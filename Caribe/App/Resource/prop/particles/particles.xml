@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <bg_sulfur>
+    <_emitter x="1512" y="708" spr="ptc_smoke.spr" idx_spr="0" cycle="1" blend="add">
+      <particle life="1,2">
+        <alpha func="linear" val="1,0" />
+        <move func="fixed" x="0" y="-1">
+          <!--x,y이동값만으로 파티클이 이동-->
+        </move>
+        <move func="random" x="-1,1" y="-1,-2">
+          <!--범위값사이에서 랜덤으로 결정-->
+        </move>
+        <move func="fixed" angle="270" speed="1">
+          <!--각도와 스피드값으로 이동x,y값을 구함.-->
+        </move>
+        <move func="random" angle="225,315" speed="1,2">
+          <!--값 사이의 랜덤값으로 이동-->
+        </move>
+        <move func="linear" angle="225,315" speed="1,2" cycle="2">
+          <!--각각의 범위값을 cycle시간으로 보간한다.-->
+        </move>
+        <angle func="random" val="225,315" />
+        <speed func="random" val="225,315" />
+        <delta_x func="random" val="225,315" />
+        <delta_y func="random" val="225,315" />
+      </particle>
+    </_emitter>
+    <emitter spr="ptc_smoke.spr" __spr="particles.spr" idx_spr="0" interval="2" blend="add">
+      <angle val="270"></angle>
+      <speed val="0.1,1.4" func="random" />
+      <delta_x func="random" val="-1,-1.5" cycle="1" />
+      <scale val="2,6" func="random" />
+      <interval val="2,4" func="random" />
+      <particle>
+        <alpha func="sin" val="0,1" />
+        <life val="3,5" func="random" />
+      </particle>
+      <life val="0" />
+    </emitter>
+    <_emitter spr="ptc_smoke.spr" idx_spr="1" interval="2" blend="add">
+      <angle val="250" func="random"></angle>
+      <speed val="1,2" func="random" />
+      <life val="5,7" func="random" />
+      <scale val="4" />
+      <particle>
+        <alpha func="linear" val="1,0" />
+      </particle>
+    </_emitter>
+  </bg_sulfur>
+  <fire_cracker>
+    <!--폭죽 꽃가루-->
+    <emitter spr="particle_star.spr" idx_spr="0,1,2,3">
+      <angle val="225,315" func="random" />
+      <speed val="2,4" func="random" />
+      <scale val="0.5,1" func="random" />
+      <interval val="0.2" />
+      <life val="0.25" />
+      <num_emit val="10" />
+      <particle>
+        <gravity val="0.1" />
+        <life val="2" />
+      </particle>
+    </emitter>
+  </fire_cracker>
+</root>

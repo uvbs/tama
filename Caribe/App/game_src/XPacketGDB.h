@@ -1,0 +1,93 @@
+﻿#pragma once
+// 게임서버<->DB에이전트간 패킷
+#include "VerPacket.h"
+
+
+// DB에러들.
+enum xtDB {
+	xDB_OK = 1,					// 성공
+	xDB_FAIL = 0,					// 그 외 일반적인 에러
+	xDB_NOT_FOUND = -1,			// 계정 못찾음.
+	xDB_INVALID_ACCOUNT = -2,		// 계정은 생성되었으나 디폴트 데이타 생성에 실패하여 계정에 아무 데이타가 없는 경우
+};
+
+
+// enum이므로 중간에 끼워넣어도 됨
+enum xtGDBPacket {
+	xGDBPK_NONE=0,
+	xGDBPK_USERLOG_ADD,
+	xGDBPK_LOGIN_ACCOUNT_INFO_LOAD,
+	xGDBPK_ACCOUNT_NAME_DUPLICATE,
+	xGDBPK_ACCOUNT_NAME_REGIST,
+	xGDBPK_ACCOUNT_NAME_REGIST_CHECK,
+	xGDBPK_ACCOUNT_NICKNAME_CHANGE,
+	xGDBPK_ACCOUNT_NICKNAME_DUPLICATE,
+	xGDBPK_SAVE_ACCOUNT_INFO,
+	xGDBPK_SAVE_ACCOUNT_LOGIN,
+	xGDBPK_REGISTER_FACEBOOK,
+	xGDBPK_UPDATE_ACCOUNT_LOGOUT,		// ACCOUNT LastServerid = 0	
+	xGDBPK_SAVE_DUMMY_ACCOUNT,
+	xGDBPK_GET_USER_LEGION_BY_POWER,	// power점수로 비교해 다른유저의 군단정보를 랜덤으로 얻어온다.
+	xGDBPK_GET_MAIN_LEGION_BY_IDACC,	// idAccount의 본진 부대정보를 요청해서 idClientConnect에게 전투정보를 보낸다. 
+	xGDBPK_GET_JEWEL_LEGION_BY_IDACC,	// idAcc의 보석광산 부대정보를 요청
+	xGDBPK_GET_MANDRAKE_LEGION_BY_IDACC,// idAcc의 만드레이크 스팟 부대정보를 요청
+	xGDBPK_GET_WOOD_IRON,
+	xGDBPK_ADD_WOOD_IRON,
+	xGDBPK_GET_USER_BY_POWER,			// min~max점수 사이의 유저중 한놈을 랜덤으로 받아온다.
+	xGDBPK_REQ_JEWEL_MINE,				// 보석광산 매칭 요청
+	xGDBPK_CHANGE_JEWEL_OWN,
+	xGDBPK_CHANGE_MANDRAKE_OWN,
+	xGDBPK_ADD_DEFENSE_BY_JEWEL,
+	xGDBPK_UPDATE_JEWEL_INFO,			// 광산정보를 업데이트 시킨다.
+	xGDBPK_DEFEAT_INFO,					// 패배정보를 전달.
+	xGDBPK_LOGIN_LOCK_FOR_BATTLE,
+	xGDBPK_LOGIN_UNLOCK_FOR_BATTLE,
+	xGDBPK_ENCOUNTER_WIN,				// 유황스팟 인카운터 승리
+	xGDBPK_REQ_MATCH_MANDRAKE,			// 만드레이크 매칭 요청.	
+	xGDBPK_POST_INFO,					// 우편함 정보
+//	xGDBPK_POST_INFO_LOGIN,				// 우편함 정보 Login
+//	xGDBPK_POST_INFO_UPDATE,			// 우편함 정보 UPDATE
+	xGDBPK_POST_ADD,					// 우편물 추가(발송)
+	xGDBPK_POST_DESTROY,				// 우편물 삭제(발송)
+	xGDBPK_POST_ITEMS_REMOVE,			// 우편물 아이템만 삭제.
+	xGDBPK_SHOP_LISTINFO_UPDATE,		// 상점 판매 물품정보 갱신
+	xGDBPK_REQ_HELLO_MSG_BY_IDACC,	// 성스팟의 인사말을 얻어옴.
+	
+	xGDBPK_TRADE_GEM_CALL,
+	xGDBPK_SHOP_GEM_CALL,
+	xGDBPK_UPDATE_CASH,					// 유저 캐쉬 정보 변경으로 인한 Cash정보 Update;
+
+	xGDBPK_RANK_INFO,
+
+	xGDBPK_GUILD_INFO,
+	xGDBPK_GUILD_CREATE,	
+	xGDBPK_GUILD_JOIN_REQ,
+	xGDBPK_GUILD_JOIN_ACCEPT,
+	xGDBPK_GUILD_JOIN_RESULT,
+//	xGDBPK_GUILD_UPDATE,					// 특정 길드의 정보를 갱신
+	xGDBPK_GUILD_UPDATE_USER,			// 길드유저에 대한 이벤트 방송
+	xGDBPK_GUILD_EVENT,					// 길드이벤트 방송
+	xGDBPK_GUILD_UPDATE_OPTION,
+	xGDBPK_GUILD_UPDATE_CONTEXT,	
+	xGDBPK_GUILD_UPDATE_MEMBER,
+	xGDBPK_GUILD_UPDATE_CAMPAIGN,
+	xGDBPK_GUILD_OUT,
+	xGDBPK_GUILD_KICK,
+	xGDBPK_GUILD_REQ_CAMPAIGN_RAID,     // 길드레이드 캠페인 요청
+	xGDBPK_GUILD_OPEN_RAID,				// 길드레이드 시작
+	xGDBPK_GUILD_REQ_ENTER_RAID,        // 길드레이드 진입요청
+	xGDBPK_GUILD_REQ_LEAVE_RAID,        // 길드레이드 스테이지에서 빠져나옴
+
+	xGDBPK_GAME_NOTIFY,
+	xGDBPK_DEFENSE_INFO_TO_DEFENDER,		// 방어자에게 방어기록을 전달한다.
+
+	xGDBPK_GAME_PUSH_GCM_REGIST_ID,			// google gcm regid를 저장.
+	xGDBPK_GAME_PUSH_REGIST,
+	xGDBPK_GAME_PUSH_UNREGIST,
+
+	xGDBPK_GAME_INAPP_PAYLOAD,
+	xGDBPK_GAME_INAPP_GOOGLE,
+	xGDBPK_GAME_INAPP_APPLE,
+	xGDBPK_GAME_INAPP_DELETE_PAYLOAD,
+	xGDBPK_RELOAD,
+};

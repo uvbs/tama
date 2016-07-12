@@ -569,6 +569,7 @@ namespace XGAME
 		xPR_TIME,
 		xPR_AP,
 		xPR_GEM,
+		xPR_TRY_DAILY,		// 요일스팟 도전횟수
 	};
 	// 기타 enum들
 	enum {

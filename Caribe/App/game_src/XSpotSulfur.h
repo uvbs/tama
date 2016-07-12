@@ -32,9 +32,9 @@ public:
 	XSpotSulfur( XWorld *pWorld, XPropWorld::xSULFUR* pProp, XDelegateSpot *pDelegate=nullptr );
 	virtual ~XSpotSulfur() { Destroy(); }
 	//
-  XPropWorld::xSULFUR* GetpProp() {
-    return static_cast<XPropWorld::xSULFUR*>( GetpBaseProp() );
-  }
+	XPropWorld::xSULFUR* GetpProp() {
+		return static_cast<XPropWorld::xSULFUR*>( GetpBaseProp() );
+	}
 	GET_ACCESSOR( const XSpot::xLOCAL_STORAGE&, lsLocal );
 //	GET_SET_ACCESSOR( float, numSulfur );
 	int GetnumSulfur() {
@@ -151,7 +151,7 @@ public:
 	}
 	void DoDropRegisterRes( XSPAcc spAcc ) override;
 	void CreateLegion( XSPAcc spAcc ) override;
-	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat ) override;
+	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat ) override;
 private:
 	XLegion* CreateLegion( XPropWorld::xBASESPOT *pProp, int lvSpot ) const;
 	void Process( float dt ) override;

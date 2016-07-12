@@ -146,7 +146,7 @@ void XSpotSulfur::ResetSpawn( void )
 	// 일정시간후에 리스폰 되도록 타이머를 맞춘다.
 	int numSpot = GetNumSpots();
 	XBREAK( numSpot < 0 || numSpot > 200 );
- 	float ns = numSpot / 3.5f;
+	float ns = numSpot / 3.5f;
 	float sec = base + (( ns * ns ) * 2) * (base * 1.f);
 	sec += xRandomF( sec * 0.1f );
 	GettimerSpawnMutable().Set( sec );
@@ -251,7 +251,7 @@ void XSpotSulfur::ResetPower( int lvSpot )
 	UpdatePower( spLegion );
 }
 
-void XSpotSulfur::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat )
+void XSpotSulfur::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat )
 {
 	if( idAccLose ) {
 		// 유황스팟 인카운터전이었으면 승패에 관계없이 지워야함(npc는 이겼으므로)

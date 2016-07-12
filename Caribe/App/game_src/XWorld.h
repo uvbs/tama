@@ -33,8 +33,10 @@
   성스팟 szHello추가
  ver29
   스팟바이너리 압축.
+ ver30
+  요일스팟 리뉴얼.
 */
-#define VER_WORLD_SERIALIZE		29
+#define VER_WORLD_SERIALIZE		30
 
 //class XTimeEventTimer;
 class XDelegateSpot;
@@ -100,6 +102,9 @@ public:
 
 	XSpotDaily* SetActiveDailySpotToRandom( XE::xtDOW dow, int secPass, XSPAcc spAcc );
 	XSpotDaily* GetActiveDailySpot( void );
+	inline XSpotDaily* GetpSpotDaily() {
+		return GetActiveDailySpot();
+	}
 // 	XSpotSpecial* SetActiveSpecialSpotToRandom( int secPass, XSPAcc spAcc );
 // 	XSpotSpecial* GetActivatedSpecialSpot( void );
 

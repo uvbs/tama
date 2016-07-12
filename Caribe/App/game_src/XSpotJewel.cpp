@@ -337,7 +337,7 @@ void XSpotJewel::SetMatch( const XGAME::xJewelMatchEnemy& infoMatch )
 		SetlootJewel( infoMatch.m_lootJewel );
 }
 
-void XSpotJewel::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat )
+void XSpotJewel::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat )
 {
 	if( bWin ) {
 		ClearSpot();

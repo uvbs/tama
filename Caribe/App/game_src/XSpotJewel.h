@@ -200,7 +200,7 @@ public:
 // 		pOut->type = XGAME::xRES_JEWEL;
 // 		pOut->num = m_lsLocal.numCurr;
 // 	}
-	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat ) override;
+	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat ) override;
 	void OnSpawn( XSPAcc spAcc ) override;
 	bool IsEnemy() const override;
 // 	ID GetidEnemy() override {

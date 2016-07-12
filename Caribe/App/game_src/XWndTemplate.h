@@ -19,7 +19,8 @@ namespace XSKILL {
 }
 XE_NAMESPACE_START( XGAME )
 //
-XWndImage* UpdateUnitFace( XWnd *pRoot, const std::string& ids, XGAME::xtUnit unit );
+XWndImage* _CreateUnitFace( XWnd *pRoot, const std::string& ids, XGAME::xtUnit unit );
+XWndImage* _CreateUnitFace( XWnd *pRoot, XGAME::xtUnit unit );
 XWndImage* UpdateLevelByHero( XWnd *pRoot, const std::string& ids, int lv );
 void CreateUpdateTopResource( XWnd *pRoot );
 void CreateUpdateTopGuildCoin( XWnd *pRoot );
@@ -74,14 +75,19 @@ private:
 class XWndCircleUnit : public XWndImage
 {
 public:
+	XWndCircleUnit();
 	XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XHero *pHero );
 	virtual ~XWndCircleUnit() { Destroy(); }
 	// get/setter
 	GET_SET_BOOL_ACCESSOR( bShowLevelSquad );
 	// public member
+	void SetUnit( XGAME::xtUnit unit ) {
+		m_Unit = unit;
+		SetbUpdate( true );
+	}
 private:
 	// private member
-	XGAME::xtUnit m_Unit;
+	XGAME::xtUnit m_Unit = XGAME::xUNIT_NONE;
 	XHero *m_pHero = nullptr;
 	bool m_bShowLevelSquad = false;
 private:
@@ -89,10 +95,6 @@ private:
 	void Init() {}
 	void Destroy() {}
 	void Update() override;
-	void SetUnit( XGAME::xtUnit unit ) {
-		m_Unit = unit;
-		SetbUpdate( true );
-	}
 }; // class XWndCircleUnit
 
 /****************************************************************

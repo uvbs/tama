@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_log>
+    <popup img="log_bg.png">
+      <butt posx="right" posy="10" img_up="common_butt_x.png" key="butt.close" adjx="-13">
+        <!--x버튼-->
+      </butt>
+      <butt img_up="common_butt_mid.png" key="butt.tab.attack" posx="24" posy="22" font_size="30" font="font_text_b" style="stroke" text="2041">
+        <!--공격기록-->
+      </butt>
+      <butt img_up="common_butt_mid.png" key="butt.tab.defense" posx="116" posy="22" font_size="30" font="font_text_b" style="stroke" text="2042">
+        <!--방어기록-->
+      </butt>
+      <list posx="30" posy="71" type="list_vert" dist="2" spaceh="0" width="351" height="188" key="list.log" />
+      <_butt img_up="log_butt_back.png" key="butt.close" posx="345" posy="19">
+        <!--닫기-->
+      </_butt>
+    </popup>
+  </popup_log>
+  <elem>
+    <img file="log_bg_bar.png">
+      <img key="img.icon.name" posx="11" posy="4" file="world_middle_enemy.png" scale="0.9">
+        <!--유저이름 앞의 아이콘-->
+        <text font_size="25" font="font_res_num" style="stroke" posx="center" posy="center" key="text.level.target">
+          <!--대상 레벨-->
+        </text>
+        <text font_size="25" font="font_text_m" style="stroke" posx="27" posy="center" key="text.name.target" width="200">
+          <!--대상 유저 이름-->
+        </text>
+      </img>
+      <img key="img.icon.score" posx="179" posy="4" file="world_top_trophy.png" scale="0.9">
+        <!--트로피 아이콘-->
+        <text font_size="20" style="stroke" posx="27" posy="center" key="text.score.target" font="font_res_num" width="100">
+          <!--점수-->
+        </text>
+      </img>
+      <img key="img.icon.power" posx="264" posy="4" file="world_top_power.png" scale="0.9">
+        <!--전투력 아이콘-->
+        <text font_size="20" font="font_res_num" style="stroke" posx="27" posy="center" key="text.power.target" width="100">
+          <!--전투력-->
+        </text>
+      </img>
+      <text font_size="18" font="font_text_m" style="stroke" posx="264" posy="25" key="text.time">
+        <!--시간-->
+      </text>
+      <butt img_up="common_butt_ts.png" key="butt.replay" posx="273" posy="4" font_size="20" font_style="stroke" text="2043" show="0">
+        <!--리플레이-->
+      </butt>
+      <butt img_up="common_butt_ts.png" key="butt.revenge" posx="273" posy="27" font_size="20" font_style="stroke" text="2044">
+        <!--복수-->
+      </butt>
+    </img>
+  </elem>
+</layout>

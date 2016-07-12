@@ -316,12 +316,14 @@ XSPAcc XSceneBattle::sCreateAcc()
 		spAcc->CreateFakeAccount();
 		// 플레이어측 군단
 		auto pPropLegion = XPropLegion::sGet()->GetpProp( "single1_player" );
-		auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, 50, false );
-		ACCOUNT->SetspLegion( 0, spLegion );
-		XVector<XHero*> aryHeroes;
-		spLegion->GetHerosToAry( &aryHeroes );
-		for( auto pHero : aryHeroes ) {
-			ACCOUNT->AddHero( pHero );
+		if( pPropLegion ) {
+			auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, 50, false );
+			ACCOUNT->SetspLegion( 0, spLegion );
+			XVector<XHero*> aryHeroes;
+			spLegion->GetHerosToAry( &aryHeroes );
+			for( auto pHero : aryHeroes ) {
+				ACCOUNT->AddHero( pHero );
+			}
 		}
 	}
 	return spAcc;
@@ -336,8 +338,10 @@ void XSceneBattle::sSetBattleParamForSingle()
 	bs.m_strName = _T( "babarian" );
 	{
 		auto pPropLegion = XPropLegion::sGet()->GetpProp( "single1_enemy" );
-		auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, bs.m_Level, false );
-		bs.m_spLegion[1] = spLegion;
+		if( pPropLegion ) {
+			auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, bs.m_Level, false );
+			bs.m_spLegion[1] = spLegion;
+		}
 	}
 	bs.m_Defense = 0;
 	bs.m_idEnemy = 0;
@@ -1344,7 +1348,7 @@ void XSceneBattle::OnSelectSquad( const SquadPtr& spSquadSelect )
 	Add( pButt );
 	//
 #ifdef _XSINGLE
-	{
+	if( XAPP->m_bDebugMode && XAPP->m_bDebugViewSquadInfo )	{
 		auto pUnit = spSquadSelect->GetspHeroUnit().get();
 		XVector<_tstring> aryStr;
 		GetSquadInfoToAry( spSquadSelect, pUnit, &aryStr );

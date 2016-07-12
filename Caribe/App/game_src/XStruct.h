@@ -338,7 +338,7 @@ struct xReward {
 	int num;				///< 보상개수
 	DWORD dwParam = 0;		/// 다용도 파라메터
 	float rateDrop = 1.f;	/// 드랍일경우 드랍 확률
-	int GetExpBook() {
+	int GetExpBook() const {
 		return (int)dwParam;
 	}
 	bool LoadFromXML( XEXmlNode& nodeReward, LPCTSTR szTag );
@@ -383,12 +383,12 @@ struct xReward {
 		idReward = idProp;			// empty한 컨트롤을 만들때 0이올수 있음.
 		num = _num;
 	}
-	ID GetidHero() {
+	ID GetidHero() const {
 		if( rewardType == xtReward::xRW_HERO )
 			return idReward;
 		return 0;
 	}
-	ID GetidItem() {
+	ID GetidItem() const {
 		if( rewardType == xtReward::xRW_ITEM )
 			return idReward;
 		return 0;

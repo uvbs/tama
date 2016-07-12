@@ -164,6 +164,8 @@ XSPSquad XLegionObj::CreateSquadObj( int col, int row
 																		, xtLegionOption bitOption
 																		, XWndBattleField* pWndWorld )
 {
+	if( !m_spLegion )
+		return nullptr;
 	const auto pSquad = m_spLegion->GetSquadron( col * 5 + row );
 	if( !pSquad )
 		return nullptr;
@@ -424,7 +426,7 @@ void XLegionObj::Draw( XEWndWorld *pWndWorld )
 					XCOLOR_RGBA( 149,125,66,255 ),
 					XCOLOR_BLACK,
 				};
-				col = cols[spSquad->GetUnitType() - 1];
+				col = cols[spSquad->GetUnit() - 1];
 				GRAPHICS->DrawCircle( vPos.x, vPos.y, radius, col );
 				// 부대의 평균 중심점에 십자를 그린다.
 				XE::VEC3 vwAvg = spSquad->GetvCenterByUnits();
@@ -611,7 +613,7 @@ XSPSquad XLegionObj::FindSquadTakeTargetAndClosed( XSquadObj *pFinder, XSquadObj
 				if( unitFilter == XGAME::xUNIT_NONE )
 					return spSquad;
 				else
-				if( unitFilter == spSquad->GetUnitType() )
+				if( unitFilter == spSquad->GetUnit() )
 					return spSquad;
 			}
 		}

@@ -2,6 +2,7 @@
 #include "XWndSpots.h"
 //#include "XWindow.h"
 #include "XSpots.h"
+#include "XSpotDaily.h"
 #include "XAccount.h"
 #include "XLegion.h"
 #include "XSquadron.h"
@@ -11,6 +12,7 @@
 #include "XWndWorld.h"
 #include "_Wnd2/XWndButton.h"
 #include "XTemp.h"
+#include "XGlobalConst.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT
@@ -1042,12 +1044,6 @@ _tstring XWndNpcSpot::GetstrDebugText()
 	return strText;
 }
 
-// _tstring XWndNpcSpot::GetstrName()
-// {
-// 	_tstring strName = GetpBaseSpot()->GetstrName();
-// 	return strName;
-// }
-
 ///////////////////////////////////////////////////////////////
 XWndDailySpot::XWndDailySpot( XSpotDaily* pSpot )
 	: XWndSpot( pSpot, SPR_DAILY, pSpot->GetPosWorld() )
@@ -1080,19 +1076,9 @@ void XWndDailySpot::Update( void )
 void XWndDailySpot::UpdateInfoText( _tstring& strOut )
 {
 	if( m_pSpot ) {		
-// 		strOut += XFORMAT( "Lv%d %s\n", m_pSpot->GetLevel(), m_pSpot->GetszName() );
-// 		if( m_pSpot->GettimerEnter().IsOn() ) {
-// 			int secRemain = (int)m_pSpot->GettimerEnter().GetsecRemainTime();	// 남은시간(초)
-// 			int hour, min, sec;
-// 			XTimer2::sGetHourMinSec( secRemain, &hour, &min, &sec );
-// 			strOut += XE::Format( _T( "남은시간:\n<%0d:%02d:%02d>\n" ),
-// 									hour, min, sec );
-// 		} else {
-// 			strOut += _T( "미입장\n" );
-// 		}
 		strOut += XFORMAT( "Lv%d %s\n", m_pSpot->GetLevel(), m_pSpot->GetszName() );
 		strOut += XE::Format( _T( "입장횟수:%d/%d" ), m_pSpot->GetnumEnter(), 
-													XSpotDaily::xNUM_ENTER );
+													_XGC->m_numEnterDaily );
 	}
 }
 
@@ -1106,55 +1092,6 @@ _tstring XWndDailySpot::GetstrDebugText()
 #endif
 	return strText;
 }
-
-//////////////////////////////////////////////////////////////
-// XWndSpecialSpot::XWndSpecialSpot( XSpotSpecial* pSpot )
-// 	: XWndSpot( pSpot, SPR_SPECIAL, pSpot->GetPosWorld() )
-// {
-// 	Init();
-// 	m_pSpot = pSpot;
-// 	// 
-// }
-// 
-// void XWndSpecialSpot::Update( void )
-// {
-// 	if( m_pSpot ) {
-// 		if( m_pSpot->IsDestroy() ) {
-// 			SetbDestroy( TRUE );
-// 			return;
-// 		}
-// 	}
-// 	XWndSpot::Update();
-// }
-// 
-// void XWndSpecialSpot::UpdateInfoText( _tstring& strOut )
-// {
-// 	if( m_pSpot )
-// 	{
-// 		strOut += XFORMAT("Lv%d %s\n", m_pSpot->GetLevel() + m_pSpot->GetidxRound(), 
-// 										m_pSpot->GetszName() );
-// 		int secRemain = (int)m_pSpot->GettimerRecharge().GetRemainSec();	// 남은시간(초)
-// 		int hour, min, sec;
-// 		XTimer2::sGetHourMinSec( secRemain, &hour, &min, &sec );
-// 		strOut += XE::Format( _T( "충전시간: <%d:%d>\n라운드:%d\n총 입장횟수:%d\n남은 입장횟수:%d" ),
-// 								min, sec,
-// 								m_pSpot->GetidxRound() + 1,
-// 								m_pSpot->GetnumEnter(), 
-// 								m_pSpot->GetnumEnterTicket() );
-// 	}
-// }
-// 
-// _tstring XWndSpecialSpot::GetstrDebugText()
-// {
-// 	_tstring strText;
-// #ifdef _CHEAT
-// 	// 디버그용 텍스트 출력
-// 	if( XAPP->GetbDebugMode() ) {
-// 	}
-// #endif
-// 	return strText;
-// }
-// 
 
 //////////////////////////////////////////////////////////////////////////
 XWndCampaignSpot::XWndCampaignSpot( XSpotCampaign* pSpot )
@@ -1177,27 +1114,6 @@ void XWndCampaignSpot::Update( void )
 			SetbDestroy( TRUE );
 			return;
 		}
-// #ifdef _CHEAT
-// 		_tstring str;
-// 		if( XAPP->m_bDebugMode )
-// 			str = XE::Format( _T( "Lv%d %s:id:%d" ), m_pSpot->GetLevel(), 
-// 													m_pSpot->GetszName(),
-// 													getid() );
-// 		else
-// 			str = XFORMAT( "Lv%d %s", m_pSpot->GetLevel(), m_pSpot->GetszName() );
-// #else
-// 		_tstring str = XE::Format( _T( "%s(%d)" ), m_pSpot->GetszName(),
-// 													m_pSpot->GetLevel() );
-// #endif
-// 		m_pText->SetText( str.c_str() );
-// 		XE::VEC2 vSizeLabel = m_pText->GetSizeNoTransLayout();
-// 		XE::VEC2 vPosText = m_pText->GetPosLocal();
-// 		XE::VEC2 vPosSpot = GetPosFinal();
-// 		XE::VEC2 vSizeSpot = GetSizeFinal();
-// //		XE::VEC2 vLT = vPosSpot + vSizeSpot / 2.f;	// 스팟의 중심좌표
-// //		vLT -= vSizeLabel / 2.f;	// 스팟을 중심으로 텍스트레이블을 중앙정렬했을때 텍스트 좌상귀
-// 		vPosText.x = -(vSizeLabel.w / 2.f);
-// 		m_pText->SetPosLocal( vPosText );
 	}
 	XWndSpot::Update();
 }

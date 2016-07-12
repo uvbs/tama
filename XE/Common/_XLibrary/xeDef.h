@@ -119,7 +119,15 @@ namespace XE {
 		xDOW_THURSDAY,
 		xDOW_FRIDAY,
 		xDOW_SATURDAY,
+		xDOW_MAX,
 	};
+
+	// 요일enum을 순차idx로 바꾼다.
+	inline int GetidxDow( xtDOW dow ) {
+		if( dow >= xDOW_MONDAY && dow <= xDOW_SATURDAY )
+			return (int)(dow - 1);
+		return 6;
+	}
 	struct xYMD {
 		WORD year;
 		BYTE month;

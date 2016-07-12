@@ -7,6 +7,7 @@
 #include "XSceneWorld.h"
 #endif
 #include "XSpots.h"
+#include "XSpotDaily.h"
 #include "XSystem.h"
 
 #ifdef WIN32
@@ -204,12 +205,9 @@ XSpotDaily* XWorld::SetActiveDailySpotToRandom( XE::xtDOW dow, int secPass, XSPA
 */
 XSpotDaily* XWorld::GetActiveDailySpot( void )
 {
-	for( XSpot *pBaseSpot : m_listSpots )
-	{
-		if( pBaseSpot->GettypeSpot() == XGAME::xSPOT_DAILY )
-		{
- 			XSpotDaily *pSpot = SafeCast<XSpotDaily*, XSpot*>( pBaseSpot );
-			if( pSpot->GetType() != XGAME::xDS_NONE )
+	for( XSpot *pBaseSpot : m_listSpots )	{
+		if( pBaseSpot->GettypeSpot() == XGAME::xSPOT_DAILY )		{
+			auto pSpot = SafeCast<XSpotDaily*>( pBaseSpot );
 				return pSpot;
 		}
 	}
@@ -225,8 +223,7 @@ int XWorld::GetNumSpots( XGAME::xtSpot spotType ) const
 	if( spotType == XGAME::xSPOT_NONE )
 		return m_listSpots.size();
 	int num = 0;
-	for( XSpot *pBaseSpot : m_listSpots )
-	{
+	for( XSpot *pBaseSpot : m_listSpots )	{
 		if( pBaseSpot->GettypeSpot() == spotType )
 			++num;
 	}
@@ -506,14 +503,14 @@ void XWorld::DoCloseArea( ID idArea )
 void XWorld::DestroySpot( XSpot *pSpot )
 {
 	m_listSpots.DelByID( pSpot->GetidSpot() );
- 	SAFE_DELETE( pSpot );
+	SAFE_DELETE( pSpot );
 }
 void XWorld::DestroySpot( ID idSpot )
 {
 	XSpot *pSpot = GetSpot( idSpot );
 	if( pSpot ) {
- 		m_listSpots.DelByID( pSpot->GetidSpot() );
- 		SAFE_DELETE( pSpot );
+		m_listSpots.DelByID( pSpot->GetidSpot() );
+		SAFE_DELETE( pSpot );
 	}
 }
 /**
@@ -524,7 +521,7 @@ int XWorld::GetClosedCloudsToAry( XArrayLinearN<ID, 512> *pOut )
 	// 전체 구름리스트를 얻는다.
 	// 이중 오픈하지 않은 리스트만 넣는다.
 	XArrayLinearN<ID, 512> aryAll;
- 	PROP_CLOUD->GetPropToAry( &aryAll );
+	PROP_CLOUD->GetPropToAry( &aryAll );
 	XARRAYLINEARN_LOOP_AUTO( aryAll, idArea ) {
 		bool bClosed = true;;
 		// 전체 리스트에서 오픈된 지역은 빼고 어레이에 담는다.

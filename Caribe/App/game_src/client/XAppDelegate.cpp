@@ -2,6 +2,7 @@
 #include "XAppDelegate.h"
 #include "client/XAppMain.h"
 #include "JWWnd.h"
+#include "XWndTemplate.h"
 
 
 #ifdef WIN32
@@ -42,6 +43,13 @@ XWnd* XAppDelegate::DelegateCreateCustomCtrl( const std::string& strcCtrl
 		auto pWndFace = new XWndStoragyItemElem( attrAll.vPos, reward );
 		pWndFace->SetNum(0);
 		pWndCreated = pWndFace;
+	} else
+	if( strcCtrl == "unit_ctrl" ) {
+//		pWndCreated = XGAME::CreateUnitFace( pParent, xUNIT_NONE );
+		pWndCreated = new XWndCircleUnit();
+		pWndCreated->SetPosLocal( attrAll.vPos );
+		pWndCreated->SetScaleLocal( attrAll.vScale );
+		pWndCreated->SetAlphaLocal( attrAll.alpha );
 	}
 
 

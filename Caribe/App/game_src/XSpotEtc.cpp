@@ -30,318 +30,337 @@ using namespace xCampaign;
 using namespace XGAME;
 
 //////////////////////////////////////////////////////////////////////////
-void XSpotDaily::OnCreateNewOnServer( XSPAcc spAcc )
-{
-	XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
-	m_dowToday = dowToday;
-	int hour, min, sec;
-	XSYSTEM::GetHourMinSec( &hour, &min, &sec );
-	// 오늘0시 기준으로 현재시간은 총 몇초인가를 계산한다.
-	int secTotal = ( hour * 60 * 60 ) + ( min * 60 ) + sec;
-	// 오늘 요일의 이벤트 스팟을 활성화 시킨다.
-	spAcc->GetpWorld()->SetActiveDailySpotToRandom( dowToday, secTotal, spAcc );
-}
-
-void XSpotDaily::Serialize( XArchive& ar ) 
-{
-	XSpot::Serialize( ar );
-	ar << (BYTE)GetpProp()->idSpot;
-	ar << (BYTE)m_Type;
-	ar << (BYTE)m_numEnter;
-	ar << (BYTE)m_dowToday;
-	m_timerCreate.Serialize( ar );
-// 	m_timerEnter.Serialize( ar );	// 삭제되었으므로 dummy로 읽고 없앰.
-}
-BOOL XSpotDaily::DeSerialize( XArchive& ar, DWORD ver ) 
-{
-#ifndef _DUMMY_GENERATOR
-//	// CONSOLE( "deserialize daily" );
-#endif // not _DUMMY_GENERATOR
-	XSpot::DeSerialize( ar, ver );
-	ID idProp;
-	BYTE b0;
-	ar >> b0;	idProp = b0;
-	ar >> b0;	m_Type = (XGAME::xtDailySpot)b0;
-	ar >> b0;	m_numEnter = b0;
-	ar >> b0;	m_dowToday = (XE::xtDOW)b0;
-	m_timerCreate.DeSerialize( ar );
-	return TRUE;
-}
-
-void XSpotDaily::ResetLevel( XSPAcc spAcc )
-{
-	SetLevel( spAcc->GetLevel() + 1 );
-}
-
-void XSpotDaily::ResetName( XSPAcc spAcc )
-{
-	if( GetstrName().empty() )
-		SetstrName( XTEXT( 2228 ) );	// 요일 전장
-}
-
-void XSpotDaily::SetSpot( XE::xtDOW dow, int secPass, XSPAcc spAccount ) 
-{
-	m_dowToday = dow;
-	m_Type = XSpotDaily::sGetDowToType( dow );
-	m_numEnter = 0;
-	SetstrName( XTEXT(2228) );	// 요일 전장
-
-	m_timerCreate.Set( (float)( 24 * 60 * 60 ) );		// 24시간을 세팅
-	m_timerCreate.SetPassSec( (float)secPass );	// 흘러간 시간을 더함.
-	ResetLevel( spAccount );
-}
-
-void XSpotDaily::ResetPower( int lvSpot )
-{
-	SetPower( 0 );
-}
-/**
- @brief 요일스팟 전투에 입장한다.
- 성공하면 xERR_OK를 반환하고 실패할경우는 그외 에러코드를 반환한다.
-*/
-XSpotDaily::xtError XSpotDaily::DoEnter() 
-{
-	xtError errCode = xERR_OK;
-	if( IsAttackable( nullptr, &errCode ) ) {
-		// 입장가능.
-		//++m_numEnter;
-	}
-	return errCode;
-
-}
-
-/**
- @brief 이 스팟이 공격이 가능한 상태인지 검사한다.
- pOut을 넘겨주면 구체적인 에러코드를 담아준다.
-*/
-bool XSpotDaily::IsAttackable( XSPAcc spAcc, xtError *pOut )
-{
-	xtError errCode = xERR_OK;
-	do {
-		if( m_timerCreate.IsOver() ) {
-			errCode = xERR_TIMEOUT;
-			break;
-		}
-		if( m_numEnter >= xNUM_ENTER ) {
-			errCode = xERR_OVER_ENTER_NUM;
-			break;
-		}
-	} while (0);
-	if( pOut )
-		*pOut = errCode;
-	return errCode == xERR_OK;
-}
-
-void XSpotDaily::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat )
-{
-	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, bRetreat );
-	if( bWin ) {	// 이길때만 깎이는걸로 정책전환.
-		AddnumEnter();
-	}
-}
-
-/**
- 스팟에 Daily군대를 생성시킨다.
-*/
-void XSpotDaily::CreateLegion( XSPAcc spAccount )
-{
-	/*
-	.오늘의 일(day)수를 구한다.
-	.% 3을 해서 중,소,대를 가린다.
-	.정해진 크기의 유닛으로 군대를 만든다.
-	.군단난이도는 노랑색 수준.
-	*/
-// 	XSpot::CreateLegion( spAccount );
-	if( GetLevel() == 0 )
-		ResetLevel( spAccount );
-	if( GetstrName().empty() )
-		ResetName( spAccount );
-	int lvLegion = GetLevel();
-	// 렙이 낮아 소형유닛만 보유하고 있을때 적이 중형급만 나온다면 질수밖에 없다.
-	// 그래서 일단 크기대신에 병과별로 나오게 한다.
-	auto typeAtk = GetAtkType();
-	XGAME::xLegionParam infoLegion;
-// 	infoLegion.SetUnitFilter( typeAtk );	// 해당병과의 유닛만 나오도록
-//	infoLegion.unit = XGAME::GetUnitRandomByFilter( XGAME::xUF_ALL );
-	infoLegion.unit = (xtUnit)((m_Day % (xUNIT_MAX-1)) + 1);	// 매일 유닛이 바뀌게
-	auto pLegion = XLegion::sCreateLegionForNPC( //GetspOwner()->GetLevel(), 
-												lvLegion,
-												0,
-												infoLegion );
-	XBREAK( GetspLegion() != nullptr );
-	SetpLegion( pLegion );
-	// 요일 보상(reward를 vector로 받아야 할거 같다.
-	ClearLootRes();
-	XVector<XGAME::xReward> aryRes;		// 오늘의 보상 리스트
-	XSpot::sGetRewardDaily( GetpProp(), m_dowToday, spAccount->GetLevel(), &aryRes );
-	// 드랍자원을 세팅(현재는 자원류 보상만 지원됨)
-	SetLootRes( aryRes );
-	UpdatePower( GetspLegion() );
-}
-
-void XSpotDaily::Process( float dt )
-{
-
-	XSpot::Process( dt );
-}
-
-
-/**
- @brief 오늘 요일에 따라 다른 클랜의 징표가 떨어진다.
-*/
-int XSpotDaily::DoDropItem( XSPAcc spAcc, XArrayLinearN<ItemBox, 256> *pOutAry, int lvSpot, float multiplyDropNum ) const
-{
-	return pOutAry->size();
-}
-
-bool XSpotDaily::Update( XSPAcc spAcc )
-{
-	m_Day = XTimer2::sGetTime() / 60 / 60 / 24;
-	return true;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-// void XSpotSpecial::OnCreateNewOnServer( XSPAcc spAcc )
+// const int XSpotDaily::c_maxFloor = 9;			// 최대 단계수
+// const int XSpotDaily::c_lvLegionStart = 9;		// 시작 군단레벨
+// 
+// void XSpotDaily::OnCreateNewOnServer( XSPAcc spAcc )
 // {
-// 	if( XBREAK( spAcc == nullptr ) )
-// 		return;
-// 	// 스페셜 스팟 타이머가 아직 세팅안되어 있다면 세팅한다.
-// //	if( spAcc->GetymdSpecialSpotStart().IsActive() == FALSE )
-// 	if( spAcc->IsActiveSpecialSpotTimer() == false )
-// 		spAcc->SetSpecialSpotTimer();
-// 	// 스페셜 스팟이 지금 활성화 되어야 하는지 확인한다.
-// 	spAcc->DoCheckSpecialSpotActivateNow();
+// 	XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
+// 	m_dowToday = dowToday;
+// 	int hour, min, sec;
+// 	XSYSTEM::GetHourMinSec( &hour, &min, &sec );
+// 	// 오늘0시 기준으로 현재시간은 총 몇초인가를 계산한다.
+// 	int secTotal = ( hour * 60 * 60 ) + ( min * 60 ) + sec;
+// 	// 오늘 요일의 이벤트 스팟을 활성화 시킨다.
+// 	spAcc->GetpWorld()->SetActiveDailySpotToRandom( dowToday, secTotal, spAcc );
 // }
-// void XSpotSpecial::Serialize( XArchive& ar ) 
+// 
+// void XSpotDaily::Serialize( XArchive& ar ) 
 // {
+// 	XBREAK( m_idxFloor > 0x7f );
 // 	XSpot::Serialize( ar );
 // 	ar << (BYTE)GetpProp()->idSpot;
-// 	ar << (BYTE)m_Type;
+// 	ar << (char)m_idxFloor; // m_Type;
 // 	ar << (BYTE)m_numEnter;
-// 	ar << (BYTE)m_numEnterTicket;
-// //	m_timerCreate.Serialize( ar );
-// 	ar << m_secCreate;
-// 	ar << m_secReleased;
-// 	m_timerRecharge.Serialize( ar );
-// 	ar << m_idxRound;
-// 	// 활성화된 스팟인데 군대가 없으면 경고.
-// //	XBREAK( m_Type != XGAME::xSS_NONE && GetspLegion() == nullptr );
-// // 	if( GetspLegion() != nullptr && ar.IsForDB() == false )		// 비활성화된 스팟은 군대가 없음.
-// // 		GetspLegion()->SerializeFull( ar );
-// // 	else
-// // 		ar << 0;
+// 	ar << (BYTE)m_dowToday;
+// 
+// 	ar << (char)m_cntWeekByFloor;
+// 	XASSERT( m_aryDay.Size() == 7 );
+// 	for( auto& day : m_aryDay ) {
+// 		ar << (char)day.m_numStar;
+// 	}
+// 	m_timerCreate.Serialize( ar );
 // }
-// BOOL XSpotSpecial::DeSerialize( XArchive& ar, DWORD ver ) 
+// BOOL XSpotDaily::DeSerialize( XArchive& ar, DWORD verWorld ) 
 // {
-// #ifndef _DUMMY_GENERATOR
-// //	// CONSOLE( "deserialize special" );
-// #endif // not _DUMMY_GENERATOR
-// 	XSpot::DeSerialize( ar, ver );
+// 	XSpot::DeSerialize( ar, verWorld );
 // 	ID idProp;
 // 	BYTE b0;
+// 	char c0;
 // 	ar >> b0;	idProp = b0;
-// 	ar >> b0;	m_Type = (XGAME::xtSpecialSpot)b0;
+// 	if( verWorld >= 30 ) {
+// 		ar >> c0;	m_idxFloor = c0; //m_Type = (XGAME::xtDailySpot)b0;
+// 	} else {
+// 		ar >> c0;	m_idxFloor = 0;	// 이전버전은 읽고 버림
+// 	}
 // 	ar >> b0;	m_numEnter = b0;
-// 	ar >> b0;	m_numEnterTicket = b0;
-// 	ar >> m_secCreate;
-// 	ar >> m_secReleased;
-// 	m_timerRecharge.DeSerialize( ar );
-// 	ar >> m_idxRound;
+// 	ar >> b0;	m_dowToday = (XE::xtDOW)b0;
+// 	if( verWorld >= 30 ) {
+// 		ar >> c0;	m_cntWeekByFloor = c0;
+// 		XASSERT( m_aryDay.Size() == 7 );
+// 		for( auto& day : m_aryDay ) {
+// 			ar >> c0;		day.m_numStar = c0;
+// 		}
+// 	}
+// 	m_timerCreate.DeSerialize( ar );
 // 	return TRUE;
 // }
 // 
-// /**
-//  스팟에 Special군대를 생성시킨다.
-// */
-// void XSpotSpecial::CreateLegion( XSPAcc spAcc )
+// void XSpotDaily::ResetLevel( XSPAcc spAcc )
 // {
-// 	if( GetLevel() == 0 )
-// 		SetLevel( spAcc->GetLevel() );
-// 	// spAccount와 싸우기 적당한 수준의 군단을 생성시킨다.
-// //	SetstrName( _T( "barbarian" ) );
-// 	int lv = GetLevel() + m_idxRound;
-// 	XGAME::xLegionParam legionInfo;
-// 	legionInfo.x_gradeLegion = XGAME::xGL_ELITE;
-// 	XLegion *pLegion = XLegion::sCreateLegionForNPC( //GetspOwner()->GetLevel(), 
-// 													lv, 0, legionInfo );
-// 	XBREAK( GetspLegion() != nullptr );
-// 	SetpLegion( pLegion );
-// 	UpdatePower( GetspLegion() );
-// // 	int power = XLegion::sGetMilitaryPower( GetspLegion(), nullptr );
-// // 	SetPower( power );
-// 	ClearDropItems();
-// 	DoDropRegisterEquip( spAcc->GetLevel() );
+// 	SetLevel( spAcc->GetLevel() + 1 );
 // }
 // 
-// void XSpotSpecial::Process( float dt )
+// void XSpotDaily::ResetName( XSPAcc spAcc )
 // {
-// 	// 스팟은 활성화 되어있는데 타이머가 꺼져있으면 안됨.
-// //	XBREAK( m_Type != XGAME::xSS_NONE && m_timerCreate.IsOff() );
-// 	XBREAK( m_Type != XGAME::xSS_NONE && m_secCreate == 0 );
-// 	if( m_timerSec.IsOff() )
-// 		m_timerSec.Set( 1.f );
-// 	// 1초마다 한번씩 검사.
-// 	if( m_timerSec.IsOver() )
-// 	{
-// //		if( m_timerCreate.IsOver() && m_Type != XGAME::xSS_NONE )
-// 		if( m_secCreate )
-// 		{
-// 			xSec secCurr = XTimer2::sGetTime();
-// 			XBREAK( secCurr - m_secCreate > 24 * 60 * 60 * 8 );	// 지나치게 오래된 시간값.
-// 			if( secCurr - m_secCreate > 24 * 60 * 60 )
-// 			{
-// 				// 24시간 다되면 스팟 사라짐.
-// 				if( GetpDelegate() )
-// 					GetpDelegate()->DelegateReleaseSpotBefore( this );
-// 				ReleaseSpot();
-// 				m_secCreate = 0;
-// 				m_secReleased = secCurr;
-// 				if( GetpDelegate() )
-// 					GetpDelegate()->DelegateReleaseSpotAfter( this );
-// //				m_timerCreate.Off();
+// 	if( GetstrName().empty() )
+// 		SetstrName( XTEXT( 2228 ) );	// 요일 전장
+// }
+// 
+// void XSpotDaily::SetSpot( XE::xtDOW dow, int secPass, XSPAcc spAccount ) 
+// {
+// 	m_dowToday = dow;
+// //	m_Type = XSpotDaily::sGetDowToType( dow );
+// 	m_numEnter = 0;
+// 	SetstrName( XTEXT(2228) );	// 요일 전장
+// 
+// 	m_timerCreate.Set( (float)( 24 * 60 * 60 ) );		// 24시간을 세팅
+// 	m_timerCreate.SetPassSec( (float)secPass );	// 흘러간 시간을 더함.
+// 	ResetLevel( spAccount );
+// 	Update( spAccount );
+// }
+// 
+// void XSpotDaily::ResetPower( int lvSpot )
+// {
+// 	SetPower( 0 );
+// }
+// /**
+//  @brief 요일스팟 전투에 입장한다.
+//  성공하면 xERR_OK를 반환하고 실패할경우는 그외 에러코드를 반환한다.
+// */
+// XSpotDaily::xtError XSpotDaily::DoEnter() 
+// {
+// 	xtError errCode = xERR_OK;
+// 	if( IsAttackable( nullptr, &errCode ) ) {
+// 		// 입장가능.
+// 		//++m_numEnter;
+// 	}
+// 	return errCode;
+// 
+// }
+// 
+// /**
+//  @brief 이 스팟이 공격이 가능한 상태인지 검사한다.
+//  pOut을 넘겨주면 구체적인 에러코드를 담아준다.
+// */
+// bool XSpotDaily::IsAttackable( XSPAcc spAcc, xtError *pOut )
+// {
+// 	xtError errCode = xERR_OK;
+// 	do {
+// 		if( m_timerCreate.IsOver() ) {
+// 			errCode = xERR_TIMEOUT;
+// 			break;
+// 		}
+// 		if( m_numEnter >= xNUM_ENTER ) {
+// 			errCode = xERR_OVER_ENTER_NUM;
+// 			break;
+// 		}
+// 	} while (0);
+// 	if( pOut )
+// 		*pOut = errCode;
+// 	return errCode == xERR_OK;
+// }
+// 
+// void XSpotDaily::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat )
+// {
+// 	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, numStar, bRetreat );
+// 	GetbitFlag().bUpdated = 0;		// 전투를 한번하고 나오면 다시 클리어 된다.
+// 	if( bWin ) {	// 이길때만 깎이는걸로 정책전환.
+// 		AddnumEnter();
+// //		const auto day = XSYSTEM::GetDayOfWeek();
+// 		const auto day = m_dowToday;		// 전투전엔 일요일이었는데 전투후 월욜로 바뀔수도 있어서.
+// 		XBREAK( m_aryDay.size() == 0 );
+// 		if( numStar > m_aryDay[day].m_numStar ) {
+// 			m_aryDay[day].m_numStar = numStar;
+// 			bool bClear = true;
+// 			for( auto& day : m_aryDay ) {
+// 				if( day.m_numStar != 3 ) {
+// 					bClear = false;
+// 					break;
+// 				}
+// 			}
+// 			// 모든 요일을 클리어 함.
+// 			if( bClear ) {
+// 				++m_idxFloor;
+// 				if( m_idxFloor >= c_maxFloor ) {
+// 					m_idxFloor = c_maxFloor - 1;
+// 					// 더이상 단계가 없음.
+// 				} else {
+// 					m_cntWeekByFloor = 0;
+// 					for( auto& day : m_aryDay ) {
+// 						day.Clear();
+// 					}
+// 					GetbitFlag().bUpdated = 1;
+// 					m_cntTouch = 2;
+// 					DestroyLegion();
+// 					Update( spAccWin );
+// 				}
 // 			}
 // 		}
-// 		// 입장횟수 충전타이머
-// 		if( m_timerRecharge.IsOver() )
-// 		{
-// 			// 20분이 지나면 입장횟수를 1증가시킴
-// 			if( ++m_numEnterTicket > xNUM_ENTER )
-// 				m_numEnterTicket = xNUM_ENTER;
-// 			// 스폰 델리게이트를 이용한다.
-// 			if( GetpDelegate() )
-// 				GetpDelegate()->DelegateOnSpawnTimer( this, 0 );
-// 			m_timerRecharge.Reset();
-// 		}
 // 	}
+// }
+// 
+// XGAME::xtUnit XSpotDaily::GetUnitByDow( XE::xtDOW dow ) const
+// {
+// 	const auto size = GetSizeUnitByFloor();
+// 	XGAME::xtAttack atkType = XGAME::xAT_NONE;
+// 	switch( dow ) {
+// 	case XE::xDOW_MONDAY:
+// 	case XE::xDOW_THURSDAY:
+// 		atkType = XGAME::xAT_TANKER;
+// 		break;
+// 	case XE::xDOW_TUESDAY:
+// 	case XE::xDOW_FRIDAY:
+// 		atkType = XGAME::xAT_RANGE;
+// 		break;
+// 	case XE::xDOW_WEDNESDAY:
+// 	case XE::xDOW_SATURDAY:
+// 		atkType = XGAME::xAT_SPEED;
+// 		break;
+// 	case XE::xDOW_SUNDAY: {
+// 		const int maxAtkType = XGAME::xAT_MAX - 1;
+// 		atkType = ( XGAME::xtAttack )( ( m_cntWeekByFloor % maxAtkType ) + 1 );
+// 	} break;
+// 	default:
+// 		break;
+// 	}
+// 	const auto unit = XGAME::GetUnitBySizeAndAtkType( size, atkType );
+// 	return unit;
+// }
+// 
+// /**
+//  @brief 현재 단계의 dow요일의 군단레벨 계산.
+//  lv9 ~ lv50
+//  총 9단계
+//  각 단계는 +6렙씩 증가
+//  각 요일은 월~일까지 0~6의 상대레벨
+// */
+// int XSpotDaily::GetlvLegionDow( XE::xtDOW dow ) const
+// {
+//  	const int lvStart = c_lvLegionStart;
+//  	const int lvMax = XGAME::MAX_ACC_LEVEL;
+//  	const int maxFloor = XSpotDaily::c_maxFloor;			// 총 단계수
+//  	const int lvArea = lvMax - lvStart;		// 총 군단레벨 범위
+//  	const float lvAddPerFloor = ROUND_FLOAT(lvArea / (float)maxFloor, 0);		// 층당 증가 레벨(반올림)
+//  	const int lvStartCurr = (int)(lvStart + m_idxFloor * lvAddPerFloor);
+// 	const float lvPerDay = ( lvAddPerFloor / 7.f);
+// 	return (int)(lvStartCurr + XE::GetidxDow( dow ) * lvPerDay);
+// }
+// 
+// /**
+//  @brief 현재 단계의 시작레벨을 구한다.
+// */
+// int XSpotDaily::GetlvLegionCurrFloor() const 
+// {
+// 	const int lvStart = c_lvLegionStart;
+// 	const int lvMax = XGAME::MAX_ACC_LEVEL;
+// 	const int maxFloor = XSpotDaily::c_maxFloor;			// 총 단계수
+// 	const int lvArea = lvMax - lvStart;		// 총 군단레벨 범위
+// 	const float lvAddPerFloor = ROUND_FLOAT( lvArea / (float)maxFloor, 0 );		// 층당 증가 레벨(반올림)
+// 	const int lvStartCurr = (int)( lvStart + m_idxFloor * lvAddPerFloor );
+// 	return lvStartCurr;
+// }
+// /**
+//  스팟에 Daily군대를 생성시킨다.
+// */
+// void XSpotDaily::CreateLegion( XSPAcc spAccount )
+// {
+// 	/*
+// 	.오늘의 일(day)수를 구한다.
+// 	.% 3을 해서 중,소,대를 가린다.
+// 	.정해진 크기의 유닛으로 군대를 만든다.
+// 	.군단난이도는 노랑색 수준.
+// 	*/
+// // 	XSpot::CreateLegion( spAccount );
+// // 	if( GetLevel() == 0 )
+// // 		ResetLevel( spAccount );
+// 	if( GetstrName().empty() )
+// 		ResetName( spAccount );
+// //	int lvLegion = GetLevel();
+// 	const int lvLegion = GetlvLegionDow( GetdowToday() );
+// 	SetLevel( lvLegion );
+// 	// 렙이 낮아 소형유닛만 보유하고 있을때 적이 중형급만 나온다면 질수밖에 없다.
+// 	// 그래서 일단 크기대신에 병과별로 나오게 한다.
+// //	auto typeAtk = GetAtkType();
+// 	XGAME::xLegionParam infoLegion;
+// //	infoLegion.unit = (xtUnit)((m_Day % (xUNIT_MAX-1)) + 1);	// 매일 유닛이 바뀌게
+// 	infoLegion.unit = GetUnitByToday();
+// 	auto pLegion = XLegion::sCreateLegionForNPC( lvLegion,
+// 																							0,
+// 																							infoLegion );
+// 	XBREAK( GetspLegion() != nullptr );
+// 	SetpLegion( pLegion );
+// 	// 요일 보상(reward를 vector로 받아야 할거 같다.
+// 	ClearLootRes();
+// 	XVector<XGAME::xReward> aryRes;		// 오늘의 보상 리스트
+// 	sGetRewardDaily( GetpProp(), m_dowToday, lvLegion, &aryRes );
+// 	// 드랍자원을 세팅(현재는 자원류 보상만 지원됨)
+// 	SetLootRes( aryRes );
+// 	UpdatePower( GetspLegion() );
+// }
+// 
+// void XSpotDaily::Process( float dt )
+// {
+// 
 // 	XSpot::Process( dt );
 // }
 // 
-// bool XSpotSpecial::Update( XSPAcc spAcc )
+// /**
+//  @brief 오늘 요일에 따라 다른 클랜의 징표가 떨어진다.
+// */
+// int XSpotDaily::DoDropItem( XSPAcc spAcc, XArrayLinearN<ItemBox, 256> *pOutAry, int lvSpot, float multiplyDropNum ) const
 // {
-// 	xSec secCurr = XTimer2::sGetTime();
-// 	// 자정으로부터 지나간 시간을 세팅한다.
-// 	int hour, min, sec;
-// 	XSYSTEM::GetHourMinSec( &hour, &min, &sec );
-// 	int secPass = ( hour * 60 * 60 ) + ( min * 60 ) + sec;
-// 	if( m_Type != XGAME::xSS_NONE )	{
-// 		if( m_secCreate == 0 ||
-// 			(m_secCreate > 0 && secCurr - m_secCreate > 24 * 60 * 60 * 8) )
-// 		{
-// 			m_secCreate = secCurr;
-// 			m_secCreate -= secPass;
-// 			m_secReleased = 0;
-// 		}
-// 	} else	{
-// 		m_secCreate = 0;
-// 		if( m_secReleased == 0 )
-// 		{
-// 			m_secReleased = secCurr;
-// 			m_secReleased -= secPass;
-// 		}
+// 	return pOutAry->size();
+// }
+// 
+// bool XSpotDaily::sGetRewardDailyToday( XPropWorld::xDaily* pProp
+// 																		, int lvLegion
+// 																		, XVector<XGAME::xReward>* pOutAry )
+// {
+// 	XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
+// 	return sGetRewardDaily( pProp, dowToday, lvLegion, pOutAry );
+// }
+// 
+// bool XSpotDaily::sGetRewardDaily( XPropWorld::xDaily* pProp
+// 																, XE::xtDOW dow
+// 																, int lvLegion
+// 																, XVector<XGAME::xReward>* pOutAry )
+// {
+// 	int idxDow = ( dow == XE::xDOW_SUNDAY ) ? 6 : dow - 1;
+// 	auto& ary = pProp->m_aryDays[idxDow];	// 해당요일의 보상리스트
+// 	// 계산
+// 	for( auto& reward : ary ) {
+// 		// 보상양을 가공한다.
+// 		auto lvBase = lvLegion - XSpotDaily::c_lvLegionStart;
+// 		if( lvBase < 0 )
+// 			lvBase = 0;
+// 		const auto v1 = pProp->m_v1;
+// 		const auto v2 = pProp->m_v2;
+// 		const auto v3 = pProp->m_v3;
+// 		int numRes = (int)( v1 + ( lvBase * v2 ) * ( reward.num * v3 ) );
+// 		XGAME::xReward rew = reward;
+// 		rew.num = numRes;
+// 		pOutAry->Add( rew );
 // 	}
 // 	return true;
 // }
+// 
+// /**
+//  @brief 스팟 터치시 호출
+// */
+// bool XSpotDaily::Update( XSPAcc spAcc )
+// {
+// 	auto dowToday = XSYSTEM::GetDayOfWeek();
+// 	if( dowToday != m_dowToday ) {
+// 		// 요일이 바뀜
+// 		if( dowToday == XE::xDOW_MONDAY ) {
+// 			// 한주가 지남.
+// 			++m_cntWeekByFloor;
+// 			CreateLegion( spAcc );		// 군단을 다시 업데이트.
+// 		}
+// 		m_dowToday = dowToday;
+// 	}
+// 	//m_Day = XTimer2::sGetTime() / 60 / 60 / 24;
+// 	return true;
+// }
+// 
+// void XSpotDaily::OnTouch( XSPAcc spAcc )
+// {
+// 	if( --m_cntTouch == 0 )
+// 		GetbitFlag().bUpdated = 0;		// 알림 확인
+// }
+
+
 //////////////////////////////////////////////////////////////////////////
 void XSpotVisit::OnCreateNewOnServer( XSPAcc spAcc )
 {
@@ -581,12 +600,12 @@ int XSpotCommon::DoDropItem( XSPAcc spAcc,
 			}
 		}
 	}
- 	return pOutAry->size();
+	return pOutAry->size();
 }
 
-void XSpotCommon::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat )
+void XSpotCommon::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat )
 {
-	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, bRetreat );
+	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, numStar, bRetreat );
 	if( m_spCampObj )
 		m_spCampObj->OnFinishBattle();
 }

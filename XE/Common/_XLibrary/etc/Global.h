@@ -202,8 +202,16 @@ SafeRelease(
 #define ROUND_OFF(F)		(((F)>0)? (float)((int)((F)+0.5f)) : (float)((int)((F)-0.5f)))	// 소숫점아래 반올림. 반올림맞는거 같은데 왜 '버림'이라고 했지?
 #define ROUND_OFF2(F,U)		(((int)(F * (1.f/U))) / (1.f/U))		// 소수점단위로 잘라낼때... ROUND_OFF2( 1.7, 0.5 ) == 1.5	// 0.5단위로 잘라냄
 #define ROUND_UP(F)		ROUND_OFF(F)		// 소숫점 아래 반올림
-// 소숫점 반올림
-#define ROUND_FLOAT(x, dig)    (floor((x) * pow(10, dig) + 0.5f) / pow(10, dig))
+/**
+ @brief 소숫점 반올림
+ @param x 반올림하려는 실수
+ @param dig 반올림 하려는 소숫점 자리수
+ ex) ROUND_FLOAT( 10.6f, 0 ) == 11.0f
+*/
+//#define ROUND_FLOAT(x, dig)    (floor((x) * pow(10, dig) + 0.5f) / pow(10, dig))
+inline float ROUND_FLOAT( float x, float dig ) {
+	return (float)(floor((x) * std::pow(10, dig) + 0.5f) / std::pow(10, dig));
+}
 // 소숫점 아래 올림
 inline float ROUND_AUP( float num ) {
 	if( num - (int)num > 0 )		// 소숫점 아래에 값이 있으면 1 올림

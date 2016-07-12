@@ -126,7 +126,8 @@ XVector<XWnd::xWinDepth>& XWnd::sGetStringByMouseOverWins()
 	for( auto& winOver : s_aryMouseOver ) {
 // 		char cSpace[256];
 		auto pWnd = winOver.m_pWnd;
- 		winOver.m_str = XE::Format("-%s(0x%08x)", pWnd->GetstrIdentifier().c_str(), pWnd->getid() );
+ 		winOver.m_str = XE::Format("-%s(0x%08x)s:%d e:%d t:%d", pWnd->GetstrIdentifier().c_str(), pWnd->getid()
+																													, pWnd->GetbShow(), pWnd->GetbEnable(), pWnd->GetbTouchable() );
 		// depth깊이만큼 스페이스를 앞에 붙인다.
 // 		if( winOver.m_Depth > 0 )
 // 			memset( cSpace, ' ', winOver.m_Depth );

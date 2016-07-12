@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "XPropCamp.h"
 #include "XPropHero.h"
+#include "XPropLegionH.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

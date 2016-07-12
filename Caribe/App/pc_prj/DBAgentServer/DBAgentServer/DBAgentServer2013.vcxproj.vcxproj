@@ -1,0 +1,634 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugCampHero2|Win32">
+      <Configuration>DebugCampHero2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_bot|Win32">
+      <Configuration>Debug_bot</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_DummyGenerator|Win32">
+      <Configuration>Debug_DummyGenerator</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_GMO|Win32">
+      <Configuration>Debug_GMO</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelCrewDev|Win32">
+      <Configuration>RelCrewDev</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_GMO|Win32">
+      <Configuration>Release_GMO</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Rel_Bot|Win32">
+      <Configuration>Rel_Bot</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Rel_DummyGenerator|Win32">
+      <Configuration>Rel_DummyGenerator</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}</ProjectGuid>
+    <SccProjectName>Perforce Project</SccProjectName>
+    <SccLocalPath>..\..\..\..\..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
+    <ProjectName>DBAgentServer_2013</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugCampHero2|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_bot|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DummyGenerator|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v120_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewDev|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_DummyGenerator|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugCampHero2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_bot|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DummyGenerator|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewDev|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Rel_DummyGenerator|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>DBAgentServer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugCampHero2|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>DBAgentServer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>DBAgentServer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_bot|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>DBAgentServerBot</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DummyGenerator|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>DBAgentServer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>DBAgentServer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewDev|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>DBAgentServer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>DBAgentServer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>DBAgentServerBot</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_DummyGenerator|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>DBAgentServerDummy</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;$(DXSDK_DIR)Include;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_DBAGENT_SVR;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;odbc32.lib;odbccp32.lib;xe_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugCampHero2|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;$(DXSDK_DIR)Include;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_XCAMP_HERO2;WIN32;_WINDOWS;_DEBUG;_DBAGENT_SVR;%(PreprocessorDefinitions);;_XCAMP_HERO2;_XCAMP_HERO2</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;odbc32.lib;odbccp32.lib;xe_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;$(DXSDK_DIR)Include;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_DBAGENT_SVR;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;odbc32.lib;odbccp32.lib;xe_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_bot|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;$(DXSDK_DIR)Include;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_XBOT;WIN32;_WINDOWS;_DEBUG;_DBAGENT_SVR;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;odbc32.lib;odbccp32.lib;xe_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DummyGenerator|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;$(DXSDK_DIR)Include;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DUMMY_GENERATOR;_VER_DX;WIN32;_WINDOWS;_DEBUG;_DBAGENT_SVR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;odbc32.lib;odbccp32.lib;xe_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;$(DXSDK_DIR)Include;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\XFramework;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\XFramework;..\..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\MTRelease;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;odbc32.lib;odbccp32.lib;xe_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewDev|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;$(DXSDK_DIR)Include;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\XFramework;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\XFramework;..\..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions);_XCREW;</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\MTRelease;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;odbc32.lib;odbccp32.lib;xe_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;$(DXSDK_DIR)Include;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\XFramework;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\XFramework;..\..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_XGMO;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\MTRelease;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;odbc32.lib;odbccp32.lib;xe_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;$(DXSDK_DIR)Include;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\XFramework;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\XFramework;..\..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_XBOT;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;odbc32.lib;odbccp32.lib;xe_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_DummyGenerator|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;$(DXSDK_DIR)Include;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\XFramework;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\XFramework;..\..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_DUMMY_GENERATOR;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;odbc32.lib;odbccp32.lib;xe_server.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\XE\XFramework\XDBMng2.inl" />
+    <None Include="res\DBAgentServer.ico" />
+    <None Include="res\DBAgentServer.rc2" />
+    <None Include="res\DBAgentServerDoc.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DBAgentServer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\MFC\CoolDialogBar.h" />
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\MFC\XDlgConsole.h" />
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\XDBMng2.h" />
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\XDetectDeadLock.h" />
+    <ClInclude Include="..\..\..\game_src\constGame.h" />
+    <ClInclude Include="..\..\..\game_src\server\XGuildMgr.h" />
+    <ClInclude Include="..\..\..\game_src\server\XSAccount.h" />
+    <ClInclude Include="..\..\..\game_src\skill\SkillDef.h" />
+    <ClInclude Include="..\..\..\game_src\skill\SkillType.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XAdjParam.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XBuffObj.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XESkillMng.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XLuaSkill.h" />
+    <ClInclude Include="..\..\..\game_src\skill\xSkill.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XSkillDat.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XSkillObj.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XSkillReceiver.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XSkillUser.h" />
+    <ClInclude Include="..\..\..\game_src\typeInServer.h" />
+    <ClInclude Include="..\..\..\game_src\VersionServers.h" />
+    <ClInclude Include="..\..\..\game_src\XAccount.h" />
+    <ClInclude Include="..\..\..\game_src\XBaseItem.h" />
+    <ClInclude Include="..\..\..\game_src\XCampObj.h" />
+    <ClInclude Include="..\..\..\game_src\XCampObjHero.h" />
+    <ClInclude Include="..\..\..\game_src\XCampObjHero2.h" />
+    <ClInclude Include="..\..\..\game_src\XCashDB.h" />
+    <ClInclude Include="..\..\..\game_src\XDatabase.h" />
+    <ClInclude Include="..\..\..\game_src\XDataBaseODBC.h" />
+    <ClInclude Include="..\..\..\game_src\XDBUAccount.h" />
+    <ClInclude Include="..\..\..\game_src\XExpTableHero.h" />
+    <ClInclude Include="..\..\..\game_src\XExpTableUser.h" />
+    <ClInclude Include="..\..\..\game_src\XGameCommon.h" />
+    <ClInclude Include="..\..\..\game_src\XGameLua.h" />
+    <ClInclude Include="..\..\..\game_src\XGlobalConst.h" />
+    <ClInclude Include="..\..\..\game_src\XGoogleVerify.h" />
+    <ClInclude Include="..\..\..\game_src\XGuild.h" />
+    <ClInclude Include="..\..\..\game_src\XGuildH.h" />
+    <ClInclude Include="..\..\..\game_src\XGuildRaid.h" />
+    <ClInclude Include="..\..\..\game_src\XGuildRaidCity.h" />
+    <ClInclude Include="..\..\..\game_src\XGuildRaidStage.h" />
+    <ClInclude Include="..\..\..\game_src\XHero.h" />
+    <ClInclude Include="..\..\..\game_src\XLegion.h" />
+    <ClInclude Include="..\..\..\game_src\XPostInfo.h" />
+    <ClInclude Include="..\..\..\game_src\XPropCamp.h" />
+    <ClInclude Include="..\..\..\game_src\XPropCloud.h" />
+    <ClInclude Include="..\..\..\game_src\XPropHelp.h" />
+    <ClInclude Include="..\..\..\game_src\XPropHero.h" />
+    <ClInclude Include="..\..\..\game_src\XPropItem.h" />
+    <ClInclude Include="..\..\..\game_src\XPropLegion.h" />
+    <ClInclude Include="..\..\..\game_src\XPropLegionH.h" />
+    <ClInclude Include="..\..\..\game_src\XPropOrder.h" />
+    <ClInclude Include="..\..\..\game_src\XProps.h" />
+    <ClInclude Include="..\..\..\game_src\XPropSeq.h" />
+    <ClInclude Include="..\..\..\game_src\XPropSquad.h" />
+    <ClInclude Include="..\..\..\game_src\XPropUnit.h" />
+    <ClInclude Include="..\..\..\game_src\XPropUpgrade.h" />
+    <ClInclude Include="..\..\..\game_src\XPropWorld.h" />
+    <ClInclude Include="..\..\..\game_src\XQuest.h" />
+    <ClInclude Include="..\..\..\game_src\XQuestCon.h" />
+    <ClInclude Include="..\..\..\game_src\XQuestMng.h" />
+    <ClInclude Include="..\..\..\game_src\XQuestProp.h" />
+    <ClInclude Include="..\..\..\game_src\XRanking.h" />
+    <ClInclude Include="..\..\..\game_src\XSpot.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotCampaign.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotCastle.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotDaily.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotEtc.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotH.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotJewel.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotMandrake.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotNpc.h" />
+    <ClInclude Include="..\..\..\game_src\XSpots.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotSulfur.h" />
+    <ClInclude Include="..\..\..\game_src\XSquadron.h" />
+    <ClInclude Include="..\..\..\game_src\XStageObj.h" />
+    <ClInclude Include="..\..\..\game_src\XStageObjHero.h" />
+    <ClInclude Include="..\..\..\game_src\XStageObjHero2.h" />
+    <ClInclude Include="..\..\..\game_src\XStruct.h" />
+    <ClInclude Include="..\..\..\game_src\XUserDB.h" />
+    <ClInclude Include="..\..\..\game_src\XWorld.h" />
+    <ClInclude Include="..\..\..\Resource\VerPacket.h" />
+    <ClInclude Include="dbagentserver.h" />
+    <ClInclude Include="DBAgentServerDoc.h" />
+    <ClInclude Include="DBAgentServerView.h" />
+    <ClInclude Include="DlgGmMsg.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Version.h" />
+    <ClInclude Include="XGame.h" />
+    <ClInclude Include="XGameSvrConnection.h" />
+    <ClInclude Include="XGameUser.h" />
+    <ClInclude Include="XGameUserMng.h" />
+    <ClInclude Include="XMain.h" />
+    <ClInclude Include="XMainDelegate.h" />
+    <ClInclude Include="XSocketForGameSvr.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\MFC\CoolDialogBar.cpp" />
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\MFC\XDlgConsole.cpp" />
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\XDBMng2.cpp" />
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\XDetectDeadLock.cpp" />
+    <ClCompile Include="..\..\..\game_src\constGame.cpp" />
+    <ClCompile Include="..\..\..\game_src\server\XGuildMgr.cpp" />
+    <ClCompile Include="..\..\..\game_src\server\XSAccount.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XAdjParam.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XBuffObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XESkillMng.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XLuaSkill.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\xSkill.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XSkillDat.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XSkillObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XSkillReceiver.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XSkillUser.cpp" />
+    <ClCompile Include="..\..\..\game_src\XAccount.cpp" />
+    <ClCompile Include="..\..\..\game_src\XBaseItem.cpp" />
+    <ClCompile Include="..\..\..\game_src\XCampObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\XCampObjHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XCampObjHero2.cpp" />
+    <ClCompile Include="..\..\..\game_src\XCashDB.cpp" />
+    <ClCompile Include="..\..\..\game_src\XDatabase.cpp" />
+    <ClCompile Include="..\..\..\game_src\XDataBaseODBC.cpp" />
+    <ClCompile Include="..\..\..\game_src\XDBUAccount.cpp" />
+    <ClCompile Include="..\..\..\game_src\XExpTableHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XExpTableUser.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGameCommon.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGameLua.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGlobalConst.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGoogleVerify.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGuild.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGuildRaid.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGuildRaidCity.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGuildRaidStage.cpp" />
+    <ClCompile Include="..\..\..\game_src\XHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XLegion.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPostInfo.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropCamp.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropCloud.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropHelp.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropItem.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropLegion.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropOrder.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropSeq.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropSquad.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropUnit.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropUpgrade.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropWorld.cpp" />
+    <ClCompile Include="..\..\..\game_src\XQuest.cpp" />
+    <ClCompile Include="..\..\..\game_src\XQuestCon.cpp" />
+    <ClCompile Include="..\..\..\game_src\XQuestMng.cpp" />
+    <ClCompile Include="..\..\..\game_src\XQuestProp.cpp" />
+    <ClCompile Include="..\..\..\game_src\XRanking.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpot.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotCampaign.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotCastle.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotDaily.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotEtc.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotJewel.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotMandrake.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotNpc.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotSulfur.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSquadron.cpp" />
+    <ClCompile Include="..\..\..\game_src\XStageObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\XStageObjHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XStageObjHero2.cpp" />
+    <ClCompile Include="..\..\..\game_src\XStruct.cpp" />
+    <ClCompile Include="..\..\..\game_src\XUserDB.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWorld.cpp" />
+    <ClCompile Include="DBAgentServer.cpp" />
+    <ClCompile Include="DBAgentServerDoc.cpp" />
+    <ClCompile Include="DBAgentServerView.cpp" />
+    <ClCompile Include="DlgGmMsg.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugCampHero2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_bot|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_DummyGenerator|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelCrewDev|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Rel_DummyGenerator|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="XGame.cpp" />
+    <ClCompile Include="XGameSvrConnection.cpp" />
+    <ClCompile Include="XGameUser.cpp" />
+    <ClCompile Include="XGameUserMng.cpp" />
+    <ClCompile Include="XMain.cpp" />
+    <ClCompile Include="XMainDelegate.cpp" />
+    <ClCompile Include="XSocketForGameSvr.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\..\daily_work.txt" />
+    <Text Include="..\..\..\..\memo.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="DBAgentServer.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf">
+  <!--모든 씬 백판-->
+  <common_bg>
+    <wnd posx="0" posy="0" width="0" height="0" key="wnd.common_bg">
+      <!--백판-->
+      <img posx="0" posy="0" file="common_bg_bottom.png" />
+      <!--백버튼-->
+      <butt posx="510" posy="0" key="butt.back" img_up="common_butt_back.png" />
+    </wnd>
+  </common_bg>
+  <!--골드 & 캐쉬 백판-->
+  <common_bg_goldcash>
+    <wnd posx="230" posy="2" width="0" height="0" key="wnd.common.bg.goldcash">
+      <!--골드 & 캐쉬 백판-->
+      <img posx="0" posy="0" file="common_bg_goldcash.png">
+        <!--골드-->
+        <text posx="50" posy="19" font="font_text_b" font_size="34" font_style="stroke" align="center" text_col="white" width="85" text="80000" key="text.common.gold" comma="on"></text>
+        <!--캐쉬-->
+        <text posx="186" posy="19" font="font_text_b" font_size="34" font_style="stroke" align="center" text_col="white" width="85" text="80000" key="text.common.cash" comma="on" />
+      </img>
+    </wnd>
+  </common_bg_goldcash>
+  <!--창고-->
+  <storage>
+    <wnd posx="64" posy="57" width="0" height="0" key="wnd.storage">
+      <!--내부 백판-->
+      <img posx="0" posy="0" file="common_bg_inside.png" />
+      <!--전체 버튼-->
+      <butt img_up="common_butt_small.png" posx="11" posy="13" text_col="white" font="font_text_b" font_size="25" key="butt.tab.all" font_style="stroke" text="80031" />
+      <!--장비 버튼-->
+      <butt img_up="common_butt_small.png" posx="90" posy="13" text_col="white" font="font_text_b" font_size="25" key="butt.tab.equipment" font_style="stroke" text="80002"></butt>
+      <!--전리품 버튼-->
+      <butt img_up="common_butt_small.png" posx="169" posy="13" text_col="white" font="font_text_b" font_size="25" key="butt.tab.trophy" font_style="stroke" text="80013" />
+      <!--기타 버튼-->
+      <butt img_up="common_butt_small.png" posx="248" posy="13" text_col="white" font="font_text_b" font_size="25" key="butt.tab.etc" font_style="stroke" text="80014" />
+      <!--아이템 리스트-->
+      <list posx="11" posy="50" width="320" height="235" spacew="3" spaceh="3" type="thumb" key="list.storage" />
+    </wnd>
+  </storage>
+  <!--아이템 정보-->
+  <select_item_info>
+    <wnd posx="405" posy="65" key="wnd.storage.select_item_info" width="162" height="286">
+      <!--양피지 백판-->
+      <img posx="0" posy="0" file="armory_bg_magnifier.png" key="storage.parchment">
+        <wnd posx="7" posy="40" key="wnd.item.tooltip" width="153" height="202">
+          <!--아이템 툴팁의 루트-->
+        </wnd>
+      </img>
+      <!--타이틀-->
+      <text posx="35" posy="7" font="font_text_b" font_size="35" font_style="stroke" align="center" width="88" text="" key="text.storage.title" text_col="white"></text>
+      <!--아이템 이미지-->
+      <!--별 1 ~ 4-->
+      <!--판매 버튼-->
+      <butt img_up="common_butt_small.png" posx="40" posy="250" text_col="white" font="font_text_b" font_size="35" key="butt.storage.sell" font_style="stroke" text="80015" show="0" />
+      <!--사용 버튼-->
+      <butt img_up="common_butt_small.png" posx="40" posy="250" text_col="white" font="font_text_b" font_size="35" key="butt.storage.use" font_style="stroke" text="80008" show="0" />
+    </wnd>
+    <_wnd posx="405" posy="65" width="0" height="0" key="wnd.storage.select_item_info">
+      <!--양피지 백판-->
+      <img posx="0" posy="0" file="storage_parchment.png" key="storage.parchment1" />
+      <img posx="0" posy="0" file="storage_parchment2.png" key="storage.parchment2" />
+      <!--타이틀-->
+      <text posx="35" posy="7" font="font_text_b" font_size="35" font_style="stroke" align="center" width="88" text="" key="text.storage.title" text_col="white"></text>
+      <!--아이템 이미지-->
+      <img posx="57" posy="40" key="img.storagy.itemimg"></img>
+      <!--별 1 ~ 4-->
+      <img posx="50" posy="77" file="common_etc_smallstar.png" key="img.storage.star1" show="0"></img>
+      <img posx="70" posy="77" file="common_etc_smallstar.png" key="img.storage.star2" show="0"></img>
+      <img posx="90" posy="77" file="common_etc_smallstar.png" key="img.storage.star3" show="0"></img>
+      <img posx="110" posy="77" file="common_etc_smallstar.png" key="img.storage.star4" show="0"></img>
+      <!--공격력 이미지-->
+      <img posx="30" posy="120" file="common_etc_att.png" show="0" key="img.storage.att"></img>
+      <!--방어력 이미지-->
+      <img posx="30" posy="120" file="common_etc_def.png" show="0" key="img.storage.def"></img>
+      <!--체력 이미지-->
+      <img posx="30" posy="120" file="common_etc_hp.png" show="0" key="img.storage.hp"></img>
+      <!--이동 속도 이미지-->
+      <img posx="30" posy="120" file="common_etc_mpd.png" show="0" key="img.storage.mpd"></img>
+      <!--공격속도 이미지-->
+      <img posx="30" posy="120" file="common_etc_apd.png" show="0" key="img.storage.apd"></img>
+      <!--아이템 이름-->
+      <text posx="38" posy="91" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="" key="text.storage.itemname" text_col="white"></text>
+      <!--아이템 정보-->
+      <text posx="40" posy="120" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.storage.iteminfo" show="0" text_col="white"></text>
+      <!--아이템 갯수-->
+      <text posx="40" posy="205" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="" key="text.storage.itemnum" show="0" text_col="white"></text>
+      <!--공격력-->
+      <text posx="30" posy="100" font="font_text_b" font_size="20" font_style="stroke" _align="right" _width="88" _text="80000" key="text.storage.att" show="0" text_col="white"></text>
+      <!--방어력-->
+      <text posx="30" posy="120" font="font_text_b" font_size="20" font_style="stroke" _align="right" _width="88" _text="80000" key="text.storage.def" show="0" text_col="white"></text>
+      <!--생명력-->
+      <text posx="30" posy="140" font="font_text_b" font_size="20" font_style="stroke" _align="right" _width="88" _text="80000" key="text.storage.hp" show="0" text_col="white"></text>
+      <!--이동속도-->
+      <text posx="30" posy="160" font="font_text_b" font_size="20" font_style="stroke" _align="right" _width="88" _text="80000" key="text.storage.apd" show="0" text_col="white"></text>
+      <!--공격속도-->
+      <text posx="30" posy="180" font="font_text_b" font_size="20" font_style="stroke" _align="right" _width="88" _text="80000" key="text.storage.mpd" show="0" text_col="white"></text>
+      <!--판매 버튼-->
+      <butt img_up="common_butt_small.png" posx="40" posy="230" text_col="white" font="font_text_b" font_size="35" key="butt.storage.sell" font_style="stroke" text="80015" show="0" />
+      <!--사용 버튼-->
+      <butt img_up="common_butt_small.png" posx="40" posy="230" text_col="white" font="font_text_b" font_size="35" key="butt.storage.use" font_style="stroke" text="80008" show="0" />
+    </_wnd>
+  </select_item_info>
+  <!--사용 팝업-->
+  <usepopup>
+    <popup img="common_bg_popup.png" key="popup.storage.use">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80008" />
+      <!--설명 bg-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80008" />
+      <!--아이템 슬롯-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <img posx="237" posy="120" file="common_bg_item.png"></img>
+      <img posx="241" posy="124" key="img.ask.itemimg"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.storage.ask" align="center" font="font_text_m" font_size="30" font_style="stroke"></text>
+      <!--사용 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80008"></butt>
+      <!--취소 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+    </popup>
+  </usepopup>
+  <_usepopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.storage.use">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80008" />
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <!--아이템 슬롯-->
+      <img posx="237" posy="120" file="common_bg_item.png"></img>
+      <img posx="241" posy="124" key="img.ask.itemimg"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.storage.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
+      <!--사용 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80008"></butt>
+      <!--취소 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+    </img>
+  </_usepopup>
+  <!--텍스트 팝업-->
+  <commontextpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popuptext">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" key="text.title" />
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.common.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
+      <!--왼쪽 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+      <!--오른쪽 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+      <!--버튼 하나용-->
+      <butt posx="215" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok1" font_style="stroke" text="2" show="0"></butt>
+    </img>
+  </commontextpopup>
+  <!--아이템 슬롯 텍스트 팝업-->
+  <commonitemtextpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popupitemtext">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" key="text.title" />
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <!--아이템 슬롯-->
+      <img posx="237" posy="120" file="common_bg_item.png"></img>
+      <!--아이템 이미지-->
+      <img posx="241" posy="124" key="img.ask.itemimg"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.common.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
+      <!--왼쪽 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+      <!--오른쪽 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+    </img>
+  </commonitemtextpopup>
+  <!--
+  <equipment_info>
+    <wnd posx="378" posy="91" width="173" height="250" key="wnd.storage.equipment_info">
+      <img posx="0" posy="0" file="storage_equip_bg.png"></img>
+      <img posx="58" posy="3" file="" key="img.storagy.itemimg"></img>
+      <img posx="50" posy="40" file="star.png" key="img.storage.star1"></img>
+      <img posx="70" posy="40" file="star.png" key="img.storage.star2"></img>
+      <img posx="90" posy="40" file="star.png" key="img.storage.star3"></img>
+      <img posx="30" posy="95" file="storage_att.png" show="0" key="img.storage.att"></img>
+      <img posx="110" posy="40" file="star.png" key="img.storage.star4"></img>
+      <img posx="30" posy="95" file="storage_def.png" show="0" key="img.storage.def"></img>
+      <img posx="30" posy="95" file="storage_hp.png" show="0" key="img.storage.hp"></img>
+      <img posx="30" posy="95" file="storage_mpd.png" show="0" key="img.storage.mpd"></img>
+      <img posx="30" posy="95" file="storage_apd.png" show="0" key="img.storage.apd"></img>
+      <text posx="40" posy="70" font="font_text_b" font_size="20" font_style="stroke" align="center" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="80000" key="text.storage.itemname"></text>
+      <text posx="40" posy="90" font="font_text_b" font_size="20" font_style="stroke" align="center" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="" key="text.storage.trophy.info"></text>
+      <text posx="40" posy="150" font="font_text_b" font_size="20" font_style="stroke" align="center" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="" key="text.storage.trophy.num"></text>
+      <text posx="30" posy="100" font="font_text_b" font_size="20" font_style="stroke" align="right" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="80000" key="text.storage.att" show="0"></text>
+      <text posx="30" posy="120" font="font_text_b" font_size="20" font_style="stroke" align="right" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="80000" key="text.storage.def" show="0"></text>
+      <text posx="30" posy="140" font="font_text_b" font_size="20" font_style="stroke" align="right" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="80000" key="text.storage.hp" show="0"></text>
+      <text posx="30" posy="160" font="font_text_b" font_size="20" font_style="stroke" align="right" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="80000" key="text.storage.apd" show="0"></text>
+      <text posx="30" posy="180" font="font_text_b" font_size="20" font_style="stroke" align="right" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="80000" key="text.storage.mpd" show="0"></text>
+      <butt img_up="butt_mid_u.png" img_down="butt_mid_d.png" posx="40" posy="200" text_col="white" font="font_text_b" font_size="35" key="butt.storage.sell" font_style="stroke" text="80015" />
+    </wnd>
+  </equipment_info>
+  <trophy_info>
+    <wnd posx="378" posy="91" width="173" height="196" key="wnd.storage.trophy_info">
+      <img posx="60" posy="10" file="slot_squad_hero.png"></img>
+      <img posx="58" posy="3" key="img.storagy.itemimg"></img>
+      <text posx="40" posy="70" font="font_text_b" font_size="20" font_style="stroke" align="center" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="" key="text.storage.trophy.name"></text>
+      <text posx="40" posy="90" font="font_text_b" font_size="20" font_style="stroke" align="center" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="" key="text.storage.trophy.info"></text>
+      <text posx="40" posy="150" font="font_text_b" font_size="20" font_style="stroke" align="center" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="" key="text.storage.trophy.num"></text>
+    </wnd>
+  </trophy_info>
+  <etc_info>
+    <wnd posx="378" posy="91" width="173" height="250" key="wnd.storage.etc_info">
+      <img posx="60" posy="10" file="slot_squad_hero.png"></img>
+      <img posx="58" posy="3" key="img.storagy.itemimg"></img>
+      <text posx="40" posy="70" font="font_text_b" font_size="20" font_style="stroke" align="center" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="" key="text.storage.etc.name"></text>
+      <text posx="40" posy="90" font="font_text_b" font_size="20" font_style="stroke" align="center" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="" key="text.storage.etc.info"></text>
+      <text posx="40" posy="150" font="font_text_b" font_size="20" font_style="stroke" align="center" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="" key="text.storage.etc.num"></text>
+      <butt img_up="butt_mid_u.png" img_down="butt_mid_d.png" posx="40" posy="200" text_col="white" font="font_text_b" font_size="35" key="butt.storage.use" font_style="stroke" text="80008" />
+    </wnd>
+  </etc_info>
+  -->
+</layout>

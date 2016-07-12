@@ -1,0 +1,91 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xe_client2013", "XE\prj\xe_client\xe_client\xe_client2013.vcxproj.vcxproj", "{4E6645B0-5901-4E21-A75D-C7D453C9A552}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Caribe2013", "Caribe\App\pc_prj\Caribe\Caribe\Caribe2013.vcxproj.vcxproj", "{1565A2CB-DB14-4F22-8545-F51B7C11C502}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552} = {4E6645B0-5901-4E21-A75D-C7D453C9A552}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_Bot2|x86 = Debug_Bot2|x86
+		Debug_DX|x86 = Debug_DX|x86
+		Debug_GLES2|x86 = Debug_GLES2|x86
+		Debug_GMO|x86 = Debug_GMO|x86
+		Debug_Patch5|x86 = Debug_Patch5|x86
+		Debug_single|x86 = Debug_single|x86
+		Debug_Softnyx|x86 = Debug_Softnyx|x86
+		Rel_Bot|x86 = Rel_Bot|x86
+		RelCrewGoogle|x86 = RelCrewGoogle|x86
+		RelCrewSoftnyx|x86 = RelCrewSoftnyx|x86
+		Release_Bot2|x86 = Release_Bot2|x86
+		Release_GMO|x86 = Release_GMO|x86
+		Release_single|x86 = Release_single|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Bot2|x86.ActiveCfg = Debug_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Bot2|x86.Build.0 = Debug_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_DX|x86.ActiveCfg = Debug_DX|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_DX|x86.Build.0 = Debug_DX|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_GLES2|x86.ActiveCfg = Debug_GLES2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_GLES2|x86.Build.0 = Debug_GLES2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_GMO|x86.ActiveCfg = Debug_GLES2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_GMO|x86.Build.0 = Debug_GLES2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Patch5|x86.ActiveCfg = Debug_Patch5|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Patch5|x86.Build.0 = Debug_Patch5|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_single|x86.ActiveCfg = Debug_single|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_single|x86.Build.0 = Debug_single|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Softnyx|x86.ActiveCfg = Debug_GLES2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Softnyx|x86.Build.0 = Debug_GLES2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Rel_Bot|x86.ActiveCfg = Rel_Bot|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Rel_Bot|x86.Build.0 = Rel_Bot|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelCrewGoogle|x86.ActiveCfg = RelCrewGoogle|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelCrewGoogle|x86.Build.0 = RelCrewGoogle|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelCrewSoftnyx|x86.ActiveCfg = RelCrewSoftnyx|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelCrewSoftnyx|x86.Build.0 = RelCrewSoftnyx|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release_Bot2|x86.ActiveCfg = Release_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release_Bot2|x86.Build.0 = Release_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release_GMO|x86.ActiveCfg = Release_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release_GMO|x86.Build.0 = Release_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release_single|x86.ActiveCfg = Release_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release_single|x86.Build.0 = Release_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release|x86.ActiveCfg = Release|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release|x86.Build.0 = Release|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Bot2|x86.ActiveCfg = Debug_Patch5|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Bot2|x86.Build.0 = Debug_Patch5|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_DX|x86.ActiveCfg = Debug_DX|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_DX|x86.Build.0 = Debug_DX|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_GLES2|x86.ActiveCfg = Debug_GLES2|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_GLES2|x86.Build.0 = Debug_GLES2|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_GMO|x86.ActiveCfg = Debug_GMO|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_GMO|x86.Build.0 = Debug_GMO|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Patch5|x86.ActiveCfg = Debug_Patch5|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Patch5|x86.Build.0 = Debug_Patch5|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_single|x86.ActiveCfg = Debug_single|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_single|x86.Build.0 = Debug_single|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Softnyx|x86.ActiveCfg = Debug_Softnyx|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Softnyx|x86.Build.0 = Debug_Softnyx|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Rel_Bot|x86.ActiveCfg = Rel_Bot|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Rel_Bot|x86.Build.0 = Rel_Bot|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelCrewGoogle|x86.ActiveCfg = RelCrewGoogle|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelCrewGoogle|x86.Build.0 = RelCrewGoogle|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelCrewSoftnyx|x86.ActiveCfg = RelCrewSoftnyx|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelCrewSoftnyx|x86.Build.0 = RelCrewSoftnyx|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Release_Bot2|x86.ActiveCfg = Release_single|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Release_Bot2|x86.Build.0 = Release_single|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Release_GMO|x86.ActiveCfg = Release_GMO|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Release_GMO|x86.Build.0 = Release_GMO|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Release_single|x86.ActiveCfg = Release_single|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Release_single|x86.Build.0 = Release_single|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Release|x86.ActiveCfg = Release|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

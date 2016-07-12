@@ -17,6 +17,7 @@
 #include "XSceneGuild.h"
 #include "XGuild.h"
 #include "XSpots.h"
+#include "XSpotDaily.h"
 #include "XHero.h"
 #include "XLegion.h"
 #include "XWorld.h"
@@ -740,28 +741,28 @@ XWndPopupGuildJoin::XWndPopupGuildJoin(XWndGuildElem *pElem, XLayout *pLayout, c
 }
 
 ////////////////////////////////////////////////////////////////
-XWndPopupDaily::XWndPopupDaily( XSpotDaily *pSpot )
-	: XWndPopup(_T("popup_daily.xml"), "popup_daily")
+_XWndPopupDaily::_XWndPopupDaily( XSpotDaily *pSpot )
+	: XWndPopup(_T("popup_daily.xml"), "popup_daily_old")
 {
 	Init();
 	XBREAK(pSpot == nullptr);
 	m_pSpot = pSpot;
 	SetbUpdate( true );
 //	SetAutoUpdate( 0.1f );
-	SetButtHander( this, "butt.battle", &XWndPopupDaily::OnClickEnter );
+	SetButtHander( this, "butt.battle", &_XWndPopupDaily::OnClickEnter );
 	XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
 	m_dowToday = dowToday;
 	m_timerAlpha.Set(1.f);
 }
 
-void XWndPopupDaily::Update()
+void _XWndPopupDaily::Update()
 {
 #ifdef _CHEAT
 	if( XAPP->m_bDebugMode ) {
 		if( Find("butt.reset") == nullptr ) {
 			auto pButt = new XWndButtonDebug( 19.f, 45.f, 50.f, 30.f, _T( "리셋" ) );
 			pButt->SetstrIdentifier( "butt.reset" );
-			pButt->SetEvent( XWM_CLICKED, this, &XWndPopupDaily::OnClickReset );
+			pButt->SetEvent( XWM_CLICKED, this, &_XWndPopupDaily::OnClickReset );
 			Add( pButt );
 		}
 	}
@@ -784,7 +785,7 @@ void XWndPopupDaily::Update()
 			// 드랍아이템
 // 			auto reward = XSpot::sGetRewardDaily( m_pSpot->GetpProp(), dow, ACCOUNT->GetLevel(), &aryReward );
 			XVector<XGAME::xReward> aryReward;
-			XSpot::sGetRewardDaily( m_pSpot->GetpProp(), dow, ACCOUNT->GetLevel(), &aryReward );
+			XSpotDaily::sGetRewardDaily( m_pSpot->GetpProp(), dow, ACCOUNT->GetLevel(), &aryReward );
 			if( aryReward.size() ) {
 				if( aryReward[0].IsTypeResource() ) {
 					auto pWndRes = new XWndResourceCtrl( XE::VEC2( 6, 31 ) );
@@ -893,7 +894,7 @@ void XWndPopupDaily::Update()
 		}
 	}
 	// 도전횟수 마크
-	int numRemain = XSpotDaily::xNUM_ENTER - m_pSpot->GetnumEnter();
+	int numRemain = _XGC->m_numEnterDaily - m_pSpot->GetnumEnter();
 	for( int i = 0; i < numRemain; ++i ) {
 		auto pMark = xGET_IMAGE_CTRLF( this, "img.mark.%d", i+1 );
 		if( pMark ) {
@@ -903,7 +904,7 @@ void XWndPopupDaily::Update()
 	XWndPopup::Update();
 }
 
-int XWndPopupDaily::Process( float dt )
+int _XWndPopupDaily::Process( float dt )
 {
 	int aryIdxDow[ 7 ] = {7, 1, 2, 3, 4, 5, 6};
 	auto pElem = Findf( "img.elem.%d", aryIdxDow[ m_dowToday ] );
@@ -921,7 +922,7 @@ int XWndPopupDaily::Process( float dt )
 	return XWndPopup::Process( dt );
 }
 
-void XWndPopupDaily::OnAutoUpdate()
+void _XWndPopupDaily::OnAutoUpdate()
 {
 // 	int secRemain = (int)m_pSpot->GettimerEnter().GetsecRemainTime();	// 남은시간(초)
 // 	int hour, min, sec;
@@ -935,7 +936,7 @@ void XWndPopupDaily::OnAutoUpdate()
 /****************************************************************
 * @brief 
 *****************************************************************/
-int XWndPopupDaily::OnClickReset( XWnd* pWnd, DWORD p1, DWORD p2 )
+int _XWndPopupDaily::OnClickReset( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("OnClickReset");
 	//
@@ -946,7 +947,7 @@ int XWndPopupDaily::OnClickReset( XWnd* pWnd, DWORD p1, DWORD p2 )
 	return 1;
 }
 
-int XWndPopupDaily::OnClickDow( XWnd* pWnd, DWORD p1, DWORD p2 )
+int _XWndPopupDaily::OnClickDow( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("OnClickDow:%d", p1);
 	//
@@ -958,7 +959,7 @@ int XWndPopupDaily::OnClickDow( XWnd* pWnd, DWORD p1, DWORD p2 )
 	return 1;
 }
 
-int XWndPopupDaily::OnClickEnter( XWnd* pWnd, DWORD p1, DWORD p2 )
+int _XWndPopupDaily::OnClickEnter( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("OnClickEnter");
 	//

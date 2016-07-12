@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf">
+  <popup_result>
+    <popup img="battle_bg.png" format_surface="argb8888">
+      <butt posx="right" posy="0" img_up="common_butt_x.png" key="butt.ok">
+        <!--x버튼-->
+      </butt>
+      <img posx="center" posy="-38" file="ingame_defeat.png" key="img.defeat" show="off"></img>
+      <img posx="center" posy="-38" file="ingame_victory.png" key="img.victory" show="off" />
+      <text posx="26" posy="71" font="font_text_s" font_size="18" font_style="stroke" text="2222" width="290" align="hcenter">
+        <!--획득한 아이템-->
+      </text>
+      <text posx="339" posy="71" font="font_text_s" font_size="18" font_style="stroke" text="2223" width="117" align="hcenter">
+        <!--획득한 자원-->
+      </text>
+      <text posx="344" posy="85" font="font_text_s" font_size="18" font_style="stroke" text="1" width="104" align="hcenter" key="text.star.penalty" text_col="yellow">
+        <!--별점으로 인한 패널티표시-->
+      </text>
+      <wnd posx="31" posy="89" key="wnd.loot.item" touchable="off"></wnd>
+      <wnd posx="336" posy="85" key="wnd.loot.res" touchable="off" width="118" height="120"></wnd>
+      <butt posx="16" posy="16" img_up="common_butt_small.png" text_col="white" font="font_text_b" font_size="20" key="butt.statistic" font_style="stroke" text="2086" show="off">
+        <!--전투통계,-->
+      </butt>
+      <text posx="375" posy="32" font="font_res_num" font_size="20" font_style="stroke" key="text.add.score" width="65" height="14" align="center" />
+      <text posx="375" posy="54" font="font_res_num" font_size="20" font_style="stroke" key="text.use.ap" width="65" height="14" align="center" />
+      <text posx="32" posy="89" font="font_text_s" font_size="25" key="text.tip" width="283" height="109" show="off" align="center" />
+      <spr posx="215" posy="39" file="ui_star.spr" key="spr.star." act="1" num="3" distx="28" />
+    </popup>
+  </popup_result>
+</layout>

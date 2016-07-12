@@ -1874,25 +1874,25 @@ public:
 		for( auto &elem : listSrc ) 
 			Add( elem );
 	}
-	T* GetpFromRandom() {
+	inline T* GetpFromRandom() {
 		return &std::vector<T>::at( xRandom( std::vector<T>::size()) );
 	}
-	T& GetFromRandom() {
+	inline T& GetFromRandom() {
 		return std::vector<T>::at( xRandom( std::vector<T>::size() ) );
 	}
-	void Add( T& elem ) {
+	inline void Add( T& elem ) {
 		std::vector<T>::push_back( elem );
 	}
-	void Add( const T& elem ) {
+	inline void Add( const T& elem ) {
 		std::vector<T>::push_back( elem );
 	}
-	void Add( const T&& elem ) {
+	inline void Add( const T&& elem ) {
 		std::vector<T>::push_back( elem );
 	}
-	void Clear() {
+	inline void Clear() {
 		std::vector<T>::clear();
 	}
-	int GetIdx( const T& val ) {
+	inline int GetIdx( const T& val ) {
 		int idx = 0;
 		for( auto& v : this ) {
 			if( v == val )
@@ -1900,8 +1900,11 @@ public:
 			++idx;
 		}
 	}
-	int Size() const {
+	inline int Size() const {
 		return (int)std::vector<T>::size();
+	}
+	inline void Fill( const T& val ) {
+		std::vector<T>::assign( Size(), val );
 	}
 // 	template<typename T>
 // 	void DeSerializeSharedPtrElem( XArchive& ar, int ver ) {

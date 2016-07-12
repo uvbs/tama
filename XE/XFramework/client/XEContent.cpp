@@ -67,11 +67,7 @@ BOOL XEContent::CreateSystemFont( void )
 	m_pfoSystem = m_pfdSystem->CreateFontObj();
 	if( XBREAKF( m_pfoSystem == NULL, "create system fontobj:......failed" ) )
 		return FALSE;
-#ifdef _XSINGLE
-	m_pfdSystemSmall = FONTMNG->Load( FONT_SYSTEM, (int)(FONT_SIZE_DEFAULT / 2.f) );
-#else
 	m_pfdSystemSmall = FONTMNG->Load( FONT_SYSTEM, (int)(FONT_SIZE_DEFAULT / 1.5f) );
-#endif // _XSINGLE
 	if( XBREAKF( m_pfdSystemSmall == NULL, "load font size10: %s......failed", FONT_SYSTEM ) )
 		return FALSE;
 	XLOGXN("create system font success.");

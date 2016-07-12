@@ -1,0 +1,26 @@
+rmdir /s /q "..\..\patch\server"
+mkdir "..\..\patch\server\"
+mkdir "..\..\patch\server\prop\"
+
+rem copy "fonts\*.ttf" "..\..\patch\server\fonts"
+rem copy "fonts\en" "..\..\patch\server\fonts\en"
+rem copy "icon\*.png" "..\..\patch\server\icon"
+rem copy "img\*.png" "..\..\patch\server\img"
+rem copy "img\en\*.png" "..\..\patch\server\img\en"
+copy "prop\*.xml" "..\..\patch\server\prop"
+copy "prop\*.txt" "..\..\patch\server\prop"
+copy "prop\*.lua" "..\..\patch\server\prop"
+rem copy "prop\layout\*.xml" "..\..\patch\server\prop\layout"
+rem copy "prop\layout\en\*.xml" "..\..\patch\server\prop\layout\en"
+rem copy "prop\particles\*.xml" "..\..\patch\server\prop\particles"
+rem copy "snd\*.ogg" "..\..\patch\server\snd"
+rem copy "snd\mp3\*.mp3" "..\..\patch\server\snd\mp3"
+rem copy "spr\*.spr" "..\..\patch\server\spr"
+rem copy "ui\*.png" "..\..\patch\server\ui"
+rem copy "ui\en\*.png" "..\..\patch\server\ui\en"
+copy *.h "..\..\patch\server"
+copy *.txt "..\..\patch\server"
+
+cd "..\..\patch\server\prop"
+del /q /f _*.*
+pause

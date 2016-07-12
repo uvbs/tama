@@ -416,6 +416,7 @@ public:
 	BOOL SendReqCreatePayload( XWnd *pTimeoutCallback, const _tstring& idsProduct );
 	BOOL SendReqSync( XWnd *pTimeoutCallback, XGAME::xtParamSync type, int param = 0 );
 	//	BOOL SendReqAllGuildInfo( XWnd *pTimeoutCallback );
+	BOOL SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, XGAME::xtPaymentRes typeAsset, bool bByItem );
 private:
 	void RecvAttackedSimulByHome( XPacket& p, const xCALLBACK& c );
 	void cbOnDisconnectByExternal() override;
@@ -438,6 +439,7 @@ private:
 	void RecvProp( XPacket& ar, const xCALLBACK& c );
 	void RecvCancelKill( XPacket& p, const xCALLBACK& c );
 	void RecvSyncAcc( XPacket& p, const xCALLBACK& c );
+	void RecvPaymentAssetByGem( XPacket& p, const xCALLBACK& c );
 };
 
 extern XSockGameSvr *GAMESVR_SOCKET;			// 월드서버와의 커넥션

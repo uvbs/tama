@@ -1,0 +1,241 @@
+2015/ 9/18   16:12:58   
+FaultReason
+
+SE.exe caused an EXCEPTION_ACCESS_VIOLATION in module SE.exe at 0023:003BF7E6, CAdjustView::OnDraw()+0646 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\adjustview.cpp, line 0230+0008 byte(s)
+Register
+EAX=06F5D268  EBX=06F63808  ECX=00000000  EDX=65726900  ESI=000000C8
+EDI=06F63808  EBP=0093D6C0  ESP=0093D664  EIP=003BF7E6  FLG=00010246
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:003BF7E6 SE.exe, CAdjustView::OnDraw()+0646 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\adjustview.cpp, line 0230+0008 byte(s)
+0023:003F1AB5 SE.exe, CView::OnPaint()+0057 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\viewcore.cpp, line 0187
+0023:003F58CA SE.exe, CWnd::OnWndMsg()+1229 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2449
+0023:003F6BBD SE.exe, CWnd::WindowProc()+0034 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2094+0023 byte(s)
+0023:003F21D7 SE.exe, AfxCallWndProc()+0176 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0285
+0023:003F298C SE.exe, AfxWndProc()+0052 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0434+0016 byte(s)
+0023:75A078E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:75A097BC USER32.dll, GetAncestor()+0259 byte(s)
+0023:75A07BAD USER32.dll, WaitMessage()+0636 byte(s)
+0023:75A07D0F USER32.dll, WaitMessage()+0990 byte(s)
+0023:775A2A82 ntdll.dll, KiUserCallbackDispatcher()+0046 byte(s)
+0023:75A1AD8A USER32.dll, IsDialogMessageW()+0391 byte(s)
+0023:75A1AE95 USER32.dll, IsDialogMessageW()+0658 byte(s)
+0023:75A2A50A USER32.dll, SoftModalMessageBox()+1689 byte(s)
+0023:75A29DF6 USER32.dll, MessageBoxIndirectW()+0472 byte(s)
+0023:75A65F2B USER32.dll, MessageBoxTimeoutW()+0108 byte(s)
+0023:75A65E6E USER32.dll, MessageBoxW()+0026 byte(s)
+0023:003F14FD SE.exe, CWinApp::ShowAppMessageBox()+0300 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\appui1.cpp, line 0122+0015 byte(s)
+0023:003F1312 SE.exe, CWinApp::DoMessageBox()+0018 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\appui1.cpp, line 0039+0015 byte(s)
+0023:003AE6A0 SE.exe, XAlert()+0064 byte(s), c:\xuzhu_work\project\iphone\caribe\se\_xlibrary\etc\alert.cpp, line 0033+0017 byte(s)
+0023:003EBC69 SE.exe, XSprDat::Load()+0777 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\sprdat.cpp, line 1302+0019 byte(s)
+0023:003BC640 SE.exe, XSprMng::Load()+0208 byte(s), c:\xuzhu_work\project\iphone\caribe\se\_xlibrary\sprite\sprmng\sprmng.cpp, line 0112+0017 byte(s)
+0023:003EF836 SE.exe, XSprObj::Load()+0182 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\sprobj.cpp, line 0740+0009 byte(s)
+0023:003DBD0D SE.exe, XTool::LoadSpr()+0285 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\tool.cpp, line 0177
+0023:003D4BFF SE.exe, CSEApp::InitInstance()+1023 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\se.cpp, line 0239
+0023:005457F4 SE.exe, AfxWinMain()+0070 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winmain.cpp, line 0037+0007 byte(s)
+0023:005281E6 SE.exe, __tmainCRTStartup()+0253 byte(s), f:\dd\vctools\crt\crtw32\startup\crt0.c, line 0251+0014 byte(s)
+0023:755186E3 KERNEL32.DLL, BaseThreadInitThunk()+0014 byte(s)
+0023:775BBD79 ntdll.dll, RtlInitializeExceptionChain()+0133 byte(s)
+0023:775BBD4C ntdll.dll, RtlInitializeExceptionChain()+0088 byte(s)
+
+2015/ 9/18   16:13:04   
+FaultReason
+
+SE.exe caused an EXCEPTION_ACCESS_VIOLATION in module SE.exe at 0023:003BF7E6, CAdjustView::OnDraw()+0646 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\adjustview.cpp, line 0230+0008 byte(s)
+Register
+EAX=012B4D40  EBX=07393F88  ECX=00000000  EDX=65726900  ESI=000000C8
+EDI=07393F88  EBP=00FBD090  ESP=00FBD034  EIP=003BF7E6  FLG=00010246
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:003BF7E6 SE.exe, CAdjustView::OnDraw()+0646 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\adjustview.cpp, line 0230+0008 byte(s)
+0023:003F1AB5 SE.exe, CView::OnPaint()+0057 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\viewcore.cpp, line 0187
+0023:003F58CA SE.exe, CWnd::OnWndMsg()+1229 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2449
+0023:003F6BBD SE.exe, CWnd::WindowProc()+0034 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2094+0023 byte(s)
+0023:003F21D7 SE.exe, AfxCallWndProc()+0176 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0285
+0023:003F298C SE.exe, AfxWndProc()+0052 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0434+0016 byte(s)
+0023:75A078E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:75A097BC USER32.dll, GetAncestor()+0259 byte(s)
+0023:75A07BAD USER32.dll, WaitMessage()+0636 byte(s)
+0023:75A07D0F USER32.dll, WaitMessage()+0990 byte(s)
+0023:775A2A82 ntdll.dll, KiUserCallbackDispatcher()+0046 byte(s)
+0023:75A1AD8A USER32.dll, IsDialogMessageW()+0391 byte(s)
+0023:75A1AE95 USER32.dll, IsDialogMessageW()+0658 byte(s)
+0023:75A2A50A USER32.dll, SoftModalMessageBox()+1689 byte(s)
+0023:75A29DF6 USER32.dll, MessageBoxIndirectW()+0472 byte(s)
+0023:75A65F2B USER32.dll, MessageBoxTimeoutW()+0108 byte(s)
+0023:75A65E6E USER32.dll, MessageBoxW()+0026 byte(s)
+0023:003F14FD SE.exe, CWinApp::ShowAppMessageBox()+0300 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\appui1.cpp, line 0122+0015 byte(s)
+0023:003F1312 SE.exe, CWinApp::DoMessageBox()+0018 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\appui1.cpp, line 0039+0015 byte(s)
+0023:003AE6A0 SE.exe, XAlert()+0064 byte(s), c:\xuzhu_work\project\iphone\caribe\se\_xlibrary\etc\alert.cpp, line 0033+0017 byte(s)
+0023:003EBC69 SE.exe, XSprDat::Load()+0777 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\sprdat.cpp, line 1302+0019 byte(s)
+0023:003BC640 SE.exe, XSprMng::Load()+0208 byte(s), c:\xuzhu_work\project\iphone\caribe\se\_xlibrary\sprite\sprmng\sprmng.cpp, line 0112+0017 byte(s)
+0023:003EF836 SE.exe, XSprObj::Load()+0182 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\sprobj.cpp, line 0740+0009 byte(s)
+0023:003DBD0D SE.exe, XTool::LoadSpr()+0285 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\tool.cpp, line 0177
+0023:003D4BFF SE.exe, CSEApp::InitInstance()+1023 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\se.cpp, line 0239
+0023:0046A9DA SE.exe, CWinApp::InitApplication()+0059 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\appcore.cpp, line 0390
+0023:005457F4 SE.exe, AfxWinMain()+0070 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winmain.cpp, line 0037+0007 byte(s)
+0023:005281E6 SE.exe, __tmainCRTStartup()+0253 byte(s), f:\dd\vctools\crt\crtw32\startup\crt0.c, line 0251+0014 byte(s)
+0023:755186E3 KERNEL32.DLL, BaseThreadInitThunk()+0014 byte(s)
+0023:775BBD79 ntdll.dll, RtlInitializeExceptionChain()+0133 byte(s)
+0023:775BBD4C ntdll.dll, RtlInitializeExceptionChain()+0088 byte(s)
+
+2015/ 9/18   16:14:06   
+FaultReason
+
+SE.exe caused an EXCEPTION_ACCESS_VIOLATION in module SE.exe at 0023:003BF7E6, CAdjustView::OnDraw()+0646 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\adjustview.cpp, line 0230+0008 byte(s)
+Register
+EAX=074081E0  EBX=073D66C8  ECX=00000000  EDX=65726900  ESI=000000C8
+EDI=073D66C8  EBP=00CED2A8  ESP=00CED24C  EIP=003BF7E6  FLG=00010246
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:003BF7E6 SE.exe, CAdjustView::OnDraw()+0646 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\adjustview.cpp, line 0230+0008 byte(s)
+0023:003F1AB5 SE.exe, CView::OnPaint()+0057 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\viewcore.cpp, line 0187
+0023:003F58CA SE.exe, CWnd::OnWndMsg()+1229 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2449
+0023:003F6BBD SE.exe, CWnd::WindowProc()+0034 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2094+0023 byte(s)
+0023:003F21D7 SE.exe, AfxCallWndProc()+0176 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0285
+0023:003F298C SE.exe, AfxWndProc()+0052 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0434+0016 byte(s)
+0023:75A078E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:75A097BC USER32.dll, GetAncestor()+0259 byte(s)
+0023:75A07BAD USER32.dll, WaitMessage()+0636 byte(s)
+0023:75A07D0F USER32.dll, WaitMessage()+0990 byte(s)
+0023:775A2A82 ntdll.dll, KiUserCallbackDispatcher()+0046 byte(s)
+0023:75A1AD8A USER32.dll, IsDialogMessageW()+0391 byte(s)
+0023:75A1AE95 USER32.dll, IsDialogMessageW()+0658 byte(s)
+0023:75A2A50A USER32.dll, SoftModalMessageBox()+1689 byte(s)
+0023:75A29DF6 USER32.dll, MessageBoxIndirectW()+0472 byte(s)
+0023:75A65F2B USER32.dll, MessageBoxTimeoutW()+0108 byte(s)
+0023:75A65E6E USER32.dll, MessageBoxW()+0026 byte(s)
+0023:003F14FD SE.exe, CWinApp::ShowAppMessageBox()+0300 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\appui1.cpp, line 0122+0015 byte(s)
+0023:003F1312 SE.exe, CWinApp::DoMessageBox()+0018 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\appui1.cpp, line 0039+0015 byte(s)
+0023:003AE6A0 SE.exe, XAlert()+0064 byte(s), c:\xuzhu_work\project\iphone\caribe\se\_xlibrary\etc\alert.cpp, line 0033+0017 byte(s)
+0023:003EBC69 SE.exe, XSprDat::Load()+0777 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\sprdat.cpp, line 1302+0019 byte(s)
+0023:003BC640 SE.exe, XSprMng::Load()+0208 byte(s), c:\xuzhu_work\project\iphone\caribe\se\_xlibrary\sprite\sprmng\sprmng.cpp, line 0112+0017 byte(s)
+0023:003EF836 SE.exe, XSprObj::Load()+0182 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\sprobj.cpp, line 0740+0009 byte(s)
+0023:003DBD0D SE.exe, XTool::LoadSpr()+0285 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\tool.cpp, line 0177
+0023:003D4BFF SE.exe, CSEApp::InitInstance()+1023 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\se.cpp, line 0239
+0023:0046A9DA SE.exe, CWinApp::InitApplication()+0059 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\appcore.cpp, line 0390
+0023:005457F4 SE.exe, AfxWinMain()+0070 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winmain.cpp, line 0037+0007 byte(s)
+0023:005281E6 SE.exe, __tmainCRTStartup()+0253 byte(s), f:\dd\vctools\crt\crtw32\startup\crt0.c, line 0251+0014 byte(s)
+0023:755186E3 KERNEL32.DLL, BaseThreadInitThunk()+0014 byte(s)
+0023:775BBD79 ntdll.dll, RtlInitializeExceptionChain()+0133 byte(s)
+0023:775BBD4C ntdll.dll, RtlInitializeExceptionChain()+0088 byte(s)
+
+2015/11/ 3   16:49:46   
+FaultReason
+
+SE.exe caused an EXCEPTION_ACCESS_VIOLATION in module SE.exe at 0023:002DFD7E, XKeyMng::Add()+0094 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\key.cpp, line 0021+0002 byte(s)
+Register
+EAX=0000C007  EBX=028D9010  ECX=028D9010  EDX=00000006  ESI=001CF5E0
+EDI=05E4B4F8  EBP=001CF598  ESP=001CF58C  EIP=002DFD7E  FLG=00010202
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:002DFD7E SE.exe, XKeyMng::Add()+0094 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\key.cpp, line 0021+0002 byte(s)
+0023:002EA101 SE.exe, XAniAction::AddKey()+0369 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\sprdat.cpp, line 0416
+0023:002DD391 SE.exe, XTool::AddKeyFromSelSpr()+0449 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\tool.cpp, line 0647+0116 byte(s)
+0023:002C3B45 SE.exe, CAnimationView::OnLButtonUp()+1205 byte(s), c:\xuzhu_work\project\iphone\caribe\se\se\se\animationview.cpp, line 0682+0011 byte(s)
+0023:002F5900 SE.exe, CWnd::OnWndMsg()+1283 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2473
+0023:002F6BBD SE.exe, CWnd::WindowProc()+0034 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2094+0023 byte(s)
+0023:002F21D7 SE.exe, AfxCallWndProc()+0176 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0285
+0023:002F298C SE.exe, AfxWndProc()+0052 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0434+0016 byte(s)
+0023:754778E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:75477A4C USER32.dll, WaitMessage()+0283 byte(s)
+0023:75478D3C USER32.dll, RegisterClipboardFormatW()+2668 byte(s)
+0023:75479323 USER32.dll, DispatchMessageW()+0016 byte(s)
+0023:00303749 SE.exe, AfxInternalPumpMessage()+0062 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\thrdcore.cpp, line 0183
+0023:00303BD0 SE.exe, CWinThread::Run()+0087 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\thrdcore.cpp, line 0629+0007 byte(s)
+0023:00445814 SE.exe, AfxWinMain()+0102 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winmain.cpp, line 0047+0007 byte(s)
+0023:004281E6 SE.exe, __tmainCRTStartup()+0253 byte(s), f:\dd\vctools\crt\crtw32\startup\crt0.c, line 0251+0014 byte(s)
+0023:759586E3 KERNEL32.DLL, BaseThreadInitThunk()+0014 byte(s)
+0023:7761BD79 ntdll.dll, RtlInitializeExceptionChain()+0133 byte(s)
+0023:7761BD4C ntdll.dll, RtlInitializeExceptionChain()+0088 byte(s)
+
+2016/ 5/16   22:44:56   
+FaultReason
+
+SE.exe caused an EXCEPTION_ACCESS_VIOLATION in module SE.exe at 0023:00E9A806
+Register
+EAX=00000000  EBX=004FDFC4  ECX=7EE829F0  EDX=003A4000  ESI=00000000
+EDI=030906B0  EBP=004FDF68  ESP=004FDF0C  EIP=00E9A806  FLG=00210216
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:00E9A806 SE.exe
+0023:00EBEE88 SE.exe
+0023:00E90413 SE.exe
+0023:00EC1FCD SE.exe
+0023:00EB8446 SE.exe
+0023:00EAE278 SE.exe
+0023:00ED5C9C SE.exe
+0023:00ED5AE8 SE.exe
+0023:00EDDBF2 SE.exe
+0023:00EEC61A SE.exe
+0023:00EC7381 SE.exe
+0023:00EDDCA7 SE.exe
+0023:00EEC6A0 SE.exe
+0023:00EC7F73 SE.exe
+0023:00EC96F7 SE.exe
+0023:00EC4D01 SE.exe
+0023:00EC54B6 SE.exe
+0023:757384F3 USER32.dll, SetManipulationInputTarget()+0083 byte(s)
+0023:75716C40 USER32.dll, CallWindowProcW()+0768 byte(s)
+0023:7571613A USER32.dll, SendMessageW()+0922 byte(s)
+0023:75715EE3 USER32.dll, SendMessageW()+0323 byte(s)
+0023:00EF3AA0 SE.exe
+0023:00EC843A SE.exe
+0023:00EC96F7 SE.exe
+0023:00EE76FE SE.exe
+0023:00EC4D01 SE.exe
+0023:00EC54B6 SE.exe
+0023:757384F3 USER32.dll, SetManipulationInputTarget()+0083 byte(s)
+0023:75716C40 USER32.dll, CallWindowProcW()+0768 byte(s)
+0023:75716541 USER32.dll, DispatchMessageW()+0593 byte(s)
+0023:75729BFB USER32.dll, IsDialogMessageW()+0235 byte(s)
+0023:00ED5371 SE.exe
+0023:00EC88AB SE.exe
+0023:00EE71B7 SE.exe
+0023:00EF5269 SE.exe
+0023:00EC95EB SE.exe
+0023:00ED626E SE.exe
+0023:00ED65F8 SE.exe
+0023:00ED6342 SE.exe
+0023:00ED62F3 SE.exe
+0023:0101839E SE.exe
+0023:00FFAD61 SE.exe
+0023:748A38F4 KERNEL32.DLL, BaseThreadInitThunk()+0036 byte(s)
+0023:76FA5DE3 ntdll.dll, RtlUnicodeStringToInteger()+0595 byte(s)
+0023:76FA5DAE ntdll.dll, RtlUnicodeStringToInteger()+0542 byte(s)
+
+2016/ 5/25   13:33:10   
+FaultReason
+
+SE.exe caused an EXCEPTION_ACCESS_VIOLATION in module SE.exe at 0023:00B0633E
+Register
+EAX=00000000  EBX=000000C8  ECX=DCB314DF  EDX=65726900  ESI=00000190
+EDI=07A246D0  EBP=003ED424  ESP=003ED3C4  EIP=00B0633E  FLG=00010246
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:00B0633E SE.exe
+0023:0FAC52DB mfc140u.dll
+0023:0FAC06CD mfc140u.dll
+0023:0FA85AF9 mfc140u.dll
+0023:0FA85BF7 mfc140u.dll
+0023:0FA85CEA mfc140u.dll
+0023:0FA85C9A mfc140u.dll
+0023:759E78E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:759E978C USER32.dll, GetAncestor()+0259 byte(s)
+0023:759E7BAD USER32.dll, WaitMessage()+0636 byte(s)
+0023:759E7D0F USER32.dll, WaitMessage()+0990 byte(s)
+0023:773B2A62 ntdll.dll, KiUserCallbackDispatcher()+0046 byte(s)
+0023:759FAD7A USER32.dll, IsDialogMessageW()+0391 byte(s)
+0023:759FAE85 USER32.dll, IsDialogMessageW()+0658 byte(s)
+0023:75A0A4FA USER32.dll, SoftModalMessageBox()+1689 byte(s)
+0023:75A09DE6 USER32.dll, MessageBoxIndirectW()+0472 byte(s)
+0023:75A45F7B USER32.dll, MessageBoxTimeoutW()+0108 byte(s)
+0023:75A45EBE USER32.dll, MessageBoxW()+0026 byte(s)
+0023:0FC402E3 mfc140u.dll
+0023:0FC401B0 mfc140u.dll
+0023:00AEFADD SE.exe
+0023:00B4A98A SE.exe
+0023:00B173FE SE.exe
+0023:00B4EB4A SE.exe
+0023:00B42719 SE.exe
+0023:00B3AAF8 SE.exe
+0023:0FAD4734 mfc140u.dll
+0023:00B51EC2 SE.exe
+0023:753486E3 KERNEL32.DLL, BaseThreadInitThunk()+0014 byte(s)
+0023:773CBD99 ntdll.dll, RtlInitializeExceptionChain()+0133 byte(s)
+0023:773CBD6C ntdll.dll, RtlInitializeExceptionChain()+0088 byte(s)
+

@@ -23,9 +23,10 @@ typedef std::shared_ptr<XBaseUnit> UnitPtr;
 typedef std::shared_ptr<XSquadObj> SquadPtr;
 typedef std::weak_ptr<XSquadObj> SquadPtrWeak;
 typedef std::shared_ptr<XLegion> LegionPtr;
-#define XSPLegion LegionPtr
-#define XSPSquad SquadPtr
 typedef std::shared_ptr<XLegionObj> XSPLegionObj;
+typedef std::shared_ptr<const XBaseUnit> XSPUnitConst;
+typedef std::shared_ptr<const XLegion> XSPLegionConst;
+typedef std::shared_ptr<const XSquadObj> XSPSquadObjConst;
 typedef std::shared_ptr<const XLegionObj> XSPLegionObjConst;
 typedef std::shared_ptr<XHero> HeroPtr;
 typedef std::shared_ptr<XBaseItem> ItemPtr;
@@ -37,6 +38,13 @@ typedef std::shared_ptr<XPostItem> XSPPostItem;
 typedef std::shared_ptr<const XPostItem> XSPPostItemConst;
 typedef std::shared_ptr<XPostInfo> XSPPostInfo;
 typedef std::shared_ptr<const XPostInfo> XSPPostInfoConst;
+
+#define XSPLegion LegionPtr
+#define XSPSquad SquadPtr
+#define XSPUnit UnitPtr
+#define XSPHero HeroPtr
+#define XSPItem ItemPtr
+#define XSPSpot SpotPtr
 
 
 namespace xCampaign {
@@ -240,12 +248,12 @@ namespace XGAME {
 	};
 
 	// 요일별 스팟의 드랍타입
-	enum xtDailySpot {
-		xDS_NONE,
-		xDS_SCALP,		// 징표스팟
-		xDS_SKILL,		// 스킬템
-		xDS_GENERAL,	// 책사드랍
-	};
+// 	enum xtDailySpot {
+// 		xDS_NONE,
+// 		xDS_SCALP,		// 징표스팟
+// 		xDS_SKILL,		// 스킬템
+// 		xDS_GENERAL,	// 책사드랍
+// 	};
 
 	// 스페셜 스팟의 타입
 	enum xtSpecialSpot {

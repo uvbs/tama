@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup>
+    <popup img="popup_cash.png" format="argb8888">
+      <img posx="center" posy="-3" file="title_bar.png" format="argb8888">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" key="text.title">
+          <!--타이틀-->
+        </text>
+      </img>
+      <wnd posx="0" posy="17" width="298" height="45" key="wnd.half.top">
+        <!--상단 메시지 부분-->
+      </wnd>
+      <butt posx="center" posy="90" img_up="common_butt_mid.png" key="butt.ok">
+        <img posx="5" posy="center" file="hero_cash.png" scale="0.75"></img>
+        <text posx="center" posy="center" font="font_res_num" font_size="30" font_style="stroke" key="text.num.cash" comma="true" />
+      </butt>
+      <butt posx="right" posy="0" img_up="common_butt_x.png" key="butt.close">
+        <!--x버튼-->
+      </butt>
+    </popup>
+  </popup>
+</layout>

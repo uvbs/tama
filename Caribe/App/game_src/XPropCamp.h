@@ -9,7 +9,12 @@
 
 #include "XXMLDoc.h"
 #include "XStruct.h"
+#include "XPropLegionH.h"
 
+namespace XGAME {
+struct xSquad;
+struct xLegion;
+}
 /*
 	ver 9
 		별누적 추가

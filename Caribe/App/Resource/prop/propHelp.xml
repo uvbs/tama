@@ -1,0 +1,553 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <start event="xAE_ENTER_SCENE" event_param="xSC_WORLD">
+    <mode mode="cut_scene" flag="yes" />
+    <touch flag="no" />
+    <delay sec="1" />
+    <dialog id_text="70000" talker="unluny" />
+    <dialog id_text="70001" talker="unluny" />
+    <dialog id_text="70002" talker="unluny" />
+    <camera ids_target="spot.home" />
+    <_camera x="972" y="779" />
+    <indicate end_order="start.dialog.castle" ids_target="spot.home" spr="ui_alert.spr" id_act="4" dir="none" />
+    <_indicate end_order="start.dialog.castle" x="974" y="865" root="scroll.view" spr="ui_alert.spr" id_act="4" dir="none" />
+    <dialog id_text="70003" talker="unluny" />
+    <dialog id_text="70004" talker="unluny" />
+    <dialog ids="start.dialog.castle" id_text="70005" talker="unluny" />
+    <indicate end_order="start.dialog.baba" ids_target="spot.613" spr="ui_alert.spr" id_act="4" dir="none" />
+    <dialog ids="start.dialog.baba" id_text="70006" talker="unluny" />
+    <dialog end_order="start.ready.last" id_text="70007" talker="unluny" />
+    <indicate end="push_target" ids="start.ready.last" ids_target="scout_recon" dir="right" />
+    <touch flag="yes" />
+    <mode mode="cut_scene" flag="no" />
+  </start>
+  <quest event="xAE_POPUP" event_param="popup.quest.info" event_param2="xQUEST_NOT_COMPLETE">
+    <delay sec="0.3" />
+    <indicate end_order="tutor.quest.objective" ids_target="quest.info.objective" dir="right" />
+    <dialog end="touch" ids="tutor.quest.objective" id_text="70008" talker="unluny" y="0" />
+    <indicate end_order="tutor.quest.reward" ids_target="quest.info.reward.exp" dir="right" />
+    <dialog end="touch" ids="tutor.quest.reward" id_text="70009" talker="unluny" />
+    <dialog end_order="tutor.quest.indicate.where" id_text="70010" talker="unluny" />
+    <touch ids_target="popup.quest.info" flag="yes" />
+    <indicate end="push_target" ids="tutor.quest.indicate.where" ids_target="butt.goto" dir="down" />
+  </quest>
+  <indicate.recon.spot event="xAE_CONFIRM_QUEST" event_param="scout_recon">
+    <camera ids_target="spot.613" />
+    <dialog end_order="tutor.quest.dialog.spot" id_text="70011" talker="unluny" />
+    <indicate end="push_target" ids="tutor.quest.dialog.spot" ids_target="spot.613" dir="none" spr="ui_alert.spr" id_act="4" />
+  </indicate.recon.spot>
+  <indicate.recon.butt event="xAE_POPUP" event_param="menu.circle">
+    <dialog end_order="tutor.quest.recon" id_text="70012" talker="unluny" y="0" />
+    <indicate end="push_target" ids="tutor.quest.recon" ids_target="butt.circle.recon" dir="left" />
+  </indicate.recon.butt>
+  <recon event="xAE_POPUP" event_param="wnd.recon.result">
+    <delay sec="0.3" />
+    <indicate end_order="tutor.recon.position" x="318" y="175" dir="right" />
+    <dialog end="touch" ids="tutor.recon.position" id_text="70013" talker="unluny" y="0" />
+    <dialog end_order="tutor.recon.close" id_text="70014" talker="unluny" />
+    <indicate end="push_target" ids="tutor.recon.close" ids_target="butt.close" dir="right" />
+  </recon>
+  <quest.complete event="xAE_CLOSE_POPUP" event_param="wnd.recon.result" finish_quest="scout_recon">
+    <delay sec="0.3" />
+    <dialog end_order="quest.complete.quest" id_text="70015" talker="unluny" />
+    <indicate end="push_target" ids="quest.complete.quest" ids_target="scout_recon" dir="right" />
+  </quest.complete>
+  <quest.complete.info event="xAE_POPUP" event_param="popup.quest.info" event_param2="xQUEST_COMPLETE">
+    <delay sec="0.3" />
+    <dialog end_order="quest.complete.reward" id_text="70016" talker="unluny" />
+    <indicate end="push_target" ids="quest.complete.reward" ids_target="butt.reward" dir="right" />
+  </quest.complete.info>
+  <new.quest event="xAE_QUEST_NEW" event_param="scout_attack">
+    <delay sec="0.5" />
+    <dialog end_order="quest.new.quest" id_text="70017" talker="unluny" />
+    <indicate end="push_target" ids="quest.new.quest" ids_target="scout_attack" dir="right" />
+  </new.quest>
+  <formation event="xAE_CONFIRM_QUEST" event_param="x.quest.barrack1">
+    <delay sec="0.5" />
+    <dialog end="touch" id_text="70018" talker="unluny" />
+    <dialog end_order="tutor.formation.1" id_text="70019" talker="unluny" x="100" />
+    <indicate end="push_target" ids="tutor.formation.1" ids_target="butt.unitorg" dir="down" />
+  </formation>
+  <scene.formation event="xAE_ENTER_SCENE" event_param="xSC_UNIT_ORG">
+    <touch flag="no" />
+    <delay sec="0.5" />
+    <dialog end="touch" id_text="70020" talker="unluny" />
+    <dialog end="touch" id_text="70021" talker="unluny" />
+    <indicate end_order="tutor.s.f.0" x="129" y="57" dir="down" />
+    <dialog end="touch" id_text="70022" talker="unluny" x="206" />
+    <dialog end="touch" id_text="70023" talker="unluny" x="206" />
+    <dialog end="touch" ids="tutor.s.f.0" id_text="70024" talker="unluny" x="206" />
+    <dialog end_order="tutor.s.f.1" id_text="70025" talker="unluny" x="206" />
+    <indicate end="push_target" ids="tutor.s.f.1" ids_target="elem.hero.unluny.0" dir="down" />
+    <indicate end_order="tutor.s.f.2" x="252" y="73" dir="down" />
+    <dialog end="touch" ids="tutor.s.f.2" id_text="70026" talker="unluny" x="350" />
+    <indicate end_order="tutor.s.f.3" x="203" y="80" dir="right" />
+    <dialog end="touch" ids="tutor.s.f.3" id_text="70027" talker="unluny" x="361" />
+    <indicate end_order="tutor.s.f.4" x="218" y="161" dir="right" />
+    <dialog end="touch" ids="tutor.s.f.4" id_text="70030" talker="unluny" x="361" />
+    <indicate end_order="tutor.s.f.5" x="331" y="110" dir="down" />
+    <dialog end="touch" id_text="70031" talker="unluny" x="361" />
+    <dialog end="touch" ids="tutor.s.f.5" id_text="70032" talker="unluny" x="361" />
+    <indicate end_order="tutor.s.f.60" x="358" y="109" dir="right" />
+    <indicate end_order="tutor.s.f.60" x="358" y="176" dir="right" />
+    <dialog end="touch" ids="tutor.s.f.60" id_text="70033" talker="unluny" x="0" y="0" />
+    <indicate end_order="tutor.s.f.70" x="358" y="109" dir="right" />
+    <dialog end="touch" ids="tutor.s.f.70" id_text="70034" talker="unluny" x="0" y="80" />
+    <indicate end_order="tutor.s.f.80" x="358" y="176" dir="right" />
+    <dialog end="touch" id_text="70035" talker="unluny" x="340" />
+    <dialog end="touch" id_text="70028" talker="unluny" x="340" />
+    <dialog end="touch" ids="tutor.s.f.80" id_text="70029" talker="unluny" x="340"></dialog>
+    <indicate end_order="tutor.s.f.90" x="217" y="277" dir="right"></indicate>
+    <dialog end="touch" ids="tutor.s.f.90" id_text="70036" talker="unluny" x="0" y="130" />
+    <dialog end="touch" id_text="70037" talker="unluny" x="0" y="130" />
+    <dialog end="touch" id_text="70038" talker="unluny" x="0" y="130" />
+    <dialog end="touch" id_text="70039" talker="unluny" x="0" y="130" />
+    <dialog end_order="tutor.s.f.100" id_text="70040" talker="unluny" y="143" />
+    <indicate end="push_target" ids="tutor.s.f.100" ids_target="butt.back" dir="up" />
+    <touch flag="yes" />
+  </scene.formation>
+  <spot.attack event="xAE_CONFIRM_QUEST" event_param="scout_attack">
+    <delay sec="0.5" />
+    <dialog end_order="tutor.s.a.0" id_text="70041" talker="unluny" />
+    <indicate end="push_target" ids="tutor.s.a.0" ids_target="spot.613" dir="none" spr="ui_alert.spr" id_act="4" />
+    <delay sec="0.5" />
+    <indicate end="push_target" ids_target="butt.circle.attack" dir="down" />
+  </spot.attack>
+  <before.attack event="xAE_ENTER_SCENE" event_param="xSC_READY">
+    <touch flag="no" />
+    <delay sec="0.5" />
+    <dialog end="touch" id_text="70042" talker="unluny" />
+    <dialog end="touch" id_text="70043" talker="unluny" />
+    <indicate end_order="tutor.b.a.0" x="198" y="72" dir="left" />
+    <indicate end_order="tutor.b.a.0" x="198" y="128" dir="left" />
+    <indicate end_order="tutor.b.a.0" x="198" y="181" dir="left" />
+    <indicate end_order="tutor.b.a.0" x="198" y="242" dir="left" />
+    <indicate end_order="tutor.b.a.0" x="198" y="303" dir="left" />
+    <dialog end="touch" ids="tutor.b.a.0" id_text="70044" talker="unluny" x="360" y="15" />
+    <indicate end_order="tutor.b.a.10" x="198" y="242" dir="left" />
+    <indicate end_order="tutor.b.a.10" x="198" y="181" dir="left" />
+    <dialog end="touch" id_text="70045" talker="unluny" x="360" y="15" />
+    <dialog end="touch" ids="tutor.b.a.10" id_text="70046" talker="unluny" x="360" y="15" />
+    <indicate end_order="tutor.b.a.20" x="198" y="128" dir="left" />
+    <dialog end="touch" id_text="70047" talker="unluny" x="360" y="15" />
+    <indicate end_order="tutor.b.a.30" x="93" y="187" dir="right" />
+    <dialog end="touch" ids="tutor.b.a.30" id_text="70048" talker="unluny" x="360" y="15" />
+    <dialog end="touch" id_text="70049" talker="unluny" x="360" y="15" />
+    <dialog end="touch" id_text="70050" talker="unluny" x="360" y="15" />
+    <dialog end="touch" ids="tutor.b.a.20" id_text="70051" talker="unluny" x="360" y="15" />
+    <dialog end_order="tutor.b.a.35" id_text="70052" talker="unluny" x="360" />
+    <indicate end="draged_slot" ids_end="draged_slot" ids="tutor.b.a.35" x="176" y="128" dir="right" spr="ui_drag.spr" />
+    <touch flag="no" />
+    <dialog end="touch" id_text="70053" talker="unluny" x="360" y="15"></dialog>
+    <dialog end_order="tutor.b.a.40" id_text="70054" talker="unluny" y="263" />
+    <indicate end="push_target" ids="tutor.b.a.40" ids_target="butt.start" dir="down" />
+  </before.attack>
+  <quest.continue prev_seq="before.attack" event="xAE_ENTER_SCENE" event_param="xSC_WORLD">
+    <delay sec="0.3" />
+    <dialog end_order="tutor.q.c.0" id_text="70055" talker="unluny" />
+    <indicate end="push_target" ids="tutor.q.c.0" ids_target="scout_attack" dir="right" />
+  </quest.continue>
+  <unlock.labor _event="xAE_CONFIRM_QUEST" _event_param="x.tutor.research" event="xAE_OPEN_AREA" event_param="area.labor">
+    <delay sec="1" />
+    <camera ids_target="spot.labor" />
+    <indicate end_order="tutor.u.1.0" ids_target="spot.labor" dir="none" spr="ui_alert.spr" id_act="4" />
+    <dialog end_order="tutor.u.l.0" id_text="70056" talker="unluny"></dialog>
+    <indicate end="push_target" ids="tutor.u.l.0" ids_target="butt.tech" dir="down" />
+  </unlock.labor>
+  <labor event="xAE_ENTER_SCENE" event_param="xSC_TECH">
+    <delay sec="0.5" />
+    <dialog end="touch" id_text="70057" talker="unluny" />
+    <dialog end_order="tutor.labor.0" id_text="70058" talker="unluny" y="153" />
+    <indicate end="push_target" ids="tutor.labor.0" ids_target="butt.2" dir="up" />
+    <delay sec="0.5" />
+    <dialog end_order="tutor.labor.15" id_text="70086" talker="unluny">
+      <!--잠금해제를 해야합니다.-->
+    </dialog>
+    <indicate end="push_target" ids="tutor.labor.15" ids_target="butt.lock.free" dir="down" ids_allow="butt.abil.chill_blast_arrow, butt.abil.archer_cri_up, butt.abil.archer_atk" />
+    <indicate end_order="tutor.labor.20" x="537" y="281" dir="down">
+      <!--연구에 필요한 자원입니다.-->
+    </indicate>
+    <dialog end="touch" ids="tutor.labor.20" id_text="70059" talker="unluny" />
+    <indicate end_order="tutor.labor.30" x="423" y="334" dir="right" />
+    <dialog end="touch" ids="tutor.labor.30" id_text="70060" talker="unluny"></dialog>
+    <dialog end_order="tutor.labor.35" id_text="70087" talker="unluny" />
+    <indicate end="push_target" ids="tutor.labor.35" ids_target="butt.plus" dir="right" />
+    <_dialog end_order="tutor.labor.40" id_text="70061" talker="unluny"></_dialog>
+    <_indicate end="push_target" ids="tutor.labor.40" ids_target="butt.plus" dir="down" ids_allow="butt.abil.chill_blast_arrow, butt.abil.archer_cri_up, butt.abil.archer_atk" />
+    <delay sec="0.5" />
+    <indicate end="push_target" ids="tutor.labor.50" ids_target="butt.ok" dir="right" />
+    <dialog end="touch" id_text="70062" talker="unluny"></dialog>
+    <indicate end="push_target" ids_target="butt.back" dir="up" />
+  </labor>
+  <find.cathedral event="xAE_CONFIRM_QUEST" event_param="x.tutor.unlock.unit">
+    <delay sec="1" />
+    <camera ids_target="spot.cathedral" />
+    <dialog end_order="tutor.cathe.0" id_text="70071" talker="unluny" />
+    <indicate end="push_target" ids="tutor.formation.1" ids_target="butt.tech" dir="down" />
+    <indicate end="push_target" ids="tutor.cathe.0" ids_target="butt.tech" dir="none" spr="ui_alert.spr" id_act="4" />
+  </find.cathedral>
+  <unlock.paladin _prev_seq="find.cathedral" event="xAE_ENTER_SCENE" event_param="xSC_TECH" _complete_seq="labor" event_param2="xEP_LOCK_PALADIN">
+    <delay sec="1" />
+    <dialog end_order="tutor.cathe.10" id_text="70072" talker="unluny" y="153" />
+    <indicate end="push_target" ids="tutor.cathe.10" ids_target="butt.3" dir="up" />
+    <delay sec="0.5" />
+    <indicate end="push_target" ids_target="butt.unlock" dir="right" />
+    <dialog end="touch" id_text="70073" talker="unluny" x="336" />
+    <dialog end="touch" id_text="70074" talker="unluny" x="336" />
+    <dialog end="touch" id_text="70075" talker="unluny" x="336" />
+    <dialog end="touch" id_text="70076" talker="unluny" x="336" />
+    <dialog end="touch" id_text="70077" talker="unluny" x="336" />
+    <dialog end="touch" id_text="70078" talker="unluny" x="336" />
+    <indicate end="push_target" ids_target="butt.back" dir="up" />
+  </unlock.paladin>
+  <find.trader event="xAE_CONFIRM_QUEST" event_param="x.tutor.trader">
+    <touch flag="yes" />
+    <indicate end="push_target" ids_target="butt.market" dir="down" />
+    <delay sec="0.5" />
+    <indicate end="push_target" ids_target="butt.tab.trade" dir="down" />
+  </find.trader>
+  <trader event="xAE_ENTER_SCENE" event_param="xSC_TRADER">
+    <delay sec="0.5" />
+    <dialog end="touch" id_text="70079" talker="trader" x="352" y="0" />
+    <dialog end="touch" id_text="70080" talker="trader" x="352" y="0" />
+    <indicate end_order="trader.01" x="561" y="116" dir="left"></indicate>
+    <indicate end_order="trader.01" x="561" y="152" dir="left"></indicate>
+    <indicate end_order="trader.01" x="561" y="187" dir="left"></indicate>
+    <indicate end_order="trader.01" x="561" y="223" dir="left"></indicate>
+    <indicate end_order="trader.01" x="561" y="259" dir="left"></indicate>
+    <dialog end="touch" id_text="70081" talker="trader" x="352" y="0" ids="trader.01"></dialog>
+    <dialog end="touch" id_text="70082" talker="trader" x="352" y="0" />
+    <dialog end="touch" id_text="70083" talker="trader" x="352" y="0" />
+    <dialog end="touch" id_text="70084" talker="trader" x="352" y="0" />
+    <dialog end="touch" id_text="70085" talker="unluny" />
+    <indicate dir="left" end_order="trader.02" x="541" y="291"></indicate>
+    <indicate ids_target="img.trader.wood" dir="right" end="push_target"></indicate>
+    <indicate ids_target="img.trader.iron" dir="right" end="push_target"></indicate>
+    <indicate end="push_target" ids_target="butt.trader.trade" dir="right" ids="trader.02"></indicate>
+    <delay sec="0.5" />
+    <indicate end="push_target" ids_target="butt.ok" dir="right" />
+    <indicate end="push_target" ids_target="butt.back" dir="up"></indicate>
+  </trader>
+  <goto.assign.speed event="xAE_CONFIRM_QUEST" event_param="x.tutor.organize">
+    <delay sec="0.5" />
+    <dialog end_order="tutor.g.a.s.0" id_text="70092" talker="unluny" />
+    <indicate end="push_target" ids="tutor.g.a.s.0" ids_target="butt.unitorg" dir="down" />
+  </goto.assign.speed>
+  <assign.speed prev_seq="goto.assign.speed" event="xAE_ENTER_SCENE" event_param="xSC_UNIT_ORG">
+    <delay sec="0.5" />
+    <indicate end="push_target" ids_target="butt.troop" dir="right" />
+  </assign.speed>
+  <scene.placement _prev_seq="assign.speed" event="xAE_ENTER_SCENE" event_param2="xEP_EXTRA_HERO">
+    <delay sec="0.5" />
+    <dialog end_order="tutor.s.p.0" id_text="70093" talker="unluny" y="60" />
+    <indicate end="draged_slot" ids_end="draged_slot" ids="tutor.s.p.0" x="109" y="91" dir="right" spr="ui_drag.spr" id_act="2" />
+    <dialog end="touch" id_text="70094" talker="unluny" />
+  </scene.placement>
+  <tavern event="xAE_CONFIRM_QUEST" event_param="x.tutor.hire.hero">
+    <delay sec="0.5" />
+    <camera ids_target="spot.tavern" />
+    <dialog end="touch" ids="tutor.tavern.0" id_text="70095" talker="unluny" />
+    <dialog end="touch" id_text="70096" talker="unluny" />
+    <dialog end_order="tutor.tavern.10" id_text="70097" talker="unluny" />
+    <indicate end="push_target" ids="tutor.tavern.10" ids_target="butt.hero" dir="none" spr="ui_alert.spr" id_act="4" />
+  </tavern>
+  <hire.hero _prev_seq="tavern" event="xAE_ENTER_SCENE" event_param="xSC_HERO">
+    <touch flag="no" />
+    <delay sec="1" />
+    <dialog end="touch" id_text="70098" talker="unluny" />
+    <indicate end_order="tutor.h.h.0" ids_target="butt.empoly.normal" dir="right" />
+    <dialog end="touch" ids="tutor.h.h.0" id_text="70099" talker="unluny" />
+    <indicate end_order="tutor.h.h.10" ids_target="butt.empoly.high.gold" dir="right" />
+    <dialog end="touch" ids="tutor.h.h.10" id_text="70100" talker="unluny" />
+    <dialog end_order="tutor.h.h.20" id_text="70101" talker="unluny" />
+    <indicate end="push_target" ids="tutor.h.h.20" ids_target="butt.empoly.normal" dir="right" />
+    <indicate end="push_target" ids_target="butt.ok" dir="right" />
+    <delay sec="1" />
+    <indicate end="push_target" ids_target="butt.ok" dir="right" />
+    <dialog end="touch" id_text="70102" talker="unluny" />
+    <dialog end="touch" id_text="70103" talker="unluny" />
+    <touch flag="yes" />
+  </hire.hero>
+  <find.training.center event="xAE_CONFIRM_QUEST" event_param="x.tutor.train.level">
+    <delay sec="0.5" />
+    <camera ids_target="spot.academy" />
+    <dialog end="touch" id_text="70166" talker="unluny"></dialog>
+    <dialog end="touch" id_text="70167" talker="unluny" />
+    <dialog end_order="tutor.f.t.c.0" id_text="70168" talker="unluny" />
+    <indicate end="push_target" ids="tutor.f.t.c.0" ids_target="butt.unitorg" dir="down" />
+  </find.training.center>
+  <training prev_seq="find.training.center" event="xAE_ENTER_SCENE" event_param="xSC_UNIT_ORG">
+    <!--영웅 레벨업 튜토-->
+    <delay sec="0.5" />
+    <dialog end_order="tutor.academy.0" id_text="70108" talker="unluny" x="200">
+      <!--저를 선택해 주십시오-->
+    </dialog>
+    <indicate end="push_target" ids="tutor.academy.0" ids_target="elem.hero.unluny.0" dir="down" />
+    <indicate end="push_target" ids_target="butt.tab.skill" dir="right" />
+    <indicate end="push_target" ids_target="butt.upgrade.hero" dir="right" />
+  </training>
+  <training_popup event="xAE_POPUP" event_param="popup.levelup.hero">
+    <!--영웅 레벨업 팝업창 튜토-->
+    <delay sec="0.5"></delay>
+    <dialog end="touch" id_text="70169" talker="unluny" y="0" save_pos="yes">
+      <!--훈련을 시작해 보겠습니다.-->
+    </dialog>
+    <dialog end="touch" id_text="70170" talker="unluny" />
+    <dialog end="touch" id_text="70171" talker="unluny" />
+    <dialog end="touch" id_text="70172" talker="unluny" />
+    <dialog end="touch" id_text="70173" talker="unluny" />
+    <dialog end="touch" id_text="70174" talker="unluny" />
+    <dialog end="touch" id_text="70175" talker="unluny" />
+    <dialog end="touch" id_text="70176" talker="unluny" />
+    <indicate end="push_target" ids_target="butt.plus" dir="up" />
+    <indicate end="push_target" ids_target="butt.train" dir="up"></indicate>
+    <indicate end="push_target" ids_target="butt.close" dir="up" />
+  </training_popup>
+  <find.unit.hangout event="xAE_CONFIRM_QUEST" event_param="x.tutor.train.squad">
+    <delay sec="1" />
+    <camera ids_target="spot.barrack" />
+    <dialog end="touch" id_text="70133" talker="unluny">
+      <!--전투규모가 커짐에따라 병사수가 부족해졌습니다.-->
+    </dialog>
+    <dialog end="touch" id_text="70134" talker="unluny" />
+    <dialog end="touch" id_text="70135" talker="unluny" />
+    <dialog end_order="tutor.f.b.0" id_text="70107" talker="unluny" />
+    <indicate end="push_target" ids="tutor.f.b.0" ids_target="butt.unitorg" dir="down" />
+  </find.unit.hangout>
+  <hangout prev_seq="find.unit.hangout" event="xAE_ENTER_SCENE" event_param="xSC_UNIT_ORG">
+    <delay sec="1" />
+    <indicate end_order="hang.01" dir="right" x="414" y="319" />
+    <dialog end="touch" id_text="70129" talker="unluny" ids="hang.01" />
+  </hangout>
+  <attack.user event="xAE_CONFIRM_QUEST" event_param="x.recon.user">
+    <delay sec="1" />
+    <camera ids_target="spot.621" />
+    <dialog end="touch" id_text="70147" talker="unluny" />
+    <dialog end="touch" id_text="70148" talker="unluny" />
+    <dialog end="touch" id_text="70149" talker="unluny" />
+    <dialog end="touch" id_text="70150" talker="unluny" />
+    <dialog end="touch" id_text="70151" talker="unluny" />
+  </attack.user>
+  <color.grade event="xAE_CONFIRM_QUEST" event_param="x.destroy.user">
+    <delay sec="0.5" />
+    <camera ids_target="spot.621" />
+    <indicate end_order="tutor.c.g.0" ids_target="spot.621" dir="none" spr="ui_alert.spr" id_act="4" />
+    <dialog end="touch" ids="tutor.c.g.0" id_text="70152" talker="unluny" />
+    <indicate end_order="tutor.c.g.10" x="74" y="53" dir="left" />
+    <dialog end="touch" ids="tutor.c.g.10" id_text="70153" talker="unluny" />
+    <dialog end="touch" id_text="70154" talker="unluny" />
+    <dialog end="touch" id_text="70155" talker="unluny" />
+    <dialog end="touch" id_text="70156" talker="unluny" />
+    <dialog end="touch" id_text="70157" talker="unluny" />
+    <dialog end="touch" id_text="70158" talker="unluny" />
+    <dialog end="touch" id_text="70159" talker="unluny" />
+    <dialog end="touch" id_text="70160" talker="unluny" />
+    <dialog end="touch" id_text="70161" talker="unluny" />
+  </color.grade>
+  <win.first.user event="xAE_QUEST_DESTROY" event_param="x.destroy.user">
+    <delay sec="0.5" />
+    <camera ids_target="spot.621" />
+    <dialog end="touch" id_text="70162" talker="unluny" />
+    <dialog end="touch" id_text="70163" talker="unluny" />
+    <dialog end="touch" id_text="70164" talker="unluny" />
+    <dialog end="touch" id_text="70165" talker="unluny" />
+    <dialog end="touch" id_text="70136" talker="unluny" />
+    <dialog end="touch" id_text="70137" talker="unluny" />
+    <dialog end="touch" id_text="70138" talker="unluny" />
+  </win.first.user>
+  <find.guild event="xAE_CONFIRM_QUEST" event_param="x.tutor.guild">
+    <delay sec="1" />
+    <camera ids_target="spot.embassy" />
+    <dialog end="touch" id_text="70112" talker="unluny" />
+    <dialog end="touch" id_text="70113" talker="unluny" />
+    <dialog end="touch" id_text="70114" talker="unluny" />
+    <dialog end_order="tutor.f.a.0" id_text="70115" talker="unluny" />
+    <indicate end="push_target" ids="tutor.f.a.0" ids_target="butt.world.hide" dir="left" />
+    <indicate end="push_target" ids_target="butt.world.social" dir="left" />
+  </find.guild>
+  <guild prev_seq="find.guild" event="xAE_ENTER_SCENE" event_param="xSC_GUILD">
+    <delay sec="0.5" />
+    <dialog end="touch" id_text="70116" talker="guildmng" />
+    <dialog end="touch" id_text="70117" talker="guildmng" />
+    <dialog end="touch" id_text="70118" talker="guildmng" />
+    <dialog end="touch" id_text="70119" talker="guildmng" />
+    <dialog end="touch" id_text="70120" talker="guildmng" />
+    <dialog end="touch" id_text="70121" talker="guildmng" />
+    <dialog end="touch" id_text="70122" talker="guildmng" />
+    <dialog end="touch" id_text="70123" talker="guildmng" />
+    <dialog end="touch" id_text="70124" talker="guildmng" />
+    <dialog end="touch" id_text="70125" talker="guildmng" />
+    <dialog end="touch" id_text="70126" talker="guildmng" />
+    <dialog end="touch" id_text="70127" talker="guildmng" />
+    <dialog end="touch" id_text="70128" talker="guildmng" />
+  </guild>
+  <kill.boss1 event="xAE_OPEN_AREA" event_param="area.1015">
+    <mode mode="cut_scene" flag="yes"></mode>
+    <touch flag="no" />
+    <delay sec="1"></delay>
+    <camera ids_target="spot.635" />
+    <indicate ids_target="spot.635" end_order="kb.03" dir="none" spr="ui_alert.spr" id_act="4" />
+    <dialog id_text="70104" talker="unluny" ids="kb.01" />
+    <dialog id_text="70105" talker="unluny" ids="kb.02"></dialog>
+    <dialog id_text="70106" talker="unluny" ids="kb.03"></dialog>
+    <touch flag="yes" />
+    <mode mode="cut_scene" flag="no" />
+  </kill.boss1>
+  <dialog.boss1 event="xAE_ENTER_SCENE" event_param="xSC_INGAME" param_spot2="spot.635">
+    <mode mode="cut_scene" flag="yes"></mode>
+    <touch flag="no" />
+    <camera x="1257" y="435" push_pos="yes" />
+    <delay sec="1"></delay>
+    <dialog id_text="70109" talker="percival" x="339" />
+    <dialog id_text="70110" talker="percival" x="339"></dialog>
+    <dialog id_text="70111" talker="percival" x="339"></dialog>
+    <camera pop_pos="yes" />
+    <touch flag="yes"></touch>
+    <mode mode="cut_scene" flag="no" />
+  </dialog.boss1>
+  <kill.boss2 event="xAE_OPEN_AREA" event_param="area.1024">
+    <mode mode="cut_scene" flag="yes"></mode>
+    <touch flag="no" />
+    <delay sec="1"></delay>
+    <camera ids_target="spot.boss2" />
+    <indicate ids_target="spot.boss2" dir="none" end_order="kb.04" id_act="4" spr="ui_alert.spr" />
+    <dialog id_text="70139" talker="unluny" ids="kb.01" />
+    <dialog id_text="70140" talker="unluny" ids="kb.02"></dialog>
+    <dialog id_text="70141" talker="unluny" ids="kb.03"></dialog>
+    <dialog id_text="70142" talker="unluny" ids="kb.04"></dialog>
+    <touch flag="yes" />
+    <mode mode="cut_scene" flag="no" />
+  </kill.boss2>
+  <dialog.boss2 event="xAE_ENTER_SCENE" event_param="xSC_INGAME" param_spot2="spot.boss2">
+    <mode mode="cut_scene" flag="yes"></mode>
+    <touch flag="no" />
+    <camera x="1257" y="435" push_pos="yes" />
+    <delay sec="1"></delay>
+    <dialog id_text="70143" talker="tristan" x="339" />
+    <dialog id_text="70144" talker="tristan" x="339"></dialog>
+    <camera pop_pos="yes" />
+    <touch flag="yes"></touch>
+    <mode mode="cut_scene" flag="no" />
+  </dialog.boss2>
+  <kill.boss3 event="xAE_OPEN_AREA" event_param="area.1031">
+    <mode mode="cut_scene" flag="yes"></mode>
+    <touch flag="no" />
+    <delay sec="1"></delay>
+    <camera ids_target="spot.boss3" />
+    <indicate ids_target="spot.boss3" dir="none" end_order="kb.02" spr="ui_alert.spr" id_act="4" />
+    <dialog id_text="70177" talker="unluny" ids="kb.01" />
+    <dialog id_text="70178" talker="unluny" ids="kb.02"></dialog>
+    <touch flag="yes" />
+    <mode mode="cut_scene" flag="no" />
+  </kill.boss3>
+  <dialog.boss3 event="xAE_ENTER_SCENE" event_param="xSC_INGAME" _event_param2="spot.boss3" param_spot2="spot.boss3">
+    <mode mode="cut_scene" flag="yes"></mode>
+    <touch flag="no" />
+    <camera x="799" y="474" push_pos="yes" />
+    <delay sec="1"></delay>
+    <dialog id_text="70179" talker="kay" x="339" />
+    <dialog id_text="70180" talker="kay" x="339"></dialog>
+    <camera pop_pos="yes" />
+    <touch flag="yes"></touch>
+    <mode mode="cut_scene" flag="no" />
+  </dialog.boss3>
+  <kill.boss4 event="xAE_OPEN_AREA" event_param="area.1039">
+    <mode mode="cut_scene" flag="yes"></mode>
+    <touch flag="no" />
+    <delay sec="1"></delay>
+    <camera ids_target="spot.645" />
+    <indicate ids_target="spot.645" dir="none" end_order="kb.02" spr="ui_alert.spr" id_act="4" />
+    <dialog id_text="70181" talker="unluny" ids="kb.01" />
+    <dialog id_text="70182" talker="unluny" ids="kb.02"></dialog>
+    <touch flag="yes" />
+    <mode mode="cut_scene" flag="no" />
+  </kill.boss4>
+  <dialog.boss4 event="xAE_ENTER_SCENE" event_param="xSC_INGAME" _event_param2="spot.645" param_spot2="spot.645">
+    <mode mode="cut_scene" flag="yes"></mode>
+    <touch flag="no" />
+    <camera x="799" y="474" push_pos="yes" />
+    <delay sec="1"></delay>
+    <dialog id_text="70183" talker="bedivere" x="339" />
+    <dialog id_text="70184" talker="bedivere" x="339"></dialog>
+    <camera pop_pos="yes" />
+    <touch flag="yes"></touch>
+    <mode mode="cut_scene" flag="no" />
+  </dialog.boss4>
+  <kill.boss5 event="xAE_OPEN_AREA" event_param="area.23.01">
+    <mode mode="cut_scene" flag="yes"></mode>
+    <touch flag="no" />
+    <delay sec="1"></delay>
+    <camera ids_target="spot.824" />
+    <indicate ids_target="spot.824" dir="none" end_order="kb.02" spr="ui_alert.spr" id_act="4" />
+    <dialog id_text="70203" talker="unluny" ids="kb.01" />
+    <dialog id_text="70204" talker="unluny" ids="kb.02"></dialog>
+    <touch flag="yes" />
+    <mode mode="cut_scene" flag="no" />
+  </kill.boss5>
+  <dialog.boss5 event="xAE_ENTER_SCENE" event_param="xSC_INGAME" _event_param2="spot.824" param_spot2="spot.824">
+    <mode mode="cut_scene" flag="yes"></mode>
+    <touch flag="no" />
+    <camera x="344" y="734" push_pos="yes" />
+    <delay sec="1"></delay>
+    <dialog id_text="70205" talker="bedivere" x="center" y="center" />
+    <dialog id_text="70205" talker="bedivere" x="center" y="center"></dialog>
+    <camera pop_pos="yes" />
+    <touch flag="yes"></touch>
+    <mode mode="cut_scene" flag="no" />
+  </dialog.boss5>
+  <star.quest.info event="xAE_CONFIRM_QUEST" event_param="star.001">
+    <delay sec="1"></delay>
+    <camera ids_target="spot.home" />
+    <indicate end_order="star.q.i.01" ids_target="star.001" dir="none" spr="ui_alert.spr" id_act="4"></indicate>
+    <dialog end="touch" id_text="70089" talker="unluny" ids="star.q.i.01"></dialog>
+    <indicate end_order="star.q.i.10" dir="down" x="347" y="182"></indicate>
+    <dialog end="touch" id_text="70193" talker="unluny" ids="star.q.i.10" />
+    <dialog end="touch" id_text="70194" talker="unluny" />
+    <dialog end="touch" id_text="70195" talker="unluny" />
+    <dialog end="touch" id_text="70196" talker="unluny" />
+    <dialog end="touch" id_text="70197" talker="unluny" />
+    <dialog end="touch" id_text="70198" talker="unluny" />
+    <dialog end="touch" id_text="70199" talker="unluny" />
+    <dialog end="touch" id_text="70200" talker="unluny" />
+    <dialog end="touch" id_text="70201" talker="unluny" />
+    <dialog end="touch" id_text="70202" talker="unluny" />
+  </star.quest.info>
+  <indicate.unitorg event="xAE_WHERE_QUEST" event_param="x.tutor.provide.book">
+    <indicate ids_target="butt.unitorg" dir="down" />
+  </indicate.unitorg>
+  <indicate.level event="xAE_WHERE_QUEST" event_param="xQC_EVENT_LEVEL" stop_pos_x="550" stop_pos_y="0">
+    <touch flag="yes" />
+    <indicate x="95" y="11" dir="left" />
+  </indicate.level>
+  <indicate.resource.get event="xAE_WHERE_QUEST" event_param="xQC_EVENT_GET_RESOURCE">
+    <touch flag="yes" />
+    <indicate x="557" y="53" dir="right" delay="10" />
+  </indicate.resource.get>
+  <indicate.resource.mandrake event="xAE_WHERE_QUEST" event_param="xQC_EVENT_GET_RESOURCE" event_param2="xRES_MANDRAKE">
+    <touch flag="yes" />
+    <indicate x="557" y="90" dir="right" delay="10" />
+  </indicate.resource.mandrake>
+  <indicate.resource.have event="xAE_WHERE_QUEST" event_param="xQC_EVENT_HAVE_RESOURCE">
+    <touch flag="yes" />
+    <indicate x="557" y="53" dir="right" />
+  </indicate.resource.have>
+  <indicate.trader event="xAE_WHERE_QUEST" event_param="x.tutor.trader">
+    <touch flag="yes" />
+    <indicate ids_target="butt.market" dir="down" end="push_target" />
+    <delay sec="0.5" />
+    <indicate ids_target="butt.tab.trade" dir="down" end="push_target" />
+  </indicate.trader>
+  <indicate.armory event="xAE_WHERE_QUEST" event_param="x.tutor.buy.equip">
+    <touch flag="yes" />
+    <indicate ids_target="butt.market" dir="down" />
+    <delay sec="0.5" />
+    <indicate ids_target="butt.tab.weapon" dir="down" />
+  </indicate.armory>
+  <_indicate.book event="xAE_CONFIRM_QUEST" event_param="x.tutor.provide.book">
+    <touch flag="yes" />
+    <indicate end="push_target" ids_target="butt.unitorg" dir="down" />
+  </_indicate.book>
+  <_indicate.book2 prev_seq="indicate.book" event="xAE_ENTER_SCENE" event_param="xSC_UNIT_ORG">
+    <indicate end="push_target" ids_target="butt.upgrade.hero" dir="down" />
+  </_indicate.book2>
+</root>

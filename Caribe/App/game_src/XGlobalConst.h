@@ -14,6 +14,9 @@ class XGameCommon;
 //extern XGlobalConst *XGC;
 #include "XFramework/XGlobal.h"
 
+/**
+ @brief 
+*/
 class XGlobalConst : public XGlobalVal
 {
 public:
@@ -44,6 +47,9 @@ public:
 	// cheat
 	//////////////////////////////////////////////////////////////////////////
 	//
+	int m_gemFillDailyTry = 0;		// 요일스팟 도전횟수 리필시 젬개수.
+	float m_rateFillDailyTry = 1.f;	// 구매시마다 증가되는 비율
+	int m_numEnterDaily = 5;				// 요일스팟 1일 도전횟수.
 	float m_rateShopSell;			//상점에 되팔때 얻는 골드양.
 	std::string m_strSampleLua;
 private:

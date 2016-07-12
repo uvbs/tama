@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <r.scalp.crow reward_exp="100" name="2050" desc="2051" icon="q_battle">
+    <when repeat="-1" level="1" />
+    <cond>
+      <what get_item="scalp_crow" num="5" del_item="1" />
+    </cond>
+    <reward item="book01_crow"></reward>
+  </r.scalp.crow>
+  <r.scalp.ironlord reward_exp="100" name="2052" desc="2051" icon="q_battle">
+    <cond>
+      <what get_item="scalp_ironlord" num="5" />
+    </cond>
+    <reward item="book01_ironlord"></reward>
+    <when repeat="-1" level="1"></when>
+  </r.scalp.ironlord>
+  <r.scalp.freedom reward_exp="100" name="2053" desc="2051" icon="q_battle">
+    <cond>
+      <what get_item="scalp_freedom" num="5" />
+    </cond>
+    <reward item="book01_freedom"></reward>
+    <when repeat="-1" level="1" />
+  </r.scalp.freedom>
+  <r.scalp.ancient reward_exp="100" name="2054" desc="2051" icon="q_battle">
+    <cond>
+      <what get_item="scalp_ancient" num="5" />
+    </cond>
+    <reward item="book01_ancient"></reward>
+    <when repeat="-1" level="1" />
+  </r.scalp.ancient>
+  <r.scalp.flame reward_exp="100" name="2055" desc="2051" icon="q_battle">
+    <cond>
+      <what get_item="scalp_flame" num="5" />
+    </cond>
+    <reward item="book01_flame"></reward>
+    <when repeat="-1" level="1" />
+  </r.scalp.flame>
+</root>

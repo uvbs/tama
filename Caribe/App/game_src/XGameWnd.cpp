@@ -2044,34 +2044,9 @@ void XWndUnitinfo::Update()
 ////////////////////////////////////////////////////////////////
 /**
  @brief 각종 모자라는 자원을 캐쉬로 대신 지불할때 쓰는 공통 팝업.
- @param payType 캐시로 지불하려는 요소
- @param lack 모자라는 양
  @param szMsg 본문메시지
  @param szTitle 타이틀 메시지
 */
-// XWndPaymentByCash::XWndPaymentByCash( XGAME::xtPaymentRes payType, int goldLack, int cash, LPCTSTR szMsg, LPCTSTR szTitle )
-//   : XWndPopup( _T( "buy_by_cash.xml" ), "popup" )
-// {
-//   Init();
-//   auto pWnd = new XWndResourceCtrl( XE::VEC2( 125, 60 ) );
-//   Add( pWnd );
-//   pWnd->AddRes( resType, (float)goldLack );
-//   auto pTextCash 
-//     = xSET_TEXT( this, "text.num.cash", 
-//                     XE::NumberToMoneyString( cash ) );
-// 	_tstring strTitle;
-// 	if( XE::IsHave(szTitle) ) {
-// 		strTitle = szTitle;
-// 	} else {
-// 
-// 	}
-//   if( szMsg )
-//     xSET_TEXT( this, "text.msg", szMsg );
-//   // 캐쉬가 부족하면 빨간색.
-//   if( pTextCash && ACCOUNT->IsNotEnoughCash( cash ) )
-//     pTextCash->SetColorText( XCOLOR_RED );
-// 
-// }
 XWndPaymentByCash::XWndPaymentByCash( LPCTSTR szMsg, LPCTSTR szTitle )
 	: XWndPopup( _T( "buy_by_cash.xml" ), "popup" )
 {
@@ -2098,6 +2073,7 @@ void XWndPaymentByCash::Update()
 		case xPR_RES:			m_strTitle = XTEXT(2339); break;
 		case xPR_AP:		m_strTitle = XTEXT(2340); break;
 		case xPR_TIME:		break;
+		case xPR_TRY_DAILY:		m_strTitle = XTEXT(2227); break;		// 도전횟수 부족
 		default:
 			XBREAK(1);
 			break;
@@ -2196,6 +2172,33 @@ void XWndPaymentByCash::SetTime( xSec secLack )
 		SetbUpdate( true );
 	}
 	m_needCash = ACCOUNT->GetCashResearch( secLack );
+}
+
+/**
+ @brief // 요일스팟 도전횟수 리필
+*/
+void XWndPaymentByCash::SetFillTryByDailySpot()		
+{
+	m_typePayment = xPR_TRY_DAILY;
+ 	auto pWndRoot = Find( "wnd.half.top" );
+ 	if( XASSERT( pWndRoot ) ) {
+		auto pWnd = pWndRoot->Find( "wnd.challs" );
+		if( pWnd == nullptr ) {
+			pWnd = new XWnd();
+			pWnd->SetstrIdentifier( "wnd.challs" );
+			pWndRoot->Add( pWnd );
+			XE::VEC2 vPos;
+			for( int i = 0; i < XGlobalConst::sGet()->m_numEnterDaily; ++i ) {
+				auto pImg = new XWndImage();
+				pImg->SetPosLocal( vPos );
+				pImg->SetSurfaceRes( PATH_UI("chall_mark_on.png") );
+				vPos.x += pImg->GetSizeLocal().w + 1.f;
+				pWnd->Add( pImg );
+			}
+			pWnd->AutoLayoutCenter();
+		}
+ 	}
+	m_needCash = XGlobalConst::sGet()->m_gemFillDailyTry;
 }
 
 ////////////////////////////////////////////////////////////////

@@ -133,9 +133,9 @@ bool XSpotCampaign::Update( XSPAcc spAcc )
 	return true;
 }
 
-void XSpotCampaign::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat )
+void XSpotCampaign::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat )
 {
-	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, bRetreat );
+	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, numStar, bRetreat );
 	if( m_spCampObj )
 		m_spCampObj->OnFinishBattle();
 }

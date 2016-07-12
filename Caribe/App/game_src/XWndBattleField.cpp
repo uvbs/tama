@@ -179,7 +179,7 @@ void XWndBattleField::OnLButtonUp( float lx, float ly )
 	if( m_spSelectSquad != nullptr ) {
 		if( m_spTempSelectEnemy != nullptr ) {
 			if( m_spTempSelectEnemy->IsLive() ) {
-				CONSOLE( "공격: %d => %d", m_spSelectSquad->GetUnitType(), m_spTempSelectEnemy->GetUnitType() );
+				CONSOLE( "공격: %d => %d", m_spSelectSquad->GetUnit(), m_spTempSelectEnemy->GetUnit() );
 				m_spSelectSquad->DoAttackSquad( m_spTempSelectEnemy );
 			}
 		} else {

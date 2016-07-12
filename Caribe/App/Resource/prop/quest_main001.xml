@@ -1,0 +1,915 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <scout_recon name="25306" desc="27306">
+    <!--주변에 존재하는 NPC스팟 정찰-->
+    <when level="1" />
+    <cond>
+      <what recon_spot="spot.613" />
+    </cond>
+    <reward resource="xRES_WOOD" num="100"></reward>
+  </scout_recon>
+  <scout_attack reward_exp="100" name="25000" desc="27000">
+    <!--주변에 존재하는 NPC스팟 퇴치-->
+    <when clear_quest="scout_recon" />
+    <cond>
+      <what clear_spot="spot.613" />
+    </cond>
+    <reward resource="xRES_WOOD" num="100" />
+    <reward resource="xRES_IRON" num="100" />
+  </scout_attack>
+  <x.quest.001 reward_exp="100" name="20010" desc="20011">
+    <!--재건 -->
+    <when clear_quest="scout_attack" />
+    <cond desc="20012">
+      <what level="3" />
+    </cond>
+    <reward resource="xRES_WOOD" num="100"></reward>
+    <reward resource="xRES_IRON" num="100" />
+    <reward cash="3" />
+  </x.quest.001>
+  <x.quest.barrack1 name="25333" desc="27333">
+    <!--막사방문-->
+    <when clear_quest="scout_attack" />
+    <cond desc="5093">
+      <what action="xUA_ENTER_SCENE" param="xSC_UNIT_ORG" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="100" />
+    <reward resource="xRES_IRON" num="100" />
+  </x.quest.barrack1>
+  <x.quest.unit.penalty name="25347" desc="25348">
+    <!--유닛 상성학습(부대배치씬 부대선택)-->
+    <when clear_quest="x.quest.barrack1" />
+    <cond desc="25349">
+      <what action="xUA_TOUCH_SQUAD_IN_READY" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="100" />
+    <reward resource="xRES_IRON" num="100" />
+  </x.quest.unit.penalty>
+  <x.quest.labor name="25307" desc="27307">
+    <!--연구소 지역 오픈-->
+    <when level="2"></when>
+    <cond>
+      <what open_area="area.labor" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="200" />
+    <reward resource="xRES_IRON" num="200" />
+  </x.quest.labor>
+  <x.tutor.research name="25316" desc="27316" rate_exp="0.05">
+    <!--특성연구-->
+    <when open_area="area.labor" />
+    <cond>
+      <what action="xUA_RESEARCH" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="200" />
+    <reward resource="xRES_IRON" num="200" />
+  </x.tutor.research>
+  <x.quest.cathedral name="25314" desc="27314">
+    <!--성당찾기-->
+    <when level="3" />
+    <cond>
+      <what open_area="area.001" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="500" />
+    <reward resource="xRES_IRON" num="500" />
+  </x.quest.cathedral>
+  <x.tutor.unlock.unit name="25317" desc="27317" rate_exp="0.25">
+    <!--유닛 잠금해제-->
+    <when open_area="area.001" />
+    <cond>
+      <what action="xUA_UNLOCK_UNIT" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_GOLD" num="1500" />
+  </x.tutor.unlock.unit>
+  <x.quest.market name="25308" desc="27308" rate_exp="0.5">
+    <!--시장오픈-->
+    <when level="4" />
+    <cond>
+      <what open_area="area.market" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="300" />
+    <reward resource="xRES_IRON" num="300" />
+  </x.quest.market>
+  <x.quest.tavern name="25309" desc="27309" rate_exp="0.5">
+    <!--여관지역오픈-->
+    <when clear_quest="x.quest.market" />
+    <cond>
+      <what open_area="area.tavern" />
+    </cond>
+    <reward resource="xRES_WOOD" num="300" />
+    <reward resource="xRES_IRON" num="300" />
+  </x.quest.tavern>
+  <x.tutor.trader name="25308" desc="27308" rate_exp="0.125">
+    <!--무역상 거래-->
+    <when clear_quest="x.quest.market" />
+    <cond>
+      <what action="xUA_TRADE" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="1000" />
+    <reward resource="xRES_IRON" num="1000" />
+  </x.tutor.trader>
+  <x.tutor.hire.hero name="25319" desc="27319" rate_exp="0.125">
+    <!--영웅고용-->
+    <when open_area="area.tavern" />
+    <cond>
+      <what _action="xUA_HIRE_HERO" xQC_EVENT_HIRE_HERO="0" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="500" />
+    <reward resource="xRES_IRON" num="500" />
+  </x.tutor.hire.hero>
+  <x.tutor.organize name="25336" desc="27336" rate_exp="0.125">
+    <!--장군배치-->
+    <when clear_quest="x.tutor.hire.hero"></when>
+    <cond desc="5094">
+      <what action="xUA_HERO_ORGANIZE" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="500" />
+    <reward resource="xRES_IRON" num="500" />
+  </x.tutor.organize>
+  <x.quest.battle.control name="25345" desc="25346" rate_exp="0.125">
+    <!--부대컨트롤 학습-->
+    <when clear_quest="x.tutor.organize" />
+    <cond desc="5099">
+      <what action="xUA_CONTROL_SQUAD" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="250" />
+    <reward resource="xRES_IRON" num="250" />
+  </x.quest.battle.control>
+  <x.quest.academy name="25310" desc="27310">
+    <!--아카데미-->
+    <when clear_quest="x.quest.tavern" />
+    <cond>
+      <what open_area="area.002" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_GOLD" num="2000" />
+  </x.quest.academy>
+  <collect.res.05 name="25303" desc="27325">
+    <!--자원 확보-->
+    <when clear_quest="x.quest.academy" />
+    <cond>
+      <what xQC_EVENT_GET_RESOURCE="xRES_WOOD" num="3000" />
+    </cond>
+    <cond>
+      <what xQC_EVENT_GET_RESOURCE="xRES_IRON" num="3000" />
+    </cond>
+    <cond>
+      <what xQC_EVENT_GET_RESOURCE="xRES_JEWEL" num="3000" />
+    </cond>
+    <cond>
+      <what xQC_EVENT_GET_RESOURCE="xRES_SULFUR" num="3000" />
+    </cond>
+    <cond>
+      <what xQC_EVENT_GET_RESOURCE="xRES_MANDRAKE" num="3000" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_MANDRAKE" num="1000" />
+  </collect.res.05>
+  <x.tutor.train.level name="25324" desc="27324" rate_exp="0.125">
+    <!--레벨 훈련-->
+    <when clear_quest="x.quest.academy" />
+    <cond desc="5088">
+      <what action="xUA_TRAINING_LEVEL" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_GOLD" num="1000" />
+  </x.tutor.train.level>
+  <levelup.hero.to.001 name="25366" desc="25367">
+    <!--영웅레벨 도달-->
+    <when clear_quest="x.tutor.train.level" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL="3" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </levelup.hero.to.001>
+  <x.quest.hangout name="25311" desc="27311">
+    <!--병영찾기-->
+    <when clear_quest="x.quest.academy" />
+    <cond>
+      <what open_area="area.1004" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_GOLD" num="2000" />
+  </x.quest.hangout>
+  <visit.luxury.shop name="25354" desc="25355" rate_exp="0.05">
+    <!--귀중품 상인 방문-->
+    <when clear_quest="x.quest.hangout" />
+    <cond desc="25354">
+      <what action="xUA_ENTER_SCENE" param="xSC_SHOP" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </visit.luxury.shop>
+  <buy.cash name="25356" desc="25357">
+    <!--캐시 구매-->
+    <when clear_quest="visit.luxury.shop" />
+    <cond desc="5081">
+      <what xQC_EVENT_BUY_CASH="1" />
+    </cond>
+    <reward cash="100"></reward>
+  </buy.cash>
+  <buy.hero.premium name="25358" desc="25359">
+    <!--고급영웅 영입-->
+    <when clear_quest="buy.cash" />
+    <cond desc="25358">
+      <what xQC_EVENT_HIRE_HERO_PREMIUM="0" />
+    </cond>
+    <reward resource="xRES_GOLD" num="300000" />
+  </buy.hero.premium>
+  <x.tutor.train.squad name="25321" desc="27321" rate_exp="0.05">
+    <!--부대훈련-->
+    <when clear_quest="x.quest.hangout" />
+    <cond>
+      <what action="xUA_TRAINING_SQUAD" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="500" />
+    <reward resource="xRES_IRON" num="500" />
+  </x.tutor.train.squad>
+  <research.abil.01 name="25362" desc="25363" rate_exp="0.05">
+    <!--특성연구-->
+    <when clear_quest="x.tutor.train.squad" />
+    <cond>
+      <what xQC_EVENT_RESEARCH_ABIL="0" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </research.abil.01>
+  <train.hero.squad.lv.to.2 name="25364" desc="25365" rate_exp="0.1">
+    <!--부대레벨 도달-->
+    <when clear_quest="research.abil.01" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL_SQUAD="2" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </train.hero.squad.lv.to.2>
+  <levelup.hero.to.5 name="25366" desc="25367" rate_exp="0.1">
+    <!--영웅레벨5 도달-->
+    <when clear_quest="train.hero.squad.lv.to.2" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL="5" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </levelup.hero.to.5>
+  <try.quick.complete name="25373" desc="25374" rate_exp="0.1">
+    <!--훈련즉시완료-->
+    <when clear_quest="train.hero.squad.lv.to.2" />
+    <cond>
+      <what xQC_EVENT_TRAIN_QUICK_COMPLETE="0" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_GOLD" num="50000" />
+  </try.quick.complete>
+  <train.hero.skill.lv.to.2 name="25360" desc="25361">
+    <!--스킬레벨 도달-->
+    <when clear_quest="levelup.hero.to.5" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL_SKILL="2" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </train.hero.skill.lv.to.2>
+  <levelup.hero.to.002 name="25366" desc="25367" rate_exp="0.1">
+    <!--영웅레벨 도달-->
+    <when clear_quest="train.hero.skill.lv.to.2" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL="7" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </levelup.hero.to.002>
+  <train.hero.squad.lv.to.3 name="25364" desc="25365" rate_exp="0.1">
+    <!--부대레벨 도달-->
+    <when clear_quest="levelup.hero.to.002" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL_SQUAD="3" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </train.hero.squad.lv.to.3>
+  <train.hero.skill.lv.to.3 name="25360" desc="25361" rate_exp="0.1">
+    <!--스킬레벨 도달-->
+    <when clear_quest="train.hero.squad.lv.to.3" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL_SKILL="3" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </train.hero.skill.lv.to.3>
+  <levelup.hero.to.003 name="25366" desc="25367" rate_exp="0.1">
+    <!--영웅레벨 도달-->
+    <when clear_quest="train.hero.skill.lv.to.3" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL="10" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </levelup.hero.to.003>
+  <train.hero.squad.lv.to.4 name="25364" desc="25365" rate_exp="0.1">
+    <!--부대레벨 도달-->
+    <when clear_quest="levelup.hero.to.003" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL_SQUAD="4" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </train.hero.squad.lv.to.4>
+  <train.hero.skill.lv.to.4 name="25360" desc="25361" rate_exp="0.1">
+    <!--스킬레벨 도달-->
+    <when clear_quest="train.hero.squad.lv.to.4" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL_SKILL="4" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </train.hero.skill.lv.to.4>
+  <levelup.hero.004 name="25366" desc="25367" rate_exp="0.1">
+    <!--영웅레벨 도달-->
+    <when clear_quest="train.hero.skill.lv.to.4" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL="13" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </levelup.hero.004>
+  <train.hero.squad.lv.to.5 name="25364" desc="25365" rate_exp="0.1">
+    <!--부대레벨 도달-->
+    <when clear_quest="levelup.hero.004" />
+    <cond>
+      <what xQC_EVENT_HERO_LEVEL_SQUAD="5" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </train.hero.squad.lv.to.5>
+  <area.006.2 rate_exp="0.1">
+    <when open_area="area.1004"></when>
+    <cond>
+      <what open_area="area.1012" />
+    </cond>
+    <reward resource="xRES_WOOD" num="300" />
+    <reward resource="xRES_IRON" num="300" />
+    <!--유저스팟지역 열기-->
+  </area.006.2>
+  <x.quest.embassy name="25312" desc="27312" rate_exp="0.1">
+    <!--대사관-->
+    <when clear_quest="area.006.2" />
+    <cond>
+      <what open_area="area.1013" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="500" />
+    <reward resource="xRES_IRON" num="500"></reward>
+  </x.quest.embassy>
+  <collect.jewel.01 name="25303" desc="25334" rate_exp="0.1">
+    <!--자원 확보-->
+    <when clear_quest="x.quest.embassy" />
+    <cond>
+      <what xQC_EVENT_GET_RESOURCE="xRES_JEWEL" num="10000" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_JEWEL" num="1000" />
+  </collect.jewel.01>
+  <collect.mandrake.01 name="27041" desc="25401" rate_exp="0.1">
+    <!--자원 확보-->
+    <when clear_quest="kill.npc.lv7" />
+    <cond>
+      <what xQC_EVENT_GET_RESOURCE="xRES_MANDRAKE" num="10000" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_MANDRAKE" num="10000" />
+  </collect.mandrake.01>
+  <open.area.7_2 rate_exp="0.1">
+    <when clear_quest="x.quest.embassy"></when>
+    <cond>
+      <what open_area="area.018" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="1000" />
+  </open.area.7_2>
+  <try.daily.spot name="25375" desc="25376" rate_exp="0.1">
+    <!--요일스팟 공격-->
+    <when clear_quest="open.area.7_2"></when>
+    <cond desc="25375">
+      <what clear_spot="spot.daily" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="5000" />
+    <reward resource="xRES_IRON" num="5000"></reward>
+  </try.daily.spot>
+  <x.recon.user name="25339" desc="27339" rate_exp="0.1">
+    <!--유저 공격-->
+    <when open_area="area.1012"></when>
+    <cond desc="5097">
+      <what recon_spot="spot.621" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="5000" />
+    <reward resource="xRES_IRON" num="5000" />
+  </x.recon.user>
+  <x.destroy.user name="25341" desc="27341" rate_exp="0.5">
+    <!--유저 공격-->
+    <when clear_quest="x.recon.user"></when>
+    <cond desc="5098">
+      <what clear_spot="spot.621" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_JEWEL" num="2500" />
+    <reward resource="xRES_MANDRAKE" num="5000"></reward>
+    <reward item="item_event_kopiosussmap"></reward>
+  </x.destroy.user>
+  <x.tutor.guild name="25322" desc="27322" rate_exp="0.05">
+    <!--연방가입-->
+    <when clear_quest="x.quest.embassy" />
+    <cond>
+      <what action="xUA_JOIN_GUILD" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="1000" />
+    <reward resource="xRES_IRON" num="1000" />
+  </x.tutor.guild>
+  <unlock.unit.01 name="25377" desc="25378" rate_exp="0.25">
+    <!--유닛 잠금해제-->
+    <when level="8"></when>
+    <cond desc="5078">
+      <_what xQC_EVENT_UNLOCK_UNIT="0" />
+      <what open_area="area.1016" />
+    </cond>
+    <reward cash="3"></reward>
+    <reward resource="xRES_WOOD" num="5000" />
+    <reward resource="xRES_IRON" num="5000" />
+  </unlock.unit.01>
+  <unlock.unit.02 name="25377" desc="25379" rate_exp="0.25">
+    <!--유닛 잠금해제-->
+    <when clear_quest="unlock.unit.01"></when>
+    <cond desc="5078">
+      <_what xQC_EVENT_UNLOCK_UNIT="0" />
+      <what open_area="area.1023" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="5000" />
+    <reward resource="xRES_IRON" num="5000" />
+  </unlock.unit.02>
+  <unlock.unit.03 name="25377" desc="25380" rate_exp="0.25">
+    <!--유닛 잠금해제-->
+    <when clear_quest="unlock.unit.02"></when>
+    <cond desc="5078">
+      <_what xQC_EVENT_UNLOCK_UNIT="0" />
+      <what open_area="area.1031" />
+    </cond>
+    <reward cash="20"></reward>
+    <reward resource="xRES_GOLD" num="500000" />
+  </unlock.unit.03>
+  <unlock.unit.04 name="25377" desc="25381" rate_exp="0.25" icon="q_unlock_unit.png">
+    <!--유닛 잠금해제-->
+    <when clear_quest="unlock.unit.03"></when>
+    <cond desc="5078">
+      <_what xQC_EVENT_UNLOCK_UNIT="0" />
+      <what open_area="area.1037" />
+    </cond>
+    <reward cash="50"></reward>
+    <reward resource="xRES_GOLD" num="1000000" />
+  </unlock.unit.04>
+  <unlock.unit.05 name="25377" desc="25382" rate_exp="0.25">
+    <!--유닛 잠금해제-->
+    <when clear_quest="unlock.unit.04"></when>
+    <cond desc="5078">
+      <_what xQC_EVENT_UNLOCK_UNIT="0" />
+      <what open_area="area.21.1" />
+    </cond>
+    <reward cash="70"></reward>
+    <reward resource="xRES_GOLD" num="2000000" />
+  </unlock.unit.05>
+  <unlock.unit.06 name="25377" desc="25383" rate_exp="0.25">
+    <!--유닛 잠금해제-->
+    <when clear_quest="unlock.unit.05"></when>
+    <cond desc="5078">
+      <_what xQC_EVENT_UNLOCK_UNIT="0" />
+      <what open_area="area.24.01" />
+    </cond>
+    <reward cash="100"></reward>
+    <reward resource="xRES_GOLD" num="5000000" />
+  </unlock.unit.06>
+  <x.hire.hero2 name="25352" desc="25353" rate_exp="0.05">
+    <!--두번째 영웅 고용-->
+    <when level="9" />
+    <cond>
+      <what _action="xUA_HIRE_HERO" xQC_EVENT_HIRE_HERO="0" />
+    </cond>
+    <reward resource="xRES_WOOD" num="500" />
+    <reward resource="xRES_IRON" num="500" />
+  </x.hire.hero2>
+  <edit.squad name="25384" desc="25385" rate_exp="0.05">
+    <!--진영편집-->
+    <when clear_quest="x.hire.hero2" />
+    <cond desc="25386">
+      <what action="xUA_EDIT_SQUAD" />
+    </cond>
+    <reward resource="xRES_WOOD" num="5000" />
+    <reward resource="xRES_IRON" num="5000" />
+  </edit.squad>
+  <recon.jewel.mine name="20398" desc="20399" rate_exp="0.05">
+    <!--광산 정찰-->
+    <when clear_quest="open.area.009"></when>
+    <cond desc="20398">
+      <what recon_spot="spot.673" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="10000" />
+    <reward resource="xRES_IRON" num="10000" />
+  </recon.jewel.mine>
+  <win.jewel.mine name="20315" desc="20316" rate_exp="0.05">
+    <!--광산 공격-->
+    <when clear_quest="recon.jewel.mine"></when>
+    <cond desc="20315">
+      <what clear_spot="spot.673" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="10000" />
+    <reward resource="xRES_IRON" num="10000" />
+  </win.jewel.mine>
+  <clear.hero.camp.stg.001 name="20400" desc="20401" rate_exp="0.05" icon="q_hero_camp.png">
+    <!--영웅전장 도전-->
+    <when clear_quest="open.area.011"></when>
+    <cond desc="20402">
+      <what xQC_EVENT_CLEAR_STAGE="5" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="10000" />
+    <reward resource="xRES_IRON" num="10000" />
+  </clear.hero.camp.stg.001>
+  <x.boss1 name="25389" desc="25390" rate_exp="0.05" icon="q_boss.png">
+    <when open_area="area.1011" />
+    <cond desc="25389">
+      <what clear_spot="spot.635" />
+    </cond>
+    <reward item="hero_nay" num="10" />
+    <!--9레벨지역 보스-->
+    <reward item="item_event_furyheart" />
+  </x.boss1>
+  <research.abil.02 name="25362" desc="25363" rate_exp="0.05">
+    <!--특성연구-->
+    <when clear_quest="x.boss1" />
+    <cond>
+      <what xQC_EVENT_RESEARCH_ABIL="0" />
+    </cond>
+    <reward cash="5"></reward>
+    <reward resource="xRES_WOOD" num="2500" />
+    <reward resource="xRES_IRON" num="2500" />
+  </research.abil.02>
+  <x.boss2 name="25389" desc="25391" rate_exp="0.05">
+    <!--12레벨지역 보스-->
+    <when open_area="area.1021" />
+    <cond desc="25389">
+      <what clear_spot="spot.boss2" />
+    </cond>
+    <reward item="staff" />
+    <reward item="item_event_minomeet" />
+  </x.boss2>
+  <x.boss3 name="25389" desc="25392" rate_exp="0.05">
+    <when open_area="area.1028" />
+    <cond desc="25389">
+      <what clear_spot="spot.boss3" />
+    </cond>
+    <reward item="hero_skar" num="10" />
+    <!--15레벨지역 보스/6군단-->
+    <reward item="item_event_teensam" />
+  </x.boss3>
+  <x.boss4 name="25389" desc="25393" rate_exp="0.05">
+    <!--18레벨지역 보스-->
+    <when open_area="area.1037" />
+    <cond desc="25389">
+      <what clear_spot="spot.645" />
+    </cond>
+    <reward item="sabre" />
+    <reward item="item_event_sulfur" />
+  </x.boss4>
+  <x.boss5 name="25403" desc="25404" rate_exp="0.05">
+    <!--나무정령보스-->
+    <when open_area="area.1040" />
+    <cond desc="25403">
+      <what clear_spot="spot.824" />
+    </cond>
+    <reward item="plate_armor" />
+    <reward item="item_event_fallenspear" />
+  </x.boss5>
+  <clear.medal.camp rate_exp="0.05" name="25387" desc="25388" icon="q_medal_camp.png">
+    <!--메달전장 승리-->
+    <when open_area="area.1019" />
+    <cond>
+      <what get_item="medal_tanker01" num="10" />
+    </cond>
+    <reward resource="xRES_MANDRAKE" num="10000" />
+  </clear.medal.camp>
+  <x.camp01 name="15040" desc="20260" rate_exp="0.05">
+    <when open_area="area.1022" />
+    <cond>
+      <what clear_spot="spot.669" />
+    </cond>
+    <reward item="iron_nec" num="1" />
+    <!--야수의 형제단 소굴 클리어-->
+  </x.camp01>
+  <x.camp02 name="15099" desc="20403" rate_exp="0.05">
+    <!--붉은바위 도적단-->
+    <when open_area="area.1032" />
+    <cond desc="20404">
+      <what clear_spot="spot.camp.02" />
+    </cond>
+    <reward item="silver_nec" />
+  </x.camp02>
+  <buy.item.equip name="25331" desc="27331" rate_exp="0.05">
+    <when open_area="area.1022" />
+    <cond desc="5080">
+      <what xQC_EVENT_BUY_ITEM="0" />
+    </cond>
+    <!--무기상에서 아이템 구입-->
+    <reward resource="xRES_GOLD" num="50000" />
+  </buy.item.equip>
+  <summon.hero.soul.stone name="25394" desc="25395" rate_exp="0.05">
+    <!--영혼석으로 소환-->
+    <when clear_quest="clear.hero.camp.stg.001" />
+    <cond desc="25394">
+      <what xQC_EVENT_SUMMON_HERO="0" />
+    </cond>
+    <reward item="hard_steel_helmet" />
+    <reward cash="20" />
+  </summon.hero.soul.stone>
+  <promotion.hero.2 name="25396" desc="25397" rate_exp="0.05">
+    <!--영웅승급-->
+    <when clear_quest="clear.hero.camp.stg.001" />
+    <cond desc="25396">
+      <what xQC_EVENT_PROMOTION_HERO="2" />
+    </cond>
+    <reward item="hard_steel_boots" />
+    <reward cash="30" />
+  </promotion.hero.2>
+  <promotion.hero.3 name="25396" desc="25398" rate_exp="0.05">
+    <!--영웅승급-->
+    <when clear_quest="promotion.hero.2" />
+    <cond desc="25396">
+      <what xQC_EVENT_PROMOTION_HERO="3" />
+    </cond>
+    <reward item="plate_armor" />
+    <reward cash="50" />
+  </promotion.hero.3>
+  <promotion.hero.4 rate_exp="0.05" name="25396" desc="25399">
+    <!--영웅승급-->
+    <when clear_quest="promotion.hero.3" />
+    <cond desc="25396">
+      <what xQC_EVENT_PROMOTION_HERO="4" />
+    </cond>
+    <reward item="sarissa" />
+    <reward cash="100" />
+  </promotion.hero.4>
+  <x.hire.hero3 name="25352" desc="25400" rate_exp="0.05">
+    <!--세번째 영웅 고용-->
+    <when level="12" />
+    <cond desc="5104">
+      <what xQC_EVENT_GET_HERO="0" />
+    </cond>
+    <reward resource="xRES_WOOD" num="500000" />
+    <reward resource="xRES_IRON" num="500000" />
+  </x.hire.hero3>
+  <try.guild.raid.01 name="25368" desc="25369" rate_exp="0.05">
+    <!--길드레이드 도전-->
+    <when clear_quest="win.jewel.mine" />
+    <cond desc="25368">
+      <what xQC_EVENT_ATTACK_SPOT="spot.guild.raid.15" />
+    </cond>
+    <reward resource="xRES_WOOD" num="10000" />
+    <reward resource="xRES_IRON" num="10000" />
+  </try.guild.raid.01>
+  <clear.guild.raid.01 name="25370" desc="25371" rate_exp="0.05">
+    <!--길드레이드 클리어-->
+    <when clear_quest="try.guild.raid.01" />
+    <cond desc="25370">
+      <what xQC_EVENT_CLEAR_GUILD_RAID="spot.guild.raid.15" />
+    </cond>
+    <reward resource="xRES_WOOD" num="10000" />
+    <reward resource="xRES_IRON" num="10000" />
+  </clear.guild.raid.01>
+  <clear.sulfur.spot name="25114" desc="25372" rate_exp="0.05">
+    <!--유황약탈-->
+    <when clear_quest="try.guild.raid.01" />
+    <cond desc="25114">
+      <what clear_spot="spot.650" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="50000" />
+    <reward cash="20" />
+  </clear.sulfur.spot>
+  <star.001 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="x.quest.embassy" />
+    <cond>
+      <what get_star="6" />
+    </cond>
+    <reward resource="xRES_WOOD" num="10000" />
+  </star.001>
+  <star.002 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.001" />
+    <cond>
+      <what get_star="6" />
+    </cond>
+    <reward resource="xRES_IRON" num="10000" />
+  </star.002>
+  <star.003 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.002" />
+    <cond>
+      <what get_star="6" />
+    </cond>
+    <reward resource="xRES_WOOD" num="10000" />
+    <reward resource="xRES_IRON" num="10000" />
+  </star.003>
+  <star.004 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.003" />
+    <cond>
+      <what get_star="9" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="10000" />
+  </star.004>
+  <star.005 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.004" />
+    <cond>
+      <what get_star="9" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="20000" />
+  </star.005>
+  <star.006 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.005" />
+    <cond>
+      <what get_star="9" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="10000" />
+    <reward resource="xRES_WOOD" num="10000" />
+    <reward resource="xRES_IRON" num="10000" />
+  </star.006>
+  <star.007 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.006" />
+    <cond>
+      <what get_star="9" />
+    </cond>
+    <reward resource="xRES_SULFUR" num="20000" />
+  </star.007>
+  <star.008 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.007" />
+    <cond>
+      <what get_star="9" />
+    </cond>
+    <reward resource="xRES_SULFUR" num="20000" />
+    <reward resource="xRES_WOOD" num="10000" />
+    <reward resource="xRES_IRON" num="10000" />
+  </star.008>
+  <star.008.1 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.008" />
+    <cond>
+      <what get_star="9" />
+    </cond>
+    <reward resource="xRES_SULFUR" num="20000" />
+    <reward resource="xRES_JEWEL" num="20000" />
+  </star.008.1>
+  <star.009 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.008.1" />
+    <cond>
+      <what get_star="9" />
+    </cond>
+    <reward resource="xRES_MANDRAKE" num="30000" />
+  </star.009>
+  <star.010 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.009" />
+    <cond>
+      <what get_star="9" />
+    </cond>
+    <reward resource="xRES_MANDRAKE" num="30000" />
+    <reward resource="xRES_WOOD" num="20000" />
+    <reward resource="xRES_IRON" num="20000" />
+  </star.010>
+  <star.011 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.010" />
+    <cond>
+      <what get_star="9" />
+    </cond>
+    <reward item="great_sword" />
+    <reward resource="xRES_WOOD" num="20000" />
+    <reward resource="xRES_IRON" num="20000" />
+  </star.011>
+  <star.012 name="25344" desc="27344" rate_exp="0.1">
+    <when clear_quest="star.010" />
+    <cond>
+      <what get_star="9" />
+    </cond>
+    <reward cash="5" />
+    <reward resource="xRES_WOOD" num="100000" />
+    <reward resource="xRES_IRON" num="100000" />
+  </star.012>
+  <area.008 rate_exp="0.1">
+    <when clear_quest="open.area.7_2"></when>
+    <cond>
+      <what open_area="area.1003" />
+    </cond>
+    <reward resource="xRES_WOOD" num="1000" />
+    <reward resource="xRES_IRON" num="1000" />
+    <!--8렙지역 오픈-->
+  </area.008>
+  <open.area.009 rate_exp="0.1">
+    <when clear_quest="area.008"></when>
+    <cond>
+      <what open_area="area.1016" />
+    </cond>
+    <reward resource="xRES_WOOD" num="1000" />
+    <reward resource="xRES_IRON" num="1000" />
+  </open.area.009>
+  <area.010 rate_exp="0.1">
+    <when clear_quest="open.area.009"></when>
+    <cond>
+      <what open_area="area.1018" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="2000" />
+  </area.010>
+  <open.area.011 rate_exp="0.1">
+    <when clear_quest="area.010"></when>
+    <cond>
+      <what open_area="area.1020" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="2000" />
+  </open.area.011>
+  <area.012 rate_exp="0.1">
+    <when clear_quest="open.area.011"></when>
+    <cond>
+      <what open_area="area.1023" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="2000" />
+  </area.012>
+  <area.013 rate_exp="0.1">
+    <when clear_quest="area.012"></when>
+    <cond>
+      <what open_area="area.1026" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="2000" />
+  </area.013>
+  <area.014 rate_exp="0.1">
+    <when clear_quest="area.013"></when>
+    <cond>
+      <what open_area="area.1027" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="3000" />
+  </area.014>
+  <area.015 rate_exp="0.1">
+    <when clear_quest="area.014"></when>
+    <cond>
+      <what open_area="area.1031" />
+    </cond>
+    <reward resource="xRES_SULFUR" num="3000" />
+  </area.015>
+  <area.016 rate_exp="0.1">
+    <when clear_quest="area.015"></when>
+    <cond>
+      <what open_area="area.1032" />
+    </cond>
+    <reward resource="xRES_SULFUR" num="3000" />
+  </area.016>
+  <area.017 rate_exp="0.1">
+    <when clear_quest="area.016"></when>
+    <cond>
+      <what open_area="area.1035" />
+    </cond>
+    <reward resource="xRES_SULFUR" num="3000" />
+  </area.017>
+  <area.018 rate_exp="0.1">
+    <when clear_quest="area.017"></when>
+    <cond>
+      <what open_area="area.1037" />
+    </cond>
+    <reward resource="xRES_SULFUR" num="3000" />
+  </area.018>
+  <area.019 rate_exp="0.1">
+    <when clear_quest="area.018"></when>
+    <cond>
+      <what open_area="area.1039" />
+    </cond>
+    <reward resource="xRES_MANDRAKE" num="3000" />
+  </area.019>
+</root>

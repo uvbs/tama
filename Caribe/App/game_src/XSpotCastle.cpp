@@ -6,8 +6,8 @@
 	#include "XGame.h"
 	#include "XGameWnd.h"
 	#include "XPropUser.h"
-  #include "XSceneWorld.h"
-  #include "XTemp.h"
+	#include "XSceneWorld.h"
+	#include "XTemp.h"
 #endif
 #ifdef _GAME_SERVER
 	#include "XGameUser.h"
@@ -689,7 +689,7 @@ void XSpotCastle::ClearSpot()
 	m_numLose = 0;
 }
 
-void XSpotCastle::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat )
+void XSpotCastle::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat )
 {
 //	ClearSpot();		 // 여기서 이거 하는게 맞는데 지역창고까지 클리어 시켜버려서 지금은 쓰면 안됨.
 	if( bWin ) {

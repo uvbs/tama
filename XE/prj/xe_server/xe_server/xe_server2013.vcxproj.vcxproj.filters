@@ -1,0 +1,472 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Stdafx.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Alert.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\ConvertString.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\MFC\CoolDialogBar.cpp">
+      <Filter>dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XWinNetwork.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XSocketClientInServer.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XNetworkConnection.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XNetworkDelegate.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XWinConnection.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XWinSocketSvr.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Debug.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\lua_tinker.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\path.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Timer.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinystr.cpp">
+      <Filter>source\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxml.cpp">
+      <Filter>source\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxmlerror.cpp">
+      <Filter>source\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxmlparser.cpp">
+      <Filter>source\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\MFC\XEServerApp.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XEServerDelegate.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\MFC\XEServerMainFrm.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\MFC\XEServerView.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XConsoleMain.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLibrary.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XServerMain.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLock.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\win32\XLockCS.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLua.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XPacket.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XPool.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XRefObj.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XRefRes.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XResMng.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XResObj.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XSystem.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XTextTable.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XTextTableUTF8.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XTimer2.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xUtil.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xLang.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XGlobal.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XE.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XCrypto.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XConstant.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Token.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XArchive.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XAutoPtr.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEBaseProp.cpp">
+      <Filter>source\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEComponents.cpp">
+      <Filter>source\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEProfile.cpp">
+      <Filter>source\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XFLevel.cpp">
+      <Filter>source\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\XGameUtil.cpp">
+      <Filter>source\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XXMLDoc.cpp">
+      <Filter>source\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XDBAccount.cpp">
+      <Filter>source\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XEUser.cpp">
+      <Filter>source\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XEUserMng.cpp">
+      <Filter>source\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XGoogleVerify.cpp">
+      <Filter>source\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XHttpMng.cpp">
+      <Filter>source\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XError.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XParamObj.cpp">
+      <Filter>source\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEOption.cpp">
+      <Filter>source\framework</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Types.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\xenDef.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\VersionXE.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xeDef.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLib.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibResPath.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibServer.h" />
+    <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\ArrayLinear.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\ArrayLinearN.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\ContainerSTL.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\MFC\CoolDialogBar.h">
+      <Filter>dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Global.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\Skill\SkillDef.h">
+      <Filter>source\skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\Skill\SkillType.h">
+      <Filter>source\skill</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\tinyxml\tinystr.h">
+      <Filter>source\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\tinyxml\tinyxml.h">
+      <Filter>source\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XList.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xVector.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XXMLDoc.h">
+      <Filter>source\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Alert.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\ConvertString.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Debug.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\lua_tinker.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\path.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Timer.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Token.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XArchive.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XAutoPtr.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XConstant.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XCrypto.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XE.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XError.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XGlobal.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xLang.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLock.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\win32\XLockCS.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLua.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XPacket.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XPool.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XRefObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XRefRes.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XResMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XResObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XSystem.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XTextTable.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XTextTableUTF8.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XTimer2.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xUtil.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEBaseProp.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XEComponents.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEOption.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEProfile.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XFLevel.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\XGameUtil.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XParamObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XConsoleMain.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\MFC\XEServerApp.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XEServerDelegate.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\MFC\XEServerMainFrm.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\MFC\XEServerView.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLibrary.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XServerMain.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XNetworkConnection.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XNetworkDelegate.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XSocketClientInServer.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XWinConnection.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XWinNetwork.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XWinSocketSvr.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XDBAccount.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XEUser.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XEUserMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XGoogleVerify.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XHttpMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\Third_Party_lib\bugslayer\lib\CrashReport.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\..\..\Third_Party_lib\OpenSSL\lib\libeay32.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\..\..\Common\_XLibrary\lua51.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\..\..\Third_Party_lib\OpenSSL\lib\ssleay32.lib">
+      <Filter>lib</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="app.ico">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\ArrayLinear.inl">
+      <Filter>source\etc</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\ArrayLinearN.inl">
+      <Filter>source\etc</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\etc\ContainerSTL.inl">
+      <Filter>source\etc</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\XList.inl">
+      <Filter>source\etc</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="header">
+      <UniqueIdentifier>{3f8106b5-a18a-4e67-a93c-c27da0420969}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{36d0d44b-2245-42ac-bca1-3ac28e36ea8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{90d045b1-2153-4b84-8209-dd9c2cdefd11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\network">
+      <UniqueIdentifier>{1aa2051a-69a7-4aac-9abf-8706de5e9a2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{9b395c0a-e8a2-4d7e-8ee9-af951ea4f08b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\etc">
+      <UniqueIdentifier>{7c1bf0cb-d87f-4402-94fe-e2a5c2cf21e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dlg">
+      <UniqueIdentifier>{00bbf561-ba39-4850-93b0-a91f8a7b14d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\main">
+      <UniqueIdentifier>{15dffb6a-ae98-493c-a7df-89521ad6fdce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\skill">
+      <UniqueIdentifier>{e7e41321-be2d-4f49-8281-16cea8a0fd1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\xml">
+      <UniqueIdentifier>{8e54b374-2bc2-49ac-a196-89b6f297e406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\framework">
+      <UniqueIdentifier>{6ab736d3-cdf9-4b4b-b180-09577910c4ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\server">
+      <UniqueIdentifier>{000d7bc9-25c5-4a26-abde-12486d42df81}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

@@ -399,11 +399,16 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 	try
 	{
 		{
+			CONSOLE( "deserialize global.xml" );
+			XArchive arProp;
+			ar >> arProp;
+			arProp.DoUnCompress();
+			XGlobalConst::sGetMutable()->DeSerialize( arProp, 0 );
+		}	{
 // 			throw std::exception("xbreak");
 			CONSOLE( "deserialize constant" );
 			XArchive arProp;
 			ar >> arProp;
-			CONSOLE( "-uncompress" );
 			arProp.DoUnCompress();
 			if( !CONSTANT ) {
 				CONSTANT = new XConstant();
@@ -450,7 +455,6 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 			CONSOLE( "deserialize propworld" );
 			XArchive arProp;
 			ar >> arProp;
-			CONSOLE( "-uncompress" );
 			arProp.DoUnCompress();
 			if( !PROP_WORLD ) {
 				PROP_WORLD = new XPropWorld();

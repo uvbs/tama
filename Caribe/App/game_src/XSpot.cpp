@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "XSpots.h"
+#include "XSpotDaily.h"
 #include "XArchive.h"
 #include "XAccount.h"
 #ifdef _CLIENT
@@ -821,19 +822,19 @@ void XSpot::CreateLegion( XSPAcc spAccount )
 	}
 }
 
-// XGAME::xReward XSpot::sGetRewardDailyToday( XPropWorld::xDaily* pProp, int lvAcc )
+// XGAME::xReward XSpot::_sGetRewardDailyToday( XPropWorld::xDaily* pProp, int lvAcc )
 // {
 // 	XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
 // 	return sGetRewardDaily( pProp, dowToday, lvAcc );
 // }
 
-bool XSpot::sGetRewardDailyToday( XPropWorld::xDaily* pProp, int lvAcc, XVector<XGAME::xReward>* pOutAry )
+bool XSpot::_sGetRewardDailyToday( XPropWorld::xDaily* pProp, int lvAcc, XVector<XGAME::xReward>* pOutAry )
 {
 	XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
-	return sGetRewardDaily( pProp, dowToday, lvAcc, pOutAry );
+	return _sGetRewardDaily( pProp, dowToday, lvAcc, pOutAry );
 }
 
-bool XSpot::sGetRewardDaily( XPropWorld::xDaily* pProp, XE::xtDOW dow, int lvAcc, XVector<XGAME::xReward>* pOutAry )
+bool XSpot::_sGetRewardDaily( XPropWorld::xDaily* pProp, XE::xtDOW dow, int lvAcc, XVector<XGAME::xReward>* pOutAry )
 {
 	int idxDow = (dow == XE::xDOW_SUNDAY)? 6 : dow - 1;
 	auto& ary = pProp->m_aryDays[ idxDow ];	// 해당요일의 보상리스트
@@ -852,39 +853,6 @@ bool XSpot::sGetRewardDaily( XPropWorld::xDaily* pProp, XE::xtDOW dow, int lvAcc
 		pOutAry->Add( rew );
 	}
 	return true;
-// 	XGAME::xReward reward;
-// 	//목재/철/보석/유황/만드레이크/목재,철/모두
-// 	auto lvBase = lvAcc - 7;
-// 	if( lvBase < 0 )
-// 		lvBase = 0;
-// 	int numRes = 5000 + lvBase * 1000;
-// 	switch( dow ) {
-// 	case XE::xDOW_MONDAY:
-// 		reward.SetResource( XGAME::xRES_WOOD, numRes );
-// 		break;
-// 	case XE::xDOW_TUESDAY:
-// 		reward.SetResource( XGAME::xRES_IRON, numRes );
-// 		break;
-// 	case XE::xDOW_WEDNESDAY:
-// 		reward.SetResource( XGAME::xRES_JEWEL, numRes );
-// 		break;
-// 	case XE::xDOW_THURSDAY:
-// 		reward.SetResource( XGAME::xRES_SULFUR, numRes );
-// 		break;
-// 	case XE::xDOW_FRIDAY:
-// 		reward.SetResource( XGAME::xRES_MANDRAKE, numRes );
-// 		break;
-// 	case XE::xDOW_SATURDAY:
-// 		reward.SetResource( XGAME::xRES_WOOD_IRON, numRes );
-// 		break;
-// 	case XE::xDOW_SUNDAY:
-// 		reward.SetResource( XGAME::xRES_ALL, numRes );
-// 		break;
-// 	default:
-// 		XBREAKF( 1, "잘못된 요일에 호출.:%d", (int)dow );
-// 		break;
-// 	}
-// 	return reward;
 }
 /**
  @brief 스팟이 속한 지역의 프로퍼티를 꺼낸다.
@@ -1092,6 +1060,7 @@ int XSpot::CalcLevel( XPropWorld::xBASESPOT *pProp, int lvAcc ) const
 void XSpot::OnAfterBattle( XSPAcc spAccWin
 												, ID idAccLose
 												, bool bWin
+												, int numStar
 												, bool bRetreat )
 {
 	if( bWin ) {

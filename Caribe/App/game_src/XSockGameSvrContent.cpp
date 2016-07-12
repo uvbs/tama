@@ -36,6 +36,7 @@
 #include "XStruct.h"
 #include "XStageObj.h"
 #include "XSpots.h"
+#include "XSpotDaily.h"
 #include "XLegion.h"
 #include "XWndDelegator.h"
 #include "XFramework/XInApp.h"
@@ -477,7 +478,17 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 				return;
 			} else
 			if( err == XSpotDaily::xERR_OVER_ENTER_NUM ) {
-				XWND_ALERT("%s", XTEXT(2227));	// 도전횟수 없음.
+				GAME->DestroyWndByIdentifier( "popup.daily" );
+				auto pPopup = new XWndPaymentByCash();
+				pPopup->SetFillTryByDailySpot();
+				GAME->GetpScene()->Add( pPopup );
+//				pPopup->SetEvent( XWM_OK, GAME, &XGame::OnClickFillAPByCash );
+				pPopup->SetEvent2( XWM_OK, []( XWnd* pWnd ) {
+					const bool bByItem = false;
+					GAMESVR_SOCKET->SendReqPaymentAssetByGem( GAME, xPR_TRY_DAILY, bByItem );
+// 					GAMESVR_SOCKET->SendReqOpenCloud( this, idCloud, xTP_GOLD_AND_CASH );
+				} );
+//				XWND_ALERT("%s", XTEXT(2227));	// 도전횟수 없음.
 				return;
 			}
 		} else
@@ -732,7 +743,9 @@ void XSockGameSvr::RecvFinishBattle( XPacket& p, const xCALLBACK& c )
 	ACCOUNT->SetaryResource( result.aryAccRes );
 	XSpot::sDeSerialize( result.arSpot, pBaseSpot );
 	// 전투에 이긴후엔 스팟에 군단정보가 없어야 정상임.
+#if _DEV_LEVEL <= DLV_LOCAL
 	XBREAK( result.IsWin() && pBaseSpot->GetspLegion() != nullptr );
+#endif
 //	}
 	//////////////////////////////////////////////////////////////////////////
 	if( typeSpot == XGAME::xSPOT_CASTLE ) {
@@ -4970,16 +4983,65 @@ void XSockGameSvr::RecvFillAP( XPacket& p, const xCALLBACK& c )
 	p >> ap;
 	p >> numCash;
 	ACCOUNT->SetCashtem( numCash );
-	if( ap == 0 )
-	{
+	if( ap == 0 )	{
 		XWND_ALERT("%s", XTEXT(80140) );		// 캐쉬 부족.
-	} else
-	{
+	} else	{
 		ACCOUNT->SetmaxAP( ap );
 		ACCOUNT->SetAP( ap );
 	}
 	GAME->SetbUpdate( true );
 }
+
+/**
+ @brief 각종 asset(자원,금화,시간,AP,횟수등)을 젬이나 특정아이템으로 지불하고 구매한다.
+ @param bByItem 젬대신 typeAsset에 맞는 아이템이 있다면 그것을 소모하고 구매(교환)
+*/
+BOOL XSockGameSvr::SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, xtPaymentRes typeAsset, bool bByItem )
+{
+	_XCHECK_CONNECT(0);
+	//
+	XPacket ar( (ID)xCL2GS_PAYMENT_ASSET );
+	ar << (char)typeAsset;
+	ar << xboolToByte( bByItem );
+	ar << (char)0;
+	ar << (char)0;
+
+	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
+	ID idKey = 
+		AddResponse( ar.GetidPacket(), 
+					&XSockGameSvr::RecvPaymentAssetByGem, pTimeoutCallback );
+	Send( ar );
+	//
+	return TRUE;
+}
+
+/**
+ SendReqPaymentAssetByGem()에 대한 응답함수
+ @param p 패킷이 들어있는 아카이브
+ @see SendReqPaymentAssetByGem()
+*/
+void XSockGameSvr::RecvPaymentAssetByGem( XPacket& p, const xCALLBACK& c )
+{
+	DWORD numCash;		// 현재 젬개수 업데이트
+	char c0;
+	p >> c0;		const auto errCode = (XGAME::xtError)c0;
+	p >> c0;		const auto typeAsset = (xtPaymentRes)c0;
+	p >> c0;		const bool bByItem = (c0 != 0);
+	p >> c0;
+	p >> numCash;
+	ACCOUNT->SetCashtem( numCash );
+	switch( typeAsset ) {
+	case xPR_TRY_DAILY: {
+	} break;
+	default:
+		break;
+	}
+	GAME->GetpScene()->SetbUpdate( true );
+
+}
+
+
+
 
 BOOL XSockGameSvr::SendRegistPushMsg(XWnd *pTimeoutCallback, int idacc, int type1, int type2, const _tstring& msg, int time)
 {

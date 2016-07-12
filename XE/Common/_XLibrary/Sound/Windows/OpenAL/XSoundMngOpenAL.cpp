@@ -181,7 +181,7 @@ bool XSoundMngOpenAL::OpenSound( ID idSound )
 		pSound->Use = 1;
 		pSound->alBuffer = pSound->Sound->GetalBuffer();
 		m_SoundList.push_back( pSound );
-		CONSOLE_TAG( "sound", "sound:%s .......loaded", C2SZ( strFullpath.c_str() ) );
+//		CONSOLE_TAG( "sound", "sound:%s .......loaded", C2SZ( strFullpath.c_str() ) );
 		return true;
 	}
 	SAFE_DELETE( pSound );

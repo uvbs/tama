@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--장비상 씬-->
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf">
+  <!--모든 씬 백판-->
+  <common_bg>
+    <wnd posx="0" posy="0" width="0" height="0" key="wnd.common_bg">
+      <!--백판-->
+      <img posx="0" posy="0" file="common_bg_bottom.png" />
+      <!--백버튼-->
+      <butt posx="510" posy="0" key="butt.back" img_up="common_butt_back.png" />
+    </wnd>
+  </common_bg>
+  <!--골드 & 캐쉬 백판-->
+  <common_bg_goldcash>
+    <wnd posx="230" posy="2" width="0" height="0" key="wnd.common.bg.goldcash">
+      <!--골드 & 캐쉬 백판-->
+      <img posx="0" posy="0" file="common_bg_goldcash.png">
+        <!--골드-->
+        <text posx="50" posy="19" font="font_text_b" font_size="34" font_style="stroke" align="center" text_col="white" width="85" text="80000" key="text.common.gold" comma="yes"></text>
+        <!--캐쉬-->
+        <text posx="186" posy="19" font="font_text_b" font_size="34" font_style="stroke" align="center" text_col="white" width="85" text="80000" key="text.common.cash" />
+      </img>
+    </wnd>
+  </common_bg_goldcash>
+  <!--장비상 씬 메인-->
+  <armory>
+    <wnd posx="0" posy="57" width="0" height="0" key="wnd.armory.armory">
+      <!--내부 백판-->
+      <img posx="64" posy="0" file="common_bg_inside.png"></img>
+      <!--현수막-->
+      <img posx="74" posy="10" file="trader_bg_banner.png" />
+      <!--무기상 캐릭터-->
+      <img posx="74" posy="46" file="armory_bg_char.png" />
+      <!--무기상 캐릭터 대사-->
+      <text posx="90" posy="52" font="font_text_b" font_size="27" font_style="stroke" align="center" width="100" text="80063" key="text.armory.char" text_col="white"></text>
+      <!--아이템 리스트 백판-->
+      <img posx="197" posy="13" file="trader_bg_list.png" />
+    </wnd>
+    <!--아이템 슬롯용-->
+    <wnd posx="0" posy="0" width="0" height="0" key="wnd.armory.itemslotbg"></wnd>
+  </armory>
+  <!--아이템 정보 - 양피지-->
+  <itemtab>
+    <wnd posx="410" posy="60" width="0" height="0" key="wnd.armory.itemteb">
+      <!--양피지 백판-->
+      <img posx="0" posy="0" file="armory_bg_magnifier.png">
+        <wnd posx="7" posy="40" key="wnd.item.tooltip" width="153" height="202">
+          <!--아이템 툴팁의 루트-->
+        </wnd>
+      </img>
+      <!--"장비상점"-->
+      <text posx="0" posy="5" font="font_text_b" font_size="30" font_style="stroke" align="center" text_col="white" width="164" text="80064" key="text.armory.armory"></text>
+      <butt img_up="common_butt_small.png" posx="83" posy="250" text_col="white" font="font_text_b" font_size="35" key="butt.armory.buy" font_style="stroke" text="80043" show="0" />
+      <butt img_up="common_butt_small.png" posx="5" posy="250" text_col="white" font="font_text_b" font_size="20" key="butt.armory.new" font_style="stroke" text="80065">
+        <img posx="-9" posy="0" file="armory_new.png" />
+      </butt>
+    </wnd>
+    <!--새로배치 버튼-->
+    <!--구입 버튼-->
+  </itemtab>
+  <!--- - - - - - - - - - - - - - - - - - - - - - - - - - - 팝업 - - - - - - - - - - - - - - - - - - - - -->
+  <!--텍스트 팝업-->
+  <commontextpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popuptext">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" key="text.title" />
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.common.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
+      <!--왼쪽 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+      <!--오른쪽 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+      <!--버튼 하나용-->
+      <butt posx="215" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok1" font_style="stroke" text="2" show="0"></butt>
+    </img>
+  </commontextpopup>
+  <!--아이템 슬롯 텍스트 팝업-->
+  <commonitemtextpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popupitemtext">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" key="text.title" />
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <!--아이템 슬롯-->
+      <img posx="237" posy="120" file="common_bg_item.png"></img>
+      <!--아이템 이미지-->
+      <img posx="241" posy="124" key="img.ask.itemimg"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.common.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
+      <!--왼쪽 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+      <!--오른쪽 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+    </img>
+  </commonitemtextpopup>
+</layout>

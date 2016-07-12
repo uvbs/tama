@@ -387,7 +387,7 @@ public:
 * @author xuzhu
 * @date	2015/05/19 18:03
 *****************************************************************/
-class XWndPopupDaily : public XWndPopup
+class _XWndPopupDaily : public XWndPopup
 {
 	XSpotDaily *m_pSpot = nullptr;
 	int m_dowToday = 0;
@@ -395,8 +395,8 @@ class XWndPopupDaily : public XWndPopup
 	void Init() {}
 	void Destroy() {}
 public:
-	XWndPopupDaily( XSpotDaily *pSpot );
-	virtual ~XWndPopupDaily() { Destroy(); }
+	_XWndPopupDaily( XSpotDaily *pSpot );
+	virtual ~_XWndPopupDaily() { Destroy(); }
 	//
 	void Update() override;
 	void OnAutoUpdate() override;

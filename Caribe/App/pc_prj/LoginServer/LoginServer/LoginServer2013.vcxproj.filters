@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{0acfe4c5-3fb7-4e56-9bf5-f1c5d9b64436}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{fbb3c3a3-0df4-49e0-85cf-abf3a90d3ca2}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{c5379e11-8609-4fd6-8bb7-16c2cd068d40}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;png;manifest</Extensions>
+    </Filter>
+    <Filter Include="source\network">
+      <UniqueIdentifier>{95bc3605-0583-4db6-8146-ad6f8a8b87ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\dlg">
+      <UniqueIdentifier>{1fc0350f-d0db-4114-9dfd-e5273b688ae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\MFC">
+      <UniqueIdentifier>{bd5cc290-cd0c-497d-b9e5-cf0d057f3ae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Main">
+      <UniqueIdentifier>{bae126c7-c082-4f40-a68e-95af5a7131f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\obj">
+      <UniqueIdentifier>{78e5cd00-0f29-47e3-a5b3-6364a645d1c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\prop">
+      <UniqueIdentifier>{8c27c455-c712-4f9b-bc99-363c032b9b96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\DB">
+      <UniqueIdentifier>{e894442b-57d0-4882-80c3-9898911ed14c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\LoginServer.ico">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="res\LoginServer.rc2">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="res\LoginServerDoc.ico">
+      <Filter>resource</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LoginServer.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginServerDoc.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginServerView.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XClientConnection.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XGame.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XGameUser.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XGameUserMng.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XMain.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XMainDelegate.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XSocketForClient.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Version.h" />
+    <ClInclude Include="XGameSvrConnection.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XGameSvrSocket.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Resource\VerPacket.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XGameLua.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="XGameSvrMng.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XGSvrMng.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\network\XLoginGameSvrPacket.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XDBMng.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\MFC\CoolDialogBar.h">
+      <Filter>source\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\MFC\XDlgConsole.h">
+      <Filter>source\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XGameCommon.h">
+      <Filter>source\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\constGame.h">
+      <Filter>source\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XUserDB.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XDBCache.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XDataBaseODBC.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XDatabase.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XDBUAccount.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XAccount.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XHero.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPropHero.h">
+      <Filter>source\prop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPropWorld.h">
+      <Filter>source\prop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XWorld.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XLegion.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSpot.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPacketCG.h">
+      <Filter>source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPacketCL.h">
+      <Filter>source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPacketLG.h">
+      <Filter>source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\server\XSAccount.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\XDBMng2.h">
+      <Filter>source\DB</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\game_src\XGameLua.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="XClientConnection.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="XGameSvrConnection.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="XGameSvrSocket.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="XSocketForClient.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\MFC\CoolDialogBar.cpp">
+      <Filter>source\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\MFC\XDlgConsole.cpp">
+      <Filter>source\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginServer.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginServerDoc.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginServerView.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="XMain.cpp">
+      <Filter>source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="XMainDelegate.cpp">
+      <Filter>source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="XGame.cpp">
+      <Filter>source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XGameCommon.cpp">
+      <Filter>source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\constGame.cpp">
+      <Filter>source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="XGameUserMng.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="XGameUser.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XAccount.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XHero.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XPropHero.cpp">
+      <Filter>source\prop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XPropWorld.cpp">
+      <Filter>source\prop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XDatabase.cpp">
+      <Filter>source\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XDBUAccount.cpp">
+      <Filter>source\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XDataBaseODBC.cpp">
+      <Filter>source\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XDBCache.cpp">
+      <Filter>source\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XDBMng.cpp">
+      <Filter>source\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="XGameSvrMng.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="XGSvrMng.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XUserDB.cpp">
+      <Filter>source\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XWorld.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XLegion.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSpot.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\server\XSAccount.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\XDBMng2.cpp">
+      <Filter>source\DB</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

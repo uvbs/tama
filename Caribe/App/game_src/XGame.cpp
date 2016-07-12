@@ -2070,6 +2070,10 @@ int XGame::OnFinishLoadedByScene( XWnd* pWnd, DWORD p1, DWORD p2 )
 
 /**
  @brief 버튼에 느낌표를 붙임.
+ 1: 느낌표
+ 2: 연구중
+ 3: 퍼지는원(천천히)
+ 4: 퍼지는원 빠르게
 */
 void XGame::AddAlert( XWnd *pButt, ID idAct, const XE::VEC2& _vPos ) const
 {

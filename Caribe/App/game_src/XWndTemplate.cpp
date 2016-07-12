@@ -21,8 +21,10 @@ static char THIS_FILE[] = __FILE__;
 
 XE_NAMESPACE_START( XGAME )
 //
-
-XWndImage* UpdateUnitFace( XWnd *pRoot, const std::string& ids, XGAME::xtUnit unit )
+/**
+ @brief 이거 쓰지말고 XWndCircleUnit쓸것.
+*/
+XWndImage* _CreateUnitFace( XWnd *pRoot, const std::string& ids, XGAME::xtUnit unit )
 {
 	auto pWndImage = XWndImage::sUpdateCtrl( pRoot, ids );
 	if( pWndImage ) {
@@ -31,6 +33,25 @@ XWndImage* UpdateUnitFace( XWnd *pRoot, const std::string& ids, XGAME::xtUnit un
 		XWndImage::sUpdateCtrl( pWndImage, XE::VEC2( 0 ), resImg, true, ids + ".face" );
 	}
 	return pWndImage;
+}
+
+/**
+ @brief 이거 쓰지말고 XWndCircleUnit쓸것.
+*/
+XWndImage* _CreateUnitFace( XWnd *pRoot, XGAME::xtUnit unit )
+{
+	auto pImgBg = new XWndImage();
+	if( pImgBg ) {
+		pImgBg->SetSurfaceRes( PATH_UI( "corps_legionnaire_bg.png" ) );
+		if( unit ) {
+			auto resImg = XGAME::GetResUnitSmall( unit );
+			auto pImgFace = new XWndImage();
+			if( pImgFace ) {
+				pImgFace->SetSurfaceRes( resImg, XE::xPF_ARGB1555 );
+			}
+		}
+	}
+	return pImgBg;
 }
 
 /**
@@ -368,6 +389,11 @@ void XWndTooltip::OnNCLButtonUp( float lx, float ly )
 /**
  @brief 유닛과 유닛의 원형프레임을 그려주는 모듈.
 */
+XWndCircleUnit::XWndCircleUnit()
+	: XWndImage( PATH_UI("corps_legionnaire_bg.png"), XE::VEC2() ) 
+{
+	Init();
+}
 XWndCircleUnit::XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XHero *pHero )
 	: XWndImage( PATH_UI("corps_legionnaire_bg.png"), vPos )
 {
@@ -378,19 +404,21 @@ XWndCircleUnit::XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XHero 
 
 void XWndCircleUnit::Update()
 {
-	auto blendFunc = GetblendFunc();
+	const auto blendFunc = GetblendFunc();
 	// 유닛 초상화.
-	auto pFace = xGET_IMAGE_CTRL( this, "img.unit" );
-	if( pFace == nullptr ) {
-		auto strResUnit = XGAME::GetResUnitSmall( m_Unit );
-		pFace = new XWndImage( strResUnit, 0, 0 );
-		pFace->SetstrIdentifier( "img.unit" );
-		Add( pFace );
-	}
-	if( pFace ) {
-		auto strResUnit = XGAME::GetResUnitSmall( m_Unit );
-		pFace->SetSurfaceRes( strResUnit );
-		pFace->SetblendFunc( blendFunc );
+	if( m_Unit ) {
+		auto pFace = xGET_IMAGE_CTRL( this, "img.unit" );
+		if( pFace == nullptr ) {
+			auto strResUnit = XGAME::GetResUnitSmall( m_Unit );
+			pFace = new XWndImage( strResUnit, 0, 0 );
+			pFace->SetstrIdentifier( "img.unit" );
+			Add( pFace );
+		}
+		if( pFace ) {
+			auto strResUnit = XGAME::GetResUnitSmall( m_Unit );
+			pFace->SetSurfaceRes( strResUnit );
+			pFace->SetblendFunc( blendFunc );
+		}
 	}
 	if( m_pHero ) {
 		// 유닛부대 레벨

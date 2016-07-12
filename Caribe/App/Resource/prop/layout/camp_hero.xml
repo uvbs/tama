@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup>
+    <popup img="camp_bg.png" format="argb8888">
+      <!--캠페인 UI 기본형-->
+      <text posx="center" posy="28" font="font_text_b" text_col="white" font_size="35" font_style="stroke" key="text.title">
+        <!--타이틀-->
+      </text>
+      <butt posx="455" posy="31" img_up="common_butt_x.png" key="butt.close"></butt>
+      <butt posx="right" posy="31" img_up="common_butt_i.png" key="butt.help" adjx="-30">
+        <tooltip file="layout.xml" layout="help_tooltip_camp01">
+          <!--부모인 text윈도우를 누르면 layout.xml의 help_tooltip2 레이아웃이 실행된다. -->
+          <!--부모가 텍스트일 경우는 반드시 가로세로 크기를 지정해줘야함.-->
+        </tooltip>
+      </butt>
+      <list posx="25" posy="114" width="440" height="120" key="list.stage" type="list_horiz" _spacew="1" _items_num="10" items_node="elem_campaign_hero"></list>
+      <text posx="21" posy="40" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.debug.num.star" show="off">
+        <!--디버깅용-->
+      </text>
+      <wnd posx="center" posy="52">
+        <!--병과 필터-->
+        <radio_butt img_up="log_butt_notouch.png" img_down="log_butt_touch.png" posx="0" posy="0" key="butt.filter.0" group="1" scale="0.8">
+          <img file="atktype_all.png" posx="center" posy="center" scale="1.4"></img>
+        </radio_butt>
+        <radio_butt img_up="log_butt_notouch.png" img_down="log_butt_touch.png" posx="60" posy="0" key="butt.filter.1" group="1" scale="0.8">
+          <img file="atktype_tanker.png" posx="center" posy="center" scale="1.4"></img>
+        </radio_butt>
+        <radio_butt img_up="log_butt_notouch.png" img_down="log_butt_touch.png" posx="120" posy="0" key="butt.filter.2" group="1" scale="0.8">
+          <img file="atktype_range.png" posx="center" posy="center" scale="1.4"></img>
+        </radio_butt>
+        <radio_butt img_up="log_butt_notouch.png" img_down="log_butt_touch.png" posx="180" posy="0" key="butt.filter.3" group="1" scale="0.8">
+          <img file="atktype_speed.png" posx="center" posy="center" scale="1.4"></img>
+        </radio_butt>
+      </wnd>
+      <wnd posx="0" posy="82">
+        <radio_butt img_up="butt_square.png" img_down="butt_square.png" posx="0" posy="0" key="butt.level" scale="0.8" num="10" distx="30" spr="ui_eff_boxGlow.spr" act_down="3" group="2">
+          <text posx="center" posy="center" font="font_res_num" text_col="white" font_size="30" font_style="stroke" key="text.num" show="on" touchable="false"></text>
+          <img file="worldmap_lock.png" scale="0.75" posx="right" key="img.key" />
+        </radio_butt>
+      </wnd>
+      <text posx="14" posy="65" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.remain.reset" width="453" height="13" length="453" align="right">
+        <!--남은 시간-->
+      </text>
+      <img posx="15" posy="45" file="icon_ap.png" scale="0.8" key="img.ap">
+        <text posx="20" posy="12" font="font_res_num" text_col="white" font_size="18" font_style="stroke" key="text.ap">
+          <!--ap-->
+        </text>
+      </img>
+    </popup>
+  </popup>
+  <campaign_default>
+    <!--캠페인 기본형 UI의 기본UI-->
+    <text posx="128" posy="63" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.remain.reset" align="right" width="235"></text>
+    <text posx="0" posy="63" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.rest.challenge" align="right" width="181" text="80207" show="off"></text>
+    <img posx="451" posy="72" file="icon_ap.png" scale="0.75" key="img.ap">
+      <text posx="35" posy="12" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.ap">
+        <!--ap-->
+      </text>
+    </img>
+    <img posx="185" posy="57" file="chall_mark_off.png" key="img.mark." num="5" distx="10" show="off"></img>
+  </campaign_default>
+  <elem_campaign_hero>
+    <wnd width="67" height="134">
+      <img posx="0" posy="0" file="stage_bg_black.png" format="argb8888" scale_y="0.9"></img>
+      <img posx="0" posy="0" file="daily_elem.png" key="img.elem.retry" format="argb8888">
+        <!--재도전 할수 있는곳-->
+      </img>
+      <img posx="0" posy="0" file="daily_elem_su.png" key="img.elem.new" show="off" format="argb8888">
+        <!--잠금이 풀렸으나 아직 한번도 클리어 안한곳.-->
+      </img>
+      <img posx="0" posy="0" file="daily_elem_st.png" key="img.elem.lock" show="off" format="argb8888">
+        <!--잠겨있는 스테이지-->
+      </img>
+      <wnd width="67" height="28">
+        <text posx="center" posy="center" font="font_res_num" text_col="white" font_size="30" font_style="stroke" key="text.stage.num">
+          <!--스테이지 번호-->
+        </text>
+      </wnd>
+      <hero_ctrl posx="center" posy="34" key="wnd.hero.face" debug="1" adjx="-1">
+        <!--영웅초상화 컨트롤-->
+      </hero_ctrl>
+      <img posx="center" posy="90" file="v_check.png" key="img.vcheck" show="off" blend="add" />
+      <wnd posx="25" posy="96" key="wnd.mark.root">
+        <!--도전횟수 마크-->
+        <img posx="0" posy="0" file="chall_mark_off.png" num="2" distx="10" key="img.mark.off" />
+        <img posx="0" posy="0" file="chall_mark_on.png" num="2" distx="10" key="img.mark.on" />
+      </wnd>
+      <wnd key="wnd.disable" show="on" posy="0">
+        <!--스테이지 비활성-->
+        <img posx="0" posy="0" file="daily_elem_dark.png" />
+        <img posx="0" posy="30" file="stage_elem_lock2.png" />
+      </wnd>
+      <butt posx="2" posy="15" key="butt.stage" width="64" height="96">
+        <!--스테이지UI전체를 덮는 가상버튼-->
+      </butt>
+    </wnd>
+  </elem_campaign_hero>
+  <camp.01>
+    <butt posx="422" posy="31" img_up="common_butt_i.png" key="butt.help">
+      <tooltip file="layout.xml" layout="help_tooltip_camp01">
+        <!--부모인 text윈도우를 누르면 layout.xml의 help_tooltip2 레이아웃이 실행된다. -->
+        <!--부모가 텍스트일 경우는 반드시 가로세로 크기를 지정해줘야함.-->
+      </tooltip>
+    </butt>
+  </camp.01>
+</layout>

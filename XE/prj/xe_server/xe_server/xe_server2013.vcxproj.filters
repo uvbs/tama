@@ -1,0 +1,439 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\Network">
+      <UniqueIdentifier>{46efa2d0-cf4b-4fd2-9ec2-d3a65884ae0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\etc">
+      <UniqueIdentifier>{160f59e6-dcdb-4502-9b4d-c9ad6523506e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\lua">
+      <UniqueIdentifier>{c54da51e-0cbd-46ab-9860-b6ece38fdf4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\xml">
+      <UniqueIdentifier>{44a052b9-173f-48eb-bb3c-b991cff1f9a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Framework">
+      <UniqueIdentifier>{6c87fbfc-dff4-4fdc-9380-ca38ac3cd6f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{91e13e25-ffda-407e-aafb-3f9f732490a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Framework\server">
+      <UniqueIdentifier>{67f1faf5-eb22-4b1c-911e-4d0e03e3fc78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Framework\MFC">
+      <UniqueIdentifier>{9a99e65e-9033-4654-a3d5-9abef4fac32e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLib.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XList.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\VersionXE.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\xenDef.h">
+      <Filter>소스 파일\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XPacket.h">
+      <Filter>소스 파일\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Types.h">
+      <Filter>소스 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\ContainerSTL.h">
+      <Filter>소스 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Global.h">
+      <Filter>소스 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xeDef.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibResPath.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XNetworkDelegate.h">
+      <Filter>소스 파일\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLua.h">
+      <Filter>소스 파일\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\lua_tinker.h">
+      <Filter>소스 파일\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\tinyxml\tinystr.h">
+      <Filter>소스 파일\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\tinyxml\tinyxml.h">
+      <Filter>소스 파일\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XXMLDoc.h">
+      <Filter>소스 파일\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XConsoleMain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XConstant.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XGlobal.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XTextTable.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XArchive.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XAutoPtr.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XCrypto.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XE.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XError.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLibrary.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLock.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\win32\XLockCS.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XPool.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XRefObj.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XRefRes.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XResMng.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XResObj.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Alert.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\ConvertString.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Debug.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\path.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Timer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Token.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xLang.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XTimer2.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xUtil.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XHttpMng.h">
+      <Filter>소스 파일\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibServer.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XGoogleVerify.h">
+      <Filter>소스 파일\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XWinConnection.h">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XWinSocketClient.h">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XWinSocketSvr.h">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XNetworkConnection.h">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XServerMain.h">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XEServerDelegate.h">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\MFC\XEServerApp.h">
+      <Filter>소스 파일\Framework\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\MFC\XEServerMainFrm.h">
+      <Filter>소스 파일\Framework\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\MFC\XEServerView.h">
+      <Filter>소스 파일\Framework\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XDBAccount.h">
+      <Filter>소스 파일\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XTextTableUTF8.h">
+      <Filter>소스 파일\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEProfile.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XEUser.h">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\server\XEUserMng.h">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XFLevel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\MFC\CoolDialogBar.h">
+      <Filter>소스 파일\Framework\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEBaseProp.h">
+      <Filter>소스 파일\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\ArrayLinear.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\ArrayLinearN.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="app.ico">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\ArrayLinear.inl">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\ArrayLinearN.inl">
+      <Filter>소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Stdafx.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLibrary.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XPacket.cpp">
+      <Filter>소스 파일\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLock.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Alert.cpp">
+      <Filter>소스 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\ConvertString.cpp">
+      <Filter>소스 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Debug.cpp">
+      <Filter>소스 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\path.cpp">
+      <Filter>소스 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Timer.cpp">
+      <Filter>소스 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xLang.cpp">
+      <Filter>소스 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XTimer2.cpp">
+      <Filter>소스 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xUtil.cpp">
+      <Filter>소스 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XRefRes.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XResMng.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XResObj.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XAutoPtr.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XCrypto.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XE.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XError.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XPool.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XRefObj.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XNetworkDelegate.cpp">
+      <Filter>소스 파일\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\win32\XLockCS.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Token.cpp">
+      <Filter>소스 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLua.cpp">
+      <Filter>소스 파일\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\lua_tinker.cpp">
+      <Filter>소스 파일\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XArchive.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinystr.cpp">
+      <Filter>소스 파일\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxml.cpp">
+      <Filter>소스 파일\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxmlerror.cpp">
+      <Filter>소스 파일\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxmlparser.cpp">
+      <Filter>소스 파일\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XXMLDoc.cpp">
+      <Filter>소스 파일\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XGlobal.cpp">
+      <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XConsoleMain.cpp">
+      <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XConstant.cpp">
+      <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XTextTable.cpp">
+      <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XHttpMng.cpp">
+      <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XGoogleVerify.cpp">
+      <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XWinConnection.cpp">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XWinSocketClient.cpp">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XWinSocketSvr.cpp">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XNetworkConnection.cpp">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XServerMain.cpp">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XEServerDelegate.cpp">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\MFC\XEServerApp.cpp">
+      <Filter>소스 파일\Framework\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\MFC\XEServerMainFrm.cpp">
+      <Filter>소스 파일\Framework\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\MFC\XEServerView.cpp">
+      <Filter>소스 파일\Framework\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XDBAccount.cpp">
+      <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XTextTableUTF8.cpp">
+      <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEProfile.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XEUser.cpp">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\server\XEUserMng.cpp">
+      <Filter>소스 파일\Framework\server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XFLevel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\MFC\CoolDialogBar.cpp">
+      <Filter>소스 파일\Framework\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEBaseProp.cpp">
+      <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\Common\_XLibrary\lua51.lib">
+      <Filter>소스 파일\lua</Filter>
+    </Library>
+    <Library Include="..\..\..\Third_Party_lib\bugslayer\lib\CrashReport.lib" />
+    <Library Include="..\..\..\Third_Party_lib\OpenSSL\lib\libeay32.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\..\..\Third_Party_lib\OpenSSL\lib\ssleay32.lib">
+      <Filter>lib</Filter>
+    </Library>
+  </ItemGroup>
+</Project>

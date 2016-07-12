@@ -76,19 +76,33 @@ public:
 	inline void AddRes( XGAME::xtResource type, float num, XCOLOR col = XCOLOR_WHITE ) {
 		AddRes( type, (int)num, col );
 	}
-	void AddRes( const XGAME::xReward& reward, XCOLOR col = XCOLOR_WHITE ) {
+	inline void AddRes( const XGAME::xReward& reward, XCOLOR col = XCOLOR_WHITE ) {
 		if( XASSERT(reward.IsTypeResource()) )
 			AddRes( reward.GetResourceType(), reward.num, col );
 	}
 	void AddResWithAry( const XVector<XGAME::xReward>& aryReward );
-	void AddRes( const std::vector<XGAME::xRES_NUM>& aryRes ) {
+	inline void AddRes( const std::vector<XGAME::xRES_NUM>& aryRes ) {
 		for( auto& res : aryRes )
 			AddRes( res.type, res.num );
 	}
-	void AddRes( const XList4<XGAME::xRES_NUM>& listRes ) {
+	inline void AddRes( const XList4<XGAME::xRES_NUM>& listRes ) {
 		for( auto& res : listRes )
 			AddRes( res.type, res.num );
 	}
+	void ClearRes() {
+		m_listResource.clear();
+		m_aryNumResPrev.Fill( 0 );
+	}
+// 	inline void SetResWithAry( const XVector<xReward>& aryReward ) {
+// 		m_listResource.clear();
+// 		m_aryNumResPrev.Fill( 0 );
+// 		AddRes( aryReward );
+// 	}
+// 	inline void SetResWithList( const XList4<xReward>& listReward ) {
+// 		m_listResource.clear();
+// 		m_aryNumResPrev.Fill( 0 );
+// 		AddRes( aryReward );
+// 	}
 	void AddRes( const XGAME::xRES_NUM& res, XCOLOR col = XCOLOR_WHITE );
 	void EditRes( XGAME::xtResource type, int num, XCOLOR col = 0 );
 	void EditResColor( XGAME::xtResource type, XCOLOR col );

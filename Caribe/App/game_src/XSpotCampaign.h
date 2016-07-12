@@ -56,6 +56,6 @@ private:
 	void ResetLevel( XSPAcc spAcc ) override;
 	void ResetName( XSPAcc spAcc ) override;
 	void OnBeforeBattle( XSPAcc spAcc ) override;
-	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat ) override;
+	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat ) override;
 
 };	// XSpotCampaign

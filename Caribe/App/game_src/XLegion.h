@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "XHero.h"
 #include "XPropHero.h"
+#include "XPropLegionH.h"
 class XArchive;
 class XAccount;
 class XSquadron;
