@@ -10,6 +10,8 @@
 #include "client/XAppMain.h"
 #endif // _CHEAT
 
+// git test
+
 #ifdef WIN32
 #ifdef _DEBUG
 #define new DEBUG_NEW
