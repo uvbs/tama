@@ -167,7 +167,7 @@ public:
 		m_strHello.clear();
 		m_strcFbUserId.clear();
 	}
-	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat ) override;
+	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat ) override;
 private:
 	void SetMaxLocal( XPropWorld::xMANDRAKE *pProp );
 friend class CUserDB;

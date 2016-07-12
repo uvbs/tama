@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\FTGL">
+      <UniqueIdentifier>{79f9bc61-ff73-47f7-b13f-c7904f66c7e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\FTFont">
+      <UniqueIdentifier>{e4529e7a-ccba-4c73-8e79-3a04e206a1c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\FTGlyph">
+      <UniqueIdentifier>{fce387d9-9eea-4fe9-bc5a-05a67d833bbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\FTLayout">
+      <UniqueIdentifier>{b4074761-505a-473f-ab28-43f94a28a1b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\iGLU-1.0.0">
+      <UniqueIdentifier>{ec9537b7-acb8-49dd-9fb1-01b9ad311a87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GLES2">
+      <UniqueIdentifier>{c0f52c18-6424-4b14-9fcb-338c3bcb6103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\xuzhu">
+      <UniqueIdentifier>{8b15d4e3-e099-45eb-9671-e4b4ca43a5d3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTCharmap.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTCharToGlyphIndexMap.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTContour.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFace.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyphContainer.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTInternals.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLibrary.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTList.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTSize.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTUnicode.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTVector.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTVectoriser.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFont\FTFontImpl.h">
+      <Filter>소스 파일\FTFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFont\FTTextureFontImpl.h">
+      <Filter>소스 파일\FTFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\ftglesGlue.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTGLTextureFont.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTGlyph.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTLayout.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTPoint.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTSimpleLayout.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTTextureGlyph.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTBBox.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTBuffer.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTBufferGlyph.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTFont.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\ftgles.h">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyph\FTGlyphImpl.h">
+      <Filter>소스 파일\FTGlyph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyph\FTTextureGlyphImpl.h">
+      <Filter>소스 파일\FTGlyph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLayout\FTLayoutImpl.h">
+      <Filter>소스 파일\FTLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLayout\FTSimpleLayoutImpl.h">
+      <Filter>소스 파일\FTLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\iGLU-1.0.0\include\glu.h">
+      <Filter>소스 파일\iGLU-1.0.0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\iGLU-1.0.0\include\gluos.h">
+      <Filter>소스 파일\iGLU-1.0.0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\iGLU-1.0.0\libutil\gluint.h">
+      <Filter>소스 파일\iGLU-1.0.0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\xftglShader.h">
+      <Filter>소스 파일\xuzhu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\XGLProgram.h">
+      <Filter>소스 파일\xuzhu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\Debug.h">
+      <Filter>소스 파일\xuzhu</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTCharmap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTContour.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFace.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyphContainer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLibrary.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTPoint.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTSize.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTVectoriser.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFont\FTFont.cpp">
+      <Filter>소스 파일\FTFont</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFont\FTFontGlue.cpp">
+      <Filter>소스 파일\FTFont</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFont\FTTextureFont.cpp">
+      <Filter>소스 파일\FTFont</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\ftglesGlue.cpp">
+      <Filter>소스 파일\FTGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyph\FTGlyph.cpp">
+      <Filter>소스 파일\FTGlyph</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyph\FTGlyphGlue.cpp">
+      <Filter>소스 파일\FTGlyph</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyph\FTTextureGlyph.cpp">
+      <Filter>소스 파일\FTGlyph</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLayout\FTSimpleLayout.cpp">
+      <Filter>소스 파일\FTLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLayout\FTLayout.cpp">
+      <Filter>소스 파일\FTLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLayout\FTLayoutGlue.cpp">
+      <Filter>소스 파일\FTLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\iGLU-1.0.0\libutil\glue.c">
+      <Filter>소스 파일\iGLU-1.0.0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\xftglShader.cpp">
+      <Filter>소스 파일\xuzhu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\XGLProgram.cpp">
+      <Filter>소스 파일\xuzhu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\Debug.cpp">
+      <Filter>소스 파일\xuzhu</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

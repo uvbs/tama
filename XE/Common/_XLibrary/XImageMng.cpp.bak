@@ -1,0 +1,141 @@
+﻿#include "stdafx.h"
+#include "XImageMng.h"
+#include "etc/XSurface.h"
+#include "etc/xGraphics.h"
+
+#ifdef WIN32
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+#endif
+
+//#define _XIMAGEMNG_DEBUG
+
+#ifdef _XIMAGEMNG_DEBUG
+#define _IMLOGXN	XLOGXN
+#else
+#define _IMLOGXN	{}
+#endif
+
+XImageMng *IMAGE_MNG = NULL;
+
+void XImageMng::Destroy()
+{
+	CheckRelease();
+	XLIST2_DESTROY(m_listSurface, XSurface*);
+}
+
+XImageMng::XImageMng( int max )
+{
+	Init();
+	m_listSurface.Create( max );
+}
+
+void XImageMng::CheckRelease( void )
+{
+	XLIST2_LOOP(m_listSurface, XSurface*, pSurface)
+	{
+#ifdef _DEBUG
+		XALERT( "XImageMng: 해제되지 않은 이미지 발견. %s", pSurface->GetstrRes().c_str() );
+#else
+		XLOGXN( "XImageMng: 해제되지 않은 이미지 발견. %s", pSurface->GetstrRes().c_str() );
+#endif
+	} END_LOOP;
+}
+
+void XImageMng::Release( XSurface* pSurface )
+{
+	XBREAK( pSurface == NULL );
+	int idx = m_listSurface.FindIdx( pSurface );
+	if( idx >= 0 )
+	{
+		if( pSurface->DecRefCnt() == 0 )
+		{
+			m_listSurface.Delete( idx ); 
+			if( pSurface )
+				_IMLOGXN("surface destroy. %s", pSurface->GetstrRes().c_str() );
+			SAFE_DELETE( pSurface )
+		}
+		return;
+	}
+	if( pSurface )
+		XBREAKF( 1, "not found surface. %s", pSurface->GetstrRes().c_str() );
+}
+
+XSurface* XImageMng::Find( DWORD idRes )
+{
+	XLIST2_LOOP( m_listSurface, XSurface*, pSurface )
+	{
+		if( pSurface->GetidRes() == idRes )
+			return pSurface;
+	} END_LOOP;
+	return NULL;
+}
+
+//XSurface* XImageMng::Find( LPCTSTR szFilename )
+XSurface* XImageMng::Find( LPCTSTR szRes )	// 로컬패스명으로 갖고있게 바뀜
+{
+	XLIST2_LOOP( m_listSurface, XSurface*, pSurface )
+	{
+		if( XE::IsSame( pSurface->GetstrRes().c_str(), szRes ) )
+			return pSurface;
+	} END_LOOP;
+	return NULL;
+}
+
+XSurface* XImageMng::Load( BOOL bHighReso, LPCTSTR szRes )
+{
+//	TCHAR szFilename[ 128 ];
+//	_tcscpy_s( szFilename, XE::GetFileName(szRes) );
+	// 파일명 체크섬값을 id로 씀
+//	DWORD idRes = XE::GetCheckSum( szLwr );
+	// 이미지풀에서 isRes로 찾아봄
+//	XSurface *pSurface = Find( szFilename );
+	XSurface *pSurface = Find( szRes );
+	if( pSurface )
+	{
+		pSurface->IncRefCnt();
+		return pSurface;
+	}
+	// 없으면 새로 생성
+	pSurface = GRAPHICS->CreateSurface( bHighReso, szRes );
+	if( pSurface == NULL )
+	{
+		// 파일을 못찾았으면 국가별 폴더에서 다시 찾아봄
+		TCHAR szLangPath[ 1024 ];
+		_tcscpy_s( szLangPath, XE::GetFilePath( szRes ) );		// 패스만 따로 떼냄
+		_tcscat_s( szLangPath, XE::GetCurrentLangDir() );						
+		_tcscat_s( szLangPath, XE::GetFileName( szRes ) );		// 
+		pSurface = GRAPHICS->CreateSurface( bHighReso, szLangPath );
+		if( pSurface )
+			pSurface->SetstrRes( szRes );
+		else
+			XALERT( "file open failed:%s", szRes );
+	}
+	XBREAK( pSurface->IsHavestrRes() == FALSE );
+//	pSurface->SetszName( szFilename );
+	_IMLOGXN( "%s...loading", pSurface->GetstrRes().c_str() );
+	if( pSurface )
+	{
+		m_listSurface.Add( pSurface );
+		pSurface->IncRefCnt();
+		return pSurface;
+	}
+	return NULL;
+}
+
+void XImageMng::RestoreDevice( void )
+{
+	XLIST2_LOOP( m_listSurface, XSurface*, pSurface )
+	{
+		pSurface->RestoreDevice();
+	} END_LOOP;
+}
+
+
+
+
+
+

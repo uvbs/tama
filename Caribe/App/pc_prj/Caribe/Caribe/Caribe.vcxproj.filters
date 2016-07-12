@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{1423aa17-3e2b-4a12-a68a-55271aefb50d}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{60eb8b39-4994-48cb-99ac-86da2e38ef0b}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{afab1b44-20ce-44d4-94d0-d73d461381f1}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;png;manifest</Extensions>
+    </Filter>
+    <Filter Include="source\scene">
+      <UniqueIdentifier>{cb808b3e-75e0-4a91-84f0-31b797dd5872}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\script">
+      <UniqueIdentifier>{ef9ac1c4-f1db-4087-b96c-f3bd1fade024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\dlg">
+      <UniqueIdentifier>{1367be33-1800-45d3-aad0-4dbe921633e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\MFC">
+      <UniqueIdentifier>{370f0f29-7af9-4159-a4f9-be31d85ef077}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Main">
+      <UniqueIdentifier>{f9e68b76-ea25-4395-82f6-ab703a52ed1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\obj">
+      <UniqueIdentifier>{1c432073-0b9a-4658-9d04-ad04b7cda033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\network">
+      <UniqueIdentifier>{1d2a3511-697f-401e-b823-5c9e0d0df874}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Caribe.ico">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="res\Caribe.rc2">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="res\CaribeDoc.ico">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="res\Toolbar.bmp">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\..\..\..\memo.txt" />
+    <None Include="..\..\..\..\daily_work.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Caribe.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="CrashDlg.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgEnterName.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="CaribeDoc.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="CaribeView.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XDlgConsole.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\constGame.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XGameLua.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XAccount.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XGameCommon.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XAppLayout.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XGame.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XGameWnd.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XLoginInfo.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XScenePatchClient.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSockGameSvr.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\client\XAppDelegate.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\client\XAppMain.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSceneWorld.h">
+      <Filter>source\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSceneTitle.h">
+      <Filter>source\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Resource\defineGame.h" />
+    <ClInclude Include="..\..\..\game_src\XPropHero.h">
+      <Filter>source\script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XHero.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPropWorld.h">
+      <Filter>source\script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XWorld.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSockLoginSvr.h">
+      <Filter>source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
+    <ClInclude Include="VersionWin32.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneBattle.h">
+      <Filter>source\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSpot.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XLegion.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPacketCG.h">
+      <Filter>source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPacketCL.h">
+      <Filter>source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XParticle.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\game_src\XGameLua.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XAppLayout.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XGameWnd.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XLoginInfo.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XScenePatchClient.cpp">
+      <Filter>source\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneWorld.cpp">
+      <Filter>source\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneTitle.cpp">
+      <Filter>source\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XPropHero.cpp">
+      <Filter>source\script</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgEnterName.cpp">
+      <Filter>source\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="XDlgConsole.cpp">
+      <Filter>source\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="Caribe.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="CaribeDoc.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="CaribeView.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="CrashDlg.cpp">
+      <Filter>source\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGame.cpp">
+      <Filter>source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XGameCommon.cpp">
+      <Filter>source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\client\XAppMain.cpp">
+      <Filter>source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\client\XAppDelegate.cpp">
+      <Filter>source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\constGame.cpp">
+      <Filter>source\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XAccount.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XHero.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSockGameSvr.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XPropWorld.cpp">
+      <Filter>source\script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XWorld.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSockLoginSvr.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneBattle.cpp">
+      <Filter>source\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSpot.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XLegion.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

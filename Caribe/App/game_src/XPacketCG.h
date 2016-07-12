@@ -178,6 +178,7 @@ enum xtPacket {
 	xCL2GS_SYNC_TRAIN_SLOT,						///< 훈련소 동기화
 	xCL2GS_BIT_FLAG_TUTORIAL,					///< 튜토리얼 플래그
 	xCL2GS_FILL_AP,								///< ap채우기
+	xCL2GS_PAYMENT_ASSET,					///< 각종 asset을 젬이나 아이템으로 지불
 	xCL2GS_TRAIN_COMPLETE_QUICK,				///< 훈련 즉시 완료
 	xCL2GS_UNLOCK_MENU,							///< 기능잠금해제
 	xCL2GS_CLICK_FOG_SQUAD,						///< 

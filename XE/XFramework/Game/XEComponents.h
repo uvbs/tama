@@ -57,7 +57,7 @@ public:
 	XECompCamp() { Init(); }
 	virtual ~XECompCamp() { Destroy(); }
 	//
-	GET_SET_ACCESSOR( BIT, bitCamp );
+	GET_SET_ACCESSOR_CONST( BIT, bitCamp );
 	//
 	template<typename T>
 	bool operator == ( T bitCamp ) const {
@@ -75,7 +75,7 @@ public:
 	 @brief this와 비교해서 pDst는 적인가?
 	 공유되는 비트가 없으면 적으로 간주. 
 	*/
-	bool IsEnemy( BIT bitDst ) {
+	bool IsEnemy( BIT bitDst ) const {
 		XBREAK( m_bitCamp == 0 );	// 초기화값이 있으면 안된다.
 		return (m_bitCamp & bitDst) == 0;		// 
 	}

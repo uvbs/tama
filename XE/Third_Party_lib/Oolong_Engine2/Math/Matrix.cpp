@@ -26,8 +26,10 @@ subject to the following restrictions:
 #include <stdio.h>
 
 //#include "FixedPoint.h"		// Only needed for trig function float lookups
+//#include "stdafx.h"
+//#include "XOpenGL.h"
 #include "Matrix.h"
-#include "Macros.h"
+#include "..\Utility\Macros.h"
 
 #ifdef __APPLE__
 #include <TargetConditionals.h>
@@ -118,10 +120,10 @@ void MatrixVec4Multiply(VECTOR4			&vOut,
 	VECTOR4 result;
 	
 	/* Perform calculation on a dummy VECTOR (result) */
-	result.x = mIn.f[_11] * vIn.x + mIn.f[_21] * vIn.y + mIn.f[_31] * vIn.z + mIn.f[_41] * vIn.w;
-	result.y = mIn.f[_12] * vIn.x + mIn.f[_22] * vIn.y + mIn.f[_32] * vIn.z + mIn.f[_42] * vIn.w;
-	result.z = mIn.f[_13] * vIn.x + mIn.f[_23] * vIn.y + mIn.f[_33] * vIn.z + mIn.f[_43] * vIn.w;
-	result.w = mIn.f[_14] * vIn.x + mIn.f[_24] * vIn.y + mIn.f[_34] * vIn.z + mIn.f[_44] * vIn.w;
+	result.x = mIn.f[_O11] * vIn.x + mIn.f[_O21] * vIn.y + mIn.f[_O31] * vIn.z + mIn.f[_O41] * vIn.w;
+	result.y = mIn.f[_O12] * vIn.x + mIn.f[_O22] * vIn.y + mIn.f[_O32] * vIn.z + mIn.f[_O42] * vIn.w;
+	result.z = mIn.f[_O13] * vIn.x + mIn.f[_O23] * vIn.y + mIn.f[_O33] * vIn.z + mIn.f[_O43] * vIn.w;
+	result.w = mIn.f[_O14] * vIn.x + mIn.f[_O24] * vIn.y + mIn.f[_O34] * vIn.z + mIn.f[_O44] * vIn.w;
 	
 	vOut = result;
 #endif
@@ -147,10 +149,10 @@ void MatrixVec4Multiply(VECTOR4			&vOut,
 	VECTOR4 result;
 	
 	/* Perform calculation on a dummy VECTOR (result) */
-	result.x = mIn.f[_11] * vIn.x + mIn.f[_21] * vIn.y + mIn.f[_31] * vIn.z + mIn.f[_41] * vIn.w;
-	result.y = mIn.f[_12] * vIn.x + mIn.f[_22] * vIn.y + mIn.f[_32] * vIn.z + mIn.f[_42] * vIn.w;
-	result.z = mIn.f[_13] * vIn.x + mIn.f[_23] * vIn.y + mIn.f[_33] * vIn.z + mIn.f[_43] * vIn.w;
-	result.w = mIn.f[_14] * vIn.x + mIn.f[_24] * vIn.y + mIn.f[_34] * vIn.z + mIn.f[_44] * vIn.w;
+	result.x = mIn.f[_O11] * vIn.x + mIn.f[_O21] * vIn.y + mIn.f[_O31] * vIn.z + mIn.f[_O41] * vIn.w;
+	result.y = mIn.f[_O12] * vIn.x + mIn.f[_O22] * vIn.y + mIn.f[_O32] * vIn.z + mIn.f[_O42] * vIn.w;
+	result.z = mIn.f[_O13] * vIn.x + mIn.f[_O23] * vIn.y + mIn.f[_O33] * vIn.z + mIn.f[_O43] * vIn.w;
+	result.w = mIn.f[_O14] * vIn.x + mIn.f[_O24] * vIn.y + mIn.f[_O34] * vIn.z + mIn.f[_O44] * vIn.w;
 	
 	vOut = result;
 #endif
@@ -707,9 +709,9 @@ void MatrixVec3Multiply(VECTOR3		&vOut,
 	    VECTOR3 result;
 	
 		/* Perform calculation on a dummy VECTOR (result) */
-		result.x = mIn.f[_11] * vIn.x + mIn.f[_21] * vIn.y + mIn.f[_31] * vIn.z;
-		result.y = mIn.f[_12] * vIn.x + mIn.f[_22] * vIn.y + mIn.f[_32] * vIn.z;
-		result.z = mIn.f[_13] * vIn.x + mIn.f[_23] * vIn.y + mIn.f[_33] * vIn.z;
+		result.x = mIn.f[_O11] * vIn.x + mIn.f[_O21] * vIn.y + mIn.f[_O31] * vIn.z;
+		result.y = mIn.f[_O12] * vIn.x + mIn.f[_O22] * vIn.y + mIn.f[_O32] * vIn.z;
+		result.z = mIn.f[_O13] * vIn.x + mIn.f[_O23] * vIn.y + mIn.f[_O33] * vIn.z;
 	    
 	    vOut = result;
 }

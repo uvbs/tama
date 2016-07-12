@@ -1,0 +1,2 @@
+무슨이유인지 기억은 안나네만 libcurl.a는 _XLibrary/android 폴더로 옮겨졌다네
+-xuzhu-

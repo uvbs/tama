@@ -5,7 +5,7 @@
   <common_bg>
     <wnd posx="0" posy="0" width="640" height="360" key="wnd.common_bg">
       <!--백판-->
-      <img posx="0" posy="0" file="common_bg_bottom.png" />
+      <img posx="0" posy="0" file="common_bg_bottom.png" format="argb8888" />
       <!--백버튼-->
       <butt posx="28" posy="20" key="butt.back" img_up="common_butt_back.png" />
     </wnd>
@@ -21,7 +21,7 @@
       <butt posx="15" posy="12" key="butt.shop.cash" img_up="common_butt_small.png" font="font_text_b" font_size="33" font_style="stroke" text="80012" />
       <!--기타 버튼-->
       <butt posx="100" posy="12" key="butt.shop.etc" img_up="common_butt_small.png" font="font_text_b" font_size="33" font_style="stroke" text="80014" />
-      <list posx="17" posy="62" width="475" height="216" spacew="3" spaceh="3" type="thumb" key="list.shop" />
+      <list posx="17" posy="62" width="475" height="216" spacew="3" spaceh="3" type="list_horiz" key="list.shop" />
     </wnd>
   </shop>
   <!--텍스트 팝업-->

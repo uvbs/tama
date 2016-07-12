@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2B5E3650-4DEA-47C8-8A04-CA91E333811B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>WinFTGL</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\..\..\bin\MTDLL_Debug\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>ftgl_d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\..\..\bin\MTDLL_Release\</OutDir>
+    <TargetName>ftgl</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;_XLIB_BUILD;WIN32;FTGL_LIBRARY_STATIC;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;_XLIB_BUILD;WIN32;FTGL_LIBRARY_STATIC;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\Debug.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTCharmap.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTCharToGlyphIndexMap.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTContour.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFace.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFont\FTFontImpl.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFont\FTTextureFontImpl.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyphContainer.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyph\FTGlyphImpl.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyph\FTTextureGlyphImpl.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTBBox.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTBuffer.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTBufferGlyph.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTFont.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\ftgles.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\ftglesGlue.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTGLTextureFont.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTGlyph.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTLayout.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTPoint.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTSimpleLayout.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\FTTextureGlyph.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTInternals.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLayout\FTLayoutImpl.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLayout\FTSimpleLayoutImpl.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLibrary.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTList.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTSize.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTUnicode.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTVector.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTVectoriser.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\iGLU-1.0.0\include\glu.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\iGLU-1.0.0\include\gluos.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\iGLU-1.0.0\libutil\gluint.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\xftglShader.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\ftgles2\XGLProgram.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\Debug.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTBuffer.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTCharmap.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTContour.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFace.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFont\FTFont.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFont\FTFontGlue.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTFont\FTTextureFont.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyphContainer.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyph\FTGlyph.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyph\FTGlyphGlue.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGlyph\FTTextureGlyph.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTGL\ftglesGlue.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLayout\FTLayout.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLayout\FTLayoutGlue.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLayout\FTSimpleLayout.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTLibrary.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTPoint.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTSize.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\FTVectoriser.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src\iGLU-1.0.0\libutil\glue.c" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\xftglShader.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\ftgles2\XGLProgram.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,278 @@
+2016/ 4/22   14:04:05   
+FaultReason
+
+DBAgentServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module DBAgentServerBot.exe at 0023:011BAAD4
+Register
+EAX=DE331024  EBX=0034C970  ECX=04F48EB8  EDX=00000001  ESI=00000074
+EDI=0A8F7870  EBP=0034C824  ESP=0034C804  EIP=011BAAD4  FLG=00010286
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:011BAAD4 DBAgentServerBot.exe
+0023:011C2AD3 DBAgentServerBot.exe
+0023:011BE926 DBAgentServerBot.exe
+0023:011E5DB7 DBAgentServerBot.exe
+0023:01137DB3 DBAgentServerBot.exe
+0023:01112FCB DBAgentServerBot.exe
+0023:01216C91 DBAgentServerBot.exe
+0023:012164B3 DBAgentServerBot.exe
+0023:01259CE2 DBAgentServerBot.exe
+0023:01264BCC DBAgentServerBot.exe
+0023:01263ED8 DBAgentServerBot.exe
+0023:0125B543 DBAgentServerBot.exe
+0023:01230E1C DBAgentServerBot.exe
+0023:0125872C DBAgentServerBot.exe
+0023:01286CE5 DBAgentServerBot.exe
+0023:01470BBB DBAgentServerBot.exe
+0023:01418A27 DBAgentServerBot.exe
+0023:752A338A kernel32.dll, BaseThreadInitThunk()+0018 byte(s)
+0023:77919902 ntdll.dll, RtlInitializeExceptionChain()+0099 byte(s)
+0023:779198D5 ntdll.dll, RtlInitializeExceptionChain()+0054 byte(s)
+
+2016/ 4/22   14:04:05   
+user saved
+2016/ 4/22   19:08:02   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module <UNKNOWN> at 0023:0131453F
+Register
+EAX=00000000  EBX=0140C919  ECX=01561A98  EDX=00000002  ESI=267D69DC
+EDI=01561A98  EBP=04EDBD5C  ESP=04ED7C88  EIP=0131453F  FLG=00010206
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   19:08:02   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module <UNKNOWN> at 0023:0131453F
+Register
+EAX=00000000  EBX=01573361  ECX=01561A98  EDX=00000002  ESI=2974633C
+EDI=01561A98  EBP=0529B754  ESP=05297680  EIP=0131453F  FLG=00010202
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   19:08:02   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module <UNKNOWN> at 0023:0131453F
+Register
+EAX=00000000  EBX=01662399  ECX=01561A98  EDX=00000002  ESI=2A1A37CC
+EDI=01561A98  EBP=0540B640  ESP=0540756C  EIP=0131453F  FLG=00010202
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   19:08:02   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module <UNKNOWN> at 0023:0131453F
+Register
+EAX=00000000  EBX=01258889  ECX=01561A98  EDX=00000002  ESI=054CC2AC
+EDI=01561A98  EBP=0560BC54  ESP=05607B80  EIP=0131453F  FLG=00010202
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   19:08:02   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module <UNKNOWN> at 0023:013147A0
+Register
+EAX=00000000  EBX=01561A98  ECX=01561A98  EDX=00000002  ESI=27169A40
+EDI=00000000  EBP=0579F83C  ESP=0579D77C  EIP=013147A0  FLG=00010206
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   19:08:02   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module <UNKNOWN> at 0023:013147A0
+Register
+EAX=00000000  EBX=01561A98  ECX=01561A98  EDX=00000002  ESI=25F95C90
+EDI=00000000  EBP=05ACFAA0  ESP=05ACD9E0  EIP=013147A0  FLG=00010206
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   19:08:02   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module <UNKNOWN> at 0023:0131453F
+Register
+EAX=00000000  EBX=01261CF9  ECX=01561A98  EDX=00000002  ESI=054CD92C
+EDI=01561A98  EBP=05BDBA50  ESP=05BD797C  EIP=0131453F  FLG=00010206
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   19:08:02   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module LoginServerBot.exe at 0023:0131453F, XDBMng2<XClientConnection>::RegisterSendCallback<void (__thiscall XClientConnection::*)(unsigned long,XArchive &,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &),unsigned long,XArchive,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> >,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >()+0063 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.h, line 0316+0005 byte(s)
+Register
+EAX=00000000  EBX=01495C69  ECX=01561A98  EDX=00000002  ESI=054CD89C
+EDI=01561A98  EBP=059BB6E0  ESP=059B760C  EIP=0131453F  FLG=00010202
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:0131453F LoginServerBot.exe, XDBMng2<XClientConnection>::RegisterSendCallback<void (__thiscall XClientConnection::*)(unsigned long,XArchive &,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &),unsigned long,XArchive,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> >,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >()+0063 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.h, line 0316+0005 byte(s)
+0023:0131D7C0 LoginServerBot.exe, XClientConnection::cbFindAccount()+0544 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\loginserver\loginserver\xclientconnection.cpp, line 0591+0221 byte(s)
+0023:0131C61D LoginServerBot.exe, std::_Func_impl<std::_Callable_obj<std::_Bind<1,void,std::_Pmf_wrap<void (__thiscall XClientConnection::*)(XDatabase *,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,unsigned long),void,XClientConnection,XDatabase *,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,unsigned long>,std::_Ph<1> &,std::_Ph<2> &,enum XGAME::xtConnectParam &,std::basi()+0045 byte(s), c:\program files (x86)\microsoft visual studio 12.0\vc\include\functional, line 0229
+0023:01323A7E LoginServerBot.exe, XDBMng2<XClientConnection>::WorkThread()+0494 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.inl, line 0111
+0023:0132441F LoginServerBot.exe, XDBMng2<XClientConnection>::_WorkThread()+0175 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.inl, line 0012
+0023:0147BDEE LoginServerBot.exe, _callthreadstartex()+0027 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0376+0006 byte(s)
+0023:0147BF16 LoginServerBot.exe, _threadstartex()+0124 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0354+0005 byte(s)
+0023:752A338A kernel32.dll, BaseThreadInitThunk()+0018 byte(s)
+0023:77919902 ntdll.dll, RtlInitializeExceptionChain()+0099 byte(s)
+0023:779198D5 ntdll.dll, RtlInitializeExceptionChain()+0054 byte(s)
+
+2016/ 4/22   19:25:56   
+FaultReason
+
+LoginServerBot.exe caused an Microsoft C++ Exception in module <UNKNOWN> at 0023:773BC54F
+Register
+EAX=057AF8B8  EBX=084782A8  ECX=00000003  EDX=00000000  ESI=01380FF8
+EDI=057AF958  EBP=057AF908  ESP=057AF8B8  EIP=773BC54F  FLG=00000216
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   19:25:56   
+user saved
+2016/ 4/22   20:09:33   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module <UNKNOWN> at 0023:0139453F
+Register
+EAX=00000000  EBX=014B5451  ECX=015E1A98  EDX=00000002  ESI=0C5BBE1C
+EDI=015E1A98  EBP=055AB750  ESP=055A767C  EIP=0139453F  FLG=00010202
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   20:09:33   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module <UNKNOWN> at 0023:0139453F
+Register
+EAX=00000000  EBX=01288629  ECX=015E1A98  EDX=00000002  ESI=0C5BC29C
+EDI=015E1A98  EBP=05A6B880  ESP=05A677AC  EIP=0139453F  FLG=00010206
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   20:09:33   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module <UNKNOWN> at 0023:0139453F
+Register
+EAX=00000000  EBX=0124B599  ECX=015E1A98  EDX=00000002  ESI=0C5BBF3C
+EDI=015E1A98  EBP=05ECB6C4  ESP=05EC75F0  EIP=0139453F  FLG=00010206
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+
+2016/ 4/22   20:09:33   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module LoginServerBot.exe at 0023:0139453F, XDBMng2<XClientConnection>::RegisterSendCallback<void (__thiscall XClientConnection::*)(unsigned long,XArchive &,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &),unsigned long,XArchive,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> >,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >()+0063 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.h, line 0316+0005 byte(s)
+Register
+EAX=00000000  EBX=0132F609  ECX=015E1A98  EDX=00000002  ESI=05D8D4BC
+EDI=015E1A98  EBP=0527B7C0  ESP=052776EC  EIP=0139453F  FLG=00010202
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:0139453F LoginServerBot.exe, XDBMng2<XClientConnection>::RegisterSendCallback<void (__thiscall XClientConnection::*)(unsigned long,XArchive &,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &),unsigned long,XArchive,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> >,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >()+0063 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.h, line 0316+0005 byte(s)
+0023:0139D7C0 LoginServerBot.exe, XClientConnection::cbFindAccount()+0544 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\loginserver\loginserver\xclientconnection.cpp, line 0591+0221 byte(s)
+0023:0139C61D LoginServerBot.exe, std::_Func_impl<std::_Callable_obj<std::_Bind<1,void,std::_Pmf_wrap<void (__thiscall XClientConnection::*)(XDatabase *,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,unsigned long),void,XClientConnection,XDatabase *,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,unsigned long>,std::_Ph<1> &,std::_Ph<2> &,enum XGAME::xtConnectParam &,std::basi()+0045 byte(s), c:\program files (x86)\microsoft visual studio 12.0\vc\include\functional, line 0229
+0023:013A3A98 LoginServerBot.exe, XDBMng2<XClientConnection>::WorkThread()+0520 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.inl, line 0107
+0023:013A45BF LoginServerBot.exe, XDBMng2<XClientConnection>::_WorkThread()+0175 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.inl, line 0012
+0023:014FBF9E LoginServerBot.exe, _callthreadstartex()+0027 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0376+0006 byte(s)
+0023:014FC0C6 LoginServerBot.exe, _threadstartex()+0124 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0354+0005 byte(s)
+0023:752A338A kernel32.dll, BaseThreadInitThunk()+0018 byte(s)
+0023:77919902 ntdll.dll, RtlInitializeExceptionChain()+0099 byte(s)
+0023:779198D5 ntdll.dll, RtlInitializeExceptionChain()+0054 byte(s)
+
+2016/ 4/22   20:09:33   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module LoginServerBot.exe at 0023:0139453F, XDBMng2<XClientConnection>::RegisterSendCallback<void (__thiscall XClientConnection::*)(unsigned long,XArchive &,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &),unsigned long,XArchive,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> >,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >()+0063 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.h, line 0316+0005 byte(s)
+Register
+EAX=00000000  EBX=015FC2C9  ECX=015E1A98  EDX=00000002  ESI=0B5F36E4
+EDI=015E1A98  EBP=0546B9A4  ESP=054678D0  EIP=0139453F  FLG=00010206
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:0139453F LoginServerBot.exe, XDBMng2<XClientConnection>::RegisterSendCallback<void (__thiscall XClientConnection::*)(unsigned long,XArchive &,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &),unsigned long,XArchive,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> >,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >()+0063 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.h, line 0316+0005 byte(s)
+0023:0139D7C0 LoginServerBot.exe, XClientConnection::cbFindAccount()+0544 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\loginserver\loginserver\xclientconnection.cpp, line 0591+0221 byte(s)
+0023:0139C61D LoginServerBot.exe, std::_Func_impl<std::_Callable_obj<std::_Bind<1,void,std::_Pmf_wrap<void (__thiscall XClientConnection::*)(XDatabase *,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,unsigned long),void,XClientConnection,XDatabase *,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,unsigned long>,std::_Ph<1> &,std::_Ph<2> &,enum XGAME::xtConnectParam &,std::basi()+0045 byte(s), c:\program files (x86)\microsoft visual studio 12.0\vc\include\functional, line 0229
+0023:013A3A98 LoginServerBot.exe, XDBMng2<XClientConnection>::WorkThread()+0520 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.inl, line 0107
+0023:013A45BF LoginServerBot.exe, XDBMng2<XClientConnection>::_WorkThread()+0175 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.inl, line 0012
+0023:014FBF9E LoginServerBot.exe, _callthreadstartex()+0027 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0376+0006 byte(s)
+0023:014FC0C6 LoginServerBot.exe, _threadstartex()+0124 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0354+0005 byte(s)
+0023:752A338A kernel32.dll, BaseThreadInitThunk()+0018 byte(s)
+0023:77919902 ntdll.dll, RtlInitializeExceptionChain()+0099 byte(s)
+0023:779198D5 ntdll.dll, RtlInitializeExceptionChain()+0054 byte(s)
+
+2016/ 4/22   20:09:33   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module LoginServerBot.exe at 0023:0139453F, XDBMng2<XClientConnection>::RegisterSendCallback<void (__thiscall XClientConnection::*)(unsigned long,XArchive &,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &),unsigned long,XArchive,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> >,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >()+0063 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.h, line 0316+0005 byte(s)
+Register
+EAX=00000000  EBX=015E5399  ECX=015E1A98  EDX=00000002  ESI=05D8D6FC
+EDI=015E1A98  EBP=05B9B7B0  ESP=05B976DC  EIP=0139453F  FLG=00010206
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:0139453F LoginServerBot.exe, XDBMng2<XClientConnection>::RegisterSendCallback<void (__thiscall XClientConnection::*)(unsigned long,XArchive &,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &),unsigned long,XArchive,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> >,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >()+0063 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.h, line 0316+0005 byte(s)
+0023:0139D7C0 LoginServerBot.exe, XClientConnection::cbFindAccount()+0544 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\loginserver\loginserver\xclientconnection.cpp, line 0591+0221 byte(s)
+0023:0139C61D LoginServerBot.exe, std::_Func_impl<std::_Callable_obj<std::_Bind<1,void,std::_Pmf_wrap<void (__thiscall XClientConnection::*)(XDatabase *,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,unsigned long),void,XClientConnection,XDatabase *,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,unsigned long>,std::_Ph<1> &,std::_Ph<2> &,enum XGAME::xtConnectParam &,std::basi()+0045 byte(s), c:\program files (x86)\microsoft visual studio 12.0\vc\include\functional, line 0229
+0023:013A3A98 LoginServerBot.exe, XDBMng2<XClientConnection>::WorkThread()+0520 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.inl, line 0107
+0023:013A45BF LoginServerBot.exe, XDBMng2<XClientConnection>::_WorkThread()+0175 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.inl, line 0012
+0023:014FBF9E LoginServerBot.exe, _callthreadstartex()+0027 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0376+0006 byte(s)
+0023:014FC0C6 LoginServerBot.exe, _threadstartex()+0124 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0354+0005 byte(s)
+0023:752A338A kernel32.dll, BaseThreadInitThunk()+0018 byte(s)
+0023:77919902 ntdll.dll, RtlInitializeExceptionChain()+0099 byte(s)
+0023:779198D5 ntdll.dll, RtlInitializeExceptionChain()+0054 byte(s)
+
+2016/ 4/22   20:09:33   
+FaultReason
+
+LoginServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module LoginServerBot.exe at 0023:0139453F, XDBMng2<XClientConnection>::RegisterSendCallback<void (__thiscall XClientConnection::*)(unsigned long,XArchive &,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &),unsigned long,XArchive,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> >,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >()+0063 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.h, line 0316+0005 byte(s)
+Register
+EAX=00000000  EBX=0138B6B1  ECX=015E1A98  EDX=00000002  ESI=05D8D54C
+EDI=015E1A98  EBP=057CBD50  ESP=057C7C7C  EIP=0139453F  FLG=00010202
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:0139453F LoginServerBot.exe, XDBMng2<XClientConnection>::RegisterSendCallback<void (__thiscall XClientConnection::*)(unsigned long,XArchive &,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &),unsigned long,XArchive,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> >,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >()+0063 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.h, line 0316+0005 byte(s)
+0023:0139D7C0 LoginServerBot.exe, XClientConnection::cbFindAccount()+0544 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\loginserver\loginserver\xclientconnection.cpp, line 0591+0221 byte(s)
+0023:0139C61D LoginServerBot.exe, std::_Func_impl<std::_Callable_obj<std::_Bind<1,void,std::_Pmf_wrap<void (__thiscall XClientConnection::*)(XDatabase *,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,unsigned long),void,XClientConnection,XDatabase *,enum XGAME::xtConnectParam,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,unsigned long>,std::_Ph<1> &,std::_Ph<2> &,enum XGAME::xtConnectParam &,std::basi()+0045 byte(s), c:\program files (x86)\microsoft visual studio 12.0\vc\include\functional, line 0229
+0023:013A3A98 LoginServerBot.exe, XDBMng2<XClientConnection>::WorkThread()+0520 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.inl, line 0107
+0023:013A45BF LoginServerBot.exe, XDBMng2<XClientConnection>::_WorkThread()+0175 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdbmng2.inl, line 0012
+0023:014FBF9E LoginServerBot.exe, _callthreadstartex()+0027 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0376+0006 byte(s)
+0023:014FC0C6 LoginServerBot.exe, _threadstartex()+0124 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0354+0005 byte(s)
+0023:752A338A kernel32.dll, BaseThreadInitThunk()+0018 byte(s)
+0023:77919902 ntdll.dll, RtlInitializeExceptionChain()+0099 byte(s)
+0023:779198D5 ntdll.dll, RtlInitializeExceptionChain()+0054 byte(s)
+
+2016/ 4/22   21:12:27   
+FaultReason
+
+DBAgentServerBot.exe caused an EXCEPTION_ACCESS_VIOLATION in module DBAgentServerBot.exe at 0023:00204231, XArchive::operator>>()+0145 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\xarchive.h, line 0498+0016 byte(s)
+Register
+EAX=00003508  EBX=0C986544  ECX=0090CAF8  EDX=005B0CD0  ESI=0090CAEC
+EDI=0036F3F4  EBP=0090C9B0  ESP=0090C9AC  EIP=00204231  FLG=00010246
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:00204231 DBAgentServerBot.exe, XArchive::operator>>()+0145 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\xarchive.h, line 0498+0016 byte(s)
+0023:0025DC1B DBAgentServerBot.exe, XHero::DeserializeAbil()+0171 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\game_src\xhero.cpp, line 1500+0011 byte(s)
+0023:0025D8ED DBAgentServerBot.exe, XHero::DeSerialize()+0397 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\game_src\xhero.cpp, line 0271+0011 byte(s)
+0023:002378F0 DBAgentServerBot.exe, XAccount::DeSerialize()+0768 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\game_src\xaccount.cpp, line 0311
+0023:00212FCB DBAgentServerBot.exe, XSAccount::DeSerialize()+0011 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\game_src\server\xsaccount.cpp, line 0086+0008 byte(s)
+0023:00316CA3 DBAgentServerBot.exe, XGameSvrConnection::RecvAccountInfoSave()+0179 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\xgamesvrconnection.cpp, line 0340
+0023:003164C3 DBAgentServerBot.exe, XGameSvrConnection::ProcessPacket()+0163 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\xgamesvrconnection.cpp, line 0245
+0023:00359DF2 DBAgentServerBot.exe, XEWinConnectionInServer::Process()+0322 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\server\xwinconnection.cpp, line 0359
+0023:00364DAC DBAgentServerBot.exe, XEWinSocketSvr::ProcessLoginedList()+0444 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\server\xwinsocketsvr.cpp, line 0646
+0023:003640B8 DBAgentServerBot.exe, XEWinSocketSvr::Process()+0120 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\server\xwinsocketsvr.cpp, line 0543
+0023:0035B663 DBAgentServerBot.exe, XEServerMain::Process()+0259 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\server\xservermain.cpp, line 0202
+0023:00330E2C DBAgentServerBot.exe, XMain::Process()+0108 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\xmain.cpp, line 0172
+0023:0035881C DBAgentServerBot.exe, XEServerApp::OnIdle()+0028 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\mfc\xeserverapp.cpp, line 0165
+0023:002E8531 DBAgentServerBot.exe, CDBAgentServerApp::OnIdle()+0017 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\dbagentserver.cpp, line 0193
+0023:00386ED5 DBAgentServerBot.exe, CWinThread::Run()+0063 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\thrdcore.cpp, line 0621+0008 byte(s)
+0023:00570DB7 DBAgentServerBot.exe, AfxWinMain()+0102 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winmain.cpp, line 0047+0007 byte(s)
+0023:00518C1B DBAgentServerBot.exe, __tmainCRTStartup()+0253 byte(s), f:\dd\vctools\crt\crtw32\startup\crt0.c, line 0251+0014 byte(s)
+0023:752A338A kernel32.dll, BaseThreadInitThunk()+0018 byte(s)
+0023:77919902 ntdll.dll, RtlInitializeExceptionChain()+0099 byte(s)
+0023:779198D5 ntdll.dll, RtlInitializeExceptionChain()+0054 byte(s)
+
+2016/ 4/22   21:12:27   
+user saved
+2016/ 4/22   21:12:28   
+FaultReason
+
+gameserverBot3.exe caused an EXCEPTION_ACCESS_VIOLATION in module gameserverBot3.exe at 0023:0137CC2D, XThread::Leave()+0093 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdetectdeadlock.cpp, line 0055+0019 byte(s)
+Register
+EAX=00000000  EBX=0551D0D4  ECX=FFFFFFFF  EDX=AFE68F97  ESI=097D01F0
+EDI=0551D0D4  EBP=074CF784  ESP=074CEF78  EIP=0137CC2D  FLG=00010286
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:0137CC2D gameserverBot3.exe, XThread::Leave()+0093 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\xdetectdeadlock.cpp, line 0055+0019 byte(s)
+0023:014C9D40 gameserverBot3.exe, XLockCS::Unlock()+0080 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\win32\xlockcs.cpp, line 0076
+0023:014D8808 gameserverBot3.exe, XESocketClientInServer::WorkThread()+0296 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\server\xsocketclientinserver.cpp, line 0237
+0023:014D88D5 gameserverBot3.exe, _WorkThread()+0085 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\server\xsocketclientinserver.cpp, line 0033
+0023:016963AE gameserverBot3.exe, _callthreadstartex()+0027 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0376+0006 byte(s)
+0023:016964F5 gameserverBot3.exe, _threadstartex()+0124 byte(s), f:\dd\vctools\crt\crtw32\startup\threadex.c, line 0354+0005 byte(s)
+0023:752A338A kernel32.dll, BaseThreadInitThunk()+0018 byte(s)
+0023:77919902 ntdll.dll, RtlInitializeExceptionChain()+0099 byte(s)
+0023:779198D5 ntdll.dll, RtlInitializeExceptionChain()+0054 byte(s)
+
+2016/ 4/22   21:12:28   
+user saved

@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1565A2CB-DB14-4F22-8545-F51B7C11C502}</ProjectGuid>
+    <SccProjectName>Perforce Project</SccProjectName>
+    <SccLocalPath>..\..\..\..\..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\XFramework;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\XFramework;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_client.lib;windowscodecs.lib;winmm.lib;d3d9.lib;d3dx9d.lib;d3dx10d.lib;d3dxof.lib;dxerr.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\game_src;..\..\..\Resource;..\..\..\..\XFramework;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\XFramework;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_client.lib;windowscodecs.lib;winmm.lib;d3d9.lib;d3dx9d.lib;d3dx10d.lib;d3dxof.lib;dxerr.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\daily_work.txt" />
+    <None Include="..\..\..\..\memo.txt" />
+    <None Include="res\Caribe.ico" />
+    <None Include="res\Caribe.rc2" />
+    <None Include="res\CaribeDoc.ico" />
+    <None Include="res\Toolbar.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Caribe.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\game_src\client\XAppDelegate.h" />
+    <ClInclude Include="..\..\..\game_src\client\XAppMain.h" />
+    <ClInclude Include="..\..\..\game_src\constGame.h" />
+    <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
+    <ClInclude Include="..\..\..\game_src\XAccount.h" />
+    <ClInclude Include="..\..\..\game_src\XAppLayout.h" />
+    <ClInclude Include="..\..\..\game_src\XGame.h" />
+    <ClInclude Include="..\..\..\game_src\XGameCommon.h" />
+    <ClInclude Include="..\..\..\game_src\XGameLua.h" />
+    <ClInclude Include="..\..\..\game_src\XGameWnd.h" />
+    <ClInclude Include="..\..\..\game_src\XHero.h" />
+    <ClInclude Include="..\..\..\game_src\XLegion.h" />
+    <ClInclude Include="..\..\..\game_src\XLoginInfo.h" />
+    <ClInclude Include="..\..\..\game_src\XPacketCG.h" />
+    <ClInclude Include="..\..\..\game_src\XPacketCL.h" />
+    <ClInclude Include="..\..\..\game_src\XParticle.h" />
+    <ClInclude Include="..\..\..\game_src\XPropHero.h" />
+    <ClInclude Include="..\..\..\game_src\XPropWorld.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneBattle.h" />
+    <ClInclude Include="..\..\..\game_src\XScenePatchClient.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneTitle.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneWorld.h" />
+    <ClInclude Include="..\..\..\game_src\XSockGameSvr.h" />
+    <ClInclude Include="..\..\..\game_src\XSockLoginSvr.h" />
+    <ClInclude Include="..\..\..\game_src\XSpot.h" />
+    <ClInclude Include="..\..\..\game_src\XWorld.h" />
+    <ClInclude Include="..\..\..\Resource\defineGame.h" />
+    <ClInclude Include="CaribeDoc.h" />
+    <ClInclude Include="CaribeView.h" />
+    <ClInclude Include="CrashDlg.h" />
+    <ClInclude Include="DlgEnterName.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="VersionWin32.h" />
+    <ClInclude Include="XDlgConsole.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\game_src\client\XAppDelegate.cpp" />
+    <ClCompile Include="..\..\..\game_src\client\XAppMain.cpp" />
+    <ClCompile Include="..\..\..\game_src\constGame.cpp" />
+    <ClCompile Include="..\..\..\game_src\XAccount.cpp" />
+    <ClCompile Include="..\..\..\game_src\XAppLayout.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGame.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGameCommon.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGameLua.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGameWnd.cpp" />
+    <ClCompile Include="..\..\..\game_src\XHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XLegion.cpp" />
+    <ClCompile Include="..\..\..\game_src\XLoginInfo.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropWorld.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneBattle.cpp" />
+    <ClCompile Include="..\..\..\game_src\XScenePatchClient.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneTitle.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneWorld.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSockGameSvr.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSockLoginSvr.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpot.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWorld.cpp" />
+    <ClCompile Include="Caribe.cpp" />
+    <ClCompile Include="CaribeDoc.cpp" />
+    <ClCompile Include="CaribeView.cpp" />
+    <ClCompile Include="CrashDlg.cpp" />
+    <ClCompile Include="DlgEnterName.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="XDlgConsole.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

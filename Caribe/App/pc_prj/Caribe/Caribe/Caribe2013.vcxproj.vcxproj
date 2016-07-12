@@ -52,12 +52,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1565A2CB-DB14-4F22-8545-F51B7C11C502}</ProjectGuid>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>Perforce Project</SccProjectName>
+    <SccLocalPath>..\..\..\..\..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
     <ProjectName>Caribe2013</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -683,6 +680,7 @@
     <ClInclude Include="..\..\..\game_src\XSpot.h" />
     <ClInclude Include="..\..\..\game_src\XSpotCampaign.h" />
     <ClInclude Include="..\..\..\game_src\XSpotCastle.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotDaily.h" />
     <ClInclude Include="..\..\..\game_src\XSpotEtc.h" />
     <ClInclude Include="..\..\..\game_src\XSpotJewel.h" />
     <ClInclude Include="..\..\..\game_src\XSpotMandrake.h" />
@@ -713,6 +711,7 @@
     <ClInclude Include="..\..\..\game_src\XWndDelegator.h" />
     <ClInclude Include="..\..\..\game_src\XWndHire.h" />
     <ClInclude Include="..\..\..\game_src\XWndObj.h" />
+    <ClInclude Include="..\..\..\game_src\XWndPopupDaily.h" />
     <ClInclude Include="..\..\..\game_src\XWndQuest.h" />
     <ClInclude Include="..\..\..\game_src\XWndResCtrl.h" />
     <ClInclude Include="..\..\..\game_src\XWndSpots.h" />
@@ -876,6 +875,7 @@
     <ClCompile Include="..\..\..\game_src\XSpot.cpp" />
     <ClCompile Include="..\..\..\game_src\XSpotCampaign.cpp" />
     <ClCompile Include="..\..\..\game_src\XSpotCastle.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotDaily.cpp" />
     <ClCompile Include="..\..\..\game_src\XSpotEtc.cpp" />
     <ClCompile Include="..\..\..\game_src\XSpotJewel.cpp" />
     <ClCompile Include="..\..\..\game_src\XSpotMandrake.cpp" />
@@ -904,6 +904,7 @@
     <ClCompile Include="..\..\..\game_src\XWndDelegator.cpp" />
     <ClCompile Include="..\..\..\game_src\XWndHire.cpp" />
     <ClCompile Include="..\..\..\game_src\XWndObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndPopupDaily.cpp" />
     <ClCompile Include="..\..\..\game_src\XWndQuest.cpp" />
     <ClCompile Include="..\..\..\game_src\XWndResCtrl.cpp" />
     <ClCompile Include="..\..\..\game_src\XWndSpots.cpp" />

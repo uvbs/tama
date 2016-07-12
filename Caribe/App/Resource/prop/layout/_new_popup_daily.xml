@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_daily>
+    <popup img="popup_daily.png">
+      <butt posx="20" posy="80" file="common_butt_mid.png" key="butt.test" num="3" disty="40">
+        <!--전사의영혼석-->
+        <_spr posx="0" posy="50" file="ui_eff_daily_glow_testjin.spr" key="spr.glow" />
+        <text posx="center" posy="center" font="font_text_s" text_col="white" font_size="30" font_style="stroke" key="text.dow" text="3">
+          <!--전사의영혼석/궁수의영혼석등을 나타내는 텍스트-->
+        </text>
+        <img posx="23" posy="6" file="_day_1.png">
+          <!--나타나는요일표시-->
+        </img>
+        <img posx="40" posy="6" file="_day_2.png">
+          <!--나타나는요일표시-->
+        </img>
+        <butt posx="165" posy="6" file="_day_item.png">
+          <!--보상정보버튼-->
+        </butt>
+      </butt>
+      <butt posx="250" posy="80" file="_board02.png" key="" num="2" disty="40">
+        <!--우측 층수 계산할것-->
+      </butt>
+      <click key="butt.test" file="rank.xml" layout="popup_rank" />
+    </popup>
+  </popup_daily>
+</layout>

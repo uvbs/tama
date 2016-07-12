@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xBOT_WATER_SHINE spr="obj_bg.spr">
+    <each posx="925.763" posy="931.491" id="1" id_act="11" />
+    <each posx="964.5" posy="960" id="2" id_act="11" />
+    <each posx="896.5" posy="920.5" id="3" id_act="2" />
+    <each posx="890.5" posy="924" id="4" id_act="2" />
+    <each posx="884.5" posy="926.5" id="5" id_act="2" />
+    <each posx="906.763" posy="920.491" id="6" id_act="11" />
+    <each posx="863.5" posy="909" id="7" id_act="11" />
+    <each posx="857" posy="914" id="8" id_act="11" />
+    <each posx="861" posy="917" id="9" id_act="11" />
+    <each posx="855" posy="917" id="10" id_act="11" />
+    <each posx="784.5" posy="888.5" id="15" id_act="11" />
+    <each posx="707" posy="823.5" id="16" id_act="11" />
+    <each posx="713.554" posy="834.019" id="17" id_act="11" />
+    <each posx="735" posy="857.5" id="18" id_act="11" />
+    <each posx="905" posy="1013.64" id="19" id_act="11" />
+    <each posx="686.101" posy="816.844" id="35" id_act="2" />
+    <each posx="706.101" posy="912.536" id="37" id_act="2" />
+    <each posx="699.601" posy="915.036" id="38" id_act="2" />
+    <each posx="693.601" posy="919.036" id="39" id_act="2" />
+    <each posx="687.101" posy="920.536" id="40" id_act="2" />
+    <each posx="679.601" posy="925.036" id="41" id_act="2" />
+    <each posx="1017.4" posy="541.853" id="42" id_act="2" />
+    <each posx="1027.9" posy="547.853" id="43" id_act="2" />
+    <each posx="1015.4" posy="506.853" id="44" id_act="30" />
+    <each posx="1091.9" posy="500.353" id="45" id_act="2" />
+    <each posx="1099.4" posy="491.853" id="46" id_act="2" />
+    <each posx="1143.4" posy="485.853" id="47" id_act="2" />
+    <each posx="912.871" posy="1009.99" id="50" id_act="11" />
+    <each posx="912.371" posy="1016.49" id="51" id_act="11" />
+    <each posx="906.371" posy="1018.49" id="52" id_act="11" />
+    <each posx="896.871" posy="1013.99" id="53" id_act="11" />
+    <each posx="903.371" posy="1016.49" id="54" id_act="11" />
+    <each posx="908.371" posy="1010.49" id="55" id_act="11" />
+    <each posx="908.371" posy="1013.99" id="56" id_act="11" />
+    <each posx="891.871" posy="1020.99" id="57" id_act="11" />
+    <each posx="829.763" posy="904.491" id="58" id_act="11" />
+    <each posx="817.763" posy="906.491" id="59" id_act="11" />
+    <each posx="820.263" posy="911.491" id="60" id_act="11" />
+    <each posx="832.263" posy="912.491" id="61" id_act="11" />
+    <each posx="830.043" posy="980.732" id="62" id_act="13" />
+    <each posx="665.543" posy="1017.23" id="63" id_act="13" />
+    <each posx="799.442" posy="905.372" id="64" id_act="13" />
+    <each posx="741.442" posy="1042.87" id="65" id_act="13" />
+    <each posx="700.442" posy="1051.87" id="66" id_act="11" />
+    <each posx="747.442" posy="1060.87" id="67" id_act="11" />
+    <each posx="730.942" posy="1088.37" id="68" id_act="11" />
+    <each posx="753.942" posy="1125.87" id="69" id_act="11" />
+    <each posx="755.942" posy="1135.37" id="70" id_act="11" />
+    <each posx="652.942" posy="999.372" id="71" id_act="2" />
+    <each posx="712.942" posy="1014.87" id="72" id_act="2" />
+    <each posx="848.442" posy="1074.37" id="73" id_act="2" />
+    <each posx="872.442" posy="1081.87" id="74" id_act="2" />
+    <each posx="889.442" posy="1079.37" id="75" id_act="2" />
+    <each posx="812.619" posy="1080.52" id="78" id_act="13" />
+    <each posx="913.119" posy="940.019" id="79" id_act="13" />
+    <each posx="975.581" posy="977.056" id="80" id_act="13" />
+    <each posx="1008.62" posy="983.019" id="81" id_act="11" />
+    <each posx="976.619" posy="960.019" id="82" id_act="11" />
+    <each posx="835.554" posy="909.519" id="84" id_act="2" />
+    <each posx="697.534" posy="756.49" id="86" id_act="13" />
+    <each posx="476.242" posy="797.354" id="94" id_act="13" />
+    <each posx="551.742" posy="884.854" id="95" id_act="13" />
+    <each posx="478.242" posy="832.854" id="99" id_act="13" />
+    <each posx="653.242" posy="885.854" id="100" id_act="13" />
+    <each posx="584.242" posy="881.854" id="101" id_act="2" />
+    <each posx="590.242" posy="874.854" id="102" id_act="2" />
+    <each posx="618.242" posy="866.854" id="103" id_act="2" />
+    <each posx="641.742" posy="857.854" id="104" id_act="2" />
+    <each posx="730.742" posy="838.354" id="105" id_act="11" />
+    <each posx="697.742" posy="1057.85" id="106" id_act="13" />
+    <each posx="859.242" posy="1125.85" id="107" id_act="13" />
+    <each posx="1045.58" posy="1030.04" id="110" id_act="4" />
+    <each posx="1038.08" posy="1029.54" id="111" id_act="4" />
+    <each posx="1035.58" posy="1036.54" id="112" id_act="4" />
+    <each posx="1784.04" posy="984.232" id="150" id_act="13" />
+    <each posx="867.742" posy="1139.35" id="168" id_act="13" />
+    <each posx="876.742" posy="1127.35" id="169" id_act="13" />
+    <each posx="754.942" posy="1124.87" id="170" id_act="2" />
+    <each posx="758.442" posy="1133.87" id="171" id_act="2" />
+    <each posx="743.242" posy="1120.85" id="172" id_act="13" />
+    <each posx="941.619" posy="956.019" id="173" id_act="13" />
+    <each posx="739.619" posy="866.519" id="174" id_act="13" />
+    <each posx="719.742" posy="1266.35" id="176" id_act="13" />
+    <each posx="747.742" posy="1275.85" id="177" id_act="13" />
+    <each posx="747.242" posy="1352.85" id="178" id_act="13" />
+    <each posx="726.242" posy="1284.35" id="181" id_act="13" />
+    <each posx="768.942" posy="1255.87" id="182" id_act="2" />
+    <each posx="1061.24" posy="1250.85" id="187" id_act="13" />
+    <each posx="979.242" posy="1223.85" id="188" id_act="13" />
+    <each posx="1022.74" posy="1345.85" id="189" id_act="13" />
+    <each posx="1050.74" posy="1396.35" id="190" id_act="13" />
+    <each posx="1132.74" posy="1425.85" id="191" id_act="13" />
+    <each posx="1218.24" posy="1448.35" id="192" id_act="13" />
+    <each posx="1366.74" posy="1469.35" id="193" id_act="13" />
+    <each posx="1518.24" posy="1450.85" id="194" id_act="13" />
+    <each posx="1538.24" posy="1460.35" id="195" id_act="13" />
+    <each posx="1518.24" posy="1465.35" id="196" id_act="13" />
+    <each posx="930.742" posy="535.35" id="197" id_act="13" />
+    <each posx="845.742" posy="556.85" id="198" id_act="13" />
+    <each posx="880.4" posy="543.353" id="199" id_act="30" />
+    <each posx="887.9" posy="546.353" id="200" id_act="30" />
+    <each posx="894.9" posy="550.353" id="201" id_act="30" />
+    <each posx="1005.24" posy="523.35" id="202" id_act="13" />
+    <each posx="1175.74" posy="475.35" id="203" id_act="13" />
+    <each posx="1232.24" posy="434.35" id="204" id_act="13" />
+    <each posx="1238.24" posy="470.35" id="205" id_act="13" />
+    <each posx="1314.74" posy="530.85" id="206" id_act="13" />
+    <each posx="1286.24" posy="471.35" id="207" id_act="13" />
+    <each posx="1267.74" posy="465.85" id="208" id_act="13" />
+    <each posx="1304.74" posy="485.85" id="209" id_act="13" />
+    <each posx="1203.9" posy="465.853" id="210" id_act="2" />
+    <each posx="1206.9" posy="455.853" id="211" id_act="2" />
+    <each posx="1221.4" posy="456.353" id="212" id_act="2" />
+    <each posx="1293.4" posy="530.353" id="215" id_act="30" />
+    <each posx="1295.4" posy="505.853" id="216" id_act="30" />
+    <each posx="1299.9" posy="525.353" id="217" id_act="30" />
+    <each posx="1199.24" posy="547.35" id="218" id_act="13" />
+    <each posx="1326.4" posy="453.853" id="219" id_act="30" />
+    <each posx="1343.4" posy="450.853" id="220" id_act="30" />
+    <each posx="1335.9" posy="460.853" id="221" id_act="30" />
+    <each posx="1462.74" posy="310.85" id="232" id_act="13" />
+    <each posx="1512.74" posy="319.35" id="233" id_act="13" />
+    <each posx="869.543" posy="995.232" id="287" id_act="13" />
+    <each posx="894.543" posy="1003.73" id="288" id_act="13" />
+    <each posx="962.081" posy="968.056" id="289" id_act="13" />
+    <each posx="717.742" posy="1063.85" id="290" id_act="13" />
+    <each posx="712.742" posy="1047.35" id="291" id_act="13" />
+    <each posx="1620.24" posy="1445.85" id="313" id_act="13" />
+    <each posx="1643.24" posy="1465.35" id="314" id_act="13" />
+    <each posx="1702.74" posy="1443.35" id="315" id_act="13" />
+    <each posx="1709.74" posy="1457.35" id="316" id_act="13" />
+    <each posx="1815.74" posy="1447.35" id="317" id_act="13" />
+    <each posx="1798.74" posy="1451.35" id="318" id_act="13" />
+    <each posx="1818.24" posy="1464.35" id="319" id_act="13" />
+    <each posx="1833.24" posy="1453.85" id="320" id_act="13" />
+    <each posx="1956.74" posy="1447.85" id="321" id_act="13" />
+    <each posx="1973.24" posy="1484.35" id="322" id_act="13" />
+  </xBOT_WATER_SHINE>
+  <xBOT_WATER_FALL spr="obj_bg.spr">
+    <each posx="747.968" posy="1214.73" id="33" id_act="1" />
+    <each posx="748.968" posy="1240.73" id="34" id_act="3" sound="env_waterfall.ogg" />
+    <each posx="631.054" posy="733.019" id="48" id_act="10" />
+    <each posx="633.371" posy="751.353" id="49" id_act="4" />
+    <each posx="634.034" posy="758.49" id="85" id_act="14" sound="env_waterfall" />
+    <each posx="633.034" posy="733.49" id="87" id_act="10" />
+    <each posx="633.534" posy="749.49" id="88" id_act="10" />
+    <each posx="603.034" posy="654.49" id="89" id_act="10" />
+    <each posx="591.034" posy="657.49" id="90" id_act="10" />
+    <each posx="593.064" posy="673.354" id="91" id_act="10" />
+    <each posx="601.564" posy="671.354" id="92" id_act="10" />
+    <each posx="609.564" posy="668.354" id="93" id_act="10" />
+    <each posx="1005.69" posy="993.778" id="108" id_act="16" />
+    <each posx="1116.52" posy="1085.21" id="113" id_act="16" />
+    <each posx="1127.02" posy="1119.21" id="115" id_act="16" />
+    <each posx="1124.5" posy="1113.71" id="116" id_act="17" />
+    <each posx="1120.5" posy="1110.71" id="119" id_act="16" />
+    <each posx="1724.03" posy="892.49" id="142" id_act="10" />
+    <each posx="1731.03" posy="951.49" id="145" id_act="28" />
+    <each posx="1725.03" posy="930.99" id="146" id_act="10" />
+    <each posx="1730.03" posy="913.49" id="147" id_act="10" />
+    <each posx="1732.97" posy="953.23" id="149" id_act="14" sound="env_waterfall" />
+    <each posx="1869.03" posy="1044.49" id="151" id_act="10" />
+    <each posx="1869.53" posy="1086.49" id="152" id_act="10" />
+    <each posx="1869.53" posy="1120.49" id="153" id_act="10" />
+    <each posx="747.398" posy="1237.76" id="179" id_act="4" />
+    <each posx="748.398" posy="1238.26" id="180" id_act="4" />
+    <each posx="1467.03" posy="337.49" id="223" id_act="31" />
+    <each posx="1464.53" posy="363.49" id="225" id_act="31" />
+    <each posx="1440.41" posy="372.494" id="226" id_act="32" />
+    <each posx="1457.66" posy="376.108" id="227" id_act="32" sound="env_waterfall" />
+    <each posx="1463.67" posy="369.089" id="229" id_act="33" />
+    <each posx="1471.67" posy="372.089" id="230" id_act="33" sound="env_waterfall" />
+  </xBOT_WATER_FALL>
+  <xBOT_WATER_STEAM spr="obj_bg.spr">
+    <each posx="1017.48" posy="1101.77" id="24" id_act="29" />
+    <each posx="1052.48" posy="1104.27" id="25" id_act="7" />
+    <each posx="1302.5" posy="1001.41" id="30" id_act="29" />
+    <each posx="1275" posy="992.41" id="31" id_act="7" />
+    <each posx="1325.5" posy="994.853" id="32" id_act="7" />
+    <each posx="747.48" posy="1242.27" id="175" id_act="29" />
+    <each posx="1380.98" posy="1327.77" id="184" id_act="7" />
+    <each posx="1248" posy="1107.41" id="185" id_act="7" />
+    <each posx="989.48" posy="1103.27" id="282" id_act="29" />
+    <each posx="1250" posy="1003.41" id="283" id_act="29" />
+    <each posx="1329.98" posy="1191.27" id="284" id_act="29" />
+    <each posx="1292.48" posy="1189.27" id="285" id_act="29" />
+    <each posx="1390.98" posy="1191.27" id="286" id_act="29" />
+    <each posx="634.039" posy="749.078" id="292" id_act="7" />
+    <each posx="1733" posy="955.671" id="304" id_act="7" />
+    <each posx="1727.5" posy="955.671" id="305" id_act="7" />
+    <each posx="1720" posy="956.171" id="306" id_act="7" />
+  </xBOT_WATER_STEAM>
+  <xBOT_LAVA_BOIL spr="obj_bg.spr">
+    <each posx="1178.5" posy="1150.21" id="120" id_act="5" />
+    <each posx="1235.99" posy="1108.42" id="121" id_act="19" />
+    <each posx="1009.65" posy="1085.74" id="122" id_act="18" sound="env_magma" />
+    <each posx="1291.15" posy="988.24" id="123" id_act="18" sound="env_magma" />
+    <each posx="1394.99" posy="1119.92" id="124" id_act="6" />
+    <each posx="1310.49" posy="1207.42" id="125" id_act="18" sound="env_magma" />
+    <each posx="1369.99" posy="1219.42" id="129" id_act="18" />
+    <each posx="1193.94" posy="1173.31" id="133" id_act="24" />
+    <each posx="1220.44" posy="1188.31" id="134" id_act="24" />
+    <each posx="1239.44" posy="1196.81" id="135" id_act="24" />
+    <each posx="1454.05" posy="1219.91" id="137" id_act="26" />
+    <each posx="1557.55" posy="1218.91" id="138" id_act="26" />
+    <each posx="1637.05" posy="1216.91" id="139" id_act="26" />
+    <each posx="1717.55" posy="1203.91" id="140" id_act="27" />
+    <each posx="1796.05" posy="1173.41" id="141" id_act="27" />
+    <each posx="1376.49" posy="1325.92" id="183" id_act="19" />
+    <each posx="1444.49" posy="1211.92" id="186" id_act="19" />
+    <each posx="819.442" posy="226.185" id="251" id_act="18" />
+    <each posx="785.442" posy="233.185" id="252" id_act="19" />
+    <each posx="844.942" posy="216.685" id="253" id_act="19" />
+    <each posx="794.942" posy="215.185" id="254" id_act="18" />
+    <each posx="726.442" posy="310.685" id="255" id_act="18" />
+    <each posx="664.442" posy="339.685" id="256" id_act="18" />
+    <each posx="690.442" posy="329.185" id="257" id_act="19" />
+    <each posx="719.442" posy="346.185" id="258" id_act="18" />
+    <each posx="754.442" posy="339.185" id="259" id_act="19" />
+    <each posx="516.442" posy="187.685" id="260" id_act="19" />
+    <each posx="600.942" posy="66.185" id="261" id_act="18" />
+    <each posx="562.442" posy="72.185" id="262" id_act="18" sound="env_magma" />
+    <each posx="865.942" posy="88.685" id="272" id_act="18" sound="env_magma" />
+    <each posx="835.942" posy="99.685" id="273" id_act="18" />
+    <each posx="193.942" posy="33.185" id="274" id_act="19" />
+    <each posx="80.442" posy="87.685" id="275" id_act="19" />
+    <each posx="287.442" posy="1004.68" id="307" id_act="19" />
+    <each posx="254.442" posy="1004.68" id="308" id_act="19" />
+    <each posx="238.942" posy="1016.18" id="309" id_act="19" sound="env_magma" />
+    <each posx="115.442" posy="1161.19" id="310" id_act="19" />
+    <each posx="176.442" posy="1281.69" id="311" id_act="19" />
+    <each posx="209.942" posy="1280.19" id="312" id_act="19" sound="env_magma" />
+  </xBOT_LAVA_BOIL>
+  <xBOT_LAVA_STEAM spr="obj_bg.spr">
+    <each posx="1415.99" posy="1132.92" id="127" id_act="21" />
+    <each posx="1443.99" posy="1159.92" id="130" id_act="22" />
+    <each posx="1325.1" posy="1180.98" id="131" id_act="22" />
+    <each posx="1246.67" posy="1124.29" id="132" id_act="23" />
+    <each posx="1468.94" posy="1177.31" id="136" id_act="25" />
+    <each posx="709.98" posy="362.978" id="277" id_act="29" />
+    <each posx="719.48" posy="340.478" id="278" id_act="29" />
+    <each posx="676.98" posy="368.478" id="279" id_act="29" sound="env_magma" />
+    <each posx="784.48" posy="257.478" id="280" id_act="29" />
+    <each posx="791.98" posy="260.478" id="281" id_act="29" sound="env_magma" />
+    <each posx="209.48" posy="998.478" id="323" id_act="29" />
+    <each posx="243.48" posy="1001.98" id="324" id_act="29" />
+    <each posx="231.48" posy="1018.98" id="325" id_act="29" />
+    <each posx="168.48" posy="1283.08" id="326" id_act="29" />
+  </xBOT_LAVA_STEAM>
+  <xBOT_LAVA_STREAM spr="obj_bg.spr">
+    <each posx="575.397" posy="236.172" id="264" id_act="34" />
+    <each posx="545.897" posy="201.172" id="265" id_act="34" />
+    <each posx="560.897" posy="217.672" id="266" id_act="34" />
+    <each posx="618.897" posy="260.672" id="267" id_act="35" />
+    <each posx="793.691" posy="266.172" id="268" id_act="36" />
+    <each posx="839.281" posy="114.438" id="270" id_act="37" />
+    <each posx="839.281" posy="113.938" id="271" id_act="37" />
+  </xBOT_LAVA_STREAM>
+  <xBOT_JEWEL_SHINE spr="ui_jewel_shine.spr">
+    <each posx="773.092" posy="1434.42" id="163" id_act="1" />
+    <each posx="875.092" posy="1451.42" id="164" id_act="1" />
+    <each posx="841.092" posy="1288.92" id="165" id_act="1" />
+    <each posx="869.592" posy="1273.92" id="166" id_act="1" />
+    <each posx="906.092" posy="1287.42" id="167" id_act="1" />
+    <each posx="1797.5" posy="1020.29" id="154" id_act="1" />
+    <each posx="600.092" posy="1243.42" id="155" id_act="1" />
+    <each posx="535.592" posy="1275.42" id="156" id_act="1" sound="env_mine" />
+    <each posx="432.592" posy="1247.42" id="157" id_act="1" />
+    <each posx="545.092" posy="1255.92" id="158" id_act="1" />
+    <each posx="549.092" posy="1386.92" id="159" id_act="1" />
+    <each posx="582.592" posy="1394.92" id="160" id_act="1" />
+    <each posx="636.592" posy="1404.42" id="161" id_act="1" />
+    <each posx="609.592" posy="1417.42" id="162" id_act="1" />
+    <each posx="1331" posy="311.685" id="234" id_act="1" />
+    <each posx="1325.5" posy="291.685" id="235" id_act="1" />
+    <each posx="1359.5" posy="313.685" id="236" id_act="1" />
+    <each posx="1208.5" posy="256.685" id="237" id_act="1" />
+    <each posx="1118" posy="321.685" id="238" id_act="1" />
+    <each posx="1129.5" posy="339.685" id="239" id_act="1" />
+    <each posx="1067.5" posy="325.185" id="240" id_act="1" />
+    <each posx="1047.5" posy="270.185" id="241" id_act="1" />
+    <each posx="1021.5" posy="269.185" id="242" id_act="1" />
+    <each posx="1070.5" posy="274.685" id="243" id_act="1" sound="env_mine" />
+    <each posx="1018.5" posy="331.685" id="244" id_act="1" />
+    <each posx="992" posy="339.185" id="245" id_act="1" />
+    <each posx="941" posy="334.185" id="246" id_act="1" />
+    <each posx="963" posy="361.185" id="247" id_act="1" />
+    <each posx="927" posy="364.185" id="248" id_act="1" />
+    <each posx="904" posy="342.685" id="249" id_act="1" />
+    <each posx="896" posy="399.685" id="250" id_act="1" />
+    <each posx="1611.5" posy="1082.29" id="293" id_act="1" />
+    <each posx="1733.5" posy="1098.79" id="294" id_act="1" />
+    <each posx="1635.5" posy="1076.79" id="295" id_act="1" />
+    <each posx="1785.5" posy="1078.79" id="296" id_act="1" />
+    <each posx="1845" posy="974.29" id="297" id_act="1" />
+    <each posx="1882.5" posy="1020.79" id="298" id_act="1" />
+    <each posx="1892" posy="960.79" id="299" id_act="1" />
+    <each posx="1924.5" posy="961.79" id="300" id_act="1" />
+    <each posx="1944.5" posy="953.79" id="301" id_act="1" />
+    <each posx="1980.5" posy="957.79" id="302" id_act="1" />
+    <each posx="2029.5" posy="960.29" id="303" id_act="1" />
+  </xBOT_JEWEL_SHINE>
+</root>

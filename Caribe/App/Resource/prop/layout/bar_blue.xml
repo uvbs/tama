@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <module_pbar_blue>
+    <!--pbar 재사용 모듈-->
+    <img file="bar_legion_bg.png">
+      <pbar2 posx="3" posy="1" key="pbar.main" _lerp="0.5">
+        <layer id="1" file="bar_legion_blue.png"></layer>
+        <layer id="2" file="bar_legion_highlight.png" fixed="true" />
+      </pbar2>
+    </img>
+  </module_pbar_blue>
+</layout>

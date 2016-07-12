@@ -1,0 +1,407 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<clouds>
+  <cloud id="1000" ids="area.000" level="1" cost="1000" cost_pos_x="-83" cost_pos_y="50" ids_precede="none" name="39000" idx="252 253 273 274 296 ">
+    <spot id="612" />
+    <spot id="614" />
+    <spot id="613" />
+    <spot id="679" />
+    <spot id="683" />
+  </cloud>
+  <cloud id="1007" ids="area.labor" level="2" lv_open="2" cost="160" ids_precede="area.000" name="2130" idx="297 275 298 319 ">
+    <spot id="554" />
+    <spot id="615" />
+    <spot id="616" />
+    <spot id="680" />
+    <spot id="684" />
+  </cloud>
+  <cloud id="16" ids="area.001" level="3" lv_open="3" cost="405" cost_pos_x="-24" cost_pos_y="45" ids_precede="area.labor" name="39001" unlock="xUNIT_PALADIN" idx="254 255 233 211 212 232 ">
+    <spot id="608" />
+    <spot id="617" />
+  </cloud>
+  <cloud id="1041" ids="area.1041" level="3" cost="405" cost_pos_y="10" ids_precede="area.001" idx="231 210 209 230 ">
+    <spot id="618" />
+    <spot id="682" />
+  </cloud>
+  <cloud id="1010" ids="area.market" level="4" lv_open="4" cost="1280" ids_precede="area.1041" name="80052" idx="317 318 295 340 ">
+    <spot id="623" />
+    <spot id="681" />
+  </cloud>
+  <cloud id="1009" ids="area.tavern" level="4" lv_open="4" cost="1280" cost_pos_y="-15" ids_precede="area.market" name="2132" idx="251 250 229 272 ">
+    <spot id="606" />
+    <spot id="622" />
+  </cloud>
+  <cloud id="17" ids="area.002" level="5" lv_open="5" cost="6250" ids_precede="area.tavern" name="39045" idx="227 207 228 206 205 ">
+    <spot id="607" />
+    <spot id="619" />
+    <spot id="624" />
+  </cloud>
+  <cloud id="1004" ids="area.1004" level="6" lv_open="6" cost="6480" cost_pos_y="-10" ids_precede="area.002" name="39002" idx="208 184 185 163 ">
+    <spot id="610" />
+    <spot id="620" />
+    <spot id="625" />
+  </cloud>
+  <cloud id="1012" ids="area.1012" level="6" lv_open="6" cost="6480" ids_precede="area.1004" name="39049" idx="187 188 186 164 " key_item="item_event_tresuremap">
+    <spot id="621" />
+    <spot id="626" />
+  </cloud>
+  <cloud id="1013" ids="area.1013" level="7" lv_open="7" cost="12005" ids_precede="area.1012" name="2135" idx="276 299 300 277 " key_item="item_event_kopiosussmap">
+    <spot id="609" />
+    <spot id="628" />
+  </cloud>
+  <cloud id="18" ids="area.018" level="7" lv_open="7" cost="12005" ids_precede="area.1013" name="39003" idx="256 234 278 257 ">
+    <spot id="627" />
+    <spot id="676" />
+  </cloud>
+  <cloud id="1003" ids="area.1003" level="8" lv_open="8" cost="20480" ids_precede="area.018" name="39046" idx="279 301 302 ">
+    <spot id="629" />
+  </cloud>
+  <cloud id="1011" ids="area.1011" level="8" lv_open="8" cost="20480" ids_precede="area.1003" name="39050" idx="280 258 235 259 281 ">
+    <spot id="630" />
+    <spot id="631" />
+    <spot id="685" />
+  </cloud>
+  <cloud id="1016" ids="area.1016" level="9" lv_open="9" cost="21870" ids_precede="area.1011" unlock="xUNIT_ANY" idx="249 270 ">
+    <spot id="632" />
+  </cloud>
+  <cloud id="1015" ids="area.1015" level="9" lv_open="9" cost="21870" ids_precede="area.1016" idx="226 248 269 ">
+    <spot id="634" />
+    <spot id="635" />
+  </cloud>
+  <cloud id="1017" ids="area.1017" level="9" lv_open="9" cost="21870" ids_precede="area.1015" idx="225 247 204 ">
+    <spot id="633" />
+  </cloud>
+  <cloud id="1018" ids="area.1018" level="10" lv_open="10" cost="50000" ids_precede="area.1017" idx="293 271 294 315 ">
+    <spot id="674" />
+  </cloud>
+  <cloud id="1019" ids="area.1019" level="10" lv_open="10" cost="50000" ids_precede="area.1018" idx="316 338 339 360 ">
+    <spot id="677" />
+    <spot id="686" />
+  </cloud>
+  <cloud id="1020" ids="area.1020" level="11" lv_open="11" cost="48803" ids_precede="area.1019" idx="292 313 314 ">
+    <spot id="637" />
+    <spot id="678" />
+  </cloud>
+  <cloud id="1021" ids="area.1021" level="11" cost="48803" ids_precede="area.1020" idx="336 335 357 ">
+    <spot id="638" />
+  </cloud>
+  <cloud id="1022" ids="area.1022" level="11" cost="48803" ids_precede="area.1021" key_item="item_event_furyheart" idx="337 359 358 ">
+    <spot id="639" />
+  </cloud>
+  <cloud id="1023" ids="area.1023" level="12" cost="103680" ids_precede="area.1022" unlock="xUNIT_ANY" idx="379 380 401 400 356 ">
+    <spot id="641" />
+    <spot id="673" />
+  </cloud>
+  <cloud id="1024" ids="area.1024" level="12" cost="103680" ids_precede="area.1023" idx="423 422 444 445 ">
+    <spot id="640" />
+    <spot id="689" />
+  </cloud>
+  <cloud id="1025" ids="area.1025" level="13" cost="142805" ids_precede="area.1024" idx="446 424 425 447 ">
+    <spot id="643" />
+  </cloud>
+  <cloud id="1026" ids="area.1026" level="13" cost="142805" ids_precede="area.1025" idx="402 381 403 ">
+    <spot id="642" />
+  </cloud>
+  <cloud id="1027" ids="area.1027" level="14" cost="192080" ids_precede="area.1026" idx="404 382 ">
+    <spot id="669" />
+  </cloud>
+  <cloud id="1028" ids="area.1028" level="14" cost="192080" ids_precede="area.1027" idx="426 427 448 ">
+    <spot id="644" />
+    <spot id="687" />
+  </cloud>
+  <cloud id="1031" ids="area.1031" level="15" cost="253125" ids_precede="area.1028" unlock="xUNIT_ANY" idx="428 429 406 385 ">
+    <spot id="646" />
+    <spot id="647" />
+    <spot id="690" />
+  </cloud>
+  <cloud id="1029" ids="area.1029" level="15" cost="253125" ids_precede="area.1031" idx="405 384 383 361 ">
+    <spot id="548" />
+  </cloud>
+  <cloud id="1032" ids="area.1032" level="16" cost="218453" ids_precede="area.1029" key_item="item_event_minomeet" idx="407 430 ">
+    <spot id="648" />
+    <spot id="649" />
+  </cloud>
+  <cloud id="1033" ids="area.1033" level="16" cost="218453" ids_precede="area.1032" idx="408 386 431 ">
+    <spot id="650" />
+    <spot id="651" />
+  </cloud>
+  <cloud id="1034" ids="area.1034" level="16" cost="218453" ids_precede="area.1033" idx="409 387 432 388 ">
+    <spot id="652" />
+    <spot id="653" />
+    <spot id="654" />
+    <spot id="691" />
+  </cloud>
+  <cloud id="1035" ids="area.1035" level="17" cost="417605" ids_precede="area.1034" idx="320 342 341 362 363 ">
+    <spot id="656" />
+    <spot id="657" />
+    <spot id="658" />
+    <spot id="688" />
+  </cloud>
+  <cloud id="1036" ids="area.1036" level="17" cost="417605" ids_precede="area.1035" idx="364 343 321 365 344 ">
+    <spot id="659" />
+    <spot id="660" />
+    <spot id="661" />
+  </cloud>
+  <cloud id="1037" ids="area.1037" level="18" cost="524880" ids_precede="area.1036" key_item="item_event_teensam" unlock="xUNIT_ANY" idx="433 410 434 ">
+    <spot id="662" />
+    <spot id="663" />
+    <spot id="664" />
+  </cloud>
+  <cloud id="1038" ids="area.1038" level="18" cost="524880" ids_precede="area.1037" idx="411 412 390 389 ">
+    <spot id="665" />
+    <spot id="666" />
+    <spot id="667" />
+  </cloud>
+  <cloud id="1039" ids="area.1039" level="19" cost="651605" ids_precede="area.1038" idx="366 368 367 ">
+    <spot id="645" />
+    <spot id="668" />
+  </cloud>
+  <cloud id="1040" ids="area.1040" level="19" cost="651605" ids_precede="area.1039" idx="345 322 346 323 ">
+    <spot id="670" />
+    <spot id="671" />
+    <spot id="672" />
+  </cloud>
+  <cloud id="1042" ids="area.20.01" level="20" cost="800000" ids_precede="area.1040" key_item="item_event_sulfur" idx="213 190 191 169 192 214 236 215 ">
+    <spot id="692" />
+    <spot id="790" />
+  </cloud>
+  <cloud id="1043" ids="area.21.1" level="21" cost="972405" ids_precede="area.20.02" unlock="xUNIT_ANY" idx="237 260 238 216 217 261 282 ">
+    <spot id="695" />
+    <spot id="792" />
+  </cloud>
+  <cloud id="1044" ids="area.21.2" level="21" cost="972405" ids_precede="area.21.1" idx="262 239 218 240 283 284 ">
+    <spot id="696" />
+    <spot id="793" />
+  </cloud>
+  <cloud id="1045" ids="area.20.02" level="20" cost="800000" ids_precede="area.20.01" idx="170 171 147 148 193 126 ">
+    <spot id="694" />
+    <spot id="791" />
+  </cloud>
+  <cloud id="1046" ids="area.22.01" level="22" cost="1171280" ids_precede="area.21.2" idx="173 172 194 195 149 127 128 150 ">
+    <spot id="697" />
+    <spot id="794" />
+  </cloud>
+  <cloud id="1047" ids="area.22.02" level="22" cost="1171280" ids_precede="area.22.01" idx="151 174 129 130 152 196 ">
+    <spot id="698" />
+    <spot id="795" />
+  </cloud>
+  <cloud id="1048" ids="area.23.01" level="23" cost="1399205" ids_precede="area.22.02" idx="224 223 202 203 180 246 ">
+    <spot id="699" />
+    <spot id="796" />
+    <spot id="824" />
+  </cloud>
+  <cloud id="1049" ids="area.23.02" level="23" cost="1399205" ids_precede="area.23.01" idx="159 181 182 161 160 137 ">
+    <spot id="700" />
+    <spot id="797" />
+  </cloud>
+  <cloud id="1050" ids="area.24.01" level="24" cost="3317760" ids_precede="area.23.02" key_item="item_event_fallenspear" unlock="xUNIT_ANY" idx="245 244 222 200 201 199 221 ">
+    <spot id="701" />
+    <spot id="798" />
+  </cloud>
+  <cloud id="1052" ids="area.25.01" level="25" cost="1953125" ids_precede="area.24.01" idx="179 178 177 155 156 157 ">
+    <spot id="702" />
+    <spot id="799" />
+  </cloud>
+  <cloud id="1053" ids="area.25.02" level="25" cost="1953125" ids_precede="area.25.01" idx="135 158 136 114 ">
+    <spot id="703" />
+    <spot id="800" />
+  </cloud>
+  <cloud id="1054" ids="area.26.01" level="26" cost="2284880" ids_precede="area.25.02" idx="134 113 133 111 112 ">
+    <spot id="704" />
+    <spot id="801" />
+  </cloud>
+  <cloud id="1055" ids="area.26.02" level="26" cost="2284880" ids_precede="area.26.01" idx="90 91 89 67 68 ">
+    <spot id="705" />
+    <spot id="802" />
+  </cloud>
+  <cloud id="1056" ids="area.27.01" level="27" cost="2657205" ids_precede="area.26.02" idx="189 168 145 167 144 ">
+    <spot id="706" />
+    <spot id="803" />
+  </cloud>
+  <cloud id="1057" ids="area.27.02" level="27" cost="2657205" ids_precede="area.27.01" idx="166 165 142 143 ">
+    <spot id="707" />
+    <spot id="804" />
+  </cloud>
+  <cloud id="1058" ids="area.28.01" level="28" cost="3073280" ids_precede="area.27.02" idx="141 140 162 120 119 ">
+    <spot id="708" />
+    <spot id="805" />
+  </cloud>
+  <cloud id="1059" ids="area.28.02" level="28" cost="3073280" ids_precede="area.28.01" idx="97 98 76 54 77 55 99 121 78 56 ">
+    <spot id="806" />
+  </cloud>
+  <cloud id="1060" ids="area.29.01" level="29" cost="3536405" ids_precede="area.28.02" idx="100 122 123 124 146 125 103 102 101 ">
+    <spot id="710" />
+    <spot id="807" />
+  </cloud>
+  <cloud id="1061" ids="area.29.02" level="29" cost="3536405" ids_precede="area.29.01" idx="79 80 57 58 81 59 37 36 35 ">
+    <spot id="711" />
+    <spot id="808" />
+  </cloud>
+  <cloud id="1062" ids="area.30.01" level="30" cost="4050000" ids_precede="area.29.02" idx="312 291 268 290 267 ">
+    <spot id="712" />
+    <spot id="809" />
+  </cloud>
+  <cloud id="1063" ids="area.30.02" level="30" cost="4050000" ids_precede="area.30.01" idx="289 311 334 355 333 310 ">
+    <spot id="713" />
+    <spot id="714" />
+    <spot id="810" />
+  </cloud>
+  <cloud id="1064" ids="area.31.01" level="31" cost="4617605" ids_precede="area.30.02" idx="266 265 243 288 ">
+    <spot id="716" />
+    <spot id="717" />
+    <spot id="811" />
+  </cloud>
+  <cloud id="1065" ids="area.31.02" level="31" cost="4617605" ids_precede="area.31.01" idx="287 309 331 332 ">
+    <spot id="718" />
+    <spot id="719" />
+    <spot id="812" />
+  </cloud>
+  <cloud id="1066" ids="area.32.01" level="32" cost="5242880" ids_precede="area.31.02" idx="378 399 421 398 377 ">
+    <spot id="720" />
+    <spot id="721" />
+    <spot id="814" />
+  </cloud>
+  <cloud id="1067" ids="area.32.02" level="32" cost="5242880" ids_precede="area.32.01" idx="353 375 397 376 354 ">
+    <spot id="722" />
+    <spot id="723" />
+    <spot id="813" />
+  </cloud>
+  <cloud id="1068" ids="area.33.01" level="33" cost="5929605" ids_precede="area.32.02" idx="465 466 487 443 442 486 509 ">
+    <spot id="724" />
+    <spot id="815" />
+  </cloud>
+  <cloud id="1070" ids="area.33.02" level="33" cost="5929605" ids_precede="area.33.01" idx="464 441 420 419 463 485 ">
+    <spot id="725" />
+    <spot id="816" />
+  </cloud>
+  <cloud id="1071" ids="area.34.01" level="34" cost="6681680" ids_precede="area.33.02" idx="467 468 488 489 469 511 510 490 ">
+    <spot id="817" />
+  </cloud>
+  <cloud id="1072" ids="area.34.02" level="34" cost="6681680" ids_precede="area.34.01" idx="536 514 535 491 513 534 512 ">
+    <spot id="818" />
+    <spot id="819" />
+  </cloud>
+  <cloud id="1074" ids="area.35.01" level="35" cost="7503125" ids_precede="area.34.02" idx="532 554 576 531 553 575 598 597 ">
+    <spot id="727" />
+    <spot id="820" />
+  </cloud>
+  <cloud id="1075" ids="area.35.02" level="35" cost="7503125" ids_precede="area.35.01" idx="508 530 529 507 551 573 595 552 574 596 ">
+    <spot id="728" />
+    <spot id="821" />
+  </cloud>
+  <cloud id="1076" ids="area.36.01" level="36" cost="8398080" ids_precede="area.35.02" idx="533 555 577 599 600 556 578 ">
+    <spot id="729" />
+    <spot id="822" />
+  </cloud>
+  <cloud id="1077" ids="area.36.02" level="36" cost="8398080" ids_precede="area.36.01" idx="559 558 580 603 602 557 579 601 ">
+    <spot id="730" />
+    <spot id="823" />
+  </cloud>
+  <cloud id="1078" ids="area.37.01" level="37" cost="9370805" ids_precede="area.36.02" idx="324 303 325 347 304 326 348 ">
+    <spot id="736" />
+  </cloud>
+  <cloud id="1079" ids="area.37.02" level="37" cost="9370805" ids_precede="area.37.01" idx="305 306 327 328 349 350 ">
+    <spot id="732" />
+    <spot id="737" />
+  </cloud>
+  <cloud id="1080" ids="area.38.01" level="38" cost="20851360" ids_precede="area.37.02" key_item="item_event_seedflame" idx="391 369 413 435 436 414 392 370 ">
+    <spot id="733" />
+    <spot id="735" />
+  </cloud>
+  <cloud id="1081" ids="area.39.01" level="39" cost="23134410" ids_precede="area.38.01" idx="371 393 415 437 438 416 394 372 ">
+    <spot id="734" />
+    <spot id="738" />
+  </cloud>
+  <cloud id="1082" ids="area.40.01" level="40" cost="12800000" ids_precede="area.39.01" idx="92 115 116 138 94 93 ">
+    <spot id="739" />
+    <spot id="740" />
+    <spot id="741" />
+  </cloud>
+  <cloud id="1083" ids="area.40.02" level="40" cost="12800000" ids_precede="area.40.01" idx="117 139 118 95 96 75 74 ">
+    <spot id="742" />
+    <spot id="743" />
+    <spot id="744" />
+  </cloud>
+  <cloud id="1084" ids="area.41.01" level="41" cost="14128805" ids_precede="area.40.02" idx="53 32 31 52 30 51 73 ">
+    <spot id="745" />
+    <spot id="746" />
+    <spot id="747" />
+  </cloud>
+  <cloud id="1085" ids="area.41.02" level="41" cost="14128805" ids_precede="area.41.01" idx="29 50 72 71 49 28 ">
+    <spot id="748" />
+    <spot id="749" />
+    <spot id="750" />
+  </cloud>
+  <cloud id="1086" ids="area.42.01" level="42" cost="15558480" ids_precede="area.41.02" idx="70 48 26 47 69 27 ">
+    <spot id="751" />
+    <spot id="752" />
+    <spot id="753" />
+  </cloud>
+  <cloud id="1087" ids="area.42.02" level="42" cost="15558480" ids_precede="area.42.01" idx="25 24 45 23 46 ">
+    <spot id="754" />
+    <spot id="755" />
+    <spot id="756" />
+  </cloud>
+  <cloud id="1089" ids="area.43.01" level="43" cost="17094005" ids_precede="area.42.02" idx="460 459 458 455 456 457 478 479 480 481 482 454 ">
+    <spot id="757" />
+    <spot id="758" />
+  </cloud>
+  <cloud id="1090" ids="area.43.02" level="43" cost="17094005" ids_precede="area.43.01" idx="503 504 526 502 501 500 499 525 524 523 522 ">
+    <spot id="760" />
+    <spot id="761" />
+  </cloud>
+  <cloud id="1091" ids="area.44.01" level="44" cost="18740480" ids_precede="area.43.02" idx="548 570 547 569 546 ">
+    <spot id="762" />
+    <spot id="763" />
+  </cloud>
+  <cloud id="1092" ids="area.44.02" level="44" cost="18740480" ids_precede="area.44.01" idx="591 592 614 613 590 ">
+    <spot id="764" />
+    <spot id="765" />
+  </cloud>
+  <cloud id="1093" ids="area.45.01" level="45" cost="20503125" ids_precede="area.44.02" idx="612 611 589 567 568 545 ">
+    <spot id="766" />
+    <spot id="767" />
+  </cloud>
+  <cloud id="1094" ids="area.45.02" level="45" cost="20503125" ids_precede="area.45.01" idx="588 610 609 587 ">
+    <spot id="768" />
+    <spot id="769" />
+  </cloud>
+  <cloud id="1095" ids="area.46.01" level="46" cost="22387280" ids_precede="area.45.02" idx="544 566 543 565 ">
+    <spot id="770" />
+    <spot id="771" />
+  </cloud>
+  <cloud id="1096" ids="area.46.02" level="46" cost="22387280" ids_precede="area.46.01" idx="586 608 564 542 521 ">
+    <spot id="772" />
+    <spot id="773" />
+  </cloud>
+  <cloud id="1097" ids="area.47.01" level="47" cost="24398405" ids_precede="area.46.02" idx="585 541 563 520 498 477 ">
+    <spot id="774" />
+    <spot id="775" />
+  </cloud>
+  <cloud id="1098" ids="area.47.02" level="47" cost="24398405" ids_precede="area.47.01" idx="497 519 540 475 453 476 ">
+    <spot id="776" />
+    <spot id="777" />
+  </cloud>
+  <cloud id="1099" ids="area.48.01" level="48" cost="26542080" ids_precede="area.47.02" idx="452 474 496 518 495 451 473 517 ">
+    <spot id="778" />
+    <spot id="779" />
+  </cloud>
+  <cloud id="1100" ids="area.48.02" level="48" cost="26542080" ids_precede="area.48.01" idx="516 470 492 471 449 515 493 472 450 494 ">
+    <spot id="780" />
+    <spot id="781" />
+  </cloud>
+  <cloud id="1101" ids="area.49.01" level="49" cost="28824005" ids_precede="area.48.02" idx="607 584 562 539 583 606 605 ">
+    <spot id="782" />
+    <spot id="783" />
+  </cloud>
+  <cloud id="1104" ids="area.49.02" level="49" cost="28824005" ids_precede="area.49.01" idx="581 604 582 560 537 538 561 ">
+    <spot id="784" />
+    <spot id="785" />
+  </cloud>
+  <cloud id="1103" ids="area.50.01" level="50" cost="62500000" ids_precede="area.49.02" idx="108 107 86 64 42 41 63 85 106 105 84 62 40 39 61 83 104 82 60 38 ">
+    <spot id="786" />
+    <spot id="787" />
+    <spot id="788" />
+    <spot id="789" />
+  </cloud>
+  <cloud id="1088" ids="area.51" level="0" cost="1000" ids_precede="area.50.01" idx="352 374 396 418 440 462 484 506 528 550 572 594 616 617 618 619 620 621 622 623 624 625 626 627 628 629 630 631 632 633 634 635 636 637 615 593 571 549 527 505 483 461 439 417 395 373 351 329 307 285 263 241 219 197 175 153 131 109 87 65 43 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0 22 66 44 88 110 132 154 176 198 220 242 264 286 308 330 33 34 " />
+</clouds>

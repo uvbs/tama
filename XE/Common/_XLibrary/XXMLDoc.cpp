@@ -379,9 +379,12 @@ TiXmlElement* XEXmlNode::sFindElemRecursive( TiXmlElement *pRoot, const char *cN
 	pElem = pRoot->FirstChildElement();
 	while( pElem ) {
 		_XTRACE( "%s ", pElem->Value() );
-		auto pElemFind = XEXmlNode::sFindElemRecursive( pElem, cNodeName );
-		if( pElemFind )
-			return pElemFind;
+		auto cValue = pElem->Value();
+		if( cValue[0] != '_' ) {
+			auto pElemFind = XEXmlNode::sFindElemRecursive( pElem, cNodeName );
+			if( pElemFind )
+				return pElemFind;
+		}
 		pElem = pElem = pElem->NextSiblingElement();
 	}
 	return nullptr;

@@ -11,6 +11,8 @@
  @Description  Vector and matrix mathematics library
 
 ******************************************************************************/
+//#include "stdafx.h"
+#if defined(_VER_OPENGL) || defined(TARGET_OS_IPHONE) || defined(ANDROID)
 #include "Vector.h"
 
 #include <math.h>
@@ -119,3 +121,4 @@
 /*****************************************************************************
 End of file (Vector.cpp)
 *****************************************************************************/
+#endif // #if defined(_VER_OPENGL) || defined(TARGET_OS_IPHONE) || defined(ANDROID)

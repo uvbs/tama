@@ -344,7 +344,17 @@ void XGameCommon::ArchivingProp( XArchive& ar )
 	int sizeMax = 0;
 	{
 		XArchive arProp;
+		XGlobalConst::sGet()->Serialize( arProp );
+		const int sizeComp =
+		arProp.DoCompress();
+		sizeMax += sizeComp;
+		XTRACE( "globalxml:%d, ", sizeComp );
+		ar << arProp;
+	}	{
+		XArchive arProp;
 		CONSTANT->Serialize( arProp );
+		XArchive arGlobal;
+		XGlobalConst::sGet()->Serialize( arGlobal );
 		const int sizeComp =
 		arProp.DoCompress();
 		sizeMax += sizeComp;

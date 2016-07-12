@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root reward_exp="100">
+  <scout_attack2 name="25332" desc="27332">
+    <!--야만습격자 퇴치-->
+    <when clear_quest="scout_attack" />
+    <cond>
+      <what clear_spot="spot.baba.assult" />
+    </cond>
+    <reward resource="xRES_WOOD" num="200" />
+    <reward resource="xRES_IRON" num="200" />
+  </scout_attack2>
+  <scout_attack3 name="25335" desc="27335">
+    <!--야만족장 퇴치-->
+    <when clear_quest="x.tutor.research" />
+    <cond>
+      <what clear_spot="spot.baba.boss" />
+    </cond>
+    <reward resource="xRES_WOOD" num="300" />
+    <reward resource="xRES_IRON" num="300" />
+  </scout_attack3>
+  <kill.npc.lv2 name="27004" desc="27013" rate_exp="0.1">
+    <!--성주변 부대 소탕-->
+    <when clear_quest="scout_attack3"></when>
+    <cond>
+      <what clear_spot_type="xSPOT_NPC" num="2" />
+    </cond>
+    <reward resource="xRES_WOOD" num="300" />
+    <reward resource="xRES_IRON" num="300" />
+  </kill.npc.lv2>
+  <kill.npc.lv3 name="27004" desc="27013" rate_exp="0.1">
+    <!--성주변 부대 소탕-->
+    <when clear_quest="x.tutor.unlock.unit"></when>
+    <cond>
+      <what clear_spot_type="xSPOT_NPC" num="5" />
+    </cond>
+    <reward resource="xRES_GOLD" num="3500" />
+  </kill.npc.lv3>
+  <scout_attack4 name="25340" desc="27340" rate_exp="0.1">
+    <!--야만족 잔당 처치-->
+    <when clear_quest="x.tutor.organize"></when>
+    <cond desc="5096">
+      <what clear_spot_type="xSPOT_NPC" num="2" />
+    </cond>
+    <reward resource="xRES_WOOD" num="300" />
+    <reward resource="xRES_IRON" num="300" />
+  </scout_attack4>
+  <empire_recon name="25001" desc="27001" rate_exp="0.1">
+    <!--제국 정찰대 소탕-->
+    <when clear_quest="levelup.hero.to.001" />
+    <cond desc="27013">
+      <what clear_spot_type="xSPOT_NPC" num="4" />
+    </cond>
+    <reward resource="xRES_WOOD" num="500" />
+    <reward resource="xRES_IRON" num="500" />
+  </empire_recon>
+  <assassin_spot name="25002" desc="27002" rate_exp="0.1">
+    <!--암살자 처지-->
+    <when clear_quest="x.quest.hangout" />
+    <cond>
+      <what clear_spot_code="code.assassin.medius" num="3" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="1000" />
+    <reward item="item_event_tresuremap" />
+  </assassin_spot>
+  <kill.npc.lv7.02 name="25350" desc="25351" rate_exp="0.1">
+    <!--제국부대 소탕-->
+    <when clear_quest="x.quest.embassy" />
+    <cond>
+      <what clear_spot_type="xSPOT_NPC" num="10" />
+    </cond>
+    <reward resource="xRES_WOOD" num="1000" />
+    <reward resource="xRES_IRON" num="1000" />
+  </kill.npc.lv7.02>
+  <kill.npc.lv7 name="25350" desc="25351" rate_exp="0.1">
+    <!--제국부대 소탕-->
+    <when clear_quest="collect.jewel.01" />
+    <cond>
+      <what clear_spot_type="xSPOT_NPC" num="10" />
+    </cond>
+    <reward resource="xRES_SULFUR" num="10000" />
+  </kill.npc.lv7>
+  <kill.npc.lv8 name="25350" desc="25402" rate_exp="0.1">
+    <!--제국부대 소탕-->
+    <when clear_quest="kill.npc.lv7" />
+    <cond>
+      <what clear_spot_type="xSPOT_NPC" num="20" />
+    </cond>
+    <reward resource="xRES_JEWEL" num="2000" />
+    <reward item="long_sword" />
+  </kill.npc.lv8>
+</root>

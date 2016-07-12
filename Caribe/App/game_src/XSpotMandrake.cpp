@@ -34,7 +34,7 @@ XSpotMandrake::XSpotMandrake( XWorld *pWorld, XPropWorld::xMANDRAKE *pProp )
 {
 	Init();
 //		m_lsLocal.maxSize = (int)( ( ( (float)GetpProp()->GetProduce() / XGAME::SEC_REGEN ) * 60 * 60 ) * 8 );
-  if( pProp )
+	if( pProp )
 		SetMaxLocal( pProp );
 }
 
@@ -155,7 +155,7 @@ void XSpotMandrake::SetPlayerOwner( ID idAcc, LPCTSTR szName )
 		return;
 	m_idOwner = idAcc;
 	m_idMatchEnemy = 0;
-  SetPower( 0 );
+	SetPower( 0 );
 	SetstrName( szName );
 	SetLevel( 0 );
 	m_secLastEvent = 0;
@@ -343,6 +343,7 @@ void XSpotMandrake::OnOpenedArea( XPropCloud::xCloud* pPropArea )
 void XSpotMandrake::OnAfterBattle( XSPAcc spAccWin
 																, ID idAccLose
 																, bool bWin
+																, int numStar
 																, bool bRetreat )
 {
 	int reward = m_Reward;

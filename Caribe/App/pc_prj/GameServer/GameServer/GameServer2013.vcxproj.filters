@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{aacb1c2e-8493-4dca-b939-fa57fce48579}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{0639af60-ba37-4ab0-b707-ee54e5ea8ac1}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{a33aa27b-e530-4997-96fe-05b5f4256d0b}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;png;manifest</Extensions>
+    </Filter>
+    <Filter Include="source\network">
+      <UniqueIdentifier>{075e35b0-2dc8-4b34-9474-4a83a8373625}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\main">
+      <UniqueIdentifier>{e2320507-052b-42f3-98f2-d3f2f352c314}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\MFC">
+      <UniqueIdentifier>{10f8c09a-7b53-49af-9768-737c6febdb75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\obj">
+      <UniqueIdentifier>{b08a421d-b849-4b98-a592-07b24c69177e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\prop">
+      <UniqueIdentifier>{f421757d-9e10-4f79-9476-bf1bdd508711}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\dlg">
+      <UniqueIdentifier>{18544a30-7737-48b0-94d3-ace6437917d5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\GameServer.ico">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="res\GameServer.rc2">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="res\GameServerDoc.ico">
+      <Filter>resource</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GameServer.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerDoc.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerView.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XClientConnection.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XGame.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XGameUser.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XGameUserMng.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XMain.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XMainDelegate.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XSocketForClient.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Version.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\..\..\Resource\VerPacket.h" />
+    <ClInclude Include="XLoginConnection.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="XDBASvrConnection.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XGameLua.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\constGame.h">
+      <Filter>source\main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XAccount.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\MFC\XDlgConsole.h">
+      <Filter>source\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XGameCommon.h">
+      <Filter>source\main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XHero.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPropWorld.h">
+      <Filter>source\prop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPropHero.h">
+      <Filter>source\prop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XWorld.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSpot.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XLegion.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPacketCG.h">
+      <Filter>source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPacketCL.h">
+      <Filter>source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPacketLG.h">
+      <Filter>source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPacketGDB.h">
+      <Filter>source\network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\server\XSAccount.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Resource\defineGame.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\game_src\XGameLua.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\constGame.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServer.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerDoc.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerView.cpp">
+      <Filter>source\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="..\..\..\game_src\XAccount.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\MFC\XDlgConsole.cpp">
+      <Filter>source\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="XDBASvrConnection.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="XClientConnection.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="XGame.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XGameCommon.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="XGameUser.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="XGameUserMng.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XHero.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="XLoginConnection.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="XMain.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="XMainDelegate.cpp">
+      <Filter>source\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XPropHero.cpp">
+      <Filter>source\prop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XPropWorld.cpp">
+      <Filter>source\prop</Filter>
+    </ClCompile>
+    <ClCompile Include="XSocketForClient.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XWorld.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSpot.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XLegion.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\server\XSAccount.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

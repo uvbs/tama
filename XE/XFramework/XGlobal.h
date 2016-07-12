@@ -31,7 +31,7 @@ public:
 		Convert_TCHAR_To_utf8( szVal, utf8 );
 //		ConvertUTF16toUTF8( szVal, utf8 );
 		const char *str = elem->Attribute( utf8 );
-		XBREAKF( str == NULL, "%s: \"%s\" not found.", GetresXml().c_str(), szVal );
+//		XBREAKF( str == NULL, "%s: \"%s\" not found.", GetresXml().c_str(), szVal );
 		RET v;
 		elem->Attribute( utf8, &v );
 		return v;

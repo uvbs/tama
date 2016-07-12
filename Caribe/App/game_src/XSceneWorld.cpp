@@ -16,6 +16,7 @@
 #include "XSeq.h"
 #include "XWndObj.h"
 #include "XSpots.h"
+#include "XSpotDaily.h"
 #include "XLegion.h"
 #include "XWndSpots.h"
 #include "XFramework/XFacebook.h"
@@ -33,6 +34,7 @@
 #include "XWndResCtrl.h"
 #include "XSystem.h"
 #include "XCampObj.h"
+#include "XWndPopupDaily.h"
 //#include "Sprite/SprMng.h"
 #ifdef _xIN_TOOL
 #include "XDlgPropCloud.h"
@@ -556,7 +558,7 @@ void XSceneWorld::UpdateDailySpot( XSpot *pBaseSpot, XWnd *pRoot )
 	XBREAK( pRoot == nullptr );
 	auto pSpot = static_cast<XSpotDaily*>( pBaseSpot );
 	XWnd *pWnd = pRoot->Find( pSpot->GetidSpot() );
-	if( pSpot->GetType() != XGAME::xDS_NONE ) {
+// 	if( pSpot->GetType() != XGAME::xDS_NONE ) {
 		if( pWnd == nullptr ) {
 			auto pWndSpot = new XWndDailySpot( pSpot );
 			std::string ids = SZ2C( pSpot->GetpBaseProp()->strIdentifier.c_str() );
@@ -564,7 +566,7 @@ void XSceneWorld::UpdateDailySpot( XSpot *pBaseSpot, XWnd *pRoot )
 			pRoot->Add( pSpot->GetidSpot(), pWndSpot );
 			pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, pSpot->GetidSpot() );
 		}
-	}
+// 	}
 }
 
 /**

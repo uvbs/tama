@@ -148,12 +148,12 @@ XBaseUnit::XBaseUnit( XSquadObj *pSquadObj,
 // 		auto pAcc = GetspLegionObj()->GetpAccount();
 // 		XBREAK( pAcc == nullptr );
 		//
-		for( auto itor : pHero->GetTechTree( pSquadObj->GetUnitType() ) ) {
+		for( auto itor : pHero->GetTechTree( pSquadObj->GetUnit() ) ) {
 			XGAME::xAbil *pAbil = &(itor.second);
 			if( pAbil->point > 0 ) {
 				XBREAK( pAbil->point > 5 );
 				ID idAbil = itor.first;
-				auto pNode = XPropTech::sGet()->GetpNode( pSquadObj->GetUnitType(), idAbil );
+				auto pNode = XPropTech::sGet()->GetpNode( pSquadObj->GetUnit(), idAbil );
 				XBREAK( pNode == nullptr );
 				XBREAK( pNode->strSkill.empty() );
 				CreateAddUseSkillByIdentifier( pNode->strSkill.c_str() );
@@ -636,7 +636,7 @@ float XBaseUnit::GetScaleFactor()
 	} else {
 		switch( GetUnitSize() ) {
 		case XGAME::xSIZE_SMALL:
-		if( m_pSquadObj->GetUnitType() == XGAME::xUNIT_PALADIN )
+		if( m_pSquadObj->GetUnit() == XGAME::xUNIT_PALADIN )
 			scaleFactor = 1.5f;
 		break;
 		case XGAME::xSIZE_MIDDLE:
@@ -2755,7 +2755,7 @@ float XBaseUnit::hardcode_OnToDamage( UnitPtr& spTarget, float damage, XGAME::xt
 */
 XGAME::xtUnit XBaseUnit::GetSquadUnit()
 {
-	return m_pSquadObj->GetUnitType();
+	return m_pSquadObj->GetUnit();
 }
 
 float XBaseUnit::GetAdjDamage( float damage, BOOL bCritical, XSKILL::xtDamage typeDamage, XGAME::xtDamageAttr attrDamage )
@@ -3276,7 +3276,7 @@ float XBaseUnit::GetSpeedMovePerSec()
 	const auto pHero = GetHero();
 	float speed = m_pPropUnit->movSpeedPerSec * pHero->GetMoveSpeed();
 	float addRatio = 0.f;
-	if( GetpSquadObj()->GetUnitType() == XGAME::xUNIT_MINOTAUR ) {
+	if( GetpSquadObj()->GetUnit() == XGAME::xUNIT_MINOTAUR ) {
 		if( FindBuffSkill( _T( "wide" ) ) ) {
 			float adjVal;
 			auto pBuff = GetAdjParamByBuff( &adjVal, _T( "mad_cow" ), XGAME::xADJ_MOVE_SPEED );
@@ -3339,7 +3339,7 @@ float XBaseUnit::GetSpeedAttack( UnitPtr spTarget )
 			addAdjRatio += GetAdjParam( XGAME::xADJ_ATTACK_SPEED_BIG )->valPercent;
 		} break;
 		}
-		if( GetpSquadObj()->GetUnitType() == XGAME::xUNIT_ARCHER ) {
+		if( GetpSquadObj()->GetUnit() == XGAME::xUNIT_ARCHER ) {
 			auto pBuff = FindBuffSkill( _T( "quick_firing" ) );
 			if( pBuff && m_typeCurrMeleeType == XGAME::xMT_RANGE ) {
 				XE::VEC2 vDist = spTarget->GetvwPos().ToVec2() - GetvwPos().ToVec2();
@@ -3348,7 +3348,7 @@ float XBaseUnit::GetSpeedAttack( UnitPtr spTarget )
 					addAdjRatio += pBuff->GetAbilMinbyLevel();
 			}
 		} else
-		if( GetpSquadObj()->GetUnitType() == XGAME::xUNIT_MINOTAUR ) {
+		if( GetpSquadObj()->GetUnit() == XGAME::xUNIT_MINOTAUR ) {
 			// 광폭 특성이 있을때
 			if( FindBuffSkill(_T("wide")) ) {
 				float adjVal;

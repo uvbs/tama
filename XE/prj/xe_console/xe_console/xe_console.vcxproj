@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugCampHero2|Win32">
+      <Configuration>DebugCampHero2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_Bot|Win32">
+      <Configuration>Debug_Bot</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_GLES2|Win32">
+      <Configuration>Debug_GLES2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Bot|Win32">
+      <Configuration>Release_Bot</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{63B59066-E735-4F48-A82F-CFF9EE611212}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>xe_console</RootNamespace>
+    <SccProjectName>Perforce Project</SccProjectName>
+    <SccLocalPath>..\..\..\..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugCampHero2|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Bot|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Bot|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugCampHero2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Bot|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Bot|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugCampHero2|Win32'">
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Bot|Win32'">
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Release\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Bot|Win32'">
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Release\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEV_LEVEL=DLV_LOCAL;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugCampHero2|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEV_LEVEL=DLV_LOCAL;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Bot|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_XBOT;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>XE_GLES2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Bot|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_XBOT;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Common\_XLibrary\etc\ContainerSTL.inl" />
+    <None Include="..\..\..\Common\_XLibrary\XList.inl" />
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Alert.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\ContainerSTL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\ConvertString.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Debug.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Global.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\path.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Timer.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Token.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Types.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xLang.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XTimer2.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xUtil.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\client\XNetworkConnection.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\client\XSocketClient.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\win32\XWinSocketClient.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\xenDef.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XNetworkDelegate.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XPacket.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\VersionXE.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\win32\XLockCS.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XArchive.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XCrypto.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XE.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xeDef.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLib.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibConsole.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLibrary.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibResPath.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XList.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLockPThreadMutex.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XResMng.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XResObj.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XSystem.h" />
+    <ClInclude Include="..\..\..\XFramework\XConsoleMain.h" />
+    <ClInclude Include="..\..\..\XFramework\XConstant.h" />
+    <ClInclude Include="..\..\..\XFramework\XDBAccount.h" />
+    <ClInclude Include="..\..\..\XFramework\XDetectDeadLock.h" />
+    <ClInclude Include="..\..\..\XFramework\XEOption.h" />
+    <ClInclude Include="..\..\..\XFramework\XTextTable.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Alert.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\ConvertString.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Debug.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\path.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Timer.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Token.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xLang.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XTimer2.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xUtil.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\client\XNetworkConnection.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\client\XSocketClient.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\win32\XWinSocketClient.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XNetworkDelegate.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XPacket.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\win32\XLockCS.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XArchive.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XCrypto.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XE.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLibrary.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLockPThreadMutex.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XResMng.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XResObj.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XSystem.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XConsoleMain.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XConstant.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XDBAccount.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XDetectDeadLock.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XEOption.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XTextTable.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugCampHero2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Bot|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_Bot|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\Third_Party_lib\pthread_win32\lib\x86\pthreadVC2.lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

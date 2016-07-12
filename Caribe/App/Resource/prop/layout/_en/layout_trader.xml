@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--무역상 씬-->
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf">
+  <!--모든 씬 백판-->
+  <common_bg>
+    <wnd posx="0" posy="0" width="640" height="360" key="wnd.common_bg">
+      <!--백판-->
+      <img posx="0" posy="0" file="common_bg_bottom.png" />
+      <!--백버튼-->
+      <butt posx="510" posy="0" key="butt.back" img_up="common_butt_back.png" />
+    </wnd>
+  </common_bg>
+  <!--골드 & 캐쉬 백판-->
+  <common_bg_goldcash>
+    <wnd posx="230" posy="2" width="0" height="0" key="wnd.common.bg.goldcash">
+      <!--골드 & 캐쉬 백판-->
+      <img posx="0" posy="0" file="common_bg_goldcash.png">
+        <!--골드-->
+        <text posx="50" posy="19" font="font_text_b" font_size="34" font_style="stroke" align="center" text_col="white" width="85" text="80000" key="text.common.gold"></text>
+        <!--캐쉬-->
+        <text posx="186" posy="19" font="font_text_b" font_size="34" font_style="stroke" align="center" text_col="white" width="85" text="80000" key="text.common.cash" />
+      </img>
+    </wnd>
+  </common_bg_goldcash>
+  <!--무역상 백판-->
+  <trader_bg>
+    <wnd posx="64" posy="57" width="640" height="303" key="wnd.trader_bg">
+      <!--내부 백판-->
+      <img posx="0" posy="0" file="common_bg_inside.png"></img>
+      <!--현수막-->
+      <img posx="10" posy="10" file="trader_bg_banner.png" />
+      <!--무역상 케릭터-->
+      <wnd posx="0" posy="0" width="0" height="0" key="wnd.trader.char" show="0">
+        <!--무역상 캐릭터-->
+        <img posx="10" posy="46" file="trader_bg_char.png" />
+        <!--무역상 캐릭터 대사-->
+        <text posx="25" posy="52" font="font_text_b" font_size="16" font_style="stroke" align="center" width="88" text="80062" key="text.armory.char" text_col="white"></text>
+      </wnd>
+      <!--무역상 바로 불러오기-->
+      <wnd posx="0" posy="0" width="0" height="0" key="wnd.trader.recall">
+        <!--남은 시간 text-->
+        <text posx="-5" posy="100" font="font_text_b" font_size="50" font_style="stroke" align="center" text_col="white" width="150" text="3" key="text.trader.recalltime"></text>
+        <!--바로 불러오기 버튼-->
+        <butt img_up="trader_butt_recall.png" posx="25" posy="200" text_col="white" font="font_text_b" font_size="35" key="butt.trader.recall" font_style="stroke">
+          <!--"즉시 호출" 텍스트-->
+          <text posx="0" posy="12" font="font_text_b" font_size="20" font_style="stroke" align="center" text_col="white" width="88" text="80130"></text>
+          <!--호루라기 이미지-->
+          <img posx="9" posy="33" file="trader_whistle.png" />
+          <text posx="15" posy="35" font="font_text_b" font_size="25" font_style="stroke" align="center" text_col="white" width="88" key="text.trader.whistle"></text>
+          <!--캐쉬 이미지-->
+          <img posx="9" posy="55" file="trader_cash.png" />
+          <text posx="15" posy="57" font="font_text_b" font_size="25" font_style="stroke" align="center" text_col="white" width="88" key="text.trader.cash"></text>
+        </butt>
+      </wnd>
+      <!--아이템 리스트 백판-->
+      <img posx="133" posy="13" file="trader_bg_list.png" />
+      <!--자원 슬롯 백판 1 ~ 5-->
+      <img posx="142" posy="23" file="trader_bg_itemslot.png" />
+      <img posx="142" posy="77" file="trader_bg_itemslot.png" />
+      <img posx="142" posy="131" file="trader_bg_itemslot.png" />
+      <img posx="142" posy="185" file="trader_bg_itemslot.png" />
+      <img posx="142" posy="239" file="trader_bg_itemslot.png" />
+      <!--자원 이미지 1 ~ 5-->
+      <img posx="150" posy="30" file="world_top_wood.png" scale="1.8" key="img.trader.wood" />
+      <img posx="154" posy="85" file="world_top_iron.png" scale="1.8" key="img.trader.iron" />
+      <img posx="150" posy="138" file="world_top_jewel.png" scale="1.8" key="img.trader.jewel"></img>
+      <img posx="150" posy="193" file="world_top_sulfur.png" scale="1.8" key="img.trader.sulfur" />
+      <img posx="156" posy="245" file="world_top_mandrake.png" scale="1.3" key="img.trader.mandrake" />
+      <!--슬라이드 백판 1 ~ 5-->
+      <img posx="195" posy="23" file="trader_bg_slideritem.png" />
+      <img posx="195" posy="77" file="trader_bg_slideritem.png" />
+      <img posx="195" posy="131" file="trader_bg_slideritem.png" />
+      <img posx="195" posy="185" file="trader_bg_slideritem.png" />
+      <img posx="195" posy="239" file="trader_bg_slideritem.png" />
+    </wnd>
+  </trader_bg>
+  <!--슬라이더-->
+  <slidertab>
+    <wnd posx="0" posy="57" width="0" height="0" key="wnd.trader">
+      <!--자원 슬라이드 텍스트 1 ~ 5-->
+      <text posx="285" posy="34" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.resource0" text_col="white"></text>
+      <text posx="285" posy="88" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.resource1" text_col="white"></text>
+      <text posx="285" posy="142" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.resource2" text_col="white"></text>
+      <text posx="285" posy="196" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.resource3" text_col="white"></text>
+      <text posx="285" posy="250" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.resource4" text_col="white"></text>
+    </wnd>
+  </slidertab>
+  <!--자원시세-->
+  <resourcetab>
+    <wnd posx="410" posy="60" width="640" height="360" key="wnd.trader.resource">
+      <!--양피지 백판-->
+      <img posx="0" posy="0" file="trader_bg_magnifier.png"></img>
+      <!--"자원시세"-->
+      <text posx="0" posy="7" font="font_text_b" font_size="20" font_style="stroke" align="center" width="157" text="80048" key="text.trader.resource" text_col="white"></text>
+      <!--아이템 이미지-->
+      <img posx="57" posy="40" key="img.trader.itemimg"></img>
+      <!--자원 시세 텍스트 1 ~ 5-->
+      <text posx="62" posy="55" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.rate0" text_col="white"></text>
+      <text posx="62" posy="91" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.rate1" text_col="white"></text>
+      <text posx="62" posy="127" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.rate2" text_col="white"></text>
+      <text posx="62" posy="163" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.rate3" text_col="white"></text>
+      <text posx="62" posy="199" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.rate4" text_col="white"></text>
+      <!--자원 이미지 1 ~ 5-->
+      <img posx="19" posy="47" file="world_top_wood.png" scale="1.2" />
+      <img posx="21" posy="83" file="world_top_iron.png" scale="1.2" />
+      <img posx="19" posy="119" file="world_top_jewel.png" scale="1.2" />
+      <img posx="19" posy="154" file="world_top_sulfur.png" scale="1.2" />
+      <img posx="23" posy="187" file="world_top_mandrake.png" />
+      <!--총 변환 금액-->
+      <text posx="39" posy="228" font="font_text_b" font_size="20" font_style="stroke" align="center" width="88" text="80000" key="text.trader.totalgold" text_col="white"></text>
+      <!--금화 이미지-->
+      <img posx="23" posy="223" file="world_top_gold.png" />
+      <!--거래 버튼-->
+      <butt img_up="common_butt_small.png" posx="7" posy="249" text_col="white" font="font_text_b" font_size="35" key="butt.trader.trade" font_style="stroke" text="80028" />
+      <!--취소 버튼-->
+      <butt img_up="common_butt_small.png" posx="82" posy="249" text_col="white" font="font_text_b" font_size="35" key="butt.trader.cancel" font_style="stroke" text="3" />
+    </wnd>
+  </resourcetab>
+  <!--텍스트 팝업-->
+  <commontextpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popuptext">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" key="text.title" />
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.common.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
+      <!--왼쪽 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+      <!--오른쪽 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+    </img>
+  </commontextpopup>
+  <!--아이템 슬롯 텍스트 팝업-->
+  <commonitemtextpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popupitemtext">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" key="text.title" />
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <!--아이템 슬롯-->
+      <img posx="237" posy="120" file="common_bg_item.png"></img>
+      <!--아이템 이미지-->
+      <img posx="241" posy="124" key="img.ask.itemimg"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.common.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
+      <!--왼쪽 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+      <!--오른쪽 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+    </img>
+  </commonitemtextpopup>
+</layout>

@@ -1,0 +1,11 @@
+prefix=D:/XUZHU_~1/XUZHU_~1/iPhone/EPICMO~1/THIRD_~1/FREETY~1
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: FreeType 2
+Description: A free, high-quality, and portable font engine.
+Version: 9.16.3
+Requires:
+Libs: -L${libdir} -lfreetype -lz 
+Cflags: -I${includedir}/freetype2 -I${includedir}

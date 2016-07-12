@@ -203,6 +203,10 @@ void XGlobalConst::LoadConst()
 	XBREAK( m_rateKillDrop < 0 || m_rateKillDrop > 100.f );
 	m_cashPerAP = GetFloat( "gem_per_ap" );
 	XBREAK( m_cashPerAP == 0 );
+
+	m_gemFillDailyTry = GetInt( "gem_fill_daily" );
+	m_rateFillDailyTry = GetFloat( "rate_fill_daily" );
+	m_numEnterDaily = GetInt( "num_try_daily" );
 } // XGlobalConst::LoadConst()
 
 // void XGlobalConst::SetTableByUnlockUnitLevel( )
@@ -522,9 +526,25 @@ const XGlobalConst::xLegionTable& XGlobalConst::GetLegionTable( int lvLegion ) c
 
 void XGlobalConst::Serialize( XArchive& ar ) const
 {
-
+	ar << (WORD)m_gemFillDailyTry;
+	ar << (char)m_numEnterDaily;
+	ar << (char)0;
+	ar << (float)m_rateFillDailyTry;
+	// 압축할때 용량이 너무 작으니까 문제가 생겨서 더미를 넣음.
+	for( int i = 0; i < 8; ++i ) {
+		ar << 0;
+	}
 }
 void XGlobalConst::DeSerialize( XArchive& ar, int )
 {
-
+	WORD w0;
+	char c0;
+	ar >> w0;		m_gemFillDailyTry = w0;
+	ar >> c0;		m_numEnterDaily = c0;
+	ar >> c0;
+	ar >> m_rateFillDailyTry;
+	for( int i = 0; i < 8; ++i ) {
+		int i0;
+		ar >> i0;
+	}
 }

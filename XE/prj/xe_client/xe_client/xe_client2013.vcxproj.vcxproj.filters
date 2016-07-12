@@ -713,9 +713,6 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\xMathD3D.h">
       <Filter>source\etc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\_XLibrary\xVector.h">
-      <Filter>source\etc</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\etc\Token.h">
       <Filter>header</Filter>
     </ClInclude>
@@ -815,16 +812,7 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XE_MFCFramework.h">
       <Filter>source\graphics\d3d</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\XF.h">
-      <Filter>source\etc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\_XLibrary\XLibrary.h">
-      <Filter>source\etc</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\xLibResPath.h">
-      <Filter>source\etc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\_XLibrary\XLua.h">
       <Filter>source\etc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XOpenGL.h">
@@ -1105,6 +1093,18 @@
     </ClInclude>
     <ClInclude Include="..\..\..\XFramework\client\XASyncLoad.h">
       <Filter>source\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XF.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLibrary.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLua.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xVector.h">
+      <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

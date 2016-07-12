@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--월드 씬-->
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf">
+  <!--월드 씬 메인-->
+  <world>
+    <!--유저 닉네임, 경험치, 트로피-->
+    <wnd posx="0" posy="0" width="0" height="0" key="">
+      <!--exp 게이지-->
+      <pbar posx="21" posy="29" key="pbar.exp" width="100" height="10" img1="world_top_exp.png" />
+      <!--블랭크 이미지-->
+      <img posx="20" posy="5" file="world_top_blank.png" />
+      <img posx="20" posy="28" file="world_top_blank.png" />
+      <img posx="20" posy="50" file="world_top_blank.png" />
+      <!--경험치 게이지-->
+      <!--얼굴, 방패, 트로피 이미지-->
+      <img posx="10" posy="1" file="world_top_face.png" key="img.player.face" />
+      <img posx="10" posy="25" file="world_top_shield.png">
+        <text posx="center" posy="center" key="text.level" font="font_text_m" font_size="20" font_style="stroke" id="666" />
+      </img>
+      <img posx="8" posy="48" file="world_top_trophy.png">
+        <text posx="22" posy="4" key="text.trophy" font="font_text_m" font_size="20" font_style="stroke" text="80000" width="56" height="12" align="center" />
+      </img>
+      <img posx="20" posy="72" file="world_top_blank.png">
+        <img posx="-12" posy="-2" file="world_top_trophy.png">
+          <text posx="22" posy="4" key="text.power" font="font_text_m" font_size="20" font_style="stroke" width="56" height="12" align="center" />
+        </img>
+      </img>
+      <!--유저 닉네임, 유저 레벨 텍스트-->
+      <text posx="31" posy="6" _width="71" key="text.name" font="font_text_m" font_size="20" font_style="stroke" _align="center" />
+      <text posx="31" posy="30" key="text.exp" font="font_text_m" font_size="20" font_style="stroke" text="80000" width="58" align="center" />
+      <img posx="248" posy="4" file="icon_ap.png" scale="0.7" />
+      <text posx="274" posy="9" key="text.ap" font="font_text_m" font_size="20" font_style="stroke" width="57" height="12" align="center" />
+    </wnd>
+    <!--자원 윈도우-->
+    <wnd posx="0" posy="0" width="0" height="0" key="">
+      <!--블랭크 이미지-->
+      <img posx="568" posy="8" file="world_top_blank.png"></img>
+      <img posx="485" posy="8" file="world_top_blank.png"></img>
+      <img posx="568" posy="24" file="world_top_blank.png"></img>
+      <img posx="568" posy="40" file="world_top_blank.png"></img>
+      <img posx="568" posy="56" file="world_top_blank.png"></img>
+      <img posx="568" posy="72" file="world_top_blank.png"></img>
+      <img posx="568" posy="88" file="world_top_blank.png"></img>
+      <img posx="263" posy="8" file="world_top_blank.png"></img>
+      <!--골드, 캐쉬, 목재, 철, 보석, 유황, 만드레이크 이미지-->
+      <img posx="561" posy="9" file="world_top_gold.png" scale="0.7" />
+      <img posx="476" posy="9" file="world_top_cash.png" scale="0.7" />
+      <img posx="561" posy="23" file="world_top_wood.png" scale="0.7" />
+      <img posx="563" posy="40" file="world_top_iron.png" scale="0.7" />
+      <img posx="562" posy="55" file="world_top_jewel.png" scale="0.7" />
+      <img posx="563" posy="70" file="world_top_sulfur.png" scale="0.7" />
+      <img posx="562" posy="85" file="world_top_mandrake.png" scale="0.7"></img>
+    </wnd>
+    <!--왼쪽 버튼들-->
+    <wnd posx="0" posy="0" width="0" height="0" key="wnd.left.butts">
+      <!--왼쪽 버튼들 bg-->
+      <img posx="0" posy="70" file="world_left_bg.png" key="img.world.left.bg" />
+      <!--랭킹, 소셜, 우편함, 옵션 버튼-->
+      <butt posx="3" posy="77" img_up="world_left_rank_butt.png" key="butt.world.rank">
+        <!--랭킹 버튼-->
+      </butt>
+      <butt posx="3" posy="130" img_up="world_left_social_butt.png" key="butt.world.social">
+        <!--소셜 버튼-->
+      </butt>
+      <butt posx="3" posy="184" img_up="world_left_mailbox_butt.png" key="butt.world.mailbox">
+        <!--우편함 버튼-->
+      </butt>
+      <spr posx="45" posy="195" spr="ui_alert.spr" key="img.world.left.mailboxalert2" show="0" />
+      <butt posx="3" posy="238" img_up="world_left_option_butt.png" key="butt.world.option">
+        <!--옵션 버튼-->
+      </butt>
+      <!--숨기기 버튼-->
+      <butt posx="68" posy="150" img_up="world_left_butt.png" key="butt.world.hide">
+        <!--숨기기 버튼-->
+      </butt>
+      <img posx="74" posy="171" file="world_left_rightarrow.png" key="img.world.left.right" show="1" />
+      <img posx="73" posy="171" file="world_left_leftarrow.png" key="img.world.left.left" show="0" />
+      <!--post 알림-->
+      <spr posx="95" posy="155" spr="ui_alert.spr" key="img.world.left.mailboxalert1" show="0" />
+    </wnd>
+    <!--퀘스트-->
+    <!--아래 버튼들-->
+    <wnd posx="0" posy="0" width="0" height="0" key="">
+      <!--부대편성, 기술연구, 영웅고용, 창고, 시장 버튼-->
+      <butt posx="53" posy="323" img_up="common_blank_s.png" key="butt.unitorg">
+        <img posx="-46" posy="-22" file="world_bottom_region.png" />
+        <text posx="0" posy="0" font="font_text_b" font_size="30" font_style="shadow" text="80004" key="text.butt.legion" align="center" width="94" height="29">
+          <!--부대편성-->
+        </text>
+      </butt>
+      <butt posx="166" posy="323" img_up="common_blank_s.png" key="butt.tech">
+        <img posx="-19" posy="-12" file="world_bottom_skillstudy.png" />
+        <text posx="5" posy="0" font="font_text_b" font_size="25" font_style="shadow" text="80049" key="text.butt.tech" width="89" align="center" height="29">
+          <!--기술연구-->
+        </text>
+      </butt>
+      <butt posx="284" posy="323" img_up="common_blank_s.png" key="butt.hero">
+        <img posx="-30" posy="-23" file="world_bottom_hero.png" />
+        <text posx="10" posy="0" font="font_text_b" font_size="20" font_style="shadow" text="80050" key="text.butt.hero" width="84" align="center" height="29" id="666">
+          <!--영웅고용-->
+        </text>
+      </butt>
+      <butt posx="414" posy="323" img_up="common_blank_s.png" key="butt.storage">
+        <img posx="-26" posy="-5" file="world_bottom_storage.png" />
+        <text posx="10" posy="0" font="font_text_b" font_size="30" font_style="shadow" text="80051" key="text.butt.storage" width="84" align="center" height="29">
+          <!--창고-->
+        </text>
+      </butt>
+      <butt posx="540" posy="323" img_up="common_blank_s.png" key="butt.market">
+        <img posx="-23" posy="-9" file="world_bottom_market.png" />
+        <text posx="10" posy="0" font="font_text_b" font_size="30" font_style="shadow" text="80052" key="text.butt.market" width="84" align="center" height="29">
+          <!--시장-->
+        </text>
+      </butt>
+      <!--부대편성, 기술연구, 영웅고용, 창고, 시장 이미지-->
+      <!--부대편성, 기술연구, 영웅고용, 창고, 시장 텍스트-->
+    </wnd>
+    <!--스페셜 스팟 출현 남은기간-->
+    <text posx="361" posy="2" key="text.special.remain" font="font_text_m" font_size="20" font_style="shadow" />
+    <sound bgm="lobby" />
+    <butt posx="4" posy="91" img_up="log_butt.png" key="butt.log.battle">
+      <!--공격/방어 로그-->
+    </butt>
+  </world>
+  <!--우편함 팝업-->
+  <mailpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.world.mail">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80072" />
+      <!--메일 리스트-->
+      <list posx="100" posy="90" width="328" height="180" spacew="3" spaceh="3" type="thumb" key="list.mail" />
+      <!--취소 버튼-->
+      <butt posx="221" posy="270" img_up="common_butt_back2.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke"></butt>
+      <text posx="0" posy="150" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80091" key="mail.numtext" />
+    </img>
+  </mailpopup>
+  <!--우편함 내용 팝업-->
+  <mailcontentpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.world.mailcontent">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80072" />
+      <!--메일 제목 bg & 내용 bg-->
+      <img posx="100" posy="80" file="mail_bg_title2.png" />
+      <img posx="100" posy="130" file="mail_bg_content.png" />
+      <!--메일 제목 & 내용 텍스트-->
+      <text posx="50" posy="90" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="left" text="80077" />
+      <text posx="50" posy="170" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="left" text="80078" />
+      <!--메일 제목 & 내용-->
+      <text posx="120" posy="90" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="left" text="80077" key="text.mail.title" />
+      <text posx="110" posy="140" width="330" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="left" text="80078" key="text.mail.content" />
+      <!--확득 버튼-->
+      <butt posx="300" posy="282" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.get" font_style="stroke" text="80076"></butt>
+      <!--확인 버튼-->
+      <butt posx="404" posy="282" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+    </img>
+  </mailcontentpopup>
+  <!--옵션 팝업-->
+  <optionpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.world.option">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80074" />
+      <!--"소리끄기", "언어선택", "진동끄기", "초대거절" 텍스트-->
+      <text posx="30" posy="120" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="right" text="80079" width="100" />
+      <text posx="210" posy="120" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="right" text="80080" width="100" />
+      <text posx="30" posy="210" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="right" text="80081" width="100" />
+      <_text posx="210" posy="210" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="right" text="80082" width="100" />
+      <!--체크박스 bg 1 ~ 4-->
+      <img posx="140" posy="110" file="option_bg_checkbox.png" key="img.world.checkbox1">
+        <!--체크 표시 1-->
+        <img posx="9" posy="8" file="option_check.png" key="img.world.check1" />
+      </img>
+      <img posx="320" posy="110" file="option_bg_checkbox.png" key="img.world.checkbox2">
+        <!--국기-->
+        <img posx="9" posy="8" file="option_ko.png" key="img.flag" />
+        <list posx="9" posy="40" width="47" height="100" type="list" key="list.flag" />
+      </img>
+      <img posx="140" posy="200" file="option_bg_checkbox.png" key="img.world.checkbox3">
+        <!--체크 표시 2-->
+        <img posx="9" posy="8" file="option_check.png" key="img.world.check2" />
+      </img>
+      <_butt posx="305" posy="200" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.login" font_style="stroke" text="80172">
+        <!--계정 연동 버튼-->
+      </_butt>
+      <_img posx="320" posy="200" file="option_bg_checkbox.png" key="img.world.checkbox4">
+        <!--체크 표시 3-->
+        <img posx="9" posy="8" file="option_check.png" key="img.world.check3" />
+      </_img>
+      <!--닫기 버튼-->
+      <butt posx="221" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="80006"></butt>
+    </img>
+  </optionpopup>
+  <spotclickselect>
+    <img posx="222" posy="87" file="world_center_bg.png" key="img.world.center">
+      <!--공격-->
+      <butt posx="-10" posy="50" img_up="world_butt_attack.png" key="butt.world.attack"></butt>
+      <img posx="-10" posy="50" file="world_butt_attack_d.png" key="img.world.attack" show="0" />
+      <!--정찰-->
+      <butt posx="65" posy="0" img_up="world_butt_recon.png" key="butt.world.recon"></butt>
+      <!--수집-->
+      <butt posx="70" posy="80" img_up="world_butt_collect.png" key="butt.world.collect"></butt>
+      <img posx="70" posy="80" file="world_butt_collect_d.png" key="img.world.collect" show="0" />
+    </img>
+  </spotclickselect>
+  <quest_list>
+    <img posx="580" posy="103" file="world_right_quest_bg.png">
+      <!--퀘스트 bg-->
+      <list posx="18" posy="50" width="34" height="153" type="list" key="list.quest" />
+      <butt posx="18" posy="14" img_up="butt_quest1.png" key="butt.quest.change">
+        <!--퀘스트 전환 버튼-->
+      </butt>
+    </img>
+  </quest_list>
+  <quest_info>
+    <popup img="hero_parchment_high.png">
+      <!--퀘스트 안내-->
+      <scroll_view posx="52" posy="41" width="191" height="176" dir="vert" key="scrl.view.quest">
+        <text font="font_text_b" text_col="col_quest_info_text" font_size="30" key="quest.info.name"></text>
+        <text posy="30" font="font_text_m" text_col="col_quest_info_text" font_size="15" key="quest.info.desc" width="158" />
+        <text font="font_text_m" font_size="15" key="text.objective" text="2013" text_col="col_quest_info_text" />
+        <text font="font_text_m" text_col="yellow" font_size="20" key="quest.info.objective" style="stroke" />
+        <text font="font_text_m" font_size="15" key="quest.info.reward" text_col="col_quest_info_text" />
+        <_text font="font_text_m" font_size="15" key="text.reward" text="2014" text_col="col_quest_info_text" />
+        <_img posx="50" posy="146" file="common_bg_item.png">
+          <!---->
+        </_img>
+        <_img posx="15" posy="164" file="common_bg_item.png" key="img.reward" />
+        <text font="font_text_m" font_size="15" key="quest.info.reward.exp" text_col="col_quest_info_text" />
+      </scroll_view>
+    </popup>
+  </quest_info>
+  <popup_account_regist>
+    <img posx="0" posy="0" file="common_bg_popup.png">
+      <text posx="0" posy="16" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" width="516" text="80081" />
+      <text posx="25" posy="92" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="left" width="112" text="80081"></text>
+      <text posx="25" posy="160" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="left" width="112" text="80145"></text>
+      <text posx="25" posy="229" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="left" width="112" text="80146" />
+      <img posx="141" posy="78" file="option_input_box.png" key="img.box.email">
+        <text posx="0" posy="11" width="284" font="font_text_b" align="center" font_size="43" font_style="stroke" key="text.email" />
+      </img>
+      <img posx="141" posy="146" file="option_input_box.png" key="img.box.password">
+        <text posx="0" posy="11" width="284" font="font_text_b" align="center" font_size="43" font_style="stroke" key="text.password" />
+      </img>
+      <img posx="141" posy="214" file="option_input_box.png" key="img.box.password.verify">
+        <text posx="0" posy="11" width="284" font="font_text_b" align="center" font_size="43" font_style="stroke" key="text.password.verify" />
+      </img>
+    </img>
+    <butt posx="148" posy="274" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.popup.register" font_style="stroke" text="80142"></butt>
+    <butt posx="279" posy="274" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.popup.close" font_style="stroke" text="80143"></butt>
+  </popup_account_regist>
+  <popup_account_login>
+    <img posx="0" posy="0" file="common_bg_popup.png">
+      <text posx="0" posy="16" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" width="516" text="80172" />
+      <text posx="25" posy="92" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="left" width="112" text="80144"></text>
+      <text posx="25" posy="160" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="left" width="112" text="80145"></text>
+      <img posx="141" posy="78" file="option_input_box.png" key="img.box.email">
+        <text posx="0" posy="11" width="284" font="font_text_b" align="center" font_size="43" font_style="stroke" key="text.email" />
+      </img>
+      <img posx="141" posy="146" file="option_input_box.png" key="img.box.password">
+        <text posx="0" posy="11" width="284" font="font_text_b" align="center" font_size="43" font_style="stroke" key="text.password" />
+      </img>
+    </img>
+    <butt posx="148" posy="274" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.login.ok" font_style="stroke" text="80009"></butt>
+    <butt posx="279" posy="274" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.popup.close" font_style="stroke" text="80143"></butt>
+  </popup_account_login>
+  <popup_fail>
+    <img posx="0" posy="0" file="guild_popup_bg.png">
+      <img posx="54" posy="77" file="guild_popup_box.png">
+        <text posx="7" posy="14" width="294" font="font_text_b" align="center" font_size="38" font_style="stroke" text="80147" key="text.regist.fail" />
+      </img>
+    </img>
+    <butt posx="160" posy="183" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.popup.ok" font_style="stroke" text="80009"></butt>
+  </popup_fail>
+  <!--텍스트 팝업-->
+  <commontextpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popuptext">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" key="text.title" />
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.common.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
+      <!--왼쪽 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+      <!--오른쪽 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+      <!--버튼 하나용-->
+      <butt posx="215" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok1" font_style="stroke" text="2" show="0"></butt>
+    </img>
+  </commontextpopup>
+</layout>

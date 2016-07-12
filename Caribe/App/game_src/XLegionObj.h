@@ -39,7 +39,7 @@ public:
 	//
 	void Release();
 	GET_ACCESSOR( LegionPtr&, spLegion );
-	GET_ACCESSOR( XECompCamp&, Camp );
+	GET_ACCESSOR_CONST( const XECompCamp&, Camp );
 	GET_ACCESSOR( int, cntLive );
 //	GET_ACCESSOR( XAccount*, pAccount );
 	GET_ACCESSOR( XStatistic*, pStatObj );

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Oolong Engine for the iPhone / iPod touch
 Copyright (c) 2007-2008 Wolfgang Engel  http://code.google.com/p/oolongengine/
 
@@ -15,7 +15,24 @@ subject to the following restrictions:
 #ifndef VECTOR_H_
 #define VECTOR_H_
 
+#if defined(_VER_OPENGL) || defined(TARGET_OS_IPHONE) || defined(ANDROID)
+#ifdef TARGET_OS_IPHONE
 #include <OpenGLES/ES2/gl.h>
+#endif
+//#ifdef _VER_ANDROID
+#ifdef ANDROID
+#include <GLES2/gl2platform.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#include "etc/Types.h"
+#endif
+// #if defined(WIN32) && defined(_VER_OPENGL) && defined(XOOLONG)
+// #include "OpenGL2/XOpenGL.h"
+// #endif // defined(WIN32) && defined(_VER_OPENGL) && defined(XOOLONG)
+#ifdef WIN32
+#include "GLES2/gl2.h"
+#include "GLES2/gl2ext.h"
+#endif
 #include <math.h>
 
 //#include "Matrix.h"
@@ -52,18 +69,18 @@ subject to the following restrictions:
 #define INT64BIT long long int
 #endif
 
-typedef struct _LARGE_INTEGER
-	{
-		union
-		{
-			struct
-			{
-				unsigned long LowPart;
-				long HighPart;
-			};
-			INT64BIT QuadPart;
-		};
-	} LARGE_INTEGER, *PLARGE_INTEGER;
+// typedef struct _ooLARGE_INTEGER
+// 	{
+// 		union
+// 		{
+// 			struct
+// 			{
+// 				unsigned long LowPart;
+// 				long HighPart;
+// 			};
+// 			INT64BIT QuadPart;
+// 		};
+// 	} ooLARGE_INTEGER, *ooPLARGE_INTEGER;
 
 /****************************************************************************
  ** Typedefs
@@ -351,8 +368,8 @@ struct Vec2
 
 	/*!***************************************************************************
 		@Function			rotated90
-		@Returns			returns the vector rotated 90ﾰ
-		@Description		returns the vector rotated 90ﾰ
+		@Returns			returns the vector rotated 90ㅀ
+		@Description		returns the vector rotated 90ㅀ
 		****************************************************************************/
 	Vec2 rotated90() const
 	{
@@ -614,11 +631,11 @@ struct Vec3 : public VECTOR3
 		return *this;
 	}
 	
-	BOOL operator==(const Vec3& rhs) const
+	bool operator==(const Vec3& rhs) const
 	{
 		return x == rhs.x && y == rhs.y && z == rhs.z;
 	}
-	BOOL operator!=(const Vec3& rhs) const
+	bool operator!=(const Vec3& rhs) const
 	{
 		return x != rhs.x || y != rhs.y || z != rhs.z;
 	}
@@ -1046,7 +1063,7 @@ friend Vec4 operator*(const VERTTYPE lhs, const Vec4&  rhs)
 ****************************************************************************/
 	VERTTYPE *ptr() { return (VERTTYPE*)this; }
 };
+#endif // #if defined(_VER_OPENGL) || defined(TARGET_OS_IPHONE) || defined(ANDROID)
 
-
-
+    
 #endif // VECTOR_H_

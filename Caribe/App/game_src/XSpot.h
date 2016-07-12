@@ -60,8 +60,8 @@ public:
 	static XPropItem::xPROP* sDoDropEquip( int level );
 //	static XGAME::xReward sGetRewardDailyToday( XPropWorld::xDaily* pProp, int lvAcc );
 // 	static XGAME::xReward sGetRewardDaily( XPropWorld::xDaily* pProp, XE::xtDOW dow, int lvAcc );
-	static bool sGetRewardDailyToday( XPropWorld::xDaily* pProp, int lvAcc, XVector<XGAME::xReward>* pOutAry );
-	static bool sGetRewardDaily( XPropWorld::xDaily* pProp, XE::xtDOW dow, int lvAcc, XVector<XGAME::xReward>* pOutAry );
+	static bool _sGetRewardDailyToday( XPropWorld::xDaily* pProp, int lvAcc, XVector<XGAME::xReward>* pOutAry );
+	static bool _sGetRewardDaily( XPropWorld::xDaily* pProp, XE::xtDOW dow, int lvAcc, XVector<XGAME::xReward>* pOutAry );
 	// 지역창고
 	struct xLOCAL_STORAGE {
 		XGAME::xtResource m_Type = XGAME::xRES_NONE;	// 새로 추가됨
@@ -108,7 +108,7 @@ public:
 // 		xSF_NO_ATTACK = 0x0001,		// 공격금지
 // 	};
 private:
-  ID m_idProp = 0;
+	ID m_idProp = 0;
 	ID m_snSpot;		// 스팟 시리얼 번호
 	XGAME::xtSpot m_typeSpot;	// 스팟 타입
 	XPropWorld::xBASESPOT *_m_pBaseProp;	// 프로퍼티
@@ -141,7 +141,7 @@ private:
 	struct bitfield {
 		BYTE noAttack : 1;
 		BYTE bReconed : 1;
-		BYTE b2 : 1;
+		BYTE bUpdated : 1;			// 스팟에 뭔가가 업데이트되었을 경우 다용도 알림용.
 		BYTE b3 : 1;
 		BYTE b4 : 1;
 		BYTE b5 : 1;
@@ -225,14 +225,13 @@ public:
 	void SetspLegion( LegionPtr spLegion );
 	GET_SET_ACCESSOR_CONST( int, Score );
 	GET_SET_ACCESSOR_CONST( int, Power );
-	GET_ACCESSOR_CONST( const struct bitfield&, bitFlag );
+	GET_ACCESSOR( struct bitfield&, bitFlag );
 	void SetbitFlagByReconed( bool bFlag ) {
 		m_bitFlag.bReconed = xboolToByte(bFlag);
 	}
 	void SetbitFlagByNoAttack( bool bFlag ) {
 		m_bitFlag.noAttack = xboolToByte( bFlag );
 	}
-//	GET_SET_ACCESSOR( ID, idDropItem );
 	void SetpLegion( XLegion *pLegion );
 	virtual void Release() {
 		m_spLegion.reset();
@@ -411,7 +410,7 @@ public:
 	}
 	void UpdateLevelArea( XSPAcc spAcc );
 	/// 전투후 스팟에 대한 처리
-	virtual void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat );
+	virtual void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat );
 	/// 전투직전 호출되는 스팟핸들러.
 	virtual void OnBeforeBattle( XSPAcc spAcc ) {}
 	/// 스팟을 터치했을때 업데이트할것이 있다면 업데이트 한다. 
@@ -445,6 +444,7 @@ public:
 	virtual ID GetidOwner() const { return 0; }
 	virtual _tstring GetstrHello() const { return _tstring(); }		// 일단 이렇게 하고 나중에 리팩토링
 	virtual void SetstrHello( const _tstring& strHello ) {}
+	virtual void OnTouch( XSPAcc spAcc ) {}
 #ifdef _DEV
 	bool IsDummy() const {
 		return m_strName == _T("TEST_USER");

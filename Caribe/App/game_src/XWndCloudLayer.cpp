@@ -538,7 +538,7 @@ void XWndAreaBanner::Update()
 				unit = pProp->unitUnlock;
 			}
 			if( unit ) {
-				auto pFrame = XGAME::UpdateUnitFace( this, "ctrl.unit", unit );
+				auto pFrame = XGAME::_CreateUnitFace( this, "ctrl.unit", unit );
 				if( pFrame ) {
 					if( pFrame->GetPosLocal().IsZero() ) {
 						if( pProp->unitUnlock == XGAME::xUNIT_ANY )

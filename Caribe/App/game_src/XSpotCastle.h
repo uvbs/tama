@@ -232,7 +232,7 @@ public:
 		}
 	}
 	void ClearSpot() override;
-	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, bool bRetreat ) override;
+	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat ) override;
 	bool IsEnemy() const override;
 // 	ID GetidEnemy() override {
 // 		return m_idOwner;

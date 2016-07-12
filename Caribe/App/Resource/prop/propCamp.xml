@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root ver="1">
+  <_sample name="1000" num_stage="5" num_try="5" auto_reset="1" hour_reset="24" debug="66">
+    <!--num_stage가 0이면 stage블럭에 따라 자동계산. -1이면 수동으로 dynamic생성-->
+    <stage elite="0" limit_level="3" drop_item="long_sword" idx="2">
+      <legion num_squad="5" level="3" boss="unluny" unit="xUNIT_ARCHER">
+        <squad_default hero="tom" unit="xUNIT_SPEARMAN" level_squad="3" level_skill="4" level_hero="5" />
+        <squad pos="2" hero="unluny" unit="xUNIT_SPEARMAN" level_squad="3" level_skill="4" level_hero="5" />
+        <squad pos="3" hero="tom" unit="xUNIT_ARCHER" level_squad="6" level_skill="7" level_hero="8" />
+      </legion>
+    </stage>
+    <stage elite="0" limit_level="3">
+      <legion num_squad="5" level="3" boss="unluny">
+        <squad pos="2" hero="unluny" unit="xUNIT_SPEARMAN" level_squad="3" level_skill="4" level_hero="5" />
+        <squad pos="3" hero="tom" unit="xUNIT_ARCHER" level_squad="6" level_skill="7" level_hero="8">
+          <squad_default hero="tom" unit="xUNIT_SPEARMAN" level_squad="3" level_skill="4" level_hero="5" />
+        </squad>
+      </legion>
+    </stage>
+  </_sample>
+  <camp.01 name="15040" xml="campaign.xml" layout="camp.01">
+    <stage limit_level="10">
+      <legion level="14"></legion>
+      <reward res="xRES_WOOD" num="50000" />
+    </stage>
+    <stage limit_level="11">
+      <legion level="14"></legion>
+      <reward res="xRES_IRON" num="50000" />
+    </stage>
+    <stage limit_level="12">
+      <legion level="15"></legion>
+      <reward res="xRES_JEWEL" num="100000" />
+    </stage>
+    <stage limit_level="13">
+      <legion level="15"></legion>
+      <reward res="xRES_SULFUR" num="100000" />
+    </stage>
+    <stage limit_level="14">
+      <legion level="16"></legion>
+      <reward item="pike" num="1" />
+    </stage>
+  </camp.01>
+  <camp.02 name="15099">
+    <stage limit_level="15">
+      <legion level="17"></legion>
+      <reward res="xRES_WOOD" num="500000" />
+    </stage>
+    <stage limit_level="15">
+      <legion level="18"></legion>
+      <reward res="xRES_IRON" num="500000" />
+    </stage>
+    <stage limit_level="16">
+      <legion level="19"></legion>
+      <reward res="xRES_JEWEL" num="500000" />
+    </stage>
+    <stage limit_level="16">
+      <legion level="20"></legion>
+      <reward res="xRES_SULFUR" num="500000" />
+    </stage>
+    <stage limit_level="16" point="20">
+      <legion level="21"></legion>
+      <reward item="plate_helmet" num="1" />
+    </stage>
+  </camp.02>
+  <raid.guild.15 name="30115" reward="100">
+    <stage num_win="1" num_try="1" limit_level="15">
+      <legion level="15" grade="xGL_RAID">
+        <squad_default unit="xUNIT_SPEARMAN" />
+      </legion>
+    </stage>
+    <stage num_win="1" num_try="1" limit_level="15">
+      <legion level="16" grade="xGL_RAID">
+        <squad_default unit="xUNIT_SPEARMAN" />
+      </legion>
+    </stage>
+    <stage num_win="1" num_try="1" limit_level="15">
+      <legion level="17" grade="xGL_RAID">
+        <squad_default unit="xUNIT_SPEARMAN" />
+      </legion>
+    </stage>
+    <stage num_win="1" num_try="1" limit_level="15">
+      <legion level="18" grade="xGL_RAID">
+        <squad_default unit="xUNIT_SPEARMAN" />
+      </legion>
+    </stage>
+    <stage num_win="1" num_try="1" limit_level="15">
+      <legion level="19" grade="xGL_RAID">
+        <squad_default unit="xUNIT_SPEARMAN" />
+      </legion>
+    </stage>
+  </raid.guild.15>
+  <camp.medal name="15085" num_stage="10" num_try="5" ap="50" auto_reset="1" hour_reset="24" layout="medal_camp">
+    <stage>
+      <legion level="11"></legion>
+    </stage>
+    <stage>
+      <legion level="15"></legion>
+    </stage>
+    <stage>
+      <legion level="20"></legion>
+    </stage>
+    <stage>
+      <legion level="25"></legion>
+    </stage>
+    <stage>
+      <legion level="30"></legion>
+    </stage>
+    <stage>
+      <legion level="35"></legion>
+    </stage>
+    <stage>
+      <legion level="40"></legion>
+    </stage>
+    <stage>
+      <legion level="43"></legion>
+    </stage>
+    <stage>
+      <legion level="46"></legion>
+    </stage>
+    <stage>
+      <legion level="50"></legion>
+    </stage>
+  </camp.medal>
+  <camp.hero type="camp_hero" name="2236" num_stage="-1" ap="50" auto_reset="1" hour_reset="24" layout="hero_camp">
+    <!--영웅의전장. num_stage가 0이면 dynamic으로 수동세팅이다.-->
+  </camp.hero>
+  <camp.hero2 type="camp_hero2" name="2236" num_stage="-1" ap="3" auto_reset="1" hour_reset="24" layout="popup" max_floor="9" xml="camp_hero.xml" lv_min="12" lv_max="55">
+    <!--영웅의전장. num_stage가 0이면 dynamic으로 수동세팅이다.-->
+  </camp.hero2>
+</root>

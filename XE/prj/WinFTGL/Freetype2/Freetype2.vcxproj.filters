@@ -1,0 +1,480 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\config">
+      <UniqueIdentifier>{3816fa5a-37d7-4e68-96be-fdb33c1ca3dd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afangles.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afcjk.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afdummy.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afglobal.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afhints.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afindic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\aflatin.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afloader.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afmodule.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afpic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afwarp.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\autofit.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\basepic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftadvanc.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftapi.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftbase.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftbbox.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftbitmap.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftcalc.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftdbgmem.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftdebug.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftgloadr.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftglyph.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftinit.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftobjs.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftoutln.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftpic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftrfork.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftsnames.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftstream.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftstroke.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftsynth.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftsystem.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\fttrigon.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftutil.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cff.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffcmap.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffdrivr.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffgload.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffload.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffobjs.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffparse.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffpic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshalgo.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshglob.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshinter.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshpic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshrec.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\psnames\psmodule.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\psnames\psnames.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\psnames\pspic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\raster\ftraster.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\raster\ftrend1.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\raster\raster.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\raster\rastpic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\sfdriver.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\sfnt.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\sfntpic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\sfobjs.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttbdf.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttcmap.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttkern.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttload.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttmtx.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttpost.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttsbit.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttsbit0.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\smooth\ftgrays.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\smooth\ftsmooth.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\smooth\ftspic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\smooth\smooth.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\truetype.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttdriver.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttgload.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttgxvar.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttinterp.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttobjs.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttpic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttpload.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshmod.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afangles.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afcjk.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afdummy.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\aferrors.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afglobal.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afhints.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afindic.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\aflatin.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\aflatin2.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afloader.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afmodule.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afpic.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\aftypes.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\autofit\afwarp.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\basepic.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\base\ftbase.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffcmap.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffdrivr.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cfferrs.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffgload.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffload.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffobjs.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffparse.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cffpic.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cfftoken.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\cff\cfftypes.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshalgo.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshglob.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshmod.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshnterr.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshpic.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\pshinter\pshrec.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\psnames\psmodule.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\psnames\psnamerr.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\psnames\pspic.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\psnames\pstables.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\raster\ftmisc.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\raster\ftraster.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\raster\ftrend1.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\raster\rasterrs.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\raster\rastpic.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\sfdriver.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\sferrors.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\sfntpic.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\sfobjs.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttbdf.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttcmap.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttcmapc.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttkern.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttload.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttmtx.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttpost.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\sfnt\ttsbit.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\smooth\ftgrays.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\smooth\ftsmerrs.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\smooth\ftsmooth.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\smooth\ftspic.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttdriver.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\tterrors.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttgload.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttgxvar.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttinterp.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttobjs.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttpic.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\src\truetype\ttpload.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\include\ft2build.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\include\freetype\config\ftconfig.h">
+      <Filter>소스 파일\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\include\freetype\config\ftheader.h">
+      <Filter>소스 파일\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\include\freetype\config\ftmodule.h">
+      <Filter>소스 파일\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\include\freetype\config\ftoption.h">
+      <Filter>소스 파일\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\ftgles\freetype2\include\freetype\config\ftstdlib.h">
+      <Filter>소스 파일\config</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

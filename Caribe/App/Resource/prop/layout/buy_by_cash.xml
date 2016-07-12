@@ -9,6 +9,9 @@
       </img>
       <wnd posx="0" posy="17" width="298" height="45" key="wnd.half.top">
         <!--상단 메시지 부분-->
+        <_wnd posx="center" posy="center">
+          <img posx="0" posy="0" file="chall_mark_on.png" key="img.mark." num="5" distx="10"></img>
+        </_wnd>
       </wnd>
       <butt posx="center" posy="90" img_up="common_butt_mid.png" key="butt.ok">
         <img posx="5" posy="center" file="hero_cash.png" scale="0.75"></img>

@@ -2225,7 +2225,7 @@ void CMainFrame::OnStopActive()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	XAPP->m_bStopActive = !XAPP->m_bStopActive;
- 	XAPP->XClientMain::SaveCheat();
+	XAPP->XClientMain::SaveCheat();
 }
 
 

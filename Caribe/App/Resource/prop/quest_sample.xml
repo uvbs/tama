@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <_quest.exam reward_exp="130" name="1000" desc="1001">
+    <when clear_spot="spot.npc.001" clear_spot_code="code.bandit.001" recon_spot="spot.npc.001" visit_spot="spot.npc.001" defense="" get_resource="xRES_WOOD" get_item="item_scroll" del_item="1(퀘 완료후 퀘템 삭제. 디폴트는 1)" kill_hero="q_unluny001" have_resource="xRES_WOOD" have_item="item_scroll" clear_spot_type="xSPOT_CASTLE" recon_spot_type="xSPOT_CASTLE" visit_spot_type="xSPOT_CASTLE" open_area="area.001" level="3" get_hero="unluny" clear_quest="quest.001" num="5" repeat="-1" />
+    <cond desc="1002">
+      <where spot="spot.npc.001" spot_type="xSPOT_CASTLE" area="area.valley" spot_code="spot.event.001" />
+      <what>
+        <!--when과 같음-->
+      </what>
+      <how limited_squad="5" ban_unit="xSPEARMAN" ban_arm="xTANKER" ban_clan="xFLAME" ban_tribe="xHUMAN" />
+    </cond>
+    <drop prob="50" item="long_sword">
+      <where spot_type="xSPOT_NPC" area="area.000" />
+      <where spot_type="xSPOT_CASTLE" area="area.000" />
+    </drop>
+    <reward item="scalp_crow" num="10" />
+    <reward resource="xGOLD" num="1000" />
+    <reward resource="xRES_WOOD" num="10" />
+    <reward hero="hero.ahgo" />
+  </_quest.exam>
+  <quest.001 reward_exp="100" name="20002" desc="20006">
+    <!--레벨1등장: spot.npc.001스팟을 클리어하라.-->
+    <when level="1" />
+    <cond>
+      <what clear_spot="spot.npc.001" />
+    </cond>
+    <reward item="scalp_crow" num="2" />
+    <reward resource="xRES_WOOD" num="10000" />
+    <reward resource="xRES_GOLD" num="1000" />
+  </quest.001>
+  <quest.002>
+    <!--레벨2등장: 성스팟을 3회 클리어 하라.-->
+    <when level="2" />
+    <cond>
+      <what clear_spot_type="xSPOT_CASTLE" num="3" />
+    </cond>
+  </quest.002>
+  <quest.003>
+    <!--area.001지역의 성스팟을 3회 클리어 하라.-->
+    <when level="2" />
+    <cond>
+      <where area="area.001" />
+      <what clear_spot_type="xSPOT_CASTLE" num="3" />
+    </cond>
+  </quest.003>
+  <quest.004>
+    <!--산적스팟을 3회 클리어 하라.-->
+    <when level="1" />
+    <cond>
+      <what clear_spot_code="code.bandit.001" num="3" />
+    </cond>
+  </quest.004>
+  <quest.004.2>
+    <!--산적스팟을 퇴치하고 나오는 산적검 10개를 구해오라.(퀘가 끝나면 산적스팟은 더이상 등장하지 않는다)-->
+    <when level="1" />
+    <cond>
+      <where spot_code="code.bandit.001" />
+      <what get_item="long_sword" num="10" />
+    </cond>
+    <drop prob="50" item="long_sword">
+      <where spot_code="code.bandit.001" />
+    </drop>
+  </quest.004.2>
+  <quest.004.3>
+    <!--산적검 10개를 구해오라. 이것은 area.000지역의 npc스팟이나 성스팟에서 드롭된다.-->
+    <when level="1" />
+    <cond>
+      <where spot_type="xSPOT_NPC" />
+      <what get_item="long_sword" num="3" />
+    </cond>
+    <drop prob="50" item="long_sword">
+      <where spot_type="xSPOT_NPC" area="area.000" />
+      <where spot_type="xSPOT_CASTLE" area="area.000" />
+    </drop>
+  </quest.004.3>
+  <quest.005>
+    <!--성스팟을 공격하여 목재 5000개를 획득하라-->
+    <when level="3" />
+    <cond>
+      <where spot_type="xSPOT_CASTLE" />
+      <what get_resource="xRES_WOOD" num="5000" />
+    </cond>
+  </quest.005>
+  <quest.006>
+    <!--목재자원 20000개를 보유하라(현재지원하지 않음)-->
+    <when level="3" />
+    <cond>
+      <what have_resource="xRES_WOOD" num="20000" />
+    </cond>
+  </quest.006>
+  <quest.007>
+    <!--까마귀징표 10개를 획득하라-->
+    <when level="3" />
+    <cond>
+      <what get_item="scalp_crow" num="10" />
+    </cond>
+  </quest.007>
+  <quest.007.1>
+    <!--레벨1등장: 산적스팟에서 등장하는 산적두목을 처치하라-->
+    <when level="2" />
+    <cond>
+      <what kill_hero="hero_bandit_boss" />
+      <where spot_code="code.bandit.001" />
+    </cond>
+  </quest.007.1>
+  <quest.008>
+    <!--레벨2이상일때 area.001지역 오픈시 퀘스트 등장: 계곡수비대를 3회 퇴치하라(퀘스트동안만 발생)-->
+    <when level="2" />
+    <when open_area="area.001" />
+    <cond>
+      <what clear_spot="spot.event.defender.001" num="3" />
+    </cond>
+  </quest.008>
+  <quest.009>
+    <!--제국보스스팟 클리어시 등장: 현자를 만나라.(한번클리어한 스팟은 더이상 나타나지 않는다)-->
+    <when clear_spot="spot.npc.boss.001" />
+    <cond>
+      <what visit_spot="spot.npc.001" />
+    </cond>
+  </quest.009>
+  <quest.010>
+    <!--영웅 언루니 획득시 등장: 현자를 만나라.(한번클리어 하면 더이상 받지 않는다.)-->
+    <when get_hero="unluny" />
+    <cond>
+      <what visit_spot="spot.npc.001" />
+    </cond>
+  </quest.010>
+  <quest.011>
+    <!--지도획득시 등장: 현자를 만나라.(한번클리어 하면 지도는 더이상 나오지 않는다.)-->
+    <!--미리 월드의 스팟에 지도를 떨어트리게 설정해두고. 드랍조건을 quest.011을 아직 안받은 상태에서만 드랍되도록 한다.-->
+    <when get_item="item_event_map" />
+    <cond>
+      <what visit_spot="spot.npc.001" />
+    </cond>
+  </quest.011>
+  <quest.012>
+    <!--quest.011완료시 등장: 산적보스 스팟을 클리어하라-->
+    <when clear_quest="quest.011" />
+    <reward item="long_sword" />
+    <cond>
+      <what clear_spot="spot.npc.001" />
+    </cond>
+  </quest.012>
+  <quest.013>
+    <!--quest.011완료시 등장:-->
+    <!--area.001 지역에서 spot.npc.001스팟을 3회 소탕-->
+    <!--area.002 지역에서 산적검 2개 획득.-->
+    <when clear_quest="quest.011" />
+    <cond>
+      <where area="area.001" />
+      <what clear_spot="spot.npc.001" num="3" />
+    </cond>
+    <cond>
+      <where area="area.002" />
+      <what get_item="long_sword" num="2" />
+    </cond>
+    <reward item="long_sword" />
+  </quest.013>
+</root>
