@@ -1,0 +1,1027 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_DX|Win32">
+      <Configuration>Debug_DX</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_GLES2|Win32">
+      <Configuration>Debug_GLES2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_GMO|Win32">
+      <Configuration>Debug_GMO</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_Patch5|Win32">
+      <Configuration>Debug_Patch5</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_single|Win32">
+      <Configuration>Debug_single</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_Softnyx|Win32">
+      <Configuration>Debug_Softnyx</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelCrewGoogle|Win32">
+      <Configuration>RelCrewGoogle</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelCrewSoftnyx|Win32">
+      <Configuration>RelCrewSoftnyx</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_GMO|Win32">
+      <Configuration>Release_GMO</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_single|Win32">
+      <Configuration>Release_single</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Rel_Bot|Win32">
+      <Configuration>Rel_Bot</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1565A2CB-DB14-4F22-8545-F51B7C11C502}</ProjectGuid>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccProvider>
+    </SccProvider>
+    <ProjectName>Caribe2013</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_single|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_single|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>False</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>YearStamp.MonthStamp.DayStamp.Increment</AssemblyVersionSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>Caribe</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>Caribe_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>Caribe_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>Caribe_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>Caribe_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>Caribe_single</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>Caribe</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>Caribe</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>Caribe</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>Caribe</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>Caribe</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_single|Win32'">
+    <OutDir>$(SolutionDir)\..\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>Caribe_single</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_clientd.lib;windowscodecs.lib;winmm.lib;d3d9.lib;d3dx9d.lib;d3dx10d.lib;d3dxof.lib;dxerr.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\debug;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_clientd_gles2.lib;libGLESv2.lib;libgles_cm.lib;windowscodecs.lib;winmm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_SOFTNYX</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\debug;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_clientd_gles2.lib;libGLESv2.lib;libgles_cm.lib;windowscodecs.lib;winmm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_XGMO;XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_SOFTNYX</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\debug;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_clientd_gles2.lib;libGLESv2.lib;libgles_cm.lib;windowscodecs.lib;winmm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_XPATCH;XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\debug;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_clientd_gles2.lib;libGLESv2.lib;libgles_cm.lib;windowscodecs.lib;winmm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XSINGLE;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Debug;;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_clientd_gles2.lib;libGLESv2.lib;libgles_cm.lib;windowscodecs.lib;winmm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\release;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_client_gles2.lib;libGLESv2.lib;libgles_cm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;windowscodecs.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_XCREW;_XGOOGLE;XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\release;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_client_gles2.lib;libGLESv2.lib;libgles_cm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;windowscodecs.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_XGMO;_SOFTNYX;XE_GLES2;_VER_OPENGL;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\release;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_client_gles2.lib;libGLESv2.lib;libgles_cm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;windowscodecs.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_XCREW;_SOFTNYX;XE_GLES2;_VER_OPENGL;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\release;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_client_gles2.lib;libGLESv2.lib;libgles_cm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;windowscodecs.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_DEV_TEST;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/NODEFAULTLIB:library %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_client.lib;windowscodecs.lib;winmm.lib;d3d9.lib;d3dx9.lib;d3d10.lib;d3dxof.lib;dxerr.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_single|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XSINGLE;_DEV_TEST;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\release;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_client_gles2.lib;libGLESv2.lib;libgles_cm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;windowscodecs.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\..\..\..\Users\정우\Downloads\friendlyping-master\friendlyping-master\server\Java\src\main\java\com\gcm\samples\friendlyping\FriendlyPingServer.java" />
+    <None Include="..\..\..\..\..\..\..\..\Users\정우\Downloads\friendlyping-master\friendlyping-master\server\Java\src\main\java\com\gcm\samples\friendlyping\GcmServer.java" />
+    <None Include="..\..\..\..\..\..\..\..\Users\정우\Downloads\friendlyping-master\friendlyping-master\server\Java\src\main\java\com\gcm\samples\friendlyping\SmackCcsClient.java" />
+    <None Include="..\..\..\..\daily_work.txt" />
+    <None Include="..\..\..\..\memo.txt" />
+    <None Include="..\..\..\..\proj.android\src\com\mtricks\caribe\GcmBroadcastReceiver.java" />
+    <None Include="..\..\..\..\proj.android\src\com\mtricks\caribe\GcmIntentService.java" />
+    <None Include="..\..\..\..\proj.android\src\com\mtricks\caribe\MyMainActivity.java" />
+    <None Include="..\..\..\..\proj.android\src\com\mtricks\caribe\Version.java" />
+    <None Include="..\..\..\game_src\XWorld.inl" />
+    <None Include="res\Caribe.ico" />
+    <None Include="res\Caribe.rc2" />
+    <None Include="res\CaribeDoc.ico" />
+    <None Include="res\Toolbar.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Caribe.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\android\JniHelper.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\Game\XEComponentMng.h" />
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\Game\XEComponents.h" />
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\MFC\GenericChildDialog.h" />
+    <ClInclude Include="..\..\..\game_src\android\VersionAndroid.h" />
+    <ClInclude Include="..\..\..\game_src\client\XAppDelegate.h" />
+    <ClInclude Include="..\..\..\game_src\client\XAppMain.h" />
+    <ClInclude Include="..\..\..\game_src\constGame.h" />
+    <ClInclude Include="..\..\..\game_src\JBWnd.h" />
+    <ClInclude Include="..\..\..\game_src\JWWnd.h" />
+    <ClInclude Include="..\..\..\game_src\server\XGuildMgr.h" />
+    <ClInclude Include="..\..\..\game_src\skill\SkillDef.h" />
+    <ClInclude Include="..\..\..\game_src\skill\SkillType.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XAdjParam.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XBuffObj.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XESkillMng.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XLuaSkill.h" />
+    <ClInclude Include="..\..\..\game_src\skill\xSkill.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XSkillDat.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XSkillObj.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XSkillReceiver.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XSkillUser.h" />
+    <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
+    <ClInclude Include="..\..\..\game_src\XAccount.h" />
+    <ClInclude Include="..\..\..\game_src\XAppLayout.h" />
+    <ClInclude Include="..\..\..\game_src\XBaseItem.h" />
+    <ClInclude Include="..\..\..\game_src\XBaseUnit.h" />
+    <ClInclude Include="..\..\..\game_src\XBattleField.h" />
+    <ClInclude Include="..\..\..\game_src\XCampObj.h" />
+    <ClInclude Include="..\..\..\game_src\XCampObjHero.h" />
+    <ClInclude Include="..\..\..\game_src\XCampObjHero2.h" />
+    <ClInclude Include="..\..\..\game_src\XConnector.h" />
+    <ClInclude Include="..\..\..\game_src\XDefNetwork.h" />
+    <ClInclude Include="..\..\..\game_src\XEBaseFSM.h" />
+    <ClInclude Include="..\..\..\game_src\XEObjMngWithType.h" />
+    <ClInclude Include="..\..\..\game_src\XExpTableHero.h" />
+    <ClInclude Include="..\..\..\game_src\XExpTableUser.h" />
+    <ClInclude Include="..\..\..\game_src\XFSMConnector.h" />
+    <ClInclude Include="..\..\..\game_src\XFSMUnit.h" />
+    <ClInclude Include="..\..\..\game_src\XGameEtc.h" />
+    <ClInclude Include="..\..\..\game_src\XGlobalConst.h" />
+    <ClInclude Include="..\..\..\game_src\XGuild.h" />
+    <ClInclude Include="..\..\..\game_src\XGuildH.h" />
+    <ClInclude Include="..\..\..\game_src\XGuildRaid.h" />
+    <ClInclude Include="..\..\..\game_src\XGuildRaidCity.h" />
+    <ClInclude Include="..\..\..\game_src\XGuildRaidStage.h" />
+    <ClInclude Include="..\..\..\game_src\XHeroH.h" />
+    <ClInclude Include="..\..\..\game_src\XLegionObj.h" />
+    <ClInclude Include="..\..\..\game_src\XObjEtc.h" />
+    <ClInclude Include="..\..\..\game_src\XOption.h" />
+    <ClInclude Include="..\..\..\game_src\XOrder.h" />
+    <ClInclude Include="..\..\..\game_src\XPatch.h" />
+    <ClInclude Include="..\..\..\game_src\XPostInfo.h" />
+    <ClInclude Include="..\..\..\game_src\XPropBgObj.h" />
+    <ClInclude Include="..\..\..\game_src\XPropBgObjH.h" />
+    <ClInclude Include="..\..\..\game_src\XPropCamp.h" />
+    <ClInclude Include="..\..\..\game_src\XPropCampH.h" />
+    <ClInclude Include="..\..\..\game_src\XPropCloud.h" />
+    <ClInclude Include="..\..\..\game_src\XGame.h" />
+    <ClInclude Include="..\..\..\game_src\XGameCommon.h" />
+    <ClInclude Include="..\..\..\game_src\XGameLua.h" />
+    <ClInclude Include="..\..\..\game_src\XGameWnd.h" />
+    <ClInclude Include="..\..\..\game_src\XHero.h" />
+    <ClInclude Include="..\..\..\game_src\XLegion.h" />
+    <ClInclude Include="..\..\..\game_src\XLoginInfo.h" />
+    <ClInclude Include="..\..\..\game_src\XPacketCG.h" />
+    <ClInclude Include="..\..\..\game_src\XPacketCL.h" />
+    <ClInclude Include="..\..\..\game_src\XPropHelp.h" />
+    <ClInclude Include="..\..\..\game_src\XPropHelpH.h" />
+    <ClInclude Include="..\..\..\game_src\XPropHero.h" />
+    <ClInclude Include="..\..\..\game_src\XPropItem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XPropLegion.h" />
+    <ClInclude Include="..\..\..\game_src\XPropLegionH.h" />
+    <ClInclude Include="..\..\..\game_src\XPropOrder.h" />
+    <ClInclude Include="..\..\..\game_src\XProps.h" />
+    <ClInclude Include="..\..\..\game_src\XPropSeq.h" />
+    <ClInclude Include="..\..\..\game_src\XPropSquad.h" />
+    <ClInclude Include="..\..\..\game_src\XPropTech.h" />
+    <ClInclude Include="..\..\..\game_src\XPropUnit.h" />
+    <ClInclude Include="..\..\..\game_src\XPropUpgrade.h" />
+    <ClInclude Include="..\..\..\game_src\XPropUser.h" />
+    <ClInclude Include="..\..\..\game_src\XPropUserH.h" />
+    <ClInclude Include="..\..\..\game_src\XPropWorld.h" />
+    <ClInclude Include="..\..\..\game_src\XQuest.h" />
+    <ClInclude Include="..\..\..\game_src\XQuestCon.h" />
+    <ClInclude Include="..\..\..\game_src\XQuestMng.h" />
+    <ClInclude Include="..\..\..\game_src\XQuestProp.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneArmory.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneBase.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneBattle.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneEquip.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneGuild.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneGuildShop.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneHero.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneLegion.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneLoading.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneOpening.h" />
+    <ClInclude Include="..\..\..\game_src\XScenePatchClient.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneProcess.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneReady.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneShop.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneStorage.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneTech.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneTechSel.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneTitle.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneTrader.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneUnitOrg.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneWorld.h" />
+    <ClInclude Include="..\..\..\game_src\XSeq.h" />
+    <ClInclude Include="..\..\..\game_src\XSequence.h" />
+    <ClInclude Include="..\..\..\game_src\XSkillMng.h" />
+    <ClInclude Include="..\..\..\game_src\XSockGameSvr.h" />
+    <ClInclude Include="..\..\..\game_src\XSockGameSvrContent.h" />
+    <ClInclude Include="..\..\..\game_src\XSockLoginSvr.h" />
+    <ClInclude Include="..\..\..\game_src\XSockLoginSvrContent.h" />
+    <ClInclude Include="..\..\..\game_src\XSpot.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotCampaign.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotCastle.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotEtc.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotJewel.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotMandrake.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotNpc.h" />
+    <ClInclude Include="..\..\..\game_src\XSpots.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotSulfur.h" />
+    <ClInclude Include="..\..\..\game_src\XSquadObj.h" />
+    <ClInclude Include="..\..\..\game_src\XSquadron.h" />
+    <ClInclude Include="..\..\..\game_src\XStageObj.h" />
+    <ClInclude Include="..\..\..\game_src\XStageObjHero.h" />
+    <ClInclude Include="..\..\..\game_src\XStageObjHero2.h" />
+    <ClInclude Include="..\..\..\game_src\XStatistic.h" />
+    <ClInclude Include="..\..\..\game_src\XStruct.h" />
+    <ClInclude Include="..\..\..\game_src\XTemp.h" />
+    <ClInclude Include="..\..\..\game_src\XTool.h" />
+    <ClInclude Include="..\..\..\game_src\XUnitArcher.h" />
+    <ClInclude Include="..\..\..\game_src\XUnitCommon.h" />
+    <ClInclude Include="..\..\..\game_src\XUnitCyclops.h" />
+    <ClInclude Include="..\..\..\game_src\XUnitHero.h" />
+    <ClInclude Include="..\..\..\game_src\XUnitSummon.h" />
+    <ClInclude Include="..\..\..\game_src\XUnitTreant.h" />
+    <ClInclude Include="..\..\..\game_src\XWndBattle.h" />
+    <ClInclude Include="..\..\..\game_src\XWndBattleField.h" />
+    <ClInclude Include="..\..\..\game_src\XWndCampaign.h" />
+    <ClInclude Include="..\..\..\game_src\XWndCampaignH.h" />
+    <ClInclude Include="..\..\..\game_src\XWndCampaignHero.h" />
+    <ClInclude Include="..\..\..\game_src\XWndCloudLayer.h" />
+    <ClInclude Include="..\..\..\game_src\XWndDelegator.h" />
+    <ClInclude Include="..\..\..\game_src\XWndHire.h" />
+    <ClInclude Include="..\..\..\game_src\XWndObj.h" />
+    <ClInclude Include="..\..\..\game_src\XWndQuest.h" />
+    <ClInclude Include="..\..\..\game_src\XWndResCtrl.h" />
+    <ClInclude Include="..\..\..\game_src\XWndSpots.h" />
+    <ClInclude Include="..\..\..\game_src\XWndStorage.h" />
+    <ClInclude Include="..\..\..\game_src\XWndTech.h" />
+    <ClInclude Include="..\..\..\game_src\XWndTemplate.h" />
+    <ClInclude Include="..\..\..\game_src\XWndUnitOrg.h" />
+    <ClInclude Include="..\..\..\game_src\XWndWorld.h" />
+    <ClInclude Include="..\..\..\game_src\XWorld.h" />
+    <ClInclude Include="..\..\..\Resource\defineAct.h" />
+    <ClInclude Include="..\..\..\Resource\defineGame.h" />
+    <ClInclude Include="..\..\..\Resource\VerPacket.h" />
+    <ClInclude Include="CaribeDoc.h" />
+    <ClInclude Include="CaribeView.h" />
+    <ClInclude Include="CrashDlg.h" />
+    <ClInclude Include="DlgBattle11.h" />
+    <ClInclude Include="DlgBattleOption.h" />
+    <ClInclude Include="DlgCheatCommand.h" />
+    <ClInclude Include="DlgCloseArea.h" />
+    <ClInclude Include="DlgCreateHero.h" />
+    <ClInclude Include="DlgCreateItem.h" />
+    <ClInclude Include="DlgEditAbility.h" />
+    <ClInclude Include="DlgEditVal.h" />
+    <ClInclude Include="DlgEnterName.h" />
+    <ClInclude Include="DlgLayerTest.h" />
+    <ClInclude Include="DlgNewBgObj.h" />
+    <ClInclude Include="DlgPropGrid.h" />
+    <ClInclude Include="DlgRestartSeq.h" />
+    <ClInclude Include="DlgSelectConnect.h" />
+    <ClInclude Include="DlgSpot.h" />
+    <ClInclude Include="DlgSubCamp.h" />
+    <ClInclude Include="DlgSubCash.h" />
+    <ClInclude Include="DlgSubCastle.h" />
+    <ClInclude Include="DlgSubCommon.h" />
+    <ClInclude Include="DlgSubJewel.h" />
+    <ClInclude Include="DlgSubMandrake.h" />
+    <ClInclude Include="DlgSubNpc.h" />
+    <ClInclude Include="DlgSubSulfur.h" />
+    <ClInclude Include="DlgSubVisit.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MyPropGrid.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="VersionWin32.h" />
+    <ClInclude Include="XDlgConsole.h" />
+    <ClInclude Include="XDlgPropCloud.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\android\JniHelper.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\Game\XEComponentMng.cpp" />
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\Game\XEComponents.cpp" />
+    <ClCompile Include="..\..\..\..\..\XE\XFramework\MFC\GenericChildDialog.cpp" />
+    <ClCompile Include="..\..\..\..\proj.android\jni\xlib_test.cpp" />
+    <ClCompile Include="..\..\..\game_src\client\XAppDelegate.cpp" />
+    <ClCompile Include="..\..\..\game_src\client\XAppMain.cpp" />
+    <ClCompile Include="..\..\..\game_src\constGame.cpp" />
+    <ClCompile Include="..\..\..\game_src\JBWnd.cpp" />
+    <ClCompile Include="..\..\..\game_src\JWWnd.cpp" />
+    <ClCompile Include="..\..\..\game_src\server\XGuildMgr.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XAdjParam.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XBuffObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XESkillMng.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XLuaSkill.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\xSkill.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XSkillDat.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XSkillObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XSkillReceiver.cpp" />
+    <ClCompile Include="..\..\..\game_src\skill\XSkillUser.cpp" />
+    <ClCompile Include="..\..\..\game_src\XAccount.cpp" />
+    <ClCompile Include="..\..\..\game_src\XBaseItem.cpp" />
+    <ClCompile Include="..\..\..\game_src\XBaseUnit.cpp" />
+    <ClCompile Include="..\..\..\game_src\XBattleField.cpp" />
+    <ClCompile Include="..\..\..\game_src\XCampObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\XCampObjHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XCampObjHero2.cpp" />
+    <ClCompile Include="..\..\..\game_src\XConnector.cpp" />
+    <ClCompile Include="..\..\..\game_src\XEBaseFSM.cpp" />
+    <ClCompile Include="..\..\..\game_src\XEObjMngWithType.cpp" />
+    <ClCompile Include="..\..\..\game_src\XExpTableHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XExpTableUser.cpp" />
+    <ClCompile Include="..\..\..\game_src\XFSMConnector.cpp" />
+    <ClCompile Include="..\..\..\game_src\XFSMUnit.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGameEtc.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGameLua.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGlobalConst.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGuild.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGuildRaid.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGuildRaidCity.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGuildRaidStage.cpp" />
+    <ClCompile Include="..\..\..\game_src\XLegionObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\XObjEtc.cpp" />
+    <ClCompile Include="..\..\..\game_src\XOption.cpp" />
+    <ClCompile Include="..\..\..\game_src\XOrder.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPatch.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPostInfo.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropBgObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropCamp.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropCloud.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGame.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGameCommon.cpp" />
+    <ClCompile Include="..\..\..\game_src\XGameWnd.cpp" />
+    <ClCompile Include="..\..\..\game_src\XHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XLegion.cpp" />
+    <ClCompile Include="..\..\..\game_src\XLoginInfo.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropHelp.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropItem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XPropLegion.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropOrder.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropSeq.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropSquad.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropTech.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropUnit.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropUpgrade.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropUser.cpp" />
+    <ClCompile Include="..\..\..\game_src\XPropWorld.cpp" />
+    <ClCompile Include="..\..\..\game_src\XQuest.cpp" />
+    <ClCompile Include="..\..\..\game_src\XQuestCon.cpp" />
+    <ClCompile Include="..\..\..\game_src\XQuestMng.cpp" />
+    <ClCompile Include="..\..\..\game_src\XQuestProp.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneArmory.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneBase.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneBattle.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneEquip.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneGuild.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneGuildShop.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneLegion.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneLoading.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneOpening.cpp" />
+    <ClCompile Include="..\..\..\game_src\XScenePatchClient.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneProcess.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneReady.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneShop.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneStorage.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneTech.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneTechSel.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneTitle.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneTrader.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneUnitOrg.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneWorld.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSeq.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSkillMng.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSockGameSvr.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSockGameSvrContent.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSockLoginSvr.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSockLoginSvrContent.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpot.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotCampaign.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotCastle.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotEtc.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotJewel.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotMandrake.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotNpc.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotSulfur.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSquadObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSquadron.cpp" />
+    <ClCompile Include="..\..\..\game_src\XStageObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\XStageObjHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XStageObjHero2.cpp" />
+    <ClCompile Include="..\..\..\game_src\XStatistic.cpp" />
+    <ClCompile Include="..\..\..\game_src\XStruct.cpp" />
+    <ClCompile Include="..\..\..\game_src\XTemp.cpp" />
+    <ClCompile Include="..\..\..\game_src\XTool.cpp" />
+    <ClCompile Include="..\..\..\game_src\XUnitArcher.cpp" />
+    <ClCompile Include="..\..\..\game_src\XUnitCommon.cpp" />
+    <ClCompile Include="..\..\..\game_src\XUnitCyclops.cpp" />
+    <ClCompile Include="..\..\..\game_src\XUnitHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XUnitSummon.cpp" />
+    <ClCompile Include="..\..\..\game_src\XUnitTreant.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndBattle.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndBattleField.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndCampaign.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndCampaignHero.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndCloudLayer.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndDelegator.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndHire.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndQuest.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndResCtrl.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndSpots.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndStorage.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndTech.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndTemplate.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndUnitOrg.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndWorld.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWorld.cpp" />
+    <ClCompile Include="Caribe.cpp" />
+    <ClCompile Include="CaribeDoc.cpp" />
+    <ClCompile Include="CaribeView.cpp" />
+    <ClCompile Include="CrashDlg.cpp" />
+    <ClCompile Include="DlgBattle11.cpp" />
+    <ClCompile Include="DlgBattleOption.cpp" />
+    <ClCompile Include="DlgCheatCommand.cpp" />
+    <ClCompile Include="DlgCloseArea.cpp" />
+    <ClCompile Include="DlgCreateHero.cpp" />
+    <ClCompile Include="DlgCreateItem.cpp" />
+    <ClCompile Include="DlgEditAbility.cpp" />
+    <ClCompile Include="DlgEditVal.cpp" />
+    <ClCompile Include="DlgEnterName.cpp" />
+    <ClCompile Include="DlgLayerTest.cpp" />
+    <ClCompile Include="DlgNewBgObj.cpp" />
+    <ClCompile Include="DlgPropGrid.cpp" />
+    <ClCompile Include="DlgRestartSeq.cpp" />
+    <ClCompile Include="DlgSelectConnect.cpp" />
+    <ClCompile Include="DlgSpot.cpp" />
+    <ClCompile Include="DlgSubCamp.cpp" />
+    <ClCompile Include="DlgSubCash.cpp" />
+    <ClCompile Include="DlgSubCastle.cpp" />
+    <ClCompile Include="DlgSubCommon.cpp" />
+    <ClCompile Include="DlgSubJewel.cpp" />
+    <ClCompile Include="DlgSubMandrake.cpp" />
+    <ClCompile Include="DlgSubNpc.cpp" />
+    <ClCompile Include="DlgSubSulfur.cpp" />
+    <ClCompile Include="DlgSubVisit.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MyPropGrid.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_single|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="XDlgConsole.cpp" />
+    <ClCompile Include="XDlgPropCloud.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\..\balance.txt" />
+    <Text Include="..\..\..\Resource\prop\text_ko.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\Resource\prop\layout\abil_tree.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\buy_by_cash.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\campaign.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\guild_shop.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\hero_portrait.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_armory.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_barrack.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_battle.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_book_hero.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_encounter.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_equip.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_guild.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_hero.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_item.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_legion.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_levelup.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_levelup_hero.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_log.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_login.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_need_ap.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_notice.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_ready_battle.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_recon.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_shop.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_statistic.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_storage.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_tech.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_title.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_trader.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_unitorg.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_unit_info.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\layout_world.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\login_lock.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\mail.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\player_info.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\popup_battle_exp.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\popup_daily.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\popup_spot.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\profile_picture.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\quest_info.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\rank.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\scene_loading.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\scene_main_loading.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\scene_opening.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\select_language.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\shop_in_world.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\skill_levelup.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\squad_info.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\squad_levelup.xml" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="Caribe.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_login_lock>
+    <popup img="common_bg_popup.png">
+      <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.info" text="1" />
+    </popup>
+  </popup_login_lock>
+</layout>

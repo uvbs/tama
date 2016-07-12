@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_notice>
+    <popup img="ingame_bg_popup.png">
+      <butt posx="208" posy="274" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.notice.ok" font_style="stroke" text="80009"></butt>
+      <_butt posx="279" posy="274" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.close" font_style="stroke" text="80143" />
+      <text posx="30" posy="40" font="font_text_b" text_col="white" font_size="20" font_style="stroke" width="456" key="text.notice" />
+    </popup>
+  </popup_notice>
+</layout>

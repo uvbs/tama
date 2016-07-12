@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--영웅고용 씬-->
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf">
+  <!--모든 씬 백판-->
+  <common_bg>
+    <wnd posx="0" posy="0" width="640" height="360" key="wnd.common.bg">
+      <!--백판-->
+      <img posx="0" posy="0" file="common_bg_bottom.png">
+        <!--백버튼-->
+        <butt posx="28" posy="20" key="butt.back" img_up="common_butt_back.png" />
+      </img>
+    </wnd>
+  </common_bg>
+  <!--영웅고용 씬 메인-->
+  <hero>
+    <!--bg-->
+    <wnd posx="64" posy="57" width="640" height="303" key="">
+      <!--내부 백판-->
+      <img posx="0" posy="0" file="common_bg_inside.png"></img>
+    </wnd>
+    <!--일반/고급 영웅 고용서-->
+    <wnd posx="74" posy="66" width="0" height="0">
+      <!--일반 영웅 고용서-->
+      <wnd posx="0" posy="0" width="0" height="0" key="wnd.empoly.normal">
+        <!--양피지 bg & 양피지 타이틀 bg-->
+        <img posx="0" posy="0" key="img.bg.normal" file="hero_parchment.png">
+          <!--양피지 bg-->
+          <text posx="center" posy="44" font="font_text_b" font_size="40" font_style="stroke" align="center" text="80032">
+            <!--
+"일반 영웅 고용서"-->
+          </text>
+          <butt posx="center" posy="200" key="butt.empoly.normal" img_up="common_butt_mid.png">
+            <img file="hero_gold.png" posx="-13" posy="5" scale="0.6" />
+            <text posx="center" posy="center" font="font_res_num" font_size="25" font_style="stroke" key="text.cost.normal" text="1"></text>
+          </butt>
+        </img>
+        <!--"일반 영웅 고용서" & 설명-->
+        <text posx="25" posy="102" width="183" font="font_text_m" font_size="25" align="hcenter" font_style="stroke" key="text.desc.normal" text="80034"></text>
+        <!--일반 고용 버튼-->
+      </wnd>
+      <!--고급 영웅 고용서-->
+      <wnd posx="231" posy="-9" width="" height="" key="wnd.empoly.high">
+        <!--양피지 bg & 양피지 타이틀 bg-->
+        <img posx="0" posy="0" key="img.bg.high" file="hero_parchment_high.png">
+          <!--캐쉬 고용 버튼-->
+          <butt posx="center" posy="208" key="butt.empoly.high.cashtem" img_up="common_butt_mid.png" font="font_res_num" font_size="35" font_style="stroke" _text="80036" text="11">
+            <img file="hero_cash.png" posx="-8" posy="5" />
+          </butt>
+          <_butt posx="center" posy="208" key="butt.empoly.high.cashtem" img_up="common_butt_mid.png">
+            <img file="hero_cash.png" posx="-8" posy="5" />
+            <text posx="center" posy="center" font="font_res_num" font_size="35" font_style="stroke" text="80034" key="__text.label"></text>
+          </_butt>
+          <text posx="center" posy="51" font="font_text_b" font_size="40" font_style="stroke" align="center" text="80033">
+            <!--"고급 영웅 고용서"-->
+          </text>
+          <!--"고급 영웅 고용서" & 설명-->
+          <text posx="40" posy="113" width="183" font="font_text_m" font_size="25" align="hcenter" font_style="stroke" key="text.desc.high" text="80035" />
+        </img>
+        <!--골드 고용 버튼-->
+      </wnd>
+    </wnd>
+  </hero>
+  <!--영웅고용 확인 팝업-->
+  <askpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.ask" format="argb8888">
+      <!--"영웅 고용"-->
+      <img posx="center" posy="18" img="popup_title_bar.png">
+        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" text="80053" />
+      </img>
+      <!--설명 bg-->
+      <text posx="170" posy="center" key="text.hero.ask" font="font_text_m" font_size="35" font_style="stroke" align="center" width="205" />
+      <_text posx="144" posy="155" width="228" key="text.hero.ask" align="center" font="font_text_m" font_size="35" font_style="stroke" />
+      <!--고용 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80036"></butt>
+      <!--취소 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+    </img>
+  </askpopup>
+  <!--영웅고용 결과 팝업-->
+  <complate>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.complate" format="argb8888">
+      <!--"고용 성공"-->
+      <img posx="center" posy="18" img="popup_title_bar.png">
+        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80044" />
+      </img>
+      <!--영웅 bg & 영웅 이름 bg-->
+      <img posx="191" posy="80" file="common_unit_bg_bb.png" key="img.unit.bg">
+        <spr file="brilliant.spr" posx="65" posy="57" scale="2.0" />
+      </img>
+      <!--별 1 ~ 4 윈도우-->
+      <wnd posx="209" posy="185" width="0" height="0">
+        <img posx="0" posy="0" file="common_etc_bicstar.png" key="img.star" show="off" num="5" distx="21"></img>
+        <img posx="0" posy="0" file="common_etc_bigstar_empty.png" key="img.star.empty" show="off" num="5" distx="21"></img>
+        <_img posx="0" posy="0" file="common_etc_bicstar.png" key="img.star1" show="off" />
+        <_img posx="25" posy="0" file="common_etc_bicstar.png" key="img.star2" show="off" />
+        <_img posx="50" posy="0" file="common_etc_bicstar.png" key="img.star3" show="off" />
+        <_img posx="75" posy="0" file="common_etc_bicstar.png" key="img.star4" show="off" />
+      </wnd>
+      <img posx="176" posy="213" file="legion_unit_blank_b.png">
+        <text posx="center" posy="center" key="text.hero.name" font="font_text_b" font_size="35" font_style="stroke" adjy="-4"></text>
+      </img>
+      <!--영웅 이름 텍스트-->
+      <_text posx="176" posy="220" width="164" key="text.hero.name" align="center" font="font_text_b" font_size="35" font_style="stroke" />
+      <!--확인 버튼-->
+      <butt posx="470" posy="31" img_up="common_butt_x.png" key="butt.ok"></butt>
+      <!--클랜 이름-->
+      <_text posx="176" posy="86" width="164" key="text.hero.clan" align="center" font="font_text_m" font_size="35" font_style="stroke" text_col_r="0" text_col_g="162" text_col_b="149" />
+    </img>
+  </complate>
+</layout>

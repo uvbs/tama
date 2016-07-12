@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf">
+  <popup>
+    <popup img="encounter.png">
+      <butt posx="right" posy="56" img_up="common_butt_x.png" key="butt.ok">
+        <!--x버튼-->
+      </butt>
+      <text text="2031" font_size="40" font="font_text_b" style="stroke" posx="center" posy="51">
+        <!--기습!-->
+      </text>
+      <_text font_size="20" font="font_text_m" style="stroke" posx="center" posy="154" key="text.name.enemy">
+        <!--공격자이름과 레벨-->
+      </_text>
+      <wnd key="wnd.sulfur" posx="68" posy="88">
+        <!--유황개수와 아이콘-->
+      </wnd>
+      <text font_size="20" font="font_text_m" width="51" style="stroke" align="hcenter" posx="68" posy="81" text="2248">
+        <!--획득한 유황-->
+      </text>
+      <text text="2034" font_size="20" font="font_text_m" style="stroke" width="198" height="68" posx="137" posy="77" align="hcenter">
+        <!--패할경우....-->
+      </text>
+      <img posx="137" posy="154" file="world_top_shield.png">
+        <text text="4" style="stroke" key="text.level" posx="center" posy="center" />
+      </img>
+      <text text="1" style="stroke" key="text.name" posx="158" posy="158"></text>
+      <img posx="137" posy="174" file="world_top_power.png"></img>
+      <text text="1" style="stroke" key="text.power" posx="162" posy="179"></text>
+      <img posx="137" posy="197" file="world_top_trophy.png"></img>
+      <text text="1" style="stroke" key="text.score" posx="162" posy="200"></text>
+      <butt img_up="common_butt_mid.png" key="butt.attack" posx="79" posy="221">
+        <img posx="14" posy="center" file="icon_two_sword.png"></img>
+        <text text="2032" font_size="30" font="font_text_b" style="stroke" posx="center" posy="center">
+          <!--공격-->
+        </text>
+        <spr file="ui_glow_butt.spr" posx="0" posy="0" key="spr.glow" />
+      </butt>
+      <butt img_up="common_butt_mid.png" key="butt.retreat" posx="194" posy="221">
+        <text text="2033" font_size="25" font="font_text_b" style="stroke" posx="center" posy="18">
+          <!--후퇴-->
+        </text>
+        <img posx="12" posy="3" file="gem_small.png" scale="1.5" />
+        <text font_size="20" font="font_text_m" style="stroke" posx="center" posy="4" key="text.cost.cash" text="1">
+          <!--캐시가격-->
+        </text>
+      </butt>
+    </popup>
+  </popup>
+</layout>

@@ -1,0 +1,975 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_Bot2|Win32">
+      <Configuration>Debug_Bot2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_DX|Win32">
+      <Configuration>Debug_DX</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_GLES2|Win32">
+      <Configuration>Debug_GLES2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_Patch5|Win32">
+      <Configuration>Debug_Patch5</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_single|Win32">
+      <Configuration>Debug_single</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelCrewGoogle|Win32">
+      <Configuration>RelCrewGoogle</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelCrewSoftnyx|Win32">
+      <Configuration>RelCrewSoftnyx</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Bot2|Win32">
+      <Configuration>Release_Bot2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Rel_Bot|Win32">
+      <Configuration>Rel_Bot</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4E6645B0-5901-4E21-A75D-C7D453C9A552}</ProjectGuid>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>xe_client</RootNamespace>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccProvider>
+    </SccProvider>
+    <ProjectName>xe_client2013</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
+    <TargetName>xe_clientd</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
+    <TargetName>xe_clientd_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
+    <TargetName>xe_clientd_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
+    <TargetName>xe_clientd_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Release\</OutDir>
+    <TargetName>xe_client_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Release\</OutDir>
+    <TargetName>xe_client_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Release\</OutDir>
+    <TargetName>xe_client_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Release\</OutDir>
+    <TargetName>xe_client</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Release\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_VER_DX;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_XSINGLE;XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_XPATCH;XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib />
+    <Lib>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_XCREW;_XGOOGLE;XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib />
+    <Lib>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_XCREW;_SOFTNYX;XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib />
+    <Lib>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_VER_DX;_XACCOUNT_REF;WIN32;NDEBUG;_LIB;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib />
+    <Lib>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Common\XDrawGraph.h" />
+    <ClInclude Include="..\..\..\Common\XGameUtil.h" />
+    <ClInclude Include="..\..\..\Common\XInterpolationObj.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\android\CrashHandler.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\ArrayLinear.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\ArrayLinearN.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Alert.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\ContainerSTL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\ConvertString.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Debug.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Global.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\InputMng.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\iOS\xStringiOS.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\path.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Timer.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Token.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Types.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XBaseImage.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xColor.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XGraphics.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XGraphicsDef.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xLang.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xMath.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XSurface.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XSurfaceDef.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XSurfaceMem.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XTimer2.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xUtil.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\lua_tinker.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\android\XBSDSocketClient.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\client\XNetworkConnection.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\client\XSocketClient.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\win32\XWinSocketClient.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XDownloader.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XDownloaderCurl.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XDownloadTask.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\xenDef.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XNetworkDelegate.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XPacket.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XSocket.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_blur_horiz.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_blur_onpass.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_blur_vert.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_color.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_color_texture.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_fastblur.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_onecolor.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_point_sprite.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_texture.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_color.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_color_texture.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_fastblurH.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_fastblurV.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_onecolor.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_point_sprite.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_texture.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\glesView.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XFontDatFTGL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XFontObjFTGL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XGraphicsOpenGL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XOpenGL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XParticleOpenGL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\xShader.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid2.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\iPhone\AVAudio.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\iPhone\XOpenAL.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\iPhone\XSoundMngOpenAL.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\Ogg\XOgg.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\aldlist.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\CWaves.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\Framework.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\LoadOAL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XOpenAL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL2.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\Key.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\Layer.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprDat.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\Sprdef.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\Sprite.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprMng.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprObj.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XBaseObj.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XDelegateSprObj.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\VersionXE.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XArchive.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XAutoPtr.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XBaseDelegate.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XBaseFontDat.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XBaseFontObj.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XCrypto.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XE.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XE3d.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xeDef.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XError.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XFont.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XFontMng.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XFontSpr.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XHSLMap.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XImage.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XImageLibPng.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XImageMng.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLib.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibConsole.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibGame.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibGameWin32.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLibrary.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibResPath.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XList.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLock.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLockPThreadMutex.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLua.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xMathGLM.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XParticle.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XParticleFramework.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XParticleMng.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XPool.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XPThread.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XRefObj.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XRefRes.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XResMng.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XResObj.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XSoundMng.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XSystem.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XTransition.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\xVector.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XWindow.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XXMLDoc.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3dapp.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3denumeration.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3dres.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3dsettings.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3dutil.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3dView.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\dxutil.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\DXUTText.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XE_MFCFramework.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XFontDatDX.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XFontObjDX.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XGraphicsD3D.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XGraphicsD3DTool.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XImageD3D.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\xMathD3D.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XSurfaceD3D.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWnd.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndButton.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndButtonRadio.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndCtrls.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndEdit.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndH.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndImage.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndList.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndListH.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndPageSlide.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndPopup.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndProgressBar.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndScrollView.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndSprObj.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndText.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndView.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\tinyxml\tinystr.h" />
+    <ClInclude Include="..\..\..\Third_Party_lib\tinyxml\tinyxml.h" />
+    <None Include="..\..\..\XFramework\android\com_mtricks_xe_Cocos2dxHelper.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\..\XFramework\android\com_mtricks_xe_Cocos2dxHelperListener.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\..\XFramework\android\com_mtricks_xe_XRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <ClInclude Include="..\..\..\XFramework\android\CocosDenshion\android\opensl\android\asset_manager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\android\CocosDenshion\android\opensl\android\asset_manager_jni.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\android\JniHelper.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XApp.h" />
+    <ClInclude Include="..\..\..\XFramework\client\XASyncLoad.h" />
+    <ClInclude Include="..\..\..\XFramework\client\XClientMain.h" />
+    <ClInclude Include="..\..\..\XFramework\client\XEContent.h" />
+    <ClInclude Include="..\..\..\XFramework\client\XELaserDX.h" />
+    <ClInclude Include="..\..\..\XFramework\client\XEmitter.h" />
+    <ClInclude Include="..\..\..\XFramework\client\XLayout.h" />
+    <ClInclude Include="..\..\..\XFramework\client\XLayoutObj.h" />
+    <ClInclude Include="..\..\..\XFramework\client\XPropParticle.h" />
+    <ClInclude Include="..\..\..\XFramework\client\XTimeoutMng.h" />
+    <ClInclude Include="..\..\..\XFramework\Game\XEBaseWorldObj.h" />
+    <ClInclude Include="..\..\..\XFramework\Game\XEWndWorld.h" />
+    <ClInclude Include="..\..\..\XFramework\Game\XEWndWorldImage.h" />
+    <ClInclude Include="..\..\..\XFramework\Game\XEWorld.h" />
+    <ClInclude Include="..\..\..\XFramework\Game\XFLevel.h" />
+    <ClInclude Include="..\..\..\XFramework\Game\XEObjMng.h" />
+    <ClInclude Include="..\..\..\XFramework\Game\XFLevelH.h" />
+    <ClInclude Include="..\..\..\XFramework\MFC\CoolDialogBar.h" />
+    <ClInclude Include="..\..\..\XFramework\XConsoleMain.h" />
+    <ClInclude Include="..\..\..\XFramework\XConstant.h" />
+    <ClInclude Include="..\..\..\XFramework\XDBAccount.h" />
+    <ClInclude Include="..\..\..\XFramework\XEBaseProp.h" />
+    <ClInclude Include="..\..\..\XFramework\XEBaseScene.h" />
+    <ClInclude Include="..\..\..\XFramework\XEOption.h" />
+    <ClInclude Include="..\..\..\XFramework\XEProfile.h" />
+    <ClInclude Include="..\..\..\XFramework\XESceneMng.h" />
+    <ClInclude Include="..\..\..\XFramework\XESceneSlide.h" />
+    <ClInclude Include="..\..\..\XFramework\XEToolTip.h" />
+    <ClInclude Include="..\..\..\XFramework\XF.h" />
+    <ClInclude Include="..\..\..\XFramework\XFacebook.h" />
+    <ClInclude Include="..\..\..\XFramework\XGlobal.h" />
+    <ClInclude Include="..\..\..\XFramework\XInApp.h" />
+    <ClInclude Include="..\..\..\XFramework\XParamObj.h" />
+    <ClInclude Include="..\..\..\XFramework\XReceiverCallback.h" />
+    <ClInclude Include="..\..\..\XFramework\XReceiverCallbackH.h" />
+    <ClInclude Include="..\..\..\XFramework\XScroll.h" />
+    <ClInclude Include="..\..\..\XFramework\XSoundTable.h" />
+    <ClInclude Include="..\..\..\XFramework\XTextTable.h" />
+    <ClInclude Include="..\..\..\XFramework\XTextTableUTF8.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Common\XDrawGraph.cpp" />
+    <ClCompile Include="..\..\..\Common\XGameUtil.cpp" />
+    <ClCompile Include="..\..\..\Common\XInterpolationObj.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\CrashHandler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Alert.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\ConvertString.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Debug.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\InputMng.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\iOS\xStringiOS.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\path.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Timer.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Token.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XGraphics.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xLang.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xMath.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XSurface.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XSurfaceMem.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XTimer2.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xUtil.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\lua_tinker.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\android\XBSDSocketClient.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\client\XNetworkConnection.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\client\XSocketClient.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\win32\XWinSocketClient.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XDownloader.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XDownloaderCurl.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XDownloadTask.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XNetworkDelegate.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XPacket.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XSocket.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\glesView.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XFontDatFTGL.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XFontObjFTGL.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XGraphicsOpenGL.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XParticleOpenGL.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\xShader.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid2.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\iPhone\XSoundMngOpenAL.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\Ogg\XOgg.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\aldlist.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\CWaves.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\Framework.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\LoadOAL.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XOpenAL.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL2.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\Key.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\Layer.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprDat.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\Sprite.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprMng.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprObj.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\XBaseObj.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XArchive.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XAutoPtr.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XBaseDelegate.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XBaseFontDat.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XBaseFontObj.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XCrypto.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XE.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XE3d.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XError.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XFontMng.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XFontSpr.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XHSLMap.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XImage.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XImageLibPng.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XImageMng.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLibrary.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLock.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLockPThreadMutex.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLua.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\xMathGLM.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XParticle.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XParticleFramework.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XParticleMng.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XPool.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XPThread.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XRefObj.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XRefRes.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XResMng.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XResObj.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XSoundMng.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XSystem.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XTransition.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\xVector.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XXMLDoc.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\d3dapp.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\d3denumeration.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\d3dsettings.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\d3dutil.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\d3dView.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\dxutil.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\DXUTText.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XE_MFCFramework.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XFontDatDX.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XFontObjDX.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XGraphicsD3D.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XGraphicsD3DTool.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XImageD3D.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XSurfaceD3D.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWnd.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndButton.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndButtonRadio.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndCtrls.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndEdit.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndImage.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndList.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndPageSlide.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndPopup.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndProgressBar.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndScrollView.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndSprObj.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndText.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndView.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinystr.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxml.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxmlparser.cpp" />
+    <None Include="..\..\..\XFramework\android\com_mtricks_xe_Cocos2dxHelper.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\..\XFramework\android\com_mtricks_xe_XRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <ClCompile Include="..\..\..\XFramework\android\JniHelper.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XApp.cpp" />
+    <ClCompile Include="..\..\..\XFramework\client\XASyncLoad.cpp" />
+    <ClCompile Include="..\..\..\XFramework\client\XClientMain.cpp" />
+    <ClCompile Include="..\..\..\XFramework\client\XEContent.cpp" />
+    <ClCompile Include="..\..\..\XFramework\client\XELaserDX.cpp" />
+    <ClCompile Include="..\..\..\XFramework\client\XEmitter.cpp" />
+    <ClCompile Include="..\..\..\XFramework\client\XLayout.cpp" />
+    <ClCompile Include="..\..\..\XFramework\client\XLayoutObj.cpp" />
+    <ClCompile Include="..\..\..\XFramework\client\XPropParticle.cpp" />
+    <ClCompile Include="..\..\..\XFramework\client\XTimeoutMng.cpp" />
+    <ClCompile Include="..\..\..\XFramework\Game\XEBaseWorldObj.cpp" />
+    <ClCompile Include="..\..\..\XFramework\Game\XEWndWorld.cpp" />
+    <ClCompile Include="..\..\..\XFramework\Game\XEWndWorldImage.cpp" />
+    <ClCompile Include="..\..\..\XFramework\Game\XEWorld.cpp" />
+    <ClCompile Include="..\..\..\XFramework\Game\XFLevel.cpp" />
+    <ClCompile Include="..\..\..\XFramework\Game\XEObjMng.cpp" />
+    <ClCompile Include="..\..\..\XFramework\MFC\CoolDialogBar.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XConsoleMain.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XConstant.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XDBAccount.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XEBaseProp.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XEBaseScene.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XEOption.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XEProfile.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XESceneMng.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XESceneSlide.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XEToolTip.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XF.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XFacebook.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XGlobal.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XInApp.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XParamObj.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XReceiverCallback.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XScroll.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XSoundTable.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XTextTable.cpp" />
+    <ClCompile Include="..\..\..\XFramework\XTextTableUTF8.cpp" />
+    <ClCompile Include="Stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Troubleshooting.txt" />
+    <None Include="..\..\..\Common\_XLibrary\ArrayLinear.inl" />
+    <None Include="..\..\..\Common\_XLibrary\ArrayLinearN.inl" />
+    <None Include="..\..\..\Common\_XLibrary\Sound\iPhone\AVAudio.mm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\Sound\iPhone\XOpenAL.mm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\Sprite\Key.inl" />
+    <None Include="..\..\..\Common\_XLibrary\XList.inl" />
+    <None Include="..\..\..\memo_xe.txt" />
+    <None Include="..\..\android\xe\src\com\mtricks\xe\Cocos2dxEditBoxDialog.java">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\Cocos2dxHandler.java">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\Cocos2dxHelper.java">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\Cocos2dxMusic.java">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\Cocos2dxSound.java">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\PinchZoom.java">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\WebGetImage.java">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\XeActivity.java">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="app.ico" />
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\OpenAL32.lib" />
+    <Library Include="..\..\..\Third_Party_lib\bugslayer\lib\CrashReport.lib" />
+    <Library Include="..\..\..\Third_Party_lib\curl\libcurl_imp.lib" />
+    <Library Include="..\..\..\Third_Party_lib\Lua\5.1\lib\lua51.lib" />
+    <Library Include="..\..\..\Third_Party_lib\pthread_win32\lib\x86\pthreadVC2.lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

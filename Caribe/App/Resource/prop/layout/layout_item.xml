@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout normal="normal.ttf" bold="bold.ttf">
+  <item_tooltip>
+    <wnd width="151" height="198">
+      <text posx="5" posy="9" width="119" font="bold" font_size="25" font_style="stroke" key="text.name">
+        <!--아이템 이름-->
+      </text>
+      <img posx="9" posy="27" key="img.item">
+        <!--아이템 이미지-->
+        <img posx="-4" posy="-4" file="common_bg_itemblank.png" key="img.frame">
+          <!--아이템 액자-->
+          <img posx="3" posy="0" key="img.star" num="5" distx="9" file="common_etc_smallstar.png" scale="0.8">
+            <!--별5개-->
+          </img>
+        </img>
+      </img>
+      <text posx="95" posy="3" width="48" font="normal" font_size="16" key="text.grade" align="right">
+        <!--장비종류와 등급-->
+      </text>
+      <wnd posx="66" posy="24" width="86" height="67" key="wnd.stat.area">
+        <!--능력치 영역-->
+        <wnd key="wnd.stat" num="4" disty="17" show="off">
+          <!--스탯 아이콘+텍스트 세트-->
+          <img key="img.stat">
+            <!--스탯아이콘-->
+          </img>
+          <text posx="20" posy="3" width="67" font="normal" font_size="18" key="text.stat" text_col="green">
+            <!--스탯 텍스트-->
+          </text>
+        </wnd>
+      </wnd>
+      <text posx="7" posy="96" width="145" font="normal" font_size="18" key="text.invoke" show="off" text_col="col_item_invoke">
+        <!--장착효과-->
+      </text>
+      <text posx="7" posy="158" width="145" font="normal" font_size="18" key="text.desc" show="off" text_col="col_item_desc">
+        <!--아이템 설명-->
+      </text>
+      <wnd posx="7" posy="190" width="139" key="wnd.sell" show="off">
+        <!--가격표시 영역-->
+        <text font="normal" font_size="15" text_col="green" text="2056">
+          <!--판매가격-->
+        </text>
+        <img posx="32" key="img.gold" file="world_top_gold.png" scale="0.75" posy="-5">
+          <!--금화아이콘-->
+        </img>
+        <text font="font_res_num" font_size="18" key="text.cost" text_col="green" text="2056" comma="yes" posx="48">
+          <!--가격숫자-->
+        </text>
+      </wnd>
+    </wnd>
+  </item_tooltip>
+  <hero_tooltip>
+    <wnd width="151" height="198">
+      <!--영웅 이름-->
+      <text posx="5" posy="5" width="119" font="bold" font_size="25" font_style="stroke" key="text.name"></text>
+      <!--영웅 아이콘-->
+      <wnd>
+        <img posx="9" posy="23" key="img.hero" scale="0.98">
+          <img posx="-4" posy="-3" file="common_unit_bg_m.png">
+            <!--영웅 아이콘 테두리-->
+            <img posx="-8" posy="-9" file="common_etc_bicstar.png" key="img.star." show="off" num="5" distx="15" scale="0.8">
+              <!--별 5개-->
+            </img>
+          </img>
+        </img>
+      </wnd>
+      <_text posx="104" posy="5" width="48" font="normal" font_size="18" key="text.grade" align="right">
+        <!--등급-->
+      </_text>
+      <wnd posx="19" posy="100" key="wnd.stat.area">
+        <!--능력치 영역-->
+        <img posx="0" posy="0" file="legion_simbol_table_b.png" scale="0.55">
+          <!--스탯 아이콘들-->
+        </img>
+        <text posx="16" posy="3" width="24" font="font_res_num" font_size="18" key="text.stat." text_col="white" align="right" num="6" disty="14">
+          <!--스탯 텍스트-->
+        </text>
+      </wnd>
+      <!--지휘가능유닛-->
+      <wnd posx="77" posy="42">
+        <text posx="0" posy="0" width="71" font="normal" font_size="18" align="hcenter" text="2206"></text>
+        <img posx="0" posy="15" file="corps_legionnaire_bg.png" num="3" distx="24" scale="0.75" />
+        <img posx="0" posy="15" num="3" distx="24" scale="0.75" key="img.unit." debug="1" />
+      </wnd>
+    </wnd>
+    <wnd posx="89" posy="90" key="key.skill.area" scale="1">
+      <!--액티브 스킬-->
+      <wnd posx="0" posy="0" key="key.skill.passive" _width="62" _height="62">
+        <img posx="2" posy="2" key="img.icon.bg" file="common_bg_skillsimbol.png" scale="0.75"></img>
+        <img posx="2" posy="2" key="img.icon" scale="0.75"></img>
+        <text posx="-13" posy="40" font="font_text_m" font_style="stroke" font_size="18" text_col="white" key="text.name" width="74" align="hcenter"></text>
+      </wnd>
+      <wnd posx="0" posy="58" key="key.skill.active" width="62" height="62">
+        <img posx="2" posy="2" key="img.icon.bg" file="common_bg_skillsimbol.png" scale="0.75"></img>
+        <img posx="2" posy="2" key="img.icon" scale="0.75" />
+        <text posx="-13" posy="40" font="font_text_m" font_style="stroke" font_size="18" text_col="white" key="text.name" width="74" align="hcenter"></text>
+      </wnd>
+    </wnd>
+    <wnd posx="7" posy="190" width="139" key="wnd.sell" show="off">
+      <!--가격표시 영역-->
+      <text font="normal" font_size="15" text_col="green" text="2056">
+        <!--판매가격-->
+      </text>
+      <img posx="32" key="img.gold" file="guild_coin_small.png" scale="0.75" posy="-5">
+        <!--금화아이콘-->
+      </img>
+      <text font="font_res_num" font_size="15" key="text.cost" text_col="green" text="2056" comma="yes" posx="48">
+        <!--가격숫자-->
+      </text>
+    </wnd>
+  </hero_tooltip>
+  <skill_tooltip>
+    <wnd width="170" height="60">
+      <wnd posx="0" posy="0" key="wnd.skill.root">
+        <img posx="2" posy="height" key="img.icon.bg" file="common_bg_skillsimbol.png">
+          <img posx="0" posy="0" key="img.icon"></img>
+        </img>
+      </wnd>
+      <text posx="65" posy="9" width="126" font="bold" font_size="25" font_style="stroke" key="text.name" font_color="yellow">
+        <!--스킬이름-->
+      </text>
+      <text posx="65" posy="28" width="126" font="normal" font_size="18" font_style="stroke" key="text.desc">
+        <!--스킬설명-->
+      </text>
+    </wnd>
+  </skill_tooltip>
+</layout>

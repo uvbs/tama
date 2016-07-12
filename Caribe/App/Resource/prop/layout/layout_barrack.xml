@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--월드 씬-->
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf">
+  <popup_barrack>
+    <popup img="common_bg_popup.png" format="argb8888">
+      <img posx="center" posy="18" img="popup_title_bar.png">
+        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="40" font_style="stroke" key="text.title" text="2097" />
+      </img>
+      <list posx="24" posy="58" spacew="0" width="475" height="262" key="list.slot" type="list_horiz">
+        <!--영웅 리스트-->
+      </list>
+      <butt posx="470" posy="30" img_up="common_butt_x.png" key="butt.close">
+        <!--x버튼-->
+      </butt>
+    </popup>
+  </popup_barrack>
+  <slot_base>
+    <wnd posx="0" posy="20" key="wnd.root.hero" />
+    <text posx="center" posy="5" font="font_text_s" text_col="white" font_size="20" font_style="stroke" text="2282">
+      <!--"훈련 중"-->
+    </text>
+    <text posx="center" posy="76" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.remain.time">
+      <!--남은시간-->
+    </text>
+    <butt posx="center" posy="227" img_up="common_butt_small.png" key="butt.complete">
+      <!--즉시완료-->
+      <text posx="center" posy="4" font="font_text_s" text_col="white" font_size="20" font_style="stroke" text="2078" />
+      <img posx="5" posy="13" file="world_top_gold.png" scale="0.7" />
+      <text posx="center" posy="17" font="font_res_num" text_col="white" font_size="15" font_style="stroke" key="text.cost.complete" />
+    </butt>
+  </slot_base>
+  <slot_lock>
+    <butt posx="center" posy="center" img_up="common_butt_mid.png" key="butt.unlock">
+      <text posx="center" posy="5" font="font_text_b" text_col="white" font_size="25" font_style="stroke" text="2023"></text>
+      <img posx="7" posy="17" file="hero_cash.png" scale="0.5" />
+      <text posx="center" posy="23" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.cost.unlock" />
+    </butt>
+    <img posx="center" posy="65" file="storage_lock2.png" />
+  </slot_lock>
+  <slot_empty>
+    <img posx="0" posy="0" file="legion_herolist_bg.png" scale="0.8785" />
+    <text posx="center" posy="center" font="font_text_s" text_col="green" font_size="25" font_style="stroke" text="2030" />
+  </slot_empty>
+  <slot_lvup>
+    <img posx="center" posy="103" file="world_left_rightarrow" />
+    <wnd key="wnd.stat." posx="14" posy="100" num="2" distx="60">
+      <img posx="7" posy="0" file="world_top_shield.png">
+        <text posx="center" posy="center" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.level" text="11" />
+      </img>
+      <img posx="0" posy="30" file="legion_simbol_table.png">
+        <text posx="20" posy="3" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.stat." text="11" num="6" disty="16" width="32" />
+      </img>
+    </wnd>
+    <_wnd key="wnd.stat2" posx="75" posy="100">
+      <img posx="7" posy="0" file="world_top_shield.png">
+        <text posx="center" posy="center" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.level" text="11" />
+      </img>
+      <img posx="0" posy="30" file="legion_simbol_table.png">
+        <text posx="20" posy="3" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.stat." text="11" num="6" disty="16" />
+      </img>
+    </_wnd>
+  </slot_lvup>
+  <slot_squadup>
+    <img posx="center" posy="103" file="world_left_rightarrow" scale="0.8" />
+    <wnd key="wnd.stat." posx="14" posy="90" num="2" distx="50">
+      <img posx="5" posy="0" file="corps_legionnaire_bg">
+        <!--유닛초상화-->
+        <img key="img.unit" />
+        <img posx="0" posy="20" file="circle_bg_s">
+          <!--부대레벨-->
+          <text posx="center" posy="center" font="font_res_num" text_col="white" font_size="15" font_style="stroke" key="text.level" _text="11" />
+        </img>
+      </img>
+      <img posx="0" posy="40" file="legion_simbol_table.png">
+        <!--스탯6종-->
+        <text posx="20" posy="3" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.stat." text="11" num="6" disty="16" width="32" />
+      </img>
+    </wnd>
+  </slot_squadup>
+  <slot_skillup>
+    <img posx="center" posy="100" file="world_left_rightarrow" />
+    <wnd key="wnd.stat." posx="18" posy="90" num="2" distx="60">
+      <img posx="0" posy="0" file="common_bg_skillsimbol" scale="0.5">
+        <!--스킬아이콘-->
+        <img key="img.skill" />
+      </img>
+      <img posx="0" posy="20" file="circle_bg_s">
+        <!--스킬레벨-->
+        <text posx="center" posy="center" font="font_res_num" text_col="white" font_size="15" font_style="stroke" key="text.level" text="11" />
+      </img>
+    </wnd>
+    <text posx="9" posy="144" font="font_text_b" text_col="yellow" font_size="20" font_style="stroke" text="1" key="text.name">
+      <!--스킬이름-->
+    </text>
+    <text posx="9" posy="157" font="font_text_s" text_col="white" font_size="18" font_style="stroke" text="1" width="104" key="text.desc">
+      <!--스킬설명-->
+    </text>
+  </slot_skillup>
+</layout>

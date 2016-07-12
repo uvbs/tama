@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_log>
+    <popup img="log_bg_new.png">
+      <butt posx="right" posy="3" img_up="common_butt_x.png" key="butt.close" _adjx="-13">
+        <!--x버튼-->
+      </butt>
+      <radio_butt img_up="log_butt_notouch.png" img_down="log_butt_touch.png" key="butt.tab.attack" posx="25" posy="12" group="1">
+        <!--공격기록-->
+        <text posx="center" posy="center" text="2041" font_size="25" font="font_text_b" style="stroke" />
+      </radio_butt>
+      <radio_butt img_up="log_butt_notouch.png" img_down="log_butt_touch.png" key="butt.tab.defense" posx="100" posy="12" group="1">
+        <!--방어기록-->
+        <text posx="center" posy="center" text="2042" font_size="25" font="font_text_b" style="stroke" />
+      </radio_butt>
+      <list posx="center" posy="41" type="list_vert" dist="2" spaceh="0" width="337" height="208" key="list.log" />
+    </popup>
+  </popup_log>
+  <elem>
+    <img file="log_list2.png">
+      <text font_size="20" font="font_text_b" style="stroke" posx="10" posy="4" key="text.name.target" width="200">
+        <!--대상 유저 이름-->
+      </text>
+      <img key="img.icon.name" posx="120" posy="2" file="world_top_shield.png" scale="0.7">
+        <!--유저이름 의 아이콘-->
+        <text font_size="20" font="font_res_num" style="stroke" posx="center" posy="center" key="text.level.target" debug="35" adjx="2">
+          <!--대상 레벨-->
+        </text>
+      </img>
+      <img key="img.icon.score" posx="10" posy="18" file="world_top_trophy.png" scale="0.6">
+        <!--트로피 아이콘-->
+        <text font_size="25" style="stroke" posx="27" posy="center" key="text.score.target" font="font_res_num" width="100">
+          <!--점수-->
+        </text>
+      </img>
+      <img key="img.icon.power" posx="10" posy="29" file="world_top_power.png" scale="0.6">
+        <!--전투력 아이콘-->
+        <text font_size="25" font="font_res_num" style="stroke" posx="27" posy="center" key="text.power.target" width="100">
+          <!--전투력-->
+        </text>
+      </img>
+      <text font_size="18" font="font_text_m" style="stroke" posx="73" posy="17" key="text.time">
+        <!--시간-->
+      </text>
+      <wnd posx="138" posy="3" width="67" height="40" key="wnd.res1" />
+      <wnd posx="209" posy="3" width="75" height="40" key="wnd.res2"></wnd>
+    </img>
+  </elem>
+</layout>

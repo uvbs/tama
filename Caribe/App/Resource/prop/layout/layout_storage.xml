@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf">
+  <!--모든 씬 백판-->
+  <common_bg>
+    <wnd posx="1" posy="0" width="0" height="0" key="wnd.common_bg">
+      <!--백판-->
+      <img posx="0" posy="0" file="common_bg_bottom.png" format="argb8888" />
+      <!--백버튼-->
+      <butt posx="28" posy="20" key="butt.back" img_up="common_butt_back.png" />
+    </wnd>
+  </common_bg>
+  <!--창고-->
+  <storage>
+    <wnd posx="64" posy="57" width="0" height="0" key="wnd.storage">
+      <!--내부 백판-->
+      <img posx="0" posy="0" file="common_bg_inside.png" />
+      <!--전체 버튼-->
+      <radio_butt img_up="common_butt_small.png" posx="11" posy="13" key="butt.tab.all" group="1" spr="ui_glow_butt.spr" act_down="2" img_down="common_butt_small.png">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="80031" />
+      </radio_butt>
+      <!--장비 버튼-->
+      <radio_butt img_up="common_butt_small.png" posx="90" posy="13" key="butt.tab.equipment" group="1" spr="ui_glow_butt.spr" act_down="2" img_down="common_butt_small.png">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="80002" />
+      </radio_butt>
+      <!--전리품 버튼-->
+      <radio_butt img_up="common_butt_small.png" posx="169" posy="13" key="butt.tab.trophy" group="1" spr="ui_glow_butt.spr" act_down="2" img_down="common_butt_small.png">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="80013" />
+      </radio_butt>
+      <!--기타 버튼-->
+      <radio_butt img_up="common_butt_small.png" posx="248" posy="13" key="butt.tab.etc" group="1" spr="ui_glow_butt.spr" act_down="2" img_down="common_butt_small.png">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="80014" />
+      </radio_butt>
+      <!--아이템 리스트-->
+      <list posx="11" posy="50" width="320" height="235" spacew="3" spaceh="3" type="thumb" key="list.storage" />
+    </wnd>
+  </storage>
+  <!--아이템 정보-->
+  <select_item_info>
+    <wnd posx="405" posy="65" key="wnd.storage.select_item_info" width="162" height="286">
+      <!--양피지 백판-->
+      <img posx="0" posy="0" file="armory_bg_magnifier.png" key="storage.parchment" show="off">
+        <text posx="center" posy="7" font="font_text_b" font_size="35" font_style="stroke" key="text.storage.title" text_col="white" id="666"></text>
+        <wnd posx="7" posy="40" key="wnd.item.tooltip" width="153" height="202">
+          <!--아이템 툴팁의 루트-->
+        </wnd>
+      </img>
+      <img posx="0" posy="0" file="guild_shop_mag.png" key="img.bg.hero.tooltip" show="off" format="argb8888">
+        <wnd posx="7" posy="40" key="wnd.hero.tooltip" width="153" height="202">
+          <!--영웅 툴팁의 루트-->
+        </wnd>
+        <!--영혼석 툴팁-->
+      </img>
+      <!--타이틀-->
+      <!--아이템 이미지-->
+      <!--별 1 ~ 4-->
+      <!--판매 버튼-->
+      <butt img_up="common_butt_mid.png" posx="40" posy="250" text_col="white" font="font_text_b" font_size="30" key="butt.storage.sell" font_style="stroke" text="80015" show="0" id="666" />
+      <!--사용 버튼-->
+      <butt img_up="common_butt_mid.png" posx="40" posy="250" text_col="white" font="font_text_b" font_size="30" key="butt.storage.use" font_style="stroke" text="80008" show="0" />
+      <!--영혼석 표시-->
+    </wnd>
+  </select_item_info>
+  <!--사용 팝업-->
+  <usepopup>
+    <popup img="common_bg_popup.png" key="popup.storage.use" format="argb8888">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80008" />
+      <!--설명 bg-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80008" />
+      <!--아이템 슬롯-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <img posx="237" posy="120" file="common_bg_item.png"></img>
+      <img posx="241" posy="124" key="img.ask.itemimg"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.storage.ask" align="center" font="font_text_m" font_size="30" font_style="stroke"></text>
+      <!--사용 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80008"></butt>
+      <!--취소 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+    </popup>
+  </usepopup>
+  <!--텍스트 팝업-->
+  <commontextpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popuptext" format="argb8888">
+      <!--타이틀-->
+      <text posx="3" posy="17" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" key="text.title" />
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png"></img>
+      <!--메세지-->
+      <text posx="147" posy="180" width="228" key="text.common.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
+      <!--왼쪽 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+      <!--오른쪽 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+      <!--버튼 하나용-->
+      <butt posx="215" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok1" font_style="stroke" text="2" show="0"></butt>
+    </img>
+  </commontextpopup>
+  <!--아이템 슬롯 텍스트 팝업-->
+  <commonitemtextpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popupitemtext" format="argb8888">
+      <!--타이틀-->
+      <img posx="center" posy="18" img="popup_title_bar.png" format="argb8888">
+        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.title" />
+      </img>
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png" format="argb8888">
+        <text posx="12" posy="88" key="text.common.ask" font="font_text_m" font_size="20" font_style="stroke" length="214" />
+      </img>
+      <!--아이템 슬롯-->
+      <img posx="237" posy="120" file="common_bg_item.png">
+        <img posx="center" posy="center" key="img.ask.itemimg"></img>
+      </img>
+      <!--아이템 이미지-->
+      <!--메세지-->
+      <!--왼쪽 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="30" key="butt.ok" font_style="stroke" text="2"></butt>
+      <!--오른쪽 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+    </img>
+  </commonitemtextpopup>
+</layout>

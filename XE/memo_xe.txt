@@ -1,0 +1,224 @@
+﻿androideabi-addr2line -C -f -e <앱라이브러리.so> <함수 주소>
+* 장기적으로 해야할것들
+. SE구조 개선
+ {
+	.현 문제점
+	{
+		.화면을 가득채우는 류의 이미지를 쓰는 애니메이션이 여러개가 있을때 
+		 spr를 각각 만들면 리소스 낭비가 심해진다. 그렇다고 한파일에 넣어버리면
+		 게임에서 메모리 낭비가 심해지고 로딩시간도 길어진다.
+	}
+	.해결방안
+	{
+		.스프라이트 프레임한장한장을 모두 파일화 시켜서 저장.png->spd(압축해도 png보다 로딩속도가 훨씬 빨라야한다)
+		.현 spr파일엔 애니메이션 포맷만 들어있음.
+		.spr로딩할때 CSprite읽는것을 모두 외부spd파일 읽는것으로 대체
+		.spd는 한파일에 몽땅묶어 pack화시켜 필요한 부분만 읽어올수 있도록하는것도 좋을듯.
+		.툴은 spr들과 spd(혹은pack)들을 한화면에서 보면서 편집할수 있어야 한다.
+		.pack화 시키면 패치는?
+	}
+ }
+
+ XWndText {
+	.텍스트정렬이 부모크기를 따라야 하는경우
+	 -중앙정렬/우측정렬
+	.가로폭을 지정하는방법이 SetLineLength를 쓰는법과 size.w를 지정하는 방법으로 이원화 되어있어 문제.
+	.SetLineLength를 쓰는경우
+	 -중앙정렬/우측정렬/텍스트줄바꿈이 필요할때.
+	.정렬시 좌상귀 좌표를 직접계산한다면 LineLength를 쓸필요는 없다.
+	 -텍스트줄바꿈에만 사용하면 됨.
+
+	컨트롤의 사이즈를 지정한경우
+	  -줄바꿈을 위해 line length를 지정한경우
+	    .왼쪽정렬
+		.오른쪽정렬(FTGL이지원되나?)
+		.H중앙정렬
+
+		.V중앙정렬
+	  -줄바꿈을 하지 않는 경우.
+	컨트롤의 사이즈가 없는 경우
+	  -줄바꿈을 위해 line length를 지정한경우
+	  -줄바꿈을 하지 않는 경우.
+
+ }
+
+ 텍스쳐 압축 전략
+ {
+	*소스는 png를 사용하고 패키징시 자동으로 각 하드웨어에 맞는 포맷으로 변환시킨다.
+	*패키징 툴이 etc1/DXTn/PVRTC 각각으로 폴더를 따로 만들어 변환시킨다.
+		.etc1/ARM/MALI/갤s2,갤노트1,2
+		.ASTC/ARM/MALI상위버전/갤4?,갤노트4
+		.ASTS/ARM/MaliT628/갤s3G/LTE,갤노트3,갤노트10.1
+		.DXTn(S3TC)/nVidia/테그라/Nexus7,LG옵티머스2x,모토롤라,갤럭시탭10.1
+		.PVRTC/PowerVR/아이폰,갤s4LTE
+		.ATC/퀄컴/Adreno,스냅드래곤(Adreno)/갤s2HD,갤S4CA갤s4외수,갤S5LTE-A,LG-옵티머스,G1,G2,G3
+	*대중적인 폰들이 전용포맷(DXT,PVRTC,ATC)을 많이 사용하고 있으므로 전용포맷의 지원도 중요하다.
+	*안드로이드는 DXT/PVRTC/ATC형식의 apk를 따로 올릴수 있다.
+	.각 포맷의 파일
+		.ETC-ktx
+		.ATC-adreno sdk
+		.DXT-dds
+		.PVRTC-pvr
+	.우선은 ETC1만이라도 지원하는게 좋다.
+	.png들은 ktx로 바꾸고, spr파일은 etc1포맷으로 저장할수 있도록 지원한다.
+	.혹은 spr이 atlas를 지원할수 있게 하여 모든 atlas png를 ktx로 변환하는것도 방법.
+ }
+
+
+다이나믹해상도 전략(에픽의 경우)
+{
+	정의
+	{
+		* 물리적해상도: 기기마다의 고유의 해상도
+		* 논리적스크린해상도: 게임에서 사용하는 우리만의 해상도이다. 가로해상도는 320으로
+                    고정되어 있으며 세로해상도는 기기별 해상도의 비율에 맞춰 유동적
+					으로 자동 조절된다. 이 값으로 Projection이 된다.
+		* 게임좌표계:게임화면이 렌더링되는 윈도우의 영역이다. 320x240이나 320x568로 고정시켜두고
+			남는부분은 잘라내는식으로 처리한다. 
+	}
+	* 640x960기준으로 작업된 경우.
+	.기존에 쓰던 XE::GetGameHeight()를 더이상 게임윈도우의 사이즈로 사용하면 안됨
+	.논리적해상도는 기기의 해상도에따라 세로길이가 유동적으로 변하기때문에 GetScreenHeight()
+	를 게임윈도우의 세로길이로 사용하면 안된다. 반드시 XGame::GetSizeLocal()을 사용해야한다.
+	GetScreenHeight()는 프로젝션 처리등 로우레벨 에서만 사용해야 한다.
+	.320x480보다 세로가 짧은 비율의 경우 좌우에 공백을 넣어야 하는데 이때는 논리적 가로해상도가
+	유동적으로 변해야 한다.
+}
+다이나믹해상도 전략2(거울의 경우)
+{
+	* 16:9 작업의 경우.
+	. 앙옆에 공백을 둘것인가. 가로로 풀스크린을 쓰고 위쪽의 게임화면을 자를것인가
+	.양옆에 공백을 두는경우
+	{
+		.16:9보다 더 긴비율은 없으므로 세로를 고정해상도로 두고 가로를 유동적으로 바꾼다.
+		. 세로논리적해상도를 568로 두고 가로논리적해상도를 320+a로 한다.
+	}
+	. 위쪽의 게임화면을 자르는경우
+	{
+		.논리적 가로해상도를 고정시키고 세로해상도를 유동적으로 바꾼다.
+		.16:9보다 세로로 짧은 비율일 경우 위쪽이 잘리므로 게임화면을 배치할때 아래쪽을 기준으로
+		 배치해야 한다.
+		. 화면상단에 놓이는 UI류는 게임윈도우의 세로크기에 따라 다이나믹하게 변해야한다.
+	}
+
+}
+다이나믹해상도 전략3
+{
+	* 720x1280으로 작업하면서 바뀌는 상황
+	. 새 문제점
+	{
+		. 리소스를 720x1280기준으로 그리는데 320x480(640x960)화면으로 그대로
+		가져오다보니 크기가 안맞는다.
+		. 논리적 기준해상도인 640x960을 바꿔야 한다. 720으로.
+		. 360x640이 논리적 해상도가 되어야 한다.
+	}
+}
+
+
+윈도우들의 나타남 사라짐 애니메이션의 커스텀화 전략
+{
+	*버튼류
+	{
+		.케이스
+		 -Pop이미지/spr이 그대로 커지며 등장(디폴트)
+		 -별도의 등장애니메이션(spr)이 존재
+	}
+	*다이얼로그창
+	{
+	}
+	*이미지/스프라이트
+	{
+	}
+	*그외 리스트등의 컨트롤
+	{
+	}
+}
+
+
+class Mng : XLock {
+	static Mng* s_pSingleton;
+	list<shared_ptr<Obj>> m_ListObjs;		// shared_ptr을 반드시 사용해야함.
+	static Mng* sGet() {
+		if( s_pSingleton == nullptr ) {
+			static XLock s_lock;
+			s_lock.Lock();
+			if( s_pSingleton == nullptr ) {
+				s_pSingleton = new Mng;
+			}
+			s_lock.Unlock();
+		}
+
+	}
+	// 싱글톤이 삭제되는시점에서 다른 스레드에서 Mng::sGet()->Func()이런식으로 쓰고있다면
+	// 문제가 되지만 삭제되는시점에서는 멀티스레드는 모두 멈춰있어야 한다고 가정하는게 편하다.
+	Add() {
+		XLOCK_OBJ;
+		// add list
+	}
+	Edit() {
+		XLOCK_OBJ;
+		// Edit this
+	}
+	Find() {
+		XLOCK_OBJ;
+		// Find and return
+		return spObj;
+	}
+	Destroy() {
+		XLOCK_OBJ;
+		for() {
+			spObj = *itor;
+			spObj->SetDestroy(true);
+			erase();	// erase가 불리면서 자동으로 spObj.reset();이 호출됨. shared_ptr이므로 파괴될때자동으로 레퍼런스카운트 떨어트림.
+		}
+		
+	}
+}
+class Obj : XLock {
+	Edit() {
+		XLOCK_OBJ;		// 만약에 대기중인동안 삭제되었더라도 shared_ptr이므로 죽지는 않음.
+		if( isDestroy() )		// 이런게 하나 있으면 좋음.
+			return;
+	}
+	Read() {
+		XLOCK_OBJ;
+		return some_date;
+	}
+};
+// XSharedObj를 쓰더라도 어차피 shared_ptr을 함께사용해야 안전한건 마찬가지이므로 XSharedObj는 굳이 쓸필요 없음.
+
+mng()
+{
+	Lock()
+	for() {
+		erase();
+		spCamp.reset();
+	}
+}
+
+spCamp = Find();
+spCamp->Edit();
+camp::Edit()
+{
+	Lock();
+}
+//XSharedObj케이스
+mng()
+{
+	Lock()
+		for() {
+			soCamp.Lock();
+			erase();	// ~XShardObj()가 호출되면서 내부객체 파괴 + Unlock
+		}
+}
+tFunc()
+{
+	soCamp = Find();
+	pCamp = soCamp.getSharedObj();
+	pCamp->Edit();
+	soCamp.ReleaseSharedObj();
+}
+camp::Edit()
+{
+	// edit something
+}

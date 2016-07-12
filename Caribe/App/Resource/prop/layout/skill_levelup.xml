@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_skill>
+    <popup img="common_bg_popup.png">
+      <text posx="center" posy="18" font="font_text_b" text_col="white" font_size="43" font_style="stroke" text="80020">
+        <!--타이틀 -->
+      </text>
+      <_butt posx="156" posy="280" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.skill.decide" font_style="stroke" text="80008" />
+      <butt posx="156" posy="280" img_up="common_butt_mid.png" key="butt.provide">
+        <!--템제공버튼-->
+        <img posx="6" posy="2" key="img.item" scale="0.7"></img>
+        <text posx="47" posy="18" font="font_text_m" font_size="20" font_style="stroke" key="text.num.inven" />
+        <text posx="38" posy="4" font="font_text_m" font_size="20" font_style="stroke" text="2203" width="45">
+          <!--1개 제공-->
+        </text>
+      </butt>
+      <butt posx="275" posy="280" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.close" font_style="stroke" text="80006"></butt>
+      <img file="common_blank_m.png" posx="152" posy="85">
+        <text posx="95" posy="33" width="97" font="font_text_m" font_size="40" font_style="stroke" key="text.curr" align="center" />
+        <_img file="common_bg_item.png" posx="14" posy="14">
+          <img posx="4" posy="3" key="img.icon.book"></img>
+        </_img>
+        <wnd posx="14" posy="14" key="wnd.icon.pos">
+          <!--보옥 아이콘이 들어갈 자리-->
+        </wnd>
+      </img>
+      <img file="common_blank_m.png" posx="152" posy="182">
+        <text posx="81" posy="9" width="132" font="font_text_m" font_size="25" font_style="stroke" key="text.skill.name" align="left" />
+        <text posx="81" posy="29" width="132" font="font_text_m" font_size="20" font_style="stroke" key="text.skill.desc" align="left" text_col="col_skill_desc" />
+        <img posx="14" posy="13" file="common_bg_skillsimbol.png">
+          <img posx="0" posy="0" key="img.skill.icon" />
+        </img>
+      </img>
+      <wnd posx="396" posy="90">
+        <!--훈련 필요자원/얻는템수, 남은훈련시간,훈련버튼,즉시완료버튼-->
+        <img posx="0" posy="0" file="world_top_jewel.png" key="img.need.res1" scale="0.8">
+          <text posx="22" posy="3" font="font_text_m" font_size="22" font_style="stroke" key="text.need.res1" />
+        </img>
+        <_img posx="0" posy="17" file="world_top_mandrake.png" key="img.need.res2" scale="0.8">
+          <text posx="22" posy="3" font="font_text_m" font_size="22" font_style="stroke" key="text.need.res2" />
+        </_img>
+        <text posx="0" posy="17" font="font_text_m" font_size="20" font_style="stroke" key="text.get.item" text_col="green">
+          <!--얻는 메달수-->
+        </text>
+        <text posx="0" posy="46" font="font_text_m" font_size="20" font_style="stroke" key="text.time.remain" show="off">
+          <!--남은 훈련시간-->
+        </text>
+        <butt posx="0" posy="58" img_up="common_butt_small.png" key="butt.train">
+          <text posx="center" posy="4" font="font_text_m" font_size="20" font_style="stroke" text="2090">
+            <!--훈련시작-->
+          </text>
+          <text posx="13" posy="17" font="font_text_m" font_size="20" font_style="stroke" key="text.time">
+            <!--훈련시간-->
+          </text>
+          <img file="icon_clock.png" posx="0" posy="14" key="img.clock" />
+        </butt>
+        <butt posx="0" posy="58" img_up="common_butt_small.png" key="butt.complete" show="off">
+          <!--즉시완료 버튼-->
+          <text posx="center" posy="4" font="font_text_m" font_size="20" font_style="stroke" text="2078">
+            <!--즉시완료-->
+          </text>
+          <text posx="center" posy="17" font="font_text_m" font_style="stroke" font_size="20" key="text.cost.complete">
+            <!--캐쉬 가격-->
+          </text>
+          <img posx="10" posy="14" file="hero_cash.png" scale="0.5" />
+        </butt>
+      </wnd>
+    </popup>
+  </popup_skill>
+</layout>

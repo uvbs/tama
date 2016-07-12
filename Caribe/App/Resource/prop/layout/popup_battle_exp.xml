@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf">
+  <popup_exp>
+    <popup img="ingame_bg_popup.png">
+      <butt posx="18" posy="30" img_up="common_butt_small.png" text_col="white" font="font_text_b" font_size="20" key="butt.statistic" font_style="stroke" text="2086">
+        <!--전투통계,-->
+      </butt>
+      <butt posx="center" posy="287" img_up="common_butt_mid.png" key="butt.ok">
+        <!--확인버튼-->
+        <text posx="center" posy="center" font="font_text_b" font_style="stroke" font_size="30" text="2" />
+      </butt>
+    </popup>
+  </popup_exp>
+  <_popup_exp>
+    <popup img="ingame_bg_popup.png">
+      <_butt posx="477" posy="22" img_up="common_butt_x.png" key="butt.ok">
+        <!--x버튼-->
+      </_butt>
+      <wnd posx="52" posy="45" width="74" height="74" key="wnd.slot1" show="false">
+        <img posx="4" posy="4" key="img.hero.slot1" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg1"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot1" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot1" adjx="1" adjy="1" show="off" />
+        <!--슬롯1-->
+      </wnd>
+      <wnd posx="200" posy="45" width="74" height="74" key="wnd.slot2" show="false">
+        <img posx="4" posy="4" key="img.hero.slot2" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg2"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot2" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot2" adjx="1" adjy="1" show="off" />
+        <!--슬롯2-->
+      </wnd>
+      <wnd posx="286" posy="45" width="74" height="74" key="wnd.slot3" show="false">
+        <img posx="4" posy="4" key="img.hero.slot3" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg3"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot3" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot3" adjx="1" adjy="1" show="off" />
+        <!--슬롯3-->
+      </wnd>
+      <wnd posx="372" posy="45" width="74" height="74" key="wnd.slot4" show="false">
+        <img posx="4" posy="4" key="img.hero.slot4" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg4"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot4" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot4" adjx="1" adjy="1" show="off" />
+        <!--슬롯4-->
+      </wnd>
+      <wnd posx="458" posy="45" width="74" height="74" key="wnd.slot5" show="false">
+        <img posx="4" posy="4" key="img.hero.slot5" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg5"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot5" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot5" adjx="1" adjy="1" show="off" />
+        <!--슬롯5-->
+      </wnd>
+      <wnd posx="114" posy="129" width="74" height="74" key="wnd.slot6" show="false">
+        <img posx="4" posy="4" key="img.hero.slot6" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg6"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot6" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot6" adjx="1" adjy="1" show="off" />
+        <!--슬롯6-->
+      </wnd>
+      <wnd posx="200" posy="129" width="74" height="74" key="wnd.slot7" show="false">
+        <img posx="4" posy="4" key="img.hero.slot7" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg7"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot7" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot7" adjx="1" adjy="1" show="off" />
+        <!--슬롯7-->
+      </wnd>
+      <wnd posx="286" posy="129" width="74" height="74" key="wnd.slot8" show="false">
+        <img posx="4" posy="4" key="img.hero.slot8" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg8"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot8" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot8" adjx="1" adjy="1" show="off" />
+        <!--슬롯8-->
+      </wnd>
+      <wnd posx="372" posy="129" width="74" height="74" key="wnd.slot9" show="false">
+        <img posx="4" posy="4" key="img.hero.slot9" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg9"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot9" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot9" adjx="1" adjy="1" show="off" />
+        <!--슬롯9-->
+      </wnd>
+      <wnd posx="458" posy="129" width="74" height="74" key="wnd.slot10" show="false">
+        <img posx="4" posy="4" key="img.hero.slot10" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg10"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot10" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot10" adjx="1" adjy="1" show="off" />
+        <!--슬롯10-->
+      </wnd>
+      <wnd posx="114" posy="214" width="74" height="74" key="wnd.slot11" show="false">
+        <img posx="4" posy="4" key="img.hero.slot11" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg11"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot11" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot11" adjx="1" adjy="1" show="off" />
+        <!--슬롯11-->
+      </wnd>
+      <wnd posx="200" posy="214" width="74" height="74" key="wnd.slot12" show="false">
+        <img posx="4" posy="4" key="img.hero.slot12" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg12"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot12" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot12" adjx="1" adjy="1" show="off" />
+        <!--슬롯12-->
+      </wnd>
+      <wnd posx="286" posy="214" width="74" height="74" key="wnd.slot13" show="false">
+        <img posx="4" posy="4" key="img.hero.slot13" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg13"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot13" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot13" adjx="1" adjy="1" show="off" />
+        <!--슬롯13-->
+      </wnd>
+      <wnd posx="372" posy="214" width="74" height="74" key="wnd.slot14" show="false">
+        <img posx="4" posy="4" key="img.hero.slot14" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg14"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot14" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot14" adjx="1" adjy="1" show="off" />
+        <!--슬롯14-->
+      </wnd>
+      <wnd posx="458" posy="214" width="74" height="74" key="wnd.slot15" show="false">
+        <img posx="4" posy="4" key="img.hero.slot15" scale="0.98" />
+        <img posx="0" posy="0" file="ingame_unit_bg_m.png" key="img.hero.bg15"></img>
+        <img posx="6" posy="49" file="common_etc_namecard_m.png">
+          <text posx="0" posy="5" width="56" font="font_text_m" font_size="21" font_style="stroke" align="hcenter" key="text.hero.slot15" />
+        </img>
+        <pbar posx="6" posy="73" img1="ingame_exp.png" img2="ingame_exp_bg.png" key="pbar.hero.slot15" adjx="1" adjy="1" show="off" />
+        <!--슬롯15-->
+      </wnd>
+      <butt posx="18" posy="30" img_up="common_butt_small.png" text_col="white" font="font_text_b" font_size="20" key="butt.statistic" font_style="stroke" text="2086">
+        <!--전투통계,-->
+      </butt>
+      <butt posx="center" posy="287" img_up="common_butt_mid.png" key="butt.ok">
+        <!--확인버튼-->
+        <text posx="center" posy="center" font="font_text_b" font_style="stroke" font_size="30" text="2" />
+      </butt>
+    </popup>
+  </_popup_exp>
+</layout>

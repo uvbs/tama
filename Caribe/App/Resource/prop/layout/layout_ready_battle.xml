@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf">
+  <popup>
+    <popup img="encounter.png">
+      <text text="2031" font_size="40" font="font_text_b" width="112" style="stroke" align="center" posx="21" posy="7">
+        <!--기습!-->
+      </text>
+      <text font_size="20" font="font_text_m" width="154" style="stroke" align="center" posx="0" posy="43" key="text.name.enemy">
+        <!--공격자이름과 레벨-->
+      </text>
+      <text font_size="20" font="font_text_m" width="154" style="stroke" align="center" posx="0" posy="55" key="text.num.sulfur">
+        <!--유황개수.-->
+      </text>
+      <butt img_up="common_butt_small.png" key="butt.attack" posx="5" posy="152">
+        <text text="2032" font_size="20" font="font_text_b" style="stroke" align="center" height="28" width="70">
+          <!--공격-->
+        </text>
+      </butt>
+      <butt img_up="common_butt_small.png" key="butt.retreat" posx="81" posy="152">
+        <text text="2033" font_size="20" font="font_text_b" style="stroke" align="center" width="70" posx="0" posy="16">
+          <!--후퇴-->
+        </text>
+        <img posx="20" posy="2" file="gem_small.png" scale="1.5" />
+        <text font_size="20" font="font_text_m" style="stroke" posx="32" posy="2" key="text.cost.cash">
+          <!--후퇴-->
+        </text>
+      </butt>
+      <text text="2034" font_size="20" font="font_text_m" style="shadow" width="137" posx="10" posy="196">
+        <!--패할경우....-->
+      </text>
+    </popup>
+  </popup>
+  <ready>
+    <img file="battle_ready_bg.png" format_surface="argb8888">
+      <text posx="center" posy="247" font_size="30" font="font_text_s" style="stroke" text="1" key="text.time">
+        <!--남은 시간-->
+      </text>
+    </img>
+    <butt img_up="common_butt_mid.png" key="butt.start" posx="center" posy="118" text="2038" font_size="30" font="font_text_b" font_style="stroke">
+      <!--전투-->
+    </butt>
+    <butt img_up="common_butt_mid.png" key="butt.edit" posx="center" posy="160" text="2244" font_size="30" font="font_text_b" font_style="stroke">
+      <!--진형편집-->
+    </butt>
+    <butt img_up="common_butt_mid.png" key="butt.cancel" posx="center" posy="203" text="2033" font_size="30" font="font_text_b" font_style="stroke">
+      <!--퇴각-->
+    </butt>
+    <text font_size="35" font="font_text_b" style="stroke" posx="center" posy="50" text="2039">
+      <!--전투준비-->
+    </text>
+    <text font_size="25" font="font_text_b" width="142" style="stroke" align="hcenter" posx="42" posy="16" key="text.name.my">
+      <!--내 이름-->
+    </text>
+    <text font_size="25" font="font_text_b" width="142" style="stroke" align="hcenter" posx="456" posy="16" key="text.name.enemy">
+      <!--적이름-->
+    </text>
+    <text posx="center" posy="283" font="font_text_s" font_size="20" font_style="stroke" text="2344" text_col="yellow" show="off" key="text.no.leader">
+      <!--리더스킬 없음-->
+    </text>
+    <wnd posx="229" posy="219" key="wnd.leader.skill" width="184" height="123">
+      <img posx="0" posy="58" file="common_bg_skillsimbol.png">
+        <img posx="0" posy="0" key="img.skill.icon" />
+      </img>
+      <text posx="center" posy="47" font="font_text_s" font_size="18" font_style="stroke" text="2104" text_col="yellow" />
+      <text posx="62" posy="65" font="font_text_b" font_size="25" font_style="stroke" key="text.skill.name" />
+      <text posx="62" posy="84" font="font_text_s" font_size="20" font_style="stroke" key="text.skill.desc" text_col="col_skill_desc" width="119" />
+    </wnd>
+    <text posx="228" posy="95" font_size="18" font="font_res_num" width="82" height="12" style="stroke" align="center" key="text.power.0" comma="true" text="17" debug="11">
+      <!--전투력-->
+    </text>
+    <text posx="330" posy="95" font_size="18" width="82" height="12" style="stroke" align="center" key="text.power.1" comma="true" text="17" font="font_res_num">
+      <!--전투력-->
+    </text>
+    <sound bgm="battle_ready" />
+  </ready>
+  <popup_select_hero>
+    <popup img="br_bg1.png" format="argb8888">
+      <!--영웅선택창-->
+      <butt posx="right" posy="0" img_up="common_butt_x.png" key="butt.close"></butt>
+      <list posx="15" posy="34" width="193" height="273" key="list.heroes" type="thumb" spacew="10" spaceh="2" dir="vert" />
+    </popup>
+  </popup_select_hero>
+  <popup_select_unit>
+    <popup img="bg_unit_sel.png" format="argb8888">
+      <!--유닛선택창-->
+      <butt posx="right" posy="0" img_up="common_butt_x.png" key="butt.close"></butt>
+      <img posx="20" posy="center" key="img.unit" num="3" distx="46" debug="3">
+        <img posx="-5" posy="-5" key="img.glow" file="glow_unit.png" show="off" />
+        <text font_size="20" font="font_res_num" style="stroke" posx="0" posy="28" key="text.point" width="34" align="hcenter">
+          <!--유닛 특성포인트-->
+        </text>
+      </img>
+    </popup>
+  </popup_select_unit>
+</layout>

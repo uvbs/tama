@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_training_base>
+    <popup img="popup_levelup.png" format="argb8888">
+      <img file="popup_title_bar.png" posx="center" posy="-12">
+        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="1" key="text.title">
+          <!--타이틀-->
+        </text>
+      </img>
+      <text posx="18" posy="9" font="font_text_s" text_col="white" font_size="18" font_style="stroke" _text="1" key="text.graph"></text>
+      <img file="board04.png" posx="center" posy="23">
+        <!--상단 그래프바 배경-->
+        <wnd posx="8" posy="8" key="wnd.root.trainer">
+          <!--훈련자(영웅얼굴,부대얼굴,스킬아이콘)-->
+        </wnd>
+        <text posx="67" posy="13" font="font_text_b" text_col="white" font_size="30" font_style="stroke" key="text.name.hero" text="1">
+          <!--영웅이름-->
+        </text>
+        <pbar2 posx="70" posy="32" key="pbar.exp">
+          <layer id="5" file="bar_train_main.png" show="off" fixed="yes">
+            <!--더미-->
+          </layer>
+          <layer id="1" file="bar_train_will.png" />
+          <layer id="2" file="bar_train_main.png"></layer>
+          <layer id="3" file="bar_train_cover.png" fixed="yes" />
+          <img file="world_top_shield.png" posx="center" posy="center">
+            <text posx="center" posy="center" font="font_res_num" text_col="green" font_size="20" font_style="stroke" text="1" key="text.level.will">
+              <!--훈련후 도달할 레벨-->
+            </text>
+          </img>
+        </pbar2>
+      </img>
+      <wnd key="wnd.train.before" show="on">
+        <img file="board01.png" posx="40" posy="98">
+          <!--+-버튼 배경,-->
+          <text posx="center" posy="-10" font="font_text_s" text_col="white" font_size="18" font_style="stroke" text="2252">
+            <!--투입할 훈련 비용-->
+          </text>
+          <butt posx="23" posy="13" img_up="butt_square.png" key="butt.min">
+            <!--최소버튼-->
+            <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="2100">
+              <!--"최소"-->
+            </text>
+          </butt>
+          <butt posx="75" posy="13" img_up="butt_minus.png" key="butt.minus">
+            <!---버튼-->
+          </butt>
+          <butt posx="173" posy="13" img_up="butt_plus.png" key="butt.plus">
+            <!--+버튼-->
+          </butt>
+          <butt posx="225" posy="13" img_up="butt_square.png" key="butt.max">
+            <!--최대버튼-->
+            <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="2229">
+              <!--"최대"-->
+            </text>
+          </butt>
+          <img file="common_bg_item.png" posx="center" posy="12" scale="0.75">
+            <!--중앙 코인 그림-->
+            <img file="hero_gold.png" posx="5" posy="3" />
+            <text posx="center" posy="42" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.min.gold" text="1" adjx="5"></text>
+          </img>
+        </img>
+        <img file="board02.png" posx="40" posy="176">
+          <!--훈련시작버튼 배경-->
+          <text posx="center" posy="-10" font="font_text_s" text_col="white" font_size="20" font_style="stroke" text="2253">
+            <!--최종 훈련 비용-->
+          </text>
+          <wnd posx="203" posy="21" width="85" height="31">
+            <!--훈련시간 표시 그룹-->
+            <img file="icon_clock.png" posx="0" posy="1" />
+            <text posx="center" posy="0" font="font_res_num" text_col="white" font_size="25" font_style="stroke" text="2255">
+              <!--"훈련시간"-->
+            </text>
+            <text posx="center" posy="13" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.time" text="1">
+              <!--훈련시간-->
+            </text>
+          </wnd>
+          <butt posx="center" posy="13" img_up="common_butt_mid.png" key="butt.train">
+            <!--훈련시작버튼-->
+            <img posx="13" posy="18" file="world_top_gold.png" scale="0.8"></img>
+            <text posx="center" posy="7" font="font_text_b" text_col="white" font_size="25" font_style="stroke" text="2090">
+              <!--훈련시작-->
+            </text>
+            <text posx="center" posy="21" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.cost" text="1"></text>
+            <spr file="ui_glow_butt.spr" />
+          </butt>
+        </img>
+      </wnd>
+      <wnd key="wnd.training" show="off">
+        <img file="board02.png" posx="40" posy="176">
+          <!--훈련시작버튼 배경-->
+          <butt posx="28" posy="13" img_up="common_butt_mid.png" key="butt.complete.gold">
+            <!--즉시완료버튼-->
+            <img posx="13" posy="18" file="world_top_gold.png" scale="0.8"></img>
+            <text posx="center" posy="7" font="font_text_b" text_col="white" font_size="25" font_style="stroke" text="2078">
+              <!--즉시완료-->
+            </text>
+            <text posx="center" posy="21" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.cost.gold" text="1"></text>
+            <spr file="ui_glow_butt.spr" />
+          </butt>
+          <butt posx="172" posy="13" img_up="common_butt_mid.png" key="butt.complete.cash">
+            <!--즉시완료버튼-->
+            <img posx="13" posy="18" file="world_top_cash.png" scale="0.8"></img>
+            <text posx="center" posy="7" font="font_text_b" text_col="white" font_size="25" font_style="stroke" text="2078">
+              <!--즉시완료-->
+            </text>
+            <text posx="center" posy="21" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.cost.cash" text="1"></text>
+          </butt>
+        </img>
+        <img file="board01.png" posx="40" posy="98">
+          <!--+-버튼 배경,-->
+          <text posx="center" posy="-10" font="font_text_b" text_col="white" font_size="18" font_style="stroke" text="2256">
+            <!--"남은 훈련 시간"-->
+          </text>
+          <img file="icon_clock.png" posx="center" posy="6" />
+          <text posx="center" posy="31" font="font_res_num" text_col="white" font_size="40" font_style="stroke" key="text.remain.time" text="1">
+            <!--남은시간-->
+          </text>
+          <spr posx="42" posy="38" file="ui_circle_glow.spr" />
+          <spr posx="42" posy="50" key="spr.training" flip="yes"></spr>
+          <spr posx="42" posy="38" file="ui_circle_glow.spr" act="2" />
+        </img>
+      </wnd>
+      <butt posx="right" posy="0" img_up="common_butt_x.png" key="butt.close"></butt>
+    </popup>
+  </popup_training_base>
+  <sub_levelup>
+    <img file="board03.png" posx="334" posy="97">
+      <img file="legion_simbol_table_b.png" posx="11" posy="3" scale="0.9" />
+      <text posx="38" posy="6" font="font_res_num" text_col="white" font_size="25" font_style="stroke" _text="11" key="text.stat." num="6" disty="24"></text>
+      <text posx="80" posy="6" font="font_res_num" text_col="green" font_size="25" font_style="stroke" _text="11" key="text.up." num="6" disty="24"></text>
+      <text posx="center" posy="-5" text_col="green" font_size="20" font_style="stroke" font="font_text_s" text="2259" key="text.next">
+        <!--다음레벨-->
+      </text>
+      <spr posx="75" posy="17" num="6" disty="24" key="spr.up." file="ui_upstat.spr" id_act="1" />
+    </img>
+    <spr posx="90" posy="225" key="spr.train.before" flip="yes" />
+  </sub_levelup>
+  <sub_skillup>
+    <img file="board03.png" posx="334" posy="97" scale_x="1.17">
+      <!--스킬설명 뒷배경 검은보드-->
+    </img>
+    <wnd posx="334" posy="97" width="128" height="140">
+      <text posx="center" posy="-5" text_col="green" font_size="20" font_style="stroke" font="font_text_s" text="2259" key="text.next">
+        <!--다음레벨-->
+      </text>
+      <wnd posx="33" posy="8" key="wnd.root.skill.icon" />
+      <text posx="center" posy="60" text_col="yellow" font_size="25" font_style="stroke" key="text.name.skill" _width="128" _align="hcenter" font="font_text_b"></text>
+      <text posx="5" posy="86" text_col="white" font_size="20" font_style="stroke" key="text.desc.skill" width="125"></text>
+      <img file="line_skill.png" posx="9" posy="80"></img>
+    </wnd>
+  </sub_skillup>
+</layout>

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_daily>
+    <popup img="popup_daily.png" format="argb8888">
+      <text posx="center" posy="25" font="font_text_b" text_col="white" font_size="40" font_style="stroke" key="text.title" text="80190">
+        <!--타이틀-->
+      </text>
+      <spr posx="223" posy="7" file="ui_eff_unicorn.spr" />
+      <butt posx="463" posy="31" img_up="common_butt_x.png" key="butt.close"></butt>
+      <butt posx="center" posy="204" img_up="common_butt_small.png" text_col="white" font="font_text_b" font_size="20" key="butt.battle" font_style="stroke" text="80189">
+        <img posx="3" posy="9" file="icon_two_sword.png" scale="0.7" />
+      </butt>
+      <text posx="128" posy="63" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.rest.time" align="right" width="235"></text>
+      <text posx="0" posy="63" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.rest.challenge" align="right" width="181" text="80207"></text>
+      <img posx="185" posy="57" file="chall_mark_off.png" key="img.mark." num="5" distx="10"></img>
+      <img posx="13" posy="106" file="daily_elem.png" key="img.elem." num="7" distx="66">
+        <spr posx="0" posy="0" file="ui_eff_daily_glow.spr" key="spr.glow" />
+        <_img posx="0" posy="0" file="daily_elem_glow.png" key="img.glow" effect="add" show="off" />
+        <text posx="center" posy="9" font="font_text_s" text_col="white" font_size="30" font_style="stroke" key="text.dow"></text>
+      </img>
+      <_butt posx="12" posy="106" key="butt.elem." num="7" distx="66" width="66" height="95" />
+      <_img posx="167" posy="125" file="common_bg_item.png">
+        <img posx="4" posy="0" key="img.reward.iocn"></img>
+        <img posx="0" posy="45" file="common_etc_namecard_m.png">
+          <text posx="center" posy="7" font="font_text_b" font_size="15" font_style="stroke" key="text.reward" />
+        </img>
+      </_img>
+    </popup>
+  </popup_daily>
+  <popup_daily_camp>
+    <popup img="popup_daily.png" format="argb8888">
+      <text posx="center" posy="14" font="font_text_b" text_col="white" font_size="40" font_style="stroke" key="text.title" text="80190">
+        <!--타이틀-->
+      </text>
+      <butt posx="158" posy="195" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.close" font_style="stroke" text="80006"></butt>
+      <butt posx="268" posy="195" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.battle" font_style="stroke" text="80189"></butt>
+      <text posx="245" posy="127" font="font_text_b" text_col="white" font_size="20" font_style="stroke" key="text.power" align="left" width="200"></text>
+      <text posx="245" posy="143" font="font_text_b" text_col="white" font_size="20" font_style="stroke" key="text.rest.challenge" align="left" width="200"></text>
+      <text posx="245" posy="159" font="font_text_b" text_col="white" font_size="20" font_style="stroke" key="text.rest.time" align="left" width="200"></text>
+      <img posx="30" posy="74" file="elem_daily_camp.png" key="img.elem" num="8" distx="57">
+        <img posx="37" posy="3" file="circle_level_bg.png">
+          <text posx="center" posy="center" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.stage.num"></text>
+        </img>
+      </img>
+    </popup>
+  </popup_daily_camp>
+</layout>

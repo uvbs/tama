@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_gold_m="normal.ttf" font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf" font_meter="font_meter.spr" font_gold="font_gold.spr" font_cooper="CooperBlackStd.otf" font_thai="kunlasatri.ttf" font_time="font_pvp_time.spr">
+  <equip>
+    <img posx="0" posy="0" file="common_bg_bottom.png">
+      <img posx="64" posy="56" file="common_bg_inside.png" />
+    </img>
+    <img posx="166" posy="0" file="common_bg_title.png">
+      <text posx="center" posy="center" font="font_text_b" font_size="45" font_style="stroke" align="center" text_col_r="255" text_col_g="216" text_col_b="0" key="text.title" debug="1" adjx="4" adjy="-6">
+        <!--타이틀 텍스트-->
+      </text>
+      <!--타이틀이 쓰여질 백그라운드-->
+    </img>
+    <butt img_up="common_butt_back.png" img_down="butt_back_d.png" posx="28" posy="20" key="butt.back">
+      <!--백버튼-->
+    </butt>
+    <list posx="85" posy="82" height="248" width="316" type="thumb" spaceh="4" spacew="2" key="list.equip" dir="vert"></list>
+    <!--아이템 툴팁-->
+    <img posx="406" posy="65" file="armory_bg_magnifier.png">
+      <text posx="center" posy="7" font="font_text_m" font_size="35" font_style="stroke" text="80002" />
+      <wnd posx="7" posy="40" key="wnd.item.tooltip" width="153" height="202">
+        <!--아이템 툴팁의 루트-->
+      </wnd>
+    </img>
+    <_img posx="406" posy="65" file="armory_bg_magnifier.png">
+      <img posx="56" posy="45" key="img.item.icon" />
+      <text posx="0" posy="7" width="161" align="center" font="font_text_m" font_size="35" font_style="stroke" text="80002" />
+      <text posx="0" posy="93" width="161" align="center" font="font_text_m" font_size="28" font_style="stroke" key="text.item.name"></text>
+      <img posx="12" posy="132" file="common_etc_att.png">
+        <text posx="25" posy="0" width="116" align="left" font="font_text_m" font_size="28" font_style="stroke" key="text.item.atk" />
+      </img>
+      <img posx="12" posy="149" file="common_etc_range.png">
+        <text posx="25" posy="2" width="116" align="left" font="font_text_m" font_size="28" font_style="stroke" key="text.item.range" />
+      </img>
+      <img posx="12" posy="168" file="common_etc_def.png">
+        <text posx="25" posy="1" width="116" align="left" font="font_text_m" font_size="28" font_style="stroke" key="text.item.def" />
+      </img>
+      <img posx="13" posy="187" file="common_etc_hp.png">
+        <text posx="25" posy="-1" width="116" align="left" font="font_text_m" font_size="28" font_style="stroke" key="text.item.hp" />
+      </img>
+      <img posx="13" posy="201" file="common_etc_apd.png">
+        <text posx="25" posy="2" width="116" align="left" font="font_text_m" font_size="28" font_style="stroke" key="text.item.move.speed" />
+      </img>
+      <img posx="14" posy="219" file="common_etc_mpd.png">
+        <text posx="25" posy="1" width="116" align="left" font="font_text_m" font_size="28" font_style="stroke" key="text.item.atk.speed" />
+      </img>
+    </_img>
+    <butt posx="443" posy="307" img_up="common_butt_mid.png" img_down="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.equip" font_style="stroke" text="80086">
+      <!--장착버튼-->
+    </butt>
+  </equip>
+</layout>

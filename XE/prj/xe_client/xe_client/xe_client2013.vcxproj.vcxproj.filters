@@ -1,0 +1,1270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Stdafx.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWnd.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndButton.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndCtrls.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndEdit.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndImage.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndPageSlide.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndSprObj.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndText.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndView.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XParticle.cpp">
+      <Filter>source\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XParticleFramework.cpp">
+      <Filter>source\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XParticleMng.cpp">
+      <Filter>source\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XParticleOpenGL.cpp">
+      <Filter>source\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XEmitter.cpp">
+      <Filter>source\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XPropParticle.cpp">
+      <Filter>source\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\d3dapp.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\d3denumeration.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\d3dsettings.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\d3dutil.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\d3dView.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\aldlist.cpp">
+      <Filter>source\sound\openal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\CWaves.cpp">
+      <Filter>source\sound\openal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\Framework.cpp">
+      <Filter>source\sound\openal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\dxutil.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\DXUTText.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Alert.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Debug.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\ConvertString.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\InputMng.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\lua_tinker.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\path.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\MFC\CoolDialogBar.cpp">
+      <Filter>source\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\android\JniHelper.cpp">
+      <Filter>source\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\Key.cpp">
+      <Filter>source\sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\Layer.cpp">
+      <Filter>source\sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprDat.cpp">
+      <Filter>source\sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\Sprite.cpp">
+      <Filter>source\sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprMng.cpp">
+      <Filter>source\sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprObj.cpp">
+      <Filter>source\sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Timer.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XAutoPtr.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XCrypto.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XConstant.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XE3d.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\LoadOAL.cpp">
+      <Filter>source\sound\openal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinystr.cpp">
+      <Filter>source\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxml.cpp">
+      <Filter>source\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxmlerror.cpp">
+      <Filter>source\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Third_Party_lib\tinyxml\tinyxmlparser.cpp">
+      <Filter>source\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XSurface.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XSurfaceMem.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\Token.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XApp.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XArchive.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XE.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XError.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEProfile.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XGlobal.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xLang.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLock.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLockPThreadMutex.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xMath.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\xMathGLM.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XPacket.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XPool.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XPThread.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XRefObj.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XRefRes.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XResMng.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XResObj.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XSystem.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\iOS\xStringiOS.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XTextTable.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XTextTableUTF8.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XTimer2.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\xUtil.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\etc\XGraphics.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XGraphicsOpenGL.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XImage.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XImageLibPng.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XImageMng.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XFontDatDX.cpp">
+      <Filter>source\font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XFontMng.cpp">
+      <Filter>source\font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XFontObjDX.cpp">
+      <Filter>source\font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XFontSpr.cpp">
+      <Filter>source\font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XBaseFontDat.cpp">
+      <Filter>source\font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XBaseFontObj.cpp">
+      <Filter>source\font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XConsoleMain.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XClientMain.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XDBAccount.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\android\XBSDSocketClient.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XDownloader.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XDownloaderCurl.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XDownloadTask.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEBaseProp.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEBaseScene.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEBaseWorldObj.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XEContent.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XBaseDelegate.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\XBaseObj.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEObjMng.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XESceneMng.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XESceneSlide.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEToolTip.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEWndWorld.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEWndWorldImage.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEWorld.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XLayout.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XLayoutObj.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XFLevel.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\XGameUtil.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\XInterpolationObj.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XScroll.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XTransition.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XSocket.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\client\XSocketClient.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\client\XNetworkConnection.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\XNetworkDelegate.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Network\win32\XWinSocketClient.cpp">
+      <Filter>source\network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\Ogg\XOgg.cpp">
+      <Filter>source\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XOpenAL.cpp">
+      <Filter>source\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XSoundMng.cpp">
+      <Filter>source\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL.cpp">
+      <Filter>source\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XSoundTable.cpp">
+      <Filter>source\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XE_MFCFramework.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\xShader.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XF.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLibrary.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XLua.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XXMLDoc.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XTimeoutMng.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XFacebook.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XELaserDX.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\XDrawGraph.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid.cpp">
+      <Filter>source\sound\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid2.cpp">
+      <Filter>source\sound\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\iPhone\XSoundMngOpenAL.cpp">
+      <Filter>source\sound\ios</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\glesView.cpp">
+      <Filter>source\graphics\GLES2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XImageD3D.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XGraphicsD3D.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XGraphicsD3DTool.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_DirectX\XSurfaceD3D.cpp">
+      <Filter>source\graphics\d3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\xVector.cpp">
+      <Filter>source\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XReceiverCallback.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XInApp.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEOption.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XFontObjFTGL.cpp">
+      <Filter>source\font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XFontDatFTGL.cpp">
+      <Filter>source\font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XParamObj.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL2.cpp">
+      <Filter>source\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndProgressBar.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndScrollView.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndList.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndButtonRadio.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\_Wnd2\XWndPopup.cpp">
+      <Filter>source\wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XHSLMap.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XASyncLoad.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString.cpp">
+      <Filter>source\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\CrashHandler.cpp">
+      <Filter>source\android</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XWindow.h">
+      <Filter>source\wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3dapp.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3denumeration.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3dres.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3dsettings.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3dutil.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\d3dView.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_blur_horiz.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_blur_onpass.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_blur_vert.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_color.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_color_texture.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_fastblur.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_onecolor.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_point_sprite.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\fshader_texture.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\aldlist.h">
+      <Filter>source\sound\openal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\CWaves.h">
+      <Filter>source\sound\openal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\Framework.h">
+      <Filter>source\sound\openal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\dxutil.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\DXUTText.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_color.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_color_texture.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_fastblurH.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_fastblurV.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_onecolor.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_point_sprite.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_texture.h">
+      <Filter>source\graphics\shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Global.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\ArrayLinear.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\ArrayLinearN.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\ContainerSTL.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\MFC\CoolDialogBar.h">
+      <Filter>source\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\android\JniHelper.h">
+      <Filter>source\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\Sprdef.h">
+      <Filter>source\sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Types.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xColor.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\LoadOAL.h">
+      <Filter>source\sound\openal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Alert.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\ConvertString.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\android\CrashHandler.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Debug.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\InputMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\lua_tinker.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\path.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Timer.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XAutoPtr.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XConstant.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XCrypto.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XE3d.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\Key.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\Layer.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprDat.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\Sprite.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWnd.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndButton.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndCtrls.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndEdit.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndImage.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndPageSlide.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndSprObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndText.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndView.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XEmitter.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XParticle.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XParticleFramework.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XParticleMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XParticleOpenGL.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XPropParticle.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\tinyxml\tinystr.h">
+      <Filter>source\tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Third_Party_lib\tinyxml\tinyxml.h">
+      <Filter>source\tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XSurfaceDef.h">
+      <Filter>source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XList.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\xMathD3D.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xVector.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\Token.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XArchive.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XE.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XError.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEProfile.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XGlobal.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xLang.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLock.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLockPThreadMutex.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xMath.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xMathGLM.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XPacket.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XPool.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XPThread.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XRefObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XRefRes.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XResMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XResObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\iOS\xStringiOS.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XSystem.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XTextTable.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XTextTableUTF8.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XTimer2.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\xUtil.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XGraphicsDef.h">
+      <Filter>source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XFont.h">
+      <Filter>source\font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XBaseImage.h">
+      <Filter>source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\Ogg\XOgg.h">
+      <Filter>source\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XOpenAL.h">
+      <Filter>source\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XSoundMng.h">
+      <Filter>source\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL.h">
+      <Filter>source\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XSoundTable.h">
+      <Filter>source\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XE_MFCFramework.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XF.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLibrary.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibResPath.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XLua.h">
+      <Filter>source\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XOpenGL.h">
+      <Filter>source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\VersionXE.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xeDef.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\xenDef.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLib.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibConsole.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibGame.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\xLibGameWin32.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid.h">
+      <Filter>source\sound\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid2.h">
+      <Filter>source\sound\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\iPhone\XOpenAL.h">
+      <Filter>source\sound\ios</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\iPhone\XSoundMngOpenAL.h">
+      <Filter>source\sound\ios</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\iPhone\AVAudio.h">
+      <Filter>source\sound\ios</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\glesView.h">
+      <Filter>source\graphics\GLES2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XImageD3D.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XGraphicsD3D.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XGraphicsD3DTool.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XSurfaceD3D.h">
+      <Filter>source\graphics\d3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\android\XBSDSocketClient.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XDownloader.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XDownloaderCurl.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XDownloadTask.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\client\XNetworkConnection.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XNetworkDelegate.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\XSocket.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\client\XSocketClient.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Network\win32\XWinSocketClient.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XBaseFontDat.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XBaseFontObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XFontDatDX.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XFontMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_DirectX\XFontObjDX.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XFontSpr.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XApp.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XBaseDelegate.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XBaseObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XClientMain.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XConsoleMain.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XDBAccount.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\XDrawGraph.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEBaseProp.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEBaseScene.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XEBaseWorldObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XEContent.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XELaserDX.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XEObjMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XESceneMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XESceneSlide.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEToolTip.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XEWndWorld.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XEWndWorldImage.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XEWorld.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XFacebook.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XFLevel.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\XGameUtil.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\XInterpolationObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XLayout.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XLayoutObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XScroll.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XTimeoutMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XTransition.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XXMLDoc.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XGraphics.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XGraphicsOpenGL.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XImage.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XImageLibPng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XImageMng.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\xShader.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XSurface.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\etc\XSurfaceMem.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XReceiverCallback.h">
+      <Filter>source\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XReceiverCallbackH.h">
+      <Filter>source\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XInApp.h">
+      <Filter>source\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEOption.h">
+      <Filter>source\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XFontObjFTGL.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XFontDatFTGL.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\android\CocosDenshion\android\opensl\android\asset_manager.h">
+      <Filter>source\sound\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\android\CocosDenshion\android\opensl\android\asset_manager_jni.h">
+      <Filter>source\sound\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XParamObj.h">
+      <Filter>source\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndH.h">
+      <Filter>source\wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XFLevelH.h">
+      <Filter>source\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL2.h">
+      <Filter>source\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndProgressBar.h">
+      <Filter>source\wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndScrollView.h">
+      <Filter>source\wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndList.h">
+      <Filter>source\wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndButtonRadio.h">
+      <Filter>source\wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndPopup.h">
+      <Filter>source\wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XDelegateSprObj.h">
+      <Filter>source\sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XHSLMap.h">
+      <Filter>source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndListH.h">
+      <Filter>source\wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XASyncLoad.h">
+      <Filter>source\Framework</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\Third_Party_lib\curl\libcurl_imp.lib" />
+    <Library Include="..\..\..\Third_Party_lib\Lua\5.1\lib\lua51.lib" />
+    <Library Include="..\..\..\Third_Party_lib\pthread_win32\lib\x86\pthreadVC2.lib" />
+    <Library Include="..\..\..\Third_Party_lib\bugslayer\lib\CrashReport.lib">
+      <Filter>source\etc</Filter>
+    </Library>
+    <Library Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\OpenAL32.lib">
+      <Filter>source\sound\openal</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Troubleshooting.txt" />
+    <None Include="..\..\..\memo_xe.txt" />
+    <None Include="app.ico">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="ReadMe.txt">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\Sound\iPhone\XOpenAL.mm">
+      <Filter>source\sound\ios</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\Sound\iPhone\AVAudio.mm">
+      <Filter>source\sound\ios</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\XList.inl">
+      <Filter>source\etc</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\ArrayLinear.inl">
+      <Filter>source\etc</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\ArrayLinearN.inl">
+      <Filter>source\etc</Filter>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\Cocos2dxHelper.java">
+      <Filter>android\java</Filter>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\Cocos2dxMusic.java">
+      <Filter>android\java</Filter>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\Cocos2dxSound.java">
+      <Filter>android\java</Filter>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\PinchZoom.java">
+      <Filter>android\java</Filter>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\WebGetImage.java">
+      <Filter>android\java</Filter>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\XeActivity.java">
+      <Filter>android\java</Filter>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\Cocos2dxEditBoxDialog.java">
+      <Filter>android\java</Filter>
+    </None>
+    <None Include="..\..\android\xe\src\com\mtricks\xe\Cocos2dxHandler.java">
+      <Filter>android\java</Filter>
+    </None>
+    <None Include="..\..\..\Common\_XLibrary\Sprite\Key.inl">
+      <Filter>source\sprite</Filter>
+    </None>
+    <None Include="..\..\..\XFramework\android\com_mtricks_xe_Cocos2dxHelper.cpp">
+      <Filter>android</Filter>
+    </None>
+    <None Include="..\..\..\XFramework\android\com_mtricks_xe_Cocos2dxHelper.h">
+      <Filter>android</Filter>
+    </None>
+    <None Include="..\..\..\XFramework\android\com_mtricks_xe_Cocos2dxHelperListener.h">
+      <Filter>android</Filter>
+    </None>
+    <None Include="..\..\..\XFramework\android\com_mtricks_xe_XRenderer.cpp">
+      <Filter>android</Filter>
+    </None>
+    <None Include="..\..\..\XFramework\android\com_mtricks_xe_XRenderer.h">
+      <Filter>android</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{9b61ac95-6f30-4c78-be9f-de3b0140a337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\wnd">
+      <UniqueIdentifier>{757e7737-8e4e-4683-b84f-c9ff34e1363c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\particle">
+      <UniqueIdentifier>{8dba5dcf-eaa0-4fe5-87cc-e832800749c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="android">
+      <UniqueIdentifier>{18da9b18-c128-4286-9eaf-61d30340c535}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\etc">
+      <UniqueIdentifier>{42ea4148-2513-4ad7-9826-784499a1bdfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\android">
+      <UniqueIdentifier>{887b03ea-7146-4810-8fc6-a43f0d43c6af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\dlg">
+      <UniqueIdentifier>{308203fd-5199-42ce-b2a5-ec226da07d62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\sprite">
+      <UniqueIdentifier>{039a51a7-006d-4491-8b62-569856470df6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{d0fa5d1f-afe9-43cb-9eb2-c9eaef298c9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\tinyxml">
+      <UniqueIdentifier>{122ceb3d-cf59-434c-8f35-c685938b70fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\graphics">
+      <UniqueIdentifier>{e49c0b22-44b0-4662-925a-d0f9701cbaf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\font">
+      <UniqueIdentifier>{ff0716cb-cb25-4c81-bb65-753c02dcb837}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Framework">
+      <UniqueIdentifier>{e5078a3c-0284-4cb5-a7a0-de8cc40e18c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\network">
+      <UniqueIdentifier>{368640c7-9dbb-48d4-82ca-6b0b0d9c863e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\map">
+      <UniqueIdentifier>{c073aed0-cf19-4506-8d96-3dcc34c10722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\sound">
+      <UniqueIdentifier>{bfd48a8f-49d6-4e6e-b2be-2cb71ccfe1ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\sound\openal">
+      <UniqueIdentifier>{3c972e61-d6eb-4704-b043-0e7258cbc330}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{5997626f-c8b5-47c8-8ec0-7842754f3144}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\graphics\shader">
+      <UniqueIdentifier>{a10d4af3-fc40-4715-9a65-fb2dc8f61e7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\graphics\d3d">
+      <UniqueIdentifier>{554cf1fc-609b-4dea-b555-9fce5bdc9963}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\sound\android">
+      <UniqueIdentifier>{2ec245d9-c99a-4982-882d-003ee12ace84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\sound\ios">
+      <UniqueIdentifier>{42465a5a-8383-4f39-922d-239f2d0c2730}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\graphics\GLES2">
+      <UniqueIdentifier>{6fa1d8fe-18ff-4f1b-a233-92a0aac05f14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="android\java">
+      <UniqueIdentifier>{824f658f-c777-4d5f-a915-e0e7f0109331}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="android\ftgl">
+      <UniqueIdentifier>{f55eee3c-627f-4b50-897f-7cca6e054176}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

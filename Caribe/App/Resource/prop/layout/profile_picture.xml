@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout normal="normal.ttf" bold="bold.ttf">
+  <profile>
+    <!--성스팟위의 상대 프로필사진-->
+    <img file="frame_profile.png" />
+    <img key="img.profile" posx="5" posy="2" scale="0.4" />
+  </profile>
+  <profile_me>
+    <!--액자에 사진있는 프로필 사진 레이아웃-->
+    <img posx="0" posy="0" file="common_bg_profile.png" key="img.profile.bg">
+      <!--프로필사진 백판-->
+    </img>
+    <img posx="3" posy="2" key="img.profile" scale="0.5">
+      <!--플레이어 프로필 사진-->
+    </img>
+  </profile_me>
+</layout>

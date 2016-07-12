@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--월드 씬-->
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf" font_hand="hand.ttf">
+  <squad_info>
+    <popup img="br_bg1.png" format_surface="argb8888">
+      <!--부대레벨별 부대원수 안내창-->
+      <text posx="center" posy="center" font="font_text_s" font_size="20" style="shadow" key="text.info">
+        <!--퀘스트-->
+      </text>
+      <butt posx="right" posy="0" img_up="common_butt_x.png" key="butt.ok">
+        <!--x버튼-->
+      </butt>
+    </popup>
+  </squad_info>
+</layout>

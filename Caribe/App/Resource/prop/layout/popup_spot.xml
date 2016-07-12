@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_spot>
+    <popup img="spot_bg.png">
+      <butt posx="right" posy="17" img_up="common_butt_x.png" key="butt.close" debug="55"></butt>
+      <spr posx="133" posy="19" key="spr.spot" />
+      <wnd key="wnd.top.root" show="off">
+        <!--모든 스팟공통 팝업 상단 유저정보.스팟 활성화 상태-->
+        <img file="world_top_power.png" posx="188" posy="26" key="img.spot.power"></img>
+        <text posx="143" posy="35" width="49" font="font_res_num" text_col="white" key="text.spot.power" align="right" font_size="20" style="stroke" />
+        <img file="world_top_trophy.png" posx="62" posy="26" key="img.spot.trophy">
+          <text posx="13" posy="7" font="font_res_num" text_col="white" key="text.spot.trophy" font_size="20" style="stroke" />
+        </img>
+        <img file="icon_ap.png" posx="16" posy="26" key="img.ap">
+          <text posx="19" posy="12" font="font_res_num" text_col="white" key="text.ap.circle" font_size="20" style="stroke" />
+        </img>
+      </wnd>
+      <img file="world_top_shield.png" posx="center" posy="26">
+        <text posx="center" posy="6" font="font_res_num" key="text.spot.level" font_size="17" text_col="white" style="stroke" debug="1" />
+      </img>
+      <text posx="center" posy="45" font="font_text_s" text_col="white" key="text.spot.name" font_size="25" style="stroke" />
+      <text posx="center" posy="166" font="font_text_s" text_col="white" key="text.numlose" font_size="20" show="off">
+        <!--최근전적-->
+      </text>
+      <text posx="center" posy="166" font="font_text_s" text_col="yellow" key="text.remain.sec" font_size="20" style="stroke" show="off">
+        <!--리젠 남은시간-->
+      </text>
+      <wnd key="wnd.root.butt" posy="186" height="66" />
+      <wnd posx="24" posy="64" width="74" height="94" key="wnd.root.p" show="on" debug="22">
+        <layout layout="sub_castle" posx="4" posy="0" />
+      </wnd>
+    </popup>
+  </popup_spot>
+  <sub_reward>
+    <wnd width="267" key="wnd.root.reward" show="off">
+      <!--가운데 보상창-->
+      <img file="spot_bg_reward.png" posx="center" posy="64"></img>
+      <text posx="24" posy="61" width="76" font="font_text_b" text_col="white" align="hcenter" font_size="15" style="stroke" text="2212">
+        <!--자원보상-->
+      </text>
+      <text posx="103" posy="61" width="139" font="font_text_b" text_col="white" align="hcenter" font_size="15" style="stroke" text="80202">
+        <!--획득가능아이템-->
+      </text>
+      <wnd posx="24" posy="64" width="74" height="94" key="wnd.root.reward.res" show="off" debug="22">
+        <layout layout="module_jewel_defense" posx="4" posy="75" />
+      </wnd>
+      <wnd posx="101" posy="64" width="137" height="50" key="wnd.root.reward.item"></wnd>
+    </wnd>
+  </sub_reward>
+  <sub_common>
+    <wnd key="wnd.root.common" show="off">
+      <!--유황/만드레이크를 제외한 나머지 스팟의 공통 레이아웃-->
+      <wnd key="wnd.root.active" show="off"></wnd>
+      <wnd key="wnd.root.deactive" show="off">
+        <!--스팟 비활성화 상태-->
+        <img file="spot_bg_log.png" posx="center" posy="64" key="">
+          <wnd key="wnd.product" show="off">
+            <text posx="center" posy="10" font="font_text_s" text_col="white" font_size="20" text="2301">
+              <!--"생산량"-->
+            </text>
+            <wnd posx="center" posy="13" width="83" align="hcenter">
+              <spr file="ui_res_jewel.spr" />
+              <text posx="20" posy="8" font="font_res_num" text_col="green" font_size="18" key="text.product" text="1">
+                <!--생산량-->
+              </text>
+            </wnd>
+            <text posx="center" posy="40" font="font_text_s" text_col="white" font_size="20" text="2302">
+              <!--"보유량"-->
+            </text>
+            <wnd posx="center" posy="43" width="83" align="hcenter">
+              <spr file="ui_res_jewel.spr" />
+              <text posx="20" posy="8" font="font_res_num" text_col="green" font_size="18" key="text.have" text="1">
+                <!--보유량-->
+              </text>
+            </wnd>
+          </wnd>
+          <layout layout="module_jewel_defense" posx="center" posy="72" show="off" />
+        </img>
+      </wnd>
+    </wnd>
+  </sub_common>
+  <sub_sulfur>
+    <wnd key="wnd.root.sulfur" show="off">
+      <!--유황 전용 레이아웃-->
+      <wnd show="off" width="267" key="wnd.root.log">
+        <!--가운데 로그창-->
+        <img file="spot_bg_log.png" posx="center" posy="64">
+          <scroll_view width="212" height="87" posx="2" posy="2" key="scrl.log" />
+        </img>
+        <text posx="center" posy="61" font="font_text_s" text_col="white" font_size="15" style="stroke" text="2246">
+          <!--약탈기록-->
+        </text>
+      </wnd>
+    </wnd>
+  </sub_sulfur>
+  <sub_mandrake>
+    <wnd show="off" key="wnd.root.mandrake">
+      <!--만드레이크 전용 레이아웃-->
+      <img file="spot_bg_log.png" posx="center" posy="64">
+        <wnd key="wnd.root.mandrake.empty" show="off">
+          <!--매치전-->
+          <img file="line_spot.png" posx="center" posy="center" />
+          <text posx="center" posy="16" font="font_text_s" text_col="white" font_size="20" text="2263">
+            <!--상대 알수없음-->
+          </text>
+          <wnd key="wnd.offwin.reward" show="off">
+            <img file="icon_brave.png" posx="65" posy="47" scale="0.65" />
+            <text posx="82" posy="56" font="font_text_s" text_col="white" font_size="25" key="text.win">
+              <!--x연승 보상-->
+            </text>
+            <img file="glow_mandrake.png" posx="55" posy="66">
+              <img file="world_top_mandrake.png" posx="5" posy="5">
+                <text posx="24" posy="5" font="font_res_num" text_col="green" font_size="30" key="text.reward" text="11">
+                  <!--보상수-->
+                </text>
+              </img>
+            </img>
+          </wnd>
+        </wnd>
+        <wnd key="wnd.root.mandrake.my" show="on">
+          <img file="line_spot.png" posx="center" posy="center"></img>
+          <text posx="center" posy="-3" font="font_text_s" text_col="white" font_size="15" text="2264">
+            <!--방어중-->
+          </text>
+          <text posx="37" posy="7" font="font_text_s" text_col="white" font_size="25" text="2265">
+            <!--현재보상-->
+          </text>
+          <img file="glow_mandrake.png" posx="14" posy="16">
+            <img file="world_top_mandrake.png" posx="5" posy="5">
+              <text posx="24" posy="5" font="font_res_num" text_col="green" font_size="30" key="text.reward">
+                <!--보상수-->
+              </text>
+            </img>
+          </img>
+          <img file="world_left_rightarrow.png" posx="100" posy="26"></img>
+          <text posx="138" posy="10" font="font_text_s" text_col="white" font_size="20" text="2268">
+            <!--"다음승리 보상"-->
+          </text>
+          <text posx="138" posy="28" font="font_res_num" text_col="white" font_size="25" key="text.reward.next">
+            <!--다음보상값-->
+          </text>
+          <text posx="center" posy="50" font="font_text_s" text_col="white" font_size="15" text="2266">
+            <!--생산자원-->
+          </text>
+          <img file="glow_mandrake.png" posx="29" posy="59">
+            <img file="world_top_mandrake.png" posx="5" posy="5"></img>
+          </img>
+          <text posx="61" posy="63" font="font_text_s" text_col="white" font_size="20" text="1" key="text.produce.per.min">
+            <!--분당생산량 숫자-->
+          </text>
+          <pbar2 posx="61" posy="75" key="pbar.produce">
+            <layer id="1" file="bar_mandrake_bg.png" fixed="yes" />
+            <layer id="2" file="bar_mandrake_fill.png"></layer>
+            <layer id="3" file="bar_mandrake_cover.png" fixed="yes" />
+          </pbar2>
+          <img file="icon_brave.png" posx="-11" posy="-37" key="img.win" />
+          <text posx="-25" posy="-5" font="font_text_s" text_col="white" font_size="25" text="1" key="text.win" width="48" align="hcenter">
+            <!--xx승-->
+          </text>
+          <wnd posx="0" posy="0" width="216" height="92">
+            <!--승수보너스에대한 설명-->
+            <tooltip file="layout.xml" layout="help_mandrake_spot_resources" />
+          </wnd>
+        </wnd>
+        <wnd key="wnd.root.mandrake.enemy" show="off">
+          <!--승수와 승수따른보너스-->
+          <img file="line_spot.png" posx="center" posy="center" />
+          <text posx="center" posy="-3" font="font_text_s" text_col="white" font_size="15" text="2264">
+            <!--방어중-->
+          </text>
+          <img file="icon_brave.png" posx="80" posy="11" scale="0.7" />
+          <text posx="center" posy="18" font="font_text_s" text_col="red" font_size="25" text="1" key="text.win">
+            <!--xx승-->
+          </text>
+          <text posx="center" posy="53" font="font_text_s" text_col="white" font_size="25" text="2045">
+            <!--승리시 보상-->
+          </text>
+          <img file="glow_mandrake.png" posx="54" posy="59">
+            <img file="world_top_mandrake.png" posx="5" posy="5">
+              <text posx="24" posy="8" font="font_res_num" text_col="green" font_size="30" text="1" key="text.win.reward" debug="1">
+                <!--보상수-->
+              </text>
+            </img>
+          </img>
+          <wnd posx="0" posy="0" width="215" height="90">
+            <!--승수와 승수따른보너스 설명-->
+            <tooltip file="layout.xml" layout="help_mandrake_spot_attack" />
+          </wnd>
+        </wnd>
+      </img>
+    </wnd>
+    <_butt posx="left" posy="50" img_up="icon_info.png" key="butt.help">
+      <!--헬프버튼_광산전용으로만들려고함-->
+    </_butt>
+  </sub_mandrake>
+  <module_product_enemy>
+    <wnd key="wnd.product.enemy" show="on" posx="102" posy="138" width="137">
+      <text posx="center" posy="0" font="font_text_s" text_col="white" font_size="18" text="2301">
+        <!--"생산량"-->
+      </text>
+      <wnd posx="0" posy="4" align="hcenter">
+        <img file="world_top_jewel.png" posy="3" />
+        <_spr file="ui_res_jewel.spr"></_spr>
+        <text posx="13" posy="10" font="font_res_num" text_col="green" font_size="15" key="text.product" _text="1" debug="88">
+          <!--생산량-->
+        </text>
+      </wnd>
+    </wnd>
+    <!--광산스팟용 생산량-->
+  </module_product_enemy>
+  <module_jewel_defense>
+    <wnd key="wnd.defense" debug="11" show="off">
+      <img file="skill_unit_bg_level.png">
+        <text posx="center" posy="center" font="font_res_num" text_col="white" font_size="15" key="text.lvmine" text="11" debug="13" adjx="-0.5" adjy="-0.5">
+          <!--광산레벨-->
+        </text>
+      </img>
+      <img file="common_etc_hp.png" posx="20" posy="5">
+        <text posx="15" posy="2" font="font_res_num" text_col="white" font_size="18" key="text.bonus" text="1">
+          <!--광산레벨-->
+        </text>
+      </img>
+    </wnd>
+    <!--광산스팟용 광산레벨과 방어도 보너스-->
+  </module_jewel_defense>
+  <sub_castle>
+    <wnd key="wnd.root.castle" show="on">
+      <!--성스팟-->
+      <wnd key="wnd.root.active" show="off"></wnd>
+      <wnd key="wnd.root.deactive" show="on">
+        <!--스팟 비활성화 상태-->
+        <img file="spot_bg_log.png" posx="center" posy="0">
+          <wnd key="wnd.product" show="on">
+            <text posx="center" posy="2" font="font_text_s" text_col="white" align="center" font_size="25" style="shadow" text="2301">
+              <!--"product"-->
+            </text>
+            <layout layout="module_castle_res_bar" posx="6" posy="18" key="module.res" num="3" disty="22" show="off" />
+          </wnd>
+        </img>
+      </wnd>
+    </wnd>
+  </sub_castle>
+  <module_castle_res_bar>
+    <!--성스팟 자원생산량과 쌓인양 ui 모듈(자원1종)-->
+    <wnd>
+      <layout file="bar_blue.xml" layout="module_pbar_blue" posx="17" posy="9" key="bar.product" scale_y="0.5">
+        <_text posx="center" posy="center" font="font_res_num" text_col="white" key="text.product.curr" font_size="15" style="shadow" text="1">
+          <!--현재 쌓인양-->
+          <!--scale 0.5문제로 텍스트 찍기가 곤란. 걍 그래프만 보여주고 터치하면 자세한 값 보여주게 하자. 그편이 더 깔끔할듯-->
+        </_text>
+      </layout>
+      <wnd width="17" height="18">
+        <spr key="spr.res" file="ui_res_wood.spr" posy="2">
+          <!--자원 아이콘-->
+        </spr>
+      </wnd>
+      <text posx="21" posy="0" font="font_res_num" text_col="white" key="text.product.per" font_size="15" style="shadow" text="1">
+        <!--시간당 생산량-->
+      </text>
+    </wnd>
+  </module_castle_res_bar>
+</layout>

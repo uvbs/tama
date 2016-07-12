@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf">
+  <battle>
+    <wnd posx="center" posy="0" width="399" height="42" key="wnd.bars">
+      <!--상단 HP바전체-->
+      <img posx="center" posy="center" file="vs_bg_total.png"></img>
+      <img posx="left" posy="14" file="bar_legion_bg.png" key="img.bar.0">
+        <!--아군바 바탕-->
+        <pbar2 posx="3" posy="2" key="pbar.hp" reverse="true">
+          <layer id="1" file="bar_legion_blue.png">
+            <!--메인바-->
+          </layer>
+          <layer id="2" file="bar_legion_highlight.png">
+            <!--상단 하이라이트-->
+          </layer>
+          <layer id="4" file="eff_ui_battle_gauge.spr" tail="1" idact="1" adjy="-6" adjx="-1.5">
+            <!--바 끝부분 이펙트-->
+          </layer>
+        </pbar2>
+        <img posx="3" posy="0" width="16" height="16">
+          <!--프로필사진-->
+        </img>
+      </img>
+      <img posx="right" posy="14" file="bar_legion_bg.png" key="img.bar.1">
+        <!--적군 바 바탕-->
+        <pbar2 posx="3" posy="2" key="pbar.hp" debug="33">
+          <layer id="1" file="bar_legion_red.png">
+            <!--메인바-->
+          </layer>
+          <layer id="2" file="bar_legion_highlight.png">
+            <!--상단 하이라이트-->
+          </layer>
+          <layer id="4" file="eff_ui_battle_gauge.spr" tail="1" idact="2" adjx="-3" adjy="-6">
+            <!--바 끝부분 이펙트-->
+          </layer>
+        </pbar2>
+      </img>
+      <text posx="center" posy="37" key="text.battle.time" font="font_res_num" font_size="25" font_style="shadow" />
+      <img posx="2" posy="0" file="fb_empty.png" key="img.profile.0" scale="0.15">
+        <!--아군프로필사진-->
+      </img>
+      <img posx="382" posy="0" file="fb_empty.png" key="img.profile.1" scale="0.15">
+        <!--아군프로필사진-->
+      </img>
+      <wnd width="83" height="19" posx="20" posy="0" key="mod.name.0" scale="0.8">
+        <img file="world_top_shield.png" posx="0" posy="center">
+          <!--방패-->
+          <!--아군 이름-->
+          <text posx="center" posy="center" key="text.level" font="font_res_num" font_size="20" font_style="stroke" text="11" _adjx="-0.5" _adjy="-0.5">
+            <!--레벨-->
+          </text>
+        </img>
+        <text posx="17" posy="center" key="text.name" font="font_text_s" font_size="20" font_style="stroke" text="1" align="left">
+          <!--군주이름-->
+        </text>
+      </wnd>
+      <wnd width="83" height="20" posx="right" posy="0" key="mod.name.1" scale="0.8">
+        <!--적군 이름-->
+        <img file="world_top_shield.png" posx="right" posy="center">
+          <!--방패-->
+          <text posx="center" posy="center" key="text.level" font="font_res_num" font_size="20" font_style="stroke" text="11">
+            <!--레벨-->
+          </text>
+        </img>
+        <wnd width="65" height="19">
+          <text posx="right" posy="center" key="text.name" font="font_text_s" font_size="20" font_style="stroke" debug="1">
+            <!--군주이름-->
+          </text>
+        </wnd>
+      </wnd>
+    </wnd>
+    <!--항복 버튼-->
+    <butt posx="550" posy="0" img_up="battle_butt_surrender.png" key="butt.battle.surrrender">
+      <text posx="center" posy="53" font="font_text_b" font_size="20" font_style="stroke" text="2033" />
+    </butt>
+    <butt posx="50" posy="328" img_up="butt_playx2.png" key="butt.play">
+      <!--배속버튼-->
+      <img posx="17" posy="16" file="butt_text_x2.png" key="img.text.x2" show="off"></img>
+      <img posx="17" posy="16" file="butt_text_x4.png" key="img.text.x4" show="off" />
+    </butt>
+  </battle>
+  <world>
+    <sound bgm="battle" />
+  </world>
+</layout>

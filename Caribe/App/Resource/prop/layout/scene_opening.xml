@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf">
+  <main>
+    <spr file="opening.spr" posx="center" posy="center" key="spr.opening" />
+  </main>
+</layout>

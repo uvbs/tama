@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--잡화상 씬-->
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf">
+  <!--모든 씬 백판-->
+  <common_bg>
+    <wnd posx="0" posy="0" width="640" height="360" key="wnd.common_bg">
+      <!--백판-->
+      <img posx="0" posy="0" file="common_bg_bottom.png" />
+      <!--백버튼-->
+      <butt posx="28" posy="20" key="butt.back" img_up="common_butt_back.png" />
+    </wnd>
+  </common_bg>
+  <!--잡화상 씬 메인-->
+  <shop>
+    <wnd posx="64" posy="57" width="640" height="303" key="wnd.shop">
+      <!--내부 백판-->
+      <img posx="0" posy="0" file="common_bg_inside.png"></img>
+      <img posx="5" posy="40" file="shot_bg_list.png" />
+      <img posx="180" posy="15" file="shop_banner.png" />
+      <!--캐쉬 버튼-->
+      <butt posx="15" posy="12" key="butt.shop.cash" img_up="common_butt_small.png" font="font_text_b" font_size="33" font_style="stroke" text="80012" />
+      <!--기타 버튼-->
+      <butt posx="100" posy="12" key="butt.shop.etc" img_up="common_butt_small.png" font="font_text_b" font_size="33" font_style="stroke" text="80014" />
+      <list posx="17" posy="62" width="475" height="216" spacew="3" spaceh="3" type="thumb" key="list.shop" />
+    </wnd>
+  </shop>
+  <!--텍스트 팝업-->
+  <commontextpopup>
+    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popup" format="argb8888">
+      <!--타이틀-->
+      <img posx="center" posy="18" img="popup_title_bar.png">
+        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.title" />
+      </img>
+      <!--설명 bg-->
+      <img posx="144" posy="100" file="common_blank_b.png">
+        <text posx="center" posy="center" width="228" key="text.common.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
+      </img>
+      <!--메세지-->
+      <!--왼쪽 버튼-->
+      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80065"></butt>
+      <!--오른쪽 버튼-->
+      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+    </img>
+  </commontextpopup>
+</layout>

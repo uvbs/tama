@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <shop>
+    <wnd posx="0" posy="0" width="640" height="360" key="wnd.popup.shop">
+      <!--백 버튼, 무역상 버튼, 무기상 버튼, 잡화상 버튼-->
+      <rect posx="0" posy="0" width="scr_width" height="scr_height" color="black" alpha="0.5" />
+      <butt posx="273" posy="274" img_up="common_butt_back2.png" key="butt.close"></butt>
+      <butt posx="76" posy="60" key="butt.tab.trade" img_up="world_butt_trader.png">
+        <img posx="12" posy="-5" file="world_bg_title_new.png">
+          <text posx="center" posy="2" width="131" font="font_text_m" text="80027" font_style="stroke" font_size="30" />
+        </img>
+      </butt>
+      <butt posx="241" posy="60" key="butt.tab.weapon" img_up="world_butt_weapon.png">
+        <img posx="12" posy="-5" file="world_bg_title_new.png">
+          <text posx="center" posy="2" width="131" font="font_text_m" text="80030" font_style="stroke" font_size="30" />
+        </img>
+      </butt>
+      <butt posx="406" posy="60" key="butt.tab.sundries" img_up="world_butt_sundries.png">
+        <img posx="12" posy="-5" file="world_bg_title_new.png">
+          <text posx="center" posy="2" width="131" font="font_text_m" text="80029" font_style="stroke" font_size="30" />
+        </img>
+      </butt>
+    </wnd>
+  </shop>
+</layout>

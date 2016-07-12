@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--사용하지 않음-->
+<layout>
+  <_popup_new_levelup_hero>
+    <popup img="common_bg_popup.png">
+      <text posx="3" posy="18" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" key="text.popup.title">
+        <!--타이틀-->
+      </text>
+      <wnd posx="50" posy="80">
+        <!--업그레이드 후 스탯-->
+        <img posx="14" posy="0" file="common_unit_bg_bb.png">
+          <!--테두리-->
+          <img posx="4" posy="4" key="img.icon.levelup.hero" scale="1.9">
+            <!--초상화-->
+          </img>
+        </img>
+        <img posx="0" posy="133" file="legion_unit_blank_b.png">
+          <img posx="9" posy="4" key="img.state.level"></img>
+          <text posx="35" posy="7" align="left" width="115" font="font_text_m" font_size="35" font_style="stroke" key="text.levelup.name" text_col_r="0" text_col_g="162" text_col_b="149"></text>
+          <!--이름, 레벨 표시-->
+        </img>
+        <_pbar posx="3" posy="174" img1="legion_exp.png" img2="legion_exp_bg.png" adjx="2" adjy="3" key="pbar.levelup.exp">
+          <!--경험치 프로그레스바-->
+        </_pbar>
+        <img posx="176" posy="0" file="legion_simbol_table_b.png">
+          <text posx="30" posy="7" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.melee"></text>
+          <text posx="30" posy="31" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.range"></text>
+          <text posx="30" posy="58" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.def"></text>
+          <text posx="30" posy="81" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.hp"></text>
+          <text posx="30" posy="107" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.atk.speed"></text>
+          <text posx="30" posy="136" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.move.speed"></text>
+          <img posx="79" posy="4" key="img.arrow1"></img>
+          <img posx="79" posy="31" key="img.arrow2"></img>
+          <img posx="79" posy="57" key="img.arrow3"></img>
+          <img posx="79" posy="82" key="img.arrow4"></img>
+          <img posx="79" posy="106" key="img.arrow5" />
+          <img posx="79" posy="131" key="img.arrow6"></img>
+          <!--스텟 아이콘들-->
+        </img>
+      </wnd>
+      <butt posx="156" posy="290" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.levelup.decide" font_style="stroke" text="2090">
+        <!--훈련시작-->
+      </butt>
+      <butt posx="275" posy="290" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.levelup.exit" font_style="stroke" text="80006">
+        <!--취소-->
+      </butt>
+      <wnd posx="382" posy="118">
+        <text posx="0" posy="0" font="font_text_m" font_size="22" font_style="stroke" text="2091" />
+        <wnd posx="0" posy="17" key="wnd.need.res">
+          <!--소모자원이 표시될 좌상귀-->
+        </wnd>
+        <_img posx="0" posy="17" file="world_top_wood.png" key="img.need.res1" show="off" scale="0.8">
+          <text posx="22" posy="3" font="font_text_m" font_size="22" font_style="stroke" key="text.need.res1" />
+        </_img>
+        <_img posx="0" posy="34" file="world_top_iron.png" key="img.need.res2" show="off" scale="0.8">
+          <text posx="22" posy="3" font="font_text_m" font_size="22" font_style="stroke" key="text.need.res2" />
+        </_img>
+        <text posx="0" posy="53" font="font_text_m" font_size="22" font_style="stroke" text="2091" key="text.train.time" />
+      </wnd>
+    </popup>
+  </_popup_new_levelup_hero>
+</layout>

@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf">
+  <popup_nickname>
+    <popup img="guild_popup_bg.png" key="img.popup.bg" nc_close="false">
+      <text posx="41" posy="78" width="324" font="font_text_b" align="hcenter" font_size="30" font_style="stroke" text="80154" />
+      <img posx="60" posy="105" file="option_input_box.png" key="img.input.box" format_surface="argb8888">
+        <text posx="0" posy="0" width="284" font="font_text_b" align="center" font_size="43" font_style="stroke" key="text.nickname" />
+      </img>
+      <butt posx="160" posy="183" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80009"></butt>
+      <butt posx="365" posy="19" img_up="common_butt_x.png" key="butt.close">
+        <!--x버튼-->
+      </butt>
+    </popup>
+  </popup_nickname>
+  <popup_fail>
+    <img posx="0" posy="0" file="guild_popup_bg.png">
+      <img posx="54" posy="77" file="guild_popup_box.png">
+        <text posx="center" posy="center" font="font_text_b" font_size="30" font_style="stroke" text="80153" key="text.popup.body" />
+      </img>
+    </img>
+    <butt posx="160" posy="183" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.popup.fail.ok" font_style="stroke" text="80009"></butt>
+  </popup_fail>
+  <popup_close_svr>
+    <img posx="0" posy="0" file="guild_popup_bg.png">
+      <img posx="54" posy="77" file="guild_popup_box.png">
+        <text posx="center" posy="center" font="font_text_s" font_size="30" font_style="stroke" text="80177" />
+      </img>
+    </img>
+    <butt posx="160" posy="183" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.popup.close.ok" font_style="stroke" text="80009"></butt>
+  </popup_close_svr>
+  <title>
+    <text posx="0" posy="336" key="text.send.dump" show="off" text="2245" font_size="15" font_style="stroke" />
+    <wnd key="wnd.title">
+      <img file="bg_popup_dark.png" alpha="0.5" />
+      <spr file="title.spr" posx="320" posy="150" key="spr.title"></spr>
+      <text posx="0" posy="349" key="text.ver.build" text_col="white" font_size="15" font_style="stroke" />
+      <img file="ui_say" posx="center" posy="center" key="img.touch" show="off" touchable="off" debug="1">
+        <text posx="center" posy="center" key="text.touch" text_col="black" font_size="20" text="2284" font="font_text_b" />
+      </img>
+      <_text posx="center" posy="349" text_col="white" font_size="15" font_style="stroke" text="2285">
+        <!--gemtree-->
+      </_text>
+      <img file="logo.png" posx="center" posy="348" />
+    </wnd>
+    <butt posx="0" posy="0" width="scr_width" height="scr_height" key="butt.touch" debug="93" />
+    <sound bgm="title" />
+  </title>
+  <popup_first>
+    <!--"이미 계정을 가지고 있습니까?"-->
+    <popup img="popup_bg.png" nc_close="off" debug="33">
+      <img file="popup_title_bar.png" posx="center" posy="12" scale_x="0.8"></img>
+      <text posx="center" posy="18" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="2270" key="text.title">
+        <!--타이틀-->
+      </text>
+      <text posx="center" posy="107" font="font_text_s" text_col="white" font_size="30" font_style="stroke" text="2116">
+        <!--"이미 계정을 가지고...."-->
+      </text>
+      <butt posx="59" posy="173" img_up="common_butt_mid.png" key="butt.no">
+        <!--아니오-->
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="5">
+          <!--아니오-->
+        </text>
+      </butt>
+      <butt posx="208" posy="173" img_up="common_butt_mid.png" key="butt.yes">
+        <!--예-->
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="4">
+          <!--예-->
+        </text>
+      </butt>
+      <butt posx="center" posy="238" img_up="facebook_norm.png" key="butt.facebook">
+        <!--페북로그인-->
+      </butt>
+    </popup>
+  </popup_first>
+</layout>

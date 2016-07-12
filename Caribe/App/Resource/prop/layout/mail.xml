@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_mail>
+    <popup img="common_bg_popup.png" format="argb8888">
+      <butt posx="470" posy="31" img_up="common_butt_x.png" key="butt.close">
+        <!--x버튼-->
+      </butt>
+      <img posx="center" posy="18" img="popup_title_bar.png" format="argb8888">
+        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="80072">
+          <!--타이틀-->
+        </text>
+      </img>
+      <list posx="center" posy="64" width="430" height="256" spacew="3" spaceh="-1" type="list" key="list.mail" disty="40" debug="12" />
+      <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="80091" key="text.no.mail">
+        <!--받은 메일이 없습니다.-->
+      </text>
+    </popup>
+  </popup_mail>
+  <popup_each>
+    <popup img="common_bg_popup.png" format="argb8888" modal="true">
+      <butt posx="470" posy="31" img_up="common_butt_x.png" key="butt.close">
+        <!--x버튼-->
+      </butt>
+      <img posx="50" posy="70" file="legion_unit_blank_b.png">
+        <text posx="0" posy="-16" font="font_text_b" text_col="white" font_size="25" font_style="stroke" text="2313" key="">
+          <!--"보낸사람"-->
+        </text>
+        <text posx="10" posy="center" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.mail.sender">
+          <!--보낸사람-->
+        </text>
+      </img>
+      <img posx="50" posy="130" file="legion_unit_blank_mail.png">
+        <text posx="0" posy="-16" font="font_text_b" text_col="white" font_size="25" font_style="stroke" text="80077" key="">
+          <!--"타이틀(title)"-->
+        </text>
+        <text posx="10" posy="center" font="font_text_s" text_col="white" font_size="25" font_style="stroke" key="text.mail.title">
+          <!--타이틀-->
+        </text>
+      </img>
+      <img posx="50" posy="190" file="legion_unit_blank_bb.png">
+        <text posx="0" posy="-16" font="font_text_b" text_col="white" font_size="25" font_style="stroke" text="80078" key="">
+          <!--"내용(contents)"-->
+        </text>
+        <text posx="10" posy="10" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.mail.content" length="392" _text="20338">
+          <!--내용(contents)-->
+        </text>
+      </img>
+      <butt posx="410" posy="290" key="butt.get" img_up="common_butt_small.png">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="80076">
+          <!--수령버튼-->
+        </text>
+      </butt>
+    </popup>
+  </popup_each>
+</layout>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--장비상 씬-->
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf">
+  <!--모든 씬 백판-->
+  <shop>
+    <img posx="0" posy="0" file="common_bg_bottom.png" />
+    <butt posx="510" posy="16" key="butt.back" img_up="common_butt_back.png" />
+    <!--내부 백판-->
+    <img posx="64" posy="57" file="common_bg_inside.png">
+      <!--배경 선반그림-->
+      <img posx="133" posy="13" file="trader_bg_list.png" key="img.rack"></img>
+      <!--현수막-->
+      <img posx="10" posy="10" file="trader_bg_banner.png"></img>
+      <!--무기상 캐릭터-->
+      <img posx="10" posy="46" file="guild_shop_seller.png">
+        <wnd posx="23" posy="72" width="57" height="64" key="wnd.face" touchable="yes" />
+        <wnd posx="80" posy="175" width="5" height="5" key="wnd.breast" touchable="yes" />
+      </img>
+      <!--관리자 캐릭터 대사-->
+      <text posx="26" posy="52" font="font_text_s" font_size="20" font_style="stroke" align="hcenter" width="96" height="38" text="80209" key="text.char.say" text_col="white"></text>
+      <!--양피지 백판-->
+      <img posx="346" posy="3" file="guild_shop_mag.png" key="img.bg.tooltip">
+        <wnd posx="7" posy="40" key="wnd.hero.tooltip" width="153" height="202">
+          <!--영웅 툴팁의 루트-->
+        </wnd>
+        <wnd posx="7" posy="40" key="wnd.item.tooltip" width="153" height="202">
+          <!--아이템 툴팁의 루트-->
+        </wnd>
+        <!--구입 버튼-->
+        <butt img_up="common_butt_small.png" posx="center" posy="250" text_col="white" font="font_text_b" font_size="35" key="butt.buy" font_style="stroke" text="80043" />
+        <!--"연맹상점"-->
+        <text posx="35" posy="5" font="font_text_b" font_size="40" font_style="stroke" align="hcenter" text_col="white" width="88" text="2204" key="text.title"></text>
+      </img>
+    </img>
+  </shop>
+</layout>

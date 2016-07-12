@@ -1,0 +1,9 @@
+﻿#pragma once
+#include "XSpot.h"
+#include "XSpotCastle.h"
+#include "XSpotJewel.h"
+#include "XSpotSulfur.h"
+#include "XSpotMandrake.h"
+#include "XSpotNpc.h"
+#include "XSpotCampaign.h"
+#include "XSpotEtc.h"

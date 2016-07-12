@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout normal="normal.ttf" bold="bold.ttf">
+  <item_tooltip>
+    <wnd width="151" height="198">
+      <text posx="5" posy="5" width="119" font="bold" font_size="25" font_style="stroke" key="text.name">
+        <!--아이템 이름-->
+      </text>
+      <img posx="9" posy="23" key="img.item">
+        <!--아이템 이미지-->
+        <img posx="-4" posy="-4" file="common_bg_itemblank.png" key="img.frame">
+          <!--아이템 액자-->
+          <img posx="3" posy="0" key="img.star" num="5" distx="9" file="common_etc_smallstar.png" scale="0.8">
+            <!--별5개-->
+          </img>
+        </img>
+      </img>
+      <text posx="104" posy="5" width="48" font="normal" font_size="18" key="text.grade" align="right">
+        <!--장비종류와 등급-->
+      </text>
+      <wnd posx="66" posy="16" width="86" height="67" key="wnd.stat.area">
+        <!--능력치 영역-->
+        <wnd key="wnd.stat" num="4" disty="17" show="off">
+          <!--스탯 아이콘+텍스트 세트-->
+          <img key="img.stat">
+            <!--스탯아이콘-->
+          </img>
+          <text posx="20" posy="3" width="67" font="normal" font_size="18" key="text.stat" text_col="green">
+            <!--스탯 텍스트-->
+          </text>
+        </wnd>
+      </wnd>
+      <text posx="7" posy="94" width="145" font="normal" font_size="18" key="text.invoke" show="off" text_col="col_item_invoke">
+        <!--장착효과-->
+      </text>
+      <text posx="7" posy="158" width="145" font="normal" font_size="18" key="text.desc" show="off" text_col="col_item_desc">
+        <!--아이템 설명-->
+      </text>
+      <wnd posx="7" posy="190" width="139" key="wnd.sell" show="off">
+        <!--가격표시 영역-->
+        <text font="normal" font_size="15" text_col="green" text="2056">
+          <!--판매가격-->
+        </text>
+        <img posx="32" key="img.gold" file="world_top_gold.png" scale="0.75" posy="-5">
+          <!--금화아이콘-->
+        </img>
+        <text font="font_res_num" font_size="18" key="text.cost" text_col="green" text="2056" comma="yes" posx="48">
+          <!--가격숫자-->
+        </text>
+      </wnd>
+    </wnd>
+  </item_tooltip>
+  <select_lang>
+    <popup img="bg_unit_sel.png" nc_close="true" format="argb8888">
+      <butt posx="center" posy="32" img_up="common_butt_mid.png" key="butt.en">
+        <img posx="center" posy="center" file="option_en.png" touch="false"></img>
+      </butt>
+      <butt posx="center" posy="87" img_up="common_butt_mid.png" key="butt.ko">
+        <img posx="center" posy="center" file="option_ko.png" touch="false"></img>
+      </butt>
+    </popup>
+  </select_lang>
+</layout>

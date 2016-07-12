@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--월드 씬-->
+<layout font_text_m="normal.ttf" font_text_b="bold.ttf" font_hand="hand.ttf">
+  <col_quest_info_text text_col_r="81" text_col_g="23" text_col_b="19" />
+  <quest_info>
+    <popup img="bg_quest_info.png">
+      <!--퀘스트 안내-->
+      <text posx="center" posy="21" font="font_text_b" font_size="40" text="2247" style="stroke">
+        <!--퀘스트-->
+      </text>
+      <butt posx="360" posy="28" img_up="common_butt_x.png" key="butt.close">
+        <!--x버튼-->
+      </butt>
+      <_scroll_view posx="55" posy="57" width="312" height="197" dir="vert" key="scrl.view.quest">
+        <text posx="41" font="font_text_b" text_col="col_quest_info_text" font_size="30" key="quest.info.name" width="220" align="hcenter">
+          <!--퀘이름-->
+        </text>
+        <text posx="41" font="font_text_s" text_col="col_quest_info_text" font_size="20" key="quest.info.desc" width="220">
+          <!--퀘설명-->
+        </text>
+        <img file="line_quest.png" key="img.line1" posx="center" show="off" />
+        <text posx="48" font="font_text_m" font_size="30" key="text.objective" text="2013" text_col="col_quest_info_text">
+          <!--목표-->
+        </text>
+        <text posx="41" posy="42" font="font_text_m" font_size="20" key="quest.info.objective" text_col="col_quest_info_text" width="220" />
+        <img file="line_quest.png" key="img.line2" posx="center" show="off" />
+        <text posx="48" font="font_text_m" font_size="30" key="text.reward" text="2014" text_col="col_quest_info_text">
+          <!--보상-->
+        </text>
+        <text posx="93" font="font_text_m" font_size="20" key="quest.info.reward" text_col="col_quest_info_text" />
+        <text posx="41" font="font_text_m" font_size="20" key="quest.info.reward.exp" text_col="col_quest_info_text"></text>
+        <_img file="line_quest.png" key="img.line3" posx="center" show="off" />
+      </_scroll_view>
+      <scroll_view posx="35" posy="57" width="332" height="197" dir="vert" key="scrl.view.quest">
+        <text posx="41" font="font_text_b" text_col="col_quest_info_text" font_size="30" key="quest.info.name" width="267" align="hcenter">
+          <!--퀘이름-->
+        </text>
+        <text posx="41" font="font_text_s" text_col="col_quest_info_text" font_size="20" key="quest.info.desc" width="280">
+          <!--퀘설명-->
+        </text>
+        <img file="line_quest.png" key="img.line1" posx="center" show="off" />
+        <text posx="48" font="font_text_m" font_size="30" key="text.objective" text="2013" text_col="col_quest_info_text">
+          <!--목표-->
+        </text>
+        <text posx="41" posy="42" font="font_text_m" font_size="20" key="quest.info.objective" text_col="col_quest_info_text" width="220" />
+        <img file="line_quest.png" key="img.line2" posx="center" show="off" />
+        <text posx="48" font="font_text_m" font_size="30" key="text.reward" text="2014" text_col="col_quest_info_text">
+          <!--보상-->
+        </text>
+        <text posx="93" font="font_text_m" font_size="20" key="quest.info.reward" text_col="col_quest_info_text" />
+        <text posx="41" font="font_text_m" font_size="20" key="quest.info.reward.exp" text_col="col_quest_info_text"></text>
+        <_img file="line_quest.png" key="img.line3" posx="center" show="off" />
+      </scroll_view>
+      <butt posx="center" posy="255" img_up="common_butt_small.png" key="butt.goto" show="on">
+        <text font="font_text_m" font_size="20" text="2219" style="stroke" posx="center" posy="center"></text>
+      </butt>
+      <butt posx="center" posy="245" img_up="common_butt_mid.png" key="butt.reward" show="off">
+        <text font="font_text_b" font_size="30" style="stroke" posx="center" posy="center" text="2015"></text>
+      </butt>
+    </popup>
+  </quest_info>
+</layout>

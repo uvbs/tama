@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <alert>
+    <wnd width="256" height="128">
+      <img posx="center" posy="0" file="icon_ap.png" />
+      <text posx="center" posy="34" font="font_text_m" font_style="stroke" font_size="30" key="text.not.enough.ap" text="1">
+        <!--행동력 n이 부족합니다.-->
+      </text>
+      <text posx="center" posy="54" font="font_text_m" font_style="stroke" font_size="20" key="text.need.ap" text="1">
+        <!--행동력 n이 부족합니다.-->
+      </text>
+      <butt posx="40" posy="88" img_up="common_butt_small.png" key="butt.use.cash">
+        <text posx="center" posy="3" font="font_text_m" font_style="stroke" font_size="20" text="2202">
+          <!--모두 채우기-->
+        </text>
+        <text posx="center" posy="16" font="font_text_m" font_style="stroke" font_size="20" key="text.cost" text="1">
+          <!--캐쉬 가격-->
+        </text>
+        <img posx="10" posy="14" file="hero_cash.png" scale="0.5" />
+      </butt>
+      <butt posx="140" posy="88" img_up="common_butt_small.png" text_col="white" font="font_text_m" font_size="30" key="butt.close" font_style="stroke" text="3"></butt>
+    </wnd>
+  </alert>
+  <popup_cash_pay>
+    <popup img="popup_cash.png">
+      <text posx="center" posy="4" font="font_text_b" font_style="stroke" font_size="30" key="text.title"></text>
+      <text posx="center" posy="54" font="font_text_m" font_style="stroke" font_size="20" key="text.need" text="1"></text>
+      <butt posx="center" posy="86" img_up="common_butt_small.png" key="butt.use.cash">
+        <img posx="9" posy="5" file="cash_m.png" debug="1">
+          <spr posx="9" posy="2" file="ui_eff_unicorn.spr" />
+        </img>
+        <text posx="28" posy="center" font="font_res_num" font_style="stroke" font_size="20" key="text.cost" text="1">
+          <!--캐쉬 가격-->
+        </text>
+      </butt>
+      <butt posx="277" posy="5" img_up="common_butt_x.png" key="butt.close"></butt>
+    </popup>
+  </popup_cash_pay>
+</layout>

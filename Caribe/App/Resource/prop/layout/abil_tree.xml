@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_tree>
+    <popup img="br_bg1.png">
+      <butt posx="0" posy="0" img_up="common_butt_x.png" key="butt.close"></butt>
+      <text posx="14" posy="37" font_size="18" font="font_text_s" key="text.abil" />
+    </popup>
+  </popup_tree>
+</layout>

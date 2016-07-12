@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_gold_m="normal.ttf" font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf" font_meter="font_meter.spr" font_gold="font_gold.spr" font_cooper="CooperBlackStd.otf" font_thai="kunlasatri.ttf" font_time="font_pvp_time.spr" font_res_num="res_num.ttf" font_title="title.ttf">
+  <constant>
+    <col_team_mng_yellow text_col_r="236" text_col_g="221" text_col_b="99" />
+    <col_growth_yellow text_col_r="255" text_col_g="191" text_col_b="75" />
+    <col_growth_yellow2 text_col_r="219" text_col_g="142" text_col_b="9">약간 더 진한 주황색</col_growth_yellow2>
+    <col_growth_next text_col_r="87" text_col_g="215" text_col_b="177" />
+    <col_detail_yellow text_col_r="243" text_col_g="227" text_col_b="101" />
+    <col_skill_name text_col_r="46" text_col_g="145" text_col_b="135" />
+    <col_sky_quest text_col_r="126" text_col_g="231" text_col_b="238" />
+    <col_gold_quest text_col_r="243" text_col_g="204" text_col_b="84" />
+    <col_green_stat text_col_r="73" text_col_g="245" text_col_b="64" />
+    <col_beige text_col_r="248" text_col_g="231" text_col_b="204" />
+    <col_quest_info_text text_col_r="82" text_col_g="17" text_col_b="17" />
+    <col_skill_desc text_col_r="255" text_col_g="234" text_col_b="0" />
+    <col_legendry text_col_r="249" text_col_g="162" text_col_b="1">
+      <!--5성-->
+    </col_legendry>
+    <col_epic text_col_r="216" text_col_g="0" text_col_b="255">
+      <!--4성-->
+    </col_epic>
+    <col_rare text_col_r="0" text_col_g="107" text_col_b="227">
+      <!--3성-->
+    </col_rare>
+    <col_veteran text_col_r="0" text_col_g="255" text_col_b="0">
+      <!--2성-->
+    </col_veteran>
+    <col_common text_col_r="255" text_col_g="255" text_col_b="255">
+      <!--1성-->
+    </col_common>
+    <col_item_invoke text_col_r="255" text_col_g="138" text_col_b="0">
+      <!--장착효과-->
+    </col_item_invoke>
+    <col_item_desc text_col_r="209" text_col_g="202" text_col_b="166">
+      <!--아이템 설명-->
+    </col_item_desc>
+  </constant>
+  <mod_acc_name>
+    <!--방패바탕에 군주레벨과 군주이름을 그리는 모듈-->
+    <wnd width="83" height="19">
+      <img file="world_top_shield.png" posx="0" posy="center">
+        <!--방패-->
+        <text posx="center" posy="center" key="text.level" font="font_res_num" font_size="20" font_style="stroke" text="11">
+          <!--레벨-->
+        </text>
+      </img>
+      <text posx="17" posy="center" key="text.name" font="font_text_s" font_size="20" font_style="stroke" text="1" align="left">
+        <!--군주이름-->
+      </text>
+    </wnd>
+  </mod_acc_name>
+  <mod_acc_name_rev>
+    <!--방패바탕에 군주레벨과 군주이름을 그리는 모듈-->
+    <wnd width="83" height="20">
+      <img file="world_top_shield.png" posx="right" posy="center">
+        <!--방패-->
+        <text posx="center" posy="center" key="text.level" font="font_res_num" font_size="20" font_style="stroke" text="11">
+          <!--레벨-->
+        </text>
+      </img>
+      <wnd width="65" height="19">
+        <text posx="right" posy="center" key="text.name" font="font_text_s" font_size="20" font_style="stroke" debug="1">
+          <!--군주이름-->
+        </text>
+      </wnd>
+      <_text posx="0" posy="center" key="text.name" font="font_text_s" font_size="20" font_style="stroke" debug="1" align="right" width="65" height="19">
+        <!--군주이름-->
+      </_text>
+    </wnd>
+  </mod_acc_name_rev>
+  <help_tooltip2>
+    <view frame="popup_tooltip.png" key="view.bg">
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <!--"view"로 창을 만든다면 키 이름은 반드시 view.bg로 해야한다.-->
+      <text posx="0" posy="center" key="__text.tooltip" text_col="black" font_size="18" length="100">
+        <!--__text.tooltip이라는 이름의 텍스트 컨트롤을 반드시 들어가 있어야 한다.-->
+        <!--length는 문단의 폭을 지정한다.-->
+      </text>
+      <_img file="world_butt_attack.png" posx="center" posy="60">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+    </view>
+  </help_tooltip2>
+  <help_tooltip_tech>
+    <!--특성연구창-->
+    <view frame="popup_tooltip.png" posx="72" posy="75">
+      <!--부대간단설명-->
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <text posx="0" posy="center" text_col="black" font_size="18" width="250" text="80211"></text>
+    </view>
+    <_img file="popup_small.png">
+      <!--바탕 윈도우를 일반 이미지파일로도 사용할 수 있다-->
+      <text posx="0" posy="center" key="__text.tooltip" text_col="black" font_size="18" length="200"></text>
+      <img file="world_butt_attack.png" posx="center" posy="60" />
+    </_img>
+    <view frame="popup_tooltip.png" posx="441" posy="162">
+      <!--리셋간단설명-->
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <text posx="0" posy="center" text_col="black" font_size="18" width="120" text="80210"></text>
+    </view>
+  </help_tooltip_tech>
+  <help_tooltip_barrack>
+    <_view frame="popup_tooltip.png" posx="300" posy="250" width="40" height="30" _nc_close="true">
+      <!--부대교체합니다-->
+      <text posx="center" posy="center" text_col="black" font_size="18" length="0" text="3"></text>
+      <_img file="world_butt_attack.png" posx="center" posy="60">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+    </_view>
+    <view frame="popup_tooltip.png" posx="360" posy="120">
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <!--영웅의 능력치 소개창-->
+      <text posx="0" posy="center" text_col="black" font_size="18" length="50" text="2005"></text>
+      <_img file="world_butt_attack.png" posx="center" posy="60">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+    </view>
+    <view frame="popup_tooltip.png" posx="210" posy="220">
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <text posx="0" posy="center" text_col="black" font_size="18" length="300" text="2005"></text>
+      <_img file="_boardtest.png" posx="0" posy="0">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+    </view>
+  </help_tooltip_barrack>
+  <help_tooltip_babarian>
+    <_view frame="popup_tooltip.png" posx="300" posy="250" width="40" height="30" _nc_close="true">
+      <!--부대교체합니다-->
+      <text posx="center" posy="center" text_col="black" font_size="18" length="0" text="3"></text>
+      <_img file="world_butt_attack.png" posx="center" posy="60">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+    </_view>
+    <view frame="popup_tooltip.png" posx="120" posy="70">
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <!--입장가능,공략실패해도다시가능-->
+      <_img _file="_tooltip2.png" posx="center" posy="60">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+      <text posx="0" posy="center" text_col="black" font_size="18" length="200" text="80212"></text>
+    </view>
+    <view frame="popup_tooltip.png" posx="125" posy="310">
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <!--난이도/메달설명-->
+      <_img _file="_tooltip2.png" posx="center" posy="60">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+      <text posx="0" posy="center" text_col="black" font_size="18" length="330" text="80214"></text>
+    </view>
+    <view frame="popup_tooltip.png" posx="460" posy="140" width="130" height="20">
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <!--매일초기화시간-->
+      <_img _file="_tooltip2.png" posx="center" posy="60">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+      <text posx="0" posy="center" text_col="black" font_size="18" length="130" text="80213"></text>
+    </view>
+  </help_tooltip_babarian>
+  <help_tooltip_camp01>
+    <_view frame="popup_tooltip.png" posx="300" posy="250" width="40" height="30" _nc_close="true">
+      <!--부대교체합니다-->
+      <text posx="center" posy="center" text_col="black" font_size="18" length="0" text="3"></text>
+      <_img file="world_butt_attack.png" posx="center" posy="60">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+    </_view>
+    <view frame="popup_tooltip.png" posx="120" posy="110">
+      <!--리셋 설명-->
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <_img _file="_tooltip2.png" posx="center" posy="60">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+      <text posx="0" posy="center" text_col="black" font_size="18" length="300" text="80215"></text>
+    </view>
+    <view frame="popup_tooltip.png" posx="120" posy="310">
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <!--스테이지설명-->
+      <_img _file="_tooltip2.png" posx="center" posy="60">
+        <!--필요에따라 img도 곁들일수 있다-->
+      </_img>
+      <text posx="0" posy="center" text_col="black" font_size="18" length="350" text="80216"></text>
+    </view>
+  </help_tooltip_camp01>
+  <_popup_camp01>
+    <wnd>
+      <img file="_log_bg.png" posx="center" posy="center">
+        <text posx="center" posy="center" font_size="10" text_col="white" text="3" />
+        <butt posx="50" posy="200" img_up="_common_butt_verysmall.png" key="butt.cancel" text="4"></butt>
+        <butt posx="150" posy="200" img_up="_common_butt_verysmall.png" key="butt.cancel" text="5"></butt>
+      </img>
+    </wnd>
+  </_popup_camp01>
+  <help_tooltip_100>
+    <view frame="popup_tooltip.png" key="view.bg">
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <!--"view"로 창을 만든다면 키 이름은 반드시 view.bg로 해야한다.-->
+      <text posx="0" posy="center" key="__text.tooltip" font="font_text_b" text_col="white" font_size="18" length="100" font_style="shadow">
+        <!--__text.tooltip이라는 이름의 텍스트 컨트롤을 반드시 들어가 있어야 한다.-->
+        <!--length는 문단의 폭을 지정한다.-->
+      </text>
+    </view>
+  </help_tooltip_100>
+  <help_mandrake_spot_attack>
+    <!--승수+승수에따른자원획득량-->
+    <view frame="popup_tooltip.png" posx="90" posy="135" width="100" height="20">
+      <!--승리승수-->
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <text posx="0" posy="center" text_col="black" font_size="18" length="100" text="80220"></text>
+    </view>
+    <view frame="popup_tooltip.png" posx="440" posy="180" width="150" height="20">
+      <!--승수에따른 자원양-->
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <text posx="0" posy="center" text_col="black" font_size="18" length="150" text="80221"></text>
+    </view>
+  </help_mandrake_spot_attack>
+  <help_mandrake_spot_resources>
+    <!--승리보너스와 다음승수보너스설명-->
+    <view frame="popup_tooltip.png" posx="440" posy="130" height="60" width="150">
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <text posx="0" posy="center" text_col="black" font_size="18" length="150" text="80222"></text>
+    </view>
+    <view frame="popup_tooltip.png" posx="100" posy="250" width="100" height="60">
+      <!--동적으로 크기를 조절할수 있는 뷰-->
+      <text posx="0" posy="center" text_col="black" font_size="18" text="80223" length="100"></text>
+    </view>
+  </help_mandrake_spot_resources>
+</layout>

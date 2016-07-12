@@ -1,0 +1,849 @@
+﻿문제해결
+2016.4.8
+ * sql,odbc드라이버 설치
+   -개인 컴터에서 서버를 띄우려면 이드라이버를 설치해야함
+   -SQL Server Native Client 라는것을 설치.
+   -설치파일이 여러개가 있는데 sql_rmo.msi만 설치하면 된다. sqlincli.msi인가???? -_-;;
+   -윈도우-검색-ODBC원본 => ODBC데이터원본관리자(32비트)를 씌움.
+   -"추가" => SQL Server Native Client 1x.0선택 => 이름:Caribe 서버:192.168.0.192 로그인아이디와 암호:Caribe/XXXXXX
+2016.3.30
+ * mPGManAuth.Login()은 자바 메인스레드에서 불러야함. natvie스레드에서 호출하면 안됨
+ * Softnyx SDK붙이는중 mPGManAuth.Login()을 실행하니 Exception이 난다.
+   -caribe프로젝트의 AndroidMenifest.xml에 아래내용을 넣어야 함.
+		<activity
+            android:name="com.pgman.auth.Login_Activity"
+            android:label="@string/pgman_app_name"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" >
+        </activity>
+        <activity
+            android:name="com.pgman.inappbilling.pgmanstore_IAB_dlg"
+            android:label="@string/pgman_iab_title"
+           	android:theme="@style/Theme.pgman.Transparent">
+        </activity>
+	-첨에 xe에 library로 등록시켜서 하려고 했는데 xe의 androidMenifest.xml에 넣으니 string이 없다고 에러남
+	 그래서 library등록을 xe에서 하지 않고 메인프로젝트(caribe)에 붙여서 activity등록도 메인에 넣으니 됨.
+  * API호출순서
+	인증:
+		Start()
+		InitIAB();
+		onStart()
+	Login click:
+		Login()
+		onStop()
+		id/pw입력
+		AuthConnectionListener::OnConnection mLogin=true
+		onActivity, 
+		onStart()
+	구매:
+		IABHelper_launchPurchaseFlow: 구매요청
+		InitIAP::IabSetupFinishedListener::onIabSetupFinished: 구매전 캐시정보 서버와 동기화
+		InitIAB::IabPurchaseFinishedListener::onIabPurchaseFinished: 구매결과를 받음.
+		onActivityResult: requestCode=REQUEST_PGMAN_IAB(569)를 받고 완료
+
+2016.2.29
+ * consumeSync()함수를 초기화때 하지 않고 따로 호출했더니 java 내부의 new Handler()에서 죽는다.
+   .알아보니 new Handler()는 메인스레드에서만 호출되어야 한다. 게임루프는 GLThread에서 돌기때문에 죽었던것.
+   .다른 스레드에서 메인스레드로 thread safe하게 뭔가를 전달할때는 핸들러라는것을 써야한다.
+   .Cocos에는 Coscos2dxHandler라는게 마련되어있다.
+   .이것을통해 consume할 아이템 아이디만 전달해두고(sendMessage) 메인스레드인 Cocos2dxHander.handleMessage()가 호출되면
+     그곳에서 메시지 종류에 따라 처리해준다.
+ * apk만들어서 기기에 넣고 실행했는데 실행즉시 죽어버리는 경우
+   -이유는 모르겟지만 이클립스를 다시 실행시키고 재 빌드할것.
+2016.2.26
+ *Jni로 자바함수 호출할때 분명히 java에 다 코딩해놨는데도 cpp에서 못찾는경우가 있다.
+   .자바쪽에 문법에러가 있었는데 그걸 잡으니까 실행됨. 썅-_-;;
+2016.2.25
+ *구글(google) 인앱(IAP,InApp)결제 구현시
+  -"요청하신 항목은 구매할 수 없습니다." => apk를 구글스토어에 올렸는데 아직 게시가 안된상태면 이런에러가 나는듯.
+    =>혹은 테스터 계정에 등록안된 계정이거나, 등록은 했으나 테스터측에서 다운로드주소로 접속해서 받지 않은 경우.
+  - "이 버전의 애플리케이션에서는 Google Play를 통한 결제를 사용할 수 없습니다." 
+	=> 구글스토어에 올라가있는과 동일한 apk로 테스트해야한다. 그리고 Debug로 빌드하면 안됨. singned된 apk로 테스트 해야함.
+	  => unsigned된 debug 버전으로도 결제전 디버깅까진 되는듯하다. 그러나 최종 결제는 안됨. "이 버전의 애플리케이션에서는 Google Play를 통한 결제를 사용할 수 없습니다."라는 에러가 남.
+2016.2.24
+ *기기에서 png읽을때 setjmp(png_jmpbuf(png_ptr)에서 -5 에러가 떨어진다.
+  이유는 모르겠고. 전투배경 읽을때 죽길래 전투배경을 rgb에서 indexed로 저장하고 다시 해보니 괜찮았음.
+  libpng의 버그일수도 있음. libpng최신버전을 써보는것도 한 방법
+2016.2.18
+ * google GCM push구현
+   1.MyApp을 구글에 등록하고 Server API Key와 Sender ID를 얻는다.
+     .https://developers.google.com/cloud-messaging/에 가서 나의 앱을 등록해야한다.
+	 .구글 개발자 콘솔의 버전에 따라 등록과정이 완전히 다를 수 있으니 주의
+	 ."Try it on Android" => 본문중에서 "add Cloud Messaging to your existing app"클릭 =>
+	   본문에서"Get a Configuration file"클릭 => App name과 package name입력(ex:MyApp test, com.mtricks.myapp)
+	   => "Cloud Messaging"선택 => "Enable google cloud messaging"선택 => "Generate configuration files"선택
+	   => Server API Key와 Sender ID를 얻는다(ex:
+		Server API Key : AIzaSyA_ILBbSzByjgGuDJZXfbKwQkS7ykM071Q
+		Sender ID: 907297166295
+	2.앱 클라이언트 구현(regid 발급받아 우리서버에 전송)
+	 .gcm초기화를 한 후
+	 .gcm서버로 Sender ID를 보내서 registration_id(regid)를 받아와야한다.
+	   ex: "APA91bGt-lr0tJScnl3r_vdkYqAwxjxhl8U_zxV5sf_7h0k5VkM9_UlkBOBSe0i1DjF0hI_fau7JKPu2iJiGIjmmv6a4ug1h_boWsTNYDxbtjvFyq3Fv_TRLa9F5wSj7ul01A0gJW9vw"
+	 .이렇게 얻은 regid는 우리 서버에 전송하여 DB에 저장시켜놔야한다.
+	 .이 값은 device의 고유의 값이며, 앱을 지우거나 업데이트하면 값이 바뀔수도 있다.
+	 .클라이언트 앱이 실행될때 regid를 얻은 후 shared preference(android)에 앱번호와 함께 저장시켜둔다.
+	 .다시 클라이언트 앱이 실행될때 apk 앱번호가 바뀌면 regid를 새로 발급받고 아니면 기존 저장해둔 regid를 그대로 사용한다.
+	 .값이 바뀌면 서버에 바뀐값으로 업데이트 해줘야 한다.
+	3.앱 서버 구현(DB에서 regid를 얻어와 http post로 gcm서버에 쏜다. 클라는 푸쉬를 받게된다)
+	 . gcm서버 주소
+	   .https://android.googleapis.com/gcm/send
+	 .http post 헤더 예제
+	   ."Authorization", "key=[Server API Key]"
+	   ."Content-Type", "application/json""
+	 .http post body 예제
+		{ "registration_ids" : ["APA91bGt-lr0tJScnl3r_vdkYqAwxjxhl8U_zxV5sf_7h0k5VkM9_UlkBOBSe0i1DjF0hI_fau7JKPu2iJiGIjmmv6a4ug1h_boWsTNYDxbtjvFyq3Fv_TRLa9F5wSj7ul01A0gJW9vw"],
+			"data": {
+				"msg" : "제목/본문"		// 
+			} }
+	4. 테스트(앱서버가 없을때 테스트 해볼 방법)
+	  .어느 앱이건 http post로 쏘기만하면 푸시가 날아온다.
+	  .크롬 확장앱중에 advanced REST client라는걸 받아서 사용한다.
+	  .위 http 포맷을 전송한다. 200 OK에러가 나오면 성공
+	5. 문제해결
+	  .만약 푸시가 안오면 regid가 변했을 가능성이 크다.
+	  .가끔 직접 http post로 때려도 안올때도 있었음.
+	  .앱에선 다 왔음.
+
+2016.2.2
+ *안드로이드는 일부기종에서 JNI호출시 문법을 잘못적었을때 에러가 나는 기종이 있고 아닌기종이 있다.
+  . 에러가 나는기종이라도 항상에러가 나는것도 아니고 잘 되다가 어떤 크래시가 한번 일어나고 난 뒤에는 
+    계속 에러가 나기도 한다.(OS차이일까?)
+  .문제가 되었던 문법
+    -getClassID_("com/mtricks/xe/Cocos2dxHelper", _env); 를 할때
+	 기존 코드는 com/mtricks.xe/Cocos.... 이렇게 되어있었는데 일부기종에선 이걸 에러로 내버린다.
+	-Java_com_mtricks_xe_XRenderer_nativeOnRecvProfileImage 의 에러
+	 jintarray로 자바에서 넘겨받아 이를 env->GetByteArrayElements()로 변환하니까 죽어버린다.
+	 이것도 평소엔 잘되다가 다른걸로 크래시가 난 순간부터 죽기시작한다.
+	 jintarray로 받은건 GetIntArrayElements()를 사용하면 죽지 않더라.
+2016.1.29
+ * jni 코딩할때 FindClass()할때 com/mtricks/xe/MainActivity 이런식으로 표기해야한다. com/mtricks.xe/Main...이렇게 하니까 되는기기도 있고 죽는기기도 있다.
+2015.12.11
+ *win32 mfc에서 opengl es2 이식.
+   .eglGetDisplay()실행하다가 런타임 에러남. 어떤 eglXXX()를 호출하더라도 다 죽음.
+     -원인은 libEGL.dll이 없어서임. ㅅㅂ 개고생
+2015.12.03
+ *안드로이드 이클립스 빌드시, 평소 보이지 않던 에러가 나서 빌드가 안난다면
+  메인프로젝트나 라이브러리프로젝트 파일중하나가 read only가 되어있을수 있다. 이것을 풀고 이클립스를 다시 실행시킨다.
+2015.11.25
+ *std::list::sort( comp )사용시 내부에러 뜨는경우
+   .중복조건으로 소트를 할때 발생
+   .조건이 3가지라면 리스트내 모든 요소들은 조건3가지에 부합하는 우선순위가 생겨야함.
+   .그렇지 않으면 내부적으로 우선순위가 꼬이면서 assert에 걸림.
+   .예)
+	listHero.Sort( 
+		[ typeAtk, unitSelected, spLegion ]( XHero* pHero1, XHero* pHero2 ) {
+			int val1 = 0;		// 왼쪽우선
+			int val2 = 0;		// 오른쪽우선.
+			const auto unit1 = pHero1->GetUnit();
+			const auto unit2 = pHero2->GetUnit();
+			const auto atk1 = pHero1->GetTypeAtk();
+			const auto atk2 = pHero2->GetTypeAtk();
+			
+			if( atk1 == typeAtk ) {	// 왼쪽이 병과가 맞으면 일단 1점
+				++val1;
+				if( unit1 == unitSelected ) {	// 유닛까지 맞으면 2점
+					++val1;
+					if( spLegion->IsEnteredHero(pHero1->GetsnHero()) )	// 군단소속까지 있으면 3점
+						++val1;
+				}
+			}
+			if( atk2 == typeAtk ) {	// 오른쪽 영웅이 병과가 맞으면 일단 1점
+				++val2;
+				if( unit2 == unitSelected ) {	// 상동
+					++val2;
+					if( spLegion->IsEnteredHero( pHero2->GetsnHero() ) )
+						++val2;
+				}
+			}
+			return val1 > val2;		// 최종 점수로 우선순위를 가림.
+		} );
+2015.11.19
+ * template의 cpp코딩은 불가능. 미리만들어지는 코드라 .h에서 확인이 되어야 함.
+   .inl로 하는수밖엔 없음.
+2015.10.20
+ * 이클립스에서 "Program "gcc" not found" 에러가 뜨면서 apk를 만들수 없다.
+   .프로젝트 체크아웃 하고 다시 실행해봐도 안되고 별짓을 해도 안되었음. 아 빡쳐
+   .프로젝트 프로퍼티에서 C/C++ Build/Builder Settings/Use Default build command가 체크가 꺼져있었는데 다시 체크를 켜봤음
+   .프로젝트 프로퍼티에서 C/C++ General/Preprocessor Include Paths, Macros etc./Providers/에서 아래 두개항목(CDT GCC Build Output Parser, CDT GCC Built-in Compiler Settings)의 체크를 껐다켰다 하다보니 해결됨
+   .정확한 방법은 아님. 위 행동을 하다보니 그냥 에러 없어짐.
+   .
+2015.07.15
+ * play_licencing/library/res 폴더가 없다면 만들어줄것. 안에 파일은 없어야 함.
+2015.04.20
+	// SetLineLength를 해주지 않고 만약 draw를 먼저한번하고 
+	// 다음 턴에서 SetLineLength가 들어가면 오동작한다
+	// FTGL의 버그인듯 하다.
+2015.03.20
+ * 안드로이드 패키징시 conversion to dalvik format failed with error 1에러가 뜨면
+   빌드 오토매티컬리를 끈다.
+2015.2.26
+ * 빌드시 CoCreateInstance관련 링크에러가 난다면 
+   빌드 플랫폼 도구집합 설정을 Visual Studio 2013 - Windows XP (v120_xp)로 바꾼다.
+2015.1.13
+ * min,max컴파일 에러.
+	. win32환경의 경우 directx 헤더가 인클루드 안되면 이런에러 나더라. 컴파일러 마다 이유가 다름.
+2015.1.5
+ * map, unorded_map(hash map)의 속도비교
+	.노드가 128개 이하의 경우는 map이 빠르다.
+	.키를 문자열형태로 했을경우 1024개 이하까지는 map이 빠르다.
+2014.12.23
+ * Android SDK: Resolving error markers 에러
+	.cmd로 가서 이클립스 폴더로 이동후 eclipse -clean -refresh 로실행
+2014.12.22
+ * 안드로이드 빌드할때 "app_id" is not translated 뭐 이런 메시지 나온다면 Clean... 이나 obj/bin/gen폴더등을 지우고 다시 해볼것.
+ * 빌드에서 성공하고 실행시키려 할때 cygpath어쩌구 에러가 뜬다.
+	.preferences-General-workspace에서 Text file encoding을 UTF-8로 고쳤더니 되더라.
+	.proj.android,facebook,ini3,playlicencing등 관련 라이브러리 모두 체크아웃 하고 이클립스 재실행하고 빌드
+
+2014.10.17
+ * 이클립스에서 Problem문제때문에 빌드가 안될때.
+   -컴파일 에러를 잡아야만 없어진다.
+iOS배포판(ipa) 만들기
+{
+	. Scheme를 Epic Monsters Adhoc으로 선택.
+	. Product -> Archive로 빌드
+	. 빌드끝나면 자동으로 오거나이저가 뜸
+	. 오거나이저->아카이브탭에서 빌드된거 선택하고 Distribute 선택
+	. Save For Enterprise or Ad-Hoc Deployment선택
+	. 코드사이닝 선택. 만약 느낌표 떠있다면 코드사이닝을 맞는걸로 바꾸면 됨.
+	. ipa 생성 완료
+	. 아이튠즈 띄워서 ipa파일을 드래그해서 넣음.
+	. 내폰->응용프로그램에 가서 해당 앱의 "설치"버튼 누르고 적용.
+	. 아이폰에 설치가 됨.
+}
+2014.08.20
+ * vc2013에서 visual c++ language manager package 패키지를 로드할수 없습니다. 에러가 날땐.
+   도구->비주얼스튜디오 명령프롬프트 로 가서 devenv /setup 이라고 치면 한참있다가 작업이끝나고
+   비절스튜디오를 다시 띄우면 끝
+2014.08.09
+ *p4v 집에서 연결하려고 할때.
+  패스워드 넣었으나 아무 메시지 없이 다시 패스워드 넣으라는 창뜰때
+  p4v를 관리자모드로 실행하면 된다.
+2014.03.25
+ *애플 인증서, 앱아이디, 프로비저닝 프로파일 정리
+  1.인증서(Certificates)
+   -이것은 최초한번만 하면 된다.
+   -인증서는 두가지를 만들어야 하는데 개발용인증서와 배포용 인증서다.
+   -개발중에는 개발용인증서로 사인된 프로비저닝 프로파일로 빌드를 해야하고
+    배포용에는 배포용으로 빌드를 해야한다.
+   -프로비저닝 포탈에 가서 개발용 인증서를 만드려고 하면 certSigning 파일을 올리라고 하는데
+    이것은 맥에서 "키체인접근"유틸로 만든다.
+   -키체인접근을 실행시키고, 메뉴->인증서지원->인증기관에서 인증서 요청...을 선택
+   -이메일주소와 이름을 넣는다. CA이메일주소는 비워둔다. 
+   -"디스크에 저장됨"으로 옵션을 바꾼다. 본인이 키 쌍정보 지정은 체크하지 않는다.
+   -적당한 폴더에 .certSigning파일을 저장한다.
+   -이것을 프로비저닝포탈에 업로드 한다.
+   -그러면 새로운 인증서가 생겼을 것이다. Type이 iOS Development인지 Distribution인지 잘 확인한다.
+  2.앱아이디(App IDs)
+   -와일드 카드를 쓰면 앱아이디 하나로 여러프로젝트에 쓸수 있지만 인앱결제(이건불확실)나 푸쉬 노티피케이션(이건확실)이 안된다는 말이있다.
+   -그래서 일단 프로젝트별로 앱아이디를 하나씩 만들어 쓰는것으로 함.
+   -앱아이디 추가(+)를 누른다.
+   -Description에 적당한 제목을 적는다(ex:EpicMon)
+   -Prefix: 위에서 만든 인증서의 고유키를 선택하는것인데 여기서 중요한것이 개발용으로 할것이라면 반드시 개발용 인증서의 키를 선택해야 한다. 배포용을 선택하면 빌드를 해도 실행이 안된다.
+   -Bundle ID:com.mtricks.epicmon 같이 번들아이디를 지정한다. 일단 와일드 카드는 쓰지 않는데 만약 쓴다면 com.mtricks.* 와같은식으로 쓰자.
+   -그외 옵션은 디폴트로 선택하자.
+   -이제 생성.
+  3.프로비저닝 프로파일(Provisioning Profiles)
+   -위에서 앱아이디를 만든것은 이 프로비저닝 프로파일을 만들기 위함이었다.
+   -프로파일 새로 생성을 하면 app ID를 선택하라고 나오는데 이때 위에서 만든 앱아이디를 선택.
+   -그다음 인증서를 선택하라고 하는데 위에서 만든 해당 인증서를 선택한다.
+   -이 프로파일이 포함할수 있는 개발용 기기들의 목록을 지정하라고 나오는데 별다른 이유가 없으면 모두 선택한다.
+   -적당한 프로파일 제목(Profile Name)을 지어준다. 헷갈리지 않기위해 개발용인지 배포용인지 정확히 적어준다(ex:Epicmon Developer)
+   -생성 시작.
+  4.xcode에서 개발기기에 프로비저닝 프로파일 설치하기
+   -애플의 프로비저닝 포탈 사이트에서 위에서 만든 프로비저닝 프로파일 파일을 다운받는다.
+   -xcode의 오거나이저에서 개발기기를 연결하고 해당기기에 프로비저닝 프로파일을 설치한다. 
+    +Add로 해당 파일을 찾아설치
+   -Valid profile이 제대로 뜨는지 확인
+   -프로젝트 Build Setting에서 방금 설치한 프로비저닝 프로파일로 선택해서 빌드한다.
+   -제대로 빌드되고 실행까지 되는지 확인한다.
+
+   Xxu28c3/lf7ouCFMZ/dhWH5uCxc=
+
+2014.03.24
+ .ios빌드중 lipo 에러
+  -게임은 디버그인데 엔진은 릴리즈로 설정되어있어서 해당라이브러리를 찾지못할때 주로 발생한다.
+  -혹은 프레임워크를 못찾을때 발생한다.
+  -주로 Clean후에 발생한다. 
+  -프레임워크에 링크되어있는 라이브러리가 Debug것인지 Release것인지 확인해보도록.
+  -build Setting에서 Library Search Paths에도 Release-iphoneos 빌드 폴더가 지정되어있어야 한다.
+2014.03.21
+ .안드로이드 빌드시에 com/mtricks/xe/XeActivity Could not find class에러가 뜬다면
+  xe프로젝트가 제대로 빌드가 안되어서 이다. 아마 xe프로젝트에 빨간 x가 떠있을듯.
+  보통 import에러때문인데 페이스북과 ini3때문이다 이 두프로젝트를 clean시키고 xe까지 clean시킨후
+  재빌드하면 빨간x가 모두 없어지며 빌드가 되며 실행하면 제대로 될것이다.
+2014.03.13
+ *애플 iOS 인앱결제(IAP) 테스트시 겪었던 문제들.
+  1.테스트 계정
+   -테스트계정은 앱스토어 새계정만들기로 카드번호까지 넣어가며 안만들어도 된다. 걍 아이튠즈 커넥트에서 Managed User에 가서
+    Test User에 이메일과 비번만 넣어주면 바로 등록 된다.
+   -테스트 계정으로 앱스토어에 직접 로그인해선 안된다. 반드시 인앱결제시 뜨는 로그인창으로 로그인을 해야 한다.
+   -인앱테스트를 할때 만약 결제 실패 오류가 떨어지면 앱스토어에 테스트계정으로 로그인되어있지 않은지 확인해보라. 그렇다면 로그아웃 시켜라.
+  2.인앱등록
+   -인앱상품 등록시에 Cleared For Sale이 Yes가 되어있어야 한다.
+   -Price Effective Date를 Now로 하고 End Date는 None으로.
+   -인앱상품을 등록한후에 꽤 많은 시간이 지나야 그때부터 테스트가 되는듯하다. iTunes Store에 연결할수 없음?? 뭐 이런 에러 뜨면 최대 24시간은 기다려 볼것.
+   -인앱을 올린후에 Waiting For Review상태가 지속되며 인앱상품 정보엔 PENDING상태로 되어있는데 이렇게 되어있어도 테스트는 되더라.
+   -인앱에 스샷은 꼭 올려다 되지 싶다.
+   -당연하지만 매우 중요한것. BundleID를 앱의 번들아이디와 일치시킬것.
+  3.구매테스트
+   -애플 인앱 테스트시 트랜잭션 실패 뜨면 인앱 테스트사용자로 애플 구매를 하고 있는지
+    검사해볼것. iTunes Connect의 Manage User에 등록된 유저로 앱스토어 아이디를 
+    입력해야 하며 앱스토어 앱을 실행시켜 로그인하면 절대안된다. 반드시 인앱구매시 
+    뜨는 팝업창으로 로긴할것.
+   -만약 이래저래 해도 안된다면 세금과 계좌정보가 제대로 입력되어있는지 확인해볼것.
+    Contracts,Tax,And Banking에 가서 입력한다. iOS Paid Applications를 입력해야 하는지 iOS Free를 입력해야 하는지 모르겟는데 현재 제대로 작동되는 상태는
+	iOS Paid에는 Edit버튼이 세개 떠있고 iOS Free상태엔 N/A  N/A  N/A로 되어있다. iAD App Network는 상관없을듯 하지만 만약 안된다면 이것도 입력해볼것.
+
+2013.10.31
+ .iOS배포버전 만들기.
+   -프로비저닝 포탈로 가서 UDID를 등록시킨다.
+   -Provisioning Profiles-Distribution에서 epictest 프로파일을 선택후
+    Edit를 누르고 해당 UDID기기를 체크 해준다.
+   -체크를 하면 새로운 프로파일을 다운받으라고 한다.
+   -다운받을 필요없이 xcode 오거나이저의 Device-Library-프로비저닝 프로파일에서
+    Refresh하면 자동으로 갱신된다.,
+   -이 프로파일로 다시 Archive빌드 한다.
+   -빌드한것을 배포용 패키지로 Distribute... 한다.
+   -주의: App ID가 kr.co.entercon.* 으로 일치해야함
+   -프로젝트의 프로파일이 epictest로 정확히 선택되어 있어야 함.
+   -빌드 설정이 배포용 Release Distribute로 설정되어 있어야 함.
+2013.10.9
+ .상황: 거울전쟁pvp장면후 결과화면이 나올때 결과화면 창 UI가 안나옴.
+       치트모드에서만 창이 안나타나는데 퍼즐 블럭 그리는 부분쪽에 문제가 있는걸로 보였음.
+	   블럭Draw 내부에서 다시 트레이스 해본결과 폰트 DrawString()할때 파라메터에 v.y+10.f 와같은식으로
+	   넘겨도 프로그램이 이상해짐. 
+ .원인: lib를 같이 사용할때는 vs최적화 옵션에서 "전체 프로그램 최적화"와 "링크타임 코드 생성"을 하면
+       안된다. 이 옵션이 켜져있어서 lib쪽 모듈(text draw)을 호출하려는데 제대로
+	   안된 모양.
+       
+2013.8.26
+ . 비주얼스튜디오 디버깅할때 stl의 값들이 제대로 보이지 않는 경우가 있었다.
+   옵션->디버깅->일반에서 "변수 창에서 개체의 원시 구조체 표시" 항목이 체크가 되어있으면 제대로 안보인다.
+   이걸 꺼줘야 한다.
+2013.7.10
+ . 프리컴파일헤더 사용을 하고 빌드를 했는데 stdafx에 포함되는 헤더쪽이 변경되어도
+   프리컴파일헤더가 자동으로 빌드가 안된다. "프리컴파일헤더 만들기"를 매번수동으로
+   해줄수도 없다. 이럴때는 stdafx.cpp의 속성에 프리컴파일헤더 "만들기"속성이 꺼져있는경우다
+   "만들기"속성으로 바꿔줄것.
+2013.6.20
+ . xcode에서 게임+엔진 프로젝트 합쳐서 워크스페이스로 할때 lib추가시키는 법
+   lib를 직접 끌어다 파일목록에 넣지말고 타겟설정에 들어가서, build phases->Link Binary With Libraries에서 +하면
+   Workspace폴더가 나오며 그안에 libXXX.a가 있다 그것을 선택.
+2013.6.20
+ . 안드로이드 빌드하는데 원래빌드하던 소스를 다른폴더로 옮기고 다시 빌드했더니
+   자꾸 예전 패스를 찾으며 make가 안된다. 이때는 안드로이드 프로젝트 폴더의 obj폴더를 모두 지우고
+   다시 빌드하면 된다. 아마도 캐시같은게 있는듯.
+2013.6.12
+ . vc프로젝트 열었을때 소스파일 필터가 다 망가져 있을때는 filter파일이 unicode로 되어있어서 그럼. 바이너리로 해야함.
+ . 퍼포스에서 다음과 같은 에러가 나며 파일이 끌어와지지 않는다면 파일내 인코딩이 깨진 한글문자가 있어서이다. 
+   에러메시지가 가리키는 라인을 찾아보라.
+	 Translation of file content failed near line 193 file D:/p4v/xt2\iPhone\EpicMonster\Common\_XLibrary\xVector.h
+2013.4.10
+ . DBMng작업중 콜백방식으로 하려함.
+ . XWinConnectionInServer를 상속받는 XClientConnection과 XGameSvrConnection이
+   콜백받는 객체로 하려고 XWinConnectionInServer타입의 콜백함수포인터를 넘겼으나
+   ESP 에러라는 런타임 에러가 남.
+ . 콜백함수를 넘기는 함수의 .h파일에 class XWinConnectionInServer; 로 하지말고
+   #include "XWinConnectionInServer.h"로 해야하더라.
+2013.3.20
+ . 로긴서버의 DB죽음의 문제원인
+ {
+	. 깨진 계정데이타유저의 접속이 원인.
+	. 로긴서버로 최초 접속해서 계정을 만들고 게임서버로 갔는데 게임서버가 죽거나 하는 이유로
+	로긴서버로 계정의 디폴트 데이타의 세이브정보가 가질 못해서 DB에 idAcc와 uuid를 제외한 
+	나머지 값들이 NULL로 저장되어있는 상태가 되었다. 이상태에서 이 유저가 다시 접속을 시도하게 되면
+	DB에서 이 계정의 읽기를 시도할때 DB가 뻗어버린다.
+	. 문제 해결 방법
+	{
+		1. 새 계정을 만들고 게임서버로 신호 보내주면 게임서버에서는 곧바로 디폴트 값을 만들어 로긴서버로 되돌려줘 세이브하게 한다.
+		   하지만 그 짧은 순간에도 세이브를 못하고 죽는일이 생긴다면 같은 문제가 생길수도 있지만 문제는 거의 줄어든다.
+		2. 로긴서버의 클라 로긴부에서 DB읽기를 시도할때 방어코드를 삽입해서 db에 어떤값이 있더라도 일단 죽지않도록 해야한다.
+		  일단 죽지않게만 읽고난후 게임서버로 정보를 보내줘서 게임서버에서 다시한번 유효성 판정을 해야 한다.
+	}
+ }
+2013.3.8
+ . _ITERATOR_DEBUG_LEVEL'에 대해 불일치가 검색되었습니다
+   XEngine.lib를 만들고 
+   XConsoleFramework.lib를 XEngine.lib를 포함해 만들고 
+   XExtractTool.exe 에 XConsoleFramework.lib를 포함해 만들었는데 에러가 남.
+   lib를 각자 따로 나오게 해서 exe에 붙이니까 에러안남
+   . 디버그 빌드에 릴리즈 lib를 쓴다거나 반대의 경우에도 같은에러 남.
+2013.3.2
+  . FTGL의 버그
+   * 툴팁이 깨지는 이유
+	 유독 툴팁에서만 글자가 깨지며 다운된다.
+	 문제는 동적할당한 텍스트를 FTGL에 넘겨준게 문제였다.
+	 FTGL은 내부적으로 캐시를 쓰고 있는데 바뀌지 않은 글자가 캐시에 남아있을때
+	 이전에 가지고 있던 포인터(이미 파괴되어버린)를 재사용 해서 깨진것이다.
+	 FTGL의 구조적 문제인걸로 보인다. 가급적 동적할당한 같은텍스트는 ftgl에 넘기지 말아야 한다.
+	 파라메터를 지역버퍼로 넘겨주는 것도 문제가 된다. 캐시가 지역버퍼의 포인터를 캐시로 저장하기 때문이다.
+
+2012.7.11
+  . CDockablepane으로 만든창에서 우클릭하면 도킹팝업 뜨는거 안나오게 하려면
+  WM_CONTEXTMENU를1 만들어서 아무것도 안하면 된다.
+2012.7.5
+  . IDD_CONSOLE같은게 FormView초기화 하면서 ASSERT_VALID에 걸린다.
+    이것은 디파인값이 0x8000이 넘는값으로 지정되어 있을때 생긴다.
+  . 리소스뷰-액셀레이터에서 단축키를 지정했는데도 키가 안먹는경우.
+    실행시킨담에 툴바끝에 메뉴에서 키보드-모두다시설정을 누르면 된다.
+2012.5.30
+  . XDrawGraph.cpp를 새로 추가해서 넣었는데 링크가 안되는 현상 발생.
+    프로젝트에 cpp를 넣을때 뜨는 창에서 프로젝트에 체크가 빠져있으니 안되더라
+2012.4.10
+  . iOS에서는 메모리에 값을 쓸때 반드시 4바이트 정렬을 해서 써야 한다. 안그러면 익셉션 발생.
+  . 그래서 스트링패킷은 4바이트로 만들어 패킷을 만들게 하고, 바이트패킷은 더미바이트를 추가해서 4바이트를 완성시킴
+
+2012.1.14
+  . 플로팅된 도커블페인에 클릭을 하면 CView::OnMouseActivate에서 assert에 걸린다.
+    CMyD3DView::OnMouseActivate를 거쳐야 하는데 그러지 않아서 생긴문제.
+	CDlgLayer에 OnMouseActivate()가 없더라도 ON_MOUSEACTIVATE()는 해줘야 호출이 되더라
+	OnSize도 마찬가지
+2012.1.9
+  . 게임센터에 sandbox로 로그인하려했는데 자꾸 로긴 실패가 뜬다.
+    원인: 게임센터 개발은 반드시 debug모드로만 해야함.
+
+2012.1.2
+  . 눈 파티클을 찍는데 알파부분이 이상하게 검은색이 들어간다. 
+    이유: 이미지를 로딩할때 GUID_WICPixelFormat32bppPBGRA 옵션을 줘서 그런데 이것은 Premultiply옵션이다.
+    예를들어 픽셀이 가로로 10개가 있다고 했을때 모두 255,255,255흰색 픽셀이고 알팓값만 255~0으로 변화한다고 치자
+    그렇다면 일반옵션은 이픽셀값 그대로 로딩이 되는데 Premultiply옵션은 사전에 곱해져서 로딩이 된다. 다시말해
+    픽셀값마저 255~0으로 알파가 먹은채로 로딩이 되어 픽셀의 끝에가선 검은색이 되는것이다.
+	해결: 파티클을 png로 만들어 읽으면 iOS쪽에선 Premultiply로 읽는 옵션밖에 없어서 불가능하다. 
+	spr로 만들어서 XSprDat::GetSprite(idx)로 읽어서 써야 함.
+
+2011.12.23
+  . 새 컴터에 svn으로 다시 체크아웃해서 받은후 civ를 실행시키면 오류로 제대로 실행되지 못했습니다? 같은 dll관련 괴 에러가 뜬다.
+    이유는 OpenAL때문이었다. 단순히 OpenAL32.dll을 실행파일폴더에 같이 넣어주기만 하면 실행되는게 아니었다.
+    OpenAL인스톨본을 제대로 깔아줘야 한다.
+
+2011.12.14
+  . LE작업중. 어떻게 해서 버그가 났는데 각 뷰들의 화면갱신이 안이뤄진다. BeginScene()이 계속 실패.
+    이유는 어딘가에서 널포인터 참조를 해서 무한루프에 빠져버렸다
+
+2011.8.30
+  . 숫자폰트중 일부가 세로로 50%로 축소되어 나오는듯한 현상.
+    텍스쳐 최소사이즈는 32인데 실수로 16으로 지정할수 있도록 해놔서 그랬음. 아 ㅅㅂ
+  . 앱이름 바꾸는법
+    Targets->프로젝트이름에 Get Info.
+    product name에 프로젝트 이름이 디폴트로 들어가 있을거임. 이 이름을 바꿈
+    끗
+    
+2011.8.19
+  . 어떤 경우에도 클래스초기화인 Init()안에 Create()관련을 넣지말것.
+    new재정의하면 기본생성자한번(Init()호출), 인수있는 생성자한번(Init()또 호출)되기땜에 릭난다.
+  . 24바이트 leak이 계속 발생.
+    증상/원인) std::map이 들어간 클래스를 new재정의로 생성자가 두번불리게 호출하니까 map초기화 내부에서 하는 new도 두번이 되어서 릭이 발생
+    해결) 메모리풀 구현시 풀을 생성할때는 생성자가 호출되지 않고 메모리만 확보되는게 원칙적으로 맞다. 그래서 풀생성시 생성자가 호출되게 하지 않기 위해
+    new T[ nNUm ]식으로 풀을 생성하던것을 char[ sizeof(T) * nNum ]식으로 메모리만 확보되도록 바꿨다
+    그리고 풀에서 할당받은 객체를 사용후에도 delete를 정상사용할수 있어야 파괴자도 제대로 호출된다.
+    
+2011.8.11
+  . XFontFTGL::_RenderText() 안에서 XFontFTGL::SetLineLength()를 써야했는데 m_Layout::SetLineLength()로 직접써서 버그가 있었다
+  . FTGL에서 \n\n이 들어가면 이상하게 찍힌다
+2011.7.4
+  . 다이얼로그안에 뷰 붙이기
+    이 코드 사용.
+			CRuntimeClass  *pObject;
+			pObject = RUNTIME_CLASS( XViewGraph );
+			XViewGraph* pView = (XViewGraph*) pObject->CreateObject();
+
+			if (!pView->Create(NULL, NULL, AFX_WS_DEFAULT_VIEW,
+				CRect(0,0,200,200), this, AFX_IDW_PANE_FIRST, NULL))
+			{
+			   TRACE0("Failed to create view window\n");
+			   return -1;
+			} 
+	이대로만 하면 뷰는 나오나 뷰를 클릭하면 죽어버린다. 그래서 뷰쪽에 OnMouseActivate를 고쳐야 한다
+			int XViewGraph::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
+			{
+				// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+				return MA_ACTIVATE;
+			//	return __super::OnMouseActivate(pDesktopWnd, nHitTest, message);
+			}
+	그 외는 보통 d3d뷰와 같다
+  . 라디오버튼이 눌렀는데도 값갱신이 이상할때.
+    두가지 체크. 첫번째, 라디오그룹의 각 버튼들의 탭순서가 순서대로 되어있는지(ctrl-d).
+    두번째,   그룹내 버튼중 첫번째 버튼에 group속성이 true가 되어있는지
+2011.6.29
+  . 루아팅커. 예를들어 Call<XObjSpr*>( "CreateSprObj", 1, 2, 3 ) 처럼 리턴값을 클래스형 포인터로 요구할때 내부에서 문법에러가 발생하면 널리턴 되지 않고 프로그램이 그냥 죽어버린다. Call()내부에서 pop을 하는 과정에서 lua2object함수 안에 nil검사도 하게 했음
+2011.6.28
+  . 예를들어 XSprObj*를 리턴해야 하는 루아함수를 만들었다고 치면, 루아에서 이걸 리턴안해주면 루아팅커에서 에러가 나더라. no class 어쩌고 저쩌고 그거
+2011.6.24
+  . iOS에서. min,max쓰려니까 계속 못찾는다고 에러. 
+    min,max는 std의 일부임. using namespace std;를 해야함
+2011.6.22
+  . lua안에서 tower:어쩌구()를 했는데 익셉션 에러 뜨면서 어디서 에러나는건지도 모르는 상황
+    이미 깨진 포인터에 멤버호출을 하면 익셉션이 걸려버린다
+2011.6.21
+  . 퍼포스 체크인 할때 perforce translation of file content failed 에러가 나면 파일을 UTF8로 저장해서 그렇다
+  . lua_tinker에서 yield쓰는 함수를 호출했을때 no class first argument어쩌구 에러나오면 템플릿의 파라메터 개수 버전이 있는지 확인.
+2011.6.20
+  . DX line그리기로 라인을 그리는데 이상한위치에 그려짐. 원인은 뷰포트 설정때문이었음. 
+2011.6.17
+  . MFC feature pack에서 메뉴목록 생략기능을 없애려면 CMFCToolBar::SetBasicCommands(lstBasicCommands); 를 없애면 된다
+2011.6.15
+  . 루아에서 casterObj, invokeObj, castObj의 멤버함수를 인식하지 못할때는 하위클래스에서 RegisterInhValRecv/Use를 제대로 등록안해줘서 그렇다
+2011.5.30
+  . 지금까지는 opengl es 1.x에서는 백버퍼는 못읽고 프론트버퍼만 읽을 수 있는줄 알았다. 알고보니 반대였다. 백버퍼만 읽을수 있고 프론트를 못읽는 거였다. 지금까지 잘못알고 있었다.
+    그래서 d3d도 백버퍼를 읽어서 오버랩을 하도록 통일시켜 작성했다. 
+  . 생각해보니 만약 프론트버퍼만 읽을 수 있는 시스템이라면 오버랩이 불가능 할거 같다. 바뀔화면을 프론트에 놓고 캡쳐를 잡아야 하는데 이미 바뀔화면이 스크린에 노출되어버리게 된다.
+  . gl에서 알파블렌딩으로 서피스를 그리면 알파 1.0일때랑 다르게 나왔다. 원인은, 알파draw랑 비알파draw랑 그리는 루틴이 다른데 알파draw에 버그가 있어서 그랬다
+2011.5.25
+  . d3d에서 GetFrontBufferData()를 하면 INVALID_CALL에러가 난다. 오프스크린 버퍼를 SCRATH로 해도, A8R8G8B8, 서피스 크기변경등 모두 실패. 이유 모름
+     그래서 오버랩을 위해서 스크린캡쳐 받을때 D3D는 백버퍼를 읽음. 그래서 구조 복잡해짐
+2011.5.24
+  . D3D와 OPENGL의 행렬곱의 이해
+    D3D는 행렬곱후 좌표축의 변화가 없이 물체를 변환하고 GL은 좌표축이 변한다고 생각하면 이해가 쉽다.
+    예를들어 0,0 - 10,10 로컬좌표를 갖는 사각형을 로컬좌표를 건드리지 않고 사각형 중앙으로 축소 회전시킨다고 가정하면 다음과 같다
+    d3d)
+    D3DXMatrixTranslation( -5, -5 )		
+    D3DXMatrixScale(0.5)	
+    D3DXRotate(30)			
+    D3DXTranslation(100,100)	
+    이것을 말로 풀어보면.
+    1. 물체를 -5, -5 만큼 이동시킨다(사각형을 중앙에 위치)
+    2. 그상태에서 해당물체를 50%로 먼저 축소시킨다.
+    3. 그것을 다시 30도 회전시킨다
+    4. 그 결과를 100,100으로 이동시킨다
+    gl)
+    glTranslate( 100, 100 )
+    glRotate( 30 )
+    glScale( 0.5 )
+    glTranslate( -5, -5 )
+    1. 좌표계(축)를 100, 100으로 이동시킨다. 이곳이 원점이 된다.
+    2. 좌표계를 30도 기울인다
+    3. 기울어진 좌표계를 기준으로 축소시킨다.
+    4. 좌표축을 -5, -5 이동한다
+    
+2011.5.18
+  . lua에서 require를 인식하지 못한다면 SetModulePath()를 안불러 줬기때문이다
+  . 루아->C++ 함수를 파라메터 6개짜리를 만들었는데 계속 템플릿 변환할수 없다고 나왔다. 
+    해결책: T6버전의 함수를 만들고 const버전과 그냥 버전 두개를 만들어야 한다. mem_functor함수였던듯. 그냥 씨함수면 functor함수일듯
+2011.5.17
+  . CSplitterWnd에서 OnCreateClient에서 지정했던 윈도우 크기와 다르게 OnSize에서지정하니까
+    Maximize됬다가 Restore될때 에러나더라. 그래서 똑같이 고치니까 잘됨
+2011.5.13
+  . iOS에선 UTF-8을 쓰므로 .LUA파일들을 ansi에서 utf8로 저장했다
+2011.5.11
+  . 루아에서 XObjGeneral::GetSide함수가 있는데도  attempt to index local 'owner' (a userdata value)가 나온다.
+    원인: XObjGeneral클래스를 등록하고 멤버함수들을 등록한뒤에 다시 XObjGeneral클래스를 등록하면 등록했던 멤버가 다 사라지는듯 하다.
+  . 하여간 attemp to index local 이런에러나면 위실수를 했을가능성이 크다
+2011.5.3
+  . 가로길이가 32이하가 되는 텍스쳐는 찌그러져나오는 현상이 있었다. 아마도 32이하크기의 텍스쳐를 지원하지 않는 그래픽카드가 있는듯하다. 아니면 드라이버문제 아니면 다이렉트x버전문제
+2011.4.20
+  . xcode에서 ftgles라이브러리 포함하기.
+    ftgles.xcodeproj프로젝트를 끌어온다.
+	libFTGLES.a 라이브러리 파일을 끌어서 Targets->프로젝트명->Link Binary With Libraries로 끌어다 놓는다
+	어쩌다 된거라 다시 될지는 모르겠음
+2011.4.14
+  SE를 컴파일해 실행하는데 MSVCRTD.DLL을 요구한다. CIV는 MSVCRT.DLL을 읽더라. RareD.dll이 프로젝트에 포함되어있었는데 이걸 삭제하고 컴파일하니까 실행됐다. 다시 프로젝트에 포함시켜봤는데 이제 계속 잘된다
+2011.4.13
+  . provisioning profile프로비저닝 프로파일 기간이 만료되면 애플 디벨로퍼 프로비저닝 포탈에서 새로 받을것
+  . 프로젝트 빌드 세팅과 타겟 빌드세팅이 따로 있으니 타겟빌드세팅쪽을 바꿔야함.
+    code sign error가 뜨면 뒤에 아이디가 현재 프로비저닝 프로파일 아이디랑 다를 것임.
+    프로파일 다 지워주고. 디벨로퍼 포탈 들어가서 프로파일 다시 다운받은 다음 오거나이저에 다시 드래그 해서 넣음.
+    
+2011.4.12
+  . NSLog창의 XLOG가 한글이 깨져서 나온다면 소스가 분명 UTF-8이 아닌거다
+  . 배경 하단 채워주는데 배경 레이어와 FillRect사이에 틈이 벌어졌다. 하지만 OpenGL에선 정상나옴. DX에서만 그럼
+    읔....정상이 아니었음. 아이패드에선 여전히 줄생김. 그래서 확축필터를 GL_NEARST로 바꿔주니 제대로됨
+2011.4.8
+  . BugslayerUtil.h을 인클루드시키면 DXUT.쪽에서 assert를 못찾는 에러가 생긴다. BugslayerUtil.h를 dxut헤더들보다 먼저 인클루드 시켜주면 해결된다
+2011.4.6
+  . CoolDialog에 툴바를 붙였는데 거기에 버튼이 비활성화 되어있더라. CDialog는 CmdUI이벤트가 먹지 않기 때문이란다.
+    CToolBar를 CXToolBar로 상속하고 아래 코드를 넣어줬다.
+	void CXToolBar::OnUpdateCmdUI(class CFrameWnd *pTarget, int bDisableIfNoHndler)
+	{
+		UpdateDialogControls(pTarget, bDisableIfNoHndler);
+	}
+	그다음 버튼의 이벤트핸들러는 원하는 클래스에 메시지맵만 작성해주면 간다.
+  . 게다가 위 툴바버튼에 해당하는 메뉴를 메인메뉴에 추가시켰는데 비활성화 되어있다.
+    컨트롤이 비활성화 되어있다는것은 속해있는 프레임에 메시지맵이 없기때문이란다. 
+    그래서 CMainFrm에다 메시지맵을 만드니 잘됨. 하지만 난 XDlgLayer클래스로 이벤트를 핸들러를 받고싶은데 메인프레임으로 받아야 한다. 이건좀 애매함. 쿨다이얼로그바를 메인프레임의 자식으로 안해서 그런가?
+  . xcode에서 Expected constructor, destructor, or type conversion before 'enum' 컴팔에러 
+    civ.cpp에서 인클루드한 최상위 헤더에서 이런에러가 남. class도 같은에러 남. civ.cpp맨위에 "lev"라는 찌그러기가 들어있어서 그랬음. 아ㅅㅂ젖같은 xcode 
+	헐 시발 근데 이게 visual studio에선 에러가 안남. 걍 무시함 stdafx때문인가?
+  .... error: macro "min" requires 2 arguments, but only 1 given
+	... error: macro "max" requires 2 arguments, buf only 1 given
+	xcode에서 stl::string을 쓰면 위 컴팔에러가 나온다. 비절스튜디오에선 문제가 없다.
+	이유는 모르겠지만 헤더를 포함 시킨 아래에
+	#undef min
+	#undef max	
+	를 넣으면 해결된다.  루아팅커부분을 살펴볼것 
+	### 새로운 해결방법
+	#include <string>을 하면 이 에러가 나오는데 이거 윗줄에다 #undef min저거 해주면 된다. XLua.h참조
+  . warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+	xcode에서 저장하면 서명없는 UTF-8로 저장되서 이경고가 계속 나올수 밖에 없다 그래서 끔
+	#pragma warning( disable : 4819 )			
+2011.4.4
+  . 프레임을 뷰사이즈에 맞추기. 토끼피씨버전의 LEView.cpp OninitialUpdate를 참조할것
+2011.4.1
+  . 고정파이프라인으로 알파블렌드 되는 텍스쳐 한장을 찍으려 했는데 알파가 안따지더라
+	pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+	pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+	이걸 꼭 해줘야함
+    
+2011.3.29
+  . CFileDialog쓸때 확장자 필터줄때 *.png;*.tif  에서 ; 다음에 스페이스 넣으면 안되더라
+2011.3.22
+  . .pch 프리컴팔 헤더에서 c++문법이 들어간 헤더(템플릿같은)를 넣으려면 컴팔에러가난다 그런건 #ifdef __cplusplus를 씌운후 include하면 된다
+  . #include <list>만 하면 컴파일 에러가 잔뜩. 해결방법은 #include <list>를 list쓰기전에 맨위에서 해줘야 함
+  . 루아팅커에서 is parsed as a non-type but instantiation yields a type 컴팔에러.
+		void get(lua_State *L)	{ push<*****typename****** if_<is_obj<V>::value,V&,V>::type>(L, read<T*>(L,1)->*(_var));	}
+		이렇게 typename을 붙여주면 해결된다. vc6에선 안	나는건데 gcc에선 나는거다
+    
+2011.3.7
+  . This file should be compiled in ARM mode only 에러가 뜨면 빌드 옵션에서 Compile for Thumb 의 체크를 꺼야한다
+  . 혹은 Other C++ flags 옵션에 -marm 옵션을 넣어줘야 한다.
+2011.2.23
+  . invalid use of incomplete type 'class XMapData' -> class XMapData { }에서 }를 빼먹었음
+  . 
+2011.2.22
+  . OnDropFiles가 안먹힐때. DragAcceptFiles( TRUE )를 해줘야 함
+2011.2.21
+  . 콘솔뷰를 만들었는데 텍스트가 안나오더라. 리소스에디터에서 m_strConsole을 컨트롤과 연결안시켜줘서 그런거였음
+  
+////////////////////////////////////////////////// 예전 memo.txt //////////////////////////////  
+11.2.17
+  . GetToken()에서 맨 마지막 pCurr--부분의 버그. "endif\0"으로 끝나는 파일일경우 endif까지 읽고 포인터 증가를 하지않았던 문제가 있었기때문에 pCurr--를 계속해서 무한루프에 걸렸었다
+11.2.15
+  . 더미레이어 완료. 레이어 아이디추가 spr버전 11로 증가.
+11.2.14
+  . Adjust언두
+  . 더미레이어 구현중
+11.2.12
+  . 맥스프레임 조절 언두
+  . 액션값조정 언두(대입 함수 및 =오퍼레이터 구현)
+  . 레이어 회전/스케일 언두
+  . 스프라이트 삭제 언두
+11.2.11
+  . 언두시스템 구현중(액션삭제, 리두, 다중키이동)
+  . XBREAK(EXP)매크로 구현. EXP를 스트링으로 만들려면 #EXP하면 된다 ㅋㅋ
+11.2.10
+  . 언두시스템 구현
+  . 플레이 중간에서 레이어가 삭제되며 키도 같이 삭제되니까 XAniAction::m_itorKeyCurr이 0xfeeefeee로 깨지더라. 그래서 키삭제한후에 m_itorKeyCurr을 초기화 시켰다
+  . XObjAct::DelLayer()를 private으로 바꿨다. 레이어를 삭제하려면 XSprObj::DelLayer()를 써야한다
+  . 레이어 삭제언두시 원래 레이어 위치로 돌아가도록 수정
+11.2.9
+  . 언두의 행동들
+    . 애니메이션뷰
+      # 이동키 생성
+      # 레이어의 #이동/회전/스케일
+    . 프레임뷰
+      # 키의 이동/#삭제/수정(다중선택언두도 지원)
+      # 레이어 삭제
+      # 애니메이션 속성(MaxFrame같은) 변경
+      # 마우스로 MaxFrame변경
+    . adjust뷰
+      # 스프라이트의 이동/
+    . 썸네일뷰
+      # 스프라이트의 추가/삭제
+    . 액션리스트뷰 
+      . 액션을 바꿀때 언두를 클리어하는걸 개선.
+        . 액션을 삭제하고 다른 액션을 선택했다가 언두를 하면 삭제가 복구가 안되는 치명적 문제
+        . 액션포인터를 쓰지말고 아이디를 써서 액션을 삭제하더라도 포인터를 잃지 않도록.
+        . 액션을 선택하는 행동도 언두로 추가
+        
+  . 언두 메커니즘
+    . 어떤 행동을 저지르기전 그것의 역행동을 정의하여 언두스택에 넣는다.
+    . 언두를실행하면 스택에서 역행동을 하나 꺼내 실행한다.
+    . 그 역행동을 실행취소 스택에 넣는다.
+  . 키 삭제. 키값 백업, 
+  . 언두시스템 구상
+11.2.8
+  . xLIB 매뉴얼 작성 완료
+  . XE 네임스페이스 코드 작성. pc버전에서 초기화가 간편해짐
+11.2.7
+  . 저장하기전 키가 없는 레이어는 삭제시킴
+  . defineAct.h를 스크립트로 읽게..
+  . se.ini와 더불어 워킹폴더를 지정하도록...
+11.1.31
+  . xLIB 폴더 체계 확립함. 기존 GameLib시리즈들과 완전 분리
+11.1.27
+  . 회전축 보이기/감추기 옵션
+  . 이동/회전/각도키의 키값 수정기능이 추가.
+  . 애니메이션뷰에 마우스커서 좌표가 표시됨
+11.1.25
+  . DXUT.obj : error LNK2019: __imp__InitCommonControls@0 외부 기호(참조 위치: "long __stdcall DXUTInit(bool,bool,wchar_t *,bool)" (?DXUTInit@@YGJ_N0PA_W0@Z) 함수)에서 확인하지 못했습니다.
+	C:\direct3d\dxut_test\Debug\dxut_test.exe : fatal error LNK1120: 1개의 확인할 수 없는 외부 참조입니다.
+	#pragma comment(lib, "comctl32.lib") <- 위 링크에러가 나오면 이걸 넣을것
+  . 피씨 버전 완성
+  . 툴에서 픽킹계산이 허접이라 다시 직관적으로 바꿈. DRAW했을때랑 같은 매트릭스를 써서 하는방법으로 교체
+
+11.1.24
+  . 피씨 버전 포팅하면서 스프라이트의 알파값이 안먹는 버그로 개고생. 원인은 픽셀쉐이더에서 
+	color = tex2D( SpriteSampler, IN.TexCoord0 );
+	color.a = fOpacity * color.a;   <- color.a값도 반영해줘야 하는데 fOpacity값만 그대로 입력해서 알파값이 모두 사라졌던게 문제 아 ㅅㅂ
+11.1.21
+  . 확축채널 구현함
+  . 이미지레이어의 스프라이트를 선택하면 adjust창에 보여지게 함
+  . XERROR( "LayerMove 타입이 아니다" ); 에서 1>c:\project\se\se\se\sprobj.h(194) : error C2001: 상수에 줄 바꿈 문자가 있습니다.
+	1>c:\project\se\se\se\sprobj.h(194) : fatal error C1057: 매크로 확장에서 예기치 않은 파일의 끝이 나타났습니다.
+	이 에러가 뜨면 그 파일이 UTF-8로 저장되어서 그렇다
+  . Key에서 레이어포인터를 직접 가지고 있던 문제 수정
+11.1.19
+  . 스프라이트에 원본파일정보가 저장됨. 스프라이트 버전 10으로 올라감
+  . 스프라이트에 액션이 없어도 로딩되도록 수정(폰트같은거 용도)
+  . "연속된 이미지 읽기"기능이 추가되었음.
+  . 팀칼라 변환용 기능 추가됨
+11.1.17
+  . 액션리스트 스크롤되게
+11.1.12
+  . Accelerator로 '1' '2'키를 등록시켜놓고 에디트박스에 값을 입력할때 1,2키는 안먹히는 증상이 있다. 
+    해결책: 에디트박스에 SetFocus/KillFocus가 될때 g_bEditing플래그를 전환시키고 MainFrame의 PreTranslate.....에서 edit==true면 CFrameWndEx::PreTranslateMessage를 실행하지 않고 0을 리턴하게 했다
+11.1.11
+  . adjust값을 마우스 드래그하여 조정할수 있게 함.
+  . 현재프레임을 표시하는 파란선을 넓은 띠로 바꿈
+  . 최대프레임수를 수정할때 직접입력방식이 추가
+  . 썸네일뷰에 스프라이트 인덱스 표시
+  . 키 툴팁 보이게 함
+  . 메인프레임 초기크기를 더 크게 늘임
+11.1.10
+  . event key(create obj)에 생성할 오브젝트 id를 넣을수 있게 되었다.
+  . 좌표축 고정 기능을 넣었다
+11.1.7
+  . createobj key 액션번호도 넣을수 있게 수정
+   이에따라 spr파일 버전이 9로 올라감
+  . 부모 XSprObj가 멈추면 자식들도 애니메이션을 멈추도록 수정
+11.1.6
+  . 선택한 스프라이트의 adj값을 0으로 초기화시키는 기능 들어감
+  . 액션카피 추가
+11.1.5
+  . 지포스 GTS450의 경우 CAPS.POW2가 NO로 나오는데도 2^가 아닌 텍스쳐를 생성하지 못한다. 그래서 무조건 2^로 텍스쳐를 생성하도록 바꿨다
+  . 프리프때 쓰던 익셉션핸들러가 작동하지 않는다 윈7이라서 그럴까?
+11.1.4
+  . 릴리즈로 빌드했는데도 d3dx9d_42.dll을 찾는문제. 릴리즈 링크옵션에서 d3d**.lib를 링크시킬때 d3d9d.lib d3dx9d.lib등 d가 붙은버전(디버그버전)으로 링크해서 그렇다
+  . 그래도 어떤컴에선 d3dx9_42.dll을 찾는다 이파일이 어디쓰는건진 모르겠지만 directx최신버전을 깔아주면 해결은 된다. 아마도 2009년 August버전의 sdk를 써서 그전에 나온 directx라면 이런에러가 나오는듯하다
+  . 맥에서 d3d를 쓸땐 텍스쳐의 가로사이즈를 pow2(2의승수)로 맞추지 않아도 되지만 다른사람컴에선 이걸 맞춰줘야만 한다. caps.texturecaps.pow2에 그항목이 있음
+11.1.3
+  . 이벤트레이어 구현함
+  . XKeyEvent에는 한가지 타입의 이벤트만 들어가도록 했고, 만약 같은 타이밍에 여러가지 타입의 이벤트가 발생되어야 한다면 한자리에 키가 여러개 생겨야 한다
+    그렇기 때문에 FrameView에서 겹쳐있는 키를 효과적으로 선택할수 있는 인터페이스가 필요해진다
+  . 일단 CreateObj Event에서 오브젝트 id는 reserved만 하고 게임에선 하드코딩으로 생성하게 하자. 후에 필요해지면 툴에서 오브젝트 아이디 스크립트를 읽어서 툴에서 입력할수 있게 바꾸자
+10.12.30
+  . 다른액션을 선택했을때 이전 액션의 선택된 레이어가 클리어 되지 않았던 문제 수정
+  . 회전채널 아이폰으로 이식
+  . 회전축 변경기능으로 인해 스프라이트 버전 8로 올라감 
+  . adjustView에 size, adj정보 표시
+10.12.29
+  . 회전축 변경가능 기능 추가
+  . 회전축 변경가능에 대한 픽킹계산방식 수정
+  . 1, 2키 기능 추가
+  . 회전키 저장 기능
+10.12.27
+  . 회전채널방식을 상대각도키방식에서 누적절대각도 방식으로 바꿨다.
+  . 회전축 바꿀수 있 구현중
+10.12.24
+  . 회전 채널을 구현함
+  . 첫프레임에 회전키가 없을때 중간프레임에 회전키를 넣었을경우 처리가 애매하다
+    . 방법
+      1. 플레이중 프레임이 첨으로 돌아오면 무조건 레이어를 클리어 시켜서 회전값이 0이되도록 한다.
+      2. 0프레임에 수동으로 각도0짜리 키를 넣기쉽게 만들어준다.
+      3. 새로 생성한 중간프레임의 회전키 앞에 키가 없다면 자동으로 0번프레임에 각도0짜리 회전키를 넣어준다.
+  . 회전시 원형인터페이스를 그려줘야 함.
+  # 소숫점 아래 각도를 반올림하는부분이 절대각도와 상대각도의 싱크가 맞지 않는일이 있다.
+  . 회전모드 툴바 아래로 내려올것
+  # 회전 저장기능 구현     
+  # 자동으로 0프레임에 키를 넣어주는게 맞는듯함
+  . 뛰어내리는 애니를 구현하려면 세밀하게조정해야 하므로 확대기능 반드시 필요
+  # 1,2키로 한프레임씩 이동하는기능 필요
+  10.12.23
+  .	액션리스트창에서 액션추가 기능 들어감
+  . 썸네일창에서 선택된 스프라이트들을 액션으로 추가하는 기능 들어감.
+10.12.22
+  . 액션이름과 아이디를 편집할수 있게 되었음. 맥쪽의 common폴더의 defineAct.h를 공유
+  . #define이 들어있는 .h파일을 UTF-8로 저장하면 한글바로 뒤의 #define 이 인식하지 못하는 문제가 있다. Korean(EUC,949)코드로 저장할것
+  . 프로젝트가 유니코드모드일때 한글문자열을 사용하는 소스코드는 한국어949코드페이지로 저장되어야 _T("")매크로가 제대로 먹는다. UTF-8같은걸로 소스가 저장되어
+    있으면 한글변환이 안된다
+10.12.21
+  . 오픈한 spr파일의패스로 spr을 읽거나 저장하도록 수정
+  . 샘플캐릭터 아이폰에 올려봄
+  . 키에 레이어 포인터가 들어갔던 버그 수정  
+10.12.20
+  . 스프라이트 플립과 알파블렌딩, screen모드 출력기능을 만듬
+  . 이펙트채널이 들어간 버전을 아이폰으로 이식함
+  . 쉐이더로 알파블렌딩을 원할때 알파블렌드 기능을활성화 시키려면 두가지 방법이 있다.
+    . SetRenderState( 알파인에이블 ), SRCBLEND, DESTBLEND 로 켜는 방법
+    . 쉐이더 코드에서 AlphaBlendEnable = TRUE, SrcBlend, DestBlend 로 하는 방법 
+  . 아이폰쪽 XSurfaceOpenGL쪽 코드에서 Adjust관련 버그가 있었다. Draw시에 x += m_AdjustX를 하고 있었는데 이걸 할필요가 없다. 버텍스버퍼를 만들때 이미 adjust를 반영하여 버텍스를 만들었기 때문
+10.12.17
+  .  스프라이트 플립기능과 알파블렌딩 기능을 만듬
+  . 3d를 2d로 쓸때 x,y,z중 z는 사용하지 않는데 Y축 회전을시키면 z에 값이 생겨버려서 출력이 안되는 문제가 있음 그래서 쉐이더를 사용했고 z를 강제로 0으로 맞춰줌
+10.12.16
+  . Direct2D를 버리고 Direct3D로 뒤엎음
+  . DXUT의 스왑체인 기능을 이용하면 좋은데 dx10만 지원한다. 맥의 패러럴즈 스튜디오는 dx9만 지원해서 못씀
+  . Cola에 썼던 d3dapp.cpp를 재활용함
+10.12.15
+  . Popup메뉴의 UPDATE_COMMAND_UI메시지가 발생하지 않을때. TrackPopupMenu()를 호출할때 this로 하지 말고 AfxGetMainWnd()로 해라
+  . Image Effect채널 만듬. 알파블랜드는 구현했으나 Flip과 Screen찍기 모드등은 Direct2D에서 지원하지 않아서 Direct3D로 교체 해야 함
+10.12.14
+  . CComboBox구현시 상속받아 쓰는게 아니라면 Owner Draw를 꺼야 한다. 그리고 Has String을 켜야 한다
+  . Image Effect채널 구현을 위해 이미지 속성 다이얼로그창을 구현
+10.12.10
+  . 게임엔 _UNICODE디파인을붙이고 게임내에서 쓰는 모든 스트링은 utf8버전인 CHAR(char), LPCSTR(const char*)를 쓴다
+  . 리소스파일에 저장된 스트링은 UTF16-TCHAR-WCHAR버전으로 저장되고 CToken에서도 TCHAR(unichar)로 읽은후 CToken내에 저장할때는 LPSTR(UTF8)로 저장해둔다. 스트링을 비교할때는 m_Token == "set한글"(UTF8) 식으로 비교하면 된다
+  . 리소스파일내에 저장된 파일명등의 토큰은 UTF16-TCHAR-WCHAR로 저장되어 있으므로 Load( LPCSTR )함수를 호출하기전에 UTF8로 변환시켜쓴다. 변환은 NSString을 이용한다
+10.11.25
+  . FormView는 OnKeyDown메시지가 안들어온다. 덩달아 MainFrame까지 안들어오더라. PreTranslateMessage를 만들어 처리해야 한다.  
+10.11.24
+  . 메뉴에 단축키 지정을 했는데 단축키가 먹지 않는 문제 발생. 심지어는 엑셀레이터에서 해당단축키를 지웠는데도 계속 남는 현상.
+    원인은 CSEApp::InitInstance()에서 CleanState()를 하지 않아 발생한문제.
+  . 뷰에 draw를 했는데 세로로 몇도트 어긋나는현상. 원인은 리소스에디터에서 다이얼로그내의 파란선을 끝까지 움직여 줘야 한다.   
+10.11.19
+  . 도킹윈도우를 생성시켰는데 일반윈도우가 하나생기고 프레임에 도킹된 윈도우가 하나더 생기는 현상이 있었다.
+    원인은 도킹윈도우에 붙이는 Dialog의 속성중 style이 popup으로 되어있어서였다. 그래서 child로 바꿈. 그리고 테두리속성도 없앰.  
+10.11.18
+   . View를 계속 렌더링하기 위해 CSEApp::OnIdel()에서 뷰의 Draw를 호출하게 했다. 그러나 OnIdle이 마우스가 움직일때만 호출이 되었다. 해결책은 
+	BOOL CSEApp::OnIdle(LONG lCount)
+	{
+		if( GetAnimationView() )
+			GetAnimationView()->Draw();
+		CWinAppEx::OnIdle(lCount);		<- 이부분을 따로 불러주고
+		return TRUE;							<- 항상 TRUE를 리턴하게 하면 해결된다
+	}
+10.11.17
+  . png드랍해서 스프라이트와 액션/프레임 추가한후 화면에 찍는거 까지 함
+  . 그러나 문제발생. 다른 View의 RenderTarget에서 생성된 D2D1Bitmap은 또다른 RenderTarget을 사용하는 뷰에선 쓸수 없음. 젠장
+  . ThumbView에선 스프라이트 리스트의 모든 스프라이트 D2D1Bitmap을 가지고 있는걸로 하고 다른뷰는 각자 필요한 만큼의 비트맵을 가지고 있게 해결하자
+  . OninitialUpdate()가 두번씩 불리는 현상있음. 원인모름. 그래서 렌더타겟생성부를 OnCreate로 옮김
+     
+  . 소형 메모리 할당/해제 실험 결과
+	 총 10메가를 할당받는데 15k로 쪼개서 할당받으면 해제가 안되고.15k가 초과되면 해제가 된다
+	 그러나 해제가 안된다고 해서 leak가 생기는건 아닌듯 하다 free메모리가 100메가 라면 할당후 90메가가 되었다가
+	 해제하면 그대로 90메가가 되어있다. 이상태에서 다시 할당/해제를 반복해서 90을 유지한다.
+	 일반메모리로 테스트했지만 비디오메모리도 마찬가지 일듯 싶다
+
+* 만들어야 할 기능
+ # 전체 프레임 조절 및 그에따른 스케일링
+ # 키 멀티 셀렉트
+ . 영역으로 멀티키 셀렉트
+ # 오브젝트 레이어 pos 추가
+ # 레이어 추가(이미지,오브젝트) 버튼
+ . 키 카피
+ # 쉐도우키 만들기
+ # 선택한 키들만 스케일링 하는 기능(쉐도우 기능 이용)
+ # 레이어 순서바꾸기
+ # 액션 삭제기능
+ # 스프라이트 삭제기능
+ # 스프라이트 멀티선택 가능
+ # 이펙트채널( 상하좌우 플립, screen, alpha, etc.... )-이미지레이어에 속함
+ # 이미지레이어에 스프라이트 사라짐 키 구현(깜빡거리는 스프라이트 구현에 사용). 사라짐속성을 이펙트레이어에 통합시켜도 괜찮을듯
+ . 현재 커서위치 이후/이전의모든키 선택 기능
+ . 공백삽입기능( 키 사이를 일괄적으로 벌려야 할때)
+ . 전체프레임 크기 다이얼로그로 직접 입력 기능
+ # 액션이름 편집 기능
+ % 회전, 확/축 키 구현-이미지레이어에 속함
+ . 윈도우 사이즈 변경시 재실행해도 이전 위치를 기억하는 기능
+ . 저해상도 버전 저장기능(자동저장, 미리보기 기능 지원)
+ # createObj로 spr을 불러올때 다른액션번호로도 불러올수 있는기능
+ # 첨부터 obj, sound레이어 넣지 말것
+ # 이벤트 레이어(타점 같은속성) 구현
+ . 충돌범위 편집-프레임별로 가능하도록
+ . 맥스처럼 툴아래 바에서 좌표,각도,스케일값을 직접 입력할수 있도록
+ # adjustview에서 크기,adj값등의 정보를 표시하기
+ . 팔레트 정보를 읽어서 팔레트값만바꿔서 색깔다른 스프라이트 만들어 낼수 있도록
+ . 이벤트레이어를 모든걸 통합할수 있는 스크립트 레이어로 전환
+   . 이벤트키가 실행될때 해당 스크립트가 실행되는 방식. 루아 아이폰 이식?
+ . 툴바에 X,Y,XY버튼이 있어서 마우스이동등의 행동을 할때 좀더 쉽게 할수 있도록
+ .  각 뷰에 툴바 구현
+

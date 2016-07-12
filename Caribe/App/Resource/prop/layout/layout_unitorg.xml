@@ -1,0 +1,358 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_gold_m="normal.ttf" font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf" font_meter="font_meter.spr" font_gold="font_gold.spr" font_cooper="CooperBlackStd.otf" font_thai="kunlasatri.ttf" font_time="font_pvp_time.spr">
+  <unitorg_top_radio>
+    <butt img_up="common_butt_back.png" img_down="butt_back_d.png" posx="32" posy="21" key="butt.back">
+      <!--백버튼-->
+    </butt>
+    <radio_butt img_up="common_butt_mid.png" img_down="common_butt_mid.png" act_down="1" posx="284" posy="17" key="butt.tab.skill" group="1" spr="ui_glow_butt.spr">
+      <text posx="center" posy="center" font="font_text_b" font_style="stroke" text_col="white" font_size="35" text="80001"></text>
+    </radio_butt>
+    <radio_butt img_up="common_butt_mid.png" img_down="common_butt_mid.png" act_down="1" posx="389" posy="17" key="butt.tab.equipment" group="1" spr="ui_glow_butt.spr">
+      <text posx="center" posy="center" font="font_text_b" font_style="stroke" text_col="white" font_size="35" text="80002"></text>
+    </radio_butt>
+  </unitorg_top_radio>
+  <unitorg_top>
+    <wnd posx="0" posy="0" key="wnd.unit.bg.top" width="640" height="360">
+      <img posx="228" posy="232" key="img.icon.legion" scale="0.79">
+        <!--유닛 아이콘-->
+      </img>
+      <img posx="225" posy="229" file="common_unit_bg_m.png" key="img.icon.legion.bg" scale="0.8">
+        <!--유닛 아이콘 테두리-->
+      </img>
+      <img posx="224" posy="82" file="bg_hero.png" format_surface="argb8888" scale="1.25">
+        <!--파랑그라뎅 배경-->
+      </img>
+      <img posx="224" posy="82" key="img.icon.hero" scale="0.98">
+        <!--영웅 아이콘-->
+      </img>
+      <img posx="220" posy="78" file="common_unit_bg_m.png">
+        <!--영웅 아이콘 테두리-->
+      </img>
+      <img posx="212" posy="159" file="common_blank_s.png" key="img.bg.blank" scale_y="0.75">
+        <!--레벨,이름,클랜 써둘 이미지-->
+        <text posx="center" posy="center" font="font_text_b" font_style="stroke" text_col_r="0" text_col_g="162" text_col_b="149" font_size="25" key="text.hero.level">
+          <!--레벨과 이름 텍스트-->
+        </text>
+      </img>
+      <text posx="309" posy="61" font="font_text_m" font_style="stroke" text_col="red" font_size="15" key="text.limit.level.hero">
+        <!--렙제한-->
+      </text>
+      <butt posx="309" posy="71" key="butt.upgrade.hero" img_up="butt_plus.png">영웅 레벨업 버튼</butt>
+      <img posx="212" posy="69" file="common_etc_bigstar_empty.png" key="img.empty.star" num="5" distx="15">
+        <!--별슬롯-->
+      </img>
+      <img posx="212" posy="69" file="common_etc_bicstar.png" key="img.star" show="off" num="5" distx="15">
+        <!--별 5개-->
+      </img>
+      <butt posx="478" posy="302" img_up="common_butt_mid.png" img_down="butt_mid_d.png" text="80016" font_size="35" font_style="stroke" text_col="white" font="font_text_b" key="butt.troop">군단 편성 버튼</butt>
+      <butt posx="478" posy="260" img_up="common_butt_mid.png" key="butt.train_center" text="2097" font_size="35" font_style="stroke" font="font_text_b">
+        <!--훈련소-->
+      </butt>
+      <butt posx="478" posy="219" img_up="common_butt_mid.png" key="butt.promotion">
+        <!--승급, 소환-->
+        <text posx="center" posy="5" font="font_text_b" font_style="stroke" font_size="30" text="80205">
+          <!--영혼석 현재수 / 필요수-->
+        </text>
+        <text posx="center" posy="23" font="font_res_num" font_style="stroke" font_size="22" key="text.soulstone">
+          <!--영혼석 현재수 / 필요수-->
+        </text>
+      </butt>
+      <butt posx="219" posy="181" img_up="common_butt_small.png" font="font_text_b" font_size="35" font_style="stroke" text="80045" key="butt.hero.fire" show="off">
+        <!--해고버튼-->
+      </butt>
+      <!--유닛 나열해둘 이미지-->
+      <img posx="313" posy="218" file="legion_unit_bg.png" key="img.squad.look" format_surface="argb8888">
+        <text posx="9" posy="9" font="font_res_num" font_style="stroke" text_col="white" font_size="18" key="text.squad.level">
+          <!--부대 레벨-->
+        </text>
+        <butt posx="123" posy="7" img_up="icon_info.png" key="butt.info.squad" />
+        <butt posx="110" posy="83" img_up="butt_plus.png" key="butt.upgrade.squad">
+          <!--부대 레벨업-->
+        </butt>
+        <text posx="104" posy="74" font="font_text_m" font_style="stroke" text_col="red" font_size="15" key="text.limit.hero" show="off">
+          <!--부대업글 영웅렙제한-->
+        </text>
+        <text posx="103" posy="75" font="font_text_m" font_style="stroke" font_size="20" key="text.time.train.squad" show="off">
+          <!--남은 훈련시간-->
+        </text>
+      </img>
+      <butt posx="231" posy="298" img_up="legion_butt_magnifier.png" key="butt.unit.info">
+        <!--유닛 상세정보-->
+      </butt>
+      <img posx="304" posy="113" file="legion_simbol_table.png" debug="86" key="img.symbol" width="100">
+        <text posx="20" posy="1" font="font_res_num" font_style="stroke" text_col="white" font_size="20" width="40" key="text.hero.atk" height="10">
+          <!--공격력 텍스트-->
+        </text>
+        <text posx="20" posy="19" font="font_res_num" font_style="stroke" text_col="white" font_size="20" width="35" key="text.hero.range">
+          <!--원거리공격력 텍스트-->
+          <_click file="layout.xml" layout="tooltip" />
+        </text>
+        <text posx="20" posy="37" font="font_res_num" font_style="stroke" text_col="white" font_size="20" width="35" align="left" key="text.hero.def">
+          <!--방어력 텍스트-->
+        </text>
+        <text posx="20" posy="52" font="font_res_num" font_style="stroke" text_col="white" font_size="20" width="35" align="left" key="text.hero.hp">
+          <!--체력 텍스트-->
+        </text>
+        <text posx="20" posy="66" font="font_res_num" font_style="stroke" text_col="white" font_size="20" width="35" align="left" key="text.hero.speed.atk">
+          <!--공격속도 텍스트-->
+        </text>
+        <text posx="20" posy="83" font="font_res_num" font_style="stroke" text_col="white" font_size="20" width="35" align="left" key="text.hero.speed.move">
+          <!--이동속도 텍스트-->
+        </text>
+        <!--스텟 아이콘들-->
+        <tooltip file="layout.xml" layout="help_tooltip_100" text="85000" />
+      </img>
+      <pbar posx="212" posy="150" img1="legion_exp_s.png" img2="legion_exp_bg_s.png" key="pbar.exp" adjx="1" adjy="1"></pbar>
+      <text posx="309" posy="61" font="font_text_m" font_style="stroke" font_size="20" key="text.time.train.level" show="off">
+        <!--렙업 남은 훈련시간-->
+      </text>
+      <text posx="221" posy="57" font="font_text_s" font_size="20" font_style="stroke" _text="1" key="text.hero.power" width="130" height="20" debug="100">
+        <!--총 군사력-->
+      </text>
+    </wnd>
+  </unitorg_top>
+  <unitorg>
+    <img posx="0" posy="0" file="common_bg_bottom.png" format="argb8888">
+      <!--씬 배경-->
+    </img>
+    <img posx="166" posy="0" file="common_bg_title.png" format="argb8888">
+      <text posx="12" posy="20" font="font_text_b" font_size="45" font_style="stroke" align="right" text_col_r="255" text_col_g="216" text_col_b="0" width="88" text="80000">
+        <!--타이틀 텍스트-->
+      </text>
+      <!--타이틀이 쓰여질 백그라운드-->
+    </img>
+    <img posx="0" posy="0" key="img.unit.bg.top">
+      <img posx="202" posy="61" file="legion_right_bg.png" format="argb8888" />
+      <!--배경 위에있는 영웅이 변해도 변하지 않는 이미지-->
+    </img>
+    <img file="legion_herolist_bg.png" posx="64" posy="54">
+      <!--영웅 리스트 판-->
+    </img>
+    <list posx="73" posy="66" spacew="9" spaceh="2" width="124" height="278" key="list.inven.hero" type="thumb">
+      <!--영웅 리스트-->
+    </list>
+    <_text posx="68" posy="37" font="font_text_s" font_size="40" font_style="stroke" text="1" key="text.legion.power" width="140" height="20">
+      <!--군단 전투력-->
+    </_text>
+    <text posx="68" posy="20" font="font_text_s" font_size="20" font_style="stroke" text="1" key="text.avg.power">
+      <!--평균 전투력-->
+    </text>
+    <_butt file="common_butt_cancel.png" posx="492" posy="28" key="butt.test" debug="102">
+      <tooltip file="layout.xml" layout="help_tooltip_barrack" debug="101" />
+    </_butt>
+    <_click file="layout.xml" layout="help_tooltip_barrack" key="butt.test" />
+  </unitorg>
+  <skill>
+    <wnd posx="357" posy="72" key="wnd.skill" width="208" height="139">
+      <wnd posx="0" posy="0" width="208" height="61">
+        <!--액티브 스킬-->
+        <img posx="3" posy="6" file="legion_skill_bg.png">
+          <img posx="2" posy="2" key="img.icon.active.bg" file="common_bg_skillsimbol.png" />
+          <img posx="2" posy="2" key="img.icon.active" />
+          <!--액티브 스킬 아이콘, 배경-->
+        </img>
+        <text posx="157" posy="8" font="font_text_m" font_style="stroke" text_col="red" font_size="15" key="text.limit.level.active">
+          <!--렙제한-->
+        </text>
+        <butt posx="160" posy="18" img_up="butt_plus.png" key="butt.upgrade.active">스킬1 레벨업 버튼</butt>
+        <text posx="157" posy="8" font="font_text_m" font_style="stroke" font_size="20" key="text.time.train.active" show="off">
+          <!--액티브스킬 남은 훈련시간-->
+        </text>
+        <text posx="64" posy="8" font="font_text_b" font_style="stroke" key="text.active.name" width="120" font_size="18" text_col="yellow">
+          <!--액티브스킬 이름-->
+        </text>
+        <text posx="65" posy="20" font="font_text_m" font_style="shadow" key="text.active.desc" width="81" font_size="15">
+          <!--액티브스킬 설명-->
+        </text>
+        <text posx="0" posy="30" font="font_text_m" font_style="stroke" key="text.active.none" width="154" show="off" text="80094" align="center">
+          <!--액티브스킬 없음-->
+        </text>
+        <img posx="113" posy="53" key="img.scroll.curr.active" scale="0.3">
+          <!--보옥 그림-->
+        </img>
+        <_text posx="129" posy="59" font="font_res_num" font_style="stroke" text_col="white" font_size="18" key="text.scroll.curr.active">
+          <!--현재 먹은 보옥수-->
+        </_text>
+        <text posx="6" posy="1" font="font_text_m" font_style="stroke" font_size="18" text="2103" text_col="green">
+          <!--액티브 스킬 라벨-->
+        </text>
+      </wnd>
+      <wnd posx="0" posy="68" width="208" height="61">
+        <!--패시브 스킬-->
+        <img posx="3" posy="6" file="legion_skill_bg.png">
+          <img posx="2" posy="2" key="img.icon.passive.bg" file="common_bg_skillsimbol.png" />
+          <img posx="2" posy="2" key="img.icon.passive" />
+          <!--패시브 스킬 아이콘, 배경-->
+        </img>
+        <text posx="157" posy="8" font="font_text_m" font_style="stroke" text_col="red" font_size="15" key="text.limit.level.passive">
+          <!--렙제한-->
+        </text>
+        <butt posx="160" posy="18" img_up="butt_plus.png" key="butt.upgrade.passive">스킬2 레벨업 버튼</butt>
+        <text posx="157" posy="12" font="font_text_m" font_style="stroke" font_size="20" key="text.time.train.passive" show="off">
+          <!--패시브스킬 남은 훈련시간-->
+        </text>
+        <text posx="64" posy="10" font="font_text_b" font_style="stroke" key="text.passive.name" width="120" font_size="18" text_col="yellow">
+          <!--패시브스킬 이름-->
+        </text>
+        <text posx="65" posy="22" font="font_text_m" font_style="shadow" key="text.passive.desc" width="83" font_size="15">
+          <!--패시브스킬 설명-->
+        </text>
+        <text posx="0" posy="32" font="font_text_m" font_style="stroke" key="text.passive.none" width="154" show="off" text="80094" align="center">
+          <!--패시브스킬 없음-->
+        </text>
+        <img posx="3" posy="6" file="legion_skill_bg.png" alpha="0.8" show="off" key="img.disable.passive">
+          <!--반투명창-->
+          <tooltip file="layout.xml" layout="help_tooltip_100" text="2235">
+            <!--3등급에 활성화 됩니다.-->
+          </tooltip>
+          <img file="worldmap_lock.png" posx="5" posy="5" />
+        </img>
+        <_text posx="3" posy="48" font="font_text_m" font_style="stroke" font_size="20" text="2235" width="145" align="hcenter" key="text.disable.passive" show="off">
+          <!--3등급에 활성화 됩니다.-->
+        </_text>
+        <text posx="6" posy="1" font="font_text_m" font_style="stroke" font_size="18" text="2104" text_col="yellow">
+          <!--패시브스킬-->
+        </text>
+      </wnd>
+    </wnd>
+  </skill>
+  <equipment>
+    <wnd posx="357" posy="72" key="wnd.equipment" width="208" height="139">
+      <img file="legion_equip_bg.png" posx="3" posy="4">
+        <!--장비 슬롯들 배경-->
+      </img>
+      <img posx="10" posy="11" key="img.equip.helm" file="common_bg_itemblank.png"></img>
+      <butt posx="10" posy="11" width="60" height="60" key="butt.equip.helm" />
+      <_img file="common_bg_itemblank.png" posx="10" posy="11">
+        <butt posx="0" posy="0" width="60" height="60" key="butt.equip.helm" />
+      </_img>
+      <img posx="78" posy="11" key="img.equip.chest" file="common_bg_itemblank.png"></img>
+      <butt posx="78" posy="11" width="60" height="60" key="butt.equip.chest" />
+      <_img file="common_bg_itemblank.png" posx="78" posy="11">
+        <butt posx="0" posy="0" width="60" height="60" key="butt.equip.chest" />
+      </_img>
+      <img posx="146" posy="11" key="img.equip.foot" file="common_bg_itemblank.png"></img>
+      <butt posx="146" posy="11" width="60" height="60" key="butt.equip.foot"></butt>
+      <_img file="common_bg_itemblank.png" posx="146" posy="11">
+        <butt posx="0" posy="0" width="60" height="60" key="butt.equip.foot"></butt>
+      </_img>
+      <img posx="46" posy="75" key="img.equip.hand" file="common_bg_itemblank.png"></img>
+      <butt posx="46" posy="75" width="60" height="60" key="butt.equip.hand" />
+      <_img file="common_bg_itemblank.png" posx="46" posy="75">
+        <butt posx="0" posy="0" width="60" height="60" key="butt.equip.hand" />
+      </_img>
+      <img posx="115" posy="75" key="img.equip.accessory" file="common_bg_itemblank.png"></img>
+      <butt posx="115" posy="75" width="60" height="60" key="butt.equip.accessory" />
+      <_img file="common_bg_itemblank.png" posx="115" posy="75">
+        <butt posx="0" posy="0" width="60" height="60" key="butt.equip.accessory" />
+      </_img>
+      <!--장비탭-->
+    </wnd>
+  </equipment>
+  <legion_list>
+    <list posx="112" posy="117" width="458" height="132" spacew="8" spaceh="0" type="thumb" key="list.legion" />
+    <butt posx="335" posy="290" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.legion.exit" font_style="stroke" text="80006"></butt>
+    <butt posx="216" posy="290" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.legion.decide" font_style="stroke" text="80005" />
+  </legion_list>
+  <legion_detail>
+    <img posx="77" posy="87" key="img.legion.detail" />
+    <img posx="72" posy="82" file="common_unit_bg_bb.png">
+      <text posx="237" posy="22" width="54" align="left" font="font_text_m" font_size="30" font_style="stroke" text_col="white" key="text.legion.atk.melee" />
+      <text posx="237" posy="46" width="54" align="left" font="font_text_m" font_size="30" font_style="stroke" text_col="white" key="text.legion.atk.range" />
+      <text posx="237" posy="72" width="54" align="left" font="font_text_m" font_size="30" font_style="stroke" text_col="white" key="text.legion.def" />
+      <text posx="237" posy="97" width="54" align="left" font="font_text_m" font_size="30" font_style="stroke" text_col="white" key="text.legion.hp" />
+      <text posx="237" posy="122" width="54" align="left" font="font_text_m" font_size="30" font_style="stroke" text_col="white" key="text.legion.atk.speed" />
+      <text posx="237" posy="151" width="left" align="54" font="font_text_m" font_size="30" font_style="stroke" text_col="white" key="text.legion.move.speed" />
+      <text posx="293" posy="56" width="165" height="113" align="left" font="font_text_m" font_size="30" font_style="stroke" text_col="white" key="text.legion.explantion" />
+    </img>
+    <butt posx="444" posy="281" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.legion.detail.exit" font_style="stroke" text="80006" />
+    <butt posx="328" posy="281" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.legion.detail.decide" font_style="stroke" text="80005" />
+  </legion_detail>
+  <base_popup>
+    <img posx="62" posy="5" file="common_bg_popup.png" format="argb8888">
+      <img posx="center" posy="18" img="popup_title_bar.png">
+        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.popup.title" />
+      </img>
+      <!--팝업 기본틀-->
+    </img>
+  </base_popup>
+  <levelup>
+    <img posx="118" posy="154" file="legion_unit_blank_bb.png"></img>
+    <img posx="145" posy="227" num="5" distx="74" file="common_bg_item.png" />
+    <img posx="150" posy="230" num="5" distx="74" key="img.book.slot" width="50" height="52"></img>
+    <butt posx="216" posy="290" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.levelup.decide" font_style="stroke" text="80008" />
+    <butt posx="335" posy="290" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.levelup.exit" font_style="stroke" text="80006" />
+    <list posx="128" posy="165" width="387" height="48" type="thumb" spacew="18" spaceh="0" key="list.levelup.item" />
+    <img posx="186" posy="78" key="img.sel.hero" scale="0.67"></img>
+    <img posx="182" posy="74" file="common_unit_bg_s.png"></img>
+    <pbar posx="245" posy="83" img1="legion_exp_m.png" img2="legion_exp_bg_m.png" adjx="2" adjy="3" key="pbar.levelup.exp" />
+    <img posx="181" posy="73" file="common_etc_bicstar.png" num="5" scale="0.6" key="img.levelup.star" distx="13" show="off" />
+    <text posx="155" posy="125" width="101" font="font_text_m" font_size="25" font_style="stroke" align="center" text_col_r="0" text_col_g="162" text_col_b="149" key="text.lev.name"></text>
+    <_text posx="155" posy="137" width="101" font="font_text_m" font_size="22" font_style="stroke" align="center" key="text.levelup.clan" />
+    <_img posx="406" posy="126" file="world_top_gold.png" key="img.need.gold">
+      <text posx="22" posy="3" font="font_text_m" font_size="22" font_style="stroke" key="text.need.gold" />
+    </_img>
+    <wnd posx="406" posy="118">
+      <!--훈련 필요자원-->
+      <img posx="0" posy="0" file="world_top_wood.png" key="img.need.res1" show="off" scale="0.8">
+        <text posx="22" posy="3" font="font_text_m" font_size="22" font_style="stroke" key="text.need.res1" />
+      </img>
+      <img posx="0" posy="17" file="world_top_iron.png" key="img.need.res2" show="off" scale="0.8">
+        <text posx="22" posy="3" font="font_text_m" font_size="22" font_style="stroke" key="text.need.res2" />
+      </img>
+    </wnd>
+    <butt posx="471" posy="116" img_up="common_butt_mid.png" key="butt.train">
+      <text posx="center" posy="4" font="font_text_m" font_size="30" font_style="stroke" text="2090">
+        <!--훈련시작-->
+      </text>
+      <text posx="center" posy="22" font="font_text_m" font_size="20" font_style="stroke" key="text.time" text="1">
+        <!--훈련시간-->
+      </text>
+    </butt>
+  </levelup>
+  <levelup_complete>
+    <img posx="200" posy="79" key="img.icon.levelup.hero" scale="1.9">
+      <!--초상화-->
+    </img>
+    <img posx="196" posy="75" file="common_unit_bg_bb.png">
+      <!--테두리-->
+    </img>
+    <img posx="181" posy="208" file="legion_unit_blank_b.png">
+      <img posx="9" posy="4" key="img.state.level"></img>
+      <text posx="35" posy="7" align="left" width="115" font="font_text_m" font_size="35" font_style="stroke" key="text.levelup.name" text_col_r="0" text_col_g="162" text_col_b="149"></text>
+      <!--이름, 레벨 표시-->
+    </img>
+    <pbar posx="183" posy="248" img1="legion_exp.png" img2="legion_exp_bg.png" adjx="2" adjy="3" key="pbar.levelup.exp">
+      <!--경험치 프로그레스바-->
+    </pbar>
+    <butt posx="276" posy="290" img_up="common_butt_mid.png" img_down="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.levelup.ok" font_style="stroke" text="80009">
+      <!--확인버튼-->
+    </butt>
+    <img posx="358" posy="75" file="legion_simbol_table_b.png">
+      <text posx="30" posy="7" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.melee"></text>
+      <text posx="30" posy="31" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.range"></text>
+      <text posx="30" posy="58" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.def"></text>
+      <text posx="30" posy="81" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.hp"></text>
+      <text posx="30" posy="107" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.atk.speed"></text>
+      <text posx="30" posy="136" align="right" width="42" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.move.speed"></text>
+      <img posx="79" posy="4" key="img.arrow1"></img>
+      <img posx="79" posy="31" key="img.arrow2"></img>
+      <img posx="79" posy="57" key="img.arrow3"></img>
+      <img posx="79" posy="82" key="img.arrow4"></img>
+      <img posx="79" posy="106" key="img.arrow5" />
+      <img posx="79" posy="131" key="img.arrow6"></img>
+      <!--스텟 아이콘들-->
+    </img>
+  </levelup_complete>
+  <popup_fire>
+    <img posx="0" posy="0" file="guild_popup_bg.png">
+      <!--타이틀-->
+      <!--설명 bg-->
+      <img posx="54" posy="77" file="guild_popup_box.png"></img>
+      <!--메세지-->
+      <text posx="64" posy="92" width="286" key="text.fire.hero" align="center" font="font_text_m" font_size="33" font_style="stroke" />
+    </img>
+    <butt posx="93" posy="183" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.decide.fire" font_style="stroke" text="80045" />
+    <butt posx="215" posy="183" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3" font_text_b="bold.ttf" />
+  </popup_fire>
+</layout>

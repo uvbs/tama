@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_squad>
+    <popup img="common_bg_popup.png">
+      <text posx="center" posy="18" font="font_text_b" text_col="white" font_size="43" font_style="stroke" text="80020">
+        <!--타이틀 -->
+      </text>
+      <butt posx="271" posy="279" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.close" font_style="stroke" text="80006"></butt>
+      <butt posx="152" posy="279" img_up="common_butt_mid.png" key="butt.provide">
+        <!--메달 제공 버튼-->
+        <img posx="6" posy="2" key="img.item" scale="0.7"></img>
+        <text posx="47" posy="18" font="font_text_m" font_size="20" font_style="stroke" key="text.num.inven" />
+        <text posx="38" posy="4" font="font_text_m" font_size="20" font_style="stroke" text="2203" width="45">
+          <!--1개 제공-->
+        </text>
+      </butt>
+      <img file="common_blank_m_s.png" posx="39" posy="160">
+        <!--필요 아이템과 현재 개수-->
+        <text posx="66" posy="center" width="85" font="font_text_m" font_size="35" font_style="stroke" key="text.curr" align="center" />
+        <wnd posx="8" posy="13" key="wnd.icon.pos">
+          <!--메달 아이콘이 들어갈 자리-->
+        </wnd>
+      </img>
+      <img posx="227" posy="100" key="img.icon.complate.legion" scale="1.9"></img>
+      <img posx="223" posy="96" file="common_unit_bg_bb.png"></img>
+      <img posx="208" posy="229" file="legion_unit_blank_b.png">
+        <img posx="4" posy="4" file="legion_stat_up.png" />
+        <text posx="34" posy="7" width="116" font="font_text_m" key="text.legion.name" font_size="25" align="left" text_col_r="0" text_col_g="162" text_col_b="149" />
+      </img>
+      <img posx="371" posy="100" file="legion_simbol_table_b.png">
+        <text posx="20" posy="7" align="right" width="52" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.melee"></text>
+        <text posx="20" posy="31" align="right" width="52" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.range"></text>
+        <text posx="20" posy="58" align="right" width="52" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.def"></text>
+        <text posx="20" posy="83" align="right" width="52" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.hp"></text>
+        <text posx="20" posy="107" align="right" width="52" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.atk.speed"></text>
+        <text posx="20" posy="136" align="right" width="52" font="font_text_m" font_size="30" font_style="stroke" key="text.levelup.move.speed"></text>
+        <img posx="79" posy="4" key="img.arrow1"></img>
+        <img posx="79" posy="31" key="img.arrow2"></img>
+        <img posx="79" posy="57" key="img.arrow3"></img>
+        <img posx="79" posy="82" key="img.arrow4"></img>
+        <img posx="79" posy="106" key="img.arrow5" />
+        <img posx="79" posy="131" key="img.arrow6"></img>
+        <!--스텟 아이콘들-->
+      </img>
+      <wnd posx="43" posy="81">
+        <!--훈련 필요자원/얻는템수, 남은훈련시간,훈련버튼,즉시완료버튼-->
+        <img posx="0" posy="0" file="world_top_sulfur.png" key="img.need.res1" scale="0.8">
+          <text posx="22" posy="3" font="font_text_m" font_size="22" font_style="stroke" key="text.need.res1" />
+        </img>
+        <img posx="0" posy="17" file="world_top_mandrake.png" key="img.need.res2" scale="0.8">
+          <text posx="22" posy="3" font="font_text_m" font_size="22" font_style="stroke" key="text.need.res2" />
+        </img>
+        <text posx="0" posy="34" font="font_text_m" font_size="20" font_style="stroke" key="text.get.item" text_col="green">
+          <!--얻는 메달수-->
+        </text>
+        <text posx="0" posy="29" font="font_text_m" font_size="18" font_style="stroke" key="text.time.remain" show="off">
+          <!--남은 훈련시간-->
+        </text>
+        <butt posx="0" posy="51" img_up="common_butt_small.png" key="butt.train">
+          <text posx="center" posy="4" font="font_text_m" font_size="20" font_style="stroke" text="2090">
+            <!--훈련시작-->
+          </text>
+          <text posx="13" posy="17" font="font_text_m" font_size="20" font_style="stroke" key="text.time">
+            <!--훈련시간-->
+          </text>
+          <img file="icon_clock.png" posx="0" posy="14" key="img.clock" />
+        </butt>
+        <butt posx="0" posy="51" img_up="common_butt_small.png" key="butt.complete" show="off">
+          <!--즉시완료 버튼-->
+          <text posx="center" posy="4" font="font_text_m" font_size="20" font_style="stroke" text="2078">
+            <!--즉시완료-->
+          </text>
+          <text posx="center" posy="17" font="font_text_m" font_style="stroke" font_size="20" key="text.cost.complete">
+            <!--캐쉬 가격-->
+          </text>
+          <img posx="10" posy="14" file="hero_cash.png" scale="0.5" />
+        </butt>
+      </wnd>
+    </popup>
+  </popup_squad>
+</layout>

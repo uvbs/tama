@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup>
+    <popup img="camp_bg.png" format="argb8888">
+      <!--캠페인 UI 기본형-->
+      <text posx="center" posy="28" font="font_text_b" text_col="white" font_size="35" font_style="stroke" key="text.title">
+        <!--타이틀-->
+      </text>
+      <butt posx="455" posy="31" img_up="common_butt_x.png" key="butt.close"></butt>
+      <list posx="35" posy="85" width="439" height="149" key="list.stage" type="list_horiz" spacew="2" />
+      <text posx="21" posy="40" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.debug.num.star" show="off">
+        <!--디버깅용-->
+      </text>
+    </popup>
+  </popup>
+  <elem_guild_raid>
+    <img file="stage_elem_bg.png" format="argb8888">
+      <butt posx="0" posy="0" key="img.bg.elem">
+        <!--stage_elem.png같은게 들어가는 곳-->
+      </butt>
+      <img file="guild_coin.png" posx="20" posy="97" scale="0.4"></img>
+      <text posx="39" posy="102" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.reward.point">
+        <!--보상 포인트-->
+      </text>
+      <text posx="0" posy="145" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.name.user">
+        <!--전투중 유저의 이름-->
+      </text>
+      <text posx="0" posy="155" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.remain.battle" text="1">
+        <!--전투 남은시간-->
+      </text>
+    </img>
+    <!--길드레이드 스테이지 ui-->
+  </elem_guild_raid>
+  <guild_raid>
+    <!--캠페인 UI기본형에 길드레이드 전용 UI-->
+    <text posx="0" posy="64" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.need.ap" width="175" align="right" text="2201">
+      <!--필요 행동력 텍스트-->
+    </text>
+    <img posx="180" posy="61" file="icon_ap.png" scale="0.5">
+      <text posx="35" posy="12" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.ap">
+        <!--ap-->
+      </text>
+    </img>
+    <butt posx="380" posy="198" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.start" font_style="stroke" text="2126"></butt>
+  </guild_raid>
+  <elem_campaign>
+    <wnd width="82" height="141">
+      <butt posx="0" posy="0" key="img.bg.elem">
+        <!--stage_elem.png같은게 들어가는 곳-->
+      </butt>
+      <img file="level_bg.png" posx="0" posy="0" scale="1">
+        <text posx="center" posy="center" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.lv.legion" text="11" debug="1">
+          <!--레벨-->
+        </text>
+      </img>
+      <img posx="5" posy="77" file="star_off.png" key="img.clear." num="5" distx="15" show="off"></img>
+      <text posx="center" posy="43" font="font_text_s" text_col="white" font_size="30" font_style="stroke" text="2205" show="off" key="text.complete">
+        <!--완료-->
+      </text>
+      <img posx="center" posy="96" file="star_num_bg.png" show="on" key="img.star.num">
+        <img posx="2" posy="1" file="star_on.png" scale="0.7"></img>
+        <text posx="center" posy="2" font="font_text_s" font_size="18" font_style="stroke" key="text.num.star" text="1"></text>
+        <!--누적별점 목표-->
+      </img>
+      <butt posx="0" posy="108" key="butt.reward" img_up="common_butt_mid.png">
+        <!--스테이지 별점 보상-->
+      </butt>
+    </wnd>
+    <!--범용 캠페인UI의 스테이지UI-->
+  </elem_campaign>
+  <campaign_default>
+    <!--캠페인 기본형 UI의 기본UI-->
+    <text posx="128" posy="63" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.remain.reset" align="right" width="235"></text>
+    <text posx="0" posy="63" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.rest.challenge" align="right" width="181" text="80207" show="off"></text>
+    <img posx="451" posy="72" file="icon_ap.png" scale="0.75" key="img.ap">
+      <text posx="35" posy="12" font="font_text_s" text_col="white" font_size="18" font_style="stroke" key="text.ap">
+        <!--ap-->
+      </text>
+    </img>
+    <img posx="185" posy="57" file="chall_mark_off.png" key="img.mark." num="5" distx="10" show="off"></img>
+  </campaign_default>
+  <elem_campaign_medal>
+    <wnd width="82" height="141">
+      <img posx="0" posy="0" file="stage_elem_bg.png" format="argb8888"></img>
+      <butt posx="0" posy="0" key="img.bg.elem">
+        <!--stage_elem.png같은게 들어가는 곳-->
+      </butt>
+      <img posx="5" posy="77" file="star_off.png" key="img.clear." num="5" distx="15" show="off"></img>
+      <text posx="center" posy="43" font="font_text_s" text_col="white" font_size="30" font_style="stroke" text="2205" show="off" key="text.complete">
+        <!--완료-->
+      </text>
+      <text posx="2" posy="2" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.lv.legion" show="off">
+        <!--레벨-->
+      </text>
+    </wnd>
+    <!--범용 캠페인UI의 스테이지UI-->
+  </elem_campaign_medal>
+  <!--영웅의 전장 스테이지-->
+  <elem_campaign_hero>
+    <wnd width="67" height="134">
+      <img posx="0" posy="0" file="stage_bg_black.png" format="argb8888"></img>
+      <img posx="0" posy="15" file="daily_elem.png" key="img.elem.retry" format="argb8888">
+        <!--재도전 할수 있는곳-->
+      </img>
+      <img posx="0" posy="0" file="daily_elem.png" key="img.elem.new" show="off" format="argb8888">
+        <!--잠금이 풀렸으나 아직 한번도 클리어 안한곳.-->
+      </img>
+      <img posx="12" posy="0" file="star_off.png" key="img.star.off" num="3" distx="15" show="off"></img>
+      <img posx="12" posy="0" file="star_on.png" key="img.star.on" num="3" distx="15" show="off"></img>
+      <text posx="center" posy="24" font="font_text_b" text_col="white" font_size="30" font_style="stroke" key="text.stage.num">
+        <!--스테이지 번호-->
+      </text>
+      <wnd posx="7" posy="50" key="wnd.hero.face" debug="1">
+        <!--영웅 초상화가 들어갈곳-->
+      </wnd>
+      <img posx="center" posy="106" file="v_check.png" key="img.vcheck" show="off" blend="add" />
+      <wnd posx="25" posy="111" key="wnd.mark.root">
+        <!--도전횟수 마크-->
+        <img posx="0" posy="0" file="chall_mark_off.png" num="2" distx="10" key="img.mark.off" />
+        <img posx="0" posy="0" file="chall_mark_on.png" num="2" distx="10" key="img.mark.on" />
+      </wnd>
+      <wnd key="wnd.disable" show="off" posy="14">
+        <!--스테이지 비활성-->
+        <img posx="0" posy="0" file="daily_elem_dark.png" />
+        <img posx="0" posy="34" file="stage_elem_lock2.png" format="argb8888" />
+      </wnd>
+      <butt posx="2" posy="15" key="butt.stage" width="64" height="96">
+        <!--스테이지UI전체를 덮는 가상버튼-->
+      </butt>
+    </wnd>
+  </elem_campaign_hero>
+  <medal_camp>
+    <butt posx="422" posy="31" img_up="common_butt_i.png" key="butt.help">
+      <tooltip file="layout.xml" layout="help_tooltip_babarian">
+        <!--부모인 text윈도우를 누르면 layout.xml의 help_tooltip2 레이아웃이 실행된다. -->
+        <!--부모가 텍스트일 경우는 반드시 가로세로 크기를 지정해줘야함.-->
+      </tooltip>
+    </butt>
+    <_click file="layout.xml" layout="help_tooltip_babarian" key="butt.test" />
+  </medal_camp>
+  <hero_camp>
+    <butt posx="422" posy="31" img_up="common_butt_i.png" key="butt.help">
+      <tooltip file="layout.xml" layout="help_tooltip2">
+        <!--부모인 text윈도우를 누르면 layout.xml의 help_tooltip2 레이아웃이 실행된다. -->
+        <!--부모가 텍스트일 경우는 반드시 가로세로 크기를 지정해줘야함.-->
+      </tooltip>
+    </butt>
+  </hero_camp>
+  <camp.01>
+    <butt posx="422" posy="31" img_up="common_butt_i.png" key="butt.help">
+      <tooltip file="layout.xml" layout="help_tooltip_camp01">
+        <!--부모인 text윈도우를 누르면 layout.xml의 help_tooltip2 레이아웃이 실행된다. -->
+        <!--부모가 텍스트일 경우는 반드시 가로세로 크기를 지정해줘야함.-->
+      </tooltip>
+    </butt>
+  </camp.01>
+</layout>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout normal="normal.ttf" bold="bold.ttf">
+  <portrait>
+    <wnd>
+      <text posx="5" posy="5" width="119" font="bold" font_size="25" font_style="stroke" key="text.name" show="off">
+        <!--영웅 이름-->
+      </text>
+      <wnd>
+        <img posx="0" posy="0" file="bg_hero.png" format_surface="argb8888">
+          <!--영웅 배경 그라데이션-->
+        </img>
+        <img posx="4" posy="3" key="img.hero" scale="0.98">
+          <!--영웅 아이콘-->
+        </img>
+        <img posx="0" posy="0" file="common_unit_bg_m.png">
+          <!--영웅 아이콘 테두리-->
+          <img posx="-4" posy="-9" file="common_etc_bicstar.png" key="img.star." show="off" num="5" distx="15" scale="0.8">
+            <!--별 5개-->
+          </img>
+        </img>
+      </wnd>
+    </wnd>
+  </portrait>
+</layout>
