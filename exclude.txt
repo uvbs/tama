@@ -1,0 +1,17 @@
+.obj
+.exe
+.pdb
+.map
+.idb
+.zip
+.git
+.tlog
+.log
+.cashe
+.pch
+.vspscc
+.dll
+.ilk
+third_party
+
+
