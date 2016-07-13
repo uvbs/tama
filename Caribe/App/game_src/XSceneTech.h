@@ -34,7 +34,6 @@ private:
 	BOOL m_bDrag;
 	CTimer m_timerAutoSave;	///< 수정한지 3초가 지나면 자동세이브 한다.
 	ID m_idSelectedNode = 0;
-//	XPropTech::xNodeAbil *m_pResearchAbil = nullptr;	// 현재 연구중인 특성의 프로퍼티
 	ID m_snSelectedHero = 0;
 	XHero *m_pHeroSected = nullptr;
 	CTimer m_timerGlow;

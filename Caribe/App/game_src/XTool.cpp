@@ -35,6 +35,7 @@ void XBaseTool::sDoChangeMode( xtToolMode modeNew )
 	const auto modeOld = (s_pCurr)? s_pCurr->GetToolMode() : xTM_NONE;
 	if( s_pCurr )
 		s_pCurr->OnLeaveMode();
+//	auto modeCurr = xTM_NONE;
 	switch( modeNew )	{
 	case xTM_NONE:
 		s_pCurr = nullptr;
@@ -43,8 +44,7 @@ void XBaseTool::sDoChangeMode( xtToolMode modeNew )
 		s_pCurr = XToolCloud::sGet().get();
 		break;
 	case xTM_TECH:
-		XBREAK(1);
-//		s_pCurr = XToolTech::sGet();
+		s_pCurr = XToolTech::sGet().get();
 		break;
 	case xTM_SPOT:
 		s_pCurr = XToolSpot::sGet().get();
@@ -58,6 +58,8 @@ void XBaseTool::sDoChangeMode( xtToolMode modeNew )
 	if( s_pCurr )
 		s_pCurr->OnEnterMode();
 	const auto modeCurr = (s_pCurr)? s_pCurr->GetToolMode() : xTM_NONE;
+// 	if( s_pCurr )
+// 		modeCurr = s_pCurr->GetToolMode();
 	if( GAME->GetpScene() )
 		GAME->GetpScene()->DelegateChangeToolMode( modeOld, modeCurr );
 }
@@ -296,6 +298,55 @@ void XToolBgObj::PasteSelected()
 
 }
 void XToolBgObj::Undo()
+{
+
+}
+
+////////////////////////////////////////////////////////////////
+std::shared_ptr<XToolTech> XToolTech::s_spInstance;
+////////////////////////////////////////////////////////////////
+std::shared_ptr<XToolTech>& XToolTech::sGet() {
+	if( s_spInstance == nullptr )
+		s_spInstance = std::shared_ptr<XToolTech>( new XToolTech );
+	return s_spInstance;
+}
+////////////////////////////////////////////////////////////////
+XToolTech::XToolTech()
+	: XBaseTool( xTM_TECH )
+{
+	Init();
+}
+
+void XToolTech::Destroy()
+{
+}
+
+void XToolTech::OnEnterMode()
+{
+}
+
+void XToolTech::OnLeaveMode()
+{
+}
+
+bool XToolTech::Save()
+{
+	XPropTech::sGet()->Save( _T( "propTech2.xml" ) );
+	return true;
+}
+void XToolTech::DelSelected()
+{
+
+}
+void XToolTech::CopySelected()
+{
+}
+
+void XToolTech::PasteSelected()
+{
+
+}
+void XToolTech::Undo()
 {
 
 }

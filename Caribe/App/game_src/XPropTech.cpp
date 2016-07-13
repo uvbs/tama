@@ -165,39 +165,6 @@ XPropTech::xNodeAbil* XPropTech::LoadUnit( XEXmlNode& nodeRoot, XGAME::xtUnit un
 
 	// 부모/자식 포인터들을 연결시킨다.
 	DoLinkParentChild( unit );
-// 	XARRAYLINEARN_LOOP( aryTemp, xNodeAbil*, pNodeAbil )
-// 	{
-// 		// 부모포인터를 모두 찾아서 연결시킨다.
-// 		for( auto idParent : pNodeAbil->listParentID )
-// 		{
-// 			xNodeAbil *pNodeParent = GetNodeAbilByAry( aryTemp, idParent );
-// 			if( pNodeParent )
-// 				pNodeAbil->listParent.Add( pNodeParent );
-// 		}
-// 		// 자식포인터를 모두 찾아서 연결시킨다.
-// 		for( auto idChild : pNodeAbil->listChildID )
-// 		{
-// 			xNodeAbil *pNodeChild = GetNodeAbilByAry( aryTemp, idChild );
-// 			if( pNodeChild )
-// 				pNodeAbil->listChild.Add( pNodeChild );
-// 		}
-// 	} END_LOOP;
-// 	// 트리구조를 위해 최상위 루트를 연결한다.
-// 	{
-// 		auto listNodes = m_aryUnitsAbil[ unit ];
-// 		auto pRoot = new xNodeAbil;
-// 		pRoot->idNode = 0;		// 더미
-// 		m_aryRoots[ unit ] = pRoot;
-// 		// unit이 가진 모든 특성을 돌며
-// 		for( auto pNode : listNodes )
-// 		{
-// 			// 부모가 없는 노드는 최상단 노드이다. 최상단노드가 반드시 tier==1인것은아니다.
-// 			if( pNode->listParent.size() == 0 )
-// 			{
-// 				pRoot->AddChild( pNode );
-// 			}
-// 		}
-// 	}
 
   return nullptr;
 }

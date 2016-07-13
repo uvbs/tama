@@ -837,14 +837,14 @@ int XSceneTech::OnClickHero( XWnd* pWnd, DWORD p1, DWORD p2 )
 int XSceneTech::Process( float dt ) 
 { 
 #ifdef _xIN_TOOL
-	if( XBaseTool::sGetCurrMode() == xTM_TECH ) {
-		if( m_timerAutoSave.IsOver() ) {
-			// text_ko 재저장.
-			TEXT_TBL->Save( _T( "text_ko.txt" ) );
-			XPropTech::sGet()->Save( _T( "propTech.xml" ) );
-			m_timerAutoSave.Off();
-		}
-	}
+// 	if( XBaseTool::sGetCurrMode() == xTM_TECH ) {
+// 		if( m_timerAutoSave.IsOver() ) {
+// 			// text_ko 재저장.
+// 			TEXT_TBL->Save( _T( "text_ko.txt" ) );
+// 			XPropTech::sGet()->Save( _T( "propTech.xml" ) );
+// 			m_timerAutoSave.Off();
+// 		}
+// 	}
 #endif
 	// 연구중일때 그래프와 시간갱신
 	// 연구중인 특성이 있고 현재 선택된 특성이 연구중일때.
@@ -910,13 +910,6 @@ int XSceneTech::Process( float dt )
 				} // pButt
 			} // for
 		} // if( m_pHeroSected ) {
-// 		XWnd *pRootTree = Find( "wnd.tree.root" );
-// 		if( pRootTree ) {
-// 			// 현재 선택된 특성의 글로우의 알파애니메이션
-// 			auto pImgGlow = SafeCast<XWndImage*>(  pRootTree->Find( "img.selected.node" ) );
-// 			if( pImgGlow ) 
-// 				pImgGlow->SetAlphaLocal( alpha );
-// 		}
 	}
 	return XEBaseScene::Process( dt );
 }
@@ -972,16 +965,6 @@ void XSceneTech::Draw( void )
 {
 	XEBaseScene::Draw();
 	XEBaseScene::DrawTransition();
-// #ifdef _CHEAT
-// 	if( XAPP->m_bDebugMode ) {
-// 		XE::VEC2 v(2,23);
-// 		PUT_STRINGF(v.x, v.y, XCOLOR_WHITE, "%d", ACCOUNT->GetResource( XGAME::xRES_WOOD) );	v.y += 11.f;
-// 		PUT_STRINGF(v.x, v.y, XCOLOR_WHITE, "%d", ACCOUNT->GetResource( XGAME::xRES_IRON ) );	v.y += 11.f;
-// 		PUT_STRINGF(v.x, v.y, XCOLOR_WHITE, "%d", ACCOUNT->GetResource( XGAME::xRES_JEWEL ) );	v.y += 11.f;
-// 		PUT_STRINGF(v.x, v.y, XCOLOR_WHITE, "%d", ACCOUNT->GetResource( XGAME::xRES_SULFUR ) );	v.y += 11.f;
-// 		PUT_STRINGF(v.x, v.y, XCOLOR_WHITE, "%d", ACCOUNT->GetResource( XGAME::xRES_MANDRAKE ) );	v.y += 11.f;
-// 	}
-// #endif // cheat
 #ifdef _xIN_TOOL
 	if( XBaseTool::sGetCurrMode() == xTM_TECH ) {
 		XE::POINT vLT(126,76);
@@ -1040,7 +1023,7 @@ void XSceneTech::OnLButtonDown( float lx, float ly )
 	m_bDrag = TRUE;
 #ifdef _xIN_TOOL
 	m_stateMouseT = 1;
-	if( XBaseTool::sGetCurrMode() == xTM_TECH ) {
+	if( XBaseTool::sIsToolTechMode() ) {
 		m_pLDownNodeT = m_pMouseOverNodeT;
 		if( m_pLDownNodeT )		{
 			m_vLocalLDownT = m_vMouse - m_pLDownNodeT->vPos;
@@ -1101,8 +1084,7 @@ void XSceneTech::OnMouseMove( float lx, float ly )
 	m_vMouse.Set( lx, ly );
 #ifdef _xIN_TOOL
 	m_stateMouseT = 2;
-//	if( XAPP->m_ToolMode == xTM_TECH  ) {
-	if( XBaseTool::sGetCurrMode() == xTM_TECH ) {
+	if( XBaseTool::sIsToolTechMode() ) {
 		// LDown한 노드가 있을때 마우스를 움직이면 노드 이동
 		if( m_pLDownNodeT ) {
 			if( m_modeTool == xMODE_MOVE )
@@ -1111,11 +1093,13 @@ void XSceneTech::OnMouseMove( float lx, float ly )
 		}
 		// 현재 마우스 위치에 노드가 있는지 검사해서 있으면 draw()시에 외곽선을 그려준다.
 		m_pMouseOverNodeT = XPropTech::sGet()->GetNodeByPos( m_unitSelected, m_vMouse );
-	}
 
+	}
 #endif // _xIN_TOOL
 	XEBaseScene::OnMouseMove( lx, ly );
 }
+
+
 
 int XSceneTech::OnBack( XWnd *pWnd, DWORD p1, DWORD p2 )
 {
@@ -1178,27 +1162,6 @@ void XSceneTech::CreateToolCtrl( void )
 }
 //////////////////////////////////////////////////////////////////////////
 //  툴 코드. tool start
-/**
- @brief 툴모드와 게임모드간의 전환이 이뤄질때 호출된다.
-*/
-// void XSceneTech::OnModeTool( xtToolMode toolMode )
-// {
-// 	// 툴모드로 전환
-// 	if( toolMode == xTM_TECH ) {
-// 		xSET_SHOW( this, KEY_ROOT_GAMEVIEW, FALSE );
-// 		// 툴 UI생성
-// 		m_Layout.CreateLayout( "tech_tool", this );
-// 		CreateToolCtrl();
-// 	} else
-// 	if( toolMode == xTM_NONE ) {// 게임모드로 전환
-// 		xSET_SHOW( this, KEY_ROOT_GAMEVIEW, TRUE );
-// 		// 툴 UI삭제
-// 		XWnd *pWnd = Find(KEY_ROOT_TOOLVIEW);
-// 		if( pWnd )
-// 			pWnd->SetbDestroy( TRUE );
-// 	}
-// }
-
 #ifdef _xIN_TOOL
 void XSceneTech::DelegateChangeToolMode( xtToolMode modeOld, xtToolMode modeCurr )
 {
@@ -1210,11 +1173,11 @@ void XSceneTech::DelegateChangeToolMode( xtToolMode modeOld, xtToolMode modeCurr
 	case xTM_CLOUD:
 		break;
 	case xTM_TECH: {
-		xSET_SHOW( this, KEY_ROOT_GAMEVIEW, true );
-		// 툴 UI삭제
-		XWnd *pWnd = Find(KEY_ROOT_TOOLVIEW);
-		if( pWnd )
-			pWnd->SetbDestroy( true );
+// 		xSET_SHOW( this, KEY_ROOT_GAMEVIEW, true );
+// 		// 툴 UI삭제
+// 		XWnd *pWnd = Find(KEY_ROOT_TOOLVIEW);
+// 		if( pWnd )
+// 			pWnd->SetbDestroy( true );
 	} break;
 	case xTM_SPOT: {
 	} break;
@@ -1231,10 +1194,10 @@ void XSceneTech::DelegateChangeToolMode( xtToolMode modeOld, xtToolMode modeCurr
 	case xTM_CLOUD:
 		break;
 	case xTM_TECH:
-		xSET_SHOW( this, KEY_ROOT_GAMEVIEW, false );
-		// 툴 UI생성
-		m_Layout.CreateLayout( "tech_tool", this );
-		CreateToolCtrl();
+// 		xSET_SHOW( this, KEY_ROOT_GAMEVIEW, false );
+// 		// 툴 UI생성
+// 		m_Layout.CreateLayout( "tech_tool", this );
+// 		CreateToolCtrl();
 		break;
 	case xTM_SPOT: {
 	} break;
@@ -1253,18 +1216,21 @@ void XSceneTech::DelegateChangeToolMode( xtToolMode modeOld, xtToolMode modeCurr
 void XSceneTech::DrawTreeT()
 {
 	BOOL bLoaded = FALSE;
-	XArrayLinearN<XPropTech::xNodeAbil*, 1024> aryAbil;
-	XPropTech::sGet()->GetNodesToAry( m_unitSelected, &aryAbil );
+// 	XArrayLinearN<XPropTech::xNodeAbil*, 1024> aryAbil;
+// 	XPropTech::sGet()->GetNodesToAry( m_unitSelected, &aryAbil );
+	auto& listAbil = XPropTech::sGet()->GetaryUnitsAbil( m_unitSelected );
 	// 화살표를 그린다.
-	XARRAYLINEARN_LOOP( aryAbil, XPropTech::xNodeAbil*, pNodeAbil ) {
+//	XARRAYLINEARN_LOOP( aryAbil, XPropTech::xNodeAbil*, pNodeAbil ) {
+	for( auto pAbil : listAbil ) {
 		for( auto pChild : pNodeAbil->listChild ) {
 			XE::VEC2 vStart = pNodeAbil->vPos + XE::VEC2(ICON_SIZE.w/2.f, 0);
 			XE::VEC2 vEnd = pChild->vPos + XE::VEC2(ICON_SIZE.w/2.f, ICON_SIZE.h );
 			m_psfcArrow->DrawDirection( vStart, vEnd );
 		}
-	} END_LOOP;
+	};
 	// 노드를 그린다.,
-	XARRAYLINEARN_LOOP( aryAbil, XPropTech::xNodeAbil*, pNodeAbil ) {
+// 	XARRAYLINEARN_LOOP( aryAbil, XPropTech::xNodeAbil*, pNodeAbil ) {
+	for( auto pAbil : listAbil ) {
 		if( pNodeAbil->psfcIcon == nullptr ) {
 			if( bLoaded == FALSE )
 				pNodeAbil->psfcIcon = IMAGE_MNG->Load( XE::MakePath(DIR_IMG, pNodeAbil->strIcon.c_str()) );
@@ -1281,7 +1247,7 @@ void XSceneTech::DrawTreeT()
 								xFONT::xSTYLE_SHADOW, 
 								"max:%d tier:%d lvOpen:%d", pNodeAbil->maxPoint, pNodeAbil->tier, pNodeAbil->GetLvOpanable() );
 		}
-	} END_LOOP;
+	}// END_LOOP;
 }
 
 /**
@@ -1302,17 +1268,14 @@ void XSceneTech::DelNodeSelected()
 */
 void XSceneTech::Undo( void )
 {
-	if( m_pDeletedNodeT )
-	{
+	if( m_pDeletedNodeT )	{
 		XPropTech::xNodeAbil *pNode = m_pDeletedNodeT;
 		// 부모노드에게 이 노드를 다시 붙임.
-		for( auto pParent : pNode->GetListParents() )
-		{
+		for( auto pParent : pNode->GetListParents() )		{
 			pParent->listChild.Add( pNode );
 		}
 		// 자식노드들에게 이 노드를 다시 부모로 붙임.
-		for( auto pChild : pNode->listChild )
-		{
+		for( auto pChild : pNode->listChild )		{
 			pChild->GetListParentsMutable().Add( pNode );
 		}
 		// 다시 복구시킴.
