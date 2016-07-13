@@ -1,0 +1,89 @@
+2016/ 4/ 7   18:27:08   
+FaultReason
+
+DBAgentServer.exe caused an EXCEPTION_ACCESS_VIOLATION in module DBAgentServer.exe at 0023:00253658, XArchive::operator>>()+0216 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\xarchive.h, line 0456+0017 byte(s)
+Register
+EAX=00006494  EBX=0000056E  ECX=00C7DB6C  EDX=005F9C90  ESI=00C7DB60
+EDI=00C7DB60  EBP=00C7D98C  ESP=00C7D988  EIP=00253658  FLG=00010246
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:00253658 DBAgentServer.exe, XArchive::operator>>()+0216 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\xarchive.h, line 0456+0017 byte(s)
+0023:0031B2F3 DBAgentServer.exe, XArchive::operator>><XGAME::xRES_NUM>()+0083 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\xarchive.h, line 0831
+0023:0031BC89 DBAgentServer.exe, XGAME::xBattleLog::DeSerialize()+0073 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\game_src\xstruct.cpp, line 0104
+0023:002794FC DBAgentServer.exe, XArchive::operator>><XGAME::xBattleLog>()+0188 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\xarchive.h, line 0771
+0023:00287772 DBAgentServer.exe, XAccount::DeSerializeDefenseLog()+0098 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\game_src\xaccount.cpp, line 3945
+0023:002872EA DBAgentServer.exe, XAccount::DeSerialize()+2122 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\game_src\xaccount.cpp, line 0353
+0023:0026242B DBAgentServer.exe, XSAccount::DeSerialize()+0011 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\game_src\server\xsaccount.cpp, line 0086+0008 byte(s)
+0023:00364711 DBAgentServer.exe, XGameSvrConnection::RecvAccountInfoSave()+0177 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\xgamesvrconnection.cpp, line 0336
+0023:00363F33 DBAgentServer.exe, XGameSvrConnection::ProcessPacket()+0163 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\xgamesvrconnection.cpp, line 0241
+0023:003A5672 DBAgentServer.exe, XEWinConnectionInServer::Process()+0322 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\server\xwinconnection.cpp, line 0376
+0023:003B031C DBAgentServer.exe, XEWinSocketSvr::ProcessLoginedList()+0444 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\server\xwinsocketsvr.cpp, line 0628
+0023:003AF628 DBAgentServer.exe, XEWinSocketSvr::Process()+0120 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\server\xwinsocketsvr.cpp, line 0525
+0023:003A6D12 DBAgentServer.exe, XEServerMain::Process()+0290 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\server\xservermain.cpp, line 0205
+0023:0037EAFC DBAgentServer.exe, XMain::Process()+0108 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\xmain.cpp, line 0122
+0023:003A40BC DBAgentServer.exe, XEServerApp::OnIdle()+0028 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\mfc\xeserverapp.cpp, line 0157
+0023:003363A1 DBAgentServer.exe, CDBAgentServerApp::OnIdle()+0017 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\dbagentserver.cpp, line 0193
+0023:003D0BF8 DBAgentServer.exe, CWinThread::Run()+0063 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\thrdcore.cpp, line 0621+0008 byte(s)
+0023:005BAAE9 DBAgentServer.exe, AfxWinMain()+0102 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winmain.cpp, line 0047+0007 byte(s)
+0023:0056292E DBAgentServer.exe, __tmainCRTStartup()+0253 byte(s), f:\dd\vctools\crt\crtw32\startup\crt0.c, line 0251+0014 byte(s)
+0023:767786E3 KERNEL32.DLL, BaseThreadInitThunk()+0014 byte(s)
+0023:76FFBD99 ntdll.dll, RtlInitializeExceptionChain()+0133 byte(s)
+0023:76FFBD6C ntdll.dll, RtlInitializeExceptionChain()+0088 byte(s)
+
+2016/ 4/ 7   18:27:09   
+user saved
+2016/ 5/10   21:05:13   
+FaultReason
+
+LoginServerDummy.exe caused an EXCEPTION_ACCESS_VIOLATION in module LoginServerDummy.exe at 0023:0141D9A0, CLoginServerView::OnDraw()+1008 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\loginserver\loginserver\loginserverview.cpp, line 0124+0005 byte(s)
+Register
+EAX=00000000  EBX=012327E4  ECX=00000060  EDX=00000000  ESI=017E32F2
+EDI=00000000  EBP=00EFF41C  ESP=00EFF3DC  EIP=0141D9A0  FLG=00010246
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:0141D9A0 LoginServerDummy.exe, CLoginServerView::OnDraw()+1008 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\loginserver\loginserver\loginserverview.cpp, line 0124+0005 byte(s)
+0023:014A8B93 LoginServerDummy.exe, CView::OnPaint()+0057 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\viewcore.cpp, line 0187
+0023:01495320 LoginServerDummy.exe, CWnd::OnWndMsg()+1229 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2449
+0023:0149693C LoginServerDummy.exe, CWnd::WindowProc()+0034 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2094+0023 byte(s)
+0023:0149152E LoginServerDummy.exe, AfxCallWndProc()+0176 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0285
+0023:01491D07 LoginServerDummy.exe, AfxWndProc()+0052 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0434+0016 byte(s)
+0023:775E78E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:775E978C USER32.dll, GetAncestor()+0259 byte(s)
+0023:775E7BAD USER32.dll, WaitMessage()+0636 byte(s)
+0023:775E7D0F USER32.dll, WaitMessage()+0990 byte(s)
+0023:779E2A62 ntdll.dll, KiUserCallbackDispatcher()+0046 byte(s)
+0023:0141B52D LoginServerDummy.exe, CLoginServerApp::InitInstance()+0301 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\loginserver\loginserver\loginserver.cpp, line 0135
+0023:0168A24F LoginServerDummy.exe, AfxWinMain()+0070 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winmain.cpp, line 0037+0007 byte(s)
+0023:016320C9 LoginServerDummy.exe, __tmainCRTStartup()+0253 byte(s), f:\dd\vctools\crt\crtw32\startup\crt0.c, line 0251+0014 byte(s)
+0023:74FE86E3 KERNEL32.DLL, BaseThreadInitThunk()+0014 byte(s)
+0023:779FBD99 ntdll.dll, RtlInitializeExceptionChain()+0133 byte(s)
+0023:779FBD6C ntdll.dll, RtlInitializeExceptionChain()+0088 byte(s)
+
+2016/ 5/10   21:05:14   
+user saved
+2016/ 5/10   21:05:17   
+FaultReason
+
+DBAgentServerDummy.exe caused an EXCEPTION_ACCESS_VIOLATION in module DBAgentServerDummy.exe at 0023:0126EDEF, CDBAgentServerView::OnDraw()+0639 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\dbagentserverview.cpp, line 0110+0005 byte(s)
+Register
+EAX=00000000  EBX=00E8184C  ECX=0000002F  EDX=00000000  ESI=0165EB2A
+EDI=00000000  EBP=00A0F66C  ESP=00A0F62C  EIP=0126EDEF  FLG=00010246
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:0126EDEF DBAgentServerDummy.exe, CDBAgentServerView::OnDraw()+0639 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\dbagentserverview.cpp, line 0110+0005 byte(s)
+0023:01319AB3 DBAgentServerDummy.exe, CView::OnPaint()+0057 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\viewcore.cpp, line 0187
+0023:01306242 DBAgentServerDummy.exe, CWnd::OnWndMsg()+1229 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2449
+0023:0130785E DBAgentServerDummy.exe, CWnd::WindowProc()+0034 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2094+0023 byte(s)
+0023:01302450 DBAgentServerDummy.exe, AfxCallWndProc()+0176 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0285
+0023:01302C29 DBAgentServerDummy.exe, AfxWndProc()+0052 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0434+0016 byte(s)
+0023:775E78E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:775E978C USER32.dll, GetAncestor()+0259 byte(s)
+0023:775E7BAD USER32.dll, WaitMessage()+0636 byte(s)
+0023:775E7D0F USER32.dll, WaitMessage()+0990 byte(s)
+0023:779E2A62 ntdll.dll, KiUserCallbackDispatcher()+0046 byte(s)
+0023:0126CB3D DBAgentServerDummy.exe, CDBAgentServerApp::InitInstance()+0301 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\pc_prj\dbagentserver\dbagentserver\dbagentserver.cpp, line 0135
+0023:014FB18F DBAgentServerDummy.exe, AfxWinMain()+0070 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winmain.cpp, line 0037+0007 byte(s)
+0023:014A2FEF DBAgentServerDummy.exe, __tmainCRTStartup()+0253 byte(s), f:\dd\vctools\crt\crtw32\startup\crt0.c, line 0251+0014 byte(s)
+0023:74FE86E3 KERNEL32.DLL, BaseThreadInitThunk()+0014 byte(s)
+0023:779FBD99 ntdll.dll, RtlInitializeExceptionChain()+0133 byte(s)
+0023:779FBD6C ntdll.dll, RtlInitializeExceptionChain()+0088 byte(s)
+
+2016/ 5/10   21:05:17   
+user saved

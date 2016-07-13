@@ -3435,12 +3435,6 @@ void XSockGameSvr::RecvAbilLockFree( XPacket& p, const xCALLBACK& c )
 		pHero->SetnumRemainAbilUnlock( numRemainUnlock );
 		bool bOk = pHero->SetUnlockAbil( unit, idAbil );
 		XBREAK( bOk == false );
-// 		const auto abil = pHero->GetAbilNode( unit, idAbil );
-// 		if( XASSERT(pAbil) ) {
-// 			pAbil->point = 0;
-// // 			if( SCENE_TECH )
-// // 				SCENE_TECH->SetbUpdate( TRUE );
-// 		}
 	}
 	GAME->GetpScene()->SetbUpdate( true );
 }

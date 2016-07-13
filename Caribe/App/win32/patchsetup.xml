@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--패치설정파일-->
+<Patchver>
+  <!--마지막 업데이트 버전-->
+  <LastUpdateVer>1</LastUpdateVer>
+  <!--패치 서버 IP-->
+  <Ip>ftp://1.209.171.76:7800</Ip>
+  <!--패치 서버 Port-->
+  <Port>21</Port>
+  <!--패치 서버 ID-->
+  <Id>FtpAdmin</Id>
+  <!--패치 서버 Pass-->
+  <Pass>Monster099!</Pass>
+  <!--패치 서버 루트 폴더-->
+  <Root>Update/Full</Root>
+</Patchver>

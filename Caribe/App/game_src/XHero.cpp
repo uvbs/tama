@@ -105,43 +105,17 @@ XHero* XHero::sCreateHero( XPropHero::xPROP *pProp,
 XHero::XHero()
 	: XAdjParam( XGAME::xMAX_PARAM, 0 )
 	, m_aryUpgrade(XGAME::xTR_MAX)
+	, m_aryUnitsAbil( XGAME::xUNIT_MAX )
 {
 	// DeSerialize용
 	Init();
-//	SetpDelegateLevel( this );
 }
-
-//XHero::XHero( XPropHero::xPROP *pProp, XGAME::xtUnit unit, int numUnit, XGAME::xtClan clan )
-// XHero::XHero( XPropHero::xPROP *pProp, XGAME::xtUnit unit, int numUnit )
-// 	: XAdjParam( XGAME::xMAX_PARAM, 0 ), m_aryUpgrade(XGAME::xTR_MAX)
-// {
-// 	Init();
-// 	XBREAK( pProp == nullptr );
-// 	m_snHero = XE::GenerateID();
-// //	SetpDelegateLevel( this );
-// 	XBREAK( unit >= XGAME::xUNIT_MAX || unit <= XGAME::xUNIT_NONE );
-// 	XGAME::xtSize size = XGAME::GetSizeUnit(unit);
-// 	XBREAK( size == XGAME::xSIZE_SMALL && numUnit > XGAME::MAX_UNIT_SMALL );
-// 	XBREAK( size == XGAME::xSIZE_MIDDLE && numUnit > XGAME::MAX_UNIT_MIDDLE );
-// 	XBREAK( size == XGAME::xSIZE_BIG && numUnit > XGAME::MAX_UNIT_BIG );
-// 	m_Unit = unit;
-// //	m_numUnit = numUnit;
-// 	_m_pProp = pProp;
-// 	m_keyPropHero = PROP_HERO->GetidKey();
-// 	m_idProp = pProp->idProp;
-// #if defined(_CLIENT) || defined(_GAME_SERVER)
-// 	AssignSkillPtr();
-// #endif
-// // 	m_Clan = clan;
-// // 	XBREAK( m_Clan <= 0 || m_Clan >= XGAME::xCL_MAX );
-// 
-// //	m_Grade = pProp->GetGrade();
-// 	m_Grade = XGAME::xGD_COMMON;	// 모든 영웅은 1성부터 시작한다.
-// }
 
 XHero::XHero( XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit )
 // XHero::XHero( XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit, XGAME::xtClan clan )
-	: XAdjParam( XGAME::xMAX_PARAM, 0 ), m_aryUpgrade(XGAME::xTR_MAX)
+	: XAdjParam( XGAME::xMAX_PARAM, 0 )
+	, m_aryUpgrade(XGAME::xTR_MAX)
+	, m_aryUnitsAbil( XGAME::xUNIT_MAX )
 {
 	Init();
 	XBREAK( pProp == nullptr );
@@ -1139,6 +1113,15 @@ void XHero::SetAbilPoint( XGAME::xtUnit unit, ID idNode, int point )
 	auto& abil = itor->second;
 	abil.point = point;
 }
+
+void XHero::SetAbilPoint( const _tstring& idsAbil, int point )
+{
+	auto pAbil = XPropTech::sGet()->GetpNode( idsAbil );
+	if( pAbil ) {
+		SetAbilPoint( pAbil->unit, pAbil->idNode, point );
+	}
+}
+
 #ifdef _GAME_SERVER
 // xXPropTech, xAbil
 /**
@@ -1163,19 +1146,6 @@ int XHero::AddAbilPoint( XGAME::xtUnit unit, ID idAbil )
 		++abil.point;
 	return abil.point;
 }
-// bool XHero::AddAbilPoint( XGAME::xtUnit unit, XPropTech::xNodeAbil *pNode )
-// {
-// 	auto pAbil = GetAbilNode( unit, pNode->idNode );
-// 	if( XASSERT( pAbil ) ) {
-// 		if( pAbil->IsLock() )
-// 			pAbil->SetUnlock();		// 잠겨있으면 일단 잠금을 풀고
-// 		if( pAbil->point < 5 ) {
-// 			++pAbil->point;
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
 #endif // _GAME_SERVER
 
 #if defined(_CLIENT) || defined(_GAME_SERVER)

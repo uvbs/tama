@@ -1,7 +1,11 @@
 ﻿#pragma once
 #include "XHero.h"
 #include "XPropHero.h"
-#include "XPropLegionH.h"
+//#include "XPropLegionH.h"
+namespace XGAME {
+struct xSquad;
+struct xLegion;
+}
 class XArchive;
 class XAccount;
 class XSquadron;
@@ -45,7 +49,7 @@ public:
 	static int sGetLvSkillByInfo( int lvSkill, int lvLegion );
 	static XGAME::xtGrade sGetGradeHeroByInfo( XGAME::xtGrade gradeHero, int lvLegion );
 	//
-	static void sSetLeaderByInfo( const XGAME::xLegion& legion, LegionPtr spLegion, XSquadron *pSquad );
+	static void sSetLeaderByInfo( const XGAME::xLegion* pxLegion, LegionPtr spLegion, XSquadron *pSquad );
 	static XGAME::xtUnit sCreateUnitType( int spawnType );
 //	static int sCreateUnitNum( XGAME::xtUnit unit, BOOL bRandom );
 	static int sGetNumUnitByLevel( XGAME::xtUnit unit, int lvUnit );

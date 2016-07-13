@@ -3494,11 +3494,10 @@ float XBaseUnit::OnInvokeTargetSize( XSKILL::XSkillDat *pSkillDat,
 									XSKILL::XSkillReceiver *pCastingTarget,
 									float size )
 {
-	if( pSkillDat->GetstrIdentifier() == _T("view_blocked") )
-	{
-		auto pBuff = FindBuffSkill(_T("cordyceps"));
-		if( pBuff )
-		{
+	if( pSkillDat->GetstrIdentifier() == _T( "view_blocked" ) ) {
+		auto pBuff = FindBuffSkill( _T( "cordyceps" ) );
+		if( pBuff ) {
+			// 시야차단 특성이 발동될때 "무성한나무"특성이 있다면 반경 증가
 			return pBuff->GetInvokeSizeByLevel();
 		}
 	}

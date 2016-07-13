@@ -141,8 +141,8 @@ public:
 	void OnRecvBattleResultSulfurEncounter( XSpotSulfur *pSpot, const XGAME::xBattleStartInfo& info );
 	int OnOkBattleResultSulfurEncounter( XWnd* pWnd, DWORD p1, DWORD p2 );
 	void OnEndSceneProcess( XSceneProcess *pProcess );
-	int OnDebugRetry( XWnd* pWnd, DWORD p1, DWORD p2 );
-	int OnDebugRecreate( XWnd* pWnd, DWORD p1, DWORD p2 );
+// 	int OnDebugRetry( XWnd* pWnd, DWORD p1, DWORD p2 );
+// 	int OnDebugRecreate( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnDebugProfile( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnUseSkillByButton( XWnd* pWnd, DWORD p1, DWORD p2 );
 	XWndFaceInBattle* GetpWndFace( ID snHero );
@@ -182,6 +182,7 @@ public:
 	static void sSetAbilHeroes();
 	static void sSetAbilHero( XHero *pHero, XGAME::xtUnit unit, LPCTSTR idsAbil, int point );
 	static XSPAcc sCreateAcc();
+	void SaveSingle();
 #endif // _XSINGLE
 
 private:

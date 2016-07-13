@@ -1,5 +1,12 @@
 ﻿#include "stdafx.h"
 #include "XPropLegion.h"
+#include "XSystem.h"
+#include "XPropLegionH.h"
+#ifdef _XSINGLE
+#include "XAccount.h"
+#include "XHero.h"
+#include "XLegion.h"
+#endif // _XSINGLE
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -158,36 +165,83 @@ XGAME::xLegion* XPropLegion::CreateProp( const char* cIdentifier )
 #ifdef _xIN_TOOL
 bool XPropLegion::Save( LPCTSTR szXml )
 {
-	XBREAK(1);	// 현재 작동하지 않음.
-	return true;
 	// 자동 백업.
-// 	_tstring strSrc = XE::MakePackageFullPath( DIR_PROP, szXml );
-// 	TCHAR szSystemPath[ 4096 ];
-// 	XE::MakeHighPath( szSystemPath, XE::MakePackageFullPath( _T( "" ), _T( "" ) ) );
-// 	_tstring strDstPath = szSystemPath;
-// 	strDstPath += _T( "backup/" );
-// 	_tstring strDst = strDstPath;
-// 	int h, m, s;
-// 	XSYSTEM::GetHourMinSec( &h, &m, &s );
-// 	strDst += XE::Format( _T( "propLegion_%02d%02d%02d.xml" ), h, m, s );
-// 	XSYSTEM::MakeDir( strDstPath.c_str() );
-// 	XSYSTEM::CopyFileX( strSrc.c_str(), strDst.c_str() );
-// 
-// 	_tstring strPath = XE::MakePackageFullPath( DIR_PROP, szXml );
-// 	XE::xtERROR err = XSYSTEM::IsReadOnly( strPath.c_str() );
-// 	if( err == XE::ERR_READONLY || err == XE::ERR_PERMISSION_DENIED ) {
-// 		XALERT( "파일을 check out하십시오.\n%s", XE::GetFileName( strPath.c_str() ) );
-// 		return false;
-// 	}
-// 	XXMLDoc xml;
-// 	xml.SetDeclaration();
-// 	XEXmlNode nodeRoot = xml.AddNode( "root" );
-// 	for( auto pProp : m_aryLegions ) {
-// 		pProp->SaveXML( nodeRoot );
-// 	}
-// 	BOOL bRet = xml.Save( XE::MakePackageFullPath( DIR_PROP, szXml ) );
-// 	return ( bRet ) ? true : false;
+	_tstring strSrc = XE::MakePackageFullPath( DIR_PROP, szXml );
+	TCHAR szSystemPath[ 4096 ];
+	XE::MakeHighPath( szSystemPath, XE::MakePackageFullPath( _T( "" ), _T( "" ) ) );
+	_tstring strDstPath = szSystemPath;
+	strDstPath += _T( "backup/" );
+	_tstring strDst = strDstPath;
+	int h, m, s;
+	XSYSTEM::GetHourMinSec( &h, &m, &s );
+	strDst += XE::Format( _T( "propLegion_%02d%02d%02d.xml" ), h, m, s );
+	XSYSTEM::MakeDir( strDstPath.c_str() );
+	XSYSTEM::CopyFileX( strSrc.c_str(), strDst.c_str() );
+
+	_tstring strPath = XE::MakePackageFullPath( DIR_PROP, szXml );
+	XE::xtERROR err = XSYSTEM::IsReadOnly( strPath.c_str() );
+	if( err == XE::ERR_READONLY || err == XE::ERR_PERMISSION_DENIED ) {
+		XALERT( "파일을 check out하십시오.\n%s", XE::GetFileName( strPath.c_str() ) );
+		return false;
+	}
+	XXMLDoc xml;
+	xml.SetDeclaration();
+	XEXmlNode nodeRoot = xml.AddNode( "root" );
+	for( auto pProp : m_aryLegions ) {
+		pProp->SaveXML( nodeRoot );
+	}
+	BOOL bRet = xml.Save( XE::MakePackageFullPath( DIR_PROP, szXml ) );
+	return ( bRet ) ? true : false;
 }
+
+/**
+ @brief idsLegion prop을 찾아서 spAcc의 영웅정보를 바탕으로 갱신한다.
+*/
+#ifdef _XSINGLE
+void XPropLegion::UpdatePropWithAcc( const std::string& idsLegion, XSPAcc spAcc )
+{
+	auto pPropLegion = GetpProp( idsLegion );
+	if( pPropLegion ) {
+		for( auto& squad : pPropLegion->arySquads ) {
+			const int idxPos = squad.idxPos;
+			auto spLegion = spAcc->GetCurrLegion();
+			auto pHero = spLegion->GetpHeroByIdxSquad( idxPos );
+			if( XASSERT( pHero ) ) {
+				squad.m_listAbil.clear();
+				for( auto i = 1; i < XGAME::xUNIT_MAX; ++i ) {
+					const auto unit = (XGAME::xtUnit)i;
+					const auto& mapAbil = pHero->GetmapAbil( unit );
+					// 영웅이 보유한 모든 특성을 갱신한다.
+					for( auto& itorAbil : mapAbil ) {
+						const ID idAbil = itorAbil.first;
+						const XGAME::xAbil& abil = itorAbil.second;
+						if( abil.point > 0 ) {
+							auto pPropAbil = XPropTech::sGet()->GetpNode( unit, idAbil );
+							if( pPropAbil ) {
+								XGAME::xAbil2 abil2;
+								abil2.m_idsAbil = pPropAbil->strSkill;
+								abil2.point = abil.point;
+								squad.m_listAbil.Add( abil2 );
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+#endif // _XSINGLE
+/**
+ @brief spAcc계정의 영웅들이 보유한 특성들을 propLegion_s.xml에 갱신하고 저장한다.
+ 이것은 싱글전용이다.
+*/
+// bool XPropLegion::SaveWithAcc( LPCTSTR szXml, XSPAcc spAcc )
+// {
+// 	// propLegion에 원래 있던 군단프로퍼티를 순회하며 해당 부대 영웅의 특성트리를 갱신한다.
+// 	for( auto pPropLegion : m_aryLegions ) {
+// 	}
+// 	return Save( szXml );
+// }
 #endif // _xIN_TOOL
 
 

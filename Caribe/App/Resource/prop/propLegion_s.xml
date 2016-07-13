@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <single1_player name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="3" boss="percival" mul_atk="1" mul_hp="1">
+        <squad_default idx_pos="-1" hero="ricky" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_MINOTAUR" size_unit="xSIZE_NONE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1" />
+        <squad idx_pos="1" hero="ricky" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_MINOTAUR" size_unit="xSIZE_NONE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1">
+            <abil>
+                <powerful_axe point="4" />
+                <rush point="1" />
+            </abil>
+        </squad>
+        <squad idx_pos="2" hero="ricky" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_MINOTAUR" size_unit="xSIZE_NONE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1" />
+        <squad idx_pos="3" hero="ricky" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_MINOTAUR" size_unit="xSIZE_NONE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1" />
+    </single1_player>
+    <single1_enemy name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="10" boss="percival" mul_atk="1" mul_hp="1">
+        <squad_default idx_pos="-1" hero="ricky" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_MINOTAUR" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" />
+    </single1_enemy>
+    <boss3 name="0" level="0" grade="xGL_ELITE" lv_limit="0" adj_level="0" num_squad="8" boss="kay" mul_atk="0.33" mul_hp="3.3">
+        <squad_default idx_pos="-1" type_atk="xAT_NONE" lv_hero="0" grade="xGD_COMMON" unit="xUNIT_NONE" size_unit="xSIZE_NONE" lv_squad="0" lv_skill="0" mul_atk="1" mul_hp="1" />
+        <squad idx_pos="0" type_atk="xAT_NONE" lv_hero="0" grade="xGD_COMMON" unit="xUNIT_GOLEM" size_unit="xSIZE_NONE" lv_squad="0" lv_skill="0" mul_atk="1" mul_hp="1" />
+        <squad idx_pos="1" type_atk="xAT_NONE" lv_hero="0" grade="xGD_COMMON" unit="xUNIT_GOLEM" size_unit="xSIZE_NONE" lv_squad="0" lv_skill="0" mul_atk="1" mul_hp="1" />
+        <squad idx_pos="2" hero="ricky" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_MINOTAUR" size_unit="xSIZE_NONE" lv_squad="10" lv_skill="0" mul_atk="1" mul_hp="1" />
+        <squad idx_pos="3" type_atk="xAT_NONE" lv_hero="0" grade="xGD_COMMON" unit="xUNIT_GOLEM" size_unit="xSIZE_NONE" lv_squad="0" lv_skill="0" mul_atk="1" mul_hp="1" />
+        <squad idx_pos="4" type_atk="xAT_NONE" lv_hero="0" grade="xGD_COMMON" unit="xUNIT_GOLEM" size_unit="xSIZE_NONE" lv_squad="0" lv_skill="0" mul_atk="1" mul_hp="1" />
+        <squad idx_pos="5" type_atk="xAT_NONE" lv_hero="0" grade="xGD_RARE" unit="xUNIT_MINOTAUR" size_unit="xSIZE_NONE" lv_squad="0" lv_skill="0" mul_atk="1" mul_hp="0.5" />
+        <squad idx_pos="9" type_atk="xAT_NONE" lv_hero="0" grade="xGD_RARE" unit="xUNIT_MINOTAUR" size_unit="xSIZE_NONE" lv_squad="0" lv_skill="0" mul_atk="1" mul_hp="0.5" />
+        <squad idx_pos="7" hero="kay" type_atk="xAT_NONE" lv_hero="0" grade="xGD_EPIC" unit="xUNIT_GOLEM" size_unit="xSIZE_NONE" lv_squad="7" lv_skill="3" mul_atk="2" mul_hp="3" />
+    </boss3>
+</root>

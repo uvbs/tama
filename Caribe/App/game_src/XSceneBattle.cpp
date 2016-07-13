@@ -35,6 +35,7 @@
 #ifdef _XSINGLE
 #include "XLegion.h"
 #include "XPropLegion.h"
+#include "XPropLegionH.h"
 #endif // _XSINGLE
 #include "XSoundMng.h"
 
@@ -348,6 +349,17 @@ void XSceneBattle::sSetBattleParamForSingle()
 	bs.m_typeBattle = XGAME::xBT_NORMAL;
 	XSceneBattle::sSetBattleStart( bs );
 }
+#endif // _XSINGLE
+
+#ifdef _XSINGLE
+void XSceneBattle::SaveSingle()
+{
+	XXMLDoc xml;
+	xml.SetDeclaration();
+	auto nodeVs = xml.AddNode( "vs" );
+
+}
+
 #endif // _XSINGLE
 
 void XSceneBattle::CreateBattleUI()
@@ -746,70 +758,6 @@ void XSceneBattle::Draw( void )
 					PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
 					v.y += distY;
 				}
-/*
-				_tstring str;
-				str = XE::Format( _T( "영웅:%s" ), spSquad->GetpHero()->GetstrName().c_str() );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "유닛:%s" ), XGAME::GetStrUnit( spSquad->GetUnitType() ) );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "근접공격력:%.1f" ), pUnit->GetAttackMeleeDamage( UnitPtr() ) );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "원거리공격력:%.1f" ), pUnit->GetAttackRangeDamage( UnitPtr() ) );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "공격속도:%.1f" ), pUnit->GetSpeedAttack( pUnit->GetspTarget() ) );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "방어력:%.1f" ), pUnit->GetDefensePower() );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "체력:%d/%d" ), pUnit->GetHp(), pUnit->GetMaxHp() );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "이동속도:%.1f" ), pUnit->GetSpeedMoveForPixel() );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = _T( "---------------------" );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "치명타율:%.1f%%" ), pUnit->GetCriticalRatio() * 100.f );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				//str = XE::Format( _T( "회피율:%.1f%%" ), pUnit->GetEvadeRatio( XSKILL::xDMG_NONE ) );
-				str = XE::Format(_T("회피율:%.1f%%"), pUnit->GetEvadeRatio( XSKILL::xDMG_NONE, nullptr ) * 100.f);
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "치명타배수:x%.1f" ), pUnit->GetCriticalPower() );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "관통율:%.1f%%" ), pUnit->GetPenetrationRatio() * 100.f );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "받는모든피해율:%.1f%%" ), ( 1.f - -pUnit->GetAdjParam( XGAME::xADJ_DAMAGE_RECV )->valPercent ) * 100.f );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "받는근접피해율:%.1f%%" ), (1.f - -pUnit->GetAdjParam( XGAME::xADJ_MELEE_DAMAGE_RECV )->valPercent) * 100.f);
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "받는원거리피해율:%.1f%%" ), ( 1.f - -pUnit->GetAdjParam( XGAME::xADJ_RANGE_DAMAGE_RECV )->valPercent ) * 100.f );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "받는모든치명타율:%.1f%%" ), ( 1.f - -pUnit->GetAdjParam( XGAME::xADJ_CRITICAL_RECV )->valPercent ) * 100.f );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "받는근접치명타율:%.1f%%" ), ( 1.f - -pUnit->GetAdjParam( XGAME::xADJ_MELEE_CRITICAL_RECV )->valPercent ) * 100.f );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "받는원거리치명타율:%.1f%%" ), ( 1.f - -pUnit->GetAdjParam( XGAME::xADJ_RANGE_CRITICAL_RECV )->valPercent ) * 100.f );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-				str = XE::Format( _T( "타격카운트:%d"), pUnit->GetcntAttack() );
-				PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
-				v.y += distY;
-*/
 			}
 		}
 	}
@@ -1055,133 +1003,12 @@ int XSceneBattle::OnSulfurRetreat( XWnd* pWnd, DWORD p1, DWORD p2 )
 	
 	return 1;
 }
-
-
-/****************************************************************
-* @brief 배치된 유닛 그대로 전투만 다시 시작한다.
-*****************************************************************/
-int XSceneBattle::OnDebugRetry( XWnd* pWnd, DWORD p1, DWORD p2 )
-{
-#ifdef _XSINGLE
-	CONSOLE("OnDebugButton");
-	if( p1 == 1 )
-	{
-#if defined(WIN32) && (defined(_DEBUG) || defined(_DEV_TEST))	// 디버그이거나 내부테스트용일때만
-		SAFE_DELETE( CONSTANT );
-		GAME->LoadConstant();
-		DestroyWndByIdentifier( "butt.skill" );
-		DestroyWndByIdentifier( "butt.skill.cancel" );
-		SAFE_DELETE( PROP_UNIT );
-		PROP_UNIT = new XPropUnit;
-		if( PROP_UNIT->Load( _T( "propUnit.txt" ) ) == FALSE )
-			XERROR( "load error! %s", PROP_UNIT->GetstrFilename() );
-		CONSOLE("Reloaded PropUnit...");
-		CONSOLE( "Load propSkill..." );
-		SAFE_DELETE( SKILL_MNG );
-		SKILL_MNG = new XSkillMng;
-		if( SKILL_MNG->Load( _T( "propSkill.xml" ) ) == FALSE )
-			XERROR( "propSkill load error" );
-#endif
-		// 군단객체만 다시 만든다. XLegion은 그대로 쓴다.
-//	XBattleField::sGet()->ResetLegionObj( m_pWndWorld );
-		/*
-		legionObj를 모두 파괴해서 참조하고 있는 오브젝트들을 모두 해제한다.
-		최종적으로 objmng를 모두 파괴한다.
-		*/
-		for( auto& camp : m_aryCamp ) {
-			camp.m_spLegionObj->Release();
-			camp.m_spLegionObj.reset();
-		}
-		XBattleField::sGet()->Clear();
-		// legionObj를 다시 생성한다.
-		for( auto& camp : m_aryCamp ) {
-			camp.CreateLegionObj();
-			camp.CreateSquadObj( m_pWndWorld, s_BattleStart.m_typeBattle );
-		}
-
-		// 배틀 씬프로세스를 종료시켜 다시 레디상태로 가게 한다.
-		m_pProcess->SetbDestroy( TRUE );
-		m_pProcess = new XSceneProcessBattle( this, m_pWndWorld->GetprefBattleField() );
-		m_pProcess->SetstrIdentifier( "scene.process.battle" );
-		Add( m_pProcess );
-		m_pWndWorld->OnReset( false );
-	}
-	SetbUpdate( true );
-//	m_ptBrave = 0;
-#endif // _XSINGLE
-	return 1;
-}
-/**
- @brief 부대를 재 생성해서 다시 시작한다.
-*/
-int XSceneBattle::OnDebugRecreate( XWnd* pWnd, DWORD p1, DWORD p2 )
-{
-#ifdef _XSINGLE
-	CONSOLE( "%s", __TFUNC__ );
-	if( p1 == 1 )
-	{
-		DestroyWndByIdentifier( "butt.skill" );
-		DestroyWndByIdentifier( "butt.skill.cancel" );
-		if( XAPP->m_bReloadWhenRetryConstant ) {
-			SAFE_DELETE( CONSTANT );
-			GAME->LoadConstant();
-		}
-		if( XAPP->m_bReloadWhenRetryPropSkill ) {
-			CONSOLE( "Load propSkill..." );
-			SAFE_DELETE( SKILL_MNG );
-			SKILL_MNG = new XSkillMng;
-			if( SKILL_MNG->Load( _T( "propSkill.xml" ) ) == FALSE ) {
-				XERROR( "propSkill load error" );
-			}
-		}
-		if( XAPP->m_bReloadWhenRetryPropUnit ) {
-			CONSOLE( "Load propUnit..." );
-			SAFE_DELETE( PROP_UNIT );
-			PROP_UNIT = new XPropUnit;
-			if( PROP_UNIT->Load( _T( "propUnit.txt" ) ) == FALSE ) {
-				XERROR( "load error! %s", PROP_UNIT->GetstrFilename() );
-			}
-		}
-		if( XAPP->m_bReloadWhenRetryPropLegion ) {
-			GAME->LoadPropLegion();
-		}
-		// 군단과 군단객체를 새로 만든다.
-//		XBattleField::sGet()->RecreateLegionObj( m_pWndWorld );
-		for( auto& camp : m_aryCamp ) {
-			camp.m_spLegionObj->Release();
-			camp.m_spLegionObj.reset();
-			camp.m_spLegion.reset();
-		}
-		// XLegion과 XHero들을 모두 파괴한다.
-		XAccount::sDestroyPlayer();
-		// objmng를 파괴한다.
-		XBattleField::sGet()->Clear();
-		//
-		m_aryCamp[xSI_PLAYER].m_idsLegion = "single1_player";
-		m_aryCamp[xSI_OTHER].m_idsLegion = "single1_enemy";
-		for( auto& camp : m_aryCamp ) {
-			camp.ReCreateLegion( m_pWndWorld );
-		}
-		// 배틀 씬프로세스를 종료시켜 다시 레디상태로 가게 한다.
-		m_pProcess->SetbDestroy( TRUE );
-		m_pProcess = new XSceneProcessBattle( this, m_pWndWorld->GetprefBattleField() );
-		m_pProcess->SetstrIdentifier( "scene.process.battle" );
-		Add( m_pProcess );
-		m_pWndWorld->OnReset( true );
-		SetbUpdate( true );
-	}
-	SetbUpdate( true );
-//	m_ptBrave = 0;
-#endif // _XSINGLE
-	return 1;
-}
-
 int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 #if defined(_XSINGLE) && defined(WIN32)
 	CONSOLE( "%s", __TFUNC__ );
-	const bool bRetry = (p1 == 1 );
-	const bool bRecreate = (p1 == 2);
+	const bool bRetry = (p1 == 1 );			// 군단배치만 다시 한다.
+	const bool bRecreate = (p1 == 2);		// 군단을 다시 생성한다.
 	if( bRetry || bRecreate ) {	
 		DestroyWndByIdentifier( "butt.skill" );
 		DestroyWndByIdentifier( "butt.skill.cancel" );
@@ -1208,6 +1035,7 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 		}
 		if( XAPP->m_bReloadWhenRetryPropLegion ) {
 			GAME->LoadPropLegion();
+//			XPropLegion::sGet()->Save( _T( "test.xml" ) );
 		}
 		// 군단과 군단객체를 새로 만든다.
 		for( auto& camp : m_aryCamp ) {

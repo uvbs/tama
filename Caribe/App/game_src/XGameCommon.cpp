@@ -238,7 +238,11 @@ void XGameCommon::LoadPropLegion()
 {
 	CONSOLE( "Load propLegion.xml..." );
 	XPropLegion::sGet()->DestroyAll();
+#ifdef _XSINGLE
+	XPropLegion::sGet()->Load( _T( "propLegion_s.xml" ) );
+#else
 	XPropLegion::sGet()->Load( _T( "propLegion.xml" ) );
+#endif // not _XSINGLE
 	CONSOLE( "Load propLegion.xml...complete" );
 }
 

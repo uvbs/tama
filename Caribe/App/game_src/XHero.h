@@ -61,7 +61,8 @@ private:
 	XSKILL::XSkillDat *m_pActive = nullptr;
 #endif
 	bool m_bLive = true;			///< 레이드등에서 영웅의 사망여부를 알수있도록.
-	XArrayLinearN<std::map<ID, XGAME::xAbil>, XGAME::xUNIT_MAX> m_aryUnitsAbil;		///< 모든 유닛들의 특성치 포인트(특성아이디로 특성포인트를 검색한다
+// 	XArrayLinearN<std::map<ID, XGAME::xAbil>, XGAME::xUNIT_MAX> m_aryUnitsAbil;		///< 모든 유닛들의 특성치 포인트(특성아이디로 특성포인트를 검색한다
+	XVector<std::map<ID, XGAME::xAbil>> m_aryUnitsAbil;		///< 모든 유닛들의 특성치 포인트(특성아이디로 특성포인트를 검색한다
 	int m_numInitAbil = 0;			// 특성초기화 한 횟수
 	int m_numRemainAbilPoint = 0;		// 남은 특성포인트 수
 	int m_numRemainAbilUnlock = 0;	// 남은 특성언락기회 횟수
@@ -172,9 +173,6 @@ public:
 		return 1.f;		// 사거리는 일단 증폭이 안되는걸로 함.
 	}
 	/// 일단 지휘력은 보정값이 없는걸로 하고 추가 패치하자
-// 	int GetleadPowerMax( void ) {
-// 		return GetpProp()->leadPowerMax;
-// 	}
 	BOOL IsRange( void ) {
 		return GetpProp()->IsRange();
 	}
@@ -193,16 +191,7 @@ public:
 	int DeSerialize( XArchive& ar, XSPAcc spAcc, int verHero );
 	int SerializeUpgrade( XArchive& ar ) const;
 	int DeSerializeUpgrade( XArchive& ar );
-// 	int SerializeLevelupReady( XArchive& ar );
-// 	int DeSerializeLevelupReady( XArchive& ar );
-// 	int SerializeProvided( XArchive& ar );
-// 	int DeSerializeProvided( XArchive& ar );
 	//
-// 	void SetUnit(XGAME::xtUnit typeUnit, int numUnit) {
-// 		m_Unit = typeUnit;
-// 		m_numUnit = numUnit;
-// 	}
-
 	void SetUnequipAll( void );
 	BOOL SetUnequip(XBaseItem *pItem);
 	BOOL SetEquip(XBaseItem *pItem);
@@ -217,14 +206,10 @@ public:
 	float GetAdjParamByItem( XGAME::xtParameter adjParam );
 	void UpdateEquipItem( ID snItem, XBaseItem *pNewItem );
 	bool IsEquip( ID snItem );
-//	std::pair<int, int> GetCostHeroLevelUpByRes( int lvAcc ) const;
-//	int GetCostHeroSkillupByRes( XGAME::xtTrain type ) const;
-//	const XPropUpgrade::xPropLevel* GetpPropLevelupNext() const;
 	const XPropUpgrade::xPropSkill* GetpPropSkillupNext( XGAME::xtTrain type ) const;
 	const XPropUpgrade::xPropSkill* GetpPropSkillupNextNext( XGAME::xtTrain type ) const;
 	const XPropSquad::xPROP* GetpPropSquadupNext() const;
 	const XPropSquad::xPROP* GetpPropSquadupNextNext() const;
-//	bool AddMedal( int add );
 	bool IsFullMedal();
 	bool IsFullScroll( XGAME::xtTrain type );
 	// 렙업이 가능한 상태인가
@@ -233,12 +218,6 @@ public:
 		return upgrade.GetLevel() < upgrade.GetMaxLevel();
 	}
 	/// 부대렙업이 가능한 상태인지
-// 	bool IsAbleSquadup() {
-// 		return m_levelSquad < PROP_SQUAD->GetMaxLevel();
-// 	}
-// 	bool IsMaxSquadLevel() const {
-// 		return m_levelSquad >= PROP_SQUAD->GetMaxLevel();
-// 	}
 	bool IsMaxLevel( XGAME::xtTrain type ) const;
 	inline XGAME::xtAttack GetType() {
 		return XGAME::GetTypeUnit( m_Unit );
@@ -246,13 +225,6 @@ public:
 	inline XGAME::xtAttack GetTypeAtk() {
 		return XGAME::GetTypeUnit( m_Unit );
 	}
-//	bool GetItemLevelUpSquad( ID *pOutID, int *pOutNum );
-// 	bool IsAbleProvideSquad();
-// 	bool IsAbleProvideSquad( const XPropSquad::xPROP* pPropNext );
-// 	bool IsAbleProvideSkill( XGAME::xtTrain type );
-// 	bool IsAbleProvideSkill( const XPropUpgrade::xPropSkill* pPropNext, XGAME::xtTrain type );
-// 	int GetNumRemainMedal( const XPropSquad::xPROP* pPropSquadNext );
-// 	bool GetItemLevelUpSkill( XGAME::xtTrain type, ID *pOutID, int *pOutNum );
 	bool IsHaveSkill( XGAME::xtTrain type ) {
 		if( XBREAK(XGAME::IsInvalidSkillTrain(type)) )
 			return false;
@@ -326,11 +298,15 @@ public:
 	XGAME::xtError _IsPromotionForXAccount();
 	// 특성
 	const XGAME::xAbil GetAbilNode(XGAME::xtUnit unit, ID idNode);
-	std::map<ID, XGAME::xAbil>& GetTechTree( XGAME::xtUnit unit ) {
+	inline std::map<ID, XGAME::xAbil>& GetTechTree( XGAME::xtUnit unit ) {
+		return m_aryUnitsAbil[ unit ];
+	}
+	inline const std::map<ID, XGAME::xAbil>& GetmapAbil( XGAME::xtUnit unit ) {
 		return m_aryUnitsAbil[ unit ];
 	}
 	bool SetUnlockAbil( XGAME::xtUnit unit, ID idNode );
 	void SetAbilPoint( XGAME::xtUnit unit, ID idNode, int point );
+	void SetAbilPoint( const _tstring& idsAbil, int point );
 	int GetLevelAbil( XGAME::xtUnit unit, ID idNode ) {
 		auto abil = GetAbilNode( unit, idNode );
 		return abil.point;
