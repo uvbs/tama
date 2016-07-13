@@ -1,0 +1,94 @@
+2015/11/ 9   13:35:35   
+FaultReason
+
+Caribe.exe caused an EXCEPTION_ACCESS_VIOLATION in module Caribe.exe at 0023:009D8576, XWnd::Find()+0118 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwnd.cpp, line 0273
+Register
+EAX=00000000  EBX=065F4A28  ECX=00CEF91C  EDX=00000062  ESI=02CF9328
+EDI=02DAA640  EBP=0052E588  ESP=0052E57C  EIP=009D8576  FLG=00210287
+CS=0023   DS=002B  SS=002B  ES=002B   FS=0053  GS=002B
+0023:009D8576 Caribe.exe, XWnd::Find()+0118 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwnd.cpp, line 0273
+0023:009D85B0 Caribe.exe, XWnd::Find()+0176 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwnd.cpp, line 0278+0010 byte(s)
+0023:009D85B0 Caribe.exe, XWnd::Find()+0176 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwnd.cpp, line 0278+0010 byte(s)
+0023:009EFAFE Caribe.exe, XWndView::Destroy()+0062 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwndview.cpp, line 0065
+0023:0083850D Caribe.exe, XWndView::~XWndView()+0061 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwndview.h, line 0086+0061 byte(s)
+0023:00838017 Caribe.exe, XWndPopup::~XWndPopup()+0167 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwndview.h, line 0341+0167 byte(s)
+0023:0083925B Caribe.exe, XWndPopup::`scalar deleting destructor'()+0011 byte(s)
+0023:009D78ED Caribe.exe, XWnd::Destroy()+0077 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwnd.cpp, line 0146
+0023:009D78C4 Caribe.exe, XWnd::Destroy()+0036 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwnd.cpp, line 0151
+0023:009D78C4 Caribe.exe, XWnd::Destroy()+0036 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwnd.cpp, line 0151
+0023:0083798C Caribe.exe, XWnd::~XWnd()+0060 byte(s), c:\xuzhu_work\project\iphone_zero\xe\common\_xlibrary\_wnd2\xwnd.h, line 0330+0060 byte(s)
+0023:008C1739 Caribe.exe, XGame::~XGame()+0361 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\game_src\xgame.h, line 0113+0361 byte(s)
+0023:008C265B Caribe.exe, XGame::`scalar deleting destructor'()+0011 byte(s)
+0023:009CC874 Caribe.exe, XClientMain::Destroy()+0036 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\client\xclientmain.cpp, line 0077+0013 byte(s)
+0023:00821AD3 Caribe.exe, XAppMain::~XAppMain()+0131 byte(s), c:\xuzhu_work\project\iphone_zero\caribe\app\game_src\client\xappmain.h, line 0095+0131 byte(s)
+0023:00821DFB Caribe.exe, XAppMain::`scalar deleting destructor'()+0011 byte(s)
+0023:009C2BA0 Caribe.exe, XApp::Destroy()+0096 byte(s), c:\xuzhu_work\project\iphone_zero\xe\xframework\client\xapp.cpp, line 0128+0019 byte(s)
+0023:009B553E Caribe.exe, CaribeView::`scalar deleting destructor'()+0078 byte(s)
+0023:00A6A39E Caribe.exe, CView::PostNcDestroy()+0011 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\viewcore.cpp, line 0124
+0023:00A56ED1 Caribe.exe, CWnd::OnNcDestroy()+0276 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0936
+0023:00A577CF Caribe.exe, CWnd::OnWndMsg()+1229 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2449
+0023:00A58DFF Caribe.exe, CWnd::WindowProc()+0034 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2094+0023 byte(s)
+0023:00A5397C Caribe.exe, AfxCallWndProc()+0176 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0285
+0023:00A5414C Caribe.exe, AfxWndProc()+0052 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0434+0016 byte(s)
+0023:74BF78E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:74BF97BC USER32.dll, GetAncestor()+0259 byte(s)
+0023:74BF7BAD USER32.dll, WaitMessage()+0636 byte(s)
+0023:74BFB365 USER32.dll, DestroyWindow()+0065 byte(s)
+0023:770C2A82 ntdll.dll, KiUserCallbackDispatcher()+0046 byte(s)
+0023:00AA6096 Caribe.exe, CDocManager::CloseAllDocuments()+0039 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\docmgr.cpp, line 0653+0010 byte(s)
+0023:00A66C38 Caribe.exe, CFrameWnd::OnClose()+0191 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winfrm.cpp, line 0891
+0023:00A577CF Caribe.exe, CWnd::OnWndMsg()+1229 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2449
+0023:00A58DFF Caribe.exe, CWnd::WindowProc()+0034 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2094+0023 byte(s)
+0023:00A5397C Caribe.exe, AfxCallWndProc()+0176 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0285
+0023:00A5414C Caribe.exe, AfxWndProc()+0052 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0434+0016 byte(s)
+0023:74BF78E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:74BF7A4C USER32.dll, WaitMessage()+0283 byte(s)
+0023:74BF7BAD USER32.dll, WaitMessage()+0636 byte(s)
+0023:74BF7D0F USER32.dll, WaitMessage()+0990 byte(s)
+0023:770C2A82 ntdll.dll, KiUserCallbackDispatcher()+0046 byte(s)
+0023:74BF99ED USER32.dll, GetWindowThreadProcessId()+0520 byte(s)
+0023:71202957 UxTheme.dll, Ordinal45()+0635 byte(s)
+0023:712016B9 UxTheme.dll
+0023:712017AF UxTheme.dll
+0023:74BF75E7 USER32.dll, gapfnScSendMessage()+0751 byte(s)
+0023:74BF78E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:74BF7A4C USER32.dll, WaitMessage()+0283 byte(s)
+0023:74BFDE1A USER32.dll, AttachThreadInput()+0204 byte(s)
+0023:74BFDE42 USER32.dll, CallWindowProcW()+0028 byte(s)
+0023:00A54F61 Caribe.exe, CWnd::DefWindowProcW()+0070 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 1116+0007 byte(s)
+0023:00A54F91 Caribe.exe, CWnd::Default()+0043 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0315+0019 byte(s)
+0023:00A67CFF Caribe.exe, CFrameWnd::OnSysCommand()+0079 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winfrm.cpp, line 1138+0007 byte(s)
+0023:00A57649 Caribe.exe, CWnd::OnWndMsg()+0839 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2305
+0023:00A58DFF Caribe.exe, CWnd::WindowProc()+0034 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2094+0023 byte(s)
+0023:00A5397C Caribe.exe, AfxCallWndProc()+0176 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0285
+0023:00A5414C Caribe.exe, AfxWndProc()+0052 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0434+0016 byte(s)
+0023:74BF78E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:74BF97BC USER32.dll, GetAncestor()+0259 byte(s)
+0023:74BF7BAD USER32.dll, WaitMessage()+0636 byte(s)
+0023:74BF7D0F USER32.dll, WaitMessage()+0990 byte(s)
+0023:770C2A82 ntdll.dll, KiUserCallbackDispatcher()+0046 byte(s)
+0023:74BF99ED USER32.dll, GetWindowThreadProcessId()+0520 byte(s)
+0023:71202957 UxTheme.dll, Ordinal45()+0635 byte(s)
+0023:712016B9 UxTheme.dll
+0023:712017AF UxTheme.dll
+0023:74BF75E7 USER32.dll, gapfnScSendMessage()+0751 byte(s)
+0023:74BF78E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:74BF7A4C USER32.dll, WaitMessage()+0283 byte(s)
+0023:74BFDE1A USER32.dll, AttachThreadInput()+0204 byte(s)
+0023:74BFDE42 USER32.dll, CallWindowProcW()+0028 byte(s)
+0023:00A54F61 Caribe.exe, CWnd::DefWindowProcW()+0070 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 1116+0007 byte(s)
+0023:00A58E16 Caribe.exe, CWnd::WindowProc()+0057 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 2095+0019 byte(s)
+0023:00A5397C Caribe.exe, AfxCallWndProc()+0176 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0285
+0023:00A5414C Caribe.exe, AfxWndProc()+0052 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\wincore.cpp, line 0434+0016 byte(s)
+0023:74BF78E8 USER32.dll, CallNextHookEx()+0453 byte(s)
+0023:74BF7A4C USER32.dll, WaitMessage()+0283 byte(s)
+0023:74BF8D3C USER32.dll, RegisterClipboardFormatW()+2668 byte(s)
+0023:74BF9323 USER32.dll, DispatchMessageW()+0016 byte(s)
+0023:00A5DAF8 Caribe.exe, AfxInternalPumpMessage()+0062 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\thrdcore.cpp, line 0183
+0023:00A5E1CA Caribe.exe, CWinThread::Run()+0087 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\thrdcore.cpp, line 0629+0007 byte(s)
+0023:00C4DD0D Caribe.exe, AfxWinMain()+0102 byte(s), f:\dd\vctools\vc7libs\ship\atlmfc\src\mfc\winmain.cpp, line 0047+0007 byte(s)
+0023:00BF2A9C Caribe.exe, __tmainCRTStartup()+0253 byte(s), f:\dd\vctools\crt\crtw32\startup\crt0.c, line 0251+0014 byte(s)
+0023:74DD86E3 KERNEL32.DLL, BaseThreadInitThunk()+0014 byte(s)
+0023:770DBD79 ntdll.dll, RtlInitializeExceptionChain()+0133 byte(s)
+0023:770DBD4C ntdll.dll, RtlInitializeExceptionChain()+0088 byte(s)
+

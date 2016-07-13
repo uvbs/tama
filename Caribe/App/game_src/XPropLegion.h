@@ -8,9 +8,13 @@
 #pragma once
 
 #include "XXMLDoc.h"
-#include "XPropLegionH.h"
+//#include "XPropLegionH.h"
 #include "XStruct.h"
 
+namespace XGAME {
+struct xSquad;
+struct xLegion;
+}
 const int VER_PROP_LEGION = 1;
 
 ////////////////////////////////////////////////////////////////
@@ -50,6 +54,10 @@ public:
 	void DeSerialize( XArchive& ar, int );
 #ifdef _xIN_TOOL
 	bool Save( LPCTSTR szXml );
+	//	bool SaveWithAcc( LPCTSTR szXml, XSPAcc spAcc );
+  #ifdef _XSINGLE
+	void UpdatePropWithAcc( const std::string& idsLegion, XSPAcc spAcc );
+  #endif // _XSINGLE
 #endif // _xIN_TOOL
 private:
 	static std::shared_ptr<XPropLegion> s_spInstance;

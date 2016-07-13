@@ -3,6 +3,7 @@
 #include "XStruct.h"
 #include "XLegion.h"
 #include "XCampObjHero.h"
+#include "XPropLegionH.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -18,7 +19,7 @@ XE_NAMESPACE_START( xCampaign )
 
 void XStageObjHero::sSetLevelLegion( StagePtr spPropStage, int lvLegion )
 {
-	spPropStage->legion.lvLegion = lvLegion;
+	spPropStage->m_spxLegion->lvLegion = lvLegion;
 	spPropStage->levelLimit = lvLegion - LV_LIMIT_UNDER;
 	if( spPropStage->levelLimit > XGAME::GetLevelMaxAccount() )
 		spPropStage->levelLimit = XGAME::GetLevelMaxAccount();
@@ -39,10 +40,10 @@ int XStageObjHero::Serialize( XArchive& ar )
 		ar << spPropStage->idProp;	// cycle과 idHero정보가 있음.
 		XBREAK( m_idHero == 0 );
 		ar << m_idHero;
-		XBREAK( spPropStage->legion.lvLegion == 0 );
-		XBREAK( spPropStage->legion.lvLegion > 0xff );
+		XBREAK( spPropStage->m_spxLegion->lvLegion == 0 );
+		XBREAK( spPropStage->m_spxLegion->lvLegion > 0xff );
 //		spPropStage->Serialize( ar );
-		ar << (BYTE)spPropStage->legion.lvLegion;
+		ar << (BYTE)spPropStage->m_spxLegion->lvLegion;
 		ar << (BYTE)GetnumStar();
 		ar << (BYTE)GetnumClear();
 		ar << (BYTE)0;
@@ -85,7 +86,7 @@ int XStageObjHero::DeSerialize( const CampObjPtr spCampObj,
 	SetspPropStage( spPropStage );
 //	pPropStage->DeSerialize( ar, verCamp );
 	ar >> b0; sSetLevelLegion( GetspPropStage(), b0 );
-	SetLevelLegion( spPropStage->legion.lvLegion );
+	SetLevelLegion( spPropStage->m_spxLegion->lvLegion );
 	ar >> b0;	SetnumStar( b0 );
 	ar >> b0;	SetnumClear( b0 );
 	ar >> b0;	

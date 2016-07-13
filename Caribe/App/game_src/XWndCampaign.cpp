@@ -14,6 +14,7 @@
 #include "XAccount.h"
 #include "XGameWnd.h"
 #include "XSockGameSvr.h"
+#include "XPropLegionH.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT
@@ -423,9 +424,9 @@ XWnd* XWndPopupCampaign::UpdateListElem( XWnd *pElem, xCampaign::StageObjPtr spS
 	pButt->SetpSurface( 0, XE::MakePath( DIR_UI, strImg ) );
 	// 군단 레벨
 	{
-		int lvLegion = spPropStage->legion.lvLegion;
+		int lvLegion = spPropStage->m_spxLegion->lvLegion;
 		if( lvLegion == 0 )
-			lvLegion = ACCOUNT->GetLevel() + spPropStage->legion.adjLvLegion;
+			lvLegion = ACCOUNT->GetLevel() + spPropStage->m_spxLegion->adjLvLegion;
 		auto pText = xSET_TEXT( pElem, "text.lv.legion", XFORMAT( "%d", lvLegion ) );
 		if( pText ) {
 			XCOLOR col = XCOLOR_WHITE;
@@ -521,20 +522,6 @@ XWnd* XWndPopupCampaign::UpdateListElem( XWnd *pElem, xCampaign::StageObjPtr spS
 		xSET_SHOW( pElem, "img.star.num", false );
 	}
 #ifdef _CHEAT
-// 	if( XAPP->m_bDebugMode ) {
-// 		int lvLegion = spPropStage->legion.lvLegion;
-// 		if( lvLegion == 0 )
-// 			lvLegion = ACCOUNT->GetLevel() + spPropStage->legion.adjLvLegion;
-// 		auto pText = xSET_TEXT( pElem, "text.lv.legion", XFORMAT( "%d", lvLegion ) );
-// 		if( pText ) {
-// 			pText->SetbShow( TRUE );
-// 			XCOLOR col = XCOLOR_WHITE;
-// 			if( spStageObj->GetPower() )
-// 				col = XGAME::GetColorPower( spStageObj->GetPower(), ACCOUNT->GetPowerExcludeEmpty() );
-// 			pText->SetColorText( col );
-// 		}
-// 	} else
-// 		xSET_SHOW( pElem, "text.lv.legion", false );
 #endif // _CHEAT
 	///< 
 	return pElem;
@@ -758,7 +745,7 @@ XWnd* XWndGuildRaid::UpdateListElem( XWnd *pElem, xCampaign::StageObjPtr spStage
 		return nullptr;
 	pButt->SetpSurface( 0, XE::MakePath( DIR_UI, strImg ) );
 	// 군단 레벨
-	xSET_TEXT( pElem, "text.lv.legion", XFORMAT( "%d", spPropStage->legion.lvLegion ) );
+	xSET_TEXT( pElem, "text.lv.legion", XFORMAT( "%d", spPropStage->m_spxLegion->lvLegion ) );
 	// 보상 포인트
 	int reward = 0;
 	if( i == numStage - 1 )	// 마지막스테이지
@@ -978,9 +965,9 @@ XWnd* XWndPopupCampaignMedal::UpdateListElem( XWnd *pElem, xCampaign::StageObjPt
 	}
 	pButt->SetpSurface( 0, XE::MakePath( DIR_UI, strImg ) );
 	// 군단 레벨
-	int lvLegion = spPropStage->legion.lvLegion;
+	int lvLegion = spPropStage->m_spxLegion->lvLegion;
 	if( lvLegion == 0 )
-		lvLegion = ACCOUNT->GetLevel() + spPropStage->legion.adjLvLegion;
+		lvLegion = ACCOUNT->GetLevel() + spPropStage->m_spxLegion->adjLvLegion;
 	auto pText = xSET_TEXT( pElem, "text.lv.legion", XFORMAT( "%d", lvLegion ) );
 	if( pText ) {
 		XCOLOR col = XCOLOR_WHITE;
@@ -1024,9 +1011,9 @@ XWnd* XWndPopupCampaignMedal::UpdateListElem( XWnd *pElem, xCampaign::StageObjPt
 	}
 #ifdef _CHEAT
 	if( XAPP->m_bDebugMode ) {
-		int lvLegion = spPropStage->legion.lvLegion;
+		int lvLegion = spPropStage->m_spxLegion->lvLegion;
 		if( lvLegion == 0 )
-			lvLegion = ACCOUNT->GetLevel() + spPropStage->legion.adjLvLegion;
+			lvLegion = ACCOUNT->GetLevel() + spPropStage->m_spxLegion->adjLvLegion;
 		auto pText = xSET_TEXT( pElem, "text.lv.legion", XFORMAT( "%d", lvLegion ) );
 		if( pText ) {
 			pText->SetbShow( TRUE );
@@ -1164,8 +1151,7 @@ XWnd* XWndCampaignHero::UpdateListElem( XWnd *pElem, xCampaign::StageObjPtr spSt
 			pText->SetstrIdentifier( "text.debug.level" );
 			pElem->Add( pText );
 		}
-// 		pText->SetText( XFORMAT("%d(%d)", spPropStage->legion.lvLegion, spPropStage->levelLimit) );
-		pText->SetText( XFORMAT( "%d(%d)", spPropStage->legion.lvLegion
+		pText->SetText( XFORMAT( "%d(%d)", spPropStage->m_spxLegion->lvLegion
 																		, spCampObj->GetlvLimit( idxStage ) ) );
 	}
 #endif // CHEAT

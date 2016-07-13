@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf">
+  <main>
+    <img file="bg_patch.png" format_surface="argb8888" />
+    <text posx="center" posy="330" key="text.loading" text="13" font_size="25" font_style="stroke">
+      <!--"로딩중입니다."-->
+    </text>
+  </main>
+</root>

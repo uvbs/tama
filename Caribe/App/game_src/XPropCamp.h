@@ -9,7 +9,7 @@
 
 #include "XXMLDoc.h"
 #include "XStruct.h"
-#include "XPropLegionH.h"
+//#include "XPropLegionH.h"
 
 namespace XGAME {
 struct xSquad;
@@ -79,8 +79,9 @@ public:
 		std::vector<XGAME::xReward> aryReward;	///< 스테이지 클리어시 보상
 		float rateDrop = 0;		///< 드랍확률
 		int idxStage = -1;		///< 몇번째 스테이지 인지
-		XGAME::xLegion legion;		///< 군단정보
-		xStage() : legion("ids.dummy") {}		// 스테이지에서는 ids안씀. 장기적으로 XPropLegion것을 쓰도록 교체할것.
+		std::shared_ptr<XGAME::xLegion> m_spxLegion;		///< 군단정보
+// 		xStage() : legion("ids.dummy") {}		// 스테이지에서는 ids안씀. 장기적으로 XPropLegion것을 쓰도록 교체할것.
+		xStage();		// 스테이지에서는 ids안씀. 장기적으로 XPropLegion것을 쓰도록 교체할것.
 		~xStage() {
 			idProp = 0;
 		}

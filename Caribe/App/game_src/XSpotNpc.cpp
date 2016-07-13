@@ -2,6 +2,7 @@
 #include "XSpotNpc.h"
 #include "XArchive.h"
 #include "XAccount.h"
+#include "XPropLegionH.h"
 #ifdef _CLIENT
 #include "XGame.h"
 #endif

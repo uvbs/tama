@@ -16,6 +16,9 @@ using namespace xCampaign;
 ID XPropCamp::s_Global = 0;
 static XVector<XPropHero::xPROP*> s_aryHeroForCamp;			// 영웅캠페인을 위해 선별되고 소트된 리스트
 
+XPropCamp::xStage::xStage() {
+	m_spxLegion = std::make_shared<XGAME::xLegion>( "ids.dummy" );
+}
 /**
  @brief 패킷최적화용 인듯? 아마도 플레이중 스테이지정보 개별적으로 보내줄때 사용하는것인듯.
 */
@@ -29,7 +32,7 @@ int XPropCamp::xStage::SerializeMin( XArchive& ar ) const {
 	ar << (BYTE)levelLimit;
 	ar << (char)idxStage;
 	ar << aryReward;
-	ar << legion;
+	ar << (*m_spxLegion);
 	MAKE_CHECKSUM( ar );
 	return 1;
 }
@@ -44,7 +47,7 @@ int XPropCamp::xStage::DeSerializeMin( XArchive& ar, int ver ) {
 	ar >> c0;	idxStage = c0;
 	XBREAK( idxStage < 0 );
 	ar >> aryReward;
-	ar >> legion;
+	ar >> (*m_spxLegion);
 	RESTORE_VERIFY_CHECKSUM( ar );
 	return 1;
 }
@@ -64,7 +67,7 @@ int XPropCamp::xStage::Serialize( XArchive& ar ) const {
 	ar << sidDropItem;
 	ar << rateDrop;
 	ar << aryReward;
-	ar << legion;
+	ar << (*m_spxLegion);
 	return 1;
 }
 int XPropCamp::xStage::DeSerialize( XArchive& ar, int ver ) {
@@ -78,7 +81,7 @@ int XPropCamp::xStage::DeSerialize( XArchive& ar, int ver ) {
 	ar >> sidDropItem;
 	ar >> rateDrop;
 	ar >> aryReward;
-	ar >> legion;
+	ar >> (*m_spxLegion);
 	return 1;
 }
 
@@ -462,11 +465,7 @@ XPropCamp::xProp* XPropCamp::LoadCamp( XEXmlNode& nodeCamp )
 					spStageHero->aryReward.push_back( reward );		// 드랍할 영혼석을 미리 설정.
 					spStageHero->maxTry = 0;		// 도전가능한 횟수는 무한대
 					spStageHero->maxWin = 2;		// 승리가능한 횟수는 2번
-//					spStageHero->m_lvLegion = sGetlvLegionByidxHero( i, numStages );
 					auto pPropCampHero = SafeCast<xPropHero*>( pPropCamp );
-//					spStageHero->legion.lvLegion = sGetlvLegionByidxHero( i, numStages );
-// 					XBREAK( spStageHero->legion.lvLegion <= 0 
-// 							|| spStageHero->legion.lvLegion > XGAME::MAX_NPC_LEVEL * 2 );		// 
 				}
 				aryStages[ i ] = spStage;
 				AddStage( i+1, spStage );
@@ -539,11 +538,11 @@ void XPropCamp::LoadStage( XEXmlNode& nodeStage, XSPPropStage& spStage, xProp *p
 		else
 		if( attr.GetcstrName() == "elite" )
 			if( m_Ver >= 1 ) {
-				spStage->legion.gradeLegion = (XGAME::xtGradeLegion)(attr.GetInt() + 1);
-				XBREAK( spStage->legion.gradeLegion <= XGAME::xGL_NONE || spStage->legion.gradeLegion >= XGAME::xGL_MAX );
+				spStage->m_spxLegion->gradeLegion = (XGAME::xtGradeLegion)(attr.GetInt() + 1);
+				XBREAK( spStage->m_spxLegion->gradeLegion <= XGAME::xGL_NONE || spStage->m_spxLegion->gradeLegion >= XGAME::xGL_MAX );
 			}
 			else
-				spStage->legion.gradeLegion = (attr.GetInt() == 1 ) ? XGAME::xGL_ELITE : XGAME::xGL_NORMAL;
+				spStage->m_spxLegion->gradeLegion = (attr.GetInt() == 1 ) ? XGAME::xGL_ELITE : XGAME::xGL_NORMAL;
 
 		else
 		if( attr.GetcstrName() == "limit_level" )
@@ -575,7 +574,7 @@ void XPropCamp::LoadStage( XEXmlNode& nodeStage, XSPPropStage& spStage, xProp *p
 	XEXmlNode nodeLegion = nodeStage.FindNode("legion");
 	if( !nodeLegion.IsEmpty() ) {
 		//LoadLegion( nodeLegion, spStage, pCampProp );
-		spStage->legion.LoadFromXML( nodeLegion, pCampProp->strIdentifier.c_str() );
+		spStage->m_spxLegion->LoadFromXML( nodeLegion, pCampProp->strIdentifier.c_str() );
 	} else {
 		CONSOLE("%s:경고: legion블럭이 없음.", pCampProp->strIdentifier.c_str() );
 		m_bError = true;

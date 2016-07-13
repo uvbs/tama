@@ -2536,6 +2536,7 @@ void CMainFrame::OnBattleOption()
 void CMainFrame::OnReloadWhenRetryConstant()
 {
 	XAPP->m_bReloadWhenRetryConstant = !XAPP->m_bReloadWhenRetryConstant;
+	XAPP->XClientMain::SaveCheat();
 }
 void CMainFrame::OnUpdateReloadWhenRetryConstant( CCmdUI *pCmdUI )
 {
@@ -2545,6 +2546,7 @@ void CMainFrame::OnUpdateReloadWhenRetryConstant( CCmdUI *pCmdUI )
 void CMainFrame::OnReloadWhenRetryPropUnit()
 {
 	XAPP->m_bReloadWhenRetryPropUnit = !XAPP->m_bReloadWhenRetryPropUnit;
+	XAPP->XClientMain::SaveCheat();
 }
 void CMainFrame::OnUpdateReloadWhenRetryPropUnit( CCmdUI *pCmdUI )
 {
@@ -2555,6 +2557,7 @@ void CMainFrame::OnUpdateReloadWhenRetryPropUnit( CCmdUI *pCmdUI )
 void CMainFrame::OnReloadWhenRetryPropSkill()
 {
 	XAPP->m_bReloadWhenRetryPropSkill = !XAPP->m_bReloadWhenRetryPropSkill;
+	XAPP->XClientMain::SaveCheat();
 }
 void CMainFrame::OnUpdateReloadWhenRetryPropSkill( CCmdUI *pCmdUI )
 {
@@ -2565,6 +2568,7 @@ void CMainFrame::OnUpdateReloadWhenRetryPropSkill( CCmdUI *pCmdUI )
 void CMainFrame::OnReloadWhenRetryPropLegion()
 {
 	XAPP->m_bReloadWhenRetryPropLegion = !XAPP->m_bReloadWhenRetryPropLegion;
+	XAPP->XClientMain::SaveCheat();
 }
 void CMainFrame::OnUpdateReloadWhenRetryPropLegion( CCmdUI *pCmdUI )
 {

@@ -1,0 +1,46 @@
+2015/11/ 9   09:57:42   
+ÿ?
+
+2015/11/ 9   10:06:25   
+//				µî±Þº° Ç¥ÁØÁõ°¡Ä¡	1¼º			2¼º	3¼º	4¼º	5¼º											»Ì±â¿ë	ÇÃ·¹À×¿ë									
+//					0.01			0.03 	0.06 	0.10 	0.17 																					
+//idProp	identifier	idText	lead	class	tribe	typeGet	priority	atkMelee	atkRange	defense	hp	attackSpeed	moveSpeed	radiusAtk	atkMeleeAdd	atkRangeAdd	defenseAdd	hpAdd	attackSpeedAdd	moveSpeedAdd	skillPassive	skillActive	pngFace	sprFile	movSpeedNormal	scale						
+//ÇÁ·Ó¾ÆÀÌµð	½Äº°ÀÚ	ÀÌ¸§	ÁöÈÖÅ¸ÀÔ	Å¬·¡½º	Á¾Á·	ÀÔ¼ö¹æ¹ý	¿ì¼±¼øÀ§	±ÙÁ¢°ø°Ý·Â	¿ø°Å¸®°ø°Ý·Â	¹æ¾î·Â	Ã¼·Â	°ø°Ý¼Óµµ	ÀÌµ¿¼Óµµ	°ø°Ý»ç°Å¸®(¹ÌÅÍ)	±Ù°ø°Ý·ÂÁõ°¡Ä¡	¿ø°ø°Ý·ÂÁõ°¡Ä¡	¹æ¾î·ÂÁõ°¡Ä¡	Ã¼·ÂÁõ°¡Ä¡	°ø°Ý¼ÓµµÁõ°¡Ä¡	ÀÌµ¿¼ÓµµÁõ°¡Ä¡	ÆÐ½Ãºê ½ºÅ³	¾×Æ¼ºê½ºÅ³	ÃÊ»óÈ­ pngÀÌ¸§(È®ÀåÀÚ»©°í)	sprÆÄÀÏ¸í(È®ÀåÀÚ»©°í)	1¹è¼ÓÀÏ¶§ ÀÌµ¿¼Óµµ	Å©±âÁ¶Àý						
+100	jyulra 	10033	xAT_TANKER	xCLS_TANKER	xTB_HUMAN	xGET_GATHA	100	1.00 	1.00 	1.10 	1.10 	1	1	1	0.01	0.01	0.01	0.01	0	0	improve_hp	sight_damage	hero_tanker01	hero_tanker01	50	0.9						
+101	ricky 	10034	xAT_TANKER	xCLS_TANKER	xTB_HUMAN	xGET_GATHA	150	1.01 	1.00 	1.10 	1.08 	1	1	1	0.01	0.01	0.01	2015/11/ 9   18:07:24   
+2015/11/ 9   16:55:28   
+
+
+2015/11/ 9   16:57:09   
+
+
+2015/11/ 9   16:58:16   
+
+
+2015/11/ 9   17:09:36   
+
+
+2015/11/ 9   17:09:56   
+
+
+2015/11/ 9   17:10:34   
+
+
+2015/11/ 9   17:18:15   
+
+
+2015/11/ 9   17:25:45   
+libxlib_test.so 0xf6480
+libxlib_test.so 0x111edc
+libxlib_test.so 0x11704c
+libxlib_test.so 0x117350
+libxlib_test.so 0x114e48
+libxlib_test.so 0x194170
+libxlib_test.so 0x1387f4
+libxlib_test.so 0x247028
+libdvm.so 0x20450
+libdvm.so 0x5111b
+
+
+
+

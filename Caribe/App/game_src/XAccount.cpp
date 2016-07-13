@@ -987,6 +987,10 @@ void XAccount::CreateFakeAccount(void)
 
 	// 플레이어 군단정보 생성
 #ifdef _XSINGLE
+	// 모든유닛의 락을 해제한다.
+	for( int i = 1; i < m_aryUnlockedUnit.GetMax(); ++i ) {
+		m_aryUnlockedUnit[ i ] = 2;
+	}
 //	CreateLegionByRandom(15, 50);
 #else
 	// 디폴트 부대를 생성.

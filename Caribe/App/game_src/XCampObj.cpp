@@ -19,6 +19,7 @@
 #include "XSystem.h"
 #include "XCampObjHero.h"
 #include "XCampObjHero2.h"
+#include "XPropLegionH.h"
 #ifdef WIN32
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -751,14 +752,14 @@ XSPStageObj XCampObj::GetspStageObjWithidProp( ID idPropStage, int idxFloor )
 
 int XCampObj::GetlvLegion( XPropCamp::xStage* pPropStage, int lvBase, int idxFloor )
 {
-	int lvLegion = pPropStage->legion.lvLegion;
+	int lvLegion = pPropStage->m_spxLegion->lvLegion;
 	if( lvLegion == 0 ) {
 		// 프롭스테이지에 군단레벨이 지정되어있지않다면 기준레벨을 중심으로 adjLevelLgion으로 보정해서 쓴다.
-		if( XBREAK( pPropStage->legion.adjLvLegion == 0x7f ) ) {	// 군단레벨이 지정되어있지않은데 보정레벨도 없으면 에러
+		if( XBREAK( pPropStage->m_spxLegion->adjLvLegion == 0x7f ) ) {	// 군단레벨이 지정되어있지않은데 보정레벨도 없으면 에러
 			return lvBase;
 		}
 		XBREAK( lvBase == 0 );
-		lvLegion = lvBase + pPropStage->legion.adjLvLegion;
+		lvLegion = lvBase + pPropStage->m_spxLegion->adjLvLegion;
 	}
 	return lvLegion;
 }

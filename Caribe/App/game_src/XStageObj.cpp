@@ -4,6 +4,7 @@
 #include "XCampObj.h"
 #include "XAccount.h"
 #include "XGlobalConst.h"
+#include "XPropLegionH.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -172,16 +173,16 @@ LegionPtr XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutL
 		if( XBREAK( pPropStage == nullptr ) ) {
 			break;
 		}
-		pLegion->SetgradeLegion( pPropStage->legion.gradeLegion );
-		if( pPropStage->legion.gradeLegion == XGAME::xGL_ELITE ) {
+		pLegion->SetgradeLegion( pPropStage->m_spxLegion->gradeLegion );
+		if( pPropStage->m_spxLegion->gradeLegion == XGAME::xGL_ELITE ) {
 			pLegion->SetRateAtk( RATE_ATK_DEFAULT_ELITE );
 			pLegion->SetRateHp( RATE_HP_DEFAULT_ELITE );
 		} else
-		if( pPropStage->legion.gradeLegion == XGAME::xGL_RAID ) {
+		if( pPropStage->m_spxLegion->gradeLegion == XGAME::xGL_RAID ) {
 			pLegion->SetRateAtk( RATE_ATK_DEFAULT_RAID );
 			pLegion->SetRateHp( RATE_HP_DEFAULT_RAID );
 		}
-		int numSquad = pPropStage->legion.numSquad;
+		int numSquad = pPropStage->m_spxLegion->numSquad;
 		int lvLegion = spCampObj->GetlvLegion( pPropStage, lvBase, idxFloor );
 //		m_LevelLegion = lvLegion;		// 외부파라메터로 받도록 수정됨.
 	//	XBREAK( spPropStage->levelLegion == 0 );
@@ -195,7 +196,7 @@ LegionPtr XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutL
 		const int idx[XGAME::MAX_SQUAD] = {2, 1, 3, 0, 4, 7, 6, 8, 5, 9, 12, 11, 13, 10, 14};
 		// 메뉴얼 지정된 부대부터 생성
 		int i = 0;
-		for( auto squadMutable : pPropStage->legion.arySquads ) {
+		for( auto squadMutable : pPropStage->m_spxLegion->arySquads ) {
 			XGAME::xSquad sqParam;
 			sqParam.idxPos = ( squadMutable.idxPos >= 0 ) ? squadMutable.idxPos : idx[i];
 			if( m_paramLegion.unit ) {
@@ -222,7 +223,7 @@ LegionPtr XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutL
 			if( XASSERT( pSquad ) ) {
 				pLegion->SetSquadron( sqParam.idxPos, pSquad, true );
 				// 리더 영웅 지정
-				XLegion::sSetLeaderByInfo( pPropStage->legion, spLegion, pSquad );
+				XLegion::sSetLeaderByInfo( pPropStage->m_spxLegion.get(), spLegion, pSquad );
 			}
 			++i;
 		}  // for legion.arySquads
@@ -230,7 +231,7 @@ LegionPtr XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutL
 		if( pLegion->GetNumSquadrons() < numSquad ) {
 			// 빈 슬롯들의 인덱스를 추려낸다.
 			XList4<int> listSlotNum;
-			if( pPropStage->legion.arySquads.size() != 0 ) {
+			if( pPropStage->m_spxLegion->arySquads.size() != 0 ) {
 				for( int i = 0; i < pLegion->GetMaxSquadSlot(); ++i ) {
 					if( pLegion->GetpSquadronByIdx( i ) == nullptr )
 						listSlotNum.Add( i );
@@ -238,12 +239,12 @@ LegionPtr XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutL
 			}
 			// 모자르는 부대수만큼 추가생성
 			const int numSquadExt = numSquad - pLegion->GetNumSquadrons();
-			const auto& squad = pPropStage->legion.squadDefault;
+			const auto& squad = pPropStage->m_spxLegion->squadDefault;
 			XGAME::xSquad sqParam;
 			//
 			for( int i = 0; i < numSquadExt; ++i ) {
 				int idxSlot;
-				if( pPropStage->legion.arySquads.size() == 0 ) {
+				if( pPropStage->m_spxLegion->arySquads.size() == 0 ) {
 					// xml로 메뉴얼 지정이 없었을땐 슬롯 순서대로 부대를 생성.
 					idxSlot = idx[i];
 				} else {
@@ -274,14 +275,14 @@ LegionPtr XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutL
 				if( XASSERT( pSquad ) ) {
 					pLegion->SetSquadron( idxSlot, pSquad, true );
 					// 리더 영웅 지정
-					XLegion::sSetLeaderByInfo( pPropStage->legion, spLegion, pSquad );
+					XLegion::sSetLeaderByInfo( pPropStage->m_spxLegion.get(), spLegion, pSquad );
 				}
 			}
 		} // if( pLegion->GetNumSquadrons() < numSquad ) {
 		// 리더가 지정되지 않았을경우 자동으로 리더를 정함.
 		if( pLegion->GetpLeader() == nullptr )
 			pLegion->SetAutoLeader();
-		if( pPropStage->legion.arySquads.size() == 0 ) {
+		if( pPropStage->m_spxLegion->arySquads.size() == 0 ) {
 			pLegion->AdjustLegion();
 		}
 

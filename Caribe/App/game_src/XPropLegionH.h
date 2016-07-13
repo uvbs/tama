@@ -8,6 +8,10 @@
 #pragma once
 
 XE_NAMESPACE_START( XGAME )
+struct xAbil2 {
+	_tstring m_idsAbil;
+	int point = 0;
+};
 //////////////////////////////////////////////////////////////////////////
 /// "부대"를 정의한다. xml에선 "squad" element로 표현된다.
 struct xSquad {
@@ -26,6 +30,7 @@ struct xSquad {
 	float mulHp = 1.f;		// 체력보정
 #ifdef _XSINGLE
 	bool m_bShow = true;	// 부대hp정보 보이기
+	XList4<xAbil2> m_listAbil;		// 이 부대 영웅의 특성트리
 #endif // _XSINGLE
 #ifdef _DEBUG
 	int debug = 0;			// 디버깅용

@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--test_comment-->
+  <single1_player name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="3" boss="percival" mul_atk="1" mul_hp="1">
+    <squad_default idx_pos="-1" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1" unit="xUNIT_MINOTAUR" hero="ricky">
+      <!--디폴트 값-->
+    </squad_default>
+  </single1_player>
+  <single1_enemy name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="10" boss="percival" mul_atk="1" mul_hp="1">
+    <squad_default idx_pos="-1" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" hero="ricky" unit="xUNIT_MINOTAUR">
+      <!--디폴트 값-->
+    </squad_default>
+  </single1_enemy>
+  <boss3 name="0" level="0" grade="xGL_ELITE" lv_limit="0" adj_level="0" num_squad="8" boss="kay" mul_atk="0.33" mul_hp="3.3">
+    <squad_default idx_pos="-1" hero="" type_atk="0" size_unit="0" lv_hero="0" adj_level="0" grade="xGD_COMMON" lv_squad="0" lv_skill="0" mul_atk="0" mul_hp="0">
+      <!--디폴트 값-->
+    </squad_default>
+    <squad idx_pos="0" unit="xUNIT_GOLEM">
+      <!--1성-->
+    </squad>
+    <squad idx_pos="1" unit="xUNIT_GOLEM">
+      <!--1성-->
+    </squad>
+    <squad idx_pos="2" unit="xUNIT_MINOTAUR" grade="xGD_RARE" mul_hp="1" hero="ricky" lv_hero="50" lv_squad="10">
+      <!--부장-->
+    </squad>
+    <squad idx_pos="3" unit="xUNIT_GOLEM">
+      <!--1성-->
+    </squad>
+    <squad idx_pos="4" unit="xUNIT_GOLEM">
+      <!--1성-->
+    </squad>
+    <squad idx_pos="5" grade="xGD_RARE" unit="xUNIT_MINOTAUR" mul_hp="0.5">
+      <!--부장-->
+    </squad>
+    <squad idx_pos="9" grade="xGD_RARE" unit="xUNIT_MINOTAUR" mul_hp="0.5">
+      <!--부장-->
+    </squad>
+    <squad idx_pos="7" hero="kay" adj_level="2" grade="xGD_EPIC" unit="xUNIT_GOLEM" lv_squad="7" lv_skill="3" mul_atk="2.0" mul_hp="3">
+      <!--대장-->
+    </squad>
+  </boss3>
+  <_single1_player name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="1" boss="percival" mul_atk="1" mul_hp="1">
+    <squad_default idx_pos="-1" hero="ricky" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1">
+      <!--디폴트 값-->
+    </squad_default>
+    <squad idx_pos="5" hero="ricky" unit="xUNIT_GOLEM" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" show="off"></squad>
+    <squad idx_pos="7" hero="ricky" unit="xUNIT_GOLEM" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" show="off"></squad>
+    <squad idx_pos="9" hero="ricky" unit="xUNIT_GOLEM" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" show="off"></squad>
+    <squad idx_pos="12" hero="ogma" unit="xUNIT_PALADIN" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_skill="1" mul_atk="1" mul_hp="1"></squad>
+    <_squad idx_pos="12" hero="ogma" unit="xUNIT_LYCAN" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_skill="1" mul_atk="1" mul_hp="1" />
+    <_squad idx_pos="14" hero="ogma" unit="xUNIT_FALLEN_ANGEL" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_skill="1" mul_atk="1" mul_hp="1" />
+  </_single1_player>
+  <_single1_enemy name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="1" boss="percival" mul_atk="1" mul_hp="1">
+    <squad_default idx_pos="-1" hero="ricky" unit="xUNIT_GOLEM" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1">
+      <!--디폴트 값-->
+    </squad_default>
+    <squad idx_pos="1" hero="unluny" unit="xUNIT_ARCHER" lv_hero="50" lv_skill="1" grade="xGD_RARE" show="on"></squad>
+    <squad idx_pos="2" hero="meltin" unit="xUNIT_ARCHER" lv_hero="50" lv_skill="1" grade="xGD_RARE" show="on"></squad>
+    <squad idx_pos="3" hero="arlene" unit="xUNIT_ARCHER" lv_hero="50" lv_skill="1" grade="xGD_RARE" show="on"></squad>
+  </_single1_enemy>
+  <_single1_player name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="1" boss="percival" mul_atk="1" mul_hp="1">
+    <squad_default idx_pos="-1" hero="ricky" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1">
+      <!--디폴트 값-->
+    </squad_default>
+    <squad idx_pos="2" hero="unluny" unit="xUNIT_CYCLOPS" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="5" lv_skill="1" mul_atk="1" mul_hp="1"></squad>
+  </_single1_player>
+  <_single1_enemy name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="1" boss="percival" mul_atk="1" mul_hp="1">
+    <squad_default idx_pos="-1" hero="random" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1">
+      <!--디폴트 값-->
+    </squad_default>
+    <squad idx_pos="2" hero="ricky" unit="xUNIT_GOLEM" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="5" lv_skill="1" mul_atk="1" mul_hp="1"></squad>
+  </_single1_enemy>
+  <_single1_player name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="1" boss="percival" mul_atk="1" mul_hp="1">
+    <squad_default idx_pos="-1" hero="ricky" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1">
+      <!--디폴트 값-->
+    </squad_default>
+    <squad idx_pos="5" hero="ricky" unit="xUNIT_GOLEM" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" show="off"></squad>
+    <squad idx_pos="7" hero="ricky" unit="xUNIT_GOLEM" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" show="off"></squad>
+    <squad idx_pos="9" hero="ricky" unit="xUNIT_GOLEM" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" show="off"></squad>
+    <_squad idx_pos="5" hero="unluny" unit="xUNIT_ARCHER" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="5" lv_skill="1" mul_atk="1" mul_hp="1" show="off" />
+    <_squad idx_pos="7" hero="unluny" unit="xUNIT_ARCHER" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="5" lv_skill="1" mul_atk="1" mul_hp="1" show="off" />
+    <_squad idx_pos="9" hero="unluny" unit="xUNIT_ARCHER" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="5" lv_skill="1" mul_atk="1" mul_hp="1" show="off" />
+    <squad idx_pos="10" hero="ogma" unit="xUNIT_PALADIN" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_skill="1" mul_atk="1" mul_hp="1"></squad>
+    <squad idx_pos="12" hero="ogma" unit="xUNIT_LYCAN" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_skill="1" mul_atk="1" mul_hp="1"></squad>
+    <squad idx_pos="14" hero="ogma" unit="xUNIT_FALLEN_ANGEL" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_skill="1" mul_atk="1" mul_hp="1"></squad>
+  </_single1_player>
+  <_single1_enemy name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="1" boss="percival" mul_atk="1" mul_hp="1">
+    <squad_default idx_pos="-1" hero="ricky" unit="xUNIT_GOLEM" type_atk="0" size_unit="0" lv_hero="50" adj_level="0" grade="xGD_RARE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1">
+      <!--디폴트 값-->
+    </squad_default>
+    <_squad idx_pos="0" lv_hero="50" lv_squad="5" lv_skill="1" grade="xGD_RARE" />
+    <_squad idx_pos="2" lv_hero="50" lv_squad="5" lv_skill="1" grade="xGD_RARE" />
+    <_squad idx_pos="4" lv_hero="50" lv_squad="5" lv_skill="1" grade="xGD_RARE" />
+    <squad idx_pos="5" hero="unluny" unit="xUNIT_CYCLOPS" lv_hero="50" lv_skill="1" grade="xGD_RARE" show="on"></squad>
+    <squad idx_pos="7" hero="unluny" unit="xUNIT_CYCLOPS" lv_hero="50" lv_skill="1" grade="xGD_RARE" show="on"></squad>
+    <squad idx_pos="9" hero="unluny" unit="xUNIT_CYCLOPS" lv_hero="50" lv_skill="1" grade="xGD_RARE" show="on"></squad>
+  </_single1_enemy>
+</root>

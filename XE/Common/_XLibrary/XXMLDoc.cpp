@@ -79,6 +79,13 @@ bool XXMLDoc::Load( LPCTSTR resXml )
 	m_bLoad = TRUE;
 	m_resXml = resXml;
 	//
+// 	auto pRoot = m_Doc.FirstChild( "global" );
+// 	auto pNode = pRoot->FirstChild();
+// 	while( pNode ) {
+// 		const _tstring strVal = U82SZ(pNode->Value());
+// 		TRACE("[%s](%d)\n", strVal.c_str(), pNode->Type() );
+// 		pNode = pNode->NextSibling();
+// 	}
 	bool bOk = OnDidFinishLoad();
 	return bOk;
 }

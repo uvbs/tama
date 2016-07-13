@@ -8,6 +8,7 @@
 #include "XLegion.h"
 #include "XSpot.h"
 #include "XWorld.h"
+#include "XPropLegionH.h"
 #ifdef _CLIENT
 #include "XGame.h"
 #endif // _CLIENT
@@ -853,13 +854,32 @@ bool xSquad::LoadFromXML( XEXmlNode& nodeSquad, LPCTSTR szTag )
 		//
 		attr = attr.GetNext();
 	}
+	auto nodeAbilRoot = nodeSquad.FindNode( "abil" );
+	if( nodeAbilRoot.IsHave() ) {
+		auto nodeAbil = nodeAbilRoot.GetFirst();
+		while( nodeAbil.IsHave() ) {
+			xAbil2 abil;
+			abil.m_idsAbil = C2SZ( nodeAbil.GetcstrName() );
+			abil.point = nodeAbil.GetInt( "point" );
+			m_listAbil.Add( abil );
+// 			auto pAbil = XPropTech::sGet()->GetpNode( idsAbil );
+// 			if( pAbil ) {
+// 			}
+			nodeAbil = nodeAbil.GetNext();
+		}
+	}
 	return bRet;
 }
-bool xSquad::SaveXML( XEXmlNode& nodeLegion )
+bool xSquad::SaveXML( XEXmlNode& nodeLegion, const std::string& strName )
 {
-	auto nodeSquad = nodeLegion.AddNode( "squad" );
+	auto nodeSquad = nodeLegion.AddNode( strName );
 	nodeSquad.AddAttribute( "idx_pos", idxPos );
-	nodeSquad.AddAttribute( "hero", idHero );
+	{
+		auto pPropHero = PROP_HERO->GetpProp( idHero );
+		if( pPropHero ) {
+			nodeSquad.AddAttribute( "hero", pPropHero->strIdentifier );
+		}
+	}
 	nodeSquad.AddAttribute( "type_atk", XGAME::GetstrEnumTypeAtk( atkType) );
 	nodeSquad.AddAttribute( "lv_hero", lvHero );
 	nodeSquad.AddAttribute( "grade", XGAME::GetstrEnumGrade(grade) );
@@ -869,6 +889,14 @@ bool xSquad::SaveXML( XEXmlNode& nodeLegion )
 	nodeSquad.AddAttribute( "lv_skill", lvSkill );
 	nodeSquad.AddAttribute( "mul_atk", mulAtk );
 	nodeSquad.AddAttribute( "mul_hp", mulHp );
+	//
+	if( m_listAbil.size() ) {
+		auto nodeAbilRoot = nodeSquad.AddNode( "abil" );
+		for( auto& abil : m_listAbil ) {
+			auto nodeAbil = nodeAbilRoot.AddNode( SZ2C(abil.m_idsAbil) );
+			nodeAbil.AddAttribute( "point", abil.point );
+		}
+	}
 	return true;
 }
 
@@ -977,23 +1005,28 @@ bool xLegion::LoadFromXML( XEXmlNode& nodeLegion, LPCTSTR szTag )
 
 bool xLegion::SaveXML( XEXmlNode& nodeRoot )
 {
-	XBREAK(1);		// 현재 save하면 원래 식별자나 주석 다 날아가서 일단 안씀.
+// 	XBREAK(1);		// 현재 save하면 원래 식별자나 주석 다 날아가서 일단 안씀.
 	XBREAK( m_idProp == 0 );
-	auto nodeLegion = nodeRoot.AddNode( "legion" );
+	auto nodeLegion = nodeRoot.AddNode( strIds );
 // 	std::string str = XE::Format("0x%8x", idProp );
 // 	nodeLegion.AddAttribute( "sn", str );
 	nodeLegion.AddAttribute( "name", idName );
 	nodeLegion.AddAttribute( "level", lvLegion );
-	nodeLegion.AddAttribute( "adj_level", adjLvLegion );
 	nodeLegion.AddAttribute( "grade", XGAME::GetstrEnumGradeLegion( gradeLegion ) );
 	nodeLegion.AddAttribute( "lv_limit", lvLimit );
+	nodeLegion.AddAttribute( "adj_level", adjLvLegion );
 	nodeLegion.AddAttribute( "num_squad", numSquad );
-	nodeLegion.AddAttribute( "boss", idBoss );
+	{
+		auto pPropHero = PROP_HERO->GetpProp( idBoss );
+		if( pPropHero ) {
+			nodeLegion.AddAttribute( "boss", pPropHero->strIdentifier );
+		}
+	}
 	nodeLegion.AddAttribute( "mul_atk", mulAtk );
 	nodeLegion.AddAttribute( "mul_hp", mulHp );
-	squadDefault.SaveXML( nodeLegion );
+	squadDefault.SaveXML( nodeLegion, "squad_default" );
 	for( auto& squad : arySquads ) {
-		squad.SaveXML( nodeLegion );
+		squad.SaveXML( nodeLegion, "squad" );
 	}
 	return true;
 }

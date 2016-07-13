@@ -9,6 +9,7 @@
 #include "XBaseItem.h"
 #include "constGame.h"
 #include "XGlobalConst.h"
+#include "XPropLegionH.h"
 #ifndef _CLIENT
 #include "XMain.h"
 #endif
@@ -131,7 +132,7 @@ LegionPtr XLegion::sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, b
 // 			const auto& squad = legion.arySquads[ i ];
 		int i = 0;
 		for( auto& squad : legion.arySquads ) {
-			XGAME::xSquad sqParam;
+			XGAME::xSquad sqParam = squad;
 			sqParam.idxPos = ( squad.idxPos >= 0 ) ? squad.idxPos : idx[ i ];
 			auto pPropHero = sGetpPropHeroByInfo( squad, lvLegion );
 			sqParam.unit = sGetUnitByInfo( squad, pPropHero, lvLegion );
@@ -148,7 +149,7 @@ LegionPtr XLegion::sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, b
 			if( XASSERT( pSquad ) ) {
 				pLegion->SetSquadron( sqParam.idxPos, pSquad, true );
 				// 리더 영웅 지정
-				sSetLeaderByInfo( legion, spLegion, pSquad );
+				sSetLeaderByInfo( &legion, spLegion, pSquad );
 			} 
 			++i;
 		}  // for legion.arySquads
@@ -164,7 +165,7 @@ LegionPtr XLegion::sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, b
 			}
 			const int numSquadExt = numSquad - pLegion->GetNumSquadrons();
 			auto& squad = legion.squadDefault;
-			XGAME::xSquad sqParam;
+			XGAME::xSquad sqParam = squad;
 			for( int i = 0; i < numSquadExt; ++i ) {
 				int idxSlot;
 				if( legion.arySquads.size() == 0 ) {
@@ -191,7 +192,7 @@ LegionPtr XLegion::sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, b
 				if( XASSERT( pSquad ) ) {
 					pLegion->SetSquadron( idxSlot, pSquad, true );
 					// 리더 영웅 지정
-					sSetLeaderByInfo( legion, spLegion, pSquad );
+					sSetLeaderByInfo( &legion, spLegion, pSquad );
 				}
 			} 
 		} // if( pLegion->GetNumSquadrons() < numSquad ) {
@@ -297,9 +298,13 @@ XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
 	XASSERT( sqParam.lvSquad > 0 && sqParam.lvSquad <= XGAME::MAX_SQUAD_LEVEL );
 	XASSERT( !IsInvalidGrade(sqParam.grade) );
 	auto pSquad = new XSquadron( pPropHero, sqParam.lvHero, sqParam.unit, sqParam.lvSquad );
-	pSquad->GetpHero()->SetGrade( sqParam.grade );
+	auto pHero = pSquad->GetpHero();
+	pHero->SetGrade( sqParam.grade );
 	pSquad->SetmulAtk( sqParam.mulAtk );
 	pSquad->SetmulHp( sqParam.mulHp );
+	for( auto& abil : sqParam.m_listAbil ) {
+		pHero->SetAbilPoint( abil.m_idsAbil, abil.point );
+	}
 	return pSquad;
 }
 /**
@@ -705,15 +710,16 @@ XGAME::xtGrade XLegion::sGetGradeHeroByInfo( const XGAME::xSquad& squad, int lvL
 	return gradeHero;
 }
 
-void XLegion::sSetLeaderByInfo( const XGAME::xLegion& legion, LegionPtr spLegion, XSquadron *pSquad )
+// void XLegion::sSetLeaderByInfo( const XGAME::xLegion& legion, LegionPtr spLegion, XSquadron *pSquad )
+void XLegion::sSetLeaderByInfo( const XGAME::xLegion* pxLegion, LegionPtr spLegion, XSquadron *pSquad )
 {
 	if( pSquad == nullptr ) 
 		return;
 	// 리더 영웅 지정
 	auto pHero = pSquad->GetpHero();
 	if( XASSERT( pHero ) ) {
-		if( legion.idBoss ) {
-			if( pHero->GetidProp() == legion.idBoss )
+		if( pxLegion->idBoss ) {
+			if( pHero->GetidProp() == pxLegion->idBoss )
 				spLegion->SetpLeader( pHero );
 		}
 	} // pHero

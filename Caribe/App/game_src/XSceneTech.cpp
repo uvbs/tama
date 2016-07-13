@@ -17,6 +17,9 @@
 #ifdef WIN32
 #include "CaribeView.h"
 #endif
+#ifdef _XSINGLE
+#include "XPropLegion.h"
+#endif // _XSINGLE
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -36,6 +39,11 @@ XSceneTech *SCENE_TECH = NULL;
 //////////////////////////////////////////////////////////////////////////
 void XSceneTech::Destroy() 
 {	
+#ifdef _XSINGLE
+	XPropLegion::sGet()->UpdatePropWithAcc( "single1_player", ACCOUNT );
+	XPropLegion::sGet()->Save( _T( "propLegion_s.xml" ) );
+	// 	XPropLegion::sGet()->SaveWithAcc(_T("propLegion_s.xml"), ACCOUNT );
+#endif // _XSINGLE
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcArrow );
 	XBREAK( SCENE_TECH == NULL );
 	XBREAK( SCENE_TECH != this );
@@ -566,14 +574,14 @@ void XSceneTech::UpdateAbilResearch( XWnd *pRoot
 */
 void XSceneTech::UpdateTopUnitButtons( XWnd *pRoot, XHero* pHero )
 {
-#ifdef _XSINGLE
-	xSET_ENABLE( this, "butt.minotaur.4", TRUE );
-	xSET_ENABLE( this, "butt.cyclops.5", TRUE );
-	xSET_ENABLE( this, "butt.lycan.6", TRUE );
-	xSET_ENABLE( this, "butt.golem.7", TRUE );
-	xSET_ENABLE( this, "butt.treant.8", TRUE );
-	xSET_ENABLE( this, "butt.fallen_angel.9", TRUE );
-#else
+// #ifdef _XSINGLE
+// 	xSET_ENABLE( this, "butt.minotaur.4", TRUE );
+// 	xSET_ENABLE( this, "butt.cyclops.5", TRUE );
+// 	xSET_ENABLE( this, "butt.lycan.6", TRUE );
+// 	xSET_ENABLE( this, "butt.golem.7", TRUE );
+// 	xSET_ENABLE( this, "butt.treant.8", TRUE );
+// 	xSET_ENABLE( this, "butt.fallen_angel.9", TRUE );
+// #else
 	const XGAME::xResearch& research = ACCOUNT->GetResearching();
 	//
 	for( int i = 1; i < XGAME::xUNIT_MAX; ++i ) {
@@ -685,7 +693,8 @@ void XSceneTech::UpdateTopUnitButtons( XWnd *pRoot, XHero* pHero )
 			}
 		} // pButt
 	} // for
-#endif  // not _XSINGLE
+//#endif  // not _XSINGLE
+
 }
 /**
  @brief 특성 트리 갱신
@@ -1426,10 +1435,6 @@ int XSceneTech::OnClickPlus( XWnd* pWnd, DWORD p1, DWORD p2 )
 	auto pHero = ACCOUNT->GetHero( m_snSelectedHero );
 	if( XBREAK(pHero == nullptr) ) 
 		return 1;
-//	const auto abil = pHero->GetAbilNode( m_unitSelected, m_idSelectedNode );
-//	XBREAK( pAbil == nullptr );
-// 	auto pProp = XPropTech::sGet()->GetpNode( m_unitSelected, m_idSelectedNode );
-// 	XBREAK( pProp == nullptr );
 	// 남은 특성포인트
 	const int numRemainPoint = pHero->GetnumRemainAbilPoint();
 	if( numRemainPoint > 0 ) {
@@ -1447,10 +1452,11 @@ int XSceneTech::OnClickPlus( XWnd* pWnd, DWORD p1, DWORD p2 )
 			const auto& costAbil = pHero->GetCostAbilCurr();
 			int point = pHero->GetNumAbilPoint( m_unitSelected, m_idSelectedNode );
 			auto pPopup = new XWndResearchConfirm( m_unitSelected, m_idSelectedNode, point + 1, costAbil );
+#ifdef _XSINGLE
+			xSET_ENABLE( pPopup, "butt.ok", true );
+#endif // _XSINGLE
+		
 			pPopup->SetEvent( XWM_OK, this, &XSceneTech::OnOkResearch, 0 );
-// 			if( !ACCOUNT->IsEnoughResourceForResearch( pHero ) ) {
-// 				xSET_ENABLE( pPopup, "butt.ok", false );
-// 			}
 			Add( pPopup );
 		} else {
 			auto pAlert = new XGameWndAlert( XTEXT(2028), nullptr, XWnd::xOK );	// 현재 다른특성을 연구중
@@ -1473,6 +1479,10 @@ int XSceneTech::OnClickLockFree( XWnd* pWnd, DWORD p1, DWORD p2 )
 	auto pHero = ACCOUNT->GetHero( m_snSelectedHero );
 	if( XBREAK( pHero == nullptr ) )
 		return 1;
+#ifdef _XSINGLE
+	pHero->SetUnlockAbil( m_unitSelected, m_idSelectedNode );
+	SetbUpdate( true );
+#else
 	if( ACCOUNT->IsLockUnit( m_unitSelected) ) {
 		XWND_ALERT("%s", XTEXT(2109) );		// 유닛잠금을 풀어야 함.
 		return 1;
@@ -1482,10 +1492,8 @@ int XSceneTech::OnClickLockFree( XWnd* pWnd, DWORD p1, DWORD p2 )
 		XWND_ALERT( "%s", XTEXT( 2143 ) );		// 금화부족
 		return 1;
 	}
-//	int goldUnlock = pHero->GetGoldUnlockAbilCurr( /*m_unitSelected*/ );
-//	if( ACCOUNT->GetGold() >= gold )
-//	if( ACCOUNT->IsEnoughGold( goldUnlock ) )
 	GAMESVR_SOCKET->SendReqAbilLockFree( GAME, pHero->GetsnHero(), m_unitSelected, m_idSelectedNode );
+#endif
 	return 1;
 }
 
@@ -1502,6 +1510,7 @@ int XSceneTech::OnOkResearch( XWnd* pWnd, DWORD p1, DWORD p2 )
 	const auto abil = pHero->GetAbilNode( m_unitSelected, m_idSelectedNode );
 	auto pProp = XPropTech::sGet()->GetpNode( m_unitSelected, m_idSelectedNode );
 	XBREAK( pProp == nullptr );
+#ifndef _XSINGLE
 	bool bByRemainPoint = (p1 == 1);
 	if( bByRemainPoint ) {
 		GAMESVR_SOCKET->SendReqResearch( this, pHero->GetsnHero()
@@ -1512,6 +1521,14 @@ int XSceneTech::OnOkResearch( XWnd* pWnd, DWORD p1, DWORD p2 )
 																			, m_unitSelected, pProp->idNode, bByRemainPoint );
 		}
 	}
+#else
+	int point = pHero->GetNumAbilPoint( m_unitSelected, m_idSelectedNode );
+	if( point < 5 ) {
+		++point;
+		pHero->SetAbilPoint( m_unitSelected, m_idSelectedNode, point );
+		SetbUpdate( true );
+	}
+#endif // single
 		
 	return 1;
 }
