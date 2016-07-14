@@ -207,6 +207,9 @@ void XGlobalConst::LoadConst()
 	m_gemFillDailyTry = GetInt( "gem_fill_daily" );
 	m_rateFillDailyTry = GetFloat( "rate_fill_daily" );
 	m_numEnterDaily = GetInt( "num_try_daily" );
+	m_arySizeCost.Add(0);
+	GetAryInt( "size_cost", &m_arySizeCost );
+	XBREAK( m_arySizeCost.Size() != xSIZE_MAX );
 } // XGlobalConst::LoadConst()
 
 // void XGlobalConst::SetTableByUnlockUnitLevel( )

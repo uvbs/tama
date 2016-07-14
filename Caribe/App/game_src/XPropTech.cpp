@@ -257,6 +257,8 @@ XPropTech::xNodeAbil* XPropTech::GetpNode( LPCTSTR szSkill )
 */
 XPropTech::xNodeAbil* XPropTech::GetpNode( ID idNode )
 {
+	if( idNode == 0 )
+		return nullptr;
 	for( auto pNodeAbil : m_listNode ) {
 		if( pNodeAbil->idNode == idNode )
 			return pNodeAbil;
@@ -489,9 +491,49 @@ int XPropTech::GetNodesByTierToAry( XGAME::xtUnit unit, int tier, XArrayLinearN<
 */
 void XPropTech::DelOutLinkByNode( XGAME::xtUnit unit, ID idNode )
 {
-	auto pPropBase = GetpNode( unit, idNode );
-	if( XASSERT(pPropBase) ) {
-//		pPropBase->list
+	auto pParent = GetpNode( unit, idNode );
+	if( XASSERT(pParent) ) {
+		// 자식들이 가리키는 부모부터 클리어
+		for( auto pChild : pParent->listChild ) {
+			pChild->listParent.DelByID( pParent->idNode );
+			pChild->listParentID.Del( pParent->idNode );
+		}
+		pParent->listChild.clear();
+		pParent->listChildID.clear();
+	}
+}
+
+/**
+ @brief pParent의 자식중에서 idChild의 연결을 끊는다. 동시에 child쪽에서도 pParent를 부모리스트에서 뺀다.
+*/
+void XPropTech::ClearChild( xNodeAbil* pParent, xNodeAbil* pChild )
+{
+	pChild->listParent.DelByID( pParent->idNode );
+	pChild->listParentID.Del( pParent->idNode );
+	pParent->listChild.DelByID( pChild->idNode );
+	pParent->listChildID.Del( pChild->idNode );
+}
+
+void XPropTech::ClearChild( xNodeAbil* pParent, ID idChild )
+{
+	auto pChild = GetpNode( idChild );
+	if( pChild )
+		ClearChild( pParent, pChild );
+}
+
+void XPropTech::ClearChild( ID idParent, xNodeAbil* pChild )
+{
+	auto pParent = GetpNode( idParent );
+	if( pParent )
+		ClearChild( pParent, pChild );
+}
+
+void XPropTech::ClearChild( ID idParent, ID idChild )
+{
+	auto pParent = GetpNode( idParent );
+	if( pParent ) {
+		auto pChild = GetpNode( idChild );
+		ClearChild( pParent, pChild );
 	}
 }
 

@@ -69,10 +69,12 @@ public:
 	virtual ~XWndAbilButton() { Destroy(); }
 	//
 	GET_SET_ACCESSOR( bool, bInRightPanel );
+	GET_ACCESSOR_CONST( ID, idNode );
 	int Process( float dt ) override;
 	void Draw() override;
 	void Update() override;
 	void SetNode( XGAME::xtUnit unit, XPropTech::xNodeAbil *pProp );
+//	void OnMouseMove( float lx, float ly ) override;
 }; // class XWndAbilButton
 
 /****************************************************************

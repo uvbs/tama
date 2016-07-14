@@ -460,10 +460,8 @@ int XEObjMngWithType::GetListUnitRadius( XArrayLinearN<XBaseUnit*, 512> *plistOu
 									BIT bitLive )		// 생존필터  
 {
 	int cnt = 0;
-	std::list<UnitPtr>::reverse_iterator itor;
-	for( itor = m_listUnits.rbegin(); itor != m_listUnits.rend(); ++itor )
-	{
-		XBaseUnit *pUnit = SafeCast<XBaseUnit*, XEBaseWorldObj*>( (*itor).get() );
+	for( auto itor = m_listUnits.rbegin(); itor != m_listUnits.rend(); ++itor )	{
+		auto pUnit = SafeCast<XBaseUnit*>( (*itor).get() );
 		XBREAK( pUnit == NULL );
 		if( ( pUnit->GetCamp() & bitSideFilter ) == 0 )
 			continue;
@@ -490,6 +488,65 @@ int XEObjMngWithType::GetListUnitRadius( XArrayLinearN<XBaseUnit*, 512> *plistOu
 	return plistOutInvokeTarget->size();
 }
 
+/**
+ @brief pCenter(or vCenter)를 중심으로 radius범위내의 유닛들을 얻어 어레이에 담는다.
+ @return 얻어낸 타겟수
+ @param pCenter 중심타겟. null이면 vCenter를 사용한다.
+ @param vCenter 중심좌표. pCenter가 있다면 사용되지 않는다.
+ @param pixelRadius 픽셀단위 반지름.
+ @param bitSideFilter 검색해야할 진영
+ @param numCost 총 코스트값. 각 유닛은 크기 코스트가 있으며 타겟이 검색될때마다 numCost에서 차감한다. 0이되면 더이상 담지 않는다. 차감한 코스값이 마이너스가 될수는 없다.
+                0은 코스트에 관계없이 무조건 타겟1개만 검색. -1은 무효값. 
+ @param bIncludeCenter 중심타겟(pCenter가 있을경우)을 대상에 포함할지 말지. pCenter가 없다면 이 옵션은 무시된다.
+*/
+int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
+																				 XEBaseWorldObj *pCenter,
+																				 const XE::VEC2& vCenter,
+																				 float pixelRadius,
+																				 BIT bitSideFilter,
+																				 int numCost,
+																				 bool bIncludeCenter,
+																				 BIT bitLive ) const		// 생존필터  
+{
+	if( numCost < 0 )
+		return 0;
+	int currCost = numCost;
+	for( auto spUnit : m_listUnits ) {
+		XBREAK( spUnit == nullptr );
+		if( (spUnit->GetCamp() & bitSideFilter) == 0 )
+			continue;
+		if( (bitLive & XSKILL::xTL_LIVE) == 0 && spUnit->IsLive() )
+			continue;
+		if( (bitLive & XSKILL::xTL_DEAD) == 0 && spUnit->IsDead() )
+			continue;
+		// 시전대상을 포함하지 않는 조건일때 유닛이 시전대상이면 스킵
+		if( pCenter 
+				&& pCenter->GetsnObj() == spUnit->GetsnObj()		// spUnit이 중심타겟일때
+				&& bIncludeCenter == false )										// 중심타겟안포함 옵션이면 스킵한다.
+			continue;
+		const XE::VEC2 vDist = spUnit->GetvwPos().ToVec2() - vCenter;
+		const float distsq = vDist.Lengthsq();
+		if( distsq <= pixelRadius * pixelRadius ) {
+			// 코스트가 0이면 코스트에 관계없이 타겟하나만 선택한다.
+			if( numCost == 0 ) {
+				pOutAry->Add( spUnit );
+				return 1;			
+			} else {
+				const auto costUnit = spUnit->GetSizeCost();
+				if( costUnit <= currCost ) {
+					// 유닛 코스트가 남은 코스트를 깔수 있을때만.
+					currCost -= costUnit;
+					XBREAK( currCost < 0 );
+					pOutAry->Add( spUnit );
+					if( currCost == 0 )				// 코스트를 다 채웠으면 리턴.
+						return pOutAry->Size();
+				}
+			}
+		} // in radius
+	} // for
+
+	return pOutAry->size();
+}
 /**
  @brief 윈도우좌표vsPos에서 픽킹되는 bitCamp진영 유닛을 찾아낸다.
  @param snExcludeSquad 검색에서 제외해야할 부대

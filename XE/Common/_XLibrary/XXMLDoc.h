@@ -100,6 +100,7 @@ public:
 	LPCTSTR GetTString( const char *cKey );
 	int GetStringAry( const char *cKey, std::vector<std::string> *pOutAry );
 	int GetInt( const char *cKey );
+	bool GetInt2( int* pOut );
 	float GetFloat( const char *cKey );
 	bool GetBool( const char *cKey );
 	XE::VEC2 GetVec2();

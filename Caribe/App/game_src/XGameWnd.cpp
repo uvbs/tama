@@ -42,6 +42,7 @@
 #include "_Wnd2/XWndImage.h"
 #include "_Wnd2/XWndButton.h"
 #include "_Wnd2/XWndProgressBar.h"
+//#include "XPropTech.h"
 #ifdef _xIN_TOOL
 #include "CaribeView.h"
 #endif // _xIN_TOOL
@@ -2383,36 +2384,36 @@ void XWndHeroPortrait::Update()
 	XWnd::Update();
 }
 ////////////////////////////////////////////////////////////////
-XWndAbilTreeDebug::XWndAbilTreeDebug( XGAME::xtUnit unit )
-	: XWndPopup( _T("abil_tree.xml"), "popup_tree" )
-{
-	Init();
-//	m_pAcc = pAcc;
-	m_Unit = unit;
-}
-
-void XWndAbilTreeDebug::Update()
-{
-	XArrayLinearN<XPropTech::xNodeAbil*, 1024> aryAbil;
-	XPropTech::sGet()->GetNodesToAry( m_Unit, &aryAbil );
-	const auto& research = ACCOUNT->GetResearching();
-	auto pHero = ACCOUNT->GetHero( research.GetsnHero() );
-	if( pHero ) {
-		_tstring strMsg;
-		XARRAYLINEARN_LOOP_AUTO( aryAbil, pNode ) {
-			const auto abil = pHero->GetAbilNode( m_Unit, pNode->idNode );
-			if( abil.point > 0 ) {
-	// 			auto pSkillDat = SKILL_MNG->FindByIdentifier( pNode->strSkill );
-	// 			if( pSkillDat ) {
-					strMsg += XFORMAT( "%s:%d\n", XTEXT( pNode->idName ), abil.point );
-	// 			}
-			}
-		} END_LOOP;
-		xSET_TEXT( this, "text.abil", strMsg );
-	}
-	//
-	XWndPopup::Update();
-}
+// XWndAbilTreeDebug::XWndAbilTreeDebug( XGAME::xtUnit unit )
+// 	: XWndPopup( _T("abil_tree.xml"), "popup_tree" )
+// {
+// 	Init();
+// //	m_pAcc = pAcc;
+// 	m_Unit = unit;
+// }
+// 
+// void XWndAbilTreeDebug::Update()
+// {
+// 	XArrayLinearN<XPropTech::xNodeAbil*, 1024> aryAbil;
+// 	XPropTech::sGet()->GetNodesToAry( m_Unit, &aryAbil );
+// 	const auto& research = ACCOUNT->GetResearching();
+// 	auto pHero = ACCOUNT->GetHero( research.GetsnHero() );
+// 	if( pHero ) {
+// 		_tstring strMsg;
+// 		XARRAYLINEARN_LOOP_AUTO( aryAbil, pNode ) {
+// 			const auto abil = pHero->GetAbilNode( m_Unit, pNode->idNode );
+// 			if( abil.point > 0 ) {
+// 	// 			auto pSkillDat = SKILL_MNG->FindByIdentifier( pNode->strSkill );
+// 	// 			if( pSkillDat ) {
+// 					strMsg += XFORMAT( "%s:%d\n", XTEXT( pNode->idName ), abil.point );
+// 	// 			}
+// 			}
+// 		} END_LOOP;
+// 		xSET_TEXT( this, "text.abil", strMsg );
+// 	}
+// 	//
+// 	XWndPopup::Update();
+// }
 
 ////////////////////////////////////////////////////////////////
 /**

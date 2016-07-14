@@ -70,7 +70,15 @@ public:
 							int numApply,
 							BOOL bIncludeCenter,
 							BIT bitLive = XSKILL::xTF_LIVE );		// 생존필터;
- 	void DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible ) override;
+	int GetListUnitRadius2( XVector<XSPUnit> *pOutAry
+												, XEBaseWorldObj *pCenter
+												, const XE::VEC2& vCenter
+												, float pixelRadius
+												, BIT bitSideFilter
+												, int numCost
+												, bool bIncludeCenter
+												, BIT bitLive = XSKILL::xTF_LIVE ) const;
+	void DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible ) override;
 //	void DrawVisible( XEWndWorld *pWndWorld, const XList4<XEBaseWorldObj*>& aryVisible ) override;
 	UnitPtr GetPickUnit( XWndBattleField *pWndWorld, const XE::VEC2& vsPos, BIT bitCamp, ID snExcludeSquad=0, BOOL *pOutPickExclude=NULL );
 };

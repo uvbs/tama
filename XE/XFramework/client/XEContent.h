@@ -208,10 +208,14 @@ inline void PUT_STRINGF2_SHADOW( const XE::VEC2& v, XCOLOR col, LPCTSTR szFormat
 	if( XE::GetMain()->GetpGame() )
 		XE::GetMain()->GetpGame()->GetpfdSystem()->DrawString( v.x, v.y, szBuff, col, xFONT::xSTYLE_SHADOW );
 }
-inline void PUT_STRING2_STROKE( const XE::VEC2& v, LPCTSTR szText, XCOLOR col ) {
+inline void PUT_STRING2_STROKE( const XE::VEC2& v, LPCTSTR szText, XCOLOR col = XCOLOR_WHITE ) {
 	if( XE::GetMain()->GetpGame() )
 		XE::GetMain()->GetpGame()->GetpfdSystem()->DrawString( v.x, v.y, szText, col, xFONT::xSTYLE_STROKE );
 }
+inline void PUT_STRING2_STROKE( const XE::VEC2& v, const _tstring& strText, XCOLOR col = XCOLOR_WHITE ) {
+	PUT_STRING2_STROKE( v, strText.c_str(), col );
+}
+
 inline void PUT_STRING2_SHADOW( const XE::VEC2& v, LPCTSTR szText, XCOLOR col ) {
 	if( XE::GetMain()->GetpGame() )
 		XE::GetMain()->GetpGame()->GetpfdSystem()->DrawString( v.x, v.y, szText, col, xFONT::xSTYLE_SHADOW );

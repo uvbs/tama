@@ -219,6 +219,7 @@ public:
 			return m_type == XGAME::xCT_SUBSCRIBE;
 		}
 	};
+	XVector<int> m_arySizeCost;		// 유닛크기에 따른 크기비용
 private:
 	XVector<cashItem> m_aryCashitems;				// 캐쉬 아이템 목록
 	XVector<cashItem> m_aryCashitemsBySoftnyx;		// 캐쉬 상품 목록(소프트닉스)

@@ -1274,7 +1274,9 @@ int XHero::GetNumUnlockAbil( /*XGAME::xtUnit unit*/ )
 	for( int i = 1; i < XGAME::xUNIT_MAX; ++i ) {
 		auto unit = (XGAME::xtUnit)i;
 		auto& mapAbil = m_aryUnitsAbil[ unit ];
+#ifndef _XSINGLE
 		XBREAK( mapAbil.size() > 0 && GetTypeAtk() != XGAME::GetAtkType(unit) );
+#endif // _XSINGLE
 		num += mapAbil.size();
 	}
 	return num;
@@ -1333,10 +1335,12 @@ int XHero::GetNumSetAbilPointByUnit( XGAME::xtUnit unit )
 			num = 0;
 		}
 #else
+#ifndef _XSINGLE
 		if( XBREAK( GetTypeAtk() != XGAME::GetAtkType(unit) ) ) {
 			mapAbil.clear();
 			num = 0;
 		}
+#endif // not _XSINGLE
 #endif
 	}
 	return num;

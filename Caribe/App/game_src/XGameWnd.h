@@ -6,7 +6,7 @@
 #include "XFramework/Game/XFLevel.h"
 //#include "XWorld.h"
 #include "XPropUnit.h"
-#include "XPropTech.h"
+//#include "XPropTech.h"
 #include "XBaseItem.h"
 #include "XAccount.h"
 #include "XFramework/client/XEContent.h"
@@ -711,22 +711,22 @@ private:
 * @author xuzhu
 * @date	2015/10/11 22:00
 *****************************************************************/
-class XWndAbilTreeDebug : public XWndPopup
-{
-public:
-	XWndAbilTreeDebug( XGAME::xtUnit unit );
-	virtual ~XWndAbilTreeDebug() { Destroy(); }
-	// get/setter
-	// public member
-	void Update() override;
-private:
-	// private member
-	XGAME::xtUnit m_Unit = XGAME::xUNIT_NONE;
-private:
-	// private method
-	void Init() {}
-	void Destroy() {}
-}; // class XWndAbilTreeDebug
+// class XWndAbilTreeDebug : public XWndPopup
+// {
+// public:
+// 	XWndAbilTreeDebug( XGAME::xtUnit unit );
+// 	virtual ~XWndAbilTreeDebug() { Destroy(); }
+// 	// get/setter
+// 	// public member
+// 	void Update() override;
+// private:
+// 	// private member
+// 	XGAME::xtUnit m_Unit = XGAME::xUNIT_NONE;
+// private:
+// 	// private method
+// 	void Init() {}
+// 	void Destroy() {}
+// }; // class XWndAbilTreeDebug
 
 /****************************************************************
 * @brief 

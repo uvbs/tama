@@ -210,8 +210,7 @@ XEXmlNode XEXmlNode::GetNext()
 {
 	XBREAK( m_pRoot == NULL );
 	TiXmlElement *pElem = m_pRoot->NextSiblingElement();
-	while( pElem )
-	{
+	while( pElem )	{
 		// 노드이름 첫글자가 언더바(_)면 스킵한다.
 		const char *cName = pElem->Value();
 		if( cName[0] != '_' )
@@ -286,6 +285,19 @@ int XEXmlNode::GetInt( const char *cKey )
 		m_bNotFound = false;
 	return val;
 }
+
+/**
+ @brief element밑에 attribute가 없이 바로 값을 읽는버전(#text값)
+*/
+bool XEXmlNode::GetInt2( int* pOut )
+{
+	auto pElem = m_pRoot->FirstChild();
+	if( !pElem )
+		return false;
+	*pOut = std::stoi( pElem->ValueStr() );
+	return true;
+}
+
 float XEXmlNode::GetFloat( const char *cKey )
 {
 	m_bNotFound = false;

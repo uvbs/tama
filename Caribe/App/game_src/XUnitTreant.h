@@ -41,6 +41,7 @@ public:
 								bool bCritical,
 								LPCTSTR sprArrive, ID idActArrive,
 								DWORD dwParam ) override;
-	static void sShootRock( UnitPtr spShooter, UnitPtr& spTarget, const XE::VEC3& vwSrc, const XE::VEC3& vwDst, float damage, bool bCritical, const _tstring& _strSpr = _T("") );
+	void DoDamageToTarget( XSPUnit spTarget, float damage, XSKILL::xtDamage typeDmg, bool bCritical, XGAME::xtDamageAttr typeDmgAttr );
+	static void sShootRock( UnitPtr spShooter, UnitPtr& spTarget, const XE::VEC3& vwSrc, const XE::VEC3& vwDst, float damage, bool bCritical, const _tstring& _strSpr = _T( "" ) );
 };
 

@@ -3580,4 +3580,10 @@ void XBaseUnit::OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster
 	}
 }
 
-
+/**
+ @brief 유닛 크기에 따른 크기비용.
+*/
+int XBaseUnit::GetSizeCost()
+{
+	return _XGC->m_arySizeCost[ GetUnitSize() ];
+}

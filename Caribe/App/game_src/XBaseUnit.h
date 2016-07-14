@@ -656,6 +656,8 @@ public:
 	virtual _tstring GetstrIds() {
 		return _tstring();
 	}
+	// 유닛의 크기비용
+	virtual int GetSizeCost();
 private:
 	void CreateDamageNumber( float damage, BIT bitAttrHit );
 	void OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) override;

@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "XXMLDoc.h"
+#include "XList.h"
+#include <vector>
 
 ////////////////////////////////////////////////////////////////
 // xml을 읽어서 상수들을 읽은 후 전역변수에 모두 세팅하고 객체는 다시 삭제한다.
@@ -65,21 +67,8 @@ public:
 		return RET();
 	}
 	/// szNodeName밑에 있는 모든 노드를 어레이로 읽는다.
-	int GetAryTString( const char *cNodeName, std::vector<_tstring> *pOutAry ) {
-		XBREAK( XE::IsEmpty(cNodeName) );
-		auto node = nodeRoot.FindNode( cNodeName );
-		auto nodeChild = node.GetFirst();
-		while( !nodeChild.IsEmpty() ) {
-			auto pAttr = nodeChild.GetFirstAttribute();
-			if( pAttr ) {
-				_tstring strVal = C2SZ(pAttr->Value());
-				pOutAry->push_back( strVal );
-			}
-			nodeChild = nodeChild.GetNext();
-		}
-		return pOutAry->size();
-	}
-
+	int GetAryTString( const char *cNodeName, std::vector<_tstring> *pOutAry );
+	int GetAryInt( const std::string& strNodeName, XVector<int>* pOutAry );
 	float GetFloat( const char* cVal, const char* cNodeName ) {
 		_tstring strVal = C2SZ(cVal);
 		_tstring strNodeName = C2SZ(cNodeName);

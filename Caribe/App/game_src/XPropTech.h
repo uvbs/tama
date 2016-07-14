@@ -65,8 +65,8 @@ public:
 		XList4<xNodeAbil*> listChild;	///< 차일드 노드 리스트
 #ifdef _CLIENT
 		XSurface *psfcIcon;				///< 아이콘 서피스
-		void DrawIcon() {
-			psfcIcon->Draw( vPos );
+		inline void DrawIcon( const XE::VEC2& vAdj = XE::VEC2()) {
+			psfcIcon->Draw( vPos + vAdj );
 		}
 #endif
 		xNodeAbil() {
@@ -213,6 +213,10 @@ private:
 	void OnDidBeforeReadProp( CToken& token );
 	void OnDidFinishReadProp( CToken& token ) override;
 	void DoLinkParentChild( XGAME::xtUnit unit );
+	void ClearChild( xNodeAbil* pParent, xNodeAbil* pChild );
+	void ClearChild( xNodeAbil* pParent, ID idChild );
+	void ClearChild( ID idParent, xNodeAbil* pChild );
+	void ClearChild( ID idParent, ID idChild );
 public:
 };
 
