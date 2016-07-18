@@ -45,6 +45,7 @@
 #include "XWndCampaign.h"
 #include "XCampObj.h"
 #include "XDefNetwork.h"
+#include "XHero.h"
 
 #define BTRACE		XTRACE
 

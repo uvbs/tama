@@ -14,6 +14,11 @@
 #ifdef _XSINGLE
 #include "XLegion.h"
 #endif
+#if defined(_CLIENT) || defined(_GAME_SERVER)
+#include "skill/XSkillDat.h"
+#include "skill/XEffect.h"
+//#include "skill/XAdjParam.h"
+#endif 
 
 using namespace XSKILL;
 #ifdef WIN32
@@ -63,61 +68,40 @@ XHero* XHero::sCreateDeSerialize( XArchive& ar, XSPAcc spAcc )
 }
 
 #if defined(_XSINGLE) || !defined(_CLIENT)
-// XHero* XHero::sCreateHero( XPropHero::xPROP *pProp, XGAME::xtUnit unit )
-// {
-// #if defined(_XSINGLE) || !defined(_CLIENT)
-// #else
-// 	XBREAK(1);	// 클라에선 이걸 사용하면 안됨.
-// #endif // XSINGLE || not CLIENT
-// 
-// 	XHero *pHero = new XHero( pProp, unit, numUnit );
-// 	return pHero;
-// }
 XHero* XHero::sCreateHero( XPropHero::xPROP *pProp, 
 						int levelSquad, 
 						XGAME::xtUnit unit )
 {
-// 	XGAME::xtClan clan = pProp->clan;
 #if defined(_XSINGLE) || !defined(_CLIENT)
-// 	if( clan == XGAME::xCL_RANDOM )
-// 		clan = ( XGAME::xtClan )( 1 + random( XGAME::xCL_MAX - 1 ) );
-// 	XBREAK( clan <= 0 || clan >= XGAME::xCL_MAX );
 #else
 	XBREAK( 1 );	// 클라에선 이걸 사용하면 안됨.
 #endif // XSINGLE || not CLIENT
-
 	XHero *pHero = new XHero( pProp, levelSquad, unit );
-// 	XHero *pHero = new XHero( pProp, levelSquad, unit, clan );
 	return pHero;
 }
-// XHero* XHero::sCreateHero( ID idProp, XGAME::xtUnit unit )
-// {
-// 	XPropHero::xPROP *pProp = PROP_HERO->GetpProp( idProp );
-// 	if( XBREAK( pProp == nullptr ) )
-// 		return nullptr;
-// 
-// 	return sCreateHero( pProp, unit, numUnit );
-// }
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 
 
 ////////////////////////////////////////////////////////////////
 XHero::XHero()
-	: XAdjParam( XGAME::xMAX_PARAM, 0 )
-	, m_aryUpgrade(XGAME::xTR_MAX)
+//	: XAdjParam( XGAME::xMAX_PARAM, 0 )
+	: m_aryUpgrade(XGAME::xTR_MAX)
 	, m_aryUnitsAbil( XGAME::xUNIT_MAX )
 {
 	// DeSerialize용
 	Init();
+//	m_spAdjParam = std::make_shared<XSKILL::XAdjParam>( XGAME::xMAX_PARAM, 0 );
 }
 
 XHero::XHero( XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit )
 // XHero::XHero( XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit, XGAME::xtClan clan )
-	: XAdjParam( XGAME::xMAX_PARAM, 0 )
-	, m_aryUpgrade(XGAME::xTR_MAX)
+// 	: XAdjParam( XGAME::xMAX_PARAM, 0 )
+// 	: m_AdjParam( XGAME::xMAX_PARAM, 0 )
+	: m_aryUpgrade(XGAME::xTR_MAX)
 	, m_aryUnitsAbil( XGAME::xUNIT_MAX )
 {
 	Init();
+//	m_spAdjParam = std::make_shared<XSKILL::XAdjParam>( XGAME::xMAX_PARAM, 0 );
 	XBREAK( pProp == nullptr );
 	auto& propSquad = PROP_SQUAD->GetTable( levelSquad );
 	int numUnit = propSquad.GetMaxUnit( unit );
@@ -531,11 +515,11 @@ BOOL XHero::SetUnequip(XBaseItem *pItem)
 */
 void XHero::GetSquadStat( int levelSquad, xSquadStat *pOut )
 {
-	pOut->meleePower = PROP_UNIT->GetAttackMeleePowerSquad( this, levelSquad );
-	pOut->rangePower = PROP_UNIT->GetAttackRangePowerSquad( this, levelSquad );
-	pOut->def = PROP_UNIT->GetDefensePowerSquad( this, levelSquad );
-	pOut->hp = PROP_UNIT->GetMaxHpSquad( this, levelSquad );
-	pOut->speedAtk = PROP_UNIT->GetAttackSpeed( this->GetUnit() );
+	pOut->meleePower = GetAttackMeleePowerSquad( levelSquad );
+	pOut->rangePower = GetAttackRangePowerSquad( levelSquad );
+	pOut->def = GetDefensePowerSquad( levelSquad );
+	pOut->hp = GetMaxHpSquad( levelSquad );
+	pOut->speedAtk = GetAttackSpeed( GetUnit() );
 	pOut->speedMoveForMeter = xPIXEL_TO_METER( PROP_UNIT->GetMoveSpeedPerSec( this->GetUnit() ) );
 }
 
@@ -546,20 +530,11 @@ void XHero::GetSquadStat( int levelSquad, xSquadStat *pOut )
 float XHero::GetAttackMeleeRatio( int lvHero, bool bForShow )
 {
 	// 기본프로퍼티 값에 레벨에 따른 증가량을 곱해서 보정한다.
-// 	float addGrade = GetGrade() * 0.1f;		// 등급당 10%씩 증가
-// 	float atkMelee = GetpProp()->atkMelee + addGrade;	// 기본스탯에 등급스탯을 더함.
-// 	float val = atkMelee + ( lvHero * GetpProp()->atkMeleeAdd );
 	float val = GetpProp()->GetStat2( XGAME::xSTAT_ATK_MELEE, GetGrade(), lvHero );
 	float multiply = 0;
 	multiply += GetAdjParamByItem( XGAME::xADJ_ATTACK );	// 공격력증가 옵션을 더한다.
 	multiply += GetAdjParamByItem( XGAME::xADJ_ATTACK_MELEE_TYPE );	// 근접공격력 증가 옵션을 더한다.
 	const auto statVal = val * (1.f + multiply);
-// 	if( bForShow ) {
-// 		if( IsRange() )
-// 			return statVal * 10.f;
-// 		else
-// 			return statVal * 100.f;
-// 	}
 	if( bForShow )
 		return statVal * HERO_STAT_MULTIPLY;
 	return statVal;
@@ -575,12 +550,6 @@ float XHero::GetAttackRangeRatio( int lvHero, bool bForShow )
 	multiply += GetAdjParamByItem( XGAME::xADJ_ATTACK );	// 공격력증가 옵션을 더한다.
 	multiply += GetAdjParamByItem( XGAME::xADJ_ATTACK_RANGE_TYPE );	// 근접공격력 증가 옵션을 더한다.
 	const auto statVal = val * ( 1.f + multiply );
-// 	if( bForShow ) {
-// 		if( IsRange() )
-// 			return statVal * 100.f;
-// 		else
-// 			return statVal * 0.f;
-// 	}
 	if( bForShow ) {
 		if( IsRange() )
 			return statVal * HERO_STAT_MULTIPLY;
@@ -1007,15 +976,7 @@ XGAME::xtError XHero::DoPromotion()
 {
 	auto bOk = _IsPromotionForXAccount();
 	XBREAK( bOk != XGAME::xE_OK );
-// 	if( XBREAK( m_Grade < XGAME::xGD_RARE || m_Grade >= XGAME::xGD_LEGENDARY ) )
-// 		return XGAME::xE_ERROR_CRITICAL;
-// 	if( XBREAK( !IsMaxLevelLevel() ) )
-// 		return XGAME::xE_NOT_ENOUGH_LEVEL;
 	m_Grade = ( XGAME::xtGrade )( m_Grade + 1 );
-// 	m_aryUpgrade[ XGAME::xTR_LEVEL_UP ].SetLevel( 1 );
-// 	m_aryUpgrade[ XGAME::xTR_LEVEL_UP ].SetExp( 0 );
-//	m_Level.SetLevel( 1 );
-//	m_Level.SetExp(0);
 	return XGAME::xE_OK;
 }
 /**
@@ -1637,3 +1598,77 @@ void XHero::AddcntInitAbil( int add )
 	m_numInitAbil += add;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// 스탯. 로비등에서 부대공격력등을 표시할때 사용
+/**
+@brief 스탯과 사이즈 부대레벨을 받아서 부대총 능력치를 곱해준다.
+*/
+float XHero::GetSquadPower( float statBase, XGAME::xtSize size, int levelSquad )
+{
+	const auto& propSquad = PROP_SQUAD->GetTable( levelSquad );
+	float stat = statBase;
+	switch( size ) {
+	case XGAME::xSIZE_SMALL:
+		stat *= propSquad.maxSmall;
+		break;
+	case XGAME::xSIZE_MIDDLE: {
+		float power = 0;
+		int max = propSquad.maxMiddle;		// 현재레벨에서의 유닛 최대수
+		for( int i = 0; i < max; ++i )
+			power += stat * propSquad.aryMultiplyRatioMiddle[i];
+		stat = power;
+		//		return power;	// 현재 레벨의 최대유닛만큼 
+	} break;
+	case XGAME::xSIZE_BIG:
+		stat *= propSquad.multiplyRatioBig;
+		break;
+	}
+	// 기본능력치에 영웅능력을 곱한다.
+	return stat *= GetAttackMeleeRatio();
+}
+// 스탯
+//////////////////////////////////////////////////////////////////////////
+// static float GetAttackMeleePowerSquad( XHero* pHero, XPropUnit::xPROP *pProp, int levelSquad ) {
+// 	return pHero->GetSquadPower( pProp->atkMelee, pProp->size, levelSquad );
+// }
+// static float GetAttackRangePowerSquad( XPropUnit::xPROP *pProp, int levelSquad ) {
+// 	return GetSquadPower( pProp->atkRange, pProp->size, levelSquad );
+// }
+// static int GetMaxHpSquad( XPropUnit::xPROP *pProp, int levelSquad ) {
+// 	return (int)GetSquadPower( pProp->hpMax, pProp->size, levelSquad );
+// }
+// static float GetDefensePowerSquad( XPropUnit::xPROP *pProp, int levelSquad ) {
+// 	return GetSquadPower( pProp->def, pProp->size, levelSquad );
+// }
+
+float XHero::GetAttackMeleePowerSquad( int levelSquad )
+{
+	auto pProp = PROP_UNIT->GetpProp( m_Unit );
+	if( XBREAK( pProp == nullptr ) )
+		return 0.f;
+	return GetSquadPower( pProp->atkMelee, pProp->size, levelSquad );
+}
+
+float XHero::GetAttackRangePowerSquad( int levelSquad )
+{
+	auto pProp = PROP_UNIT->GetpProp( m_Unit );
+	if( XBREAK( pProp == nullptr ) )
+		return 0.f;
+ 	return GetSquadPower( pProp->atkRange, pProp->size, levelSquad );
+}
+
+float XHero::GetDefensePowerSquad( int levelSquad )
+{
+	auto pProp = PROP_UNIT->GetpProp( m_Unit );
+	if( XBREAK( pProp == nullptr ) )
+		return 0.f;
+ 	return GetSquadPower( pProp->def, pProp->size, levelSquad );
+}
+
+int XHero::GetMaxHpSquad( int levelSquad )
+{
+	auto pProp = PROP_UNIT->GetpProp( m_Unit );
+	if( XBREAK( pProp == nullptr ) )
+		return 0;
+	return (int)GetSquadPower( pProp->hpMax, pProp->size, levelSquad );
+}

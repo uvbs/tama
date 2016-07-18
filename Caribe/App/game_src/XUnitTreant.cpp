@@ -75,9 +75,12 @@ void XUnitTreant::sShootRock( UnitPtr spShooter,
 		// 거대한바위 특성
 		pBuff = spShooter->FindBuffSkill( _T( "giant_rock" ) );
 		if( pBuff ) {
-			float ratio = pBuff->GetAbilMinbyLevel();
-			pRock->SetSplash( 4.f, ratio );
-			pRock->SetScaleObj( 2.f );
+			const int lvSkill = pBuff->GetLevel();
+			pRock->SetSplash( 3.f + lvSkill, 0.5f );
+			pRock->SetScaleObj( 2.f + lvSkill );
+			// 			float ratio = pBuff->GetAbilMinbyLevel();
+// 			pRock->SetSplash( 4.f, ratio );
+// 			pRock->SetScaleObj( 2.f );
 		}
 	}
 	pRock->SetpDelegate( spShooter.get() );
@@ -137,7 +140,8 @@ void XUnitTreant::OnArriveBullet( XObjBullet *pBullet,
 		// 넌타겟팅으로 날아옴.(탄성바위)
 		meterRadius = 3.f;		// 이것도 발동반경으로.
 		vCenter = vwDst.ToVec2();
-		ratio = 1.f;
+		if( maxCost > 0 )
+			ratio = pBullet->GetratioDamageSplash();
 		// 중심타겟이 없으므로 true적용(의미없음)
 		bIncludeCenter = true;
 		if( maxCost <0 )
@@ -231,3 +235,39 @@ void XUnitTreant::DoDamageToTarget( XSPUnit spTarget
 	}
 }
 
+void XUnitTreant::FrameMove( float dt )
+{
+	XUnitCommon::FrameMove( dt );
+	//
+	if( m_timerSec.IsOff() )
+		m_timerSec.Set( 1.f );
+	if( m_timerSec.IsOver() ) {
+		auto pBuff = FindBuffSkill( _T( "invoke_photosynthesis" ) );
+		if( pBuff ) {
+			pBuff->AddAbilMin( 0.01f );
+			if( m_cntPerSec < 200 )
+				++m_cntPerSec;
+			float scale = 1.f + (m_cntPerSec * 0.01f);
+			const float scaleMax = 1.5f;
+			if( scale > scaleMax )
+				scale = scaleMax;
+			SetScaleObj( GetScaleUnitOrg() * scale );
+		}
+		m_timerSec.Reset();
+	}
+// 
+// 	if( pSkillDat->GetstrIdentifier() == _T( "photosynthesis" ) ) {
+// 		static int si = 0;
+// 		if( GetUnitType() == xUNIT_TREANT ) {
+// 			if( m_cntPerSec < 50 )
+// 				++m_cntPerSec;
+// 			XBREAK( pBuffObj == nullptr );
+// 			float scale = 1.f + (m_cntPerSec * 0.01f);
+// 			const float scaleMax = 1.5f;
+// 			if( scale > scaleMax )
+// 				scale = scaleMax;
+// 			SetScaleObj( GetScaleUnitOrg() * scale );
+// 		}
+// 	}
+
+}

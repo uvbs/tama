@@ -10,6 +10,8 @@
 #include "XLegion.h"
 #include "_Wnd2/XWndList.h"
 #include "_Wnd2/XWndButton.h"
+#include "skill/XSkillDat.h"
+#include "XHero.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -207,10 +209,8 @@ int XSceneLegion::OnClickSquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 
 		XSKILL::XSkillDat* pSkill = SKILL_MNG->FindByIdentifier(pHero->GetpProp()->strActive.c_str());
 		XWndImage* pImg = SafeCast<XWndImage*, XWnd*>(Find("img.icon.active"));
-		if (pImg)
-		{
-			if (pSkill)
-			{
+		if (pImg)		{
+			if (pSkill)			{
 				pImg->SetSurface(XE::MakePath(DIR_IMG, pSkill->GetstrIcon()));
 				xSET_SHOW(this, "img.icon.active.bg", TRUE);
 				_tstring strDesc;

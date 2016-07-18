@@ -176,6 +176,7 @@ void XAccount::sUpdateByGuildEvent( XSPAcc spAcc, xtGuildEvent event, const XGui
 //////////////////////////////////////////////////////////////////////////
 XAccount::XAccount()
 	: m_aryResource(XGAME::xRES_MAX)
+	, m_aryLegion( XGAME::MAX_LEGION )
 {
 	Init();
 	CreateQuestMng();
@@ -187,6 +188,7 @@ XAccount::XAccount()
 
 XAccount::XAccount(ID idAccont)
 	: m_aryResource( XGAME::xRES_MAX )
+	, m_aryLegion( XGAME::MAX_LEGION )
 {
 	Init();
 	m_idAccount = idAccont;
@@ -195,6 +197,7 @@ XAccount::XAccount(ID idAccont)
 }
 XAccount::XAccount(ID idAccount, LPCTSTR szID)
 	: m_aryResource( XGAME::xRES_MAX )
+	, m_aryLegion( XGAME::MAX_LEGION )
 {
 	Init();
 	m_idAccount = idAccount;
@@ -204,6 +207,7 @@ XAccount::XAccount(ID idAccount, LPCTSTR szID)
 }
 XAccount::XAccount( ID idAcc, const _tstring& strUUID )
 	: m_aryResource( XGAME::xRES_MAX )
+	, m_aryLegion( XGAME::MAX_LEGION )
 	, m_strUUID(strUUID)
 {
 	Init();
@@ -309,14 +313,16 @@ int XAccount::Serialize(XArchive& ar)
 	//
 	ar << (BYTE)VER_LEGION_SERIALIZE;
 	ar << (BYTE)0;
-	ar << (WORD)m_aryLegion.GetMax();
-	XARRAYN_LOOP_IDX(m_aryLegion, LegionPtr&, i, pLegion) {
-		if (pLegion) {
+	ar << (WORD)m_aryLegion.Size();
+//	XARRAYN_LOOP_IDX(m_aryLegion, LegionPtr&, i, pLegion) {
+	for( auto spLegion : m_aryLegion ) {
+		if (spLegion) {
 			ar << 1;
-			pLegion->Serialize(ar);
-		} else
+			spLegion->Serialize(ar);
+		} else {
 			ar << 0;
-	} END_LOOP;
+		}
+	}// END_LOOP;
 	MAKE_CHECKSUM(ar);
 	listSizes.Add(ar.size());
 	//
@@ -418,7 +424,7 @@ int XAccount::DeSerialize( XArchive& ar )
 	ar >> b0;	verLegion = b0;
 	ar >> b0;
 	ar >> w0;	size = w0;
-	XBREAK( m_aryLegion.GetMax() != size );
+	XBREAK( m_aryLegion.Size() != size );
 	for( int i = 0; i < size; ++i ) {
 		int fill;
 		ar >> fill;
@@ -1024,18 +1030,18 @@ void XAccount::CreateFakeAccount(void)
 @brief 지정된 값으로 부대를 생성한다.
 */
 XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
-	int idxSquad,
-	LPCTSTR szHeroIdentifier,
-	int levelSquad,
-	int tierUnit)
+																		int idxSquad,
+																		LPCTSTR szHeroIdentifier,
+																		int levelSquad,
+																		int tierUnit)
 {
-	XPropHero::xPROP *pPropHero = PROP_HERO->GetpProp(szHeroIdentifier);
+	auto pPropHero = PROP_HERO->GetpProp(szHeroIdentifier);
 	if (XBREAK(pPropHero == nullptr))
 		return nullptr;
-	XGAME::xtUnit unit = XGAME::GetRandomUnit(pPropHero->typeAtk, (XGAME::xtSize)tierUnit);
-	XHero *pHero = XHero::sCreateHero(pPropHero, levelSquad, unit);
+	auto unit = XGAME::GetRandomUnit(pPropHero->typeAtk, (XGAME::xtSize)tierUnit);
+	auto pHero = XHero::sCreateHero(pPropHero, levelSquad, unit);
 	AddHero(pHero);
-	XSquadron *pSq = new XSquadron(pHero);
+	auto pSq = new XSquadron(pHero);
 	pLegion->SetSquadron(idxSquad, pSq, FALSE);
 	return pSq;
 }
@@ -1419,7 +1425,8 @@ XGAME::xtGrade XAccount::GetRandomGradeHeroByTable(int levelUser) const
 }
 void XAccount::DestroyLegion(void)
 {
-	m_aryLegion.Clear(LegionPtr());
+//	m_aryLegion.Clear(LegionPtr());
+	m_aryLegion.Fill( nullptr );
 }
 
 /**
@@ -1642,11 +1649,11 @@ void XAccount::DestroyHero(ID snHero)
 */
 void XAccount::DeleteHeroInLegion(ID snHero)
 {
-	XARRAYN_LOOP(m_aryLegion, LegionPtr&, spLegion)
-	{
-		if (spLegion != nullptr)
+// 	XARRAYN_LOOP(m_aryLegion, LegionPtr&, spLegion)
+	for( auto spLegion : m_aryLegion ) {
+		if ( spLegion )
 			spLegion->RemoveSquad(snHero);
-	} END_LOOP;
+	}// END_LOOP;
 }
 /**
 @brief 군단에 배정된 장군을 제외한 장군의 리스트를 돌려준다.
@@ -5540,3 +5547,19 @@ int XAccount::ProcessCheatCmd( const _tstring& strCmdLine )
 	} // white
 	return (int)param;
 }
+
+void XAccount::SetspLegion( int idxLegion, XSPLegion spLegion ) 
+{
+	m_aryLegion[idxLegion] = spLegion;
+	XBREAK( spLegion && spLegion->IsNpc() );
+}
+
+/**
+ @brief infoLegion을 바탕으로 군단을 생성하고 영웅을 추가한다.
+*/
+#ifdef _XSINGLE
+// XSPLegion XAccount::CreatespLegion( const XGAME::xLegion& infoLegion )
+// {
+// 	df
+// }
+#endif // _XSINGLE

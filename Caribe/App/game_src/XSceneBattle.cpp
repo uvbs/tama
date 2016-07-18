@@ -29,11 +29,13 @@
 #include "XWndBattle.h"
 #include "_Wnd2/XWndProgressBar.h"
 #include "XSystem.h"
+#include "XHero.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT
 #ifdef _XSINGLE
 #include "XLegion.h"
+#include "XSquadron.h"
 #include "XPropLegion.h"
 #include "XPropLegionH.h"
 #endif // _XSINGLE
@@ -185,6 +187,7 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 
 void XSceneBattle::Release()
 {
+	s_BattleStart.Release();
 	XSceneBase::Release();
 	for( auto& camp : m_aryCamp ) {
 		camp.Release();
@@ -241,6 +244,7 @@ void XSceneBattle::CreateCamps()
 		camp.CreateSquadObj( m_pWndWorld, s_BattleStart.m_typeBattle );
 		camp.m_psfcProfile = nullptr;
 	}
+	s_BattleStart.Release();		// spAcc가 파괴되기전에 미리 해제시켜줘야 함.
 }
 BOOL XSceneBattle::OnCreate()
 {
@@ -318,13 +322,17 @@ XSPAcc XSceneBattle::sCreateAcc()
 		// 플레이어측 군단
 		auto pPropLegion = XPropLegion::sGet()->GetpProp( "single1_player" );
 		if( pPropLegion ) {
+//			auto spLegion = spAcc->CreateLegion( pPropLegion );
 			auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, 50, false );
-			ACCOUNT->SetspLegion( 0, spLegion );
-			XVector<XHero*> aryHeroes;
-			spLegion->GetHerosToAry( &aryHeroes );
-			for( auto pHero : aryHeroes ) {
-				ACCOUNT->AddHero( pHero );
+			XVector<XSquadron*> arySquad;
+			spLegion->GetSquadronToAry( &arySquad );
+			for( auto pSquad : arySquad ) {
+				if( pSquad && pSquad->GetpHero() ) {
+					ACCOUNT->AddHero( pSquad->GetpHero() );
+					pSquad->SetbCreateHero( FALSE );
+				}
 			}
+			ACCOUNT->SetspLegion( 0, spLegion );
 		}
 	}
 	return spAcc;
@@ -785,17 +793,24 @@ void XSceneBattle::GetSquadInfoToAry( XSPSquad spSquad, XBaseUnit* pUnit, XVecto
 	auto secAtk = pUnit->GetSpeedAttack( pUnit->GetspTarget() );
 	auto dmgMelee = pUnit->GetAttackMeleeDamage( nullptr );
 	auto dmgRange = pUnit->GetAttackRangeDamage( nullptr );
-	str = XE::Format( _T( "근접공격력:%.1f(dps:%1.f)" ), dmgMelee, dmgMelee / secAtk );
+	_tstring 
+	strAdd = XFORMAT("%+.0f%%", pUnit->GetAddRateByStat( xSTAT_ATK_MELEE, pUnit->GetspTarget() ) * 100.f);
+	str = XE::Format( _T( "근접피해량:%.1f(%s)(dps:%1.f)" ), dmgMelee, strAdd.c_str(), dmgMelee / secAtk );
 	pOut->Add( str );
-	str = XE::Format( _T( "원거리공격력:%.1f(dps:%1.f)" ), dmgRange, dmgRange / secAtk );
+	strAdd = XFORMAT( "%+.0f%%", pUnit->GetAddRateByStat( xSTAT_ATK_RANGE, pUnit->GetspTarget() ) * 100.f );
+	str = XE::Format( _T( "원거리피해량:%.1f(%s)(dps:%1.f)" ), dmgRange, strAdd.c_str(), dmgRange / secAtk );
 	pOut->Add( str );
-	str = XE::Format( _T( "공격속도:%.1f" ), secAtk );
+	strAdd = XFORMAT( "%+.1f%%", pUnit->GetAddRateByStat( xSTAT_SPEED_ATK, pUnit->GetspTarget() ) * 100.f );
+	str = XE::Format( _T( "공격속도:%.1f(%s)" ), secAtk, strAdd.c_str() );
 	pOut->Add( str );
-	str = XE::Format( _T( "방어력:%.1f" ), pUnit->GetDefensePower() );
+	strAdd = XFORMAT( "%+.0f%%", pUnit->GetAddRateByStat( xSTAT_DEF, pUnit->GetspTarget() ) * 100.f );
+	str = XE::Format( _T( "방어력:%.1f(%s)" ), pUnit->GetDefensePower(), strAdd.c_str() );
 	pOut->Add( str );
-	str = XE::Format( _T( "체력:%d/%d" ), pUnit->GetHp(), pUnit->GetMaxHp() );
+	strAdd = XFORMAT( "%+.0f%%", pUnit->GetAddRateByStat( xSTAT_HP, pUnit->GetspTarget() ) * 100.f );
+	str = XE::Format( _T( "체력:%d/%d(%s)" ), pUnit->GetHp(), pUnit->GetMaxHp(), strAdd.c_str() );
 	pOut->Add( str );
-	str = XE::Format( _T( "이동속도:%.1f" ), pUnit->GetSpeedMoveForPixel() );
+	strAdd = XFORMAT( "%+.0f%%", pUnit->GetAddRateByStat( xSTAT_SPEED_MOV, pUnit->GetspTarget() ) * 100.f );
+	str = XE::Format( _T( "이동속도:%.1f(%s)" ), pUnit->GetSpeedMovePerSec(), strAdd.c_str() );
 	pOut->Add( str );
 	str = _T( "---------------------" );
 	pOut->Add( str );
@@ -1018,6 +1033,8 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 			GAME->LoadConstant();
 		}
 		if( XAPP->m_bReloadWhenRetryPropSkill ) {
+			SAFE_DELETE( CONSTANT );
+			GAME->LoadConstant();		// 스킬은 내부에서 AddConstant를 하므로 삭제하고 다시 읽어야 함.
 			CONSOLE( "Load propSkill..." );
 			SAFE_DELETE( SKILL_MNG );
 			SKILL_MNG = new XSkillMng;
@@ -1048,6 +1065,7 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 		if( bRecreate ) {
 			// XLegion과 XHero들을 모두 파괴한다.
 			XAccount::sDestroyPlayer();
+			sCreateAcc();
 		}
 		// objmng를 파괴한다.
 		XBattleField::sGet()->Clear();

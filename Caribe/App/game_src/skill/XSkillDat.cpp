@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "XSkillDat.h"
 #include "XESkillMng.h"
+#include "XEffect.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -10,7 +11,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 
 ID XSkillDat::s_idGlobal = 0;		// SkillDat 제네레이트용 글로벌아이디
 //////////////////////////////////////////////////////////////////////////
@@ -456,7 +457,31 @@ void XSkillDat::DeSerialize( XArchive& ar, int ver )
 	ar >> m_shootObjSpeed;
 }
 
+BOOL XSkillDat::IsBuff( const EFFECT *pEffect ) 
+{
+	return (pEffect->IsDuration()
+					 || pEffect->secInvokeDOT > 0
+					 || IsPassive() || IsAbility()) ? TRUE : FALSE;
+}
+// 자신이나 자신의 부대에게만 쓰는 버프인가.
+bool XSkillDat::IsSelfBuff() 
+{
+	if( m_baseTarget != xBST_SELF )
+		return false;
+	for( auto pEffect : m_listEffects ) {
+		if( pEffect->IsDuration() )
+			return true;
+	}
+	return false;
+}
 
-NAMESPACE_XSKILL_END;
+void XSkillDat::AddEffect( EFFECT *pEffect ) 
+{
+	pEffect->m_snEffect = XE::GenerateID();
+	m_listEffects.push_back( pEffect );
+}
+
+
+XE_NAMESPACE_END;
 
 

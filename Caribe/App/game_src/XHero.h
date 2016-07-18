@@ -2,8 +2,8 @@
 #include "XHeroH.h"
 #include "XFramework/Game/XFLevelH.h"
 #include "XPropHero.h"
-#include "skill/XSkillDat.h"
-#include "skill/XAdjParam.h"
+//#include "skill/XSkillDat.h"
+//#include "skill/XAdjParam.h"
 #include "XPropSquad.h"
 #include "XPropUpgrade.h"
 #include "XStruct.h"
@@ -17,10 +17,14 @@ class XAccount;
 namespace XGAME {
 	struct xAbil;
 };
+namespace XSKILL {
+class XSkillDat;
+class XAdjParam;
+}
 
 ////////////////////////////////////////////////////////////////
-class XHero : public XSKILL::XAdjParam
-			, public XDelegateLevel
+// class XHero : public XSKILL::XAdjParam
+class XHero : public XDelegateLevel
 {
 public:
 	static int sSerialize( XArchive& ar, XHero *pHero );
@@ -46,6 +50,7 @@ public:
 //	static volatile float s_fMultiply;				// 메모리 치팅방지
 #endif // _CLIENT
 private:
+//	std::shared_ptr<XSKILL::XAdjParam> m_spAdjParam;
 	//
 	ID m_idProp = 0;      // m_pProp을 교체해야할때 필요함.
 	ID m_keyPropHero = 0;
@@ -84,6 +89,7 @@ public:
 	XHero( XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit );
 	virtual ~XHero() { Destroy(); }
 	//
+//	GET_ACCESSOR( std::shared_ptr<XSKILL::XAdjParam>, spAdjParam );
 	GET_SET_ACCESSOR( XGAME::xtUnit, Unit );
 	int GetnumUnit();
 	GET_SET_ACCESSOR_CONST( bool, bLive );
@@ -344,6 +350,11 @@ public:
 	bool IsResearbleUnit( XGAME::xtUnit unit );
 	int GetCostInitAbil();
 	int GetNumAbilPoint( XGAME::xtUnit unit, ID idAbil );
+	float GetSquadPower( float stat, XGAME::xtSize size, int levelSquad );
+	float GetAttackMeleePowerSquad( int levelSuqad );
+	float GetAttackRangePowerSquad( int levelSquad );
+	int GetMaxHpSquad( int levelSquad );
+	float GetDefensePowerSquad( int levelSquad );
 private:
 	void InitAryAbil();
 	BOOL IsEmptyAbilMap();

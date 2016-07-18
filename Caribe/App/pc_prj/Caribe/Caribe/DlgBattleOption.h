@@ -16,6 +16,10 @@ public:
 	enum { IDD = IDD_BATTLE_OPTION };
 
 	BOOL m_bCheckFace = FALSE;		// 초상화 보이기/감추기
+	BOOL m_bCheckPlayerHero = FALSE;
+	BOOL m_bCheckPlayerUnit = FALSE;
+	BOOL m_bCheckEnemyHero = FALSE;
+	BOOL m_bCheckEnemyUnit = FALSE;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 

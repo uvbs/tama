@@ -42,6 +42,7 @@
 #include "_Wnd2/XWndImage.h"
 #include "_Wnd2/XWndButton.h"
 #include "_Wnd2/XWndProgressBar.h"
+#include "XHero.h"
 //#include "XPropTech.h"
 #ifdef _xIN_TOOL
 #include "CaribeView.h"

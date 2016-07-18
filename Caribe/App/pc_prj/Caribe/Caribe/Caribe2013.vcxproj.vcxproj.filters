@@ -1102,6 +1102,9 @@
     <ClInclude Include="..\..\..\game_src\XSpotDaily.h">
       <Filter>source\world and spot</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\game_src\skill\XEffect.h">
+      <Filter>source\skill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\daily_work.txt" />

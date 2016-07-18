@@ -4,7 +4,9 @@
 //#include "etc/Token.h"
 #include "XRefObj.h"
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
+
+struct EFFECT;
 
 // 스킬하나에 대한 데이터 정의
 class XSkillDat : public XRefObj
@@ -25,7 +27,7 @@ private:
 	float	m_fCoolTime;		// 쿨타임, 재사용대기시간
 	_tstring m_strIcon;			// 아이콘 파일명
 //	std::list<XSKILL::EFFECT*> m_listEffects;	// 하나의 스킬에는 여러개의 효과를 가질수 있다
-	XList4<XSKILL::EFFECT*> m_listEffects;	// 하나의 스킬에는 여러개의 효과를 가질수 있다
+	XList4<EFFECT*> m_listEffects;	// 하나의 스킬에는 여러개의 효과를 가질수 있다
 	ID m_idCastMotion;			///< 시전동작
 	_tstring m_strCasterEffect;	///< 시전자 이펙트 spr
 	ID m_idCasterEffect;		///< 시전자 이펙트 ID
@@ -143,29 +145,15 @@ public:
 		return m_CastMethod == XSKILL::xTOGGLE;
 	}
 	// 버프타입의 스킬인가
-	BOOL IsBuff( const XSKILL::EFFECT *pEffect ) { 
-		return ( pEffect->IsDuration() 
-			|| pEffect->secInvokeDOT > 0
-			|| IsPassive() || IsAbility() )? TRUE : FALSE; 
-	}
+	BOOL IsBuff( const XSKILL::EFFECT *pEffect );
 	// 자신이나 자신의 부대에게만 쓰는 버프인가.
-	bool IsSelfBuff() {
-		if( m_baseTarget != xBST_SELF )
-			return false;
-		for( auto pEffect : m_listEffects ) {
-			if( pEffect->IsDuration() )
-				return true;
-		}
-		return false;
-	}
+	bool IsSelfBuff();
 	/// 패시브형 스킬인가(패시브,특성)
 	BOOL IsPassiveType() {
 		return m_CastMethod == xPASSIVE || m_CastMethod == xABILITY;
 	}
 	//
-	void AddEffect( XSKILL::EFFECT *pEffect ) { 
-		m_listEffects.push_back( pEffect ); 
-	}
+	void AddEffect( XSKILL::EFFECT *pEffect );
 	int GetNumEffect( void ) {
 		return m_listEffects.size();
 	}
@@ -192,6 +180,6 @@ public:
 friend class XESkillMng;
 };
 
-NAMESPACE_XSKILL_END;
+XE_NAMESPACE_END;
 
 

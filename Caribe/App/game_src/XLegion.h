@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "XHero.h"
+//#include "XHero.h"
 #include "XPropHero.h"
 //#include "XPropLegionH.h"
 namespace XGAME {
@@ -9,6 +9,7 @@ struct xLegion;
 class XArchive;
 class XAccount;
 class XSquadron;
+class XHero;
 #define RATE_ATK_DEFAULT_ELITE		0.2f
 #define RATE_HP_DEFAULT_ELITE		5.f
 #define RATE_ATK_DEFAULT_RAID		0.5f
@@ -20,12 +21,13 @@ public:
 	enum {
 		xMAX_NOT_FOG = 3,	// 안개로가려지지 않는 부대수
 	};
-	static int sSerializeFull( XArchive& ar, LegionPtr spLegion );
+	static int sSerializeFull( XArchive& ar, XSPLegion spLegion );
 	static XLegion* sCreateDeserializeFull( XArchive& ar );
 //	static XLegion* sCreateDeserializeForGuildRaid( XArchive& ar );
 	static XLegion* sCreateLegionForNPC( int lvAcc, int adjDiff, 
 																		XGAME::xLegionParam& legionInfo );
-	static LegionPtr sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, bool bAdjustLegion );
+	static XSPLegion sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, bool bAdjustLegion );
+//	static XSPLegion sCreatespLegion( const XGAME::xLegion& legion, int lvExtern, bool bReArrangeSquad, XVector<XHero*>* pOutAry );
 #if defined(_XSINGLE) || !defined(_CLIENT)
 	static XSquadron* sCreateSquadronForNPC( int levelLegion, int adjDiff, XGAME::xtUnit unit, ID idHero=0, int _levelHero=0, int levelSkill=0, int _levelSquad=0, XGAME::xtGradeLegion gradeLegion = XGAME::xGL_NORMAL, const XGAME::xLegionParam *pLegionInfo = nullptr );
 	static XSquadron* sCreateSquadronForNPC2( const int levelLegion
@@ -49,7 +51,7 @@ public:
 	static int sGetLvSkillByInfo( int lvSkill, int lvLegion );
 	static XGAME::xtGrade sGetGradeHeroByInfo( XGAME::xtGrade gradeHero, int lvLegion );
 	//
-	static void sSetLeaderByInfo( const XGAME::xLegion* pxLegion, LegionPtr spLegion, XSquadron *pSquad );
+	static void sSetLeaderByInfo( const XGAME::xLegion* pxLegion, XSPLegion spLegion, XSquadron *pSquad );
 	static XGAME::xtUnit sCreateUnitType( int spawnType );
 //	static int sCreateUnitNum( XGAME::xtUnit unit, BOOL bRandom );
 	static int sGetNumUnitByLevel( XGAME::xtUnit unit, int lvUnit );
@@ -58,7 +60,7 @@ public:
 	static XGAME::xtGrade sGetRandomGradeHeroByTable( int levelUser, XGAME::xtGradeLegion gradeLegion );
 	static int sGetAvailableUnitByLevel( int level, XArrayLinearN<XGAME::xtUnit, XGAME::xUNIT_MAX> *pOutAry );
 	static int sGetAvailableUnitByLevel( int level, XVector<XGAME::xtUnit> *pOutAry );
-	static int sGetMilitaryPower( LegionPtr spLegion );
+	static int sGetMilitaryPower( XSPLegion spLegion );
 	static int sGetMilitaryPower( XHero *pHero );
 	static int sGetMilitaryPowerMax( int lvAcc );
 private:
@@ -88,6 +90,14 @@ public:
 	//
 	XArrayN< XSquadron*, XGAME::MAX_SQUAD >& GetarySquadrons( void ) {
 		return m_arySquadrons;
+	}
+	int GetSquadronToAry( XVector<XSquadron*>* pOut ) const {
+		pOut->clear();
+		const int num = m_arySquadrons.GetMax();
+		for( int i = 0; i < num; ++i ) {
+			pOut->Add( m_arySquadrons.At(i) );
+		}
+		return pOut->Size();
 	}
 	GET_ACCESSOR( ID, snLegion );
 	GET_SET_ACCESSOR( XHero*, pLeader );
@@ -179,5 +189,7 @@ public:
 		return m_arySquadrons.GetMax();
 	}
 	float GethpMaxEach( ID snSquadHero, bool bHero );
+//	bool IsValid() const;
+	bool IsNpc() const;
 };
 

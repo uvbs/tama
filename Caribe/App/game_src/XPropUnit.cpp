@@ -2,7 +2,7 @@
 #include "XPropUnit.h"
 #include "etc/Token.h"
 #include "XPropSquad.h"
-#include "XHero.h"
+//#include "XHero.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -179,68 +179,68 @@ XPropUnit::xPROP* XPropUnit::GetpPropFromName( LPCTSTR szName )
     return nullptr;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 스탯. 로비등에서 부대공격력등을 표시할때 사용
-/**
- @brief 스탯과 사이즈 부대레벨을 받아서 부대총 능력치를 곱해준다.
-*/
-float XPropUnit::GetSquadPower( XHero *pHero, float statBase, XGAME::xtSize size, int levelSquad )
-{
-	const XPropSquad::xPROP& propSquad = PROP_SQUAD->GetTable( levelSquad );
-	float stat = statBase;
-	switch( size )
-	{
-	case XGAME::xSIZE_SMALL:
-		stat *= propSquad.maxSmall;
-		break;
-	case XGAME::xSIZE_MIDDLE: {
-		float power = 0;
-		int max = propSquad.maxMiddle;		// 현재레벨에서의 유닛 최대수
-		for( int i = 0; i < max; ++i )
-			power += stat * propSquad.aryMultiplyRatioMiddle[ i ];
-		stat = power;
-//		return power;	// 현재 레벨의 최대유닛만큼 
-	} break;
-	case XGAME::xSIZE_BIG:
-		stat *= propSquad.multiplyRatioBig;
-		break;
-	}
-	// 기본능력치에 영웅능력을 곱한다.
-	return stat *= pHero->GetAttackMeleeRatio();
-}
-// 스탯
-//////////////////////////////////////////////////////////////////////////
-float XPropUnit::GetAttackMeleePowerSquad( XHero *pHero, int levelSuqad ) 
-{
-	xPROP *pProp = GetpProp( pHero->GetUnit() );
-	if( XBREAK( pProp == nullptr ) )
-		return 0.f;
-	return GetAttackMeleePowerSquad( pHero, pProp, levelSuqad );
-}
-
-float XPropUnit::GetAttackRangePowerSquad( XHero *pHero, int levelSquad ) 
-{
-	xPROP *pProp = GetpProp( pHero->GetUnit() );
-	if( XBREAK( pProp == nullptr ) )
-		return 0.f;
-	return GetAttackRangePowerSquad( pHero, pProp, levelSquad );
-}
-
-float XPropUnit::GetDefensePowerSquad( XHero *pHero, int levelSquad ) 
-{
-	xPROP *pProp = GetpProp( pHero->GetUnit() );
-	if( XBREAK( pProp == nullptr ) )
-		return 0.f;
-	return GetDefensePowerSquad( pHero, pProp, levelSquad );
-}
-
-int XPropUnit::GetMaxHpSquad( XHero *pHero, int levelSquad ) 
-{
-	xPROP *pProp = GetpProp( pHero->GetUnit() );
-	if( XBREAK( pProp == nullptr ) )
-		return 0;
-	return GetMaxHpSquad( pHero, pProp, levelSquad );
-}
+// //////////////////////////////////////////////////////////////////////////
+// // 스탯. 로비등에서 부대공격력등을 표시할때 사용
+// /**
+//  @brief 스탯과 사이즈 부대레벨을 받아서 부대총 능력치를 곱해준다.
+// */
+// float XPropUnit::GetSquadPower( XHero *pHero, float statBase, XGAME::xtSize size, int levelSquad )
+// {
+// 	const XPropSquad::xPROP& propSquad = PROP_SQUAD->GetTable( levelSquad );
+// 	float stat = statBase;
+// 	switch( size )
+// 	{
+// 	case XGAME::xSIZE_SMALL:
+// 		stat *= propSquad.maxSmall;
+// 		break;
+// 	case XGAME::xSIZE_MIDDLE: {
+// 		float power = 0;
+// 		int max = propSquad.maxMiddle;		// 현재레벨에서의 유닛 최대수
+// 		for( int i = 0; i < max; ++i )
+// 			power += stat * propSquad.aryMultiplyRatioMiddle[ i ];
+// 		stat = power;
+// //		return power;	// 현재 레벨의 최대유닛만큼 
+// 	} break;
+// 	case XGAME::xSIZE_BIG:
+// 		stat *= propSquad.multiplyRatioBig;
+// 		break;
+// 	}
+// 	// 기본능력치에 영웅능력을 곱한다.
+// 	return stat *= pHero->GetAttackMeleeRatio();
+// }
+// // 스탯
+// //////////////////////////////////////////////////////////////////////////
+// float XPropUnit::GetAttackMeleePowerSquad( XHero *pHero, int levelSuqad ) 
+// {
+// 	xPROP *pProp = GetpProp( pHero->GetUnit() );
+// 	if( XBREAK( pProp == nullptr ) )
+// 		return 0.f;
+// 	return GetAttackMeleePowerSquad( pHero, pProp, levelSuqad );
+// }
+// 
+// float XPropUnit::GetAttackRangePowerSquad( XHero *pHero, int levelSquad ) 
+// {
+// 	xPROP *pProp = GetpProp( pHero->GetUnit() );
+// 	if( XBREAK( pProp == nullptr ) )
+// 		return 0.f;
+// 	return GetAttackRangePowerSquad( pHero, pProp, levelSquad );
+// }
+// 
+// float XPropUnit::GetDefensePowerSquad( XHero *pHero, int levelSquad ) 
+// {
+// 	xPROP *pProp = GetpProp( pHero->GetUnit() );
+// 	if( XBREAK( pProp == nullptr ) )
+// 		return 0.f;
+// 	return GetDefensePowerSquad( pHero, pProp, levelSquad );
+// }
+// 
+// int XPropUnit::GetMaxHpSquad( XHero *pHero, int levelSquad ) 
+// {
+// 	xPROP *pProp = GetpProp( pHero->GetUnit() );
+// 	if( XBREAK( pProp == nullptr ) )
+// 		return 0;
+// 	return GetMaxHpSquad( pHero, pProp, levelSquad );
+// }
 
 void XPropUnit::xPROP::Serialize( XArchive& ar ) const {
 	ar << idProp << strIdentifier << strName << idDesc;

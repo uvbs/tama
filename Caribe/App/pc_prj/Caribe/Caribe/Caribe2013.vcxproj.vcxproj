@@ -376,7 +376,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XSINGLE;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -570,6 +570,7 @@
     <ClInclude Include="..\..\..\game_src\skill\SkillType.h" />
     <ClInclude Include="..\..\..\game_src\skill\XAdjParam.h" />
     <ClInclude Include="..\..\..\game_src\skill\XBuffObj.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XEffect.h" />
     <ClInclude Include="..\..\..\game_src\skill\XESkillMng.h" />
     <ClInclude Include="..\..\..\game_src\skill\XLuaSkill.h" />
     <ClInclude Include="..\..\..\game_src\skill\xSkill.h" />

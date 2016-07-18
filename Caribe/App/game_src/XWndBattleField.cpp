@@ -10,6 +10,7 @@
 #include "XUnitHero.h"
 
 using namespace XSKILL;
+using namespace XGAME;
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -119,10 +120,18 @@ void XWndBattleField::OnLButtonDown( float lx, float ly )
 		}
 #endif
 	} else {
+		auto sideRival = XGAME::xSIDE_OTHER;
+#ifdef WIN32
+		if( XAPP->m_bDebugMode && XAPP->m_bCtrl ) {
+			// 강제 공격(선택되어있는 부대의 상대진영부대를 우선으로 강제공격한다.
+			sideRival = m_spSelectSquad->GetSideRival();
+		}
+#endif // WIN32
+		const auto sideRivalOfRival = (sideRival == xSIDE_PLAYER)? xSIDE_OTHER : xSIDE_PLAYER;
 		// 이미 아군이 선택되어 있는상태라면 아군적군이 동시에 있을때 적을 우선으로 찍음.
-		m_spTempSelectEnemy = PickingSquad( lx, ly, XGAME::xSIDE_OTHER );
+		m_spTempSelectEnemy = PickingSquad( lx, ly, sideRival );
 		if( m_spTempSelectEnemy == nullptr )
-			m_spTempSelect = PickingSquad( lx, ly, XGAME::xSIDE_PLAYER );
+			m_spTempSelect = PickingSquad( lx, ly, sideRivalOfRival );
 	}
 	// 만약 새로 픽킹한 부대가 이전에 선택했던 부대라면 선택을 꺼줌
 	if( (m_spTempSelect != nullptr && m_spSelectSquad != nullptr) &&

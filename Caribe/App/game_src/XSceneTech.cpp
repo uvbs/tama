@@ -6,7 +6,7 @@
 #include "XGameWnd.h"
 #include "XSockGameSvr.h"
 #include "XSkillMng.h"
-//#include "XHero.h"
+#include "XHero.h"
 #include "XLegion.h"
 #include "XWndTemplate.h"
 #include "XWndTech.h"
@@ -14,6 +14,7 @@
 #include "_Wnd2/XWndProgressBar.h"
 #include "_Wnd2/XWndList.h"
 #include "XSystem.h"
+#include "skill/XSkillDat.h"
 #ifdef WIN32
 #include "CaribeView.h"
 #endif

@@ -9,11 +9,11 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 
 void XAdjParam::AddAdjParam( int adjParam, 
-								xtValType valType, 
-								float adj )
+															xtValType valType, 
+															float adj )
 {
 	XBREAK( adjParam == 0 );
 	XBREAK( adjParam >= m_adjParam.GetMax() );		// 버퍼 오버플로우
@@ -55,16 +55,29 @@ float XAdjParam::GetAdjValue( float val, int adjParam )
 
 /**
  @brief 증감량만 리턴한다.
+ valImm과 valPercent가 공존하는 경우는 고려치 않았다.
 */
 float XAdjParam::GetAdjValue( int adjParam )
 {
 	XSKILL::ADJ_PARAM *pAdjParam = &m_adjParam[ adjParam ];
 	if( pAdjParam->valFixedImm >= 0 )		// 고정값이 디폴트가 아니면 고정치값만 적용한다
 		return pAdjParam->valFixedImm;
-	if( pAdjParam->valPercent > 0 )
+	if( pAdjParam->valPercent )
 		return pAdjParam->valPercent;
 	return pAdjParam->valImm;
 }
 
+/**
+ @brief 증감량을 문자열로 만들어 돌려준다.
+*/
+_tstring XAdjParam::GetstrAdjParam( int adjParam ) const
+{
+	const auto pAdjParam = &m_adjParam[ adjParam ];
+	if( pAdjParam->valFixedImm >= 0 )		// 고정값이 디폴트가 아니면 고정치값만 적용한다
+		return XFORMAT("%+d", (int)pAdjParam->valFixedImm );
+	if( pAdjParam->valPercent )
+		return XFORMAT( "%+.1f%%", pAdjParam->valPercent * 100.f );
+	return XFORMAT( "%+d", (int)pAdjParam->valImm );
+}
 
-NAMESPACE_XSKILL_END
+XE_NAMESPACE_END

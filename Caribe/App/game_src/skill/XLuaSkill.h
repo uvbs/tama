@@ -6,7 +6,7 @@
 #undef max
 #endif
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 class XLuaSkill;
 class XSkillUser;
 class XSkillReceiver;
@@ -30,4 +30,4 @@ public:
 	virtual void RegisterGlobal( void );
 };
 
-NAMESPACE_XSKILL_END
+XE_NAMESPACE_END

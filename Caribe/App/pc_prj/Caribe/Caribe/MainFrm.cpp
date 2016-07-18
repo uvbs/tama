@@ -2194,7 +2194,7 @@ void CMainFrame::OnUpdateStopPassive( CCmdUI *pCmdUI )
 void CMainFrame::OnFilHero()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	XAPP->m_bFilterHero = !XAPP->m_bFilterHero;
+//	XAPP->m_bFilterHero = !XAPP->m_bFilterHero;
 	XAPP->XClientMain::SaveCheat();
 }
 
@@ -2202,14 +2202,14 @@ void CMainFrame::OnFilHero()
 void CMainFrame::OnUpdateFilHero( CCmdUI *pCmdUI )
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	pCmdUI->SetCheck( XAPP->m_bFilterHero != false );
+// 	pCmdUI->SetCheck( XAPP->m_bFilterHero != false );
 }
 
 
 void CMainFrame::OnFilUnit()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	XAPP->m_bFilterUnit = !XAPP->m_bFilterUnit;
+// 	XAPP->m_bFilterUnit = !XAPP->m_bFilterUnit;
 	XAPP->XClientMain::SaveCheat();
 }
 
@@ -2217,7 +2217,7 @@ void CMainFrame::OnFilUnit()
 void CMainFrame::OnUpdateFilUnit( CCmdUI *pCmdUI )
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	pCmdUI->SetCheck( XAPP->m_bFilterUnit != false );
+// 	pCmdUI->SetCheck( XAPP->m_bFilterUnit != false );
 }
 
 
@@ -2239,7 +2239,7 @@ void CMainFrame::OnUpdateStopActive( CCmdUI *pCmdUI )
 void CMainFrame::OnFilterPlayer()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	XAPP->m_bFilterPlayer = !XAPP->m_bFilterPlayer;
+// 	XAPP->m_bFilterPlayer = !XAPP->m_bFilterPlayer;
 	XAPP->XClientMain::SaveCheat();
 }
 
@@ -2247,14 +2247,14 @@ void CMainFrame::OnFilterPlayer()
 void CMainFrame::OnUpdateFilterPlayer( CCmdUI *pCmdUI )
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	pCmdUI->SetCheck( XAPP->m_bFilterPlayer );
+// 	pCmdUI->SetCheck( XAPP->m_bFilterPlayer );
 }
 
 
 void CMainFrame::OnFilterEnemy()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	XAPP->m_bFilterEnemy = !XAPP->m_bFilterEnemy;
+// 	XAPP->m_bFilterEnemy = !XAPP->m_bFilterEnemy;
 	XAPP->XClientMain::SaveCheat();
 }
 
@@ -2262,7 +2262,7 @@ void CMainFrame::OnFilterEnemy()
 void CMainFrame::OnUpdateFilterEnemy( CCmdUI *pCmdUI )
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	pCmdUI->SetCheck( XAPP->m_bFilterEnemy );
+// 	pCmdUI->SetCheck( XAPP->m_bFilterEnemy );
 }
 
 
@@ -2527,8 +2527,23 @@ void CMainFrame::OnUpdateOnViewDamageLogging( CCmdUI *pCmdUI )
 void CMainFrame::OnBattleOption()
 {
 	CDlgBattleOption dlg;
-// 	dlg.m_bCheck = TRUE;
+	if( XAPP->m_dwFilter & 0x01 )
+		dlg.m_bCheckPlayerHero = TRUE;
+	if( XAPP->m_dwFilter & 0x02 )
+		dlg.m_bCheckPlayerUnit = TRUE;
+	if( XAPP->m_dwFilter & 0x04 )
+		dlg.m_bCheckEnemyHero = TRUE;
+	if( XAPP->m_dwFilter & 0x08 )
+		dlg.m_bCheckEnemyUnit = TRUE;
 	if( dlg.DoModal() ) {
+		if( dlg.m_bCheckPlayerHero )	XAPP->m_dwFilter |= 0x01;
+		else													XAPP->m_dwFilter &= ~0x01;
+		if( dlg.m_bCheckPlayerUnit )	XAPP->m_dwFilter |= 0x02;
+		else													XAPP->m_dwFilter &= ~0x02;
+		if( dlg.m_bCheckEnemyHero )		XAPP->m_dwFilter |= 0x04;
+		else													XAPP->m_dwFilter &= ~0x04;
+		if( dlg.m_bCheckEnemyUnit )		XAPP->m_dwFilter |= 0x08;
+		else													XAPP->m_dwFilter &= ~0x08;
 		XAPP->XClientMain::SaveCheat();
 	}
 }

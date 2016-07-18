@@ -7,6 +7,7 @@
 #include "XPropSquad.h"
 #include "XExpTableHero.h"
 #include "XBaseItem.h"
+#include "XHero.h"
 #ifndef _CLIENT
 #include "XMain.h"
 #endif
@@ -36,17 +37,18 @@ XSquadron::XSquadron( XHero *pHero )
 #if defined(_XSINGLE) || !defined(_CLIENT)
 /**
  @brief 
+ @param bCreateHero Hero를 내부에서 직접 생성하
 */
-XSquadron::XSquadron( XPropHero::xPROP *pPropHero,
-					int levelHero,
-					XGAME::xtUnit unit,
-					int levelSquad )
+XSquadron::XSquadron( XPropHero::xPROP *pPropHero
+											, int levelHero
+											, XGAME::xtUnit unit
+											, int levelSquad
+											, bool bCreateHero )
 {
 	Init();
 	XBREAK( pPropHero == nullptr );
-	const auto& prop = PROP_SQUAD->GetTable( levelSquad );
-	m_bCreateHero = TRUE;
-//	int numUnit = prop.GetMaxUnit( unit);
+//	const auto& prop = PROP_SQUAD->GetTable( levelSquad );
+	m_bCreateHero = (bCreateHero)? TRUE : FALSE;
 	m_pHero = XHero::sCreateHero( pPropHero, levelSquad, unit );
 	XBREAK( m_pHero == nullptr );
 	XBREAK( levelHero <= 0 );
@@ -58,7 +60,8 @@ XSquadron::XSquadron( XPropHero::xPROP *pPropHero,
 	XBREAK( m_pHero->IsRange() && pPropUnit->IsRange() == FALSE );
 }
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
-void XSquadron::Destroy( void )
+
+void XSquadron::Destroy()
 {
 	if( m_bCreateHero )
 		SAFE_DELETE( m_pHero );
@@ -193,3 +196,39 @@ BOOL XSquadron::DeSerializeFull( XArchive& ar, int verLegion )
 	return TRUE;
 }
 
+ID XSquadron::GetsnHero() const 
+{
+	if( !m_pHero )
+		return 0;
+	return m_pHero->GetsnHero();
+}
+ID XSquadron::GetidPropHero() const
+{
+	if( m_pHero == nullptr )
+		return 0;
+	return m_pHero->GetidProp();
+}
+int XSquadron::GetLevelHero() const
+{
+	if( m_pHero == nullptr )
+		return 0;
+	return m_pHero->GetLevel( XGAME::xTR_LEVEL_UP );
+}
+XGAME::xtUnit XSquadron::GetUnitType() const
+{
+	if( m_pHero == nullptr )
+		return XGAME::xUNIT_NONE;
+	return m_pHero->GetUnit();
+}
+XGAME::xtAttack XSquadron::GetAtkType() const
+{
+	if( m_pHero == nullptr )
+		return XGAME::xAT_NONE;
+	return XGAME::GetAtkType( m_pHero->GetUnit() );
+}
+int XSquadron::GetnumUnit() const
+{
+	if( m_pHero == nullptr )
+		return 0;
+	return m_pHero->GetnumUnit();
+}

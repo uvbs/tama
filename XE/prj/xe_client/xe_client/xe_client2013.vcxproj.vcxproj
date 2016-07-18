@@ -272,7 +272,7 @@
       <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>

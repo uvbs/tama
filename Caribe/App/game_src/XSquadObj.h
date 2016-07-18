@@ -1,11 +1,17 @@
 ﻿#pragma once
 #include "XPropUnit.h"
 #include "XFramework/Game/XEComponents.h"
-#include "Skill/xSkill.h"
-#include "XHero.h"
-#include "XPropSquad.h"
+//#include "Skill/xSkill.h"
+//#include "XHero.h"
+//#include "XPropSquad.h"
 #include "Sprite/Sprdef.h"
+#include "XStruct.h"
+#include "skill/SkillDef.h"
 ////////////////////////////////////////////////////////////////
+namespace XSKILL {
+class XSkillDat;
+class XSkillReceiver;
+}
 class XBaseUnit;
 class XHero;
 class XSquadron;
@@ -148,11 +154,7 @@ public:
 	XSPUnit GetspLeaderUnit() {
 		return m_spHeroUnit;
 	}
-	ID GetsnHero() const {
-		if( !m_pHero )
-			return 0;
-		return m_pHero->GetsnHero();
-	}
+	ID GetsnHero() const;
 	/**
 	 @brief this와 비교해서 pDst는 적인가
 	*/
@@ -162,6 +164,13 @@ public:
 	}
 	bool IsPlayer() const {
 		return GetCamp().GetbitCamp() == XGAME::xSIDE_PLAYER;
+	}
+	XGAME::xtSide GetSide() const {
+		return (XGAME::xtSide)GetCamp().GetbitCamp();
+	}
+	XGAME::xtSide GetSideRival() const {
+		const auto side = (XGAME::xtSide)GetCamp().GetbitCamp();
+		return (IsPlayer())? XGAME::xSIDE_OTHER : XGAME::xSIDE_PLAYER;
 	}
 	//
 	void SetAI( BOOL bFlag );

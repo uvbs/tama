@@ -21,6 +21,7 @@
 #include "_Wnd2/XWndList.h"
 #include "_Wnd2/XWndButton.h"
 #include "_Wnd2/XWndProgressBar.h"
+#include "XHero.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

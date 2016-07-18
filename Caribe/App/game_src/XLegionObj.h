@@ -1,9 +1,12 @@
 ﻿#pragma once
-#include "XPropUnit.h"
+//#include "XPropUnit.h"
 #include "XFramework/Game/XEComponents.h"
-#include "Skill/xSkill.h"
-#include "XHero.h"
+//#include "Skill/xSkill.h"
+//#include "XHero.h"
 ////////////////////////////////////////////////////////////////
+namespace XSKILL {
+class XSkillReceiver;
+}
 class XBaseUnit;
 class XHero;
 class XSquadron;

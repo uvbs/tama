@@ -184,6 +184,10 @@ struct xBattleStart {
 	inline bool IsInvalid() const {
 		return !IsValid();
 	}
+	inline void Release() {
+		m_spLegion[0].reset();
+		m_spLegion[1].reset();
+	}
 };
 //////////////////////////////////////////////////////////////////////////
 /**

@@ -1,11 +1,8 @@
 ﻿#include "stdafx.h"
 #include "constGame.h"
-//#include "XGameCommon.h"
-//#include "XGame.h"
 #include "XGameLua.h"
 #include <iomanip>
 #include "XExpTableUser.h"
-//#include "XAccount.h"
 #include "XLegion.h"
 #include "XPropUnit.h"
 #include "XSkillMng.h"
@@ -16,6 +13,7 @@
 #include "XAccount.h"
 #include "_Wnd2/XWndImage.h"
 #include "_Wnd2/XWndText.h"
+#include "skill/XSkillDat.h"
 #endif // _CLIENT
 
 

@@ -11,7 +11,7 @@
 #include "SkillType.h"
 
 class XECompCamp;
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 
 class XSkillSfx;
 // 스킬의 효과를 받을 수 있는 베이스오브젝트
@@ -237,7 +237,7 @@ public:
 	}
 };
 
-NAMESPACE_XSKILL_END
+XE_NAMESPACE_END
 
 
 #endif // xskill_sys

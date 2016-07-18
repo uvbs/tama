@@ -110,10 +110,11 @@ void XAppMain::SaveCheat( FILE *fp )
 	fprintf( fp, "mouse_over_wins = %d\r\n", XWnd::s_bDrawMouseOverWins );
 	fprintf( fp, "layout_xml = \"%s\"\r\n", m_strLayoutXml.c_str() );
 	fprintf( fp, "layout_node = \"%s\"\r\n", m_strLayoutNode.c_str() );
-	fprintf( fp, "fil_player = %d\r\n", m_bFilterPlayer );
-	fprintf( fp, "fil_enemy = %d\r\n", m_bFilterEnemy );
-	fprintf( fp, "fil_hero = %d\r\n", m_bFilterHero );
-	fprintf( fp, "fil_unit = %d\r\n", m_bFilterUnit );
+// 	fprintf( fp, "fil_player = %d\r\n", m_bFilterPlayer );
+// 	fprintf( fp, "fil_enemy = %d\r\n", m_bFilterEnemy );
+// 	fprintf( fp, "fil_hero = %d\r\n", m_bFilterHero );
+// 	fprintf( fp, "fil_unit = %d\r\n", m_bFilterUnit );
+	fprintf( fp, "filter = %d\r\n", m_dwFilter );
 	fprintf( fp, "battle_log = %d\r\n", m_bBattleLogging );
 	fprintf( fp, "reload_cmd = \"%s\"\r\n", m_strReloadCmd.c_str() );
 	fprintf( fp, "show_hp_squad = %d\r\n", m_bDebugViewSquadsHp );
@@ -309,22 +310,26 @@ void XAppMain::LoadCheat( CToken& token )
 		token.GetToken(); // =
 		XWnd::s_bDrawMouseOverWins = token.GetBool();
 	} else
-	if( token == _T("fil_player") ) {
+	if( token == _T("filter") ) {
 		token.GetToken(); // =
-		m_bFilterPlayer = token.GetBool();
+		m_dwFilter = (DWORD)token.GetNumber();
 	} else
-	if( token == _T("fil_enemy") ) {
-		token.GetToken(); // =
-		m_bFilterEnemy = token.GetBool();
-	} else
-	if( token == _T("fil_hero") ) {
-		token.GetToken(); // =
-		m_bFilterHero = token.GetBool();
-	} else
-	if( token == _T("fil_unit") ) {
-		token.GetToken(); // =
-		m_bFilterUnit = token.GetBool();
-	} else
+// 	if( token == _T("fil_player") ) {
+// 		token.GetToken(); // =
+// 		m_bFilterPlayer = token.GetBool();
+// 	} else
+// 	if( token == _T("fil_enemy") ) {
+// 		token.GetToken(); // =
+// 		m_bFilterEnemy = token.GetBool();
+// 	} else
+// 	if( token == _T("fil_hero") ) {
+// 		token.GetToken(); // =
+// 		m_bFilterHero = token.GetBool();
+// 	} else
+// 	if( token == _T("fil_unit") ) {
+// 		token.GetToken(); // =
+// 		m_bFilterUnit = token.GetBool();
+// 	} else
 	if( token == _T("battle_log") ) {
 		token.GetToken(); // =
 		m_bBattleLogging = token.GetBool();

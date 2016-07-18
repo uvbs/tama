@@ -8,6 +8,7 @@
 #include "XSceneTech.h"
 #include "XWndResCtrl.h"
 #include "XSkillMng.h"
+#include "skill/XSkillDat.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
