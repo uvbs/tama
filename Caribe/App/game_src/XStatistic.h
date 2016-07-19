@@ -6,7 +6,8 @@
 	@brief:	전투통계
 *********************************************************************/
 #pragma once
-#include "XHero.h"
+//#include "XHero.h"
+class XHero;
 
 class XStatistic
 {
@@ -20,9 +21,7 @@ public:
 		float heal = 0;						// 총 치료량
 		float treated = 0;					// 총 치료받은 양
 		float damageDealBySkill = 0;		// 총 스킬공격양
-		ID getid() {
-			return pHero->GetsnHero();
-		}
+		ID getid() const;
 	};
 private:
 	XList4<xSquad*> m_listSquads;

@@ -701,23 +701,12 @@ void XObjDamageNumber::FrameMove( float dt )
 		if( m_timerLife.IsOver() )
 			SetDestroy(1);
 	}
-// 	if( m_State == 0 ) {
-// 		if( m_timerLife.IsOver() ) {
-// 			m_State = 1;
-// 			m_timerLife.Set(1.f);
-// 		}
-// 	} else {
-// 		float alpha = 1.0f - m_timerLife.GetSlerp();
-// 		SetAlpha( alpha );
-// 		if( m_timerLife.IsOver() )
-// 			SetDestroy(1);
-// 	}
 	XEBaseWorldObj::FrameMove( dt );
 }
 
 void XObjDamageNumber::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ )
 {
-#ifndef _XUZHU_HOME
+//#ifndef _XUZHU_HOME
 	BYTE a = (BYTE)(GetAlpha() * 255);
 	if( a > 255 )
 		a = 255;
@@ -731,7 +720,7 @@ void XObjDamageNumber::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float 
 	}
 //	m_pfdNumber->DrawString( vPos.x, vPos.y, m_strNumber.c_str(), col );
 	m_pfdNumber->DrawStringStyle( vPos.x, vPos.y, col, xFONT::xSTYLE_STROKE, m_strNumber.c_str() );
-#endif 
+//#endif 
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -10,6 +10,7 @@
 #include "constGame.h"
 #include "XGlobalConst.h"
 #include "XPropLegionH.h"
+#include "XHero.h"
 #ifndef _CLIENT
 #include "XMain.h"
 #endif
@@ -87,10 +88,10 @@ float sGetDefaultRateAtk( xtGradeLegion gradeLegion )
  @param lvExtern 자동생성을 위해 필요한 외부레벨. 스팟레벨이나 계정레벨이 됨.
 */
 #if defined(_XSINGLE) || !defined(_CLIENT)
-LegionPtr XLegion::sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, bool bAdjustLegion )
+XSPLegion XLegion::sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, bool bAdjustLegion )
 {
 	auto pLegion = new XLegion;
-	auto spLegion = LegionPtr( pLegion );
+	auto spLegion = XSPLegion( pLegion );
 	//
 	do {
 		XBREAK( !legion.gradeLegion );
@@ -205,8 +206,176 @@ LegionPtr XLegion::sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, b
 		pLegion->AdjustLegion();
 #endif // not _XSINGLE
 	return spLegion;
-} // LegionPtr XLegion::sCreateLegion( XGAME::xLegion& legion, int lvExtern, bool bAdjustLegion )
+} // 
 #endif // defined(_XSINGLE) || defined(!_CLIENT)
+
+#if defined(_XSINGLE) || !defined(_CLIENT)
+
+/**
+@brief 군단생성의 일반화 버전. PC/NPC구분없이 쓸수 있다.
+@param legion 군단프로퍼티
+@param lvExtern 외부 레벨 파라메터. legion에 군단레벨이 지정되어있지 않을때 참조할 군단레벨
+@param bReArrangeSquad 군단생성후 부대특성에 따라 위치를 재배치할것인지.
+@param 생성한 영웅들의 리스트를 받는다.
+*/
+// XSPLegion XLegion::sCreatespLegion( const XGAME::xLegion& legion
+// 																, int lvExtern
+// 																, bool bReArrangeSquad
+// 																, XVector<XHero*>* pOutAry )
+// {
+// 	auto spLegion = std::make_shared<XLegion>();
+// 	auto pLegion = spLegion.get();
+// 		//
+// 	do {
+// 		XBREAK( !legion.gradeLegion );
+// 		pLegion->SetgradeLegion( legion.gradeLegion );
+// 		if( legion.mulHp ) {
+// 			pLegion->SetRateHp( legion.mulHp );
+// 		} else {
+// 			pLegion->SetRateHp( sGetDefaultRateHp( legion.gradeLegion ) );
+// 		}
+// 		if( legion.mulAtk ) {
+// 			pLegion->SetRateAtk( legion.mulAtk );
+// 		} else {
+// 			pLegion->SetRateAtk( sGetDefaultRateAtk( legion.gradeLegion ) );
+// 		}
+// 		// 군단레벨 지정
+// 		int lvLegion = legion.lvLegion;
+// 		if( lvLegion ) {
+// 			if( legion.adjLvLegion != 0x7f )
+// 				lvLegion += legion.adjLvLegion;		// 군단레벨 보정
+// 		} else {
+// 			// 군단레벨이 지정안되어있으면 외부레벨이라도 있어야 함.
+// 			XBREAK( lvExtern == 0 );	// 
+// 			lvLegion = lvExtern;		// 군단레벨이 지정안되어있으면 외부레벨을 군단레벨로 씀.
+// 		}
+// 		XBREAK( lvLegion == 0 );
+// 		// 군단레벨을 기준으로 부대수를 정한다.
+// 		int numSquad = legion.numSquad;
+// 		if( numSquad == 0 ) {
+// 			const auto& tblLegion = XGC->GetLegionTable( lvLegion );
+// 			numSquad = tblLegion.m_numSquad;
+// 		} else {
+// 			int a = 0;
+// 		}
+// 		XBREAK( numSquad == 0 );
+// 		const int idx[XGAME::MAX_SQUAD] = { 2, 1, 3, 0, 4, 7, 6, 8, 5, 9, 12, 11, 13, 10, 14 };
+// 		// 메뉴얼지정된 squad부터 생성하고 부족한 squad수만큼은 남은 슬롯들중에서 랜덤으로 채워넣는다.
+// 		// 메뉴얼 지정된 부대부터 생성
+// 		// 		for( int i = 0; i < (int)legion.arySquads.size(); ++i ) {
+// 		// 			const auto& squad = legion.arySquads[ i ];
+// 		int i = 0;
+// 		for( auto& squad : legion.arySquads ) {
+// 			XGAME::xSquad sqParam = squad;
+// 			sqParam.idxPos = (squad.idxPos >= 0) ? squad.idxPos : idx[i];
+// 			auto pPropHero = sGetpPropHeroByInfo( squad, lvLegion );
+// 			sqParam.unit = sGetUnitByInfo( squad, pPropHero, lvLegion );
+// 			sqParam.lvHero = sGetLvHeroByInfo( squad, lvLegion );
+// 			sqParam.lvSkill = sGetLvSkillByInfo( squad, lvLegion );
+// 			sqParam.lvSquad = sGetLvSquadByInfo( squad, lvLegion );
+// 			sqParam.grade = sGetGradeHeroByInfo( squad, lvLegion );
+// 			sqParam.mulAtk = squad.mulAtk;
+// 			sqParam.mulHp = squad.mulHp;
+// 		
+// 			auto pSquad = sCreateSquadron( lvLegion
+// 																		, pPropHero
+// 																		, sqParam );
+// 			if( XASSERT( pSquad ) ) {
+// 				pLegion->SetSquadron( sqParam.idxPos, pSquad, true );
+// 				// 리더 영웅 지정
+// 				sSetLeaderByInfo( &legion, spLegion, pSquad );
+// 			}
+// 			++i;
+// 		}  // for legion.arySquads
+// 			 // 생성해야할 부대수가 부족하다면 부족한 squad수만큼은 남은 슬롯들중에서 랜덤으로 채워넣는다.
+// 		if( pLegion->GetNumSquadrons() < numSquad ) {
+// 			// 빈 슬롯들의 인덱스를 추려낸다.
+// 			XList4<int> listSlotNum;
+// 			if( legion.arySquads.size() != 0 ) {
+// 				for( int i = 0; i < pLegion->GetMaxSquadSlot(); ++i ) {
+// 					if( pLegion->GetpSquadronByIdx( i ) == nullptr )
+// 						listSlotNum.Add( i );
+// 				}
+// 			}
+// 			const int numSquadExt = numSquad - pLegion->GetNumSquadrons();
+// 			auto& squad = legion.squadDefault;
+// 			XGAME::xSquad sqParam = squad;
+// 			for( int i = 0; i < numSquadExt; ++i ) {
+// 				int idxSlot;
+// 				if( legion.arySquads.size() == 0 ) {
+// 					// xml로 메뉴얼 지정이 없었을땐 슬롯 순서대로 부대를 생성.
+// 					idxSlot = idx[i];
+// 				} else {
+// 					auto itor = listSlotNum.GetItorFromRandom();
+// 					if( XASSERT( itor != listSlotNum.end() ) ) {
+// 						idxSlot = (*itor);
+// 						listSlotNum.erase( itor );	// 한번 사용한 인덱스슬롯 번호는 다시 사용하지 않게.
+// 					}
+// 				}
+// 				auto pPropHero = sGetpPropHeroByInfo( squad, lvLegion );
+// 				sqParam.unit = sGetUnitByInfo( squad, pPropHero, lvLegion );
+// 				sqParam.lvHero = sGetLvHeroByInfo( squad, lvLegion );
+// 				sqParam.lvSkill = sGetLvSkillByInfo( squad, lvLegion );
+// 				sqParam.lvSquad = sGetLvSquadByInfo( squad, lvLegion );
+// 				sqParam.grade = sGetGradeHeroByInfo( squad, lvLegion );
+// 				sqParam.mulAtk = squad.mulAtk;
+// 				sqParam.mulHp = squad.mulHp;
+// 				auto pSquad = sCreateSquadronForNPC2( lvLegion
+// 																							, pPropHero
+// 																							, sqParam );
+// 				if( XASSERT( pSquad ) ) {
+// 					pLegion->SetSquadron( idxSlot, pSquad, true );
+// 					// 리더 영웅 지정
+// 					sSetLeaderByInfo( &legion, spLegion, pSquad );
+// 				}
+// 			}
+// 		} // if( pLegion->GetNumSquadrons() < numSquad ) {
+// 			// 리더가 지정되지 않았을경우 자동으로 리더를 정함.
+// 		if( pLegion->GetpLeader() == nullptr )
+// 			pLegion->SetAutoLeader();
+// 	} while( 0 );
+// #ifndef _XSINGLE
+// 	if( bReArrangeSquad && legion.arySquads.size() == 0 )
+// 		pLegion->AdjustLegion();
+// #endif // not _XSINGLE
+// 	return spLegion;
+// } 
+#endif // #if defined(_XSINGLE) || !defined(_CLIENT)
+
+/**
+@brief 신버전 부대생성기.
+파라메터는 반드시 유효한 값으로 들어와야한다.
+*/
+// #if defined(_XSINGLE) || !defined(_CLIENT)
+// XSquadron* XLegion::sCreateSquadron( const int lvLegion
+// 																	, XPropHero::xPROP *pPropHero
+// 																	, const XGAME::xSquad& sqParam )
+// {
+// 	XASSERT( lvLegion > 0 );
+// 	XASSERT( !IsInvalidUnit( sqParam.unit ) );
+// 	XASSERT( pPropHero );
+// 	XASSERT( sqParam.lvSkill > 0 && sqParam.lvSkill < XGAME::MAX_SKILL_LEVEL );
+// 	XASSERT( sqParam.lvSquad > 0 && sqParam.lvSquad <= XGAME::MAX_SQUAD_LEVEL );
+// 	XASSERT( !IsInvalidGrade( sqParam.grade ) );
+// 	//
+// 	
+// 	pc/npc 구분없이 일반화 시키려면 
+// 		1.XSquadron을 shared_ptr로 한다.
+// 		2.
+// 	싱글/서버 공통
+// 		.pc군단을 propLegion으로 생성할때는 NPC버전으로 생성한다음, 생성된 영웅들을 모두 acc로 옮긴후 각 XSquadron::m_bCreateHero는 false로 해야한다.
+// 
+// 	auto pSquad = new XSquadron( pPropHero, sqParam.lvHero, sqParam.unit, sqParam.lvSquad, false );
+// 	auto pHero = pSquad->GetpHero();
+// 	pHero->SetGrade( sqParam.grade );
+// 	pSquad->SetmulAtk( sqParam.mulAtk );
+// 	pSquad->SetmulHp( sqParam.mulHp );
+// 	for( auto& abil : sqParam.m_listAbil ) {
+// 		pHero->SetAbilPoint( abil.m_idsAbil, abil.point );
+// 	}
+// 	return pSquad;
+// }
+// #endif // // #if defined(_XSINGLE) || !defined(_CLIENT)
 
 /**
  @brief 분대 생성 모듈.
@@ -279,13 +448,6 @@ XSquadron* XLegion::sCreateSquadronForNPC( int levelLegion,
  @brief 신버전 부대생성기.
  파라메터는 반드시 유효한 값으로 들어와야한다.
 */
-// XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
-// 																, const XGAME::xtUnit unit
-// 																, XPropHero::xPROP *pPropHero
-// 																, const int lvHero
-// 																, const int lvSkill
-// 																, const int lvSquad
-// 																, XGAME::xtGrade gradeHero )
 XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
 																					, XPropHero::xPROP *pPropHero
 																					, const XGAME::xSquad& sqParam )
@@ -322,23 +484,6 @@ XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
 }
 
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
-/**
- @brief 군단레벨의 의거해 부대수를 정한다.
- @note 랜덤요소 넣지말것.
-*/
-// int XLegion::sGetNumSquadByUserLevel( int levelLegion )
-// {
-// 	int numSquadron = 0;
-// 	XBREAK( levelLegion == 0 );
-// 	numSquadron = XAccount::sGetMaxSquadByLevel( levelLegion );
-// // 	if( levelLegion <= 5 ) 
-// // 		--numSquadron;
-// 	if( numSquadron < 3 )
-// 		numSquadron = 3;
-// 	else if( numSquadron > XGAME::MAX_SQUAD )
-// 		numSquadron = XGAME::MAX_SQUAD;
-// 	return numSquadron;
-// }
 /**
  @brief 유저레벨 level에 맞는 NPC부대를 생성시킨다.
  NPC전용으로만 써야 한다.
@@ -710,8 +855,8 @@ XGAME::xtGrade XLegion::sGetGradeHeroByInfo( const XGAME::xSquad& squad, int lvL
 	return gradeHero;
 }
 
-// void XLegion::sSetLeaderByInfo( const XGAME::xLegion& legion, LegionPtr spLegion, XSquadron *pSquad )
-void XLegion::sSetLeaderByInfo( const XGAME::xLegion* pxLegion, LegionPtr spLegion, XSquadron *pSquad )
+// void XLegion::sSetLeaderByInfo( const XGAME::xLegion& legion, XSPLegion spLegion, XSquadron *pSquad )
+void XLegion::sSetLeaderByInfo( const XGAME::xLegion* pxLegion, XSPLegion spLegion, XSquadron *pSquad )
 {
 	if( pSquad == nullptr ) 
 		return;
@@ -881,7 +1026,7 @@ XLegion* XLegion::sCreateDeserializeFull( XArchive& ar )
 // 	if( numSquads == 0 ) {
 // 		SAFE_DELETE( pLegion );
 // 	} else {
-// 		return LegionPtr( pLegion );
+// 		return XSPLegion( pLegion );
 // 	}
 // }
 //////////////////////////////////////////////////////////////////////////
@@ -1001,7 +1146,7 @@ int XLegion::DeSerializeFogs( XArchive& ar, int verLegion )
 	return 1;
 }
 
-int XLegion::sSerializeFull( XArchive& ar, LegionPtr spLegion )
+int XLegion::sSerializeFull( XArchive& ar, XSPLegion spLegion )
 {
 	if( spLegion == nullptr ) {
 		ar << 0;
@@ -1398,7 +1543,7 @@ void XLegion::DummyDataRechange( int levelAcc, XAccount *pAcc )
 /**
  @brief spLegion의 군사력을 얻는다.
 */
-int XLegion::sGetMilitaryPower( LegionPtr spLegion )
+int XLegion::sGetMilitaryPower( XSPLegion spLegion )
 {
 	XBREAK( spLegion == nullptr );
 	float score = 0;
@@ -1823,3 +1968,26 @@ float XLegion::GethpMaxEach( ID snSquadHero, bool bHero )
 	return hpMax;
 }
 
+// bool XLegion::IsValid() const
+// {
+// 	for( int i = 0; i < m_arySquadrons.GetMax(); ++i ) {
+// 		const auto pSquad = m_arySquadrons[ i ];
+// 		if( pSquad ) {
+// 			if( pSquad->IsNpc() )
+// 				return false;
+// 		}
+// 	}
+// 	return true;
+// }
+
+bool XLegion::IsNpc() const
+{
+	for( int i = 0; i < m_arySquadrons.GetMax(); ++i ) {
+		const auto pSquad = m_arySquadrons.At(i);
+		if( pSquad ) {
+			if( !pSquad->IsNpc() )
+				return false;
+		}
+	}
+	return true;
+}

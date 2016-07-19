@@ -2,6 +2,7 @@
 #include "xSkill.h"
 #include "XSkillUser.h"
 #include "XESkillMng.h"
+#include "XSkillDat.h"
 #include "XLua.h"
 #include "Sprite/Sprdef.h"
 #include "XFramework/Game/XEComponents.h"
@@ -18,7 +19,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 
 XLuaSkill* XSkillUser::CreateScript( void ) { 
 	return new XLuaSkill; 
@@ -1263,4 +1264,11 @@ XBuffObj* XSkillUser::CreateSkillBuffObj( XSkillUser *pCaster,
 						vPos );
 }
 
-NAMESPACE_XSKILL_END
+void XSkillUser::AddUseSkill( XSkillObj *pUseSkill ) 
+{
+	XSkillObj *pExistObj = FindUseSkillByIdentifier( pUseSkill->GetpDat()->GetstrIdentifier().c_str() );
+	XBREAKF( pExistObj != NULL, "warning: Already tried to add the skill. %s", pUseSkill->GetpDat()->GetstrIdentifier().c_str() );
+	m_listUseSkill.push_back( pUseSkill );
+}
+
+XE_NAMESPACE_END

@@ -2,7 +2,9 @@
 #include "SkillDef.h"
 #include <list>
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
+
+struct EFFECT;
 
 class XSkillObj;
 class XBuffObj;
@@ -40,8 +42,8 @@ public:
 	virtual XSkillUser* GetCaster( ID snObj ) { return NULL; }
 // 	virtual BIT GetCamp( void ) = 0;	// 사용하는곳이 없어보여서 삭제
 // //	virtual xtSide GetFriendship( void ) = 0;
-	virtual void DelegateResultEventBeforeAttack( XBuffObj *pBuffObj, XSKILL::EFFECT *pEffect ) {}
+	virtual void DelegateResultEventBeforeAttack( XBuffObj *pBuffObj, EFFECT *pEffect ) {}
 
 };
 
-NAMESPACE_XSKILL_END
+XE_NAMESPACE_END

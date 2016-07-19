@@ -4,6 +4,7 @@
 #include "SkillDef.h"
 #include "XFramework/XTextTableUTF8.h"
 #include "etc/ConvertString.h"
+#include "XEffect.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -16,7 +17,7 @@ static char THIS_FILE[] = __FILE__;
 #define _XDEBUG_SKILL
 #endif
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 
 XESkillMng *XESkillMng::s_pInstance = NULL;
 // XAutoPtr XSkillMng::s_pDestroyer;		///< 프로그램 종료될때 자동 파괴될수 있게 사용
@@ -1122,5 +1123,5 @@ void XESkillMng::DeSerialize( XArchive& ar, int )
 }
 
 
-NAMESPACE_XSKILL_END;
+XE_NAMESPACE_END;
 

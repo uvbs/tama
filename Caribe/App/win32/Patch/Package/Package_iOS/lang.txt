@@ -1,4 +1,0 @@
-// key		 folder
-//"thailand"	"thl"
-"korea"		"ko"
-//"Indonesia"	"idn"

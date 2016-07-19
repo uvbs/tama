@@ -11,6 +11,7 @@
 #include "XQuestMng.h"
 #include "XLegion.h"
 #include "XWndResCtrl.h"
+#include "XHero.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

@@ -15,6 +15,7 @@
 
 class XGame;
 class XAccount;
+class XWndAbilButton;
 class XSceneTech : public XSceneBase
 {
 public:
@@ -23,18 +24,18 @@ public:
 		xMODE_LINK,
 	};
 	XPropTech::xNodeAbil *m_pLDownNodeT;			///< LButtonDown한 노드
-	XPropTech::xNodeAbil *m_pMouseOverNodeT;		///< 현재 마우스 오버된 노드
+//	XPropTech::xNodeAbil *m_pMouseOverNodeT;		///< 현재 마우스 오버된 노드
+	ID m_idMouseOverNodeT = 0;								// 현재 마우스 오버된 노드의 아이디
 	XPropTech::xNodeAbil *m_pSelNodeT;				///< 선택된 노드
 	XPropTech::xNodeAbil *m_pDeletedNodeT;			///< 삭제될 노드. 노드를 삭제시키면 언두를 위해서 잠시 받아둠.
 private:
 	XLayoutObj m_Layout;
-	XE::VEC2 m_vMouse;
+	XE::VEC2 m_vMouse, m_vMousePrev;
 	XGAME::xtUnit m_unitSelected = XGAME::xUNIT_NONE;	///< 현재 보거나 편집중인 유닛
 	XSurface *m_psfcArrow;			///< 화살표 선
 	BOOL m_bDrag;
 	CTimer m_timerAutoSave;	///< 수정한지 3초가 지나면 자동세이브 한다.
 	ID m_idSelectedNode = 0;
-//	XPropTech::xNodeAbil *m_pResearchAbil = nullptr;	// 현재 연구중인 특성의 프로퍼티
 	ID m_snSelectedHero = 0;
 	XHero *m_pHeroSected = nullptr;
 	CTimer m_timerGlow;
@@ -52,7 +53,7 @@ private:
 		m_bDrag = FALSE;
 #ifdef _xIN_TOOL
 		m_pLDownNodeT = nullptr;
-		m_pMouseOverNodeT = nullptr;
+//		m_pMouseOverNodeT = nullptr;
 		m_pSelNodeT = nullptr;
 		m_pDeletedNodeT = nullptr;
 		m_modeTool = xMODE_MOVE;
@@ -118,7 +119,7 @@ public:
 	int OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 );
 #endif
 	void Update();
-//	void UpdateTreeNode( XWnd *pRoot );
+	//	void UpdateTreeNode( XWnd *pRoot );
 	void UpdateHeroList( XWnd *pRoot );
 	void UpdateRightPanel( XWnd *_pRoot, XHero *pHero, XPropTech::xNodeAbil* pProp, const XGAME::xAbil& abil );
 	void UpdateInitAbil( XWnd *pRoot, XHero *pHero );
@@ -148,6 +149,7 @@ public:
 private:
 	int OnClickInitAbil( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnOkInitAbil( XWnd* pWnd, DWORD p1, DWORD p2 );
+	XWndAbilButton* GetpWndNodeMouseOver( const XE::VEC2& vPos );
 };
 
 extern XSceneTech *SCENE_TECH;

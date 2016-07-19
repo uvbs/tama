@@ -10,7 +10,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 /*	int ExecuteInvokeScript( XLua *pLua, const char *szScript ) {
 		// 스트링이 없는건 걍 리턴
 		if( szScript == NULL )	return 0;
@@ -53,5 +53,5 @@ bool DoDiceInvokeRatio( const EFFECT *pEffect, int level )
 	return bSuccess;
 }
 
-NAMESPACE_XSKILL_END
+XE_NAMESPACE_END
 

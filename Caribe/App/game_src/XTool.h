@@ -198,6 +198,31 @@ private:
 //	BOOL OnCreate() override;
 }; // class XToolObj
 
+/**
+ @brief 
+*/
+class XToolTech : public XBaseTool {
+public:
+	static std::shared_ptr<XToolTech>& sGet();
+public:
+	XToolTech();
+	virtual ~XToolTech() {
+		Destroy();
+	}
+	//
+	bool Save() override;
+	void DelSelected() override;
+	void CopySelected() override;
+	void PasteSelected() override;
+	void Undo() override;
+	void OnEnterMode() override;
+	void OnLeaveMode() override;
+private:
+	static std::shared_ptr<XToolTech> s_spInstance;
+	void Init() {}
+	void Destroy();
+	//	BOOL OnCreate() override;
+}; // class XToolObj
 
 
 

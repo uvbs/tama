@@ -10,7 +10,7 @@
 // class XSprObj;
 // class XKeyEvent;
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 xtTargetFilter MakeTargetFilter( const EFFECT *pEffect );
 // 스킬을 사용할 수 있는 베이스 오브젝트
 class XShootingObj;
@@ -91,11 +91,7 @@ public:
 	XSkillObj* FindUseSkillByIdentifier( LPCTSTR szIdentifier );
 
 	// pUseSkill을 보유스킬목록에 추가합니다
-	void AddUseSkill( XSkillObj *pUseSkill ) {		
-		XSkillObj *pExistObj = FindUseSkillByIdentifier( pUseSkill->GetpDat()->GetstrIdentifier().c_str() );
-		XBREAKF( pExistObj != NULL, "warning: Already tried to add the skill. %s", pUseSkill->GetpDat()->GetstrIdentifier().c_str() );
-		m_listUseSkill.push_back( pUseSkill );
-	}
+	void AddUseSkill( XSkillObj *pUseSkill );
 	// idSkillDat스킬로 사용스킬객체를 만들어서 보유한다
 	XSkillObj* CreateAddUseSkillByID( ID idSkillDat );		
 //	XSkillObj* CreateAddUseSkillByName( LPCTSTR szName );
@@ -353,5 +349,5 @@ public:
 	}
 }; // class XSkillSfx
 
-NAMESPACE_XSKILL_END
+XE_NAMESPACE_END
 

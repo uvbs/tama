@@ -11,7 +11,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 // 버프리스트에 버프객체를 추가함
 int XSkillReceiver::AddSkillRecvObj( XBuffObj *pSkillRecvObj )
 {
@@ -347,4 +347,4 @@ void XSkillReceiver::CreateSfx( XSkillDat *pSkillDat,
 }
 
 
-NAMESPACE_XSKILL_END
+XE_NAMESPACE_END

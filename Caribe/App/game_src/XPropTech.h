@@ -62,12 +62,11 @@ public:
 		int maxPoint;				///< 최대 포인트
 		int tier = 0;				///< 레벨단계
 		XE::VEC2 vPos;				///< 노드 출력 위치
-//		XArrayLinearN<xtResearch, MAX_POINT> aryResearch;	///< 각 포인트별 연구에 필요한 정보
 		XList4<xNodeAbil*> listChild;	///< 차일드 노드 리스트
 #ifdef _CLIENT
 		XSurface *psfcIcon;				///< 아이콘 서피스
-		void DrawIcon() {
-			psfcIcon->Draw( vPos );
+		inline void DrawIcon( const XE::VEC2& vAdj = XE::VEC2()) {
+			psfcIcon->Draw( vPos + vAdj );
 		}
 #endif
 		xNodeAbil() {
@@ -90,30 +89,12 @@ public:
 		XList4<xNodeAbil*>& GetListParentsMutable() {
 			return listParent;
 		}
-// 		BOOL IsRoot() {
-// 			if( idNode == 0 ) {
-// 				XASSERT( listParent.size() == 0 );
-// 				return TRUE;
-// 			}
-// 			return FALSE;
-// 		}
-// 		xtResearch& GetResearch( int idx ) {
-// 			return aryResearch[idx];
-// 		}
 		XGAME::xtSize GetSizeUnit() {
 			return XGAME::GetSizeUnit( unit );
 		}
 		int GetLvOpanable() {
 			return (tier-1) * 5;
 		}
-		// 잠금해제하는데 필요한 용맹포인트
-// 		int GetBravePointForUnlock() {
-// 			return ( tier * tier ) * XGC->m_bravePointPerTech;
-// 		}
-		// 잠금해제하는데 필요한 금화
-// 		DWORD GetGoldForUnlock() {
-// 			return (DWORD)(( tier * tier ) * XGC->m_bravePointPerTech);
-// 		}
 		void AddChild( xNodeAbil *pNode ) {
 			listChild.Add( pNode );
 			pNode->listParent.Add( this );
@@ -137,15 +118,10 @@ private:
 	XVector<xNodeAbil*> m_aryRoots;					// 각 유닛들 특성의 루트들.(트리구조. 최상단루트는 더미)
 	std::vector<int> m_aryGoldUnlock;	// 잠금해제된 개수별 금화비용
 	std::vector<xtResearch> m_aryCost;	///< 특성연구 비용(시간/자원)
-	
-//	xtRead m_stateRead = xRS_TIME;
-
 	void Init() {
 		m_aryRoots[ 0 ] = nullptr;
-//		m_aryRoot.Clear( nullptr );
 	}
 	void Destroy();
-
 public:
 	XPropTech();
 	virtual ~XPropTech() { Destroy(); }
@@ -200,7 +176,9 @@ public:
 		}
 		return pOut->size();
 	}
-	
+	XList4<xNodeAbil*>& GetaryUnitsAbil( XGAME::xtUnit unit ) {
+		return m_aryUnitsAbil[unit];
+	}
 	void Add( XGAME::xtUnit unit, xNodeAbil *pNewNode );
 	
 	virtual int GetSize( void ) { 
@@ -235,6 +213,10 @@ private:
 	void OnDidBeforeReadProp( CToken& token );
 	void OnDidFinishReadProp( CToken& token ) override;
 	void DoLinkParentChild( XGAME::xtUnit unit );
+	void ClearChild( xNodeAbil* pParent, xNodeAbil* pChild );
+	void ClearChild( xNodeAbil* pParent, ID idChild );
+	void ClearChild( ID idParent, xNodeAbil* pChild );
+	void ClearChild( ID idParent, ID idChild );
 public:
 };
 

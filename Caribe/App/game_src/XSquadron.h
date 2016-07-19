@@ -1,9 +1,10 @@
 ﻿#pragma once
-#include "XHero.h"
+//#include "XHero.h"
 #include "XPropHero.h"
 class XArchive;
 class XAccount;
 class XSquadron;
+class XHero;
 ////////////////////////////////////////////////////////////////
 class XSquadron
 {
@@ -21,10 +22,7 @@ public:
 	XSquadron() { Init(); }
 	XSquadron( XHero *pHero );
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	XSquadron( XPropHero::xPROP *pPropHero,
-				int levelHero,
-				XGAME::xtUnit unit,
-				int levelSquad );
+	XSquadron( XPropHero::xPROP *pPropHero, int levelHero, XGAME::xtUnit unit, int levelSquad, bool bCreateHero = true );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 	virtual ~XSquadron() { Destroy(); }
 	//
@@ -33,46 +31,25 @@ public:
 	GET_SET_ACCESSOR_CONST( float, mulAtk );
 	GET_SET_ACCESSOR_CONST( float, mulHp );
 //	GET_SET_ACCESSOR( bool, bResourceSquad );
+	bool IsNpc() const {
+		return m_bCreateHero != FALSE;
+	}
 	//
-	void Clear( void ) {
+	void Clear() {
 		// 정적객체로 만들었을때 m_pHero를 삭제하지 않게 하기위한 궁여지책..-_-;;
 		Init();
 	}
-	ID GetsnHero() const {
-		if( !m_pHero )
-			return 0;
-		return m_pHero->GetsnHero();
-	}
-	ID GetidPropHero( void ) {
-		if( m_pHero == nullptr )
-			return 0;
-		return m_pHero->GetidProp();
-	}
-	int GetLevelHero( void ) {
-		if( m_pHero == nullptr )
-			return 0;
-		return m_pHero->GetLevel( XGAME::xTR_LEVEL_UP );
-	}
-	XGAME::xtUnit GetUnitType( void ) {
-		if( m_pHero == nullptr )
-			return XGAME::xUNIT_NONE;
-		return m_pHero->GetUnit();
-	}
-	XGAME::xtAttack GetAtkType( void ) {
-		if( m_pHero == nullptr )
-			return XGAME::xAT_NONE;
-		return XGAME::GetAtkType( m_pHero->GetUnit() );
-	}
-	int GetnumUnit( void ) {
-		if( m_pHero == nullptr )
-			return 0;
-		return m_pHero->GetnumUnit();
-	}
+	ID GetsnHero() const;
+	ID GetidPropHero() const;
+	int GetLevelHero() const;
+	XGAME::xtUnit GetUnitType() const;
+	XGAME::xtAttack GetAtkType() const;
+	int GetnumUnit() const;
 	//
-	BOOL IsEmpty() {
+	BOOL IsEmpty() const {
 		return m_pHero == nullptr;
 	}
-	BOOL IsFill() {
+	BOOL IsFill() const {
 		return m_pHero != nullptr;
 	}
 	void Serialize( XArchive& ar );

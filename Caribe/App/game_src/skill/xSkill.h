@@ -12,7 +12,7 @@
 
 #define EFFECT_LOOP( SKILL, I, E )		LIST_LOOP( SKILL->GetEffectList(), EFFECT*, I, E )
 
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 //	int ExecuteInvokeScript( XLua *pLua, const char *szScript );
 bool DoDiceInvokeRatio( const EFFECT *pEffect, int level );
-NAMESPACE_XSKILL_END
+XE_NAMESPACE_END

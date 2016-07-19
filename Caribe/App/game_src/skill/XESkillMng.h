@@ -7,9 +7,9 @@ const int VER_PROP_SKILL = 1;
 
 class XTextTableUTF8;
 class XConstant;
-NAMESPACE_XSKILL_START
+XE_NAMESPACE_START( XSKILL )
 ////////////////////////////////////////////////////////////////
-
+struct EFFECT;
 class XSkillDat;
 class XESkillMng;
 class XESkillMng
@@ -191,5 +191,5 @@ public:
 #define XSAME(UTF8, IDTEXT)	XE::IsSame( UTF8, XSKTEXTU8(IDTEXT) )
 
 
-NAMESPACE_XSKILL_END
+XE_NAMESPACE_END
 

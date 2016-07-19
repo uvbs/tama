@@ -2,6 +2,7 @@
 #include "XSkillMng.h"
 #include "XFramework/XTextTableUTF8.h"
 #include "skill/XSkillDat.h"
+#include "skill/XEffect.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

@@ -1045,6 +1045,7 @@ public:
 #if defined(_CHEAT) && defined(WIN32)
 	void UpdateMouseOverWins( const XE::VEC2& vMouse, int depth, XVector<xWinDepth>* pOutAry );
 #endif // defined(_CHEAT) && defined(WIN32)
+	bool IsMouseOver( const XE::VEC2& vMouse );
 	void SetEvent2( ID idEvent, std::function<void(XWnd*)> func );
 private:
 	virtual void OnNCModal() {}

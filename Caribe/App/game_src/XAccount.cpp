@@ -176,6 +176,7 @@ void XAccount::sUpdateByGuildEvent( XSPAcc spAcc, xtGuildEvent event, const XGui
 //////////////////////////////////////////////////////////////////////////
 XAccount::XAccount()
 	: m_aryResource(XGAME::xRES_MAX)
+	, m_aryLegion( XGAME::MAX_LEGION )
 {
 	Init();
 	CreateQuestMng();
@@ -187,6 +188,7 @@ XAccount::XAccount()
 
 XAccount::XAccount(ID idAccont)
 	: m_aryResource( XGAME::xRES_MAX )
+	, m_aryLegion( XGAME::MAX_LEGION )
 {
 	Init();
 	m_idAccount = idAccont;
@@ -195,6 +197,7 @@ XAccount::XAccount(ID idAccont)
 }
 XAccount::XAccount(ID idAccount, LPCTSTR szID)
 	: m_aryResource( XGAME::xRES_MAX )
+	, m_aryLegion( XGAME::MAX_LEGION )
 {
 	Init();
 	m_idAccount = idAccount;
@@ -204,6 +207,7 @@ XAccount::XAccount(ID idAccount, LPCTSTR szID)
 }
 XAccount::XAccount( ID idAcc, const _tstring& strUUID )
 	: m_aryResource( XGAME::xRES_MAX )
+	, m_aryLegion( XGAME::MAX_LEGION )
 	, m_strUUID(strUUID)
 {
 	Init();
@@ -309,14 +313,16 @@ int XAccount::Serialize(XArchive& ar)
 	//
 	ar << (BYTE)VER_LEGION_SERIALIZE;
 	ar << (BYTE)0;
-	ar << (WORD)m_aryLegion.GetMax();
-	XARRAYN_LOOP_IDX(m_aryLegion, LegionPtr&, i, pLegion) {
-		if (pLegion) {
+	ar << (WORD)m_aryLegion.Size();
+//	XARRAYN_LOOP_IDX(m_aryLegion, LegionPtr&, i, pLegion) {
+	for( auto spLegion : m_aryLegion ) {
+		if (spLegion) {
 			ar << 1;
-			pLegion->Serialize(ar);
-		} else
+			spLegion->Serialize(ar);
+		} else {
 			ar << 0;
-	} END_LOOP;
+		}
+	}// END_LOOP;
 	MAKE_CHECKSUM(ar);
 	listSizes.Add(ar.size());
 	//
@@ -418,7 +424,7 @@ int XAccount::DeSerialize( XArchive& ar )
 	ar >> b0;	verLegion = b0;
 	ar >> b0;
 	ar >> w0;	size = w0;
-	XBREAK( m_aryLegion.GetMax() != size );
+	XBREAK( m_aryLegion.Size() != size );
 	for( int i = 0; i < size; ++i ) {
 		int fill;
 		ar >> fill;
@@ -1024,18 +1030,18 @@ void XAccount::CreateFakeAccount(void)
 @brief 지정된 값으로 부대를 생성한다.
 */
 XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
-	int idxSquad,
-	LPCTSTR szHeroIdentifier,
-	int levelSquad,
-	int tierUnit)
+																		int idxSquad,
+																		LPCTSTR szHeroIdentifier,
+																		int levelSquad,
+																		int tierUnit)
 {
-	XPropHero::xPROP *pPropHero = PROP_HERO->GetpProp(szHeroIdentifier);
+	auto pPropHero = PROP_HERO->GetpProp(szHeroIdentifier);
 	if (XBREAK(pPropHero == nullptr))
 		return nullptr;
-	XGAME::xtUnit unit = XGAME::GetRandomUnit(pPropHero->typeAtk, (XGAME::xtSize)tierUnit);
-	XHero *pHero = XHero::sCreateHero(pPropHero, levelSquad, unit);
+	auto unit = XGAME::GetRandomUnit(pPropHero->typeAtk, (XGAME::xtSize)tierUnit);
+	auto pHero = XHero::sCreateHero(pPropHero, levelSquad, unit);
 	AddHero(pHero);
-	XSquadron *pSq = new XSquadron(pHero);
+	auto pSq = new XSquadron(pHero);
 	pLegion->SetSquadron(idxSquad, pSq, FALSE);
 	return pSq;
 }
@@ -1419,7 +1425,8 @@ XGAME::xtGrade XAccount::GetRandomGradeHeroByTable(int levelUser) const
 }
 void XAccount::DestroyLegion(void)
 {
-	m_aryLegion.Clear(LegionPtr());
+//	m_aryLegion.Clear(LegionPtr());
+	m_aryLegion.Fill( nullptr );
 }
 
 /**
@@ -1642,11 +1649,11 @@ void XAccount::DestroyHero(ID snHero)
 */
 void XAccount::DeleteHeroInLegion(ID snHero)
 {
-	XARRAYN_LOOP(m_aryLegion, LegionPtr&, spLegion)
-	{
-		if (spLegion != nullptr)
+// 	XARRAYN_LOOP(m_aryLegion, LegionPtr&, spLegion)
+	for( auto spLegion : m_aryLegion ) {
+		if ( spLegion )
 			spLegion->RemoveSquad(snHero);
-	} END_LOOP;
+	}// END_LOOP;
 }
 /**
 @brief 군단에 배정된 장군을 제외한 장군의 리스트를 돌려준다.
@@ -3540,8 +3547,10 @@ XGAME::xtError XAccount::GetUnlockableAbil( XHero *pHero
 																					, XGAME::xtUnit unit
 																					, XPropTech::xNodeAbil *pProp)
 {
+	if( pHero->GetTypeAtk() != XGAME::GetAtkType( unit ) )
+		return XGAME::xE_NOT_ENOUGH_AUTHORITY;
 	// 모든 유닛의 특성포인트 합을 구함.
-	int numUnlock = pHero->GetNumUnlockAbil( /*unit*/ );
+	int numUnlock = pHero->GetNumUnlockAbil();
 	// 남은 언락포인트
 	const int numRemainUnlock = pHero->GetnumRemainAbilUnlock();
 	// 언락포인트가 있으면 금화검사는 안하고 넘어감.
@@ -3584,43 +3593,7 @@ XGAME::xtError XAccount::GetUnlockableAbil( XHero *pHero
 	return GetUnlockableAbil( pHero, unit, pProp );
 }
 #endif // defined(_CLIENT) || defined(_GAME_SERVER)
-// /**
-// @brief pProp특성을 지금 업그레이드 하기위해 자원이 충분한가.
-// */
-// bool XAccount::IsEnoughResourceForAbil(xAbil *pAbil, XPropTech::xNodeAbil* pProp)
-// {
-// // 	if (IsEnoughGoldForAbil(pAbil, pProp) == false)
-// // 		return false;
-// 	if (IsEnoughSubResourceForAbil(pAbil, pProp, 0) == false)
-// 		return false;
-// 	if (IsEnoughSubResourceForAbil(pAbil, pProp, 1) == false)
-// 		return false;
-// 	return true;
-// }
-// bool XAccount::IsEnoughGoldForAbil(xAbil *pAbil, XPropTech::xNodeAbil* pProp)
-// {
-// 	auto& researchNext = pProp->GetResearch(pAbil->point);
-// 	if (m_Gold < researchNext.gold)
-// 		return false;
-// 	return true;
-// }
-/**
-@brief pProp특성을 지금 업그레이드 하기위해 idx번째 자원이 충분한가.
-*/
-// bool XAccount::IsEnoughSubResourceForAbil(xAbil *pAbil, XPropTech::xNodeAbil* pProp, int idx)
-// {
-// 	auto& researchNext = pProp->GetResearch(pAbil->point);
-// 	auto size = researchNext.aryResourceNeed.size();
-// 	XBREAK( size == 0 || size >= 3 );
-// 	if (size > 0 ) {
-// 		if( XASSERT( idx < size ) ) {
-// 			auto resType = researchNext.aryResourceNeed[ idx ];
-// 			if( GetResource( resType ) < researchNext.aryNumNeed[ idx ] )
-// 				return false;
-// 		}
-// 	}
-// 	return true;
-// }
+
 /**
 @brief 특성업그레이드를 위해 자원이 충분한가.
 */
@@ -3771,22 +3744,6 @@ int XAccount::GetGoldResearch( int sec )
 		cost = 1;
 	return cost;
 }
-
-// 영웅의 렙업 비용을 얻는다.
-// int XAccount::GetCostHeroLevelup(XHero *pHero, XINT64 expAdd)
-// {
-// 	int cost = (int)(pHero->GetLevel() * ((expAdd * 0.5f) * pHero->GetGrade()));
-// 	return cost;
-// }
-
-/**
-@brief pHero의 렙업을 시키기 위해 필요한 자원의 양은?
-@return 목재/철의 수량
-*/
-// std::pair<int,int> XAccount::GetCostHeroLevelUpByRes( XHero *pHero )
-// {
-// 	return pHero->GetCostHeroLevelUpByRes();
-// }
 
 /**
 @brief snSlot을 즉시완료할경우 필요한 캐쉬양을 얻는다.
@@ -4019,13 +3976,6 @@ int XAccount::DeSerializeDefenseLog(XArchive& ar)
 	RESTORE_VERIFY_CHECKSUM(ar);
 	return 1;
 }
-
-// #if defined(_CLIENT) || defined(_GAME_SERVER) || defined(_DB_SERVER)
-// XGuild* XAccount::GetpGuild() 
-// {
-//   return XGuildMgr::sGet()->FindGuild( m_GuildIndex );
-// }
-// #endif // #if defined(_CLIENT) || defined(_GAME_SERVER) || defined(_DB_SERVER)
 
 int XAccount::AddGold( int add ) 
 {
@@ -4305,29 +4255,6 @@ int XAccount::DoCompleteCurrResearch()
 }
 #endif // _GAME_SERVER
 
-#if defined(_CLIENT) || defined(_GAME_SERVER)
-// int XAccount::DoCompleteCurrResearch()
-// {
-// 	auto pHero = GetHero( m_Researching.m_snHero );
-// 	if( XBREAK(pHero == nullptr) )
-// 		return 0;		// 연구중에 영웅 날리면 이렇게 될 수 있음. 연구중엔 해고못시키게 해야겠군.
-// 	ID idAbil = GetidAbilResearchNow();
-// 	if (idAbil == 0)
-// 		return 0;
-// 	auto pProp = XPropTech::sGet()->GetpNode(idAbil);
-// 	if (XBREAK(pProp == nullptr))
-// 		return 0;
-// 	auto pAbil = GetAbilNode(pProp->unit, idAbil);
-// 	if (XBREAK(pAbil == nullptr))
-// 		return 0;
-// 	if (XBREAK(pAbil->point >= 5))
-// 		return 0;
-// 	++pAbil->point;		// 특성 포인트를 올려줌.
-// 	SetCompleteResearch();
-// 	return pAbil->point;
-// }
-#endif // #if defined(_CLIENT) || defined(_GAME_SERVER)
-
 bool XAccount::IsEquip(ID snItem)
 {
 	if (snItem == 0)
@@ -4346,8 +4273,7 @@ XHero* XAccount::GetHeroByEquip(ID snItem)
 {
 	if (snItem == 0)
 		return nullptr;
-	for (auto pHero : m_listHero)
-	{
+	for (auto pHero : m_listHero)	{
 		if (pHero->IsEquip(snItem))
 			return pHero;
 	}
@@ -4371,8 +4297,7 @@ ID XAccount::AddTrainSlot(const xTrainSlot& slot)
 */
 bool XAccount::IsTrainingHero(ID snHero, XGAME::xtTrain type)
 {
-	for (auto& slot : m_listTrainSlot)
-	{
+	for (auto& slot : m_listTrainSlot)	{
 		if (slot.snHero == snHero &&
 			slot.type == type)
 			return true;
@@ -4385,8 +4310,7 @@ bool XAccount::IsTrainingHero(ID snHero, XGAME::xtTrain type)
 */
 bool XAccount::IsTrainingHeroByAny(ID snHero)
 {
-	for (auto& slot : m_listTrainSlot)
-	{
+	for (auto& slot : m_listTrainSlot)	{
 		if (slot.snHero == snHero)
 			return true;
 	}
@@ -4401,14 +4325,12 @@ bool XAccount::IsTrainingAnyHero()
 	return m_listTrainSlot.size() > 0;
 }
 
-
 /**
 @brief snHero의 훈련정보를 꺼낸다.
 */
 XAccount::xTrainSlot* XAccount::GetTrainingHero(ID snHero, XGAME::xtTrain type)
 {
-	for (auto& slot : m_listTrainSlot)
-	{
+	for (auto& slot : m_listTrainSlot)	{
 		if (slot.snHero == snHero &&
 			slot.type == type)
 			return &slot;
@@ -4433,8 +4355,7 @@ bool XAccount::IsTrainingComplete(ID snSlot)
 void XAccount::IfCompleteThenDoCompleteAndInvokeHandler(void(*funcHandler)())
 {
 	XBREAK(1);
-	for (auto itor = m_listTrainSlot.begin(); itor != m_listTrainSlot.end();)
-	{
+	for (auto itor = m_listTrainSlot.begin(); itor != m_listTrainSlot.end();)	{
 		// 만들려다 말음.
 		++itor;
 	}
@@ -4516,27 +4437,6 @@ void XAccount::OnHeroLevelup( XGAME::xtTrain type, XHero *pHero )
 		m_pQuestMng->DispatchEvent( XGAME::xQC_EVENT_HERO_LEVEL_SKILL, infoQuest );
 	}
 }
-/**
- @brief 몇몇 퀘스트 조건을 현재 보유한 모든 영웅들에게 보내서 퀘스트가 달성되도록 한다.
-*/
-// void XAccount::DispatchQuestEventHeroes( XGAME::xtQuestCond typeCond )
-// {
-// 	for( auto pHero : m_listHero ) {
-// 		switch( typeCond ) {
-// 		case XGAME::xQC_EVENT_HERO_LEVEL: {
-// 			// 보유한 모든영웅의 레벨을 퀘스트에 한번씩 보낸다.
-// 			m_pQuestMng->DispatchEvent( typeCond, pHero->GetLevelHero() );
-// 		} break;
-// 		case XGAME::xQC_EVENT_HERO_LEVEL_SQUAD: {
-// 			m_pQuestMng->DispatchEvent( typeCond, pHero->GetlevelSquad() );
-// 		} break;
-// 		case XGAME::xQC_EVENT_HERO_LEVEL_SKILL: {
-// 			m_pQuestMng->DispatchEvent( typeCond, pHero->GetlvActive() );
-// 			m_pQuestMng->DispatchEvent( typeCond, pHero->GetlvPassive() );
-// 		} break;
-// 		}
-// 	}
-// }
 /**
  @brief 현재보유한 모든 퀘스트들의 완료조건을 현재 계정상태로 다시 평가한다.
 */
@@ -4655,21 +4555,10 @@ bool XAccount::DispatchQuestEventCurrState( XQuestObj *pQuestObj
 
 	return bRetUpdate;
 }
-
-
-// bool XAccount::IsResearching()
-// {
-// 	return m_idAbilResearchNow != 0;
-// }
-
 int XAccount::GetCostRemainFullAP()
 {
 	const int apRemain = m_maxAP - m_AP;
 	return GetCashFromAP( apRemain );
-// 	float apPerMin = (XGC->m_apPerOnce / (float)XGC->m_secByAP) * 60;
-// 	float min = ( (float)apRemain / apPerMin );	// 남은 ap가 다찰때까지 걸리는 분
-// 	float min = ((float)apRemain / XGC->m_apPerMin);
-//	return GetCashResearch( (int)(min * 60) );
 }
 
 int XAccount::GetCashFromAP( int ap )
@@ -4677,14 +4566,6 @@ int XAccount::GetCashFromAP( int ap )
 	const int cash = (int)( XGC->m_cashPerAP * ap );
 	return ( cash < 1 ) ? 1 : cash;
 }
-
-/**
-@brief 현재 유닛을 잠금 해제할수 있는 상태인가.
-*/
-// bool XAccount::IsUnlockableUnitByLevel()
-// {
-// 	return GetLevel() >= GetLevelUnlockUnit();
-// }
 
 /**
  @brief 유닛을 잠금 해제 시킨다.
@@ -4848,36 +4729,6 @@ void XAccount::SetCheckUnlockUnit( XGAME::xtUnit unit )
 	XBREAK( m_aryUnlockedUnit[unit] == 0 );
 	m_aryUnlockedUnit[ unit ] = 2;
 }
-/// 현재 잠긴 유닛들을 풀려면 몇레벨이 되어야 하는지 알려준다.
-// int XAccount::GetLevelUnlockUnit() 
-// {
-// 	int numLock = GetNumLockUnit();
-// 	XBREAK( numLock > 7 );
-// 	int lvStart = XGAME::LEVEL_UNLOCK_UNIT;
-// 	switch( numLock ) {
-// 	case 6:	return lvStart;
-// 	case 5:	return lvStart + 2;
-// 	case 4:	return lvStart + 4;
-// 	case 3:	return lvStart + 7;
-// 	case 2:	return lvStart + 10;
-// 	case 1:	return lvStart + 13;
-// 	case 0: return 999;
-// 	default:	XBREAK( 1 );
-// 	}
-// 	return 999;
-// }
-
-// static const int levelUnlock[9] = {
-// 	1,
-// 	1,
-// 	XGAME::LEVEL_UNLOCK_PALADIN,		// 기사열리는 레벨
-// 	XGAME::LEVEL_UNLOCK_UNIT,
-// 	XGAME::LEVEL_UNLOCK_UNIT + 2,
-// 	XGAME::LEVEL_UNLOCK_UNIT + 4,
-// 	XGAME::LEVEL_UNLOCK_UNIT + 7,
-// 	XGAME::LEVEL_UNLOCK_UNIT + 10,
-// 	XGAME::LEVEL_UNLOCK_UNIT + 13
-// };
 /**
 @brief 계정레벨 lvAcc레벨에 가질수 있는 총 유닛 종류
 */
@@ -4917,98 +4768,6 @@ int XAccount::sGetLevelByUnlockUnit(int numUnits)
 }
 
 /**
-@brief 현재 보유중인 자원으로 pHero의 스킬훈련을 시킬경우 나오는 각종 정보들
-*/
-// void XAccount::GetTrainInfoBySkill(XHero *pHero,
-// 									XGAME::xtTrain type,
-// 									const XPropUpgrade::xPropSkill* pPropNext,
-// 									XGAME::xTrainInfo *pOut)
-// {
-// 	int numNeed1 = pPropNext->GetNeedRes();
-// 	pOut->needRes1 = numNeed1;
-// 	if (numNeed1 == 0)
-// 		numNeed1 = 1;
-// 	int numRes1 = GetJewel() / numNeed1;
-// 	if (numNeed1 == 0)
-// 		numRes1 = 0x7fffffff;
-// 	// 현재 내가 소지한 자원으로 훈련해서 얻을 수 있는 아이템개수
-// 	int numItem = numRes1;		// 최소단위를 충족하는 자원을 기준으로. 
-// 	// 채워야할 남은 아이템
-// 	int remainItem = pPropNext->numItem - pHero->GetNumProvided(type);
-// 	// 오버해서 훈련할순 없음.
-// 	if (numItem > remainItem)
-// 		numItem = remainItem;
-// 	// 총 훈련시간
-// 	int secTrain = numItem * pPropNext->needTrain.secTrainPerItem;
-// 	// 소모될 자원
-// 	int useRes1 = numItem * pPropNext->GetNeedRes();		// 소모될 자원수
-// 	pOut->numItemWill = numItem;
-// 	pOut->numRemain = remainItem;
-// 	pOut->secTotal = secTrain;
-// 	pOut->useRes1 = useRes1;
-// }
-// 
-// void XAccount::GetTrainInfoBySquad(XHero *pHero,
-// 									XGAME::xtTrain type,
-// 									const XPropSquad::xPROP* pPropNext,
-// 									XGAME::xTrainInfo *pOut)
-// {
-// 	int numNeed1 = pPropNext->GetNeedRes(0);
-// 	int numNeed2 = pPropNext->GetNeedRes(1);
-// 	pOut->needRes1 = numNeed1;
-// 	pOut->needRes2 = numNeed2;
-// 	if (numNeed1 == 0)
-// 		numNeed1 = 1;
-// 	if (numNeed2 == 0)
-// 		numNeed2 = 1;
-// 	int numRes1 = GetSulphur() / numNeed1;
-// 	int numRes2 = GetMandrake() / numNeed2;
-// 	if (pPropNext->GetNeedRes(0) == 0)
-// 		numRes1 = 0x7fffffff;
-// 	if (pPropNext->GetNeedRes(1) == 0)
-// 		numRes2 = 0x7fffffff;
-// 	// 현재 내가 소지한 자원으로 훈련해서 얻을 수 있는 보옥개수
-// 	int numItem = std::min(numRes1, numRes2);		// 최소단위를 충족하는 자원을 기준으로. 
-// 	// 채워야할 남은 보옥
-// 	int remainItem = pPropNext->numItem - pHero->GetNumProvided(type);
-// 	// 오버해서 훈련할순 없음.
-// 	if (numItem > remainItem)
-// 		numItem = remainItem;
-// 	// 총 훈련시간
-// 	int secTrain = numItem * pPropNext->needTrain.secTrainPerItem;
-// 	// 소모될 자원
-// 	int useRes1 = numItem * pPropNext->GetNeedRes(0);		// 소모될 자원수
-// 	int useRes2 = numItem * pPropNext->GetNeedRes(1);		// 소모될 자원수
-// 	pOut->numItemWill = numItem;
-// 	pOut->numRemain = remainItem;
-// 	pOut->secTotal = secTrain;
-// 	pOut->useRes1 = useRes1;
-// 	pOut->useRes2 = useRes2;
-// }
-// 
-// bool XAccount::GetTrainInfoByLevel(XHero *pHero,
-// 								const XPropUpgrade::xPropLevel* pProp,
-// 								XGAME::xTrainInfo *pOut)
-// {
-// 	int woodNeed = pProp->GetNeedRes(pHero->GetClan(), 0);
-// 	int ironNeed = pProp->GetNeedRes(pHero->GetClan(), 1);
-// 	pOut->needRes1 = woodNeed;
-// 	pOut->needRes2 = ironNeed;
-// 	XBREAK(woodNeed == 0 || ironNeed == 0);
-// 	int numw = GetWood() / woodNeed;
-// 	int numi = GetIron() / ironNeed;
-// 	int numBook = std::min(numw, numi);   // 가진자원으로 얻을수 있는 책 수
-// 	if (numBook == 0)
-// 		return false;
-// 	pOut->numItemWill = numBook;
-// 	pOut->numRemain = 0;
-// 	pOut->secTotal = (int)(pProp->secTrain * numBook);
-// 	pOut->useRes1 = woodNeed * numBook;
-// 	pOut->useRes2 = ironNeed * numBook;
-// 	return true;
-// }
-
-/**
 @brief 아무 영웅이나 현재 아이템 장비가능한 영웅이 있는가.
 장비가 있어도 더 좋은 장비가 있다면 true가 된다.
 */
@@ -5016,38 +4775,28 @@ bool XAccount::IsAbleEquipAnyHero()
 {
 	int aryNumItems[XGAME::xPARTS_MAX] = { 0, };
 	// 각 파츠별 소지한 개수를 얻는다.
-	for (auto pItem : m_listItem)
-	{
-		if (pItem)
-		{
+	for( auto pItem : m_listItem ) {
+		if( pItem ) {
 			auto parts = pItem->GetpProp()->parts;
-			if (XASSERT(IsValidParts(parts)))
-			{
+			if( XASSERT( IsValidParts( parts ) ) ) {
 				++aryNumItems[parts];
 			}
 		}
 	}
 	// 각 영웅별로 장비슬롯을 검사한다;.
-	for (auto pHero : m_listHero)
-	{
-		if (pHero)
-		{
-			for (int i = 1; i < XGAME::xPARTS_MAX; ++i)
-			{
+	for( auto pHero : m_listHero ) {
+		if( pHero ) {
+			for( int i = 1; i < XGAME::xPARTS_MAX; ++i ) {
 				auto parts = (XGAME::xtParts)i;
-				if (XASSERT(IsValidParts(parts)))
-				{
-					auto pSlotItem = pHero->GetEquipItem(parts);
+				if( XASSERT( IsValidParts( parts ) ) ) {
+					auto pSlotItem = pHero->GetEquipItem( parts );
 					// 슬롯이 비었고 거기에 넣을수 있는 템을 가지고 있을때는 무조건 true
-					if (pSlotItem == nullptr)
-					{
-						if (aryNumItems[parts] > 0)
+					if( pSlotItem == nullptr ) {
+						if( aryNumItems[parts] > 0 )
 							return true;
-					}
-					else
-					{
+					} else {
 						// 슬롯이 비어있지는 않지만 없지만 장착한 장비보다 더 좋은게 있다면 true
-						if (IsHaveBetterEquipItem(pSlotItem))
+						if( IsHaveBetterEquipItem( pSlotItem ) )
 							return true;
 					}
 				}
@@ -5062,21 +4811,19 @@ bool XAccount::IsAbleEquipAnyHero()
 */
 bool XAccount::IsHaveBetterEquipItem(XBaseItem* pItemEquip)
 {
-	if (XBREAK(pItemEquip == nullptr))
+	if( XBREAK( pItemEquip == nullptr ) )
 		return false;
-	if (XBREAK(!pItemEquip->IsEquip()))	// invalid call
+	if( XBREAK( !pItemEquip->IsEquip() ) )	// invalid call
 		return false;
-	if (XBREAK(pItemEquip->GetpProp()->parts == XGAME::xPARTS_NONE)) // missing parts
+	if( XBREAK( pItemEquip->GetpProp()->parts == XGAME::xPARTS_NONE ) ) // missing parts
 		return false;
-	for (auto pItem : m_listItem)
-	{
+	for( auto pItem : m_listItem ) {
 		// 장착아이템이고 비교템과 파츠가 같으면
-		if (pItem
-			&& !IsEquip(pItem->GetsnItem())	// 아직 장착하지 않았고
-			&& pItem->IsEquip()
-			&& pItem->GetpProp()->parts == pItemEquip->GetpProp()->parts)
-		{
-			if (pItem->IsBetterThan(pItemEquip))
+		if( pItem
+				&& !IsEquip( pItem->GetsnItem() )	// 아직 장착하지 않았고
+				&& pItem->IsEquip()
+				&& pItem->GetpProp()->parts == pItemEquip->GetpProp()->parts ) {
+			if( pItem->IsBetterThan( pItemEquip ) )
 				return true;
 		}
 	}
@@ -5088,25 +4835,20 @@ bool XAccount::IsHaveBetterEquipItem(XBaseItem* pItemEquip)
 */
 bool XAccount::IsHaveBetterThanParts(XHero *pHero)
 {
-	for (int i = 1; i < XGAME::xPARTS_MAX; ++i)
-	{
+	for( int i = 1; i < XGAME::xPARTS_MAX; ++i ) {
 		auto parts = (XGAME::xtParts)i;
-		if (XASSERT(IsValidParts(parts)))
-		{
-			auto pSlotItem = pHero->GetEquipItem(parts);
+		if( XASSERT( IsValidParts( parts ) ) ) {
+			auto pSlotItem = pHero->GetEquipItem( parts );
 			// 슬롯이 비었고 거기에 넣을수 있는 템을 가지고 있을때는 무조건 true
-			if (pSlotItem == nullptr)
-			{
+			if( pSlotItem == nullptr ) {
 				// 슬롯이 비었을땐 해당파츠 아이템 아무거나 있어도 더 좋은걸로 한다
 				const bool bExcludeEquiped = true;	// 장착중인건 제외시킨다.
-				auto pItemHave = GetItemByEquip(parts, bExcludeEquiped);
-				if (pItemHave)
+				auto pItemHave = GetItemByEquip( parts, bExcludeEquiped );
+				if( pItemHave )
 					return true;
-			}
-			else
-			{
+			} else {
 				// 슬롯이 비어있지는 않지만 없지만 장착한 장비보다 더 좋은게 있다면 true
-				if (IsHaveBetterEquipItem(pSlotItem))
+				if( IsHaveBetterEquipItem( pSlotItem ) )
 					return true;
 			}
 		}
@@ -5120,10 +4862,9 @@ bool XAccount::IsHaveBetterThanParts(XHero *pHero)
 bool XAccount::IsHaveBetterThanPartsEnteredHero()
 {
 	auto spLegion = GetCurrLegion();
-	for (auto pHero : m_listHero)
-	{
-		bool bEnter = (spLegion->GetpHeroBySN(pHero->GetsnHero()) != nullptr);
-		if ( bEnter && IsHaveBetterThanParts(pHero))
+	for( auto pHero : m_listHero ) {
+		bool bEnter = (spLegion->GetpHeroBySN( pHero->GetsnHero() ) != nullptr);
+		if( bEnter && IsHaveBetterThanParts( pHero ) )
 			return true;
 	}
 	return false;
@@ -5245,13 +4986,6 @@ ID XAccount::GetsnSoulStone( const _tstring& strId )
 	return 0;
 }
 /**
- @brief  pPropHero영웅을 지금 소환할수 있는가.
-*/
-// bool XAccount::IsEnoughSummonSoul( XPropHero::xPROP *pPropHero )
-// {
-// 	return false;
-// }
-/**
  @brief snHero영웅을 승급시킨다.
 */
 XGAME::xtError XAccount::DoPromotionHero(ID snHero)
@@ -5296,17 +5030,9 @@ int XAccount::GetNeedSoulPromotion( XHero *pHero )
 */
 XGAME::xtError XAccount::IsPromotionHero( XHero *pHero )
 {
-// 	if( pHero->GetGradeCurr() < XGAME::xGD_RARE )
-// 		return XGAME::xE_CAN_NOT;	// 1,2성은 승급 못함.
 	auto bOk = pHero->_IsPromotionForXAccount();
 	if( bOk != XGAME::xE_OK ) 
 		return bOk;
-// 	if( pHero->GetGrade() >= XGAME::xGD_LEGENDARY )
-// 		return XGAME::xE_NO_MORE;
-// 	int lvMax = pHero->GetMaxLevel();
-// 	// 최대레벨이 아니면 안됨
-// 	if( !pHero->IsMaxLevelLevel() )
-// 		return XGAME::xE_NOT_ENOUGH_LEVEL;
 	auto pProp = pHero->GetpProp();
 	if( pProp ) {
 		int numHave = GetNumSoulStone( pHero->GetstrIdentifer() );
@@ -5316,17 +5042,6 @@ XGAME::xtError XAccount::IsPromotionHero( XHero *pHero )
 	}
 	return XGAME::xE_NOT_ENOUGH_ITEM;
 }
-// bool XAccount::IsPromotionHero(_tstring strIdHero )
-// {
-// 	auto pProp = PROP_HERO->GetpProp(strIdHero);
-// 	if (pProp) {
-// 		if (pProp->grade == XGAME::xGD_RARE && GetNumSoulStone(strIdHero) >= XGAME::GetNeedSoulPromotion(pProp->grade))
-// 			return true;
-// 		else if (pProp->grade == XGAME::xGD_EPIC && GetNumSoulStone(strIdHero) >= XGAME::GetNeedSoulPromotion(pProp->grade))
-// 			return true;
-// 	}
-// 	return false;
-// }
 /**
  @brief 영혼석으로 소환할수 있는 상태인지 검사한다.
 */
@@ -5334,12 +5049,8 @@ XGAME::xtError XAccount::IsAbleSummonHeroBySoulStone( _tstring& strIdHero)
 {
 	auto pProp = PROP_HERO->GetpProp(strIdHero);
 	if (pProp) {
-// 		if( pProp->GetGrade() < XGAME::xGD_RARE )
-// 			return XGAME::xE_CAN_NOT;
 		int numHave = GetNumSoulStone( strIdHero );
-//		int numNeed = XGAME::GetNeedSoulSummon( pProp->GetGrade() );
 		// 최초소환은 1성부터 시작한다.
-//		int numNeed = XGAME::GetNeedSoulSummon( XGAME::xGD_COMMON );
 		int numNeed = XGAME::GetNeedSoulSummon();
 		if( numHave >= numNeed )
 			return XGAME::xE_OK;
@@ -5496,35 +5207,6 @@ void XAccount::UpdateSpots( XDelegateSpot *pDelegate )
 	m_pWorld->UpdateSpots();
 }
 
-// /**
-//  @brief 퀘가 바뀌거나 해서 스팟관련퀘는 있는데 스팟이 없는경우는 스팟을 생성시켜준다.
-//  이 함수는 SuccessLoginBeforeSend에서만 불리는걸 보장해야함.
-// */
-// void XAccount::UpdateSpotsByQuest()
-// {
-// 	// 현재 가진 퀘목록을 얻는다.
-// 	XVector<XQuestObj*> ary;
-// 	m_pQuestMng->GetQuestsToAry( &ary );
-// 	// 퀘로부터 발생하는 스팟이 있으면 그 스팟이 있는지 검사.
-// 	for( auto pQuestObj : ary ) {
-// 		// 퀘로부터 발생하는 스팟리스트 얻음.
-// 		auto pList = PROP_WORLD->GetpPropWhen( pQuestObj->GetstrIdentifer() );
-// 		if( pList )	{
-// 			for( auto pBaseSpotProp : *pList ) {
-// 				// 그 스팟을 가지고 있지 않으면 생성.
-// 				if( !m_pWorld->IsHaveSpot( pBaseSpotProp->idSpot) ) {
-// 					auto pBaseSpot = CreateNewSpot( pBaseSpotProp->idSpot, this );
-// 					if( XASSERT(pBaseSpot) ) {
-// 						// 이 함수는 접속시 계정정보 보내주기전에 호출되므로 별도로 동기화 패킷을 보낼필요 없다.,
-// 						// 정찰퀘용 스팟은 공격금지로 한다.
-// 						if( pQuestObj->IsReconQuest() )
-// 							pBaseSpot->SetbitFlagByNoAttack( true );
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-// }
 /**
  @brief 구름지역 프로퍼티와 다시 비교해서 잘못열리거나 닫힌게 있으면 수정한다
  프로퍼티에 변경이 생겼을때를 위한 자동화 도구.
@@ -5661,18 +5343,7 @@ void XAccount::StartTimerByTrader()
 	const xSec secRecall = (xSec)XGC->GetsecTraderReturn( GetLevel() );
 	m_timerTrader.ClearTimer();
 	m_timerTrader.Set( secRecall );		// 무역상 떠나있는동안 레벨이 오를수 있으나 미리 돌아오는 시간을 넣어야 한다.
-//	m_timerTrader.DoStart();
 }
-
-/**
- @brief 무역상 귀환시간이 지났는지
-*/
-// bool XAccount::IsOverTraderRecall() const
-// {
-// //	return m_timerTrader.IsOver();
-// //	const xSec secRecall = (xSec)XGC->GetsecTraderReturn( GetLevel() );
-// //	return m_timerTrader.IsOver( secRecall );
-// }
 
 /**
  @brief 무역상 귀환 남은시간
@@ -5682,8 +5353,6 @@ int XAccount::GetsecRemainByTraderRecall() const
 	if( m_timerTrader.IsOff() )
 		return 0;
 	return m_timerTrader.GetsecRemain();
-//	const int secPass = m_timerTrader.GetsecPass();
-//	return XGC->GetsecTraderReturn( GetLevel() ) - secPass;
 }
 
 /**
@@ -5878,3 +5547,19 @@ int XAccount::ProcessCheatCmd( const _tstring& strCmdLine )
 	} // white
 	return (int)param;
 }
+
+void XAccount::SetspLegion( int idxLegion, XSPLegion spLegion ) 
+{
+	m_aryLegion[idxLegion] = spLegion;
+	XBREAK( spLegion && spLegion->IsNpc() );
+}
+
+/**
+ @brief infoLegion을 바탕으로 군단을 생성하고 영웅을 추가한다.
+*/
+#ifdef _XSINGLE
+// XSPLegion XAccount::CreatespLegion( const XGAME::xLegion& infoLegion )
+// {
+// 	df
+// }
+#endif // _XSINGLE

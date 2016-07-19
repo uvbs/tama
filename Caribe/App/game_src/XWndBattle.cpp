@@ -9,6 +9,8 @@
 #include "XUnitHero.h"
 #include "XSquadObj.h"
 #include "Sprite/Layer.h"
+#include "XHero.h"
+#include "skill/XSkillDat.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

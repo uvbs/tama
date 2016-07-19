@@ -1,5 +1,8 @@
 ﻿#include "stdafx.h"
-#include "xSkill.h"
+#include "XSkillObj.h"
+//#include "xSkill.h"
+#include "SkillDef.h"
+#include "XSkillDat.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -9,26 +12,47 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-NAMESPACE_XSKILL_START
-int XSkillObj::IsCastCondition( void )
+XE_NAMESPACE_START( XSKILL )
+int XSkillObj::IsCastCondition()
 {
 	if( IsPassive() || IsAbility() )
 		return TRUE;
-// 	switch( GetpDat()->GetCastMethod() )
-// 	{
-// 	case xPASSIVE:	// 패시브
-// 	case xABILITY:	// 특성
-// 		return TRUE;		// 패시브는 항상 발동
-// 	case xSCRIPT:						// 스크립트에 의한 조건발동
-// 		//#pragma message( "아직 구현안됨" )
-// 		break;
-// 	case xACTIVE:			// 액티브랑 토글은 자동발동 되지 않음
-// 	case xTOGGLE:
-// 		break;
-// 	default:
-// 		XBREAKF(1, "%s, %d", GetpDat()->GetstrIdentifier().c_str(), GetpDat()->GetCastMethod() );
-// 		break;
-// 	}
 	return FALSE;
 }
-NAMESPACE_XSKILL_END
+
+std::list<EFFECT*>& XSkillObj::GetEffectList() 
+{
+	return GetpDat()->GetlistEffects();
+}
+BOOL XSkillObj::IsActive() 
+{
+	return GetpDat()->IsActive();
+}
+BOOL XSkillObj::IsPassive() 
+{
+	return GetpDat()->IsPassive();
+}
+BOOL XSkillObj::IsAbility() 
+{
+	return GetpDat()->IsAbility();
+}
+ID XSkillObj::GetidSkill() 
+{
+	XBREAK( m_pDat == NULL );
+	return m_pDat->GetidSkill();
+}
+const _tstring& XSkillObj::GetStrIdentifier() 
+{
+	XBREAK( m_pDat == NULL );
+	return m_pDat->GetstrIdentifier();
+}
+LPCTSTR XSkillObj::GetIdsSkill() 
+{
+	XBREAK( m_pDat == NULL );
+	return m_pDat->GetstrIdentifier().c_str();
+}
+BOOL XSkillObj::IsSameCastMethod( xCastMethod castMethod ) 
+{
+	return m_pDat->IsSameCastMethod( castMethod );
+}
+XE_NAMESPACE_END

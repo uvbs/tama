@@ -629,9 +629,9 @@ void CaribeView::OnUpdateEditAbil( CCmdUI *pCmdUI )
 void CaribeView::OnDelOutLink()
 {
 #ifdef _xIN_TOOL
-	if( XBaseTool::sIsToolTechMode() && (SCENE_TECH && SCENE_TECH->m_pSelNodeT ) )
-//	if( XAPP->m_ToolMode == xTM_TECH && (SCENE_TECH && SCENE_TECH->m_pSelNodeT ) )
-		SCENE_TECH->DelNodeSelected();
+//	if( XBaseTool::sIsToolTechMode() && (SCENE_TECH && SCENE_TECH->m_pSelNodeT ) )
+//		SCENE_TECH->DelNodeSelected();
+	SCENE_TECH->DelOutLinkBySelectedNode();
 
 #endif // _xIN_TOOL
 }

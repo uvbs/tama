@@ -1903,6 +1903,10 @@ public:
 	inline int Size() const {
 		return (int)std::vector<T>::size();
 	}
+	// XArray류 호환용
+	inline int GetMax() const {
+		return (int)std::vector<T>::size();
+	}
 	inline void Fill( const T& val ) {
 		std::vector<T>::assign( Size(), val );
 	}

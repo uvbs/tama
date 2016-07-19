@@ -1046,15 +1046,9 @@ void XWnd::OnMouseMove( float lx, float ly )
 		--idx;
 		if( pWnd->GetbShow() )  {
 			XWnd *pWndMove = NULL;
-// 			XE::VEC2 vChildLocal;
-// 			if( m_pParent )
-// 				vChildLocal = vMouseLocal - (pWnd->GetPosLocal() * GetScaleLocal());
-// 			else
-// 				vChildLocal = vMouseLocal - pWnd->GetPosLocal();
 			const XE::VEC2 vChildLocal = pWnd->XWnd::GetvChildLocal( vMouseLocal, this, m_pParent );
 			const XE::VEC2 vInLocal = pWnd->GetvChildLocal( vMouseLocal, this, m_pParent );		// 영역체크 전용
 			BOOL bAreaIn = pWnd->IsWndAreaIn( vInLocal );
-// 			if( (pWnd->IsWndAreaIn( vChildLocal ) ||		// 터치가 윈도영역 위에 있거나
 			if( ( pWnd->IsWndAreaIn( vInLocal ) ||		// 터치가 윈도영역 위에 있거나
 				pWnd->GetSizeLocal().IsZero() ||	// 윈도사이즈가 0,0일경우 통과
 				pWnd->GetSizeLocal().IsMinus() ) && 		// 윈도영역이 -1이거나
@@ -1132,6 +1126,22 @@ void XWnd::UpdateMouseOverWins( const XE::VEC2& vMouse, int depth, XVector<xWinD
 			}
 		}
 	}
+}
+
+/**
+ @brief this윈도우가 vPos영역에 있는가.
+ 사이즈가 없는 윈도우는 무조건 실패한다.
+*/
+bool XWnd::IsMouseOver( const XE::VEC2& vMouse )
+{
+	if( !IsDestroy() && GetbShow() ) {
+		const auto vPos = GetPosFinal();
+		const auto vSize = GetSizeFinal();
+		if( vSize.IsValid() && XE::IsArea( vPos, vSize, vMouse )  ) {
+			return true;
+		}
+	}
+	return false;
 }
 #endif // defined(_CHEAT) && defined(WIN32)
 /**

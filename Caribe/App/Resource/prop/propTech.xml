@@ -224,7 +224,7 @@
       <parent node="97" />
       <child node="102" />
     </abil>
-    <abil id="101" skill="mad_cow" icon="mino_12.png" id_name="60143" id_desc="60144" tier="5" max_point="5" posx="140" posy="77">
+    <abil id="101" skill="mad_cow" icon="mino_12.png" id_name="60143" id_desc="60144" tier="5" max_point="5" posx="140" posy="84">
       <parent node="99" />
     </abil>
     <abil id="102" skill="grows" icon="mino_13.png" id_name="60145" id_desc="60146" tier="5" max_point="5" posx="245" posy="77">
@@ -334,7 +334,6 @@
       <child node="127" />
     </abil>
     <abil id="125" skill="scurrilous_attack" icon="lycan_06.png" id_name="60184" id_desc="60185" tier="4" max_point="5" posx="210" posy="133">
-      <parent node="0" />
       <parent node="123" />
       <child node="130" />
       <child node="131" />
@@ -446,62 +445,69 @@
   <treant>
     <abil id="150" skill="hard_rock" icon="treant_01.png" id_name="60227" id_desc="60228" tier="1" max_point="5" posx="168" posy="315">
       <parent node="0" />
-      <child node="151" />
+      <child node="155" />
+      <child node="157" />
     </abil>
-    <abil id="151" skill="speed_up_ent" icon="treant_03.png" id_name="60064" id_desc="60231" tier="2" max_point="5" posx="168" posy="259">
+    <abil id="151" skill="speed_up_ent" icon="treant_03.png" id_name="60064" id_desc="60231" tier="3" max_point="5" posx="168" posy="168">
+      <parent node="155" />
+      <child node="163" />
+    </abil>
+    <abil id="152" skill="resentment" icon="treant_05.png" id_name="60234" id_desc="60235" tier="3" max_point="5" posx="119" posy="168">
+      <parent node="155" />
+      <child node="163" />
+    </abil>
+    <abil id="153" skill="elastic" icon="treant_06.png" id_name="60236" id_desc="60237" tier="3" max_point="5" posx="217" posy="168">
+      <parent node="157" />
+      <child node="156" />
+      <child node="163" />
+    </abil>
+    <abil id="154" skill="archer_concealment" icon="treant_07.png" id_name="60238" id_desc="60239" tier="3" max_point="5" posx="350" posy="168">
+      <parent node="0" />
+      <parent node="161" />
+      <parent node="159" />
+      <child node="164" />
+    </abil>
+    <abil id="155" skill="adaman_rock" icon="treant_09.png" id_name="60242" id_desc="60243" tier="2" max_point="5" posx="140" posy="245">
       <parent node="150" />
       <child node="152" />
-      <child node="153" />
+      <child node="151" />
     </abil>
-    <abil id="152" skill="resentment" icon="treant_05.png" id_name="60234" id_desc="60235" tier="3" max_point="5" posx="140" posy="203">
-      <parent node="151" />
-      <child node="155" />
-    </abil>
-    <abil id="153" skill="elastic" icon="treant_06.png" id_name="60236" id_desc="60237" tier="3" max_point="5" posx="196" posy="203">
-      <parent node="151" />
-      <child node="156" />
-    </abil>
-    <abil id="154" skill="archer_concealment" icon="treant_07.png" id_name="60238" id_desc="60239" tier="3" max_point="5" posx="252" posy="203">
-      <parent node="0" />
-    </abil>
-    <abil id="155" skill="adaman_rock" icon="treant_09.png" id_name="60242" id_desc="60243" tier="4" max_point="5" posx="140" posy="140">
-      <parent node="152" />
-      <child node="157" />
-    </abil>
-    <abil id="156" skill="strong_elastic" icon="treant_10.png" id_name="60244" id_desc="60245" tier="4" max_point="5" posx="196" posy="140">
+    <abil id="156" skill="strong_elastic" icon="treant_10.png" id_name="60244" id_desc="60245" tier="4" max_point="5" posx="217" posy="98">
       <parent node="153" />
-      <child node="157" />
     </abil>
-    <abil id="157" skill="gaiant_rock" icon="treant_13.png" id_name="60250" id_desc="60251" tier="5" max_point="5" posx="168" posy="77">
-      <parent node="156" />
-      <parent node="155" />
+    <abil id="157" skill="giant_rock" icon="treant_13.png" id_name="60250" id_desc="60251" tier="2" max_point="5" posx="196" posy="245">
+      <parent node="150" />
+      <child node="153" />
     </abil>
     <abil id="158" skill="hard_bark" icon="treant_02.png" id_name="60229" id_desc="60230" tier="1" max_point="5" posx="322" posy="315">
       <parent node="0" />
+      <child node="161" />
       <child node="159" />
     </abil>
-    <abil id="159" skill="entangling" icon="treant_04.png" id_name="60232" id_desc="60233" tier="2" max_point="5" posx="322" posy="259">
+    <abil id="159" skill="entangling" icon="treant_04.png" id_name="60232" id_desc="60233" tier="2" max_point="5" posx="350" posy="245">
       <parent node="158" />
-      <child node="160" />
+      <child node="162" />
+      <child node="154" />
     </abil>
-    <abil id="160" skill="rooting" icon="treant_08.png" id_name="60240" id_desc="60241" tier="3" max_point="5" posx="322" posy="203">
-      <parent node="159" />
-      <child node="161" />
+    <abil id="160" skill="rooting" icon="treant_08.png" id_name="60240" id_desc="60241" tier="2" max_point="5" posx="245" posy="245" />
+    <abil id="161" skill="phytoncide" icon="treant_11.png" id_name="60246" id_desc="60247" tier="2" max_point="5" posx="294" posy="245">
+      <parent node="158" />
+      <child node="154" />
       <child node="162" />
     </abil>
-    <abil id="161" skill="phytoncide" icon="treant_11.png" id_name="60246" id_desc="60247" tier="4" max_point="5" posx="294" posy="140">
-      <parent node="160" />
-      <child node="163" />
-    </abil>
-    <abil id="162" skill="view_blocked" icon="treant_12.png" id_name="60248" id_desc="60249" tier="4" max_point="5" posx="350" posy="140">
-      <parent node="160" />
+    <abil id="162" skill="view_blocked" icon="treant_12.png" id_name="60248" id_desc="60249" tier="3" max_point="5" posx="294" posy="168">
+      <parent node="159" />
+      <parent node="161" />
       <child node="164" />
     </abil>
-    <abil id="163" skill="photosynthesis" icon="treant_14.png" id_name="60252" id_desc="60253" tier="5" max_point="5" posx="294" posy="77">
-      <parent node="161" />
+    <abil id="163" skill="photosynthesis" icon="treant_14.png" id_name="60252" id_desc="60253" tier="4" max_point="5" posx="168" posy="98">
+      <parent node="153" />
+      <parent node="151" />
+      <parent node="152" />
     </abil>
-    <abil id="164" skill="cordyceps" icon="treant_15.png" id_name="60254" id_desc="60255" tier="5" max_point="5" posx="350" posy="77">
+    <abil id="164" skill="cordyceps" icon="treant_15.png" id_name="60254" id_desc="60255" tier="4" max_point="5" posx="322" posy="98">
       <parent node="162" />
+      <parent node="154" />
     </abil>
   </treant>
   <fallen_angel>

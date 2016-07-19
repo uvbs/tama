@@ -1559,3 +1559,10 @@ bool XSquadObj::IsResourceSquad() const
 // }
 // 
 // 
+
+ID XSquadObj::GetsnHero() const 
+{
+	if( !m_pHero )
+		return 0;
+	return m_pHero->GetsnHero();
+}

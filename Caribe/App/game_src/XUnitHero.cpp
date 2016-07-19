@@ -12,6 +12,7 @@
 #include "XPropTech.h"
 #include "XUnitTreant.h"
 #include "XUnitCyclops.h"
+#include "skill/XSkillDat.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -45,20 +46,18 @@ XUnitHero::XUnitHero( XSquadObj *pSquadObj,
 	m_pfoName->SetStyle( xFONT::xSTYLE_STROKE );
 	m_pfoName->SetColor( XCOLOR_WHITE );
 	// 싱글이 아닐때만 스킬 적용함.
-#ifdef _XSINGLE
-	if( !XAPP->m_bStopActive )
-#endif // _XSINGLE
+#if defined(WIN32) && defined(_CHEAT)
+	if( !XAPP->m_bStopActive && IsCheatFiltered() )
+#endif // 
 	{
-		if( (IsPlayer() && XAPP->m_bFilterPlayer) 
-			|| (!IsPlayer() && XAPP->m_bFilterEnemy) )
-			if( pHero->GetSkillDatActive() )
-				m_pSkillActive = CreateAddUseSkillByIdentifier( m_pProp->strActive.c_str() );
+		if( pHero->GetSkillDatActive() )
+			m_pSkillActive = CreateAddUseSkillByIdentifier( m_pProp->strActive.c_str() );
 	}
 	// 이 영웅이 군단장이냐
-#ifdef _XSINGLE
-	if( !XAPP->m_bStopPassive )
-#endif // _XSINGLE
+#if defined(WIN32) && defined(_CHEAT)
+	if( !XAPP->m_bStopPassive && IsCheatFiltered() )
 	{
+#endif // defined(WIN32) && defined(_CHEAT)
 		// 3성 이상일때만 적용
 #ifndef _XSINGLE
 		if( pHero->GetGrade() >= XGAME::xGD_RARE ) 
@@ -155,14 +154,6 @@ void XUnitHero::FrameMove( float dt )
 void XUnitHero::OnDebugStr( _tstring& str )
 {
 #ifdef _CHEAT
-// 	if( XAPP->m_bDebugViewBuff )
-// 	{
-// 		XLIST2_LOOP( GetlistSkillRecvObj(), XSKILL::XBuffObj*, pBuffObj )
-// 		{
-// 			_tstring s = XE::Format( _T( "+%s\n" ), pBuffObj->GetpDat()->GetszIdentifier() );
-// 			str += s;
-// 		} END_LOOP;
-// 	}
 #endif
 }
 

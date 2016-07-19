@@ -6,6 +6,7 @@
 #include "XLegion.h"
 #include "XBaseUnit.h"
 #include "XWndBattleField.h"
+#include "XHero.h"
 #ifdef _XSINGLE
 #include "XAccount.h"
 #endif // _XSINGLE

@@ -41,6 +41,11 @@ public:
 								bool bCritical,
 								LPCTSTR sprArrive, ID idActArrive,
 								DWORD dwParam ) override;
-	static void sShootRock( UnitPtr spShooter, UnitPtr& spTarget, const XE::VEC3& vwSrc, const XE::VEC3& vwDst, float damage, bool bCritical, const _tstring& _strSpr = _T("") );
+	void DoDamageToTarget( XSPUnit spTarget, float damage, XSKILL::xtDamage typeDmg, bool bCritical, XGAME::xtDamageAttr typeDmgAttr );
+	static void sShootRock( UnitPtr spShooter, UnitPtr& spTarget, const XE::VEC3& vwSrc, const XE::VEC3& vwDst, float damage, bool bCritical, const _tstring& _strSpr = _T( "" ) );
+	void FrameMove( float dt ) override;
+private:
+	CTimer m_timerSec;
+	int m_cntPerSec = 0;				///< 1초마다 하나씩 올라가는 카운터(엔트의 광합성 특성에 사용)
 };
 

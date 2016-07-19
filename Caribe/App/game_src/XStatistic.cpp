@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "XStatistic.h"
+#include "XHero.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -10,6 +11,10 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 ////////////////////////////////////////////////////////////////
+ID XStatistic::xSquad::getid() const {
+	return pHero->GetsnHero();
+}
+
 XStatistic::XStatistic()
 {
 	Init();

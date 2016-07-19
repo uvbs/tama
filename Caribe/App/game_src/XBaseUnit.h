@@ -8,12 +8,18 @@
 #pragma once
 #include "XFramework/Game/XEBaseWorldObj.h"
 #include "XPropUnit.h"
-#include "Skill/xSkill.h"
+//#include "Skill/xSkill.h"
 #include "XFramework/Game/XEComponents.h"
 #include "XFSMUnit.h"
 #include "XPropHero.h"
 #include "XObjEtc.h"
+#include "skill/XSkillUser.h"
+#include "skill/XSkillReceiver.h"
 
+namespace XSKILL {
+class XSkillDat;
+struct EFFECT;
+}
 class XWndBattleField;
 class XEBaseFSM;
 class XFSMIdle;
@@ -95,7 +101,7 @@ private:
 //	bool m_bInvokeHitter = false;			///< 쏜즈어택류를 처리할때 한프레임에 한번의 피격이벤트만 발생시키기 위해 플래그를 둠.
 	CTimer m_timerInvokeHitter;		///< 쏜즈어택류를 처리할때 피격이벤트가 일어날때마다 데미지를 입히니까 너무 쎄서 일정 시간이 지나야 다시 쏜즈효과가 발동되도록 함.
 	int m_cntShell = 0;					///< 골렘의 "보호"특성을 위한 껍질 개수.
-	int m_cntPerSec = 0;				///< 1초마다 하나씩 올라가는 카운터(엔트의 광합성 특성에 사용)
+// 	int m_cntPerSec = 0;				///< 1초마다 하나씩 올라가는 카운터(엔트의 광합성 특성에 사용)
 	BIT m_bitFlags = 0;				///< 각종플래그들(xFL_...)
   int m_Count = 0;          ///< 디버깅용 FrameMove카운터
 	XPropUnit::xPROP *m_pPropUnit = nullptr;	///< 유닛 프로퍼티.(this가 영웅이어도 갖고 있다)
@@ -129,7 +135,7 @@ private:
 	///< 
 	SET_ACCESSOR( const XE::VEC3&, vwTarget );
 protected:
-	GET_ACCESSOR( int, cntPerSec );
+// 	GET_ACCESSOR( int, cntPerSec );
 public:
 	XBaseUnit( XSquadObj *pSquadObj
 					, ID idProp
@@ -352,6 +358,7 @@ public:
 	float GetAttackRangePower();
 	float GetAttackMeleeDamage( UnitPtr spTarget );
 	float GetAttackRangeDamage( UnitPtr spTarget );
+	float GetAddRateByStat( XGAME::xtStat statType, XSPUnit spTarget );
 	float GetDefensePower();
 	inline XGAME::xtSize GetUnitSize() {
 		return m_pPropUnit->size;		// 이제 영웅도 유닛사이즈를 따른다.(상성때문)
@@ -656,12 +663,15 @@ public:
 	virtual _tstring GetstrIds() {
 		return _tstring();
 	}
-private:
+	// 유닛의 크기비용
+	virtual int GetSizeCost();
+protected:
 	void CreateDamageNumber( float damage, BIT bitAttrHit );
 	void OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) override;
 	void DrawDebugStr( XE::VEC2* pvLT, XCOLOR col, float sizeFont, const _tstring& strDebug );
-	bool IsCheatFilterPlayer() const;
-	bool IsCheatFilterHero() const;
+// 	bool IsCheatFilterPlayer() const;
+// 	bool IsCheatFilterHero() const;
+	bool IsCheatFiltered();
 	friend class XFSMBase;
 friend class XFSMIdle;
 };

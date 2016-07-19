@@ -137,23 +137,23 @@ public:
 	}
 	//////////////////////////////////////////////////////////////////////////
 	// 스탯
-	float GetSquadPower( XHero *pHero, float stat, XGAME::xtSize size, int levelSquad );
-	float GetAttackMeleePowerSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
-		return GetSquadPower( pHero, pProp->atkMelee, pProp->size, levelSquad );
-	}
-	float GetAttackMeleePowerSquad( XHero *pHero, int levelSuqad );
-	float GetAttackRangePowerSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
-		return GetSquadPower( pHero, pProp->atkRange, pProp->size, levelSquad );
-	}
-	float GetAttackRangePowerSquad( XHero *pHero, int levelSquad );
-	int GetMaxHpSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
-		return (int)GetSquadPower( pHero, pProp->hpMax, pProp->size, levelSquad );
-	}
-	int GetMaxHpSquad( XHero *pHero, int levelSquad );
-	float GetDefensePowerSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
-		return GetSquadPower( pHero, pProp->def, pProp->size, levelSquad );
-	}
-	float GetDefensePowerSquad( XHero *pHero, int levelSquad );
+// 	float GetSquadPower( XHero *pHero, float stat, XGAME::xtSize size, int levelSquad );
+// 	float GetAttackMeleePowerSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
+// 		return GetSquadPower( pHero, pProp->atkMelee, pProp->size, levelSquad );
+// 	}
+// 	float GetAttackMeleePowerSquad( XHero *pHero, int levelSuqad );
+// 	float GetAttackRangePowerSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
+// 		return GetSquadPower( pHero, pProp->atkRange, pProp->size, levelSquad );
+// 	}
+// 	float GetAttackRangePowerSquad( XHero *pHero, int levelSquad );
+// 	int GetMaxHpSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
+// 		return (int)GetSquadPower( pHero, pProp->hpMax, pProp->size, levelSquad );
+// 	}
+// 	int GetMaxHpSquad( XHero *pHero, int levelSquad );
+// 	float GetDefensePowerSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
+// 		return GetSquadPower( pHero, pProp->def, pProp->size, levelSquad );
+// 	}
+// 	float GetDefensePowerSquad( XHero *pHero, int levelSquad );
 	float GetAttackSpeed( ID idProp ) {
 		xPROP *pProp = GetpProp( idProp );
 		if( XBREAK( pProp == nullptr ) )

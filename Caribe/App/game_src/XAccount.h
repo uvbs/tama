@@ -417,8 +417,6 @@ private:
 	int m_numHirePremium = 0;	// 고급영웅소환 횟수.
 protected:
 
-	//	_tstring m_FBUserID;									// FBUserID
-	//	_tstring m_FBUserName;									// FBUserName
 	ID	m_CurrSN;											// ?
 	XFLevel m_Level;										// 레벨/경험치 객체
 	DWORD m_Gold;											// 게임머니
@@ -429,7 +427,8 @@ protected:
 	int m_PowerIncludeEmpty = 0;							// 현재 군단의 전투력(빈슬롯을 포함함)
 	int m_Ladder = 0;                      // 
 	XList4<XHero*> m_listHero;								// 영웅 리스트
-	XArrayN<LegionPtr, XGAME::MAX_LEGION> m_aryLegion;		// 군단 배열
+//	XArrayN<LegionPtr, XGAME::MAX_LEGION> m_aryLegion;		// 군단 배열
+	XVector<XSPLegion> m_aryLegion;
 	XList4<XBaseItem*> m_listItem;							// 아이템 인벤
 	XList4<XPostInfo*> m_listPost;							// 우편함 인벤
 	std::vector<ID> m_listShopSell;							// 상점 판매 목록
@@ -441,18 +440,12 @@ protected:
 	
 	XTimerTiny m_timerTrader;			// 무역상인 귀환타이머
 	XTimerTiny m_timerShop;				// 무기상인
-	// 	CTimer m_timerSubscribe;		// 월정액 캐쉬
-	// 	CTimer m_timerSubscribeEnd;
-// 	DWORD m_secSubscribe;			// 월정액 캐쉬 상품
-// 	DWORD m_secSubscribeEnd;		// 월정액 종료 타이머	
 	int m_numSubscribe = 0;				// (메일을)지급받은 횟수
 	xSec m_secNextSubscribe = 0;		// 월정액상품. 다음에 지급해야할 시간
 	int	 m_cntSubscribeOffline;	// 월정액 아이템 모프라인이라 못받은거..
 
 	XWorld* m_pWorld;										// 월드맵 정보
 	xSec m_secLastSaved = 0;		// 마지막 저장시간.(온라인중에도 저장될수 있음)
-//	xSec m_secSpecialSpotReleased = 0;						// 스페셜스팟이 끝난시간(초)을 기록해둔다.
-//	int m__dayWaitSpecialSpot = 0;							// 스팟끝난시간으로부터 몇일후에 다시 활성화 되어야 하는가 1~7일이 기록된다.
 	XGAME::xResearch m_Researching;		// 현재 연구중인 정보.
 	XList4<xTrainSlot> m_listTrainSlot;	// 훈련소 슬롯
 	int m_numFreeSlot = 1;			// 잠금이 풀린 슬롯 개수
@@ -460,7 +453,6 @@ protected:
 	int m_AP = 0;					// 현재 행동력
 	int m_maxAP = 0;
 	XTimerTiny m_timerAP;			// 행동력 타이머
-//	xOption m_xOption;										// 옵션
 	ID m_GuildIndex;										// 
 	XList4< ID > m_listGuildJoinReq;				// 가입 길드 리스트?
 	XGAME::xtGuildGrade m_Guildgrade;						// 길드 등급
@@ -489,13 +481,9 @@ private:
 		m_maxItems = XGAME::ITEM_INIT_COUNT;
 		m_pQuestMng = nullptr;
 		m_timerPlay.Set(0);
-// 		m_timerSubscribe.Off();		// 월정액 캐쉬
-// 		m_timerSubscribeEnd.Off();
 		m_GuildIndex = 0;
 		m_listGuildJoinReq.clear();
 		m_Guildgrade = XGAME::xtGuildGrade::xGGL_NONE;
-// 		m_secSubscribe = 0;
-// 		m_secSubscribeEnd = 0;
 		m_cntSubscribeOffline = 0;
 		*((DWORD*)(&m_bitFlagTutorial)) = 0;
 		m_aryUnlockedUnit.Clear(0);
@@ -508,15 +496,10 @@ private:
 
 	SET_ACCESSOR(XWorld*, pWorld);
 	SET_ACCESSOR(DWORD, Gold);
-
-// 	BOOL IsActivateNowSpecialSpot(void);			// 스페셜 스팟 활성화 확인
-// 	BOOL IsActivateTodaySpecialSpot(void);					// 오늘 스팟 활성화 날인지 확인
-// 	XSpotSpecial* DoActiveSpecialSpot(void);		// 스페셜 스팟 중 한곳 활성화
 	XBaseItem* AddItem(XBaseItem *pBaseItem);		// 아이템을 인벤에 추가
 
 public:
 	bool m_bDebugMode = false;
-
 	XAccount();
 	XAccount(ID idAccont);
 	XAccount(ID idAccount, LPCTSTR szID);
@@ -797,9 +780,8 @@ public:
 
 	// Legion
 #ifdef _XSINGLE
-	void SetspLegion( int idxLegion, XSPLegion spLegion ) {
-		m_aryLegion[ idxLegion ] = spLegion;
-	}
+	void SetspLegion( int idxLegion, XSPLegion spLegion );
+//	XSPLegion CreatespLegion( const XGAME::xLegion& infoLegion );
 #endif // _XSINGLE
 	LegionPtr& GetCurrLegion(void) {
 		return m_aryLegion[GetCurrLegionIdx()];
@@ -811,24 +793,24 @@ public:
 	// 		m_aryLegion[0] = pLegion;
 	// 	}
 	LegionPtr GetLegionByIdx(int idx) {
-		if (idx < 0 || idx >= m_aryLegion.GetMax())
-			return LegionPtr();
+		if (idx < 0 || idx >= m_aryLegion.Size())
+			return nullptr;
 		return m_aryLegion[idx];
 	}
 	void DestroyLegion(void);
 	// 군단 최대수를 얻는다.
 	int GetMaxLegions(void) {
-		return m_aryLegion.GetMax();
+		return m_aryLegion.Size();
 	}
-	XArrayN<LegionPtr, XGAME::MAX_LEGION>& GetaryLegion(void) {
-		return m_aryLegion;
-	}
-	BOOL IsHaveLegion(int idx) {
-		if (idx < 0 || idx >= m_aryLegion.GetMax())
+// 	XArrayN<LegionPtr, XGAME::MAX_LEGION>& GetaryLegion(void) {
+// 		return m_aryLegion;
+// 	}
+	bool IsHaveLegion(int idx) const {
+		if (idx < 0 || idx >= m_aryLegion.Size())
 			return FALSE;
 		return m_aryLegion[idx] != nullptr;
 	}
-	BOOL IsEmptyLegion(int idx) {
+	bool IsEmptyLegion(int idx) const {
 		return !IsHaveLegion(idx);
 	}
 

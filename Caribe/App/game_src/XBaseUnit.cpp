@@ -15,6 +15,7 @@
 #include "XSquadObj.h"
 #include "XStatistic.h"
 #include "../XDrawGraph.h"
+#include "XHero.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif
@@ -133,21 +134,19 @@ XBaseUnit::XBaseUnit( XSquadObj *pSquadObj,
 	XBREAK( m_pPropUnit->tribe == 0 );
 	m_multipleAbility = multipleAbility;
 	XBREAK( m_multipleAbility <= 0.f );
-// 	m_pfdName = FONTMNG->CreateFontDat( FONT_NANUM, 12.f );
-// 	m_pfoName = m_pfdName->CreateFontObj();
-// 	m_pfoName->SetStyle( xFONT::xSTYLE_STROKE );
-// 	m_pfoName->SetColor( XCOLOR_WHITE );
-// 	m_pfoName->SetLineLength( 40.f );
-// 	m_pfoName->SetAlign( XE::xALIGN_HCENTER );
 	//
 	CreateFSMObj();
 	//
 	m_psfcShadow = IMAGE_MNG->Load( TRUE, XE::MakePath(DIR_IMG,_T("shadow.png")) );
 	// 특성스킬 세팅
+#if defined(WIN32) && defined(_CHEAT)
+	if( IsCheatFiltered() )
+// 	if( (IsPlayer() && IsHero() && (XAPP->m_dwFilter & 0x01))	
+// 		|| (IsPlayer() && IsUnit() && (XAPP->m_dwFilter & 0x02))
+// 		|| (!IsPlayer() && IsHero() && (XAPP->m_dwFilter & 0x04)) 
+// 		|| (!IsPlayer() && IsUnit() && (XAPP->m_dwFilter & 0x04)) ) 
+#endif // defined(WIN32) && defined(_CHEAT)
 	{
-// 		auto pAcc = GetspLegionObj()->GetpAccount();
-// 		XBREAK( pAcc == nullptr );
-		//
 		for( auto itor : pHero->GetTechTree( pSquadObj->GetUnit() ) ) {
 			XGAME::xAbil *pAbil = &(itor.second);
 			if( pAbil->point > 0 ) {
@@ -197,48 +196,6 @@ void XBaseUnit::OnCreate()
 			// 적 유닛의 경우만 2버전을 쓴다. 영웅은 2버전이 없다.
 			strSpr = strTitle + _T( "2.spr" );
 		}
-// 	if( strTitle == _T( "unit_golem" ) ) {		// hsl버전에서 골렘은 2버전만 쓴다.
-// 		// hsl버전에 골렘은 항상 2버전만 쓴다.
-// 		strSpr = strTitle + _T( "2.spr" );		// propUnit엔 항상 unit_golem.spr로 들어가 있게 할 예정. 이 디파일을 완전히 정착시키면 golem2를 golem으로 파일명교체해서 쓴다.
-// 		if( m_Camp == XGAME::xSIDE_PLAYER ) {
-// 			// 아군 골렘은 golem2.spr을 사용하고 hsl을 바꾼다.
-// 			hsl.SetHSL( 180.f, -19.f, 0 );
-// 		} else {
-// 		}
-// 	} else
-// 	if( strTitle == _T( "unit_treant" ) ) {		// hsl버전에서 앤트는 2버전만 쓴다.
-// 		// hsl버전은 항상 2버전만 쓴다.
-// 		strSpr = strTitle + _T( "2.spr" );
-// 		if( m_Camp == XGAME::xSIDE_PLAYER ) {
-// 			hsl.SetHSL( 116.f, -11.f, 0 );
-// 			hsl.m_vRange1.Set( 315.f, 345.f );
-// 			hsl.m_vRange2.Set( 15.f, 45.f );
-// 		}
-// 	} else
-// 	if( strTitle == _T("hero_range01") ) {
-// 		strSpr = _T("hero_range02.spr");
-// 		hsl.SetHSL( 180.f, -38.f, 0 );
-// 		hsl.m_vRange1.Set( 355.f, 25.f );
-// 		hsl.m_vRange2.Set( 54.f, 84.f );
-// 	} else
-// 	if( strTitle == _T( "hero_tanker02" ) ) {
-// 		strSpr = _T( "hero_tanker01.spr" );
-// 		hsl.SetHSL( -57.f, -31.f, 0 );
-// 		hsl.m_vRange1.Set( 297.f, 336.f );
-// 		hsl.m_vRange2.Set( 357.f, 53.f );
-// 	} else
-// 	if( strTitle == _T( "hero_speed02" ) ) {
-// 		strSpr = _T( "hero_speed01.spr" );
-// 		hsl.SetHSL( 151.f, 43.f, 0 );
-// 		hsl.m_vRange1.Set( 195.f, 204.f );
-// 		hsl.m_vRange2.Set( 272.f, 285.f );
-// 	} else {
-// 		// 색변환하지 않는 그 외 파일일 경우.
-// 		if( m_Camp == XGAME::xSIDE_OTHER && bUnit ) {
-// 			// 적 유닛의 경우만 2버전을 쓴다. 영웅은 2버전이 없다.
-// 			strSpr = strTitle + _T( "2.spr" );
-// 		}
-// 	}
 	LoadSpr( strSpr.c_str(), hsl, ACT_IDLE1 );
 #else
 	if( m_Camp == XGAME::xSIDE_OTHER &&	// 상대편만 해당
@@ -414,9 +371,11 @@ void XBaseUnit::FrameMove( float dt )
 		SetvwPos( vwPos );
 	}
 #ifdef WIN32
-	if( XAPP->m_bDebugMode && XAPP->m_bBattleLogging && !m_strLog.empty() ) {
-		CONSOLE( "%s", m_strLog.c_str() );
-		m_strLog.clear();
+	if( IsCheatFiltered() ) {
+		if( XAPP->m_bDebugMode && XAPP->m_bBattleLogging && !m_strLog.empty() ) {
+			CONSOLE( "%s", m_strLog.c_str() );
+			m_strLog.clear();
+		}
 	}
 #endif // WIN32
 }
@@ -650,30 +609,19 @@ float XBaseUnit::GetScaleFactor()
 	return scaleFactor;
 }
 
-bool XBaseUnit::IsCheatFilterPlayer() const
+/**
+ @brief this유닛이 필터링에 걸리는지.
+ 0x01: 플레이어: 영웅
+ 0x02: 플레이어: 유닛
+ 0x04: 적군: 영웅
+ 0x08: 적군: 유닛
+*/
+bool XBaseUnit::IsCheatFiltered()
 {
-	if( IsPlayer() ) {
-		if( XAPP->m_bFilterPlayer )
-			return true;
-	} else
-	if( IsEnemy() ) {
-		if( XAPP->m_bFilterEnemy )
-			return true;
-	}
-	return false;
-}
-
-bool XBaseUnit::IsCheatFilterHero() const
-{
-	if( IsHero() ) {
-		if( XAPP->m_bFilterHero )
-			return true;
-	} else
-	if( IsUnit() ) {
-		if( XAPP->m_bFilterUnit )
-			return true;
-	}
-	return false;
+	return( (IsPlayer() && IsHero() && (XAPP->m_dwFilter & 0x01))	
+		|| (IsPlayer() && IsUnit() && (XAPP->m_dwFilter & 0x02))
+		|| (!IsPlayer() && IsHero() && (XAPP->m_dwFilter & 0x04)) 
+		|| (!IsPlayer() && IsUnit() && (XAPP->m_dwFilter & 0x08)) );
 }
 
 void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
@@ -780,24 +728,21 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		}
 	}
 #ifdef _CHEAT
-	if( XAPP->GetbDebugMode()
-		&& IsCheatFilterPlayer()
-		&& IsCheatFilterHero() ) {
+	if( XAPP->GetbDebugMode() ) {
 		_tstring strDebug;
 		XCOLOR colDebug = XCOLOR_WHITE;
-		if( XAPP->m_bDebugViewRefCnt ) {
+		if( XAPP->m_bDebugViewRefCnt && IsCheatFiltered() ) {
 			int cntRef = GetThis().use_count();
 			strDebug += XE::Format( _T( "refCnt=%d\n" ), cntRef );
 		}
-		if( XAPP->m_bDebugViewUnitSN ) {
+		if( XAPP->m_bDebugViewUnitSN && IsCheatFiltered() ) {
 			strDebug += XE::Format(_T("sn=%d\n"), GetsnObj() );
 		}
-		if( XAPP->m_bDebugViewTarget && GetidTarget() != 0 ) {
+		if( XAPP->m_bDebugViewTarget && GetidTarget() != 0 && IsCheatFiltered() ) {
 			strDebug += XE::Format( _T( "target=%d\n" ), GetidTarget() );
 			strDebug += XE::Format( _T( "vwbind=%d,%d\n" ), (int)m_vwBind.x, (int)m_vwBind.y );
 			if( m_spTarget != nullptr && IsBindTarget() ) {
 				float scale = 1.f;
-				//			XE::VEC3 vDst = m_spTarget->GetvwPos() + m_vlVecFromTarget;
 				XE::VEC3 vDst = m_vwBind;
 				XE::VEC2 vsDst = XWndBattleField::sGet()->GetPosWorldToWindow( vDst, &scale );
 				XE::VEC2 vsSrc = XWndBattleField::sGet()->GetPosWorldToWindow( GetvwPos(), &scale );
@@ -805,14 +750,15 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 				GRAPHICS->DrawLine( vsSrc, vsDst, XCOLOR_WHITE );
 			}
 		}
-		if( XAPP->m_bDebugViewBoundBox ) {
+		if( XAPP->m_bDebugViewBoundBox && IsCheatFiltered() ) {
 			XE::VEC2 vLT = vPos + m_bbLocal.vLT * scale;
 			XE::VEC2 vRB = vPos + m_bbLocal.vRB * scale;
 			XE::DrawRectangle( vLT, vRB, XCOLOR_WHITE );
 		}
-		if( XAPP->m_bDebugViewBuff ) {
+		if( XAPP->m_bDebugViewBuff && IsCheatFiltered() ) {
 			XLIST2_LOOP( GetlistSkillRecvObj(), XSKILL::XBuffObj*, pBuffObj ) {
-				_tstring s = XE::Format( _T( "+%s\n" ), pBuffObj->GetpDat()->GetszIdentifier() );
+				_tstring s = XE::Format( _T( "+%s(%d)\n" ), pBuffObj->GetpDat()->GetszIdentifier()
+																									, pBuffObj->GetpDat()->GetidSkill() );
 				strDebug += s;
 			} END_LOOP;
 			if( m_cntShell > 0 ) {
@@ -837,23 +783,19 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		// 공격력 보정치 출력(버프없이 adjParam만 변하는 효과에 사용.
 #ifdef _DEBUG
 		{
-//			float adjVal = GetAdjParam(XGAME::xADJ_EVADE_RATE)->GetValPercent();
 			float adjVal = GetAdjParam( XGAME::xADJ_EVADE_RATE_RANGE )->GetValImm();
 			if( adjVal != 0 )
 				strDebug += XFORMAT("evade:%.2f\n", adjVal);
 		}
 #endif // _DEBUG
 		// hp표시
-		if( XAPP->m_bDebugViewHp )
+		if( XAPP->m_bDebugViewHp && IsCheatFiltered() )
 			strDebug += XE::Format(_T("%d/%d\n"), GetHp(), GetMaxHp() );
 		OnDebugStr( strDebug );	// virtual
-		if( strDebug.empty() == false )
-		{
+		if( strDebug.empty() == false )		{
 			int numCR = XE::GetNumCR( strDebug.c_str() );
-//			XE::VEC2 vTop = GetvsTop();
 			XE::VEC2 vTop = vDrawHp;
 			float sizeFont = BASE_FONT_SMALL->GetFontSize() / 2.f;
-//			vTop.x -= ( GetSize() * scale ).w / 2.f;
 			vTop.y -= (sizeFont * (numCR)) * scaleFactor;
 			if( IsPlayer() ) {
 				if( IsHero() )
@@ -867,14 +809,6 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 					colDebug = XCOLOR_ARGB( 255, 255, 100, 100 );
 			}
 			DrawDebugStr( &vTop, colDebug, sizeFont, strDebug );
-//			PUT_STRING_SMALL( vTop.x, vTop.y, colDebug, strDebug.c_str() );
-//			vTop.y += sizeFont;
-			// 영웅레벨 표시
-// 			if( XAPP->m_bDebugViewHeroLevel ) {
-// 				XHero *pHero = GetpSquadObj()->GetpHero();
-// 				strDebug = XFORMAT( "Lv%d", pHero->GetLevel() );
-// 				PUT_STRING_SMALL( vTop.x, vTop.y, XGAME::GetGradeColor(pHero->GetGrade()), strDebug.c_str() );
-// 			}
 		}
 	} // if( XAPP->GetbDebugMode() )
 #endif // 치트정보를 맨 마지막에 찍을것
@@ -1313,17 +1247,17 @@ void XBaseUnit::DoDamage( XEBaseWorldObj *pAttacker,
 	if( damage > 0 ) {		// 회피시에는 이벤트를 발생시키지 않는다.
 		AddCntHit();
 #ifdef _CHEAT
-		if( XAPP->m_bDebugMode ) {
-			if( XAPP->m_bDebugHeroImmortal && IsHero() )
+		if( XAPP->m_bDebugMode && IsCheatFiltered() ) {
+			if( XAPP->m_bDebugHeroImmortal )
 				if( IsDead() )
 					m_HP = 1;
 			if( XAPP->m_bDebugUnitImmortal && !IsHero() )
 				if( IsDead() )
 					m_HP = 1;
-// 			if( (XAPP->m_bDebugViewAttackedDamage && this->IsPlayer()) ||		// 맞는대상이 플레이어고 피격옵션이 켜져있으면
-// 				(XAPP->m_bDebugViewDamage && this->IsPlayer() == FALSE) ) {		// 맞는대상이 적이고 타격옵션이 켜져있으면
+			// 타격이나 피격옵션이 켜져있으면 출력.
+// 			if( XAPP->m_bDebugViewAttackedDamage || XAPP->m_bDebugViewDamage ) {		
 // 				bNumberEffect = true;
-// 			}
+//			}
 		}
 #endif
 		OnDamage( pUnitAttacker, damage, bCritical, typeDamage, bitAttrHit );
@@ -1334,10 +1268,10 @@ void XBaseUnit::DoDamage( XEBaseWorldObj *pAttacker,
 				bNumberEffect = false;
 	}
 #ifdef _CHEAT
-	if( XAPP->m_bDebugMode ) {
+	if( XAPP->m_bDebugMode && !bNumberEffect ) {
 		// 디버깅 모드에선 옵션에 따라 표시한다.
-		if( XAPP->m_bDebugViewDamage 
-			&& IsCheatFilterHero() && IsCheatFilterPlayer() )
+		if( (XAPP->m_bDebugViewAttackedDamage || XAPP->m_bDebugViewDamage) 
+				&& IsCheatFiltered() )
 			bNumberEffect = true;
 		else
 			bNumberEffect = false;		// 스킬데미지가 떠서 귀찮아서 치트모드에선 여기서 완전히 컨트롤함.
@@ -2154,14 +2088,6 @@ XSkillReceiver* XBaseUnit::CreateSfxReceiver( EFFECT *pEffect, float sec )
 	return pReceiver;
 }
 
-// void XBaseUnit::cbOnHitShootTargetSfx( XSkillShootObj *pArrow,
-// 									XSKILL::XSkillDat *pSkillDat,
-// 									int level,
-// 									XSKILL::XSkillReceiver *pBaseTarget )
-// {
-// 	XSkillUser::CastSkillToBaseTarget( pSkillDat, level, pBaseTarget );
-// }
-
 /**
  @brief
 */
@@ -2176,8 +2102,7 @@ void XBaseUnit::cbOnArriveSkillObj( XSkillShootObj *pArrow,
 	if( pSkillDat->GetstrIdentifier() == _T("throw_spear_shoot" ))
 	{
 		XBuffObj *pBuffObj = FindBuffSkill( _T("gungnir") );
-		if( pBuffObj )
-		{
+		if( pBuffObj )		{
 			// 궁니르버프가 있을때 창으로 대상을 맞춤.
 			pBuffObj->OnEventJunctureCommon( XSKILL::xCOND_HARD_CODE );
 		}
@@ -2232,17 +2157,14 @@ int XBaseUnit::GetGroupList( XArrayLinearN<XSKILL::XSkillReceiver*, 512> *pAryOu
 							const XSKILL::EFFECT *pEffect,
 							xtGroup typeGroup )
 {
-	if( typeGroup == xGT_ME )
-	{
+	if( typeGroup == xGT_ME )	{
 		GetpSquadObj()->GetListMember( pAryOutGroupList );
 	} else
-	if( typeGroup == xGT_TARGET_PARTY )
-	{
+	if( typeGroup == xGT_TARGET_PARTY )	{
 		if( m_spTarget != nullptr )
 			m_spTarget->GetpSquadObj()->GetListMember( pAryOutGroupList );
 	} else
-	if( typeGroup == xGT_RANDOM_PARTY_FRIENDLY )
-	{
+	if( typeGroup == xGT_RANDOM_PARTY_FRIENDLY )	{
 		auto spLegionObj = GetspLegionObj();
 		XBREAK( spLegionObj == nullptr );
 		auto spSquad = spLegionObj->FindSquadRandom( GetpSquadObj(),
@@ -2250,8 +2172,7 @@ int XBaseUnit::GetGroupList( XArrayLinearN<XSKILL::XSkillReceiver*, 512> *pAryOu
 													true );
 		spSquad->GetListMember( pAryOutGroupList );
 	} else
-	if( typeGroup == xGT_RANDOM_PARTY_ENEMY )
-	{
+	if( typeGroup == xGT_RANDOM_PARTY_ENEMY )	{
 		auto spLegionObj = XBattleField::sGet()->GetEnemyLegionObj( m_pSquadObj );
 		XBREAK( spLegionObj == nullptr );
 		auto spSquad = spLegionObj->FindSquadRandom( GetpSquadObj(),
@@ -2260,8 +2181,7 @@ int XBaseUnit::GetGroupList( XArrayLinearN<XSKILL::XSkillReceiver*, 512> *pAryOu
 		if( spSquad )
 			spSquad->GetListMember( pAryOutGroupList );
 	} else
-	if( typeGroup == xGT_FRIENDLY_ALL )
-	{
+	if( typeGroup == xGT_FRIENDLY_ALL )	{
 		GetspLegionObj()->GetAllUnit( pAryOutGroupList );
 	}
 	return pAryOutGroupList->size();
@@ -2383,14 +2303,12 @@ BOOL XBaseUnit::OnFirstApplyState( XSkillUser *pCaster,
 	} break;
 	case XGAME::xST_TAUNT: {
 		bool bTaunt = true;
-		if( GetUnitType() == xUNIT_LYCAN )
-		{
+		if( GetUnitType() == xUNIT_LYCAN )		{
 			float prob = GetInvokeRatioByBuff( GetUnitType(), _T("disregard") );
 			if( prob > 0 && XE::IsTakeChance(prob) )
 				bTaunt = false;		// 도발저항
 		}
-		if( bTaunt )
-		{
+		if( bTaunt )		{
 			// this는 공격상대를 pCaster로 바꿔야 한다.
 			XBaseUnit *pAttacker = dynamic_cast<XBaseUnit*>( pCaster );
 			if( pAttacker )
@@ -2417,11 +2335,9 @@ BOOL XBaseUnit::OnFirstApplyState( XSkillUser *pCaster,
 */
 int	XBaseUnit::OnClearSkill( XSkillDat *pSkillDat, EFFECT_OBJ *pEffObj )
 {
-	auto pEffect = pEffObj->refEffect;
-	if( pEffect->invokeState )
-	{
-		switch( pEffect->invokeState )
-		{
+	auto pEffect = &pEffObj->m_effect;
+	if( pEffect->invokeState )	{
+		switch( pEffect->invokeState )		{
 		case xST_FEAR:
 			GetpSquadObj()->DoAttackAutoTargetEnemy();
 			break;
@@ -2439,10 +2355,8 @@ XSKILL::XSkillReceiver* XBaseUnit::GetTargetObject( XSKILL::EFFECT *pEffect,
 													XSKILL::xtTargetCond cond )
 {
 	XBaseUnit *pFind = NULL;;
-	if( cond == XSKILL::xTC_NEAREST )
-	{
-		if( pEffect->castfiltFriendship & XSKILL::xfHOSTILE )
-		{
+	if( cond == XSKILL::xTC_NEAREST )	{
+		if( pEffect->castfiltFriendship & XSKILL::xfHOSTILE )		{
 			WorldObjPtr spObj;
 			spObj = XEObjMngWithType::sGet()->FindNearUnitByFunc( this,
 																GetvwPos(),
@@ -2452,15 +2366,12 @@ XSKILL::XSkillReceiver* XBaseUnit::GetTargetObject( XSKILL::EFFECT *pEffect,
 			if( spObj != nullptr )
 				pFind = static_cast<XBaseUnit*>( spObj.get() );
 		} else
-		if( pEffect->castfiltFriendship & XSKILL::xfALLY )
-		{
+		if( pEffect->castfiltFriendship & XSKILL::xfALLY )		{
 			// 아군중에서 검색
-		} else
-		{
+		} else		{
 			XBREAK(1);		// 아직 이런조건은 쓰지 않음.
 		}
-	} else
-	{
+	} else	{
 		if( GetspTarget() != nullptr )
 			pFind = GetspTarget().get();
 	}
@@ -2818,16 +2729,14 @@ bool XBaseUnit::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
 {
 	if( pSkillDat->GetstrIdentifier() == _T("morale") ||
 		pSkillDat->GetstrIdentifier() == _T("divine_protection") ||
-		pSkillDat->GetstrIdentifier() == _T("blessing") )
-	{
+		pSkillDat->GetstrIdentifier() == _T("blessing") )	{
 		XBaseUnit *pCasterUnit = dynamic_cast<XBaseUnit*>( pCaster );
 		if( !pCasterUnit->IsHero() )
 			return false;
 	} else
 	if( pSkillDat->GetstrIdentifier() == _T("protect") ||
 		pSkillDat->GetstrIdentifier() == _T("view_blocked") ||
-		pSkillDat->GetstrIdentifier() == _T("stigma"))
-	{
+		pSkillDat->GetstrIdentifier() == _T("stigma"))	{
 		// 하드코딩
 		// 이들 특성의 경우 한부대만 걸려야 하는데 부대엔 영웅까지 2명이 있어서
 		// 두부대가 걸리게 된다. 그래서 영웅의 발동은 제외시킴.
@@ -2835,38 +2744,33 @@ bool XBaseUnit::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
 		if( pCasterUnit->IsHero() )
 			return false;
 	} else
-	if( pSkillDat->GetstrIdentifier() == _T("invoke_protect"))
-	{
+	if( pSkillDat->GetstrIdentifier() == _T("invoke_protect"))	{
 		float val = pEffect->GetAbilityMin( level );
 		m_cntShell = (int)val;
 		XBREAK( m_cntShell == 0 );
 	} else
-	if( pSkillDat->GetstrIdentifier() == _T("destruct"))
-	{
+	if( pSkillDat->GetstrIdentifier() == _T("destruct"))	{
 		this->DoDie( nullptr );
 	} else
-	if( pSkillDat->GetstrIdentifier() == _T("phytoncide"))
-	{
+	if( pSkillDat->GetstrIdentifier() == _T("phytoncide"))	{
 		XBaseUnit *pCasterUnit = dynamic_cast<XBaseUnit*>( pCaster );
 		// 피톤치트의 경우는 같은 부대원(예를들어 영웅)에게는 발동되지 않는다.
 		if( pCasterUnit->GetpSquadObj()->GetsnSquadObj() == GetpSquadObj()->GetsnSquadObj() )
 			return false;
-	} else
-	if( pSkillDat->GetstrIdentifier() == _T("photosynthesis") )
-	{
-		static int si = 0;
-		if( GetUnitType() == xUNIT_TREANT )
-		{
-			if( m_cntPerSec < 50 )
-				++m_cntPerSec;
-			XBREAK( pBuffObj == nullptr );
-			float scale = 1.f + (m_cntPerSec * 0.01f);
-			const float scaleMax = 1.5f;
-			if( scale > scaleMax )
-				scale = scaleMax;
-			SetScaleObj( GetScaleUnitOrg() * scale );
-		}
-	}
+	}// else
+// 	if( pSkillDat->GetstrIdentifier() == _T("photosynthesis") )	{
+// 		static int si = 0;
+// 		if( GetUnitType() == xUNIT_TREANT )		{
+// 			if( m_cntPerSec < 50 )
+// 				++m_cntPerSec;
+// 			XBREAK( pBuffObj == nullptr );
+// 			float scale = 1.f + (m_cntPerSec * 0.01f);
+// 			const float scaleMax = 1.5f;
+// 			if( scale > scaleMax )
+// 				scale = scaleMax;
+// 			SetScaleObj( GetScaleUnitOrg() * scale );
+// 		}
+// 	}
 
 	return true;
 }
@@ -3179,10 +3083,11 @@ float XBaseUnit::GetAttackMeleePower()
 			// 이동속도 보정치를 공격력 보정치로 쓴다.
 			addRatio += GetAdjParam( XGAME::xADJ_MOVE_SPEED )->valPercent * level;
 		}
-	} else
-	if( GetUnitType() == XGAME::xUNIT_TREANT ) {
-		addRatio += (GetcntPerSec() * 0.01f);
-	}
+	} 
+// 	else
+// 	if( GetUnitType() == XGAME::xUNIT_TREANT ) {
+// 		addRatio += (GetcntPerSec() * 0.01f);
+// 	}
 	addRatio += GetAdjParam( XGAME::xADJ_ATTACK_MELEE_TYPE )->GetValPercent();
 	return CalcAdjParam( power, XGAME::xADJ_ATTACK, addRatio );
 }
@@ -3266,6 +3171,52 @@ float XBaseUnit::GetAttackRangeDamage( UnitPtr spTarget )
 	XBREAK( rateAtkSq == 0 );
 	damage *= rateAtk * rateAtkSq;
 	return damage;
+}
+
+/**
+ @brief spTarget에 대한 원거리공격력 증가율을 구한다.
+ 디버깅모드의 출력용으로만 사용하는거라 부정확할수 있음.
+ 공격력만 더함. 추가피해보정은 더하지 않았음. 
+ 장기적으로 공격력과 피해보정을 하나로 합쳐야 할듯하다.
+ 추가피해보정은 말하자면 공격력에 복리로 곱하는개념.
+*/
+float XBaseUnit::GetAddRateByStat( XGAME::xtStat statType, XSPUnit spTarget )
+{
+	switch( statType ) {
+	case XGAME::xSTAT_NONE:
+		break;
+	case XGAME::xSTAT_ATK_MELEE: {
+		float rateAdd = GetAdjValue( xADJ_ATTACK );
+		rateAdd += GetAdjValue( xADJ_ATTACK_MELEE_TYPE );
+		return rateAdd;
+	} break;
+	case XGAME::xSTAT_ATK_RANGE: {
+		float rateAdd = GetAdjValue( xADJ_ATTACK );
+		rateAdd += GetAdjValue( xADJ_ATTACK_RANGE_TYPE );
+		return rateAdd;
+	} break;
+	case XGAME::xSTAT_DEF: {
+		return GetAdjValue( xADJ_DEFENSE );
+	} break;
+	case XGAME::xSTAT_HP: {
+		return GetAdjValue( xADJ_MAX_HP );
+	} break;
+	case XGAME::xSTAT_SPEED_ATK: {
+		float speedAdd = GetAdjValue( xADJ_ATTACK_SPEED );
+		speedAdd += GetAdjValue( xADJ_ATTACK_SPEED_SMALL );
+		speedAdd += GetAdjValue( xADJ_ATTACK_SPEED_MIDDLE );
+		speedAdd += GetAdjValue( xADJ_ATTACK_SPEED_BIG );
+		return speedAdd;
+	} break;
+	case XGAME::xSTAT_SPEED_MOV: {
+		float speedAdd = GetAdjValue( xADJ_MOVE_SPEED );
+		return speedAdd;
+	} break;
+	default:
+		XBREAK(1);
+		break;
+	}
+	return 0;
 }
 
 /**
@@ -3360,6 +3311,7 @@ float XBaseUnit::GetSpeedAttack( UnitPtr spTarget )
 	}
 	return CalcAdjParam( speed, XGAME::xADJ_ATTACK_SPEED, addAdjRatio, addAdjVal );
 }
+
 /**
  @brief
 */
@@ -3494,13 +3446,26 @@ float XBaseUnit::OnInvokeTargetSize( XSKILL::XSkillDat *pSkillDat,
 									XSKILL::XSkillReceiver *pCastingTarget,
 									float size )
 {
-	if( pSkillDat->GetstrIdentifier() == _T( "view_blocked" ) ) {
-		auto pBuff = FindBuffSkill( _T( "cordyceps" ) );
-		if( pBuff ) {
-			// 시야차단 특성이 발동될때 "무성한나무"특성이 있다면 반경 증가
-			return pBuff->GetInvokeSizeByLevel();
+	if( GetUnitType() == xUNIT_TREANT ) {
+		const auto idsSkill = pSkillDat->GetstrIdentifier();
+		if( idsSkill == _T( "view_blocked" ) || idsSkill == _T( "phytoncide" ) 
+			|| idsSkill == _T( "archer_concealment" ) || idsSkill == _T( "entangling" ) ) {
+			// 무성한 나무 특성이 있으면 위 스킬들의 발동반경을 증폭시킨다.
+			auto pBuff = FindBuffSkill( _T( "cordyceps" ) );
+			if( pBuff ) {
+				// 시야차단 특성이 발동될때 "무성한나무"특성이 있다면 반경 증가
+				auto abilMin = pBuff->GetAbilMinbyLevel();
+				return size + (size * abilMin);
+			}
 		}
 	}
+// 	if( pSkillDat->GetstrIdentifier() == _T( "view_blocked" ) ) {
+// 		auto pBuff = FindBuffSkill( _T( "cordyceps" ) );
+// 		if( pBuff ) {
+// 			// 시야차단 특성이 발동될때 "무성한나무"특성이 있다면 반경 증가
+// 			return pBuff->GetInvokeSizeByLevel();
+// 		}
+// 	}
 	return size;
 }
 
@@ -3580,4 +3545,10 @@ void XBaseUnit::OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster
 	}
 }
 
-
+/**
+ @brief 유닛 크기에 따른 크기비용.
+*/
+int XBaseUnit::GetSizeCost()
+{
+	return _XGC->m_arySizeCost[ GetUnitSize() ];
+}
