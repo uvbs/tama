@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<global sample_int="11">
+  <group sample_float="5.5">
+    <!--주석-->
+  </group>
+</global>

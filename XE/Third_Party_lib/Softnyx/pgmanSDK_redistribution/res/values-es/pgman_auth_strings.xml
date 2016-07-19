@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="pgman_done">Hecho</string>
+	<string name="pgman_login_ok">Conectar</string>
+	<string name="pgman_login_cancel">Cancelar</string>
+	<string name="pgman_login_error">Nombre de usuario o la contraseña no es correcta</string>
+	<string name="pgman_login_not_connected">No está conectado al Internet</string>
+	<string name="pgman_login_error_100">Error del Servidor</string>
+	<string name="pgman_login_error_101">No hay llave de cliente</string>
+	<string name="pgman_login_error_102">Error de código Auth</string>
+	<string name="pgman_login_error_109">Error de redirection_url</string>
+	<string name="pgman_login_error_103">Error de response_type</string>
+	<string name="pgman_login_error_203">Cancelar Autorización de Usuario</string>
+	<string name="pgman_login_error_501">No hay datos (errores DB)</string>
+	<string name="pgman_login_error_503">No hay información de usuario</string>
+	<string name="pgman_login_error_504">Error de App ID</string>
+	<string name="pgman_login_error_msg">Se ha producido un error durante la conexión</string>
+   
+</resources>

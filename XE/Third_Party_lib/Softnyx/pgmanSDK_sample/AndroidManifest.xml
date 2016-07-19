@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.pgman.sdk.sample.gemtree"
+    android:versionCode="122"
+    android:versionName="0.0.0.122" >
+
+    <uses-sdk
+        android:minSdkVersion="10"
+        android:targetSdkVersion="17" />
+    
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />    
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/pgman"
+        android:label="pgman SDK sample">
+        <activity
+            android:name="com.pgman.sdk.sample.gemtree.Sample_MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>   
+        
+        <meta-data 
+            android:name="@string/pgman_registered_app_id"
+            android:value="9e32822d0d01a5cdd9210831ef65112b9e0fd3b9dde34146a13ccd3a0d34f4"/>
+    </application>
+
+</manifest>

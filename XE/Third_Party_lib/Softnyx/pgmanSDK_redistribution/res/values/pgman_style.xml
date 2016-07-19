@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.pgman.Transparent" parent="android:Theme">
+	    <item name="android:windowBackground">@android:color/transparent</item>
+	    <item name="android:colorBackgroundCacheHint">@null</item>
+	    <item name="android:windowIsTranslucent">true</item>
+	    <item name="android:windowAnimationStyle">@android:style/Animation</item>
+	    <item name="android:windowNoTitle">true</item>
+	    <item name="android:windowContentOverlay">@null</item>
+	    <item name="android:backgroundDimEnabled">true</item>
+	    <item name="android:windowFullscreen">true</item>
+	</style>
+	
+    <!-- siftnyx -->
+    <color name="sdkcolor">#f98016</color>
+    <color name="sdkcolor_drak">#e19a04</color>
+    <!-- -->
+    
+    <!-- PGMAN  
+    <color name="sdkcolor">#a55ffc</color>
+    <color name="sdkcolor_drak">#874ece</color>
+     -->
+</resources>

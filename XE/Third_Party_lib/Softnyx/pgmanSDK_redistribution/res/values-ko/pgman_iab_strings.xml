@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="pgman_iab_title">스토어 결재정보</string>
+    <string name="pgman_iab_dlg_title">코인을 사용한 구매를 진행 합니다</string>        
+    <string name="pgman_iab_dlg_cash_unit"> 캐쉬  </string>    
+    <string name="pgman_iab_dlg_user_possessiont">보유 캐쉬 </string>
+    <string name="pgman_iab_dlg_contents">구매하시겠습니까?</string>
+    <string name="pgman_iab_userid_use">결제자 </string>
+    <string name="pgman_iab_done">구매</string>
+    <string name="pgman_iab_buycash"><u>캐쉬 충전</u></string>
+    
+    <string name="pgman_iab_error_no_store_userid">결제를 위한 스토어아이디가 없습니다</string>
+    <string name="pgman_iab_error_server">결제 과정에 문제 가 발생하였습니다</string> 
+    
+    <string name="pgman_iab_dlg_haved_id">아이디가 있습니다</string>
+    <string name="pgman_iab_dlg_no_id">아이디가 없습니다</string>
+    <string name="pgman_iab_dlg_no_id_message">스토어 아이디가 있습니까?</string>
+
+     <string name="pgman_iab_tester_id">[This is a test account, No billing charged]</string>
+</resources>

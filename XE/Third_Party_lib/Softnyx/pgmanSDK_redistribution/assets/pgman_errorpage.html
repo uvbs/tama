@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+    <head>
+    	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />        
+        <style type="text/css">
+			html, body { width:100%; height: 100%; margin: 0; padding: 0; }
+			#wrap { display:table-cell; vertical-align:middle; text-align: center; }
+		</style>
+        <title>Error</title>       
+    </head>
+    <body style="display:table" >
+		<div id="wrap">
+			<img src="logo.png" alt="" />
+		<div>
+		<br/><br/><br/><br/><br/>    	
+		<div style="text-align:center">
+			<p id = "net_state">Uoops! connected denine....<strong> </strong></p>						
+		</div>
+		<script type="text/javascript" charset="utf-8">
+				msgArray = window.JSBridge.ConnectErrorMessage();
+	    		realJsString = msgArray + "";
+				errormsg = realJsString.split("|");					
+		    	document.getElementById("net_state").innerHTML= errormsg[0];
+		 </script>
+    </body>
+</html>

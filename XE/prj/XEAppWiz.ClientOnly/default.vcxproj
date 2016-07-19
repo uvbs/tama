@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FD08C8FA-1EA3-4BCA-854A-B2A239A4F548}</ProjectGuid>
+    <RootNamespace>XSample</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;..\..\..\..\..\XE\XFramework;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\Include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\XFramework;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\Debug_AccRef</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_client_rfd.lib;windowscodecs.lib;winmm.lib;d3d9.lib;d3dx9d.lib;d3dx10d.lib;d3dxof.lib;dxerr.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="res\Toolbar.bmp" />
+    <None Include="res\XSample.ico" />
+    <None Include="res\XSample.rc2" />
+    <None Include="res\XSampleDoc.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\client\XAppDelegate.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\client\XAppMain.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\constGame.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\VersionCommon.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\XAccount.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\XAppLayout.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\XBaseProp.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\XCGPacket.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\XGame.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\XGameCommon.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\XGameWnd.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\XLoginInfo.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\XSampleLua.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\game_src\XSockGameSvr.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\Resource\defineAct.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\Resource\defineGame.h" />
+    <ClInclude Include="..\..\..\..\..\AppTemplate\App\Resource\VerPacket.h" />
+    <ClInclude Include="CrashDlg.h" />
+    <ClInclude Include="DlgEnterName.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="XDlgConsole.h" />
+    <ClInclude Include="XSample.h" />
+    <ClInclude Include="XSampleDoc.h" />
+    <ClInclude Include="XSampleView.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\client\XAppDelegate.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\client\XAppMain.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\constGame.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\XAccount.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\XAppLayout.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\XBaseProp.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\XGame.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\XGameCommon.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\XGameWnd.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\XLoginInfo.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\XSampleLua.cpp" />
+    <ClCompile Include="..\..\..\..\..\AppTemplate\App\game_src\XSockGameSvr.cpp" />
+    <ClCompile Include="CrashDlg.cpp" />
+    <ClCompile Include="DlgEnterName.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="XDlgConsole.cpp" />
+    <ClCompile Include="XSample.cpp" />
+    <ClCompile Include="XSampleDoc.cpp" />
+    <ClCompile Include="XSampleView.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="XSample.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

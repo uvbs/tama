@@ -1,0 +1,8 @@
+1. 새 프로젝트->XE-Server 프로젝트로 프로젝트를 만든다.
+2. game_src폴더를 App/game_src 폴더로 옮긴다
+3. Resource폴더를 App/Resource 폴더로 옮긴다
+4. XE/Xframework/MFC/ 폴더에서 XDlgConsole.cpp/h 와 CoolDialogBar.cpp/h를 프로젝트에 포함시킨다.
+5. 솔루션탐색기의 솔루션에서 우클릭후 추가->기존프로젝트 XE/prj/xe_server/xe_server/ 로들어가서 xe_server프로젝트를 포함시킨다
+6. 빌드->구성관리자 에서 xe_server의 Debug를 Debug_AccRef로 바꾼다
+7. 프로젝트 종속성을 xe_server가 먼저 빌드되도록 바꾼다.
+8. 빌드해서 문제없으면 OK.

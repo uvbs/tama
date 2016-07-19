@@ -1,0 +1,694 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout font_gold_m="normal.ttf" font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf" font_meter="font_meter.spr" font_gold="font_gold.spr" font_cooper="CooperBlackStd.otf" font_thai="kunlasatri.ttf" font_time="font_pvp_time.spr">
+  <title>
+    <img file="bg_title.png" posx="0" posy="0"></img>
+    <butt posx="0" posy="0" width="scr_width" height="scr_height" key="butt.next" />
+    <text posx="0" posy="500" key="text.connect.info" />
+    <_text posx="0" posy="10" text="50000" width="360" />
+  </title>
+  <main>
+    <sc_menu>
+      <butt text="154" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="167" key="butt.single" text_col="white" font="font_text_b" font_size="40" font_style="stroke" />
+      <butt text="420" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="282" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="butt.tour" />
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text text="149" posx="11" posy="76" font="font_text_s" font_size="30" font_style="shadow">메인1</text>
+    </sc_menu>
+    <select_theme>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text text="274" posx="73" posy="76" font="font_text_s" font_size="30" font_style="shadow">테마선택</text>
+      <list posx="18" posy="108" width="294" height="309" type="list" id="ID_LIST_THEME" spaceh="8" />
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back">뒤로</butt>
+    </select_theme>
+    <select_scenario>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text text="0" posx="73" posy="76" font="font_text_s" font_size="30" font_style="shadow">시나리오선택</text>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back">뒤로</butt>
+      <list posx="18" posy="108" width="294" height="309" type="list" key="ID_LIST_SCENARIO" spaceh="8" />
+    </select_scenario>
+    <start>
+      <img file="bg_boss_info.png" posx="0" posy="62"></img>
+      <img file="bookmark.png" posx="0" posy="68"></img>
+      <slide posx="0" posy="62" width="scr_width" height="356" key="start_slide" img_point="slide_point.png">
+        <page>
+          <spr posx="159" posy="187" key="boss_spr" scale="0.7" />
+          <img file="bg_girl.png" posx="0" posy="244" />
+          <img file="girl.png" posx="0" posy="198" />
+          <img file="talk.png" posx="111" posy="210" />
+          <text posx="128" posy="217" width="180" key="sce_desc">시나리오 설명</text>
+        </page>
+        <page>
+          <img file="bg_enemy_info.png" posx="10" posy="48" />
+          <img file="bg_my_info.png" posx="10" posy="214" />
+          <text text="276" posx="20" posy="55" font="font_text_m" font_size="25" font_style="stroke">등장몬스터</text>
+          <text text="418" posx="20" posy="219" font="font_text_m" font_size="25" font_style="stroke">내몬스터</text>
+          <text text="419" posx="center" posy="69" font="font_text_m" font_size="25" font_style="stroke" text_col_r="239" text_col_g="180" text_col_b="13">보스</text>
+        </page>
+      </slide>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <butt text="176" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="114" posy="373" text_col="white" font="font_text_b" font_size="30" id="ID_GAME_START" font_style="stroke">시작</butt>
+      <text posx="63" posy="77" width="146" font="font_text_b" font_size="30" key="boss_name" font_style="stroke">보스이름</text>
+    </start>
+  </main>
+  <card>
+    <menu>
+      <butt text="278" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="110" key="card.menu.team" text_col="white" font="font_text_b" font_size="40" font_style="stroke" />
+      <butt text="190" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="169" key="card.menu.evol" text_col="white" font="font_text_b" font_size="40" font_style="stroke">진화</butt>
+      <butt text="191" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="228" key="card.menu.growth" text_col="white" font="font_text_b" font_size="40" font_style="stroke">성장</butt>
+      <butt text="192" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="287" key="card.menu.destroy" text_col="white" font="font_text_b" font_size="40" font_style="stroke">분해</butt>
+      <butt text="202" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="346" key="card.menu.inven" text_col="white" font="font_text_b" font_size="40" font_style="stroke">카드인벤</butt>
+    </menu>
+    <team>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <text text="279" posx="73" posy="76" font="font_text_b" font_size="30" font_style="shadow">팀편성</text>
+      <img file="bg_team_mng2.png" posx="9" posy="112" />
+      <butt_team posx="48" posy="153" key="card.team1" idx="0" />
+      <butt_team posx="102" posy="153" key="card.team2" idx="1" />
+      <butt_team posx="156" posy="153" key="card.team3" idx="2" />
+      <butt_team posx="210" posy="153" key="card.team4" idx="3" />
+      <butt_team posx="264" posy="153" key="card.team5" idx="4" />
+      <text posx="22" posy="183" width="52" key="card.level.team1" align="center" font="font_text_m" font_size="25" font_style="stroke">레벨표시</text>
+      <text posx="76" posy="183" width="52" key="card.level.team2" align="center" font="font_text_m" font_size="25" font_style="stroke" />
+      <text posx="130" posy="183" width="52" key="card.level.team3" align="center" font_size="25" font="font_text_m" font_style="stroke" />
+      <text posx="186" posy="183" width="52" key="card.level.team4" align="center" font_size="25" font="font_text_m" font_style="stroke" />
+      <text posx="242" posy="183" width="52" key="card.level.team5" align="center" font_size="25" font="font_text_m" font_style="stroke" />
+      <text posx="22" posy="195" width="52" key="card.cost.team1" font="font_text_m" font_size="25" align="center" font_style="stroke">영혼력표시</text>
+      <text posx="76" posy="195" width="52" key="card.cost.team2" font="font_text_m" font_size="25" align="center" font_style="stroke"></text>
+      <text posx="130" posy="195" width="52" key="card.cost.team3" font="font_text_m" font_size="25" align="center" font_style="stroke" />
+      <text posx="184" posy="195" width="52" key="card.cost.team4" font="font_text_m" font_size="25" align="center" font_style="stroke" />
+      <text posx="240" posy="195" width="52" key="card.cost.team5" font="font_text_m" font_size="25" align="center" font_style="stroke"></text>
+      <text text="345" posx="118" posy="220" font="font_text_m" font_size="25" text_col="col_team_mng_yellow">팀영혼력(레이블)</text>
+      <text posx="148" posy="220" key="card.team.spirit" width="55" align="center" font="font_text_m" font_size="25">팀영혼력</text>
+      <text text="346" posx="62" posy="243" font="font_text_m" font_size="25" text_col="col_team_mng_yellow">팀레벨(레이블)</text>
+      <text text="348" posx="62" posy="266" font="font_text_m" font_size="25" text_col="col_team_mng_yellow">팀공격력(레이블)</text>
+      <text text="347" posx="173" posy="243" font="font_text_m" font_size="25" text_col="col_team_mng_yellow">체력(레이블)</text>
+      <text text="349" posx="173" posy="266" font="font_text_m" font_size="25" text_col="col_team_mng_yellow">팀방어력(레이블)</text>
+      <text posx="99" posy="243" key="card.team.level" align="right" width="48" font="font_text_m" font_size="25">팀레벨</text>
+      <text posx="113" posy="266" key="card.team.attack" align="right" width="34" font="font_text_m" font_size="25">팀공격력</text>
+      <text posx="214" posy="243" key="card.team.hp" align="right" width="44" font_size="25" font="font_text_m">체력</text>
+      <text posx="214" posy="266" key="card.team.defense" align="right" width="44" font="font_text_m" font_size="25">팀방어력</text>
+    </team>
+    <evol>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <butt text="408" img_up="butt_small_u.png" img_down="butt_small_d.png" posx="258" posy="70" text_col="white" font="font_text_b" font_size="25" key="card.evol.sort" font_style="stroke">정렬변경</butt>
+      <text text="409" posx="176" posy="74" font_style="stroke" align="right" width="40" font="font_text_s" font_size="20">정렬순서</text>
+      <text posx="176" posy="86" font_style="stroke" align="right" width="40" font="font_text_s" font_size="20" text_col_r="98" text_col_g="234" text_col_b="127" key="text.sort">현재 정렬타입</text>
+      <text text="421" posx="64" posy="76" font_style="shadow" font="font_text_b" font_size="30" key="text.title">진화몬스터 선택</text>
+      <list_card_inven posx="10" posy="107" width="310" height="312" spacew="6" spaceh="6" key="card.evol.inven" />
+      <img file="inven_num.png" posx="center" posy="398" />
+      <text_card_inven_num posx="133" posy="398" width="51" align="center" key="card.evol.inven.num">카드인벤개수표시 ex)30/50</text_card_inven_num>
+    </evol>
+    <change_team>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back">뒤로</butt>
+      <butt text="408" img_up="butt_mid_u.png" img_down="butt_mid_d.png" posx="258" posy="70" text_col="white" font="font_text_b" font_size="25" key="card.evol.sort">정렬변경</butt>
+      <text text="409" posx="176" posy="74" font_style="stroke" align="right" width="40" font="font_text_s" font_size="20">정렬순서</text>
+      <text text="283" posx="64" posy="76" font_style="shadow" font="font_text_b" font_size="30">진화몬스터 선택</text>
+    </change_team>
+    <grow>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <img file="bg_growth.png" posx="77" posy="111" />
+      <img file="growth_on.png" posx="77" posy="272" key="card.grow.ee" />
+      <img file="growth_on.png" posx="77" posy="315" key="card.grow.gold"></img>
+      <text text="426" posx="84" posy="275" font_style="shadow" font="font_text_b" font_size="30" text_col="col_growth_yellow2">필요ee</text>
+      <text text="427" posx="84" posy="319" font_style="shadow" font="font_text_b" font_size="30" text_col="col_growth_yellow2">필요gold</text>
+      <text posx="113" posy="334" font_style="shadow" font="font_text_m" font_size="30" text_col="white" width="118" align="right" key="grow.text.needgold">필요gold</text>
+      <text posx="113" posy="292" font_style="shadow" font="font_text_m" font_size="30" text_col="white" width="118" align="right" key="grow.text.needee">필요ee</text>
+      <img file="icon_gold.png" posx="92" posy="334" />
+      <img file="icon_ee2.png" posx="92" posy="289" />
+      <butt text="425" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="114" posy="374" text_col="white" font="font_text_b" font_size="30" key="card.grow.go" font_style="stroke">성장하기</butt>
+      <text posx="84" posy="116" font_style="stroke" font="font_text_m" font_size="25" key="card.grow.name">성장몹이름</text>
+      <text text="284" posx="97" posy="188" font="font_text_b" font_size="25" text_col="col_growth_yellow">레벨(레이블)</text>
+      <text text="504" posx="97" posy="206" font="font_text_b" font_size="25" text_col="col_growth_yellow">체력(레이블)</text>
+      <text text="500" posx="97" posy="224" font="font_text_b" font_size="25" text_col="col_growth_yellow">공격력(레이블)</text>
+      <text text="501" posx="97" posy="242" font="font_text_b" font_size="25" text_col="col_growth_yellow">방어력(레이블)</text>
+      <text posx="134" posy="188" font="font_text_b" font_size="25" text_col="white" key="grow.text.level">레벨</text>
+      <text posx="134" posy="206" font="font_text_b" font_size="25" text_col="white" key="grow.text.hp">체력</text>
+      <text posx="134" posy="224" font="font_text_b" font_size="25" text_col="white" key="grow.text.atk">공격력</text>
+      <text posx="134" posy="242" font="font_text_b" font_size="25" text_col="white" key="grow.text.def">방어력</text>
+      <text posx="189" posy="186" font="font_text_b" font_size="30" text_col="col_growth_next" key="grow.text2.level">다음레벨</text>
+      <text posx="189" posy="204" font="font_text_b" font_size="30" text_col="col_growth_next" key="grow.text2.hp">다음체력</text>
+      <text posx="189" posy="222" font="font_text_b" font_size="30" text_col="col_growth_next" key="grow.text2.atk">다음공격력</text>
+      <text posx="189" posy="240" font="font_text_b" font_size="30" text_col="col_growth_next" key="grow.text2.def">다음방어력</text>
+      <spr posx="158" posy="156" key="card.grow.card" />
+      <img_need_dark img="growth_off.png" alpha="80">비활성때 알파먹여서 덮는용도</img_need_dark>
+    </grow>
+    <growth_result>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <text posx="72" posy="77" font_style="shadow" font="font_text_b" font_size="30" key="text.title">몹이름</text>
+      <spr posx="center" posy="248" key="card.result.spr"></spr>
+      <img file="bg_growth_result.png" posx="center" posy="268" />
+      <text text="284" posx="129" posy="277" font="font_text_b" font_size="25" text_col="col_growth_yellow">레벨(레이블)</text>
+      <text text="504" posx="129" posy="295" font="font_text_b" font_size="25" text_col="col_growth_yellow">체력(레이블)</text>
+      <text text="500" posx="129" posy="313" font="font_text_b" font_size="25" text_col="col_growth_yellow">공격력(레이블)</text>
+      <text text="500" posx="129" posy="330" font="font_text_b" font_size="25" text_col="col_growth_yellow">방어력(레이블)</text>
+      <text posx="166" posy="277" font="font_text_b" font_size="25" text_col="white" key="grow.text.level">레벨</text>
+      <text posx="166" posy="296" font="font_text_b" font_size="25" text_col="white" key="grow.text.hp">체력</text>
+      <text posx="166" posy="314" font="font_text_b" font_size="25" text_col="white" key="grow.text.atk">공격력</text>
+      <text posx="166" posy="332" font="font_text_b" font_size="25" text_col="white" key="grow.text.def">방어력</text>
+      <butt text="204" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="117" posy="374" text_col="white" font="font_text_b" font_size="30" key="card.grow.ok" font_style="stroke">ok</butt>
+    </growth_result>
+    <detail>
+      <img file="bg_boss_info.png" posx="0" posy="62"></img>
+      <img file="bookmark.png" posx="0" posy="68"></img>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <text posx="72" posy="77" font_style="shadow" font="font_text_b" font_size="30" key="text.title">몹이름</text>
+      <spr posx="center" posy="247" key="detail.mob" />
+      <img file="detail_stat_bg.png" posx="2" posy="200" />
+      <img file="detail_exp_bg.png" posx="2" posy="262" />
+      <img file="detail_skill_bg.png" posx="2" posy="293"></img>
+      <img file="detail_skill_bg.png" posx="2" posy="341"></img>
+      <img file="detail_skill2_bg.png" posx="2" posy="389"></img>
+      <text text="504" posx="8" posy="206" font="font_text_b" font_size="25" text_col="col_detail_yellow" font_style="stroke">체력(레이블)</text>
+      <text text="500" posx="8" posy="220" font="font_text_b" font_size="25" text_col="col_detail_yellow" font_style="stroke">공격력(레이블)</text>
+      <text text="501" posx="8" posy="234" font="font_text_b" font_size="25" text_col="col_detail_yellow" font_style="stroke">방어력(레이블)</text>
+      <text text="422" posx="8" posy="247" font="font_text_b" font_size="25" text_col="col_detail_yellow" font_style="stroke">영혼력(레이블)</text>
+      <text text="284" posx="8" posy="266" font="font_text_b" font_size="25" text_col="col_growth_yellow" font_style="stroke">레벨(레이블)</text>
+      <text posx="30" posy="206" font="font_text_b" font_size="25" text_col="white" key="text.hp" align="right" width="40" font_style="stroke">체력</text>
+      <text posx="41" posy="220" font="font_text_b" font_size="25" text_col="white" key="text.atk" width="29" align="right" font_style="stroke">공격력</text>
+      <text posx="41" posy="234" font="font_text_b" font_size="25" text_col="white" key="text.def" width="29" align="right" font_style="stroke">방어력</text>
+      <text posx="41" posy="247" font="font_text_b" font_size="25" text_col="white" key="text.scp" width="29" align="right" font_style="stroke">영혼력</text>
+      <text posx="32" posy="266" font="font_text_b" font_size="25" text_col="white" key="text.lev" font_style="stroke">레벨</text>
+      <text posx="17" posy="299" font="font_text_m" font_size="25" text_col="col_skill_name" key="text.skill1.name">액티브스킬이름</text>
+      <text posx="12" posy="325" font="font_text_s" font_size="20" text_col="white" width="292" font_style="stroke" key="text.skill1" align="vcenter">액티브스킬설명.</text>
+      <text posx="17" posy="347" font="font_text_m" font_size="25" text_col="col_skill_name" key="text.skill2.name">패시브스킬이름</text>
+      <text posx="12" posy="373" font="font_text_s" font_size="20" text_col="white" width="292" font_style="stroke" key="text.skill2" align="vcenter">패시브스킬설명</text>
+      <text posx="17" posy="393" font="font_text_m" font_size="25" text_col="col_skill_name" key="text.skill3.name">패시브스킬2이름</text>
+      <text posx="12" posy="421" font="font_text_s" font_size="20" text_col="white" width="292" font_style="stroke" key="text.skill3" align="vcenter">패시브스킬2설명</text>
+      <img posx="10" posy="108" key="img.mark"></img>
+      <img posx="15" posy="104" key="img.star1" file="icon_star.png" show="off"></img>
+      <img posx="30" posy="104" key="img.star2" file="icon_star.png" show="off"></img>
+      <img posx="45" posy="104" key="img.star3" file="icon_star.png" show="off"></img>
+      <img posx="60" posy="104" key="img.star4" file="icon_star.png" show="off"></img>
+      <img posx="75" posy="104" key="img.star5" file="icon_star.png" show="off"></img>
+      <butt posx="75" posy="406" img_up="butt_scroll_u.png" img_down="butt_scroll_d.png" img_off="butt_scroll_off.png" text="318" key="butt.scroll">커스텀.스크롤부여버튼</butt>
+      <butt_weapon posx="176" posy="254" img_up="butt_weapon2_u.png" img_down="butt_weapon2_d.png" key="butt.weapon">커스텀.무기버튼.</butt_weapon>
+      <butt_rune1 posx="222" posy="254" img_up="butt_rune2_u.png" img_down="butt_rune2_d.png" key="butt.rune1">커스텀.룬버튼.</butt_rune1>
+      <butt_rune2 posx="267" posy="254" img_up="butt_rune2_u.png" img_down="butt_rune2_d.png" key="butt.rune2">커스텀.룬버튼.</butt_rune2>
+      <pbar posx="7" posy="279" img1="bar2_exp.png" img2="bar2_exp_bg.png" key="bar.exp" adjx="0" adjy="-1" />
+    </detail>
+    <evol_work>
+      <img file="bookmark.png" posx="0" posy="68"></img>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <text text="190" posx="73" posy="76" font="font_text_b" font_size="30" font_style="shadow">진화</text>
+      <img file="evol_stat_bg.png" posx="41" posy="123">
+        <text text="284" posx="20" posy="78" font="font_text_b" font_size="25" text_col="col_growth_yellow" font_style="stroke">Lv(레이블)</text>
+        <text text="504" posx="20" posy="96" font="font_text_b" font_size="25" text_col="col_growth_yellow" font_style="stroke">체력(레이블)</text>
+        <text text="500" posx="20" posy="113" font="font_text_b" font_size="25" text_col="col_growth_yellow" font_style="stroke">공격력(레이블)</text>
+        <text text="501" posx="20" posy="131" font="font_text_b" font_size="25" text_col="col_growth_yellow" font_style="stroke">방어력(레이블)</text>
+        <text posx="57" posy="78" font="font_text_b" font_size="25" text_col="white" font_style="stroke" num="4" disty="18" key="text.stat">레벨,체력,공격력,방어력</text>
+        <spr posx="51" posy="48" key="spr.base"></spr>
+      </img>
+      <img file="evol_stat_bg.png" posx="178" posy="123" roty="180">
+        <text text="284" posx="20" posy="78" font="font_text_b" font_size="25" text_col="col_growth_yellow" font_style="stroke">Lv(레이블)</text>
+        <text text="504" posx="20" posy="96" font="font_text_b" font_size="25" text_col="col_growth_yellow" font_style="stroke">체력(레이블)</text>
+        <text text="500" posx="20" posy="113" font="font_text_b" font_size="25" text_col="col_growth_yellow" font_style="stroke">공격력(레이블)</text>
+        <text text="501" posx="20" posy="131" font="font_text_b" font_size="25" text_col="col_growth_yellow" font_style="stroke">방어력(레이블)</text>
+        <text posx="57" posy="78" font="font_text_b" font_size="25" text_col="white" font_style="stroke" num="4" disty="18" key="text2.stat">레벨,체력,공격력,방어력</text>
+        <spr posx="51" posy="48" key="spr.evol"></spr>
+      </img>
+      <text text="469" posx="51" posy="128" font="font_text_s" font_size="25" text_col="col_beige" font_style="stroke">현재</text>
+      <text text="190" posx="247" posy="128" font="font_text_s" font_size="25" text_col="col_beige" font_style="stroke">진화</text>
+      <img file="evol_mtrl_bg.png" posx="12" posy="275"></img>
+      <text text="241" posx="143" posy="278" font="font_text_s" font_size="25" text_col="col_beige" font_style="stroke" width="36" align="center">재료</text>
+      <butt text="45" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="115" posy="374" text_col="col_beige" font="font_text_b" font_size="30" key="evol.go" font_style="stroke">진화</butt>
+      <img posx="45" posy="320" key="img.mtrl">첫번째아이템재료칸</img>
+      <spr posx="101" posy="320" distx="60" num="4" key="spr.mtrl">몬스터 재료4칸</spr>
+      <img file="evol_arrow.png" posx="147" posy="190"></img>
+    </evol_work>
+    <destroy_card>
+      <butt text="204" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="106" posy="135" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="butt.ok">확인 </butt>
+      <text text="470" posx="center" posy="15" font="font_text_b" font_size="40" font_style="stroke">몬스터 카드 분해</text>
+    </destroy_card>
+  </card>
+  <ingame>
+    <option>
+      <slider img_bg="slider_bg.png" img_handle="slider_handle.png" posx="23" posy="24" width="253" height="28" key="option.bgm" />
+      <slider img_bg="slider_bg.png" img_handle="slider_handle.png" posx="23" posy="70" width="253" height="28" key="option.effect" />
+      <text posx="center" posy="7" font="font_text_m" font_size="25" font_style="stroke">배경음</text>
+      <text posx="center" posy="56" font="font_text_m" font_size="25" font_style="stroke">효과음</text>
+      <text posx="center" posy="105" font="font_text_m" font_size="25" font_style="stroke">튜토리얼</text>
+      <butt_ratio text="291" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="38" posy="121" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="tutor.on" group="1">튜토리얼켬</butt_ratio>
+      <butt_ratio text="292" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="171" posy="121" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="tutor.off" group="1">튜토리얼끔</butt_ratio>
+      <butt img_up="icon_close.png" posx="281" posy="2" key="close">닫기</butt>
+    </option>
+    <menu>
+      <butt text="251" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="57" posy="36" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="option">설정</butt>
+      <butt text="252" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="57" posy="73" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="giveup">게임포기</butt>
+      <butt text="232" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="57" posy="110" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="resume">게임계속</butt>
+      <text posx="center" posy="14" font="font_text_b" font_size="25" key="sce_name" font_style="stroke">시나리오이름</text>
+    </menu>
+    <_popup width="201" height="150" frame="popup01.png" posx="center" posy="55" key="ingame.menu">
+      <butt text="251" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="57" posy="36" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="option">설정</butt>
+      <butt text="252" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="57" posy="73" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="giveup">게임포기</butt>
+      <butt text="232" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="57" posy="110" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="resume">게임계속</butt>
+      <text posx="center" posy="14" font="font_text_b" font_size="25" key="sce_name" font_style="stroke">시나리오이름</text>
+    </_popup>
+    <gameview>
+      <img posx="10" posy="7" file="ui_gold.png" />
+      <img posx="7" posy="35" file="ui_item.png"></img>
+      <text posx="32" posy="10" font="font_gold" font_size="25" key="text.gold" comma="true" counter="true" text_col="col_gold_yellow">가진돈 표시</text>
+      <text posx="32" posy="35" font="font_gold" font_size="25" key="text.item" comma="true" counter="true" text_col="col_gold_yellow">획득 아이템 수</text>
+      <_text posx="205" posy="9" font="font_meter" font_size="50" key="text.meter" font_style="shadow" width="87" align="right">미터표시</_text>
+      <butt_char posx="4" posy="275" num="3" distx="88" key="butt.char"></butt_char>
+      <img posx="273" posy="289" file="item_slot.png" show="false" key="img.itemslot1" />
+      <img posx="317" posy="289" file="item_slot.png" show="false" key="img.itemslot2"></img>
+      <butt posx="273" posy="289" key="butt.subitem1" width="40" height="40">보조아이템1</butt>
+      <butt posx="317" posy="289" key="butt.subitem2" width="40" height="40">보조아이템2</butt>
+    </gameview>
+    <scene_game>
+      <butt spr="ui_ingame.spr" act_up="1" act_down="2" posx="332" posy="15" key="butt.menu">메뉴</butt>
+      <_butt text="1003" img_up="butt_small_u.png" img_down="butt_small_d.png" img_off="butt_small_off.png" posx="3" posy="0" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="butt.menu">메뉴</_butt>
+    </scene_game>
+    <pvp_gameview>
+      <butt_char_pvp posx="4" posy="273" num="3" distx="58" key="butt.char">
+        <!--캐릭터 포트레이트창 3개-->
+      </butt_char_pvp>
+      <butt posx="192" posy="273" key="butt.skill1" img_up="skill_heal_pop.png" img_down="skill_heal_push.png" img_off="skill_heal_off.png" enable="false">
+        <!--스킬버튼1-->
+      </butt>
+      <butt posx="248" posy="273" key="butt.skill2" img_up="skill_atk_pop.png" img_down="skill_atk_push.png" img_off="skill_atk_off.png" enable="false">
+        <!--스킬버튼2-->
+      </butt>
+      <butt posx="304" posy="273" key="butt.skill3" img_up="skill_def_pop.png" img_down="skill_def_push.png" img_off="skill_def_off.png" enable="false">
+        <!--스킬버튼3-->
+      </butt>
+      <text posx="0" posy="11" font="font_time" font_size="50" key="text.time" text_col="col_gold_yellow" align="center">제한시간</text>
+    </pvp_gameview>
+  </ingame>
+  <_result>
+    <img file="bookmark.png" posx="0" posy="68" />
+    <text text="169" posx="11" posy="76" font="font_text_b" font_size="30" font_style="shadow">시나리오 완료</text>
+    <img file="clear_bg.png" posx="13" posy="102" />
+    <text posx="27" posy="109" key="text.name" font_style="shadow" font_size="25" font="font_text_s"></text>
+    <text posx="96" posy="130" text="213">획득경험치</text>
+    <text posx="96" posy="151" text="212">획득금화</text>
+    <text_cnt posx="153" posy="130" key="text.exp" state="off" width="68" align="right" />
+    <text_cnt posx="153" posy="151" key="text.gold" state="off" width="68" align="right" text_col="col_detail_yellow" comma="yes" />
+    <spr posx="44" posy="201" distx="56" num="5" key="spr.team"></spr>
+    <text posx="22" posy="219" key="text.exp.team" font_style="shadow" font_size="20" font="font_text_s" num="5" distx="56"></text>
+    <text text="216" posx="24" posy="246" font_size="25" font="font_text_s" font_style="shadow" show="off" key="text.get">전리품</text>
+    <text text="437" posx="center" posy="307" font_size="30" font="font_text_b" font_style="shadow" show="off" key="text.noget.card">몬스터전리품 없음</text>
+    <text text="438" posx="center" posy="417" font_size="30" font="font_text_b" font_style="shadow" show="off" key="text.noget.item">아이템전리품 없음</text>
+    <list posx="19" posy="261" width="292" height="115" type="thumb" key="clear.card" spaceh="2" spacew="2" show="off" />
+    <list posx="22" posy="378" width="283" height="92" type="thumb" key="clear.item" spaceh="2" spacew="2" show="off" />
+    <butt posx="0" posy="0" width="scr_width" height="scr_height" key="butt.exit"></butt>
+    <spr posx="center" posy="260" spr="result_levelup.spr" act="1" show="off" key="spr.levelup" play_type="once" />
+  </_result>
+  <quest>
+    <menu>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text text="169" posx="11" posy="76" font="font_text_b" font_size="30" font_style="shadow">퀘스트</text>
+      <butt text="382" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="126" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="quest.normal">일반퀘스트</butt>
+      <butt text="383" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="195" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="quest.exchange">교환퀘스트</butt>
+      <img file="quest_daily_bg.png" posx="0" posy="305" />
+      <img file="girl.png" posx="0" posy="260" />
+    </menu>
+    <normal_quest>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <text text="382" posx="73" posy="76" font="font_text_b" font_size="30" font_style="shadow">일반퀘스트</text>
+      <list posx="17" posy="143" width="296" height="276" type="list" key="list.quest" spaceh="8" />
+      <text text="399" posx="center" posy="237" font="font_text_b" font_size="30" font_style="shadow" show="off" key="text.noquest">진행중인 퀘스트가 없다.</text>
+    </normal_quest>
+    <quest_bar>
+      <img file="butt_big_u.png" />
+      <text posx="31" posy="19" font="font_text_b" font_size="30" font_style="stroke" key="text.name">퀘스트 이름</text>
+      <img posx="202" posy="12" key="img.state" />
+      <text posx="205" posy="18" font="font_text_b" font_size="25" font_style="stroke" key="text.state" width="51" align="center">퀘스트상태</text>
+    </quest_bar>
+    <quest_detail>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <text posx="73" posy="76" font="font_text_b" font_size="30" font_style="shadow" key="text.title">퀘스트 이름.</text>
+      <img file="quest_detail_bg.png" posx="2" posy="185" />
+      <img file="girl.png" posx="0" posy="120" />
+      <img file="quest_detail_reward.png" posx="2" posy="280" />
+      <img file="quest_detail_say.png" posx="110" posy="122" />
+      <butt text="394" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="117" posy="379" text_col="white" font="font_text_b" font_size="30" key="butt.ok" font_style="stroke">수락</butt>
+      <text posx="127" posy="130" font="font_text_s" font_size="25" font_style="shadow" key="text.desc" width="175" height="132">퀘스트설명</text>
+      <img file="icon_gold.png" posx="169" posy="309" show="off" key="icon.gold" />
+      <img file="icon_ee2.png" posx="169" posy="333" show="off" key="icon.ee" />
+      <text posx="194" posy="314" font="font_text_s" font_size="25" font_style="shadow" key="text.reward.gold" width="71" align="right" show="off">골드보상</text>
+      <text posx="194" posy="336" font="font_text_s" font_size="25" font_style="shadow" key="text.reward.ee" width="81" align="right" text_col="" show="off">ee보상</text>
+      <text text="248" posx="266" posy="314" font="font_text_s" font_size="25" font_style="shadow" text_col="col_gold_quest" key="label.gold" show="off">골드(레이블)</text>
+      <text text="439" posx="279" posy="337" font="font_text_s" font_size="25" font_style="shadow" text_col="col_sky_quest" key="label.ee" show="off">ee(레이블)</text>
+      <text text="440" posx="5" posy="284" font="font_text_m" font_size="25" font_style="shadow" text_col="col_team_mng_yellow" width="124" align="center">퀘스트보상.</text>
+      <reward_pos1 posx="54" posy="329" />
+      <reward_pos2 posx="117" posy="329" />
+    </quest_detail>
+  </quest>
+  <_shop>
+    <menu>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text text="152" posx="11" posy="76" font="font_text_b" font_size="30" font_style="shadow">상점</text>
+      <butt text="441" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="110" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="shop.item">아이템소환</butt>
+      <butt text="229" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="168" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="shop.monster">몬스터소환</butt>
+      <butt text="442" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="227" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="shop.inven">아이템인벤</butt>
+      <butt text="443" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="286" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="shop.cash">젬상점</butt>
+    </menu>
+    <popup_summon_item>
+      <popup posx="center" posy="166" width="288" height="144" frame="popup01.png" key="popup.summon.item">
+        <butt text="444" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="0" posy="110" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="summon1">1개소환</butt>
+        <butt text="445" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="97" posy="110" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="summon10" enable="false">10개소환</butt>
+        <butt text="232" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="195" posy="110" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="cancel">취소</butt>
+        <text text="441" posx="center" posy="15" font="font_text_b" font_size="40" font_style="stroke">아이템 소환</text>
+        <text text="446" posx="center" posy="40" font="font_text_b" font_size="25" font_style="stroke">골드가 필요함</text>
+        <text text="447" posx="center" posy="65" font="font_text_b" font_size="25" key="text.cost1" font_style="stroke">1개소환 1000골</text>
+        <text text="448" posx="center" posy="80" font="font_text_b" font_size="25" key="text.cost10" font_style="stroke">10개소환 1000골</text>
+      </popup>
+    </popup_summon_item>
+    <summon_item_result>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text posx="73" posy="76" font="font_text_b" font_size="30" font_style="shadow" key="text.name">아이템이름.</text>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <img file="item_info.png" posx="94" posy="121">
+        <text posx="31" posy="70" key="text.label" num="4" disty="24" font="font_text_b" font_size="30" />
+        <text posx="74" posy="70" key="text.stat" num="4" disty="24" font="font_text_b" font_size="30" text_col="col_green_stat" />
+        <butt text="296" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="23" posy="163" text_col="white" font="font_text_b" font_size="30" key="butt.sell" font_style="stroke">판매</butt>
+        <img posx="66" posy="36" />
+      </img>
+    </summon_item_result>
+    <menu_summon_mob>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text text="229" posx="73" posy="76" font="font_text_b" font_size="30" font_style="shadow" key="text.title">몬스터 소환.</text>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <butt text="265" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="170" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="summon.mob.gatha">봉인석소환</butt>
+      <butt text="449" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="283" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="summon.mob.cash">캐쉬소환</butt>
+    </menu_summon_mob>
+    <popup_summon_gatha>
+      <popup posx="center" posy="166" width="288" height="144" frame="popup01.png" key="popup.summon.gatha">
+        <butt text="453" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="0" posy="110" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="summon1">1개소환</butt>
+        <butt text="454" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="97" posy="110" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="summon10" enable="false">10개소환</butt>
+        <butt text="232" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="195" posy="110" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="cancel">취소</butt>
+        <text text="265" posx="center" posy="5" font="font_text_b" font_size="40" font_style="stroke">봉인석</text>
+        <text text="450" posx="center" posy="30" font="font_text_b" font_size="25" font_style="stroke">모든등급이 다양하게 소환됨</text>
+        <text text="451" posx="center" posy="65" font="font_text_b" font_size="25" key="text.cost1" font_style="stroke">1개소환 봉인석x개</text>
+        <text text="452" posx="center" posy="80" font="font_text_b" font_size="25" key="text.cost10" font_style="stroke">10개소환 1000골</text>
+        <text text="455" posx="center" posy="94" font="font_text_b" font_size="25" key="text.have" font_style="stroke">보유수</text>
+      </popup>
+    </popup_summon_gatha>
+    <popup_summon_cash>
+      <popup posx="center" posy="166" width="288" height="144" frame="popup01.png" key="popup.summon.cash">
+        <butt text="460" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="30" posy="111" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="summon">소환</butt>
+        <butt text="232" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="171" posy="111" text_col="white" font="font_text_b" font_size="30" font_style="stroke" key="cancel">취소</butt>
+        <text text="449" posx="center" posy="5" font="font_text_b" font_size="40" font_style="stroke">젬</text>
+        <text text="456" posx="center" posy="31" font="font_text_b" font_size="25" font_style="stroke">젬으로 소환합니다</text>
+        <text text="457" posx="center" posy="46" font="font_text_b" font_size="25" font_style="stroke">3등급이상의 몬스터를 반드시...</text>
+        <text text="458" posx="center" posy="67" font="font_text_b" font_size="25" key="text.cost" font_style="stroke">1회소환:</text>
+        <text text="459" posx="center" posy="88" font="font_text_b" font_size="40" key="text.num" font_style="stroke">현재 소환가능 횟수.</text>
+      </popup>
+    </popup_summon_cash>
+    <item_inven>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text text="295" posx="73" posy="76" font="font_text_b" font_size="30" font_style="shadow" key="text.title">아이템 보관함</text>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <tabview img="inven_item_bg.png" posx="28" posy="110" font="font_text_b" font_size="25" font_style="stroke" key="tabview.item.inven">
+        <tab text="230" img_tab_on="inven_tab_on.png" img_tab_off="inven_tab_off.png" width="59" height="21" posx="0" posy="278" idtab="1">전체</tab>
+        <tab text="503" img_tab_on="inven_tab_on.png" img_tab_off="inven_tab_off.png" width="59" height="21" posx="65" posy="278" idtab="2">무기</tab>
+        <tab text="502" img_tab_on="inven_tab_on.png" img_tab_off="inven_tab_off.png" width="59" height="21" posx="128" posy="278" idtab="3">룬</tab>
+        <tab text="174" img_tab_on="inven_tab_on.png" img_tab_off="inven_tab_off.png" width="59" height="21" posx="192" posy="278" idtab="4">기타</tab>
+        <list posx="16" posy="15" width="244" height="250" type="list" key="list.inven" spaceh="6" />
+      </tabview>
+    </item_inven>
+  </_shop>
+  <tournament>
+    <menu>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text text="420" posx="11" posy="76" font="font_text_b" font_size="30" font_style="shadow">토너먼트</text>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <butt text="476" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="169" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="butt.register">토너먼트 등록</butt>
+      <butt text="472" img_up="butt_big_u.png" img_down="butt_big_d.png" posx="center" posy="282" text_col="white" font="font_text_b" font_size="40" font_style="stroke" key="butt.result">결과 확인</butt>
+    </menu>
+    <team_list>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text text="476" posx="67" posy="76" font="font_text_b" font_size="30" font_style="shadow">토너먼트 등록</text>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <list posx="17" posy="141" width="296" height="277" spaceh="17" key="list.register" type="list" items_num="21" items_node="team_bar" />
+      <img file="tour_text_bg.png" posx="80" posy="112" />
+      <text text="475" posx="83" posy="116" font="font_text_m" font_size="25" font_style="shadow" width="153" align="center">팀을 등록하세요</text>
+    </team_list>
+    <team_bar>
+      <wnd posx="0" posy="0" width="287" height="93">
+        <img file="tour_team_bar.png" posx="0" posy="0" key="img.teambar"></img>
+        <img file="tour_enter_bar.png" posx="0" posy="0" show="false" key="img.enterbar"></img>
+        <img file="tour_reg_bar.png" posx="0" posy="29" />
+        <text text="473" posx="12" posy="9" font="font_text_b" font_size="30" font_style="stroke" key="text.num.team">x팀</text>
+        <text text="474" posx="center" posy="7" font="font_text_b" font_size="30" font_style="stroke" show="false" key="text.reg.enter">참가중</text>
+        <spr posx="32" posy="62" distx="56" num="5" key="spr.member" spr="ui_frame" act="6">팀멤버</spr>
+      </wnd>
+    </team_bar>
+    <select>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text posx="67" posy="76" font="font_text_b" font_size="30" font_style="shadow" key="text.title.num">팀번호</text>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <butt text="408" img_up="butt_small_u.png" img_down="butt_small_d.png" posx="258" posy="70" text_col="white" font="font_text_b" font_size="25" key="butt.sort" font_style="stroke">정렬변경</butt>
+      <text text="409" posx="176" posy="74" font_style="stroke" align="right" width="40" font="font_text_s" font_size="20">정렬순서</text>
+      <text posx="176" posy="86" font_style="stroke" align="right" width="40" font="font_text_s" font_size="20" text_col_r="98" text_col_g="234" text_col_b="127" key="text.sort">현재 정렬타입</text>
+      <img file="tour_team_bg.png" posx="center" posy="122"></img>
+      <spr posx="49" posy="160" distx="56" num="5" key="spr.member" spr="ui_frame" act="6">등록된 멤버</spr>
+      <img file="tour_text_bg.png" posx="80" posy="109" />
+      <text text="477" posx="87" posy="113" font="font_text_m" font_size="25" font_style="shadow" text_col="col_growth_yellow">참가비</text>
+      <text text="248" posx="207" posy="113" font="font_text_m" font_size="25" font_style="shadow" text_col="col_gold_quest">골드</text>
+      <text posx="142" posy="113" font="font_text_m" font_size="25" font_style="shadow" width="61" align="right" comma="yes" key="text.entry.gold">금액</text>
+      <list_card_inven posx="11" posy="206" width="305" height="212" spacew="5" spaceh="13" key="list.inven" type="thumb" />
+      <img file="inven_num.png" posx="center" posy="398" />
+      <text posx="137" posy="399" width="45" align="center" key="text.num.card" font="font_text_s" font_size="20" font_style="shadow">카드인벤개수표시 ex)30/50</text>
+      <butt text="102" img_up="butt_mid_u.png" img_down="butt_mid_d.png" img_off="butt_mid_off.png" posx="115" posy="369" text_col="white" font="font_text_b" font_size="30" key="butt.ok" font_style="stroke">확인</butt>
+    </select>
+    <result>
+      <img file="bookmark.png" posx="0" posy="68" />
+      <text text="481" posx="67" posy="76" font="font_text_b" font_size="30" font_style="shadow">토너먼트 결과</text>
+      <butt text="417" img_up="butt_back_u.png" img_down="butt_back_d.png" posx="6" posy="73" text_col="white" font="font_text_b" font_size="25" key="butt.back" font_style="stroke">뒤로</butt>
+      <img file="tour_result_bg.png" posx="2" posy="103" />
+      <text text="482" posx="24" posy="108" font="font_text_b" font_size="30" font_style="shadow" text_col="col_gold_quest">토너먼트 보상</text>
+      <img posx="46" posy="124" key="img.reward.item" />
+      <text posx="191" posy="142" font="font_text_s" font_size="25" key="text.reward.gold" width="71" align="right" comma="true">보상금액</text>
+      <text text="248" posx="267" posy="142" font="font_text_s" font_size="25" font_style="shadow" text_col="col_gold_quest">골드</text>
+      <img file="tour_text_bg.png" posx="80" posy="192"></img>
+      <text posx="center" posy="197" font="font_text_s" font_size="25" font_style="shadow" key="text.log.title">전투 로그</text>
+      <_list posx="18" posy="219" width="301" height="203" spaceh="2" key="list.log" type="list" items_node="combat_log_page" items_num="10" />
+      <slide posx="0" posy="216" width="scr_width" height="203" key="result.slide.team" default_page_layout="combat_log_page" _page_layout="sample_layout2">
+        <combat_log_page>
+          <list posx="18" posy="0" width="301" height="203" spaceh="2" key="list.log" type="list" items_node="combat_log_bar" />전투로그 한페이지의 정의</combat_log_page>
+        <sample_layout1>
+          <img img="a.png" />
+        </sample_layout1>
+        <sample_layout2>
+          <img img="a.png" />
+        </sample_layout2>
+      </slide>
+      <img file="inven_num.png" posx="center" posy="399"></img>
+      <img file="tour_trophy.png" posx="86" posy="179" show="false" key="img.trophy" />
+      <text posx="137" posy="402" width="46" align="center" key="text.num.pages">페이지 개수</text>
+    </result>
+    <combat_log_bar>
+      <slide_down posx="0" posy="0" img_body="tour_team_bar.png" img_slider="tour_reg_bar.png" font="font_text_m" font_size="25" font_style="stroke" adj_slidey="-4" sec_slide="0.2" slider_layout="entry_member" slider_layout_posx="0" slider_layout_posy="0">
+        <img file="tour_num_batt.png" posx="14" posy="7" />
+        <text posx="18" posy="9" key="text.num.battle" font="font_text_m" font_size="25" font_style="stroke" width="49" align="right" />
+        <text posx="83" posy="9" key="text.log.name" font="font_text_m" font_size="25" font_style="stroke" text_col="green" />
+        <text posx="0" posy="10" key="text.log.tail" font="font_text_m" font_size="25" font_style="stroke" />
+      </slide_down>
+    </combat_log_bar>
+    <entry_member>
+      <spr posx="27" posy="32" num="5" key="spr.enemy" distx="56" />
+    </entry_member>
+  </tournament>
+  <constant>
+    <col_team_mng_yellow text_col_r="236" text_col_g="221" text_col_b="99" />
+    <col_growth_yellow text_col_r="255" text_col_g="191" text_col_b="75" />
+    <col_growth_yellow2 text_col_r="219" text_col_g="142" text_col_b="9">약간 더 진한 주황색</col_growth_yellow2>
+    <col_growth_next text_col_r="87" text_col_g="215" text_col_b="177" />
+    <col_detail_yellow text_col_r="243" text_col_g="227" text_col_b="101" />
+    <col_skill_name text_col_r="46" text_col_g="145" text_col_b="135" />
+    <col_sky_quest text_col_r="126" text_col_g="231" text_col_b="238" />
+    <col_gold_quest text_col_r="243" text_col_g="204" text_col_b="84" />
+    <col_green_stat text_col_r="73" text_col_g="245" text_col_b="64" />
+    <col_beige text_col_r="248" text_col_g="231" text_col_b="204" />
+    <col_item_level1 text_col_r="255" text_col_g="255" text_col_b="255" />
+    <col_item_level2 text_col_r="253" text_col_g="226" text_col_b="48"></col_item_level2>
+    <col_item_level3 text_col_r="59" text_col_g="247" text_col_b="165" />
+    <col_item_level4 text_col_r="191" text_col_g="69" text_col_b="237" />
+    <col_item_level5 text_col_r="255" text_col_g="129" text_col_b="17" />
+    <col_gold_yellow text_col_r="252" text_col_g="178" text_col_b="0" />
+  </constant>
+  <result>
+    <rect posx="0" posy="0" width="scr_width" height="scr_height" col_r="0" col_g="0" col_b="0" col_a="128">
+      <img file="in_result_bg.png" posx="6" posy="75" key="img.result.bg">결과화면<text posx="49" posy="81" font="font_text_m" font_size="30" key="text.acquire.gold" text_col_r="245" text_col_g="167" text_col_b="31" align="right" width="66">획득골드</text><text posx="55" posy="113" font="font_text_m" font_size="30" key="text.acquire.exp" text_col_b="221" text_col_r="121" text_col_g="187" align="right" width="61">획득경험치</text><text posx="200" posy="32" font="font_text_b" font_size="40" key="text.stage.number" font_style="shadow">스테이지번호</text><text posx="16" posy="182" font="font_text_m" font_size="30" text="2030" key="text.fail.acquire" show="off" width="320" align="center">획득아이템 없을때</text><img posx="208" posy="322" show="false" key="in.result.special">특전보상</img><text posx="80" posy="331" font="font_text_m" font_size="30" key="text.bonus.gold" text_col_r="245" text_col_g="167" text_col_b="31" align="right" width="66">추가골드</text><text posx="89" posy="362" font="font_text_m" font_size="30" key="text.bonus.exp" text_col_r="121" text_col_g="187" text_col_b="221" align="right" width="61">추가경험치</text><img posx="154" posy="78" file="in_result_star.png" show="off" key="in.result.star1">별1</img><img posx="211" posy="78" file="in_result_star.png" show="off" key="in.result.star2">별2</img><img posx="268" posy="78" file="in_result_star.png" show="off" key="in.result.star3">별3</img><list posx="7" posy="140" width="335" height="136" type="thumb" key="in.result.itemlist" spaceh="1" spacew="1" show="off">획득아이템리스트</list><butt text="2031" img_up="butt_team_u.png" img_down="butt_team_d.png" posx="239" posy="410" key="in.result.button" font="font_text_b" font_size="35" font_style="stroke">확인버튼</butt></img>
+      <img file="in_result_bar.png" posx="16" posy="0">
+        <img file="in_result_reward.png" posx="108" posy="29" />
+      </img>
+    </rect>
+  </result>
+  <hero_mng_iphone>
+    <hero_mng_main>
+      <wnd posx="0" posy="0" width="scr_width" height="scr_height-148">
+        <tabview img="lobby_clearbar_bg.png" posx="6" posy="40" key="tabview.hero.inven">
+          <tab font="font_text_b" font_size="40" font_style="stroke" text="4000" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="12" posy="1" idtab="1">영웅</tab>
+          <tab text="4001" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="92" posy="1" idtab="2">아이템</tab>
+          <tab text="4002" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="172" posy="1" idtab="3">팀</tab>
+        </tabview>
+        <img posx="72" posy="0" file="lobby_hero_title.png">히어로씬타이틀</img>
+      </wnd>
+    </hero_mng_main>
+    <hero_tab>히어로 탭<wnd posx="0" posy="0" width="scr_width" height="scr_height-148" key="inven.tab"><text posx="72" posy="-74" width="216" height="29" font="font_text_b" font_size="40" font_style="shadow" text="4003">타이틀텍스트</text><img file="lobby_hero_bg_iphone.png" posx="6" posy="-7" /><list posx="15" posy="0" width="337" height="281" type="thumb" spacew="14" key="list.hero.inven">히어로카드 리스트</list><text posx="center" posy="286" font="font_text_b" font_size="20" text_col_r="212" text_col_g="237" text_col_b="126" key="text.inven.count" font_style="stroke" width="166" align="center">보유수량</text><butt posx="249" posy="286" img_up="butt_hero_sort_u.png" img_down="butt_hero_sort_d.png" key="butt.hero.sort">정렬선택버튼</butt></wnd></hero_tab>
+    <hero_sort>히어로 정렬 팝업<wnd posx="0" posy="0" width="scr_width" height="scr_height" key="hero.sort.wnd"><img file="hero_sort_bg.png" posx="30" posy="130"><butt posx="30" posy="23" img_up="hero_sort_stamina.png" img_down="hero_sort_stamina.png" key="hero.sort.stamina" file="">스테미너</butt><butt posx="121" posy="23" img_up="hero_sort_hp.png" img_down="hero_sort_hp.png" key="hero.sort.hp">hp</butt><butt posx="210" posy="23" img_up="hero_sort_dmg.png" img_down="hero_sort_dmg.png" key="hero.sort.attack">공격력</butt><butt posx="30" posy="51" img_up="hero_sort_def.png" img_down="hero_sort_def.png" key="hero.sort.defense">방어력</butt><butt posx="121" posy="51" img_up="hero_sort_as.png" img_down="hero_sort_as.png" key="hero.sort.attack.speed">공격속도</butt><butt posx="210" posy="51" img_up="hero_sort_speed.png" img_down="hero_sort_speed.png" key="hero.sort.move.speed">이동속도</butt><butt posx="30" posy="79" img_up="hero_sort_poison.png" img_down="hero_sort_poison.png" key="hero.sort.poison">중독내성</butt><butt posx="121" posy="79" img_up="hero_sort_ice.png" img_down="hero_sort_ice.png" key="hero.sort.ice">아이스내성</butt><butt posx="210" posy="79" img_up="hero_sort_knockback.png" img_down="hero_sort_knockback.png" key="hero.sort.knock.back">넉백내성</butt><butt posx="30" posy="107" img_up="hero_sort_fire.png" img_down="hero_sort_fire.png" key="hero.sort.fire">화염내성</butt><butt posx="121" posy="107" img_up="hero_sort_time.png" img_down="hero_sort_time.png" key="hero.sort.time">최근획득</butt><butt posx="210" posy="107" img_up="hero_sort_grade.png" img_down="hero_sort_grade.png" key="hero.sort.grade">등급</butt><butt posx="30" posy="135" img_up="hero_sort_growth.png" img_down="hero_sort_growth.png" key="hero.sort.level">성장</butt><butt posx="121" posy="135" img_up="hero_sort_job.png" img_down="hero_sort_job.png" key="hero.sort.job">최상위 직업</butt><butt posx="210" posy="135" img_up="hero_sort_color.png" img_down="hero_sort_color.png" key="hero.sort.color">색상</butt></img></wnd></hero_sort>
+    <hero_info>히어로 정보창<img posx="72" posy="0" file="lobby_hero_title.png">히어로씬타이틀</img><butt posx="6" posy="0" key="butt.hero.back" img_up="lobby_back_u.png" img_down="lobby_back_d.png">뒤로가기버튼</butt><text posx="72" posy="6" width="216" font="font_text_b" font_size="40" font_style="shadow" key="text.hero.name" align="center">타이틀텍스트</text><img file="hero_info_inven_iphone.png" posx="5" posy="48" /><spr posx="164" posy="232" key="hero.detail" /><img file="hero_info_bg.png" posx="5" posy="42"><butt posx="191" posy="13" img_down="hero_info_recovery.png" img_up="hero_info_recovery.png" key="butt.hero.recovery">회복</butt><pbar posx="117" posy="17" img1="hero_info_stamina.png" img2="hero_info_stamina_bg.png" key="bar.hero.stamina">스테미너</pbar><img posx="92" posy="9" file="hero_class_bg.png">히어로 직업<img posx="15" posy="15" key="hero.info.class" /></img><spr posx="103" posy="52" key="spr.hero.grade" file="font_grade.spr" /><text posx="137" posy="17" width="35" key="text.hero.stamina" font="font_text_b" font_size="20" align="center" font_style="shadow">스테미너 텍스트</text><img posx="8" posy="5" key="hero.skill1" /><img posx="9" posy="79" key="hero.skill2" /><img posx="13" posy="154" key="hero.item" /><text posx="265" posy="12" width="63" key="text.hero.hp" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="29" width="63" key="text.hero.attack" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="47" width="63" key="text.hero.defense" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="64" width="63" key="text.hero.attack.speed" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="82" width="63" key="text.hero.speed" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="109" width="63" key="text.hero.knockback" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="126" width="63" key="text.hero.fire" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="144" width="63" key="text.hero.ice" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="161" width="63" key="text.hero.poison" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="148" posy="200" width="29" key="text.hero.growth" font="font_text_b" font_size="21" font_style="stroke">성장</text><butt posx="233" posy="190" img_down="butt_team_d.png" img_up="butt_team_u.png" key="butt.hero.sell" font="font_text_b" text="4007" font_size="30" font_style="stroke" text_col_g="87" text_col_b="17" text_col_r="234">판매</butt></img><list posx="15" posy="272" width="334" height="93" type="thumb" spacew="1" spaceh="2" key="list.hero.info">아이템 리스트</list></hero_info>
+    <item_tab>아이템 탭<wnd posx="0" posy="0" width="scr_width" height="scr_height-148" key="inven.tab"><text posx="72" posy="-74" width="216" height="29" font="font_text_b" font_size="40" font_style="shadow" text="4003">타이틀텍스트</text><img file="lobby_hero_bg_iphone.png" posx="6" posy="-7" /><list posx="16" posy="0" width="334" height="281" type="thumb" spacew="1" spaceh="2" key="list.item.inven">아이템 리스트</list><text posx="center" posy="286" font="font_text_b" font_size="20" text_col_r="212" text_col_g="237" text_col_b="126" key="text.inven.count" font_style="stroke" width="166" align="center">보유수량</text><butt posx="249" posy="286" img_up="butt_hero_sort_u.png" img_down="butt_hero_sort_d.png" key="butt.item.sort">정렬선택버튼</butt></wnd></item_tab>
+    <item_sort>아이템 정렬 팝업<wnd posx="0" posy="0" width="scr_width" height="scr_height" key="item.sort.wnd"><img file="hero_sort_bg.png" posx="30" posy="130"><butt posx="30" posy="23" img_up="hero_sort_stamina.png" img_down="hero_sort_stamina.png" key="hero.sort.stamina" file="">스테미너</butt><butt posx="121" posy="23" img_up="hero_sort_hp.png" img_down="hero_sort_hp.png" key="hero.sort.hp">hp</butt><butt posx="210" posy="23" img_up="hero_sort_dmg.png" img_down="hero_sort_dmg.png" key="hero.sort.attack">공격력</butt><butt posx="30" posy="51" img_up="hero_sort_def.png" img_down="hero_sort_def.png" key="hero.sort.defense">방어력</butt><butt posx="121" posy="51" img_up="hero_sort_as.png" img_down="hero_sort_as.png" key="hero.sort.attack.speed">공격속도</butt><butt posx="210" posy="51" img_up="hero_sort_speed.png" img_down="hero_sort_speed.png" key="hero.sort.move.speed">이동속도</butt><butt posx="30" posy="79" img_up="hero_sort_poison.png" img_down="hero_sort_poison.png" key="hero.sort.poison">중독내성</butt><butt posx="121" posy="79" img_up="hero_sort_ice.png" img_down="hero_sort_ice.png" key="hero.sort.ice">아이스내성</butt><butt posx="210" posy="79" img_up="hero_sort_knockback.png" img_down="hero_sort_knockback.png" key="hero.sort.knock.back">넉백내성</butt><butt posx="30" posy="107" img_up="hero_sort_fire.png" img_down="hero_sort_fire.png" key="hero.sort.fire">화염내성</butt><butt posx="121" posy="107" img_up="hero_sort_time.png" img_down="hero_sort_time.png" key="hero.sort.time">최근획득</butt><butt posx="210" posy="107" img_up="hero_sort_grade.png" img_down="hero_sort_grade.png" key="hero.sort.grade">등급</butt></img></wnd></item_sort>
+    <team_tab>팀 탭<wnd posx="0" posy="0" width="scr_width" height="scr_height-148" key="inven.tab"><text posx="72" posy="-74" width="216" height="29" font="font_text_b" font_size="40" font_style="shadow" text="4014">타이틀텍스트</text><slide posx="0" posy="0" width="scr_width" height="308" key="slide.team" img_point="slide_point.png"><page><img file="team_bg.png" posx="6" posy="-7"><wnd posx="8" posy="8" key="team.elem.member0" width="154" height="98">팀슬롯 리더<img posx="0" posy="0" file="team_info.png" key="team.state.member0"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp0" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack0" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense0" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed0" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed0" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back0" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire0" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice0" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison0" font_style="shadow">독내성</text></wnd><wnd posx="120" posy="8" key="team.elem.member1" width="154" height="98">팀슬롯 멤버1<img posx="0" posy="0" file="team_info.png" key="team.state.member1"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp1" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack1" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense1" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed1" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed1" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back1" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire1" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice1" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison1" font_style="shadow">독내성</text></wnd><wnd posx="232" posy="8" key="team.elem.member2" width="154" height="98">팀슬롯 멤버2<img posx="0" posy="0" file="team_info.png" key="team.state.member2"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp2" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack2" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense2" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed2" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed2" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back2" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire2" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice2" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison2" font_style="shadow">독내성</text></wnd></img><img posx="15" posy="234" file="team_skill_leader.png"><img posx="8" posy="16" key="team.skill.icon">스킬아이콘</img><text posx="7" posy="2" key="team.skill.name" font="font_text_b" font_size="22" font_style="shadow" text_col_r="173" text_col_g="255" text_col_b="74">스킬이름</text><text posx="52" posy="20" key="team.skill.desc" font="font_text_s" font_size="20" width="270">스킬설명</text></img></page><page><img file="team_bg.png" posx="6" posy="-7"><wnd posx="8" posy="8" key="team.elem.member0" width="154" height="98">팀슬롯 리더<img posx="0" posy="0" file="team_info.png" key="team.state.member0"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp0" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack0" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense0" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed0" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed0" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back0" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire0" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice0" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison0" font_style="shadow">독내성</text></wnd><wnd posx="120" posy="8" key="team.elem.member1" width="154" height="98">팀슬롯 멤버1<img posx="0" posy="0" file="team_info.png" key="team.state.member1"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp1" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack1" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense1" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed1" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed1" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back1" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire1" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice1" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison1" font_style="shadow">독내성</text></wnd><wnd posx="232" posy="8" key="team.elem.member2" width="154" height="98">팀슬롯 멤버2<img posx="0" posy="0" file="team_info.png" key="team.state.member2"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp2" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack2" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense2" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed2" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed2" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back2" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire2" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice2" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison2" font_style="shadow">독내성</text></wnd></img><img posx="15" posy="234" file="team_skill_leader.png"><img posx="8" posy="16" key="team.skill.icon">스킬아이콘</img><text posx="7" posy="2" key="team.skill.name" font="font_text_b" font_size="22" font_style="shadow" text_col_r="173" text_col_g="255" text_col_b="74">스킬이름</text><text posx="52" posy="20" key="team.skill.desc" font="font_text_s" font_size="20" width="270">스킬설명</text></img></page><page><img file="team_bg.png" posx="6" posy="-7"><wnd posx="8" posy="8" key="team.elem.member0" width="154" height="98">팀슬롯 리더<img posx="0" posy="0" file="team_info.png" key="team.state.member0"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp0" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack0" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense0" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed0" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed0" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back0" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire0" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice0" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison0" font_style="shadow">독내성</text></wnd><wnd posx="120" posy="8" key="team.elem.member1" width="154" height="98">팀슬롯 멤버1<img posx="0" posy="0" file="team_info.png" key="team.state.member1"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp1" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack1" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense1" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed1" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed1" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back1" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire1" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice1" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison1" font_style="shadow">독내성</text></wnd><wnd posx="232" posy="8" key="team.elem.member2" width="154" height="98">팀슬롯 멤버2<img posx="0" posy="0" file="team_info.png" key="team.state.member2"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp2" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack2" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense2" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed2" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed2" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back2" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire2" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice2" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison2" font_style="shadow">독내성</text></wnd></img><img posx="15" posy="234" file="team_skill_leader.png"><img posx="8" posy="16" key="team.skill.icon">스킬아이콘</img><text posx="7" posy="2" key="team.skill.name" font="font_text_b" font_size="22" font_style="shadow" text_col_r="173" text_col_g="255" text_col_b="74">스킬이름</text><text posx="52" posy="20" key="team.skill.desc" font="font_text_s" font_size="20" width="270">스킬설명</text></img></page></slide></wnd></team_tab>
+  </hero_mng_iphone>
+  <hero_mng>
+    <hero_mng_main>
+      <wnd posx="0" posy="0" width="scr_width" height="scr_height-148">
+        <tabview img="lobby_clearbar_bg.png" posx="6" posy="40" key="tabview.hero.inven">
+          <tab font="font_text_b" font_size="40" font_style="stroke" text="4000" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="12" posy="1" idtab="1">영웅</tab>
+          <tab text="4001" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="92" posy="1" idtab="2">아이템</tab>
+          <tab text="4002" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="172" posy="1" idtab="3">팀</tab>
+        </tabview>
+        <img posx="72" posy="0" file="lobby_hero_title.png">히어로씬타이틀</img>
+      </wnd>
+    </hero_mng_main>
+    <hero_tab>히어로 탭<wnd posx="0" posy="0" width="scr_width" height="scr_height-148" key="inven.tab"><text posx="72" posy="-74" width="216" height="29" font="font_text_b" font_size="40" font_style="shadow" text="4003">타이틀텍스트</text><img file="lobby_hero_bg.png" posx="6" posy="-7" /><list posx="15" posy="0" width="337" height="385" type="thumb" spacew="14" key="list.hero.inven">히어로카드 리스트</list><text posx="center" posy="390" font="font_text_b" font_size="20" text_col_r="212" text_col_g="237" text_col_b="126" key="text.inven.count" font_style="stroke" width="166" align="center">보유수량</text><butt posx="249" posy="388" img_up="butt_hero_sort_u.png" img_down="butt_hero_sort_d.png" key="butt.hero.sort">정렬선택버튼</butt></wnd></hero_tab>
+    <hero_sort>히어로 정렬 팝업<wnd posx="0" posy="0" width="scr_width" height="scr_height" key="hero.sort.wnd"><img file="hero_sort_bg.png" posx="30" posy="130"><butt posx="30" posy="23" img_up="hero_sort_stamina.png" img_down="hero_sort_stamina.png" key="hero.sort.stamina" file="">스테미너</butt><butt posx="121" posy="23" img_up="hero_sort_hp.png" img_down="hero_sort_hp.png" key="hero.sort.hp">hp</butt><butt posx="210" posy="23" img_up="hero_sort_dmg.png" img_down="hero_sort_dmg.png" key="hero.sort.attack">공격력</butt><butt posx="30" posy="51" img_up="hero_sort_def.png" img_down="hero_sort_def.png" key="hero.sort.defense">방어력</butt><butt posx="121" posy="51" img_up="hero_sort_as.png" img_down="hero_sort_as.png" key="hero.sort.attack.speed">공격속도</butt><butt posx="210" posy="51" img_up="hero_sort_speed.png" img_down="hero_sort_speed.png" key="hero.sort.move.speed">이동속도</butt><butt posx="30" posy="79" img_up="hero_sort_poison.png" img_down="hero_sort_poison.png" key="hero.sort.poison">중독내성</butt><butt posx="121" posy="79" img_up="hero_sort_ice.png" img_down="hero_sort_ice.png" key="hero.sort.ice">아이스내성</butt><butt posx="210" posy="79" img_up="hero_sort_knockback.png" img_down="hero_sort_knockback.png" key="hero.sort.knock.back">넉백내성</butt><butt posx="30" posy="107" img_up="hero_sort_fire.png" img_down="hero_sort_fire.png" key="hero.sort.fire">화염내성</butt><butt posx="121" posy="107" img_up="hero_sort_time.png" img_down="hero_sort_time.png" key="hero.sort.time">최근획득</butt><butt posx="210" posy="107" img_up="hero_sort_grade.png" img_down="hero_sort_grade.png" key="hero.sort.grade">등급</butt><butt posx="30" posy="135" img_up="hero_sort_growth.png" img_down="hero_sort_growth.png" key="hero.sort.level">성장</butt><butt posx="121" posy="135" img_up="hero_sort_job.png" img_down="hero_sort_job.png" key="hero.sort.job">최상위 직업</butt><butt posx="210" posy="135" img_up="hero_sort_color.png" img_down="hero_sort_color.png" key="hero.sort.color">색상</butt></img></wnd></hero_sort>
+    <hero_info>히어로 정보창<img posx="72" posy="0" file="lobby_hero_title.png">히어로씬타이틀</img><butt posx="6" posy="0" key="butt.hero.back" img_up="lobby_back_u.png" img_down="lobby_back_d.png">뒤로가기버튼</butt><text posx="72" posy="6" width="216" font="font_text_b" font_size="40" font_style="shadow" key="text.hero.name" align="center">타이틀텍스트</text><img file="hero_info_inven.png" posx="5" posy="48" /><spr posx="152" posy="232" key="hero.detail" /><img file="hero_info_bg.png" posx="5" posy="42"><butt posx="191" posy="13" img_down="hero_info_recovery.png" img_up="hero_info_recovery.png" key="butt.hero.recovery">회복</butt><pbar posx="117" posy="17" img1="hero_info_stamina.png" img2="hero_info_stamina_bg.png" key="bar.hero.stamina">스테미너</pbar><img posx="92" posy="9" file="hero_class_bg.png">히어로 직업<img posx="15" posy="15" key="hero.info.class" /></img><spr posx="103" posy="52" key="spr.hero.grade" file="font_grade.spr" /><text posx="137" posy="17" width="35" key="text.hero.stamina" font="font_text_b" font_size="20" align="center" font_style="shadow">스테미너 텍스트</text><img posx="8" posy="5" key="hero.skill1" /><img posx="8" posy="77" key="hero.skill2" /><img posx="10" posy="152" key="hero.item" /><text posx="265" posy="12" width="63" key="text.hero.hp" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="29" width="63" key="text.hero.attack" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="47" width="63" key="text.hero.defense" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="64" width="63" key="text.hero.attack.speed" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="82" width="63" key="text.hero.speed" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="109" width="63" key="text.hero.knockback" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="126" width="63" key="text.hero.fire" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="144" width="63" key="text.hero.ice" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="265" posy="161" width="63" key="text.hero.poison" font="font_text_b" font_size="21" align="right" font_style="stroke" /><text posx="148" posy="200" width="35" key="text.hero.growth" font="font_text_b" font_size="21" font_style="stroke">성장</text><butt posx="233" posy="190" img_down="butt_team_d.png" img_up="butt_team_u.png" key="butt.hero.sell" font="font_text_b" text="4007" font_size="30" font_style="stroke" text_col_g="87" text_col_b="17" text_col_r="234">판매</butt></img><list posx="15" posy="272" width="334" height="196" type="thumb" spacew="1" spaceh="2" key="list.hero.info">아이템 리스트</list></hero_info>
+    <item_tab>아이템 탭<wnd posx="0" posy="0" width="scr_width" height="scr_height-148" key="inven.tab"><text posx="72" posy="-74" width="216" height="29" font="font_text_b" font_size="40" font_style="shadow" text="4003">타이틀텍스트</text><img file="lobby_hero_bg.png" posx="6" posy="-7" /><list posx="16" posy="0" width="334" height="385" type="thumb" spacew="1" spaceh="2" key="list.item.inven">아이템 리스트</list><text posx="center" posy="390" font="font_text_b" font_size="20" text_col_r="212" text_col_g="237" text_col_b="126" key="text.inven.count" font_style="stroke" width="166" align="center">보유수량</text><butt posx="249" posy="388" img_up="butt_hero_sort_u.png" img_down="butt_hero_sort_d.png" key="butt.item.sort">정렬선택버튼</butt></wnd></item_tab>
+    <item_sort>아이템 정렬 팝업<wnd posx="0" posy="0" width="scr_width" height="scr_height" key="item.sort.wnd"><img file="item_sort_bg.png" posx="30" posy="130"><butt posx="30" posy="23" img_up="sort_type.png" img_down="sort_type.png" key="hero.sort.type" file="">스테미너</butt><butt posx="121" posy="23" img_up="hero_sort_hp.png" img_down="hero_sort_hp.png" key="hero.sort.hp">hp</butt><butt posx="210" posy="23" img_up="hero_sort_dmg.png" img_down="hero_sort_dmg.png" key="hero.sort.attack">공격력</butt><butt posx="30" posy="51" img_up="hero_sort_def.png" img_down="hero_sort_def.png" key="hero.sort.defense">방어력</butt><butt posx="121" posy="51" img_up="hero_sort_as.png" img_down="hero_sort_as.png" key="hero.sort.attack.speed">공격속도</butt><butt posx="210" posy="51" img_up="hero_sort_speed.png" img_down="hero_sort_speed.png" key="hero.sort.move.speed">이동속도</butt><butt posx="30" posy="79" img_up="hero_sort_poison.png" img_down="hero_sort_poison.png" key="hero.sort.poison">중독내성</butt><butt posx="121" posy="79" img_up="hero_sort_ice.png" img_down="hero_sort_ice.png" key="hero.sort.ice">아이스내성</butt><butt posx="210" posy="79" img_up="hero_sort_knockback.png" img_down="hero_sort_knockback.png" key="hero.sort.knock.back">넉백내성</butt><butt posx="30" posy="107" img_up="hero_sort_fire.png" img_down="hero_sort_fire.png" key="hero.sort.fire">화염내성</butt><butt posx="121" posy="107" img_up="hero_sort_time.png" img_down="hero_sort_time.png" key="hero.sort.time">최근획득</butt><butt posx="210" posy="107" img_up="hero_sort_grade.png" img_down="hero_sort_grade.png" key="hero.sort.grade">등급</butt></img></wnd></item_sort>
+    <team_tab>팀 탭<wnd posx="0" posy="0" width="scr_width" height="scr_height-148" key="inven.tab"><text posx="72" posy="-74" width="216" height="29" font="font_text_b" font_size="40" font_style="shadow" text="4014">타이틀텍스트</text><slide posx="0" posy="0" width="scr_width" height="308" key="slide.team" img_point="slide_point.png"><page><img file="team_bg.png" posx="6" posy="-7"><wnd posx="8" posy="8" key="team.elem.member0" width="154" height="98">팀슬롯 리더<img posx="0" posy="0" file="team_info.png" key="team.state.member0"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp0" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack0" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense0" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed0" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed0" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back0" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire0" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice0" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison0" font_style="shadow">독내성</text></wnd><wnd posx="120" posy="8" key="team.elem.member1" width="154" height="98">팀슬롯 멤버1<img posx="0" posy="0" file="team_info.png" key="team.state.member1"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp1" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack1" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense1" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed1" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed1" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back1" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire1" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice1" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison1" font_style="shadow">독내성</text></wnd><wnd posx="232" posy="8" key="team.elem.member2" width="154" height="98">팀슬롯 멤버2<img posx="0" posy="0" file="team_info.png" key="team.state.member2"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp2" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack2" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense2" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed2" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed2" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back2" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire2" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice2" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison2" font_style="shadow">독내성</text></wnd></img><img posx="15" posy="234" file="team_skill_leader.png"><img posx="8" posy="16" key="team.skill.icon">스킬아이콘</img><text posx="7" posy="2" key="team.skill.name" font="font_text_b" font_size="22" font_style="shadow" text_col_r="173" text_col_g="255" text_col_b="74">스킬이름</text><text posx="52" posy="20" key="team.skill.desc" font="font_text_s" font_size="20" width="270">스킬설명</text></img></page><page><img file="team_bg.png" posx="6" posy="-7"><wnd posx="8" posy="8" key="team.elem.member0" width="154" height="98">팀슬롯 리더<img posx="0" posy="0" file="team_info.png" key="team.state.member0"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp0" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack0" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense0" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed0" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed0" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back0" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire0" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice0" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison0" font_style="shadow">독내성</text></wnd><wnd posx="120" posy="8" key="team.elem.member1" width="154" height="98">팀슬롯 멤버1<img posx="0" posy="0" file="team_info.png" key="team.state.member1"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp1" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack1" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense1" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed1" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed1" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back1" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire1" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice1" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison1" font_style="shadow">독내성</text></wnd><wnd posx="232" posy="8" key="team.elem.member2" width="154" height="98">팀슬롯 멤버2<img posx="0" posy="0" file="team_info.png" key="team.state.member2"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp2" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack2" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense2" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed2" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed2" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back2" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire2" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice2" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison2" font_style="shadow">독내성</text></wnd></img><img posx="15" posy="234" file="team_skill_leader.png"><img posx="8" posy="16" key="team.skill.icon">스킬아이콘</img><text posx="7" posy="2" key="team.skill.name" font="font_text_b" font_size="22" font_style="shadow" text_col_r="173" text_col_g="255" text_col_b="74">스킬이름</text><text posx="52" posy="20" key="team.skill.desc" font="font_text_s" font_size="20" width="270">스킬설명</text></img></page><page><img file="team_bg.png" posx="6" posy="-7"><wnd posx="8" posy="8" key="team.elem.member0" width="154" height="98">팀슬롯 리더<img posx="0" posy="0" file="team_info.png" key="team.state.member0"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp0" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack0" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense0" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed0" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed0" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back0" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire0" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice0" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison0" font_style="shadow">독내성</text></wnd><wnd posx="120" posy="8" key="team.elem.member1" width="154" height="98">팀슬롯 멤버1<img posx="0" posy="0" file="team_info.png" key="team.state.member1"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp1" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack1" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense1" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed1" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed1" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back1" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire1" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice1" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison1" font_style="shadow">독내성</text></wnd><wnd posx="232" posy="8" key="team.elem.member2" width="154" height="98">팀슬롯 멤버2<img posx="0" posy="0" file="team_info.png" key="team.state.member2"></img><text posx="40" posy="64" width="59" font="font_text_b" font_size="23" align="right" key="text.member.hp2" font_style="shadow">hp</text><text posx="40" posy="81" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack2" font_style="shadow">공격력</text><text posx="40" posy="98" width="59" font="font_text_b" font_size="23" align="right" key="text.member.defense2" font_style="shadow">방어력</text><text posx="40" posy="116" width="59" font="font_text_b" font_size="23" align="right" key="text.member.attack.speed2" font_style="shadow">공격속도</text><text posx="40" posy="133" width="59" font="font_text_b" font_size="23" align="right" key="text.member.move.speed2" font_style="shadow">이동속도</text><text posx="40" posy="158" width="59" font="font_text_b" font_size="23" align="right" key="text.member.knock.back2" font_style="shadow">넉백내성</text><text posx="40" posy="175" width="59" font="font_text_b" font_size="23" align="right" key="text.member.fire2" font_style="shadow">화염내성</text><text posx="40" posy="193" width="59" font="font_text_b" font_size="23" align="right" key="text.member.ice2" font_style="shadow">아이스내성</text><text posx="40" posy="211" width="59" font="font_text_b" font_size="23" align="right" key="text.member.poison2" font_style="shadow">독내성</text></wnd></img><img posx="15" posy="234" file="team_skill_leader.png"><img posx="8" posy="16" key="team.skill.icon">스킬아이콘</img><text posx="7" posy="2" key="team.skill.name" font="font_text_b" font_size="22" font_style="shadow" text_col_r="173" text_col_g="255" text_col_b="74">스킬이름</text><text posx="52" posy="20" key="team.skill.desc" font="font_text_s" font_size="20" width="270">스킬설명</text></img></page></slide></wnd></team_tab>
+  </hero_mng>
+  <shop_iphone>
+    <shop_main>상점 메인<wnd posx="0" posy="0" width="scr_width" height="scr_height-148"><img posx="6" posy="38" file="shop_main_bg.png"><img posx="9" posy="10" file="shop_menu.png">소환<butt posx="121" posy="67" img_up="butt_team_u.png" img_down="butt_team_d.png" key="butt.shop.summons" font="font_text_b" font_size="26" font_style="stroke" text="4010"></butt><img posx="86" posy="9" file="shop_menu_summon.png" /></img><img posx="9" posy="112" file="shop_menu.png">확장<butt posx="121" posy="67" img_up="butt_team_u.png" img_down="butt_team_d.png" key="butt.shop.extend" font="font_text_b" font_size="26" font_style="stroke" text="4011"></butt><img posx="86" posy="9" file="shop_menu_extend.png" /></img><img posx="9" posy="214" file="shop_menu.png">충전<butt posx="121" posy="67" img_up="butt_team_u.png" img_down="butt_team_d.png" key="butt.shop.charge" font="font_text_b" font_size="26" font_style="stroke" text="4012"></butt><img posx="86" posy="9" file="shop_menu_charge.png" /></img></img><img posx="72" posy="-4" file="lobby_hero_title.png">상점타이틀</img><text posx="72" posy="-2" width="216" height="29" font="font_text_b" font_size="35" font_style="stroke" text="4009">타이틀텍스트</text></wnd></shop_main>
+    <shop_summons>소환 씬<wnd posx="0" posy="0" width="scr_width" height="scr_height-148">소환<img posx="72" posy="-4" file="lobby_hero_title.png">상점타이틀</img><text posx="72" posy="-2" width="216" height="29" font="font_text_b" font_size="35" font_style="stroke" text="4010">타이틀텍스트</text><butt posx="6" posy="-2" key="butt.shop.back" img_up="lobby_back_u.png" img_down="lobby_back_d.png">뒤로가기버튼</butt><tabview posx="6" posy="45" img="shop_summon_bg.png" key="tabview.shop.summons"><tab font="font_text_b" font_size="40" font_style="stroke" text="4015" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="12" posy="0" idtab="1">게임머니</tab><tab text="4016" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="92" posy="0" idtab="2">캐쉬</tab><img posx="9" posy="33" file="shop_summon.png"><img posx="41" posy="8" file="shop_summon_hero.png" /><butt img_up="butt_team_u.png" img_down="butt_team_d.png" posx="36" posy="110" key="butt.summons.hero">히어로 소환<img posx="12" posy="3" file="ui_gold.png" scale="0.7" key="shop.summon.hero" /></butt></img><img posx="176" posy="33" file="shop_summon.png"><img posx="42" posy="14" file="shop_summon_item.png" /><butt img_up="butt_team_u.png" img_down="butt_team_d.png" posx="36" posy="110" key="butt.summons.item">아이템 소환<img posx="12" posy="3" file="ui_gold.png" scale="0.7" key="shop.summon.item" /></butt></img><img posx="9" posy="179" file="shop_summon.png"><img posx="39" posy="17" file="shop_summon_package.png" /><butt show="on" img_up="butt_team_u.png" img_down="butt_team_d.png" posx="36" posy="110" key="butt.summons.package" enable="false">패키지 소환<img posx="12" posy="3" file="shop_charge_carrot.png" scale="0.35" /></butt></img><img posx="176" posy="179" file="shop_summon.png"><img posx="25" posy="11" file="shop_summon_event.png" /><butt img_up="butt_team_u.png" img_down="butt_team_d.png" posx="36" posy="110" key="butt.summons.event">이벤트 소환<img posx="12" posy="3" file="ui_gold.png" scale="0.7" key="shop.summon.event" /></butt></img></tabview></wnd></shop_summons>
+    <shop_extend>확장 씬<wnd posx="0" posy="0" width="scr_width" height="scr_height-148">인벤토리 확장<img posx="72" posy="-4" file="lobby_hero_title.png">상점타이틀</img><text posx="72" posy="-2" width="216" height="29" font="font_text_b" font_size="35" font_style="stroke" text="4011">타이틀텍스트</text><butt posx="6" posy="-2" key="butt.shop.back" img_up="lobby_back_u.png" img_down="lobby_back_d.png">뒤로가기버튼</butt><img posx="6" posy="38" file="shop_main_bg.png"><img posx="9" posy="10" file="shop_menu.png">히어로<butt posx="121" posy="67" img_up="butt_team_u.png" img_down="butt_team_d.png" key="butt.shop.summons" font="font_text_b" font_size="26" font_style="stroke"><img posx="12" posy="3" file="shop_charge_carrot.png" scale="0.35" /></butt><img posx="111" posy="9" file="shop_extend_hero.png" /></img><img posx="9" posy="112" file="shop_menu.png">인벤<butt posx="121" posy="67" img_up="butt_team_u.png" img_down="butt_team_d.png" key="butt.shop.summons" font="font_text_b" font_size="26" font_style="stroke"><img posx="12" posy="3" file="shop_charge_carrot.png" scale="0.35" /></butt><img posx="111" posy="9" file="shop_extend_item.png" /></img></img></wnd></shop_extend>
+    <shop_charge>충전 씬<wnd posx="0" posy="0" width="scr_width" height="scr_height-148">충전<img posx="72" posy="-4" file="lobby_hero_title.png">상점타이틀</img><text posx="72" posy="-2" width="216" height="29" font="font_text_b" font_size="35" font_style="stroke" text="4012">타이틀텍스트</text><butt posx="6" posy="-2" key="butt.shop.back" img_up="lobby_back_u.png" img_down="lobby_back_d.png">뒤로가기버튼</butt><tabview posx="6" posy="38" img="shop_summon_bg.png" key="tabview.shop.charge"><tab font="font_text_b" font_size="40" font_style="stroke" text="4015" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="12" posy="0" idtab="1">게임머니</tab><tab text="4016" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="92" posy="0" idtab="2">캐쉬</tab><list posx="8" posy="35" width="335" height="scr_height-251" type="thumb" spacew="1" key="list.shop.charge">히어로카드 리스트</list></tabview></wnd></shop_charge>
+  </shop_iphone>
+  <shop>
+    <shop_main>상점 메인<wnd posx="0" posy="0" width="scr_width" height="scr_height-148"><img posx="6" posy="38" file="shop_main_bg.png"><img posx="9" posy="10" file="shop_menu.png">소환<butt posx="121" posy="67" img_up="butt_team_u.png" img_down="butt_team_d.png" key="butt.shop.summons" font="font_text_b" font_size="26" font_style="stroke" text="4010"></butt><img posx="86" posy="9" file="shop_menu_summon.png" /></img><img posx="9" posy="112" file="shop_menu.png">확장<butt posx="121" posy="67" img_up="butt_team_u.png" img_down="butt_team_d.png" key="butt.shop.extend" font="font_text_b" font_size="26" font_style="stroke" text="4011"></butt><img posx="86" posy="9" file="shop_menu_extend.png" /></img><img posx="9" posy="214" file="shop_menu.png">충전<butt posx="121" posy="67" img_up="butt_team_u.png" img_down="butt_team_d.png" key="butt.shop.charge" font="font_text_b" font_size="26" font_style="stroke" text="4012"></butt><img posx="86" posy="9" file="shop_menu_charge.png" /></img></img><img posx="72" posy="-4" file="lobby_hero_title.png">상점타이틀</img><text posx="72" posy="-2" width="216" height="29" font="font_text_b" font_size="35" font_style="stroke" text="4009">타이틀텍스트</text></wnd></shop_main>
+    <shop_summons>소환 씬<wnd posx="0" posy="0" width="scr_width" height="scr_height-148">소환<img posx="72" posy="-4" file="lobby_hero_title.png">상점타이틀</img><text posx="72" posy="-2" width="216" height="29" font="font_text_b" font_size="35" font_style="stroke" text="4010">타이틀텍스트</text><butt posx="6" posy="-2" key="butt.shop.back" img_up="lobby_back_u.png" img_down="lobby_back_d.png">뒤로가기버튼</butt><tabview posx="6" posy="45" img="shop_summon_bg.png" key="tabview.shop.summons"><tab font="font_text_b" font_size="40" font_style="stroke" text="4015" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="12" posy="0" idtab="1" layout="summon_gold">게임머니</tab><tab text="4016" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="92" posy="0" idtab="2" layout="summon_carrot">캐쉬</tab><_img posx="9" posy="33" file="shop_summon.png"><img posx="41" posy="8" file="shop_summon_hero.png" /><butt img_up="butt_team_u.png" img_down="butt_team_d.png" posx="36" posy="110" key="butt.summons.hero">히어로 소환<img posx="12" posy="3" file="ui_gold.png" scale="0.7" key="shop.summon.hero" /></butt></_img><_img posx="176" posy="33" file="shop_summon.png"><img posx="42" posy="14" file="shop_summon_item.png" /><butt img_up="butt_team_u.png" img_down="butt_team_d.png" posx="36" posy="110" key="butt.summons.item">아이템 소환<img posx="12" posy="3" file="ui_gold.png" scale="0.7" key="shop.summon.item" /></butt></_img><_img posx="9" posy="179" file="shop_summon.png"><img posx="39" posy="17" file="shop_summon_package.png" /><butt show="on" img_up="butt_team_u.png" img_down="butt_team_d.png" posx="36" posy="110" key="butt.summons.package" enable="false">패키지 소환<img posx="12" posy="3" file="shop_charge_carrot.png" scale="0.35" /></butt></_img><_img posx="176" posy="179" file="shop_summon.png"><img posx="25" posy="11" file="shop_summon_event.png" /><butt img_up="butt_team_u.png" img_down="butt_team_d.png" posx="36" posy="110" key="butt.summons.event">이벤트 소환<img posx="12" posy="3" file="ui_gold.png" scale="0.7" key="shop.summon.event" /></butt></_img></tabview></wnd></shop_summons>
+    <shop_extend>확장 씬<wnd posx="0" posy="0" width="scr_width" height="scr_height-148">인벤토리 확장<img posx="72" posy="-4" file="lobby_hero_title.png">상점타이틀</img><text posx="72" posy="-2" width="216" height="29" font="font_text_b" font_size="35" font_style="stroke" text="4011">타이틀텍스트</text><butt posx="6" posy="-2" key="butt.shop.back" img_up="lobby_back_u.png" img_down="lobby_back_d.png">뒤로가기버튼</butt><img posx="6" posy="38" file="shop_main_bg.png"><img posx="9" posy="10" file="shop_menu.png">히어로<butt posx="121" posy="67" img_up="butt_team_u.png" img_down="butt_team_d.png" key="butt.shop.summons" font="font_text_b" font_size="26" font_style="stroke"><img posx="12" posy="3" file="shop_charge_carrot.png" scale="0.35" /></butt><img posx="111" posy="9" file="shop_extend_hero.png" /></img><img posx="9" posy="112" file="shop_menu.png">인벤<butt posx="121" posy="67" img_up="butt_team_u.png" img_down="butt_team_d.png" key="butt.shop.summons" font="font_text_b" font_size="26" font_style="stroke"><img posx="12" posy="3" file="shop_charge_carrot.png" scale="0.35" /></butt><img posx="111" posy="9" file="shop_extend_item.png" /></img></img></wnd></shop_extend>
+    <shop_charge>충전 씬<wnd posx="0" posy="0" width="scr_width" height="scr_height-148">충전<img posx="72" posy="-4" file="lobby_hero_title.png">상점타이틀</img><text posx="72" posy="-2" width="216" height="29" font="font_text_b" font_size="35" font_style="stroke" text="4012">타이틀텍스트</text><butt posx="6" posy="-2" key="butt.shop.back" img_up="lobby_back_u.png" img_down="lobby_back_d.png">뒤로가기버튼</butt><tabview posx="6" posy="38" img="shop_charge_bg.png" key="tabview.shop.charge"><tab font="font_text_b" font_size="40" font_style="stroke" text="4015" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="12" posy="0" idtab="1">게임머니</tab><tab text="4016" img_tab_on="lobby_hero_tap_on.png" img_tab_off="lobby_hero_tap_off.png" width="81" height="25" posx="92" posy="0" idtab="2">캐쉬</tab><list posx="8" posy="34" width="335" height="scr_height-248" type="thumb" spacew="1" key="list.shop.charge">히어로카드 리스트</list></tabview></wnd></shop_charge>
+  </shop>
+  <elem>
+    <hero_inven_elem>히어로카드<img posx="15" posy="4" key="inven.face">히어로 아이콘</img><img posx="89" posy="4" key="inven.skill">스킬 아이콘</img><img posx="0" posy="0" file="lobby_hero_edge.png" key="inven.edge">카드배경</img></hero_inven_elem>
+    <item_elem_equip>장착 아이템<img posx="20" posy="50" file="butt_big_d.png"><text key="inven.item.name">아이템 이름</text><butt posx="30" posy="20" img_down="butt_small_d.png" img_up="butt_small_u.png" key="butt.item.sell" text="4007">판매</butt><butt posx="100" posy="20" img_down="butt_small_d.png" img_up="butt_small_u.png" key="butt.item.close" text="4008">취소</butt><img key="equip.option1">옵션1<text key="equip.option1.value">옵션1의 값</text></img><img key="equip.option2">옵션2<text key="equip.option2.value">옵션의 값</text></img><img key="equip.option3">옵션3<text key="equip.option3.value">옵션3의 값</text></img><img key="equip.option4">옵션4<text key="equip.option4.value">옵션4의 값</text></img><text>요구조건<text key="item.use.terms">필요 수치</text></text></img></item_elem_equip>
+    <item_elem_level>레벨업 아이템</item_elem_level>
+    <item_elem_etc>잡템</item_elem_etc>
+    <team_slot_elem>팀 슬롯 카드<wnd posx="0" posy="0" width="154" height="98"><img posx="0" posy="0" key="slot.inven.face">히어로 아이콘</img><img posx="37" posy="0" key="slot.inven.skill">스킬 아이콘</img></wnd></team_slot_elem>
+    <team_list_elem>팀 슬롯 카드리스트 팝업<img posx="32" posy="100" file="team_select_hero.png"><butt posx="25" posy="115" key="butt.slot.select" img_up="butt_team_u.png" img_down="butt_team_d.png">선택하기</butt><text posx="25" posy="120" width="82" font="font_text_b" font_style="stroke" font_size="25" align="center" text="4018" /><butt posx="112" posy="115" key="butt.slot.info" img_up="butt_team_u.png" img_down="butt_team_d.png">정보확인</butt><text posx="112" posy="120" width="82" font="font_text_b" font_style="stroke" font_size="25" align="center" text="4019" /><butt posx="198" posy="115" key="butt.slot.close" img_up="butt_team_u.png" img_down="butt_team_d.png">취소</butt><text posx="198" posy="120" width="82" font="font_text_b" font_style="stroke" font_size="25" align="center" text="4020" /><img posx="57" posy="37" key="team.info.icon">히어로 아이콘</img><text posx="165" posy="56" width="65" font="font_text_b" font_size="21" align="right" key="text.team.info.growth" font_style="stroke">성장 제한</text><text posx="165" posy="75" width="65" font="font_text_b" font_size="21" align="right" key="text.team.info.hp" font_style="stroke">hp</text><text posx="0" posy="8" width="299" key="text.team.info.name" font="font_text_b" font_size="35" font_style="shadow" align="center">이름</text></img></team_list_elem>
+    <shop_elem_charge>
+      <img posx="34" posy="12" key="shop.elem.type"></img>
+      <text posx="98" posy="26" width="51" font="font_text_b" font_size="30" font_style="shadow" text="0" align="center" key="text.num.goods">골드/당근 개수</text>
+      <butt img_up="butt_team_u.png" img_down="butt_team_d.png" posx="37" posy="68" key="butt.buy" text="0" font="font_text_b" font_style="stroke" font_size="30">
+        <img posx="12" posy="3" key="shop.elem.price"></img>
+      </butt>
+    </shop_elem_charge>
+  </elem>
+  <result_pvp>
+    <wnd height="scr_height" width="scr_width" key="wnd.pvp.resut.root" posx="0" posy="0">
+      <img file="pvp_result_bg.png" posx="6" posy="scr_height-491">결과화면배경<text posx="67" posy="73" width="69" align="right" font="font_text_m" font_size="25" font_style="stroke" text_col_r="245" text_col_g="167" text_col_b="31" key="pvp.result.gold">획득한골드</text><text posx="247" posy="73" width="61" align="right" font="font_text_m" font_size="25" font_style="stroke" text_col_r="115" text_col_g="178" text_col_b="209" key="pvp.result.exp">획득한경험치</text><text posx="112" posy="100" width="35" align="left" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.count.win">승리횟수</text><text posx="73" posy="100" width="39" align="right" font="font_text_m" font_size="25" font_style="stroke" text_col_r="58" text_col_g="250" text_col_b="19" key="pvp.result.plus.win" show="off">승리+1</text><text posx="272" posy="100" width="35" align="left" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.count.lose">패배횟수</text><text posx="233" posy="100" width="39" align="right" font="font_text_m" font_size="25" font_style="stroke" text_col_r="58" text_col_g="250" text_col_b="19" key="pvp.result.plus.lose" show="off">패배+1</text><text posx="65" posy="202" width="138" align="center" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.id.player">자신의닉네임,점수</text><text posx="221" posy="202" width="58" align="center" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.score.player">자신의점수</text><text posx="65" posy="227" width="138" align="center" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.id.enemy">상대의닉네임</text><text posx="221" posy="227" width="58" align="center" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.score.enemy">상대의점수</text><img posx="59" posy="246" key="pvp.result.death1">죽은영웅1</img><img posx="138" posy="246" key="pvp.result.death2">죽은영웅2</img><img posx="217" posy="246" key="pvp.result.death3">죽은영웅3</img></img>
+      <butt posx="118" posy="scr_height-83" img_up="butt_team_u.png" img_down="butt_team_d.png" text="2031" key="butt.pvp.result.next" font="font_text_b" font_style="stroke" font_size="35">확인버튼</butt>
+      <img file="in_result_bar.png" posx="17" posy="109">타이틀바<img posx="44" posy="3" file="pvp_result_title_win.png" key="pvp.result.win" show="off">승리타이틀</img><img posx="61" posy="4" file="pvp_result_title_lose.png" key="pvp.result.lose" show="off">패배타이틀</img><img posx="65" posy="5" file="pvp_result_title_draw.png" key="pvp.result.draw" show="off">비김타이틀</img></img>
+    </wnd>
+  </result_pvp>
+  <result_pvp_iphone>
+    <wnd height="scr_height" width="scr_width" key="wnd.pvp.resut.root" posx="0" posy="0">
+      <img file="pvp_result_bg.png" posx="6" posy="scr_height-491">결과화면배경<text posx="67" posy="73" width="69" align="right" font="font_text_m" font_size="25" font_style="stroke" text_col_r="245" text_col_g="167" text_col_b="31" key="pvp.result.gold">획득한골드</text><text posx="247" posy="73" width="61" align="right" font="font_text_m" font_size="25" font_style="stroke" text_col_r="115" text_col_g="178" text_col_b="209" key="pvp.result.exp">획득한경험치</text><text posx="112" posy="100" width="35" align="left" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.count.win">승리횟수</text><text posx="73" posy="100" width="39" align="right" font="font_text_m" font_size="25" font_style="stroke" text_col_r="58" text_col_g="250" text_col_b="19" key="pvp.result.plus.win" show="off">승리+1</text><text posx="272" posy="100" width="35" align="left" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.count.lose">패배횟수</text><text posx="233" posy="100" width="39" align="right" font="font_text_m" font_size="25" font_style="stroke" text_col_r="58" text_col_g="250" text_col_b="19" key="pvp.result.plus.lose" show="off">패배+1</text><text posx="65" posy="202" width="138" align="center" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.id.player">자신의닉네임,점수</text><text posx="221" posy="202" width="58" align="center" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.score.player">자신의점수</text><text posx="65" posy="227" width="138" align="center" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.id.enemy">상대의닉네임</text><text posx="221" posy="227" width="58" align="center" font="font_text_m" font_size="25" font_style="stroke" key="pvp.result.score.enemy">상대의점수</text><img posx="59" posy="246" key="pvp.result.death1">죽은영웅1</img><img posx="138" posy="246" key="pvp.result.death2">죽은영웅2</img><img posx="217" posy="246" key="pvp.result.death3">죽은영웅3</img></img>
+      <butt posx="118" posy="440" img_up="butt_team_u.png" img_down="butt_team_d.png" text="2031" key="butt.pvp.result.next" font="font_text_b" font_style="stroke" font_size="35">확인버튼</butt>
+      <img file="in_result_bar.png" posx="17" posy="scr_height-531">타이틀바<img posx="44" posy="3" file="pvp_result_title_win.png" key="pvp.result.win" show="off">승리타이틀</img><img posx="61" posy="4" file="pvp_result_title_lose.png" key="pvp.result.lose" show="off">패배타이틀</img><img posx="65" posy="5" file="pvp_result_title_draw.png" key="pvp.result.draw" show="off">비김타이틀</img></img>
+    </wnd>
+  </result_pvp_iphone>
+  <_item_equip>
+    <img file="item_detail_bg.png" posx="center" posy="center" />
+    <text posx="27" posy="9" key="text.name" font="font_text_b" font_size="40" font_style="shadow">
+      <!--아이템 이름-->
+    </text>
+    <img posx="12" posy="37" key="img.icon">
+      <!--아이콘 이미지-->
+    </img>
+    <spr posx="99" posy="63" key="spr.icon.1" />
+    <spr posx="99" posy="80" key="spr.icon.2" />
+    <spr posx="203" posy="63" key="spr.icon.3" />
+    <spr posx="203" posy="80" key="spr.icon.4" />
+    <text posx="116" posy="56" key="text.adjparam.1" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션1-->
+    </text>
+    <text posx="116" posy="73" key="text.adjparam.2" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션2-->
+    </text>
+    <text posx="221" posy="56" key="text.adjparam.3" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션3-->
+    </text>
+    <text posx="221" posy="73" key="text.adjparam.4" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션4-->
+    </text>
+    <butt posx="27" posy="114" key="butt.equip" img_up="butt_team_u.png" img_down="butt_team_d.png" text="2041" font_style="stroke" font_size="30" font="font_text_b"></butt>
+    <butt posx="175" posy="114" key="butt.cancel" img_up="butt_team_u.png" img_down="butt_team_d.png" text="4020" font_style="stroke" font_size="30" font="font_text_b"></butt>
+  </_item_equip>
+  <_item_levelup>
+    <img file="item_detail_bg.png" posx="center" posy="center" />
+    <text posx="27" posy="9" key="text.name" font="font_text_b" font_size="40" font_style="shadow">
+      <!--아이템 이름-->
+    </text>
+    <img posx="12" posy="37" key="img.icon">
+      <!--아이콘 이미지-->
+    </img>
+    <spr posx="99" posy="63" key="spr.icon.1" />
+    <spr posx="99" posy="80" key="spr.icon.2" />
+    <spr posx="203" posy="63" key="spr.icon.3" />
+    <spr posx="203" posy="80" key="spr.icon.4" />
+    <text posx="116" posy="56" key="text.adjparam.1" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션1-->
+    </text>
+    <text posx="116" posy="73" key="text.adjparam.2" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션2-->
+    </text>
+    <text posx="221" posy="56" key="text.adjparam.3" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션3-->
+    </text>
+    <text posx="221" posy="73" key="text.adjparam.4" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션4-->
+    </text>
+    <butt posx="27" posy="114" key="butt.levelup" img_up="butt_team_u.png" img_down="butt_team_d.png" text="2042" font_style="stroke" font_size="30" font="font_text_b"></butt>
+    <butt posx="175" posy="114" key="butt.cancel" img_up="butt_team_u.png" img_down="butt_team_d.png" text="4020" font_style="stroke" font_size="30" font="font_text_b"></butt>
+  </_item_levelup>
+  <item_adj>
+    <img file="item_detail_bg.png" posx="center" posy="center" />
+    <text posx="27" posy="9" key="text.name" font="font_text_b" font_size="40" font_style="shadow">
+      <!--아이템 이름-->
+    </text>
+    <img posx="12" posy="37" key="img.icon">
+      <!--아이콘 이미지-->
+    </img>
+    <spr posx="99" posy="63" key="spr.icon.1" />
+    <spr posx="99" posy="80" key="spr.icon.2" />
+    <spr posx="203" posy="63" key="spr.icon.3" />
+    <spr posx="203" posy="80" key="spr.icon.4" />
+    <text posx="116" posy="56" key="text.adjparam.1" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션1-->
+    </text>
+    <text posx="116" posy="73" key="text.adjparam.2" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션2-->
+    </text>
+    <text posx="221" posy="56" key="text.adjparam.3" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션3-->
+    </text>
+    <text posx="221" posy="73" key="text.adjparam.4" width="62" align="right" font="font_text_b" font_size="25">
+      <!--보정옵션4-->
+    </text>
+    <!--보정치 아이템의 팝업창 기본형-->
+    <spr posx="279" posy="22" key="spr.item.grade" file="font_grade.spr" />
+  </item_adj>
+  <item_levelup>
+    <butt posx="27" posy="114" key="butt.levelup" img_up="butt_team_u.png" img_down="butt_team_d.png" text="2042" font_style="stroke" font_size="30" font="font_text_b"></butt>
+    <butt posx="175" posy="114" key="butt.cancel" img_up="butt_team_u.png" img_down="butt_team_d.png" text="4020" font_style="stroke" font_size="30" font="font_text_b"></butt>
+    <!--강화템 팝업창-->
+  </item_levelup>
+  <item_equip>
+    <butt posx="27" posy="114" key="butt.equip" img_up="butt_team_u.png" img_down="butt_team_d.png" text="2041" font_style="stroke" font_size="30" font="font_text_b"></butt>
+    <butt posx="175" posy="114" key="butt.cancel" img_up="butt_team_u.png" img_down="butt_team_d.png" text="4020" font_style="stroke" font_size="30" font="font_text_b"></butt>
+    <!--장착템 팝업창-->
+  </item_equip>
+</layout>

@@ -1,0 +1,80 @@
+--VisualStudio XE프로텍트 템플릿 설치 방법--
+1.XE/prj/XEAppWiz.Server or Client폴더를 체크아웃 하여 ReadyOnly를 푼다.
+2.위 폴더내의 vc폴더를 들어가 vsz파일을 편집한다.
+3.VsWizardEngin.12.0 <- 이 버전을 사용하는 비주얼스튜디오 버전과 맞춘다.(12는 vs2013)
+4.WIZARD_VERSION = 12.0 <-이 버전을 역시 맞춘다.
+5.ABSOLUTE_PATH의 패시를 사용하는 폴더에 맞게 바꾼다.따옴표는 "ABSOLUTE_XXX 부터 시작해서 패스마지막으로 끝나는걸 주의.
+6.vc 폴더의 파일들 4개를 아래 폴더로 복사한다.
+	XEAppWizXXXXvs.vsz/vsdir/ico/XE-XXX(폴더)
+   C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcprojects 
+7.vs를 가동시킨다.
+8.새프로젝트를 눌러서 템플릿이 나오는지 확인.
+
+--XE프로젝트 생성-
+
+-AppTemplate복사
+.먼저 _AppTemplate폴더를 복사하고 폴더명을 프로젝트 명으로 바꾼다. 기존 XE폴더와 같은 계층에 있으면 된다.
+.복사한 폴더전체의 readOnly속성을 푼다.
+
+-서버(게임서버) 프로젝트 생성-
+*가급적 서버프로젝트부터 생성하는것을 추천(역으로는 테스트가 부족함)
+.vs에서 "새 프로젝트..."로 들어가서 XE-Server템플릿을 선택.
+.솔루션폴더를 프로젝트폴더/App/pc_prj로 선택하고 프로젝트명은 원하는것을 넣는다(GameServer)추천
+.Wizard에 나오는 옵션은 무시하고 Next->Finish를 누른다.
+.프로젝트가 정상 생성
+	.만약 프로젝트가 정상적으로 생성되지 않았다면 --프로젝트 템플릿 에러- 항목을 참조.
+.xe_server프로젝트를 솔루션에 추가시킨다.
+	.솔루션탐색기의 솔루션에 우클릭하고 추가/기존 프로젝트후 XE/prj/xe_server/xe_server/xe_server2013.vcxproj를 선택하여 프로젝트를 솔루션에 추가시킨다.
+.다시 솔루션탐색기의 솔루션에 우클릭하고 "프로젝트 종속성"을 선택. 후 xe_server에 체크해서 먼저 빌드되도록 한다.
+."솔루션 다시 빌드"를 한다.
+
+-클라이언트 프로젝트의 생성
+.서버생성과 방식이 같다.
+.XE-Client 프로젝트 템플릿을 설정해서 생성. 프로젝트명은 "Game"추천
+.XE/xe_client/xe_client/xe_client2013.vcxproj.vcxproj를 솔루션에 추가
+.프로젝트 종속성 변경
+."솔루션 다시 빌드"
+.실행
+.클라이언트의 콘솔창에 "SendLoginFromUUID...."라고 나오면 클라는 성공
+.로그인서버의 콘솔창에 "클라이언트 접속성공:uuid=XXXX nickname strNickName=XXXX"라고 나오면 서버도 성공
+.db읽는곳에서 에러가 날텐데 그것은 db를 따로 설정해야함.
+
+*클라이언트 단독으로만 쓰려면 XE-ClientOnly를 사용해야 하나 아마 작동이 제대로 안될듯 싶다.
+
+vs에서 XE 프로젝트 생성
+1.vs새프로젝트를 실행해서 XE-Server의 프로젝트를 pc_prj폴더에 먼저 만든다. 마법사의 옵션은 건드리지 않는다.
+2.에러없이 생성되었다면 일단 성공
+   2-1만약 에러가 발생했다면 vcproject의 vsz파일내 정보를 점검. 특히 패스를 점검
+   XE/prj/XEAppWiz.XXXX 폴더의 default.vcxproj파일을 열어서 include되는 파일목록을 점검.
+   templates/1033/Templates.inf파일의 목록을 점검하여 빠진 없는 파일이 있는지 점검.
+   default.vcxproj파일을 보면 XSample.xxx파일들이 포함되는데 XSample의 이름은 안고쳐도 된다. 아마도 <RootNamespace>XSample</RootNamespace>의 값과 일치하면 되는듯 하다.
+3.XE-Client 프로젝트도 같은방식으로 pc_prj폴더를 루트로 만든다.
+4.Templates\1033 폴더내에 game_src와 Resource폴더를 새 프로젝트폴더의 App폴더내로 복사한다.
+  이게 클라와 서버 양쪽에 다 있는데 어떤걸 카피해야할지 확실하지 않음. 그냥 클라거 먼저 카피하고 서버그를 덮어씌움.
+5.솔루션탐색기의 솔루션에서 우클릭후 추가->기존프로젝트 XE/prj/xe_xxxxxx/xe_xxxxx/ 로들어가서 xe_xxxxxx프로젝트를 포함시킨다
+7.프로젝트 종속성을 xe_xxxxx프로젝트가 먼저 빌드되도록 바꾼다.
+
+-프로젝트 템플릿 에러-
+.XE-프로젝트 템플릿을 생성할때 에러가 발생했다면 vcproject의 vsz파일내 정보를 점검. 특히 패스를 점검
+  .패스 부분의 따옴표 위치도 확인.
+  .Wizard버전도 확인
+.c:\xuzhu_work\ 폴더에 xdebugc.txt(XEAppWiz.Client용) xdebugs.txt(XEAppWiz.Server용)로그을 읽어 default.js를 열어
+  에러난 위치를 확인.
+.XE/prj/XEAppWiz.XXXX/Template/1033/Templates.inf 파일을 열어서 목록 확인
+	.에러가 나는 경우는 보통 다음과 같다
+	.Templates.inf의 목록에는 있으나 실제 파일이 없는경우.
+	.프로젝트에 포함은 되지 않고 파일만 카피가 되어야 하는경우 Templates.inf의 파일패스앞에 &를 붙인다.
+	.파일을 카피하지 않고 프로젝트에 링크만 하는 기능은 현재 작동하지 않는다.
+	.wizard.RenderTemplate(strTemplate, strFile, bDontProcess, bOverwrite); js파일에서 이부분 호출시
+	 c/cpp/h/rc파일을 제외하고는 bDontProcess=false가 되어야 한다. "렌더"란 [!output PROJECT_NAME]같은부분을 자동변환시켜주는걸 말한다.
+	.RenderTemplate함수는 프로젝트에 포함을 시키지 않더라도 모든 파일에 실행이 되어야 한다. 단 bDontProcess가 다를뿐이다.
+	.proj.Object.AddFile()함수를 실행하면 비로소 프로젝트에 들어간다.
+	.bOverWrite가 false면 cpp등을 복사할때 덮어씌우지 않고 파일뒤에 추가하므로 반드시 true래야한다.
+	.가급적 프로젝트에 포함되지 않고 카피만 되어야할 파일들은 &를 붙여주도록 한다. 단 defineGame.h같은 파일들은 &를 붙이지 않아야 프로젝트에 포함이 된다.
+	.자세한 사항은 XEAppWiz.Client/Script/default.js 파일을 참조한다.
+.default.vcxproj파일이나 XEAppWiz.Client/Server.vcxproj 에 대한 설명
+  .default.vcxproj는 실제 생성될 프로젝트파일의 기초가 되는 파일.
+    .[!output PROJECT_NAME]같은게 변환되려면 반드시 이 파일에 <Clxxxxxxx Include="XSample.cpp"/>과ㅏ 같이 목록을 포함시켜야 한다. 헤더는 ClInclude, cpp는 ClCompile, rc파일은 ResourceCompil
+	.파일내에 보면 XSample.cpp와 같은식으로 되어있는데 "XSample"은 나중에 사용자가 입력한 프로젝트명으로 자동으로 변환되어 처리된다. 이 "XSample"의 기준은 아마도 <RootNamespace>XSample</RootNamespace>부분의 영향을 받는것이 아닌가 한다.
+  .XEAppWiz.XXX.vcxproj는 위자드자체의 프로젝트 파일. 위자드의 동작을 제어하는 곳.
+

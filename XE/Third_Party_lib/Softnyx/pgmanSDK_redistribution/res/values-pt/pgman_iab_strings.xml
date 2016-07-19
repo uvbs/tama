@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="pgman_iab_title">Informação do pagamento</string>
+	<string name="pgman_iab_dlg_title">Proceda com a compra</string>
+	<string name="pgman_iab_dlg_cash_unit">Cash</string>
+	<string name="pgman_iab_dlg_user_possessiont">Saldo do cash</string>
+	<string name="pgman_iab_dlg_contents">Você quer comprar?</string>
+	<string name="pgman_iab_userid_use">Biller</string>
+	<string name="pgman_iab_done">Comprar</string>
+	<string name="pgman_iab_buycash">Recarregar Cash</string>
+	<string name="pgman_iab_error_no_store_userid">Não tem ID na store para pagamentos</string>
+	<string name="pgman_iab_error_server">Ocorreu um erro no processo de pagamento</string>
+	<string name="pgman_iab_dlg_haved_id">Tem ID</string>
+	<string name="pgman_iab_dlg_no_id">Não ID</string>
+	<string name="pgman_iab_dlg_no_id_message">Você tem ID?</string>
+	
+	 <string name="pgman_iab_tester_id">[This is a test account, No billing charged]</string>
+</resources>

@@ -1,0 +1,4 @@
+.zip
+.vsscc
+.vssscc
+.scc
