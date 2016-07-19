@@ -1,4 +1,9 @@
 ﻿androideabi-addr2line -C -f -e <앱라이브러리.so> <함수 주소>
+버그리포팅 요령 {
+  .항상 발생하는가/랜덤으로 발생하는가
+  .특정상황에서만 발생하는가/ 모든상황에서 발생하는가
+  .
+}
 * 장기적으로 해야할것들
 . SE구조 개선
  {
@@ -222,3 +227,73 @@ camp::Edit()
 {
 	// edit something
 }
+
+layout_battle.xml, world, 29177
+layout create: key=battle
+eff_ui_battle_gauge.spr, 253
+res_num.ttf(23.00), 1691
+res_num.ttf(19.00), 1739
+bold.ttf(20.00), 1289
+layout_battle.xml, battle, 161566
+unit_golem2.spr, 94563
+hero_skar.spr, 50075
+eff_hit02.spr, 1380
+unit_spearman.spr, 5017
+hero_tanker03.spr, 47280
+hero_tanker01.spr, 39062
+hero_tanker01.spr, 145748
+unit_cyclops.spr, 9660
+hero_frio.spr, 27842
+unit_treant2.spr, 100570
+hero_unluny.spr, 28375
+unit_lycan.spr, 10094
+hero_laynar.spr, 54226
+unit_fallen_angel.spr, 25198
+hero_speed03.spr, 63672
+unit_paladin.spr, 5563
+hero_speed01.spr, 245908
+unit_spearman2.spr, 5764
+unit_golem2.spr, 30395
+hero_hetribs.spr, 54195
+unit_minotaur2.spr, 20023
+hero_zanta.spr, 72636
+unit_treant2.spr, 33494
+unit_cyclops2.spr, 13847
+hero_congent.spr, 42788
+res_num.ttf(13.00), 1861
+normal.ttf(18.00), 1234
+
+layout_battle.xml, world, 33223
+layout create: key=battle
+eff_ui_battle_gauge.spr, 429
+res_num.ttf(23.00), 2381
+res_num.ttf(19.00), 1693
+bold.ttf(20.00), 1527
+layout_battle.xml, battle, 179211
+unit_golem2.spr, 86965
+hero_skar.spr, 48728
+eff_hit02.spr, 1327
+unit_spearman.spr, 4939
+hero_tanker03.spr, 42740
+hero_tanker01.spr, 39439
+hero_tanker01.spr, 144132
+unit_cyclops.spr, 9096
+hero_frio.spr, 28446
+unit_treant2.spr, 101789
+hero_unluny.spr, 27289
+unit_lycan.spr, 10383
+hero_laynar.spr, 50597
+unit_fallen_angel.spr, 24463
+hero_speed03.spr, 65448
+unit_paladin.spr, 5631
+hero_speed01.spr, 223650
+unit_spearman2.spr, 5525
+unit_fallen_angel2.spr, 26724
+unit_archer2.spr, 3907
+hero_range02.spr, 57532
+unit_cyclops2.spr, 11208
+hero_sinceridade.spr, 39101
+unit_treant2.spr, 27787
+hero_range02.spr, 14424
+res_num.ttf(13.00), 1687
+normal.ttf(18.00), 1255
