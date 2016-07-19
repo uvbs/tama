@@ -5548,11 +5548,13 @@ int XAccount::ProcessCheatCmd( const _tstring& strCmdLine )
 	return (int)param;
 }
 
+#ifdef _XSINGLE
 void XAccount::SetspLegion( int idxLegion, XSPLegion spLegion ) 
 {
 	m_aryLegion[idxLegion] = spLegion;
 	XBREAK( spLegion && spLegion->IsNpc() );
 }
+#endif // _XSINGLE
 
 /**
  @brief infoLegion을 바탕으로 군단을 생성하고 영웅을 추가한다.

@@ -294,7 +294,8 @@ bool XEXmlNode::GetInt2( int* pOut )
 	auto pElem = m_pRoot->FirstChild();
 	if( !pElem )
 		return false;
-	*pOut = std::stoi( pElem->ValueStr() );
+//	*pOut = std::stoi( pElem->ValueStr() );
+	*pOut = ::atoi( pElem->ValueStr().c_str() );
 	return true;
 }
 

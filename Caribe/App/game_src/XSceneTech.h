@@ -149,7 +149,7 @@ public:
 private:
 	int OnClickInitAbil( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnOkInitAbil( XWnd* pWnd, DWORD p1, DWORD p2 );
-	XWndAbilButton* GetpWndNodeMouseOver( const XE::VEC2& vPos );
+//	XWndAbilButton* GetpWndNodeMouseOver( const XE::VEC2& vPos );
 };
 
 extern XSceneTech *SCENE_TECH;

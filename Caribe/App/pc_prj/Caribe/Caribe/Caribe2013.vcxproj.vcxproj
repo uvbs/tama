@@ -570,6 +570,7 @@
     <ClInclude Include="..\..\..\game_src\skill\SkillType.h" />
     <ClInclude Include="..\..\..\game_src\skill\XAdjParam.h" />
     <ClInclude Include="..\..\..\game_src\skill\XBuffObj.h" />
+    <ClInclude Include="..\..\..\game_src\skill\XEffect.h" />
     <ClInclude Include="..\..\..\game_src\skill\XESkillMng.h" />
     <ClInclude Include="..\..\..\game_src\skill\XLuaSkill.h" />
     <ClInclude Include="..\..\..\game_src\skill\xSkill.h" />

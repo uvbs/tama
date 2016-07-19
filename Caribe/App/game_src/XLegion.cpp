@@ -464,9 +464,11 @@ XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
 	pHero->SetGrade( sqParam.grade );
 	pSquad->SetmulAtk( sqParam.mulAtk );
 	pSquad->SetmulHp( sqParam.mulHp );
+#ifdef _XSINGLE
 	for( auto& abil : sqParam.m_listAbil ) {
 		pHero->SetAbilPoint( abil.m_idsAbil, abil.point );
 	}
+#endif // _XSINGLE
 	return pSquad;
 }
 /**

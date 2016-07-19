@@ -26,14 +26,14 @@ const int XSpotDaily::c_lvLegionStart = 9;		// 시작 군단레벨
 
 void XSpotDaily::OnCreateNewOnServer( XSPAcc spAcc )
 {
-	XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
-	m_dowToday = dowToday;
-	int hour, min, sec;
-	XSYSTEM::GetHourMinSec( &hour, &min, &sec );
+// 	XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
+// 	m_dowToday = dowToday;
+// 	int hour, min, sec;
+// 	XSYSTEM::GetHourMinSec( &hour, &min, &sec );
 	// 오늘0시 기준으로 현재시간은 총 몇초인가를 계산한다.
-	int secTotal = ( hour * 60 * 60 ) + ( min * 60 ) + sec;
-	// 오늘 요일의 이벤트 스팟을 활성화 시킨다.
-	spAcc->GetpWorld()->SetActiveDailySpotToRandom( dowToday, secTotal, spAcc );
+//	int secTotal = ( hour * 60 * 60 ) + ( min * 60 ) + sec;
+// 	// 오늘 요일의 이벤트 스팟을 활성화 시킨다.
+// 	spAcc->GetpWorld()->SetActiveDailySpotToRandom( dowToday, secTotal, spAcc );
 }
 
 void XSpotDaily::Serialize( XArchive& ar ) 
@@ -50,7 +50,8 @@ void XSpotDaily::Serialize( XArchive& ar )
 	for( auto& day : m_aryDay ) {
 		ar << (char)day.m_numStar;
 	}
-	m_timerCreate.Serialize( ar );
+//	m_timerCreate.Serialize( ar );
+	m_timerCreate2.Serialize( ar );
 }
 BOOL XSpotDaily::DeSerialize( XArchive& ar, DWORD verWorld ) 
 {
@@ -73,7 +74,12 @@ BOOL XSpotDaily::DeSerialize( XArchive& ar, DWORD verWorld )
 			ar >> c0;		day.m_numStar = c0;
 		}
 	}
-	m_timerCreate.DeSerialize( ar );
+	if( verWorld >= 31 ) {
+		m_timerCreate2.DeSerialize( ar );
+	} else {
+		CTimer timerDummy;
+		timerDummy.DeSerialize( ar );
+	}
 	return TRUE;
 }
 
@@ -95,10 +101,13 @@ void XSpotDaily::SetSpot( XE::xtDOW dow, int secPass, XSPAcc spAccount )
 	m_numEnter = 0;
 	SetstrName( XTEXT(2228) );	// 요일 전장
 
-	m_timerCreate.Set( (float)( 24 * 60 * 60 ) );		// 24시간을 세팅
-	m_timerCreate.SetPassSec( (float)secPass );	// 흘러간 시간을 더함.
-	ResetLevel( spAccount );
-	Update( spAccount );
+// 	m_timerCreate.Set( (float)( 24 * 60 * 60 ) );		// 24시간을 세팅
+// 	m_timerCreate.SetPassSec( (float)secPass );	// 흘러간 시간을 더함.
+	m_timerCreate2.Set( 24 * 60 * 60 );		// 24시간을 기다리도록 세팅
+	m_timerCreate2.AddSec( secPass );
+	DestroyLegion();
+//	ResetLevel( spAccount );
+//	Update( spAccount );
 }
 
 void XSpotDaily::ResetPower( int lvSpot )
@@ -138,7 +147,7 @@ bool XSpotDaily::IsAttackable( XSPAcc spAcc, xtError *pOut )
 {
 	xtError errCode = xERR_OK;
 	do {
-		if( m_timerCreate.IsOver() ) {
+		if( m_timerCreate2.IsOver() ) {
 			errCode = xERR_TIMEOUT;
 			break;
 		}
@@ -350,10 +359,17 @@ bool XSpotDaily::Update( XSPAcc spAcc )
 		if( dowToday == XE::xDOW_MONDAY ) {
 			// 한주가 지남.
 			++m_cntWeekByFloor;
-			CreateLegion( spAcc );		// 군단을 다시 업데이트.
+			DestroyLegion();		// 군단을 삭제해서 스팟 터치하면 다시 만들도록 한다.
+//			CreateLegion( spAcc );		// 군단을 다시 업데이트.
 		}
 	}
-	//m_Day = XTimer2::sGetTime() / 60 / 60 / 24;
+	int hour, min, sec;
+	XSYSTEM::GetHourMinSec( &hour, &min, &sec );
+	const int secPass = ( hour * 60 * 60 ) + ( min * 60 ) + sec;
+	// 타이머가 없거나 24시간이 오버됐으면 스팟을 다시 리셋함.
+	if( m_timerCreate2.IsOff() || ( m_timerCreate2.IsOver() ) ) {
+		SetSpot( dowToday, secPass, spAcc );
+	}
 	return true;
 }
 

@@ -25,7 +25,8 @@ public:
 		xERR_OVER_ENTER_NUM,	// 입장횟수 초과
 	};
 private:
-	CTimer m_timerCreate;		// 스팟 생성 타이머
+//	CTimer m_timerCreate;		// 스팟 생성 타이머
+	XTimerTiny m_timerCreate2;
 	int m_numEnter = 0;
 	XE::xtDOW m_dowToday = XE::xDOW_MONDAY;		// 어느 요일꺼냐
 	int m_idxFloor = 0;		// 난이도 단계 인덱스
@@ -58,7 +59,7 @@ public:
 	XPropWorld::xDaily* GetpProp() {
 		return static_cast<XPropWorld::xDaily*>( GetpBaseProp() );
 	}
-	GET_ACCESSOR_CONST( const CTimer&, timerCreate );
+	GET_ACCESSOR_CONST( const XTimerTiny&, timerCreate2 );
 	GET_SET_ACCESSOR_CONST( int, numEnter );
 	GET_ACCESSOR_CONST( XE::xtDOW, dowToday );
 	// 치트용

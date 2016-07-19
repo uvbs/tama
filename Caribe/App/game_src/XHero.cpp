@@ -17,6 +17,7 @@
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 #include "skill/XSkillDat.h"
 #include "skill/XEffect.h"
+#include "XPropTech.h"
 //#include "skill/XAdjParam.h"
 #endif 
 
@@ -664,31 +665,6 @@ bool XHero::IsEquip( ID snItem )
 }
 
 /**
- @brief pHero의 렙업을 시키기 위해 필요한 자원의 양은?
- @param lvAcc 군주레벨
- @return 목재/철의 수량
-*/
-// std::pair<int,int> XHero::GetCostHeroLevelUpByRes( int lvAcc ) const
-// {
-// 	if( XBREAK(lvAcc > XGAME::GetLevelMaxAccount()) )
-// 		return std::make_pair( 0, 0 );
-// 	auto propLevelUp = XPropUpgrade::sGet()->GetpTableForLevelup( lvAcc );
-// 	return propLevelUp->GetNeedRes( m_Clan );
-// 
-// }
-// 
-// int XHero::GetCostHeroSkillupByRes( XGAME::xtTrain type ) const
-// {
-// 	int lvCurr = GetLevelSkill( type );
-// 	if( lvCurr >= EXP_TABLE_HERO->GetMaxLevel() )
-// 		return 0;
-// 	// 다음레벨의 스킬프로퍼티를 꺼낸다.
-// 	auto propSkillup = XPropUpgrade::sGet()->GetpTableForSkillup( lvCurr + 1 );
-// 	return propSkillup->GetNeedRes();
-// 
-// }
-
-/**
  @brief pHero의 스킬을 렙업시키기 위한 프로퍼티를 꺼낸다.
 */
 const XPropUpgrade::xPropSkill* XHero::GetpPropSkillupNext( XGAME::xtTrain type ) const
@@ -739,229 +715,6 @@ const XPropSquad::xPROP* XHero::GetpPropSquadupNextNext() const
 	return PROP_SQUAD->GetpTable( level );
 }
 
-// int XHero::SerializeLevelupReady( XArchive& ar )
-// {
-// 	ar << m_aryLevelupReady;
-// 	return 1;
-// }
-// int XHero::DeSerializeLevelupReady( XArchive& ar )
-// {
-// 	m_aryLevelupReady.Clear();
-// 	ar >> m_aryLevelupReady;
-// 	return 1;
-// }
-
-// int XHero::SerializeProvided( XArchive& ar )
-// {
-// 	ar << (BYTE)m_aryProvided[ XGAME::xTR_SQUAD_UP ];
-// 	ar << (BYTE)m_aryProvided[ XGAME::xTR_SKILL_ACTIVE_UP ];
-// 	ar << (BYTE)m_aryProvided[ XGAME::xTR_SKILL_PASSIVE_UP ];
-// 	ar << (BYTE)0;
-// 	return 1;
-// }
-// int XHero::DeSerializeProvided( XArchive& ar )
-// {
-// 	m_aryProvided.Clear(0);
-// 	BYTE b0;
-// 	ar >> b0;	m_aryProvided[ XGAME::xTR_SQUAD_UP ] = b0;
-// 	ar >> b0;	m_aryProvided[ XGAME::xTR_SKILL_ACTIVE_UP ] = b0;
-// 	ar >> b0;	m_aryProvided[ XGAME::xTR_SKILL_PASSIVE_UP ] = b0;
-// 	ar >> b0;	
-// 	return 1;
-// }
-
-/**
- @brief 업글템을 영웅에게 제공한다. 
- @param pOutOver 만약 더하고 오버된값이 있으면 여기에 담긴다.
- @return 렙업하면 true를 리턴한다.
-
-*/
-// bool XHero::AddProvide( XGAME::xtTrain type, int add, int *pOutOver ) 
-// {
-// 	if( pOutOver )
-// 		*pOutOver = 0;
-// 	if( XBREAK( XGAME::IsInvalidTrainType( type ) ) )
-// 		return false;
-// 	int maxItem;
-// 	if( type == XGAME::xTR_SQUAD_UP )
-// 	{
-// 		auto pPropSquad = GetpPropSquadupNext();
-// 		maxItem = 999;
-// 		if( XASSERT( pPropSquad ) )
-// 			maxItem = pPropSquad->numItem;
-// 	} else
-// 	if( type == XGAME::xTR_SKILL_ACTIVE_UP ||
-// 		type == XGAME::xTR_SKILL_PASSIVE_UP )
-// 	{
-// 		auto pPropNext = GetpPropSkillupNext( type );
-// 		maxItem = 999;
-// 		if( XASSERT( pPropNext ) )
-// 			maxItem = pPropNext->numItem;
-// 	} else
-// 	{
-// 		XBREAKF(1, "잘못된 호출:typeTrain=%d, add=%d", type, add );
-// 		return false;
-// 	}
-// 	// 일단 더해야할 개수를 더함.
-// 	m_aryProvided[ type ] += add;
-// 	// 렙업
-// 	if( m_aryProvided[ type ] >= maxItem )
-// 	{
-// 		// 최대치에서 현재개수를 빼서 남은개수를 얻는다.
-// 		int numRemain = maxItem - m_aryProvided[ type ];
-// 		XBREAK( numRemain > 0 );
-// 		// 오버된 개수를 얻는다.
-// 		int numOver = m_aryProvided[ type ] - maxItem;
-// 		XBREAK( numOver < 0 );
-// 		if( pOutOver > 0 )
-// 			*pOutOver = numOver;
-// 		SetbLevelupReady( type, true );	// 렙업
-// 		return true;
-// 	}
-// 	return false;
-// }
-// 
-// /**
-//  @brief 제공해야할 메달이 꽉찼는지
-// */
-// bool XHero::IsFullMedal()
-// {
-// 	auto pPropSquad = GetpPropSquadupNext();
-// 	if( XASSERT( pPropSquad ) )
-// 		return m_aryProvided[XGAME::xTR_SQUAD_UP] >= pPropSquad->numItem;
-// 	return false;	
-// }
-// 
-// bool XHero::IsFullScroll( XGAME::xtTrain type )
-// {
-// 	if( XBREAK( XGAME::IsInvalidSkillTrain(type) ) )
-// 		return false;
-// 	auto pPropNext = GetpPropSkillupNext( type );
-// 	if( XASSERT( pPropNext ) )
-// 		return m_aryProvided[ type ] >= pPropNext->numItem;
-// 	return false;
-// }
-// 
-// /**
-//  @brief 남은 메달수
-// */
-// int XHero::GetNumRemainMedal( const XPropSquad::xPROP* pPropSquadNext )
-// {
-// 	if( XBREAK( pPropSquadNext == nullptr ) )
-// 		return 0;
-// 	return pPropSquadNext->numItem - GetNumProvidedMedal();
-// }
-// /**
-//  @brief pHero,가 현재 부대업글을 위해 필요한 아이템과 수량을 얻는다.
-// */
-// bool XHero::GetItemLevelUpSquad(ID *pOutID, int *pOutNum)
-// {
-// 	// 업글 아이템이 충분히 있는가.
-// 	auto pPropSquad = GetpPropSquadupNext();
-// 	if( pPropSquad == nullptr )
-// 		return false;
-// 	// 일단 최대 레벨이면 더이상 업글 안됨
-// 	if( GetlevelSquad() >= PROP_SQUAD->GetMaxLevel() )
-// 		return false;
-// 	// 영웅 렙제에 걸리면 더이상 안됨.
-// 	if( GetLevel() < pPropSquad->levelLimitByHero )
-// 		return false;
-// 	int numItem = 0;
-// 	// 유닛의 공격타입에 따라 필요한 업글템의 아이디를 얻음.
-// 	ID idNeed = XGAME::GetSquadLvupItem(GetType(), pPropSquad->gradeNeed );
-// 	XBREAK(idNeed == 0);
-// 	//XBREAK( XGAME::IsInvalidGrade(pPropSquad->gradeNeed) );
-// // 	idNeed += (pPropSquad->gradeNeed - 1);
-// 	if (pOutID)
-// 		*pOutID = idNeed;	// UI등에 사용하기 위해 필요한 아이템의 아이디를 넣어줌.
-// 	if (pOutNum)
-// 		*pOutNum = pPropSquad->numItem;
-// 	return true;
-// }
-// 
-// /**
-//  @brief 다음 스킬업글을 위해 필요한 아이템과 수량을 얻는다.
-// */
-// bool XHero::GetItemLevelUpSkill( XGAME::xtTrain type, ID *pOutID, int *pOutNum)
-// {
-// 	// 업글 아이템이 충분히 있는가.
-// 	auto pPropSkillup = GetpPropSkillupNext( type );
-// 	// 일단 최대 레벨이면 더이상 업글 안됨
-// 	if( GetLevelSkill(type) >= XGAME::GetMaxSkillLevel() )
-// 		return false;
-// 	// 영웅 렙제에 걸리면 더이상 안됨.
-// // 	if( GetLevel() < pPropSkillup->levelLimitByHero )
-// // 		return false;
-// 	int numItem = 0;
-// 	// 유닛의 공격타입에 따라 필요한 업글템의 아이디를 얻음.
-// 	ID idNeed = XGAME::GetSkillLvupItem( pPropSkillup->gradeNeed );
-// 	XBREAK(idNeed == 0);
-// 	//XBREAK( XGAME::IsInvalidGrade(pPropSkill->gradeNeed) );
-// 	if (pOutID)
-// 		*pOutID = idNeed;	// UI등에 사용하기 위해 필요한 아이템의 아이디를 넣어줌.
-// 	if (pOutNum)
-// 		*pOutNum = pPropSkillup->numItem;
-// 	return true;
-// }
-// 
-// /**
-//  @brief 현재 메달이 제공가능한가
-// */
-// bool XHero::IsAbleProvideSquad()
-// {
-// 	// 업글 아이템이 충분히 있는가.
-// 	auto pPropSquad = GetpPropSquadupNext();
-// 	return IsAbleProvideSquad( pPropSquad );
-// }
-// 
-// /**
-//  @brief 현재 메달이 제공가능한 상태인가.
-//  pHero로만 봤을때 상태임.
-// */
-// bool XHero::IsAbleProvideSquad( const XPropSquad::xPROP* pPropNext )
-// {
-// 	// 일단 최대 레벨이면 더이상 제공 안됨
-// 	if( GetlevelSquad() >= PROP_SQUAD->GetMaxLevel() )
-// 		return false;
-// 	// 이미 풀상태면 안됨.
-// 	if( m_aryProvided[XGAME::xTR_SQUAD_UP] >= pPropNext->numItem )
-// 		return false;
-// 	return true;
-// }
-// 
-// /**
-//  @brief 현재 메달이 제공가능한가
-// */
-// bool XHero::IsAbleProvideSkill( XGAME::xtTrain type )
-// {
-// 	// 업글 아이템이 충분히 있는가.
-// 	auto pPropSkill = GetpPropSkillupNext( type );
-// 	return IsAbleProvideSkill( pPropSkill, type );
-// }
-// 
-// /**
-//  @brief 현재 메달이 제공가능한 상태인가.
-// */
-// bool XHero::IsAbleProvideSkill( const XPropUpgrade::xPropSkill* pPropNext, XGAME::xtTrain type )
-// {
-// 	// 스킬이 아예없으면 실패
-// 	if( !IsHaveSkill(type) )
-// 		return false;
-// #if defined(_CLIENT) || defined(_GAME_SERVER)
-// 	if( GetSkillDat( type ) == nullptr )
-// 		return false;
-// #endif // 
-// 	// 일단 최대 레벨이면 더이상 업글 안됨
-// 	if( GetLevelSkill( type ) >= XGAME::GetMaxSkillLevel() )
-// 		return false;
-// 	// 영웅 렙제에 걸리면 더이상 안됨.
-// 	if( GetLevel() < pPropNext->levelLimitByHero )
-// 		return false;
-// 	// 이미 풀상태면 안됨.
-// 	if( m_aryProvided[type] >= pPropNext->numItem )
-// 		return false;
-// 	return true;
-// }
 
 bool XHero::IsMaxLevel( XGAME::xtTrain type ) const 
 {
@@ -1073,14 +826,6 @@ void XHero::SetAbilPoint( XGAME::xtUnit unit, ID idNode, int point )
 	}
 	auto& abil = itor->second;
 	abil.point = point;
-}
-
-void XHero::SetAbilPoint( const _tstring& idsAbil, int point )
-{
-	auto pAbil = XPropTech::sGet()->GetpNode( idsAbil );
-	if( pAbil ) {
-		SetAbilPoint( pAbil->unit, pAbil->idNode, point );
-	}
 }
 
 #ifdef _GAME_SERVER
@@ -1429,6 +1174,13 @@ void XHero::GenerateAbilityForDummy( XGAME::xtUnit unit, int lvAcc )
 	}
 }
 
+void XHero::SetAbilPoint( const _tstring& idsAbil, int point )
+{
+	auto pAbil = XPropTech::sGet()->GetpNode( idsAbil );
+	if( pAbil ) {
+		SetAbilPoint( pAbil->unit, pAbil->idNode, point );
+	}
+}
 #endif // defined(_GAME_SERVER) && defined(_DEV)
 
 /**

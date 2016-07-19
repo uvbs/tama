@@ -30,8 +30,8 @@ struct xSquad {
 	float mulHp = 1.f;		// 체력보정
 #ifdef _XSINGLE
 	bool m_bShow = true;	// 부대hp정보 보이기
-	XList4<xAbil2> m_listAbil;		// 이 부대 영웅의 특성트리
 #endif // _XSINGLE
+	XList4<xAbil2> m_listAbil;		// 이 부대 영웅의 특성트리
 #ifdef _DEBUG
 	int debug = 0;			// 디버깅용
 #endif // _DEBUG

@@ -35,6 +35,8 @@
 #include "server/XGoogle.h"
 #include "XSystem.h"
 #include "XDefNetwork.h"
+#include "XHero.h"
+#include "XPropLegionH.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -507,32 +509,32 @@ void XGameUser::SuccessLoginBeforeSend( XSPSAcc spAcc, BOOL bReconnect )
 	// 접속직후 요일이벤트 스팟이 오늘자 타입으로 제대로 세팅되어있는지 확인한다.
 	//////////////////////////////////////////////////////////////////////////
 	// 현재 활성화된 요일스팟이 있는지 찾아온다.
-	{
-		// 요일스팟이 있을때.
-		if( GetpWorld()->GetNumSpots( XGAME::xSPOT_DAILY ) > 0 ) {
-			// 오늘의 요일을 알아낸다.
-			XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
-			// 오늘의 요일에 대한 타입을 알아낸다.
-//			XGAME::xtDailySpot type = XSpotDaily::sGetDowToType( dowToday );
-			// 자정으로부터 지나간 시간을 세팅한다.
-			int hour, min, sec;
-			XSYSTEM::GetHourMinSec( &hour, &min, &sec );
-			int secPass = ( hour * 60 * 60 ) + ( min * 60 ) + sec;
-			XSpotDaily *pSpot = GetpWorld()->GetActiveDailySpot();
-			if( pSpot ) {
-				// 읽어온 스팟의 타입과 오늘타입을 비교해서 다르면 바꿔준다.
-				if( /*pSpot->GetType() != type ||*/ pSpot->GetdowToday() != dowToday ) {
-					// 다르면 이 스팟은 해제시킨다.
-//					pSpot->ReleaseSpot();
-					// 새 스팟을 랜덤위치에 활성화시킨다.
-					GetpWorld()->SetActiveDailySpotToRandom( dowToday, secPass, spAcc );
-				}
-			} else {
-				// 요일스팟은 있는데 활성화된 스팟이 없으므로 아무거나 하나 활성화시킴.
-				GetpWorld()->SetActiveDailySpotToRandom( dowToday, secPass, spAcc );
-			}
-		}
-	}
+// 	{
+// 		// 요일스팟이 있을때.
+// 		if( GetpWorld()->GetNumSpots( XGAME::xSPOT_DAILY ) > 0 ) {
+// 			// 오늘의 요일을 알아낸다.
+// 			XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
+// 			// 오늘의 요일에 대한 타입을 알아낸다.
+// //			XGAME::xtDailySpot type = XSpotDaily::sGetDowToType( dowToday );
+// 			// 자정으로부터 지나간 시간을 세팅한다.
+// 			int hour, min, sec;
+// 			XSYSTEM::GetHourMinSec( &hour, &min, &sec );
+// 			int secPass = ( hour * 60 * 60 ) + ( min * 60 ) + sec;
+// 			XSpotDaily *pSpot = GetpWorld()->GetActiveDailySpot();
+// 			if( pSpot ) {
+// 				// 읽어온 스팟의 타입과 오늘타입을 비교해서 다르면 바꿔준다.
+// 				if( /*pSpot->GetType() != type ||*/ pSpot->GetdowToday() != dowToday ) {
+// 					// 다르면 이 스팟은 해제시킨다.
+// //					pSpot->ReleaseSpot();
+// 					// 새 스팟을 랜덤위치에 활성화시킨다.
+// 					GetpWorld()->SetActiveDailySpotToRandom( dowToday, secPass, spAcc );
+// 				}
+// 			} else {
+// 				// 요일스팟은 있는데 활성화된 스팟이 없으므로 아무거나 하나 활성화시킴.
+// 				GetpWorld()->SetActiveDailySpotToRandom( dowToday, secPass, spAcc );
+// 			}
+// 		}
+// 	}
 	// 로그인 직후에 각 스팟들의 처리이벤트
 	spAcc->GetpWorld()->OnAfterDeSerialize( this, 
 												spAcc->GetidAccount() );
@@ -6465,7 +6467,8 @@ int XGameUser::DoSpotAttackCampaign( XSpot *pBaseSpot, int idxStage, int idxFloo
 			//
 			XArchive arParam;
 			arParam << idxStage;
-			arParam << spPropStage->legion.lvLegion;
+// 			arParam << spPropStage->legion.lvLegion;
+			arParam << spPropStage->m_spxLegion->lvLegion;
 			arParam << idxFloor;
 			SendBattleInfoWithidAccParam( pBaseSpot, 0, &arParam );
 		}	else
@@ -6483,7 +6486,7 @@ int XGameUser::DoSpotAttackCampaign( XSpot *pBaseSpot, int idxStage, int idxFloo
 					&& !spCampObj->IsTimeOverTry() ) {
 					SendBattleInfoByGuildRaid( pBaseSpot,
 												idxStage,
-												spPropStage->legion.lvLegion,
+												spPropStage->m_spxLegion->lvLegion,
 												XGAME::xGE_ERROR_STILL_TRYING_RAID );
 					bOk = 0;	// 진입 실패
 				}	else {
@@ -6503,7 +6506,7 @@ int XGameUser::DoSpotAttackCampaign( XSpot *pBaseSpot, int idxStage, int idxFloo
 				//
 				XArchive arParam;
 				arParam << idxStage;
-				arParam << spPropStage->legion.lvLegion;
+				arParam << spPropStage->m_spxLegion->lvLegion;
 				arParam << idxFloor;
 				SendBattleInfoWithidAccParam( pBaseSpot, 0, &arParam );
 			} else
@@ -6560,7 +6563,7 @@ void XGameUser::RecvReqEnterGuildRaid( XPacket& p )
 		pBaseSpot->SetspLegion( spStageObj->GetspLegion() );
 		SendBattleInfoByGuildRaid( pBaseSpot, 
 									spCampObj->GetidxLastUnlock(),
-									spCampObj->GetspStageLastUnlock()->GetspPropStage()->legion.lvLegion,
+									spCampObj->GetspStageLastUnlock()->GetspPropStage()->m_spxLegion->lvLegion,
 									result );
 	}
 }

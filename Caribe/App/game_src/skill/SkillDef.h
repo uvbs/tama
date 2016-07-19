@@ -6,8 +6,8 @@
 // 추가하고 싶은 타입이 있을경우 enum타입에 추가하면 됩니다.
 // define으로 하지 않은이유는 디버깅시에 enum은 타입을 바로 확인할수 있기 때문입니다.
 // enum {} 에 타입추가가 가능하다면 이렇게 안해도 되는데, 추가방법 아시는분은 제보바랍니다. ㅠㅠ;
-#define XE_NAMESPACE_START( XSKILL )	namespace XSKILL {
-#define XE_NAMESPACE_END	}
+// #define XE_NAMESPACE_START( XSKILL )	namespace XSKILL {
+// #define XE_NAMESPACE_END	}
 
 XE_NAMESPACE_START( XSKILL )
 // 시전방식 타입

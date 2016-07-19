@@ -35,8 +35,10 @@
   스팟바이너리 압축.
  ver30
   요일스팟 리뉴얼.
+ ver31
+  요일스팟 시리얼라이즈 변경 
 */
-#define VER_WORLD_SERIALIZE		30
+#define VER_WORLD_SERIALIZE		31
 
 //class XTimeEventTimer;
 class XDelegateSpot;
@@ -100,15 +102,15 @@ public:
 	void _AddSpot( XSpot *pBaseSpot );
 	void OnCreateSpots( XSPAcc pAcc );
 
-	XSpotDaily* SetActiveDailySpotToRandom( XE::xtDOW dow, int secPass, XSPAcc spAcc );
-	XSpotDaily* GetActiveDailySpot( void );
+//	XSpotDaily* SetActiveDailySpotToRandom( XE::xtDOW dow, int secPass, XSPAcc spAcc );
+	XSpotDaily* GetActiveDailySpot();
 	inline XSpotDaily* GetpSpotDaily() {
 		return GetActiveDailySpot();
 	}
 // 	XSpotSpecial* SetActiveSpecialSpotToRandom( int secPass, XSPAcc spAcc );
-// 	XSpotSpecial* GetActivatedSpecialSpot( void );
+// 	XSpotSpecial* GetActivatedSpecialSpot();
 
-//	void CreateEmptySpots( void );
+//	void CreateEmptySpots();
 	int GetSpotInSight( XArrayLinearN<XSpot*, 512> *pOutAry,
 						XGAME::xtSpot typeSpot,
 						const XE::VEC2& vCenter,

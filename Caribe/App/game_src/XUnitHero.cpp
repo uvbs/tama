@@ -56,8 +56,8 @@ XUnitHero::XUnitHero( XSquadObj *pSquadObj,
 	// 이 영웅이 군단장이냐
 #if defined(WIN32) && defined(_CHEAT)
 	if( !XAPP->m_bStopPassive && IsCheatFiltered() )
-	{
 #endif // defined(WIN32) && defined(_CHEAT)
+	{
 		// 3성 이상일때만 적용
 #ifndef _XSINGLE
 		if( pHero->GetGrade() >= XGAME::xGD_RARE ) 

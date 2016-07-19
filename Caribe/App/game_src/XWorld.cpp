@@ -150,52 +150,20 @@ void XWorld::UpdateSpots()
 /**
  보유한 요일스팟중 아무거나 잡아서 주어진 인자로 세팅하고 활성화 시킨다.
 */
-XSpotDaily* XWorld::SetActiveDailySpotToRandom( XE::xtDOW dow, int secPass, XSPAcc spAcc )
-{
-	XArrayLinearN<XSpotDaily*, 32> ary;
-	GetSpotsToAry( &ary, XGAME::xSPOT_DAILY );
-	XARRAYLINEARN_LOOP( ary, XSpotDaily*, pSpot )
-	{
-		if( pSpot->IsActive() )		// 이미 활성화 되어있는 스팟이 있으면 새로 만들지 않는다.
-			return nullptr;
-	} END_LOOP;
-	XSpotDaily *pSpot = ary.GetFromRandom();
-	if( pSpot == nullptr )
-		return nullptr;
-	// 작동시작
-	pSpot->SetSpot( dow, secPass, spAcc );
-	return pSpot;
-}
-
-/**
- 이미 활성화 되어있는 스페셜스팟이 있는지 확인한다.
-*/
-// XSpotSpecial* XWorld::GetActivatedSpecialSpot( void )
+// XSpotDaily* XWorld::SetActiveDailySpotToRandom( XE::xtDOW dow, int secPass, XSPAcc spAcc )
 // {
-// 	for( XSpot *pSpot : m_listSpots )
+// 	XArrayLinearN<XSpotDaily*, 32> ary;
+// 	GetSpotsToAry( &ary, XGAME::xSPOT_DAILY );
+// 	XARRAYLINEARN_LOOP( ary, XSpotDaily*, pSpot )
 // 	{
-// 		if( pSpot->GettypeSpot() == XGAME::xSPOT_SPECIAL )
-// 		{
-// 			if( pSpot->IsActive() )
-// 				return SafeCast<XSpotSpecial*, XSpot*>( pSpot );
-// 		}
-// 	};
-// 	return nullptr;
-// }
-// /**
-//  보유한 스페셜스팟중 아무거나 잡아서 주어진 인자로 세팅하고 활성화 시킨다.
-// */
-// XSpotSpecial* XWorld::SetActiveSpecialSpotToRandom( int secPass, XSPAcc spAcc )
-// {
-// 	XArrayLinearN<XSpotSpecial*, 32> ary;
-// 	GetSpotsToAry( &ary, XGAME::xSPOT_SPECIAL );
-// 	XSpotSpecial *pSpot = nullptr;
-// 	if( ary.size() > 0 )
-// 		pSpot = ary.GetFromRandom();
+// 		if( pSpot->IsActive() )		// 이미 활성화 되어있는 스팟이 있으면 새로 만들지 않는다.
+// 			return nullptr;
+// 	} END_LOOP;
+// 	XSpotDaily *pSpot = ary.GetFromRandom();
 // 	if( pSpot == nullptr )
 // 		return nullptr;
 // 	// 작동시작
-// 	pSpot->SetSpot( spAcc->GetLevel(), secPass, spAcc );
+// 	pSpot->SetSpot( dow, secPass, spAcc );
 // 	return pSpot;
 // }
 

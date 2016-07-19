@@ -182,21 +182,21 @@ void XSceneTech::Update()
  @brief 노드트리영역에서 마우스 오버된 노드를 찾는다.
  vPos는 씬좌상귀를 기준으로한 좌표
 */
-XWndAbilButton* XSceneTech::GetpWndNodeMouseOver( const XE::VEC2& vPos )
-{
-	XWnd *pRootTree = Find( "wnd.tree.root" );
-	if( pRootTree ) {
-		for( auto pWnd : pRootTree->GetlistItems() ) {
-			const auto strHead = pWnd->GetstrIdentifier().substr( 0, 9 );
-			if( strHead == "butt.abil" ) {
-				if( pWnd->IsMouseOver( vPos ) ) {
-					return SafeCast<XWndAbilButton*>( pWnd );
-				}
-			}
-		}
-	}
-	return nullptr;
-}
+// XWndAbilButton* XSceneTech::GetpWndNodeMouseOver( const XE::VEC2& vPos )
+// {
+// 	XWnd *pRootTree = Find( "wnd.tree.root" );
+// 	if( pRootTree ) {
+// 		for( auto pWnd : pRootTree->GetlistItems() ) {
+// 			const auto strHead = pWnd->GetstrIdentifier().substr( 0, 9 );
+// 			if( strHead == "butt.abil" ) {
+// 				if( pWnd->IsMouseOver( vPos ) ) {
+// 					return dynamic_cast<XWndAbilButton*>( pWnd );
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return nullptr;
+// }
 /**
  @brief 왼쪽 영웅 리스트
 */

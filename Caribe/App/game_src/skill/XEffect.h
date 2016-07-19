@@ -1,8 +1,8 @@
 ﻿#pragma once
 #include <list>
 #include "SkillDef.h"
-#define XE_NAMESPACE_START( XSKILL )	namespace XSKILL {
-#define XE_NAMESPACE_END	}
+// #define XE_NAMESPACE_START( XSKILL )	namespace XSKILL {
+// #define XE_NAMESPACE_END	}
 
 XE_NAMESPACE_START( XSKILL )
 /**
