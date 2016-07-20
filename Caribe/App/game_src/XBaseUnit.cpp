@@ -511,20 +511,6 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 {
 	float scaleDraw = GetScaleObj().x * scale;
 	const float scaleFactor = GetScaleFactor();
-// 	float scaleFactor = 1.f;
-// 	switch( GetUnitSize() )
-// 	{
-// 	case XGAME::xSIZE_SMALL:
-// 		if( m_pSquadObj->GetUnitType() == XGAME::xUNIT_PALADIN )
-// 			scaleFactor = 1.5f;
-// 		break;
-// 	case XGAME::xSIZE_MIDDLE:
-// 		scaleFactor = 1.5f;
-// 		break;
-// 	case XGAME::xSIZE_BIG:
-// 		scaleFactor = 2.0f;
-// 		break;
-// 	}
 
 	scaleDraw *= scaleFactor;
 	// 정식선택되었을때 인디케이터
@@ -699,7 +685,8 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 				// 이미 로딩한건지 검사.
 				auto pSkillDat = pBuffObj->GetpDat();
 				// 액티브 스킬만 표시한다(특성의 액티브발동효과는 idName이 없다)
-				if( pSkillDat->IsActive() && pSkillDat->GetidName() ) {
+//				if( pSkillDat->IsActive() && pSkillDat->GetidName() ) {
+			if( pSkillDat->IsActive() && !pSkillDat->GetstrIcon().empty() ) {
 					XSurface *psfc = nullptr;
 					for( auto& icon : m_aryBuffIcon ) {
 						if( icon.m_idSkill == pSkillDat->GetidSkill() ) {

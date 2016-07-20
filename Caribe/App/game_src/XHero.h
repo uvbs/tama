@@ -312,13 +312,13 @@ public:
 	}
 	bool SetUnlockAbil( XGAME::xtUnit unit, ID idNode );
 	void SetAbilPoint( XGAME::xtUnit unit, ID idNode, int point );
-	void SetAbilPoint( const _tstring& idsAbil, int point );
 	int GetLevelAbil( XGAME::xtUnit unit, ID idNode ) {
 		auto abil = GetAbilNode( unit, idNode );
 		return abil.point;
 	}
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 	// abil, PropTech
+	void SetAbilPoint( const _tstring& idsAbil, int point );
 	int AddAbilPoint( XGAME::xtUnit unit, ID idAbil );
 	float GetAdjByTech(XGAME::xtUnit unt, XGAME::xtParameter adjParam, float baseStat);
 	float GetSquadAttackMeleePower( int levelSquad);

@@ -986,14 +986,6 @@ int XHero::GetNumUnlockAbil( /*XGAME::xtUnit unit*/ )
 		num += mapAbil.size();
 	}
 	return num;
-// 	return mapAbil.size();
-// 	for( auto& itor : mapAbil ) {
-// 		ID idNode = itor.first;
-// 		auto& abil = itor.second;
-// 		if( abil.point >= 0 )
-// 			++num;
-// 	}
-// 	return num;
 }
 /**
  @brief unit의 특성트리에서 현재 잠금해제 비용을 얻는다.
@@ -1002,6 +994,14 @@ int XHero::GetGoldUnlockAbilCurr( /*XGAME::xtUnit unit*/ )
 {
 	int numUnlock = GetNumUnlockAbil( /*unit*/ );
 	return XPropTech::sGet()->GetGoldUnlockWithNum( numUnlock );
+}
+
+void XHero::SetAbilPoint( const _tstring& idsAbil, int point )
+{
+	auto pAbil = XPropTech::sGet()->GetpNode( idsAbil );
+	if( pAbil ) {
+		SetAbilPoint( pAbil->unit, pAbil->idNode, point );
+	}
 }
 
 #endif // defined(_CLIENT) || defined(_GAME_SERVER)
@@ -1174,13 +1174,6 @@ void XHero::GenerateAbilityForDummy( XGAME::xtUnit unit, int lvAcc )
 	}
 }
 
-void XHero::SetAbilPoint( const _tstring& idsAbil, int point )
-{
-	auto pAbil = XPropTech::sGet()->GetpNode( idsAbil );
-	if( pAbil ) {
-		SetAbilPoint( pAbil->unit, pAbil->idNode, point );
-	}
-}
 #endif // defined(_GAME_SERVER) && defined(_DEV)
 
 /**
