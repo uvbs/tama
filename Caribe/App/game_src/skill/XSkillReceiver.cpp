@@ -145,7 +145,7 @@ int XSkillReceiver::ApplyInvokeEffect( XSkillDat *pSkillDat,
 																												level,
 																												this, NULL );
 			XASSERT( infoUseSkill.errCode == xOK );
-			pCaster->OnShootSkill( infoUseSkill );
+			pCaster->OnShootSkill( infoUseSkill, pBuffObj->GetidSkill() );
 		}
 	}
 	// 효과발동자(시전대상)에게 이 스킬로 부터 발동될 스킬이 있으면 발생시킨다.

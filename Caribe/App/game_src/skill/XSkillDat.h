@@ -29,23 +29,27 @@ private:
 //	std::list<XSKILL::EFFECT*> m_listEffects;	// 하나의 스킬에는 여러개의 효과를 가질수 있다
 	XList4<EFFECT*> m_listEffects;	// 하나의 스킬에는 여러개의 효과를 가질수 있다
 	ID m_idCastMotion;			///< 시전동작
-	_tstring m_strCasterEffect;	///< 시전자 이펙트 spr
-	ID m_idCasterEffect;		///< 시전자 이펙트 ID
+	xEffSfx m_CasterEff;		// 시전자 이펙트
+// 	_tstring m_m_CasterEff.m_strSpr;	///< 시전자 이펙트 spr
+// 	ID m_m_CasterEff.m_idAct;		///< 시전자 이펙트 ID
 	xtWhenCasting m_whenCasting = xWC_BASE_TARGET_NEAR;	// 시전시점
 	xtBaseTarget m_baseTarget;	///< 기준타겟
 	xtFriendshipFilt m_bitBaseTarget;	///< 기준타겟우호
 	xtBaseTargetCond m_condBaseTarget;	///< 기준타겟조건
 	float m_rangeBaseTargetCond;		///< 기준타겟조건범위
-	_tstring m_strTargetEffect;	// 타겟이펙트, 기준타겟에 생성되는 이펙트
-	ID m_idTargetEffect;		// 타겟이펙트id
-	xtPoint m_pointTargetEffect;		// 타겟이펙트생성지점
-	xtAniLoop m_loopTargetEffect;		// 타겟이펙트반복
-	_tstring m_strShootEffect;	///< 슈팅이펙트
-	ID m_idShootEffect;			///< 슈팅이펙트id
-	xtPoint m_pointShootEffect;	///< 슈팅이펙트생성위치
-	_tstring m_strShootTargetEffect;	///< 슈팅타겟이펙트
-	ID m_idShootTargetEffect;			///< 이펙트 아이디
-	xtPoint m_pointShootTargetEffect;	///< 슈팅타겟이펙트생성위치
+	xEffSfx m_TargetEff;					// 타겟이펙트, 기준타겟에 생성되는 이펙트
+// 	_tstring m_strTargetEffect;	// 타겟이펙트, 기준타겟에 생성되는 이펙트
+// 	ID m_idTargetEffect;		// 타겟이펙트id
+// 	xtPoint m_pointTargetEffect;		// 타겟이펙트생성지점
+// 	xtAniLoop m_loopTargetEffect;		// 타겟이펙트반복
+	xEffSfx m_ShootEff;				///< 슈팅이펙트
+// 	_tstring m_strShootEffect;	///< 슈팅이펙트
+// 	ID m_idShootEffect;			///< 슈팅이펙트id
+// 	xtPoint m_pointShootEffect;	///< 슈팅이펙트생성위치
+	xEffSfx m_ShootTargetEff;			///< 슈팅타겟이펙트
+// 	_tstring m_strShootTargetEffect;	///< 슈팅타겟이펙트
+// 	ID m_idShootTargetEffect;			///< 이펙트 아이디
+// 	xtPoint m_pointShootTargetEffect;	///< 슈팅타겟이펙트생성위치
 	_tstring m_strShootObj;				// 발사체
 	ID m_idShootObj = 1;			// 발사체id
 	float m_shootObjSpeed = 0.6f;		// 발사체속도
@@ -58,18 +62,19 @@ private:
 		m_fCoolTime = 0;
 //		m_UseType = xUST_NONE;
 		m_idCastMotion = ACT_SKILL1;
-		m_idCasterEffect = 1;
+//		m_m_CasterEff.m_idAct = 1;
 		m_baseTarget = xBST_SELF;
 		m_bitBaseTarget = xfNONESHIP;
 		m_condBaseTarget = xBTC_NONE;
 		m_rangeBaseTargetCond = 0;
-		m_idTargetEffect = 1;
-		m_pointTargetEffect = xPT_TARGET_POS;
-		m_loopTargetEffect = xAL_ONCE;
-		m_idShootEffect = 1;
-		m_pointShootEffect = xPT_ACTION_EVENT;
-		m_idShootTargetEffect = 1;
-		m_pointShootTargetEffect = xPT_TARGET_POS;
+// 		m_idTargetEffect = 1;
+// 		m_pointTargetEffect = xPT_TARGET_POS;
+// 		m_loopTargetEffect = xAL_ONCE;
+// 		m_idShootEffect = 1;
+		m_ShootEff.m_Point = xPT_ACTION_EVENT;
+// 		m_pointShootEffect = xPT_ACTION_EVENT;
+// 		m_idShootTargetEffect = 1;
+// 		m_pointShootTargetEffect = xPT_TARGET_POS;
 		// EFFECT구조체 초기화시킬때 memset으로 밀지말것. 스크립트클래스들어갈 가능성 있음
 	}
 	void Destroy ();
@@ -96,26 +101,30 @@ public:
 	GET_SET_ACCESSOR(ID, idName );
 	GET_SET_ACCESSOR(ID, idDesc );
 	GET_SET_ACCESSOR( float, fCoolTime );
-	GET_ACCESSOR( const _tstring&, strIcon );
+	GET_ACCESSOR_CONST( const _tstring&, strIcon );
 	LPCTSTR GetResIcon() {
 		return XE::MakePath(DIR_IMG, m_strIcon );
 	}
 	GET_SET_ACCESSOR( ID, idCastMotion );
-	GET_ACCESSOR( const _tstring&, strCasterEffect );
-	GET_ACCESSOR( ID, idCasterEffect );
-	GET_ACCESSOR( const _tstring&, strTargetEffect );
-	GET_ACCESSOR( ID, idTargetEffect );
-	GET_ACCESSOR( xtPoint, pointTargetEffect );
+	GET_ACCESSOR_CONST( const xEffSfx&, CasterEff );
+// 	GET_ACCESSOR( const _tstring&, m_CasterEff.m_strSpr );
+// 	GET_ACCESSOR( ID, m_CasterEff.m_idAct );
+	GET_ACCESSOR_CONST( const xEffSfx&, TargetEff );
+// 	GET_ACCESSOR( const _tstring&, strTargetEffect );
+// 	GET_ACCESSOR( ID, idTargetEffect );
+// 	GET_ACCESSOR( xtPoint, pointTargetEffect );
 	GET_ACCESSOR( xtBaseTarget, baseTarget );
 	GET_ACCESSOR( xtFriendshipFilt, bitBaseTarget );
 	GET_ACCESSOR( xtBaseTargetCond, condBaseTarget );
-	GET_ACCESSOR( const _tstring&, strShootEffect );
-	GET_ACCESSOR( ID, idShootEffect );
-	GET_ACCESSOR( xtPoint, pointShootEffect );
-	GET_ACCESSOR( xtAniLoop, loopTargetEffect );
-	GET_ACCESSOR( const _tstring&, strShootTargetEffect );
-	GET_ACCESSOR( ID, idShootTargetEffect );
-	GET_ACCESSOR( xtPoint, pointShootTargetEffect );
+	GET_ACCESSOR_CONST( const xEffSfx&, ShootEff );
+// 	GET_ACCESSOR( const _tstring&, strShootEffect );
+// 	GET_ACCESSOR( ID, idShootEffect );
+// 	GET_ACCESSOR( xtPoint, pointShootEffect );
+// 	GET_ACCESSOR( xtAniLoop, loopTargetEffect );
+	GET_ACCESSOR_CONST( const xEffSfx&, ShootTargetEff );
+// 	GET_ACCESSOR( const _tstring&, strShootTargetEffect );
+// 	GET_ACCESSOR( ID, idShootTargetEffect );
+// 	GET_ACCESSOR( xtPoint, pointShootTargetEffect );
 	GET_ACCESSOR( float, rangeBaseTargetCond );
 	GET_ACCESSOR( const _tstring&, strShootObj );
 	GET_ACCESSOR( ID, idShootObj );

@@ -43,6 +43,8 @@ class XBuffObj //: public XMemPool<XBuffObj>
 	ID m_idBuff;			// 고유아이디
 	XSkillDat *m_pDat;			// 스킬데이타 참조용 포인터(파괴금지)
 	XSkillUser *m_pCaster;		// 시전자
+//	ID m_idCaster = 0;				// 시전자(아이디)
+	BIT m_bitCampCaster = 0;		// 시전자 진영(땜빵)
 	XSkillReceiver *m_pOwner;		// 
 	XE::VEC2 m_vCastPos;				// 지역시전으로 했을때 그 중심좌표
 	std::list<EFFECT_OBJ*> m_listEffectObjs;		// 스킬효과 오브젝트
@@ -51,6 +53,8 @@ class XBuffObj //: public XMemPool<XBuffObj>
 	int	m_nCount;			// 생성시부터 1씩 계속 증가
 	XList<ID> m_listImmunity;				// 발동스킬 발동시 면역된 대상들 리스트
 	int m_Level;
+	ID m_idCallerSkill = 0;			// 이 버프객체를 생성한 상위 스킬의 아이디
+	XSkillDat* m_pDatCaller = nullptr;		// idCallerSkill의 아이디
 #ifdef _CLIENT
 	XSurface *m_psfcIcon;		///< 스킬 아이콘
 #endif
@@ -78,50 +82,25 @@ public:
 				XSkillReceiver *pOwner, 
 				XSkillDat *pSkillDat, 
 				int level,
-				const XE::VEC2& vPos );
+				const XE::VEC2& vPos,
+				ID idCallerSkill );
 	virtual ~XBuffObj() { Destroy(); }
 	// get/set/is
 	//GET_ACCESSOR( ID, id );
 	GET_ACCESSOR( XDelegateSkill*, pDelegate );
 	ID GetidBuff() { return m_idBuff; }
 	GET_ACCESSOR( XSkillDat*, pDat );
-// 	inline EFFECT_LIST& GetEffectList() { 
-// 		return GetpDat()->GetlistEffects(); 
-// 	}
-// 	inline EFFECT* GetEffectIndex( int idx ) {
-// 		if( idx >= GetpDat()->GetNumEffect() )
-// 			return nullptr;
-// 		return *(GetpDat()->GetlistEffects().GetpByIndex( idx ));
-// 	}
-// 	inline int GetNumEffect() {
-// 		return GetpDat()->GetNumEffect();
-// 	}
-// 	inline float GetAbilMinbyLevel( int idx = 0 ) {
-// 		EFFECT *pEffet = GetEffectIndex(idx);
-// 		if( pEffet )
-// 			return pEffet->GetAbilityMin( m_Level );
-// 		return 0;
-// 	}
-// 	inline float GetInvokeRatioByLevel() {
-// 		XBREAK( GetNumEffect() > 1 );
-// 		EFFECT *pEffet = GetEffectIndex( 0 );
-// 		if( pEffet )
-// 			return pEffet->aryInvokeRatio[ m_Level ];
-// 		return 0;
-// 	}
-// 	inline float GetInvokeSizeByLevel() {
-// 		XBREAK( GetNumEffect() > 1 );
-// 		EFFECT *pEffet = GetEffectIndex( 0 );
-// 		if( pEffet )
-// 			return pEffet->GetInvokeSize( m_Level );
-// 		return 0;
-// 	}
+	GET_ACCESSOR_CONST( ID, idCallerSkill );
+	LPCTSTR GetstrIconByCaller() const;
+//	GET_ACCESSOR_CONST( ID, idCaster );
+	GET_ACCESSOR_CONST( BIT, bitCampCaster );
+
 	void AddAbilMin( float val );
 	GET_ACCESSOR( XSkillUser*, pCaster );
-	GET_SET_ACCESSOR( BOOL, bDestroy );
+	GET_SET_ACCESSOR_CONST( BOOL, bDestroy );
 	GET_SET_ACCESSOR( XLuaSkill*, pluaScript );
 	GET_ACCESSOR( XSkillReceiver*, pOwner );
-	GET_ACCESSOR( int, Level );
+	GET_ACCESSOR_CONST( int, Level );
 	/**
 	 @brief 최초 프로세스 상태인가.
 	*/

@@ -667,48 +667,55 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 	}
 	if( m_timerDamage.IsOver() )
 		m_timerDamage.Off();
+	auto vDrawName = vDrawHp;
 	// draw name
 	if( IsHero() && IsLive() ) {
-		auto vDrawName = DrawName( vPos, scaleFactor, scale, vDrawHp );
+		vDrawName = DrawName( vPos, scaleFactor, scale, vDrawHp );
+	}
+	if( /*IsHero() &&*/ IsLive() ) {
+//		vDrawName = DrawName( vPos, scaleFactor, scale, vDrawHp );
 		// 버프 디버프 아이콘 표시
 		{
-			if( GetlistSkillRecvObj().size() > 0 ) {
-				int a = 0;
-				if( IsPlayer() ) {
-					int a = 0;
-				} else {
-					int a = 0;
-				}
-			}
 			int idx = 1;
 			XLIST2_LOOP( GetlistSkillRecvObj(), XSKILL::XBuffObj*, pBuffObj ) {
 				// 이미 로딩한건지 검사.
 				auto pSkillDat = pBuffObj->GetpDat();
 				// 액티브 스킬만 표시한다(특성의 액티브발동효과는 idName이 없다)
 //				if( pSkillDat->IsActive() && pSkillDat->GetidName() ) {
-			if( pSkillDat->IsActive() && !pSkillDat->GetstrIcon().empty() ) {
+//			if( pSkillDat->IsActive() && !pSkillDat->GetstrIcon().empty() ) {
+				if( pSkillDat->IsActive() ) {
+					auto strIcon = pSkillDat->GetstrIcon();
+					if( strIcon.empty() ) {
+						strIcon = pBuffObj->GetstrIconByCaller();
+					}
 					XSurface *psfc = nullptr;
+					// 같은 종류가 두개걸렸을때는 하나만 표시한다.
 					for( auto& icon : m_aryBuffIcon ) {
 						if( icon.m_idSkill == pSkillDat->GetidSkill() ) {
 							psfc = icon.m_psfcIcon;
 							break;
 						}
 					}
-					if( psfc == nullptr ) {
+					if( psfc == nullptr && !strIcon.empty() ) {
 						xIconBuff icon;
 						icon.m_idSkill = pSkillDat->GetidSkill();
-						icon.m_psfcIcon = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, pSkillDat->GetstrIcon() ) );
+						icon.m_psfcIcon = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, strIcon ) );
 						psfc = icon.m_psfcIcon;
 						XBREAK( psfc == nullptr );
 						m_aryBuffIcon.push_back( icon );
 					}
-					float scaleIcon = 0.5f * scale;
-					XE::VEC2 sizeIcon = psfc->GetSize() * scaleIcon;
-					XE::VEC2 vDrawBuffIcon = vPos;
-					vDrawBuffIcon.x -= (sizeIcon.w * idx) * 0.5f;
-					vDrawBuffIcon.y = vDrawName.y - (( 2.f * scale ) + sizeIcon.h);
-					psfc->SetScale( scaleIcon );
-					psfc->Draw( vDrawBuffIcon );
+					if( psfc ) {
+						const auto bitCaster = pBuffObj->GetbitCampCaster();
+						if( m_Camp.IsEnemy( bitCaster ) )
+							psfc->SetColor( XCOLOR_RGBA(200,0,0,255) );
+						float scaleIcon = 0.5f * scale;
+						XE::VEC2 sizeIcon = psfc->GetSize() * scaleIcon;
+						XE::VEC2 vDrawBuffIcon = vPos;
+						vDrawBuffIcon.x -= ( sizeIcon.w * idx ) * 0.5f;
+						vDrawBuffIcon.y = vDrawName.y - ( ( 2.f * scale ) + sizeIcon.h );
+						psfc->SetScale( scaleIcon );
+						psfc->Draw( vDrawBuffIcon );
+					}
 					++idx;
 				}
 			} END_LOOP;
@@ -1899,11 +1906,11 @@ int XBaseUnit::GetListObjsRadius( XArrayLinearN<XSkillReceiver*, 512> *plistOutI
 								int numApply,
 								BOOL bIncludeCenter )
 {
-	XArrayLinearN<XBaseUnit*,512> ary;
+//	XArrayLinearN<XBaseUnit*,512> ary;
+	XVector<XSPUnit> ary;
 	XE::VEC2 vCenter;
 	XEBaseWorldObj *pTarget = nullptr;
-	if( pBaseTarget )
-	{
+	if( pBaseTarget )	{
 		pTarget = dynamic_cast<XEBaseWorldObj*>( pBaseTarget );
 		if( XBREAK( pTarget == nullptr ) )
 			return 0;
@@ -1923,23 +1930,20 @@ int XBaseUnit::GetListObjsRadius( XArrayLinearN<XSkillReceiver*, 512> *plistOutI
 	else
 	if( pEffect->liveTarget == XSKILL::xTL_ALL )
 		bitLive = XSKILL::xTF_ALL;
-	XEObjMngWithType::sGet()->GetListUnitRadius( &ary,
+	XEObjMngWithType::sGet()->GetListUnitRadius2( &ary,
 												pTarget,
 												vCenter,
 												xMETER_TO_PIXEL(meter),
 												bitSideFilter,
 												numApply,
-												bIncludeCenter,
+												bIncludeCenter != FALSE,
 												bitLive );
-	XARRAYLINEARN_LOOP( ary, XBaseUnit*, pUnit )
-	{
-//		XSkillReceiver *pRecv = dynamic_cast<XSkillReceiver *>(pUnit);
-		XSkillReceiver *pRecv = static_cast<XSkillReceiver *>( pUnit );
-		if (NULL != pRecv)
-		{
+	for( auto spUnit : ary )	{
+		auto pRecv = static_cast<XSkillReceiver *>( spUnit.get() );
+		if (pRecv)		{
 			plistOutInvokeTarget->Add( pRecv );
 		}
-	} END_LOOP;
+	}
 	return plistOutInvokeTarget->size();
 }
 
@@ -2080,22 +2084,17 @@ XSkillReceiver* XBaseUnit::CreateSfxReceiver( EFFECT *pEffect, float sec )
 */
 void XBaseUnit::cbOnArriveSkillObj( XSkillShootObj *pArrow,
 									XSKILL::XSkillDat *pSkillDat,
-// 									XSKILL::EFFECT *pEffect,
 									int level,
-									XSKILL::XSkillReceiver *pBaseTarget
-// 									, XSKILL::XSkillReceiver *pCastingTarget
-									)
+									XSKILL::XSkillReceiver *pBaseTarget )
 {
-	if( pSkillDat->GetstrIdentifier() == _T("throw_spear_shoot" ))
-	{
+	if( pSkillDat->GetstrIdentifier() == _T("throw_spear_shoot" ))	{
 		XBuffObj *pBuffObj = FindBuffSkill( _T("gungnir") );
 		if( pBuffObj )		{
 			// 궁니르버프가 있을때 창으로 대상을 맞춤.
 			pBuffObj->OnEventJunctureCommon( XSKILL::xCOND_HARD_CODE );
 		}
 	}
-	XSkillUser::CastSkillToBaseTarget( pSkillDat, level, pBaseTarget, XE::VEC2(0) );
-//	XSkillUser::CastEffectToCastingTarget( pSkillDat, pEffect, level, pBaseTarget, pCastingTarget, XE::VEC2( 0 ) );
+	XSkillUser::CastSkillToBaseTarget( pSkillDat, level, pBaseTarget, XE::VEC2(0), pSkillDat->GetidSkill() );
 }
 
 /**

@@ -9,6 +9,7 @@
 #include "XWndResCtrl.h"
 #include "XSkillMng.h"
 #include "skill/XSkillDat.h"
+#include "skill/XESkillMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -89,7 +90,8 @@ XWndAbilButton::XWndAbilButton( XHero *pHero
 // 	Add(pBg);
 	auto vScale = GetScaleLocal();
 	XE::VEC2 vOfs(3);
-	auto pIcon = new XWndImage( strRes, vOfs * vScale );
+//	auto pIcon = new XWndImage( strRes, vOfs * vScale );
+	auto pIcon = new XWndImage( vOfs * vScale );
 	pIcon->SetScaleLocal( 0.724f );
 	pIcon->SetstrIdentifier("img.abil");
 	Add( pIcon );
@@ -122,7 +124,14 @@ void XWndAbilButton::Update()
 	auto pImg = xGET_IMAGE_CTRL( this, "img.abil" );
 	auto pHero = ACCOUNT->GetHero( m_snHero );
 	if( XASSERT(pHero) && pImg ) {
-		_tstring strRes = XE::MakePath( DIR_IMG, m_pProp->strIcon.c_str() );
+		auto strIcon = m_pProp->strIcon;
+		if( strIcon.empty() ) {
+			auto pSkillDat = XSKILL::XESkillMng::sGet()->FindByIdentifier( m_pProp->strSkill );
+			if( pSkillDat ) {
+				strIcon = pSkillDat->GetstrIcon();
+			}
+		}
+		const _tstring strRes = XE::MakePath( DIR_IMG, strIcon );
 		pImg->SetSurfaceRes( strRes );
 		bool bEnable = false;
 		// 활성화가 되려면 우선 필요레벨이 되어야 한다.
@@ -191,16 +200,6 @@ void XWndAbilButton::Update()
 					Add( pGlow );
 				}
 			}
-// 			auto pImgGlow = SafeCast2<XWndImage*>( Find("img.researching.node") );
-// 			if( pImgGlow == nullptr ) {
-// 				pImgGlow = new XWndImage( PATH_UI( "common_bg_item_glow.png" ), -3.f, -3.f );
-// 				pImgGlow->SetScaleLocal( 0.75f );
-// 				pImgGlow->SetblendFunc( XE::xBF_ADD );
-// //				pImgGlow->SetbShow( false );
-// 				pImgGlow->SetstrIdentifier( "img.researching.node" );
-// 				Add( pImgGlow );
-// 				pImgGlow->AddComponentWave( "alpha", 0.f, 0.5f, 0.5f, 1.f );
-// 			}
 		} else {
 			// 연구중 노드가 아니면 글로우 삭제
 			DestroyWndByIdentifier( "spr.researching.node");

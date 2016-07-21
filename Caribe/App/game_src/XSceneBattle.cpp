@@ -38,6 +38,7 @@
 #include "XSquadron.h"
 #include "XPropLegion.h"
 #include "XPropLegionH.h"
+#include "Sprite/SprMng.h"
 #endif // _XSINGLE
 #include "XSoundMng.h"
 
@@ -1069,6 +1070,8 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 		}
 		// objmng를 파괴한다.
 		XBattleField::sGet()->Clear();
+		SPRMNG->DoFlushCache();
+		IMAGE_MNG->DoFlushCache();
 		//
 		m_aryCamp[xSI_PLAYER].m_idsLegion = "single1_player";
 		m_aryCamp[xSI_OTHER].m_idsLegion = "single1_enemy";

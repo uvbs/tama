@@ -283,6 +283,7 @@ BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr,
 							XSkillDat* pSkillDat,
 							EFFECT *pEffect )
 {
+	const std::string strAttrName = (cAttrName)? cAttrName : "";
 	if( XSAME( cAttrName, 4 ) )		// 이름
 	{
 		int idName = pAttr->IntValue();
@@ -302,20 +303,10 @@ BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr,
 	{
 		pSkillDat->SetidCastMotion( (ID)pAttr->IntValue() );
 	} else
-	if( XSAME( cAttrName, 11 ) )	// 아이콘
+	if( XSAME( cAttrName, 11 ) || strAttrName == "icon" )	// 아이콘
 	{
 		pSkillDat->SetszIcon( U82SZ(cParam) );
 	} else
-// 	if( XSAME( cAttrName, 12 ) || XSAME( cAttrName, 13 ) )	// 쿨타임/재사용대기시간
-// 	{
-// 		float secCool = (float)pAttr->DoubleValue();
-// 		pSkillDat->SetfCoolTime( secCool );
-// 	} else
-// 	if( XSAME( cAttrName, 12 ) || XSAME( cAttrName, 13 ) )	// 쿨타임/재사용대기시간
-// 	{
-// 		float secCool = (float) pAttr->DoubleValue();
-// 		pSkillDat->SetfCoolTime( secCool ); 
-// 	} else
 	if( XSAME( cAttrName, 249) ) {	// 시전시점
 		pSkillDat->m_whenCasting = (xtWhenCasting)ParsingParam( cParam );
 	} else
@@ -337,43 +328,43 @@ BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr,
 	} else
 	if( XSAME( cAttrName, 164 ) )	// 타겟이펙트
 	{
-		pSkillDat->m_strTargetEffect = U82SZ( cParam );
+		pSkillDat->m_TargetEff.m_strSpr = U82SZ( cParam );
 	} else
 	if( XSAME( cAttrName, 167 ) )	// 타겟이펙트생성지점
 	{
-		pSkillDat->m_pointTargetEffect = (xtPoint)ParsingParam( cParam );
+		pSkillDat->m_TargetEff.m_Point = (xtPoint)ParsingParam( cParam );
 	} else
 	if( XSAME( cAttrName, 165 ) )	// 타겟이펙트id
 	{
-		pSkillDat->m_idTargetEffect = (int)pAttr->IntValue();
+		pSkillDat->m_TargetEff.m_idAct = (int)pAttr->IntValue();
 	} else
 	if( XSAME( cAttrName, 166 ) )	// 타겟이펙트반복
 	{
-		pSkillDat->m_loopTargetEffect = (xtAniLoop)ParsingParam( cParam );
+		pSkillDat->m_TargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
 	} else
 	if( XSAME( cAttrName, 64 ) )	// 슈팅이펙트
 	{
-		pSkillDat->m_strShootEffect = U82SZ( cParam );
+		pSkillDat->m_ShootEff.m_strSpr = U82SZ( cParam );
 	} else
 	if( XSAME( cAttrName, 98 ) )	// 슈팅이펙트생성지점
 	{
-		pSkillDat->m_pointShootEffect = (xtPoint)ParsingParam( cParam );
+		pSkillDat->m_ShootEff.m_Point = (xtPoint)ParsingParam( cParam );
 	} else
 	if( XSAME( cAttrName, 97 ) )	// 슈팅이펙트id
 	{
-		pSkillDat->m_idShootEffect = (int)pAttr->IntValue();
+		pSkillDat->m_ShootEff.m_idAct = (int)pAttr->IntValue();
 	} else
 	if( XSAME( cAttrName, 192 ) )
 	{
-		pSkillDat->m_strShootTargetEffect = U82SZ( cParam );
+		pSkillDat->m_ShootTargetEff.m_strSpr = U82SZ( cParam );
 	} else
 	if( XSAME( cAttrName, 194 ) )	// 슈팅타겟이펙트생성지점
 	{
-		pSkillDat->m_pointShootTargetEffect = (xtPoint)ParsingParam( cParam );
+		pSkillDat->m_ShootTargetEff.m_strSpr = (xtPoint)ParsingParam( cParam );
 	} else
 	if( XSAME( cAttrName, 193 ) )	// 슈팅타겟이펙트id
 	{
-		pSkillDat->m_idShootTargetEffect = (int)pAttr->IntValue();
+		pSkillDat->m_ShootTargetEff.m_idAct = (int)pAttr->IntValue();
 	} else
 	if( XSAME( cAttrName, 36 ) )	// 발사체
 	{	
@@ -448,11 +439,11 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 // 	} else
 	if( XSAME( cAttrName, 135 ) )	// 시전자이펙트
 	{	
-		pEffect->strCasterEffect = U82SZ( cParam );
+		pEffect->m_CasterEff.m_strSpr = U82SZ( cParam );
 	} else
 	if( XSAME( cAttrName, 137 ) )	// 시전자이펙트생성지점
 	{
-		pEffect->pointCasterEffect = (xtPoint) ParsingParam( cParam );
+		pEffect->m_CasterEff.m_Point = (xtPoint) ParsingParam( cParam );
 	} else
 // 	if( XSAME( cAttrName, 155 ) )	// 시전자이펙트반복
 // 	{
@@ -460,15 +451,15 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 // 	} else
 	if( XSAME( cAttrName, 136 ) )	// 시전자이펙트id
 	{	
-		pEffect->idCasterEffect = (int)pAttr->IntValue();
+		pEffect->m_CasterEff.m_idAct = (int)pAttr->IntValue();
 	} else
 	if( XSAME( cAttrName, 20 ) )	// 시전대상이펙트
 	{	
-		pEffect->strCastTargetEffect = U82SZ( cParam );
+		pEffect->m_CastTargetEff.m_strSpr = U82SZ( cParam );
 	} else
 	if( XSAME( cAttrName, 21 ) )	// 시전대상이펙트id
 	{	
-		pEffect->idCastTargetEffect = (int)pAttr->IntValue();
+		pEffect->m_CastTargetEff.m_idAct = (int)pAttr->IntValue();
 	} else
 // 	if( XSAME( cAttrName, 97 ) )	// 시전대상이펙트반복
 // 	{
@@ -476,7 +467,7 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 // 	} else
 	if( XSAME( cAttrName, 156 ) )	// 시전대상이펙트생성지점
 	{
-		pEffect->castTargetEffectPoint = (xtPoint) ParsingParam( cParam );
+		pEffect->m_CastTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
 	} else
 	if( XSAME( cAttrName, 60 ) || XSAME( cAttrName, 127 ) )	// /시전범위 시전길이
 	{	
@@ -545,12 +536,18 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	} else
 	if( XSAME( cAttrName, 116 ) )	// 발동확률
 	{
-//		pEffect->invokeRatio = (float)pAttr->DoubleValue() / 100.f;
-		_tstring strParam = U82SZ( cParam ); 
-		_tstring strAttrName = U82SZ( cAttrName );
+		const _tstring strParam = U82SZ( cParam ); 
+		const _tstring strAttrName = U82SZ( cAttrName );
 		ReadTableAry( strAttrName.c_str(), 
 					pSkillDat->GetstrIdentifier().c_str(), 
 					&pEffect->aryInvokeRatio, strParam.c_str(), xPERCENT );
+	} else
+	if( XSAME( cAttrName, 257 ) )	{// 발동적용확률
+		const _tstring strParam = U82SZ( cParam ); 
+		const _tstring strAttrName = U82SZ( cAttrName );
+		ReadTableAry2( strAttrName.c_str(), 
+					pSkillDat->GetstrIdentifier().c_str(), 
+					&pEffect->m_aryInvokeApplyRatio, strParam.c_str(), xPERCENT );
 	} else
 	if( XSAME( cAttrName, 7 ) || XSAME( cAttrName, 161 ) )	// 발동파라메터/효과인덱스.
 	{	
@@ -609,25 +606,8 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	{
 		pEffect->invokeState = (int)ParsingParam( cParam );
 	} else
-// 	if( XSAME( cAttrName, 102 ) )	// 상태변수1
-// 	{
-// 		pEffect->invokeStateParam[0] = (float) pAttr->DoubleValue();
-// 	} else
-// 	if( XSAME( cAttrName, 103 ) )	// 상태변수2
-// 	{
-// 		pEffect->invokeStateParam[1] = (float) pAttr->DoubleValue();
-// 	} else
-// 	if( XSAME( cAttrName, 104 ) )	// 상태변수3
-// 	{
-// 		pEffect->invokeStateParam[2] = (float) pAttr->DoubleValue();
-// 	} else
-// 	if( XSAME( cAttrName, 105 ) )	// 상태변수4
-// 	{
-// 		pEffect->invokeStateParam[3] = (float) pAttr->DoubleValue();
-// 	} else
 	if( XSAME( cAttrName, 65 ) || XSAME( cAttrName, 28 ) )	// 발동반경/범위
 	{	
-//		pEffect->invokeSize.w = (float)pAttr->DoubleValue();	// 반지름으로 쓰일땐 Size변수 같이 씀.
 		_tstring strParam = U82SZ( cParam );
 		_tstring strAttrName = U82SZ( cAttrName );
 		ReadTableAry( strAttrName.c_str(),
@@ -650,23 +630,37 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	{	
 		pEffect->invokeNumApply = pAttr->IntValue();
 	} else
-	if( XSAME( cAttrName, 30 ) || XSAME( cAttrName, 162 )  )	// 발동이펙트, 발동대상이펙트
+	if( XSAME( cAttrName, 30 ) /*|| XSAME( cAttrName, 162 )*/  )	// 발동대상이펙트
 	{	
-		if( pEffect->strInvokeEffect.empty() == false )
-			XLOGXN("%s: 중복입력. 기존값:%s", U82SZ(cAttrName), pEffect->strInvokeEffect.c_str() );
-		pEffect->strInvokeEffect = U82SZ( cParam );
+		if( pEffect->m_invokeTargetEff.m_strSpr.empty() == false )
+			XLOGXN("%s: 중복입력. 기존값:%s", U82SZ(cAttrName), pEffect->m_invokeTargetEff.m_strSpr.c_str() );
+		pEffect->m_invokeTargetEff.m_strSpr = U82SZ( cParam );
 	} else
-	if( XSAME( cAttrName, 31 ) || XSAME( cAttrName, 163 ) )	// 발동이펙트id, 발동대상이펙트id
+	if( XSAME( cAttrName, 31 ) /*|| XSAME( cAttrName, 163 )*/ )	// 발동대상이펙트id
 	{	
-		pEffect->idInvokeEffect = (int)pAttr->IntValue();
+		pEffect->m_invokeTargetEff.m_idAct = (int)pAttr->IntValue();
+	} else
+	if( XSAME( cAttrName, 157 ) )	// 발동대상이펙트생성지점
+	{
+		pEffect->m_invokeTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
 	} else
 // 	if( XSAME( cAttrName, 98 ) )	// 발동이펙트반복
 // 	{
 // 		pEffect->invokeEffectPlayMode = (xtAniLoop)ParsingParam( cParam );
 // 	} else
-	if( XSAME( cAttrName, 157 ) )	// 발동이펙트생성지점
+	if( XSAME( cAttrName, 162 )  )	// 발동자이펙트
+	{	
+		if( pEffect->m_invokerEff.m_strSpr.empty() == false )
+			XLOGXN("%s: 중복입력. 기존값:%s", U82SZ(cAttrName), pEffect->m_invokerEff.m_strSpr.c_str() );
+		pEffect->m_invokerEff.m_strSpr = U82SZ( cParam );
+	} else
+	if( XSAME( cAttrName, 163 ) )	// 발동자대상이펙트id
+	{	
+		pEffect->m_invokerEff.m_idAct = (int)pAttr->IntValue();
+	} else
+	if( XSAME( cAttrName, 258 ) )	// 발동자이펙트생성지점
 	{
-		pEffect->pointInvokeEffect = (xtPoint) ParsingParam( cParam );
+		pEffect->m_invokerEff.m_Point = (xtPoint) ParsingParam( cParam );
 	} else
 	if( XSAME( cAttrName, 33 ) )	// 발동사운드
 	{	
@@ -684,18 +678,6 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	{
 		pEffect->liveTarget = (xtTargetLive) ParsingParam( cParam );
 	} else
-// 	if( XSAME( cAttrName, 36 ) )	// 발사체
-// 	{	
-// 		pEffect->strShootObj = U82SZ( cParam );
-// 	} else
-// 	if( XSAME( cAttrName, 37 ) )	// 발사체id
-// 	{	
-// 		pEffect->idShootObj = (int)pAttr->IntValue();
-// 	} else
-// 	if( XSAME( cAttrName, 38 ) )	// 발사체속도
-// 	{	
-// 		pEffect->shootObjSpeed = (float)pAttr->DoubleValue();
-// 	} else
 	if( XSAME( cAttrName, 129 ) )	// 소환
 	{
 		pEffect->strCreateObj = U82SZ( cParam );
@@ -754,15 +736,15 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	} else
 	if( XSAME( cAttrName, 189 ) )	// 지속이펙트
 	{	
-		pEffect->strPersistEffect = U82SZ( cParam );
+		pEffect->m_PersistEff.m_strSpr = U82SZ( cParam );
 	} else
 	if( XSAME( cAttrName, 191 ) )	// 지속이펙트생성지점
 	{
-		pEffect->pointPersistEffect = (xtPoint) ParsingParam( cParam );
+		pEffect->m_PersistEff.m_Point = (xtPoint) ParsingParam( cParam );
 	} else
 	if( XSAME( cAttrName, 190 ) )	// 지속이펙트id
 	{	
-		pEffect->idPersistEffect = (int)pAttr->IntValue();
+		pEffect->m_PersistEff.m_idAct = (int)pAttr->IntValue();
 	} else
 	if( XSAME( cAttrName, 207 ) )	// 파라메터1
 	{	
@@ -1120,6 +1102,66 @@ void XESkillMng::DeSerialize( XArchive& ar, int )
 		pDat->DeSerialize( ar, ver );
 		m_listSkillDat.Add( pDat );
 	}
+}
+
+	/**
+	 @brief 테이블형태로 된 스트링을 읽어 어레이에 담는다.
+	*/
+int XESkillMng::ReadTableAry2( LPCTSTR szAttrName,
+															LPCTSTR idsSkill,
+															XVector<float>* pOutAry,
+															LPCTSTR szStr,
+															xtValType valType ) {
+	CToken token;
+	token.LoadString( szStr );
+	int idx = 0;
+	// pOutAry.size() != 0 경우도 있다. 상위블럭에서 값을 입력한 경우 하위에 상속되기때문에. 그러므로 그런경우는 클리어 시키고 다시 읽는다.
+	pOutAry->Clear();
+	pOutAry->Add( 0.f );	// index0은 쓰지 않음.
+	int level = 0;
+	float numFirst = 0;
+	while( 1 ) {
+		if( token.IsEof() )
+			break;
+		numFirst = token.GetNumberF();
+		if( numFirst == TOKEN_ERROR )
+			break;
+		if( token.IsEof() )
+			break;
+		level = (int)numFirst;
+		if( level != idx + 1 ) {
+			XALERT( "skill %s(%s):레벨번호가 순차적이지 않습니다.level:%d",
+				idsSkill,
+				szAttrName,
+				level );
+			return 0;
+		}
+		token.GetToken();	// :
+		float ability = token.GetNumberF();
+		if( token.IsError() ) {
+			XALERT( "skill %s(%s):잘못된 숫자입니다..level:%d", idsSkill,
+																												szAttrName,
+																												level );
+			return 0;
+		}
+		if( valType == xPERCENT ) {
+			pOutAry->Add( ability / 100.f );
+		} else {
+			pOutAry->Add( ability );
+		}
+		++idx;
+		// 레벨 10을 넘어가도 더이상 읽지 않는다.
+		if( idx >= XGAME::MAX_SKILL_LEVEL )
+			break;
+	}
+	// 만약 스트링이 테이블형태가 아니고 숫자하나일경우 0번인덱스에 값을 넣는다.
+	if( pOutAry->size() == 1 ) {
+		if( valType == xPERCENT )
+			( *pOutAry )[0] = numFirst / 100.f;
+		else
+			( *pOutAry )[0] = numFirst;
+	}
+	return pOutAry->size();
 }
 
 

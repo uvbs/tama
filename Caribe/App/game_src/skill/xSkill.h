@@ -15,4 +15,5 @@
 XE_NAMESPACE_START( XSKILL )
 //	int ExecuteInvokeScript( XLua *pLua, const char *szScript );
 bool DoDiceInvokeRatio( const EFFECT *pEffect, int level );
+bool DoDiceInvokeApplyRatio( const EFFECT *pEffect, int level );
 XE_NAMESPACE_END

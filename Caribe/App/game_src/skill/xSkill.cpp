@@ -11,6 +11,24 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 XE_NAMESPACE_START( XSKILL )
+void xEffSfx::Serialize( XArchive& ar ) const {
+	ar << m_strSpr;
+	XBREAK( m_idAct > 0xff );
+	ar << (BYTE)m_idAct;
+	ar << (char)m_Point;
+	ar << (char)m_Loop;
+	ar << (char)0;
+}
+void xEffSfx::DeSerialize( XArchive& ar, int ) {
+	BYTE b0;
+	char c0;
+	ar >> m_strSpr;
+	ar >> b0;		m_idAct = b0;
+	ar >> c0;		m_Point = (xtPoint)c0;
+	ar >> c0;		m_Loop = (xtAniLoop)c0;
+	ar >> c0;
+}
+
 /*	int ExecuteInvokeScript( XLua *pLua, const char *szScript ) {
 		// 스트링이 없는건 걍 리턴
 		if( szScript == NULL )	return 0;
@@ -29,24 +47,54 @@ XE_NAMESPACE_START( XSKILL )
 bool DoDiceInvokeRatio( const EFFECT *pEffect, int level )
 {
 	bool bSuccess = true;
-	float invokeRatio = 0;
-	if( pEffect->aryInvokeRatio.size() == 0 )
-		invokeRatio = 1.f;
-	else {
+	float ratio = 0;
+	if( pEffect->aryInvokeRatio.size() == 0 ) {
+		ratio = 1.f;
+	} else {
 		XBREAK( level == 0 );
 		if( pEffect->aryInvokeRatio.size() == 1 )	// 테이블형태로 안넣고 숫자하나만 넣었을경우.
-			invokeRatio = pEffect->aryInvokeRatio[ 0 ];
+			ratio = pEffect->aryInvokeRatio[ 0 ];
 		else
-			invokeRatio = pEffect->aryInvokeRatio[ level ];
+			ratio = pEffect->aryInvokeRatio[ level ];
 	}
-	if( invokeRatio < 1.0f 
+	if( ratio < 1.0f 
 			&& ( pEffect->invokeJuncture != xJC_PERSIST 
 					|| pEffect->secInvokeDOT > 0 
 					|| pEffect->strInvokeSkill.empty() == false 
 					|| pEffect->idInvokeSkill ) )
 	{
 		DWORD dice = xRandom( 1000 );
-		DWORD ratioInvoke = (DWORD)( 1000 * invokeRatio );
+		DWORD ratioInvoke = (DWORD)( 1000 * ratio );
+		if( dice >= ratioInvoke )
+			bSuccess = false;
+	}
+	return bSuccess;
+}
+
+/**
+ @brief 발동적용확률
+*/
+bool DoDiceInvokeApplyRatio( const EFFECT *pEffect, int level )
+{
+	auto& aryRatio = pEffect->m_aryInvokeApplyRatio;
+	bool bSuccess = true;
+	float ratio = 0;
+	if( aryRatio.size() == 0 )
+		ratio = 1.f;
+	else {
+		XBREAK( level == 0 );
+		if( aryRatio.size() == 1 )	// 테이블형태로 안넣고 숫자하나만 넣었을경우.
+			ratio = aryRatio[0];
+		else
+			ratio = aryRatio[level];
+	}
+	if( ratio < 1.0f
+		&& ( pEffect->invokeJuncture != xJC_PERSIST
+		|| pEffect->secInvokeDOT > 0
+		|| pEffect->strInvokeSkill.empty() == false
+		|| pEffect->idInvokeSkill ) ) {
+		DWORD dice = xRandom( 1000 );
+		DWORD ratioInvoke = (DWORD)( 1000 * ratio );
 		if( dice >= ratioInvoke )
 			bSuccess = false;
 	}

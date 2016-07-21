@@ -450,43 +450,43 @@ UnitPtr XEObjMngWithType::FindNearUnitByMore( XBaseUnit *pSrcObj,
  시전대상을 중심으로(시전대상을 포함하거나/제외하거나) 반경내 bitSideFilter에 맞는 오브젝트 invokeNumApply개의 리스트를 요청한다
 * numApply가 0이면 개수제한이 없다.
 */
-int XEObjMngWithType::GetListUnitRadius( XArrayLinearN<XBaseUnit*, 512> *plistOutInvokeTarget,
-									XEBaseWorldObj *pBaseTarget,
-									const XE::VEC2& vCenter,
-									float pixelRadius,
-									BIT bitSideFilter,
-									int numApply,
-									BOOL bIncludeCenter,
-									BIT bitLive )		// 생존필터  
-{
-	int cnt = 0;
-	for( auto itor = m_listUnits.rbegin(); itor != m_listUnits.rend(); ++itor )	{
-		auto pUnit = SafeCast<XBaseUnit*>( (*itor).get() );
-		XBREAK( pUnit == NULL );
-		if( ( pUnit->GetCamp() & bitSideFilter ) == 0 )
-			continue;
-		if( (bitLive & XSKILL::xTL_LIVE) == 0 && pUnit->IsLive() )
-			continue;
-		if( ( bitLive & XSKILL::xTL_DEAD ) == 0 && pUnit->IsDead() )
-			continue;
-		if( numApply != 0 && cnt >= numApply )
-			return plistOutInvokeTarget->size();
-		// 시전대상을 포함하지 않는 조건일때 유닛이 시전대상이면 스킵
-		if( pBaseTarget &&
-			bIncludeCenter == FALSE && 
-			pBaseTarget->GetsnObj() == pUnit->GetsnObj() )
-			continue;
-		XE::VEC2 vDist = pUnit->GetvwPos().ToVec2() - vCenter;
-		float distsq = vDist.Lengthsq();
-		if( distsq <= pixelRadius * pixelRadius )
-		{
-			plistOutInvokeTarget->Add( pUnit );
-			++cnt;
-		}
-	}
-	
-	return plistOutInvokeTarget->size();
-}
+// int XEObjMngWithType::GetListUnitRadius( XArrayLinearN<XBaseUnit*, 512> *plistOutInvokeTarget,
+// 									XEBaseWorldObj *pBaseTarget,
+// 									const XE::VEC2& vCenter,
+// 									float pixelRadius,
+// 									BIT bitSideFilter,
+// 									int numApply,
+// 									BOOL bIncludeCenter,
+// 									BIT bitLive )		// 생존필터  
+// {
+// 	int cnt = 0;
+// 	for( auto itor = m_listUnits.rbegin(); itor != m_listUnits.rend(); ++itor )	{
+// 		auto pUnit = SafeCast<XBaseUnit*>( (*itor).get() );
+// 		XBREAK( pUnit == NULL );
+// 		if( ( pUnit->GetCamp() & bitSideFilter ) == 0 )
+// 			continue;
+// 		if( (bitLive & XSKILL::xTL_LIVE) == 0 && pUnit->IsLive() )
+// 			continue;
+// 		if( ( bitLive & XSKILL::xTL_DEAD ) == 0 && pUnit->IsDead() )
+// 			continue;
+// 		if( numApply != 0 && cnt >= numApply )
+// 			return plistOutInvokeTarget->size();
+// 		// 시전대상을 포함하지 않는 조건일때 유닛이 시전대상이면 스킵
+// 		if( pBaseTarget &&
+// 			bIncludeCenter == FALSE && 
+// 			pBaseTarget->GetsnObj() == pUnit->GetsnObj() )
+// 			continue;
+// 		XE::VEC2 vDist = pUnit->GetvwPos().ToVec2() - vCenter;
+// 		float distsq = vDist.Lengthsq();
+// 		if( distsq <= pixelRadius * pixelRadius )
+// 		{
+// 			plistOutInvokeTarget->Add( pUnit );
+// 			++cnt;
+// 		}
+// 	}
+// 	
+// 	return plistOutInvokeTarget->size();
+// }
 
 /**
  @brief pCenter(or vCenter)를 중심으로 radius범위내의 유닛들을 얻어 어레이에 담는다.

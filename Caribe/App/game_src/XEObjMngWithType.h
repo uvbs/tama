@@ -62,14 +62,14 @@ public:
 							float radius,
 					BOOL( *pfuncFilter )( XBaseUnit*, XBaseUnit* ),
 					BOOL( *pfuncCompare )( XBaseUnit*, XBaseUnit*, XBaseUnit* ));
-	int GetListUnitRadius( XArrayLinearN<XBaseUnit*, 512> *plistOutInvokeTarget,
-							XEBaseWorldObj *pCastingTarget,
-							const XE::VEC2& vCenter,
-							float radius,
-							BIT bitSideFilter,
-							int numApply,
-							BOOL bIncludeCenter,
-							BIT bitLive = XSKILL::xTF_LIVE );		// 생존필터;
+// 	int GetListUnitRadius( XArrayLinearN<XBaseUnit*, 512> *plistOutInvokeTarget,
+// 							XEBaseWorldObj *pCastingTarget,
+// 							const XE::VEC2& vCenter,
+// 							float radius,
+// 							BIT bitSideFilter,
+// 							int numApply,
+// 							BOOL bIncludeCenter,
+// 							BIT bitLive = XSKILL::xTF_LIVE );		// 생존필터;
 	int GetListUnitRadius2( XVector<XSPUnit> *pOutAry
 												, XEBaseWorldObj *pCenter
 												, const XE::VEC2& vCenter

@@ -92,7 +92,7 @@ void XUnitCyclops::sShootLaser( UnitPtr spShooter,
 			pLaser->SetScaleObj( 1.f, 1.f * lvInferno );
 		spShooter->GetpWndWorld()->AddObj( WorldObjPtr( pLaser ) );
 		// 범위공격 대상 선정
-		XArrayLinearN<XBaseUnit*, 512> ary;
+		XVector<XSPUnit> ary;
 		BIT bitSide = ~(spShooter->GetCamp());
 		float radius = 3.f;
 		{
@@ -100,7 +100,7 @@ void XUnitCyclops::sShootLaser( UnitPtr spShooter,
 			if( pBuff )
 				radius += radius * pBuff->GetAbilMinbyLevel();
 		}
-		XEObjMngWithType::sGet()->GetListUnitRadius( &ary, 
+		XEObjMngWithType::sGet()->GetListUnitRadius2( &ary, 
 													spTarget.get(),
 													spTarget->GetvwPos().ToVec2(),
 													xMETER_TO_PIXEL(radius), 
@@ -109,10 +109,10 @@ void XUnitCyclops::sShootLaser( UnitPtr spShooter,
 													TRUE );
 		//
 		// 각각의 대상에게 데미지.
-		XARRAYLINEARN_LOOP_AUTO( ary, pUnit ) {
-			if( XASSERT( pUnit ) ) {
+		for( auto spUnit : ary ) {
+			if( XASSERT( spUnit ) ) {
 				BIT bitHit = XGAME::xBHT_HIT;
-				BOOL bCritical = spShooter->IsCritical( pUnit->GetThisUnit() );
+				BOOL bCritical = spShooter->IsCritical( spUnit );
 				if( bCritical ) {
 					damage *= spShooter->GetCriticalPower();
 					bitHit |= XGAME::xBHT_CRITICAL;
@@ -120,9 +120,9 @@ void XUnitCyclops::sShootLaser( UnitPtr spShooter,
 				if( damage == 0 )
 					bitHit &= ~XGAME::xBHT_HIT;
 				float ratioPenet = spShooter->GetPenetrationRatio();
-				pUnit->DoDamage( spShooter.get(), damage, ratioPenet, XSKILL::xDMG_RANGE, bitHit, XGAME::xDA_FIRE );
+				spUnit->DoDamage( spShooter.get(), damage, ratioPenet, XSKILL::xDMG_RANGE, bitHit, XGAME::xDA_FIRE );
 			}
-		} END_LOOP;
+		}
 		auto pBuff = spShooter->FindBuffSkill(_T("flame_fit"));
 		if( pBuff )	{
 			auto pEffect = pBuff->GetEffectIndex(0);

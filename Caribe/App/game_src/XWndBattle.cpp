@@ -240,7 +240,7 @@ void XWndFaceInBattle::Update()
 	if( pBar ) {
 		if( m_spSquadObj->IsLive() ) {
 			const auto sizeBar = pBar->GetSizeLocalNoTrans();
-			const auto scale = sizeThis.w / sizeBar.w;
+			const auto scale = sizeThisNoTrans.w / sizeBar.w;
 			pBar->SetScaleLocal( scale );
 			pBar->SetY( sizeThisNoTrans.h );
 		} else {

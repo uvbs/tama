@@ -164,58 +164,6 @@ void XUnitTreant::OnArriveBullet( XObjBullet *pBullet,
 		}
 	} // for
 
-// 	if( spTarget != nullptr )	{
-// 		// 기본적으로 대상하나에게는 데미지가 들어감.
-// 		XBaseUnit::OnArriveBullet( pBullet, spAttacker, spTarget, vwDst, damage, bCritical, sprArrive, idActArrive, dwParam );
-// 	} else	{
-// 		// 넌타겟팅으로 날아옴.(탄성바위)
-// // 		maxCost = 1;		// 범위내 타겟 한명에게만 데미지.
-// 		meterRadius = 3.f;		// 이것도 발동반경으로.
-// 	}
-// 	// 광역 속성인가.
-// 	if( pBullet->GetmeterRadius() > 0 )	{
-// 		maxCost = 5;
-// 		meterRadius = pBullet->GetmeterRadius();
-// 	}
-// 	if( meterRadius > 0 )	{
-// 		// 범위공격 대상 선정
-// 		XE::VEC2 vCenter;
-// 		if( spTarget != nullptr )
-// 			vCenter = spTarget->GetvwPos().ToVec2();
-// 		else
-// 			vCenter = vwDst.ToVec2();
-// //		XArrayLinearN<XBaseUnit*, 512> ary;
-// 		XVector<XSPUnit> ary;
-// 		BIT bitSide = ~GetCamp();
-// 		// 타겟이 있을땐 위에서 이미 데미지를 한번 먹였기때문에 스플래시에서 다시 먹일필요 없댜ㅏ.
-// 		BOOL bIncludeCenter = (spTarget != nullptr)? FALSE : TRUE;
-// 		XEObjMngWithType::sGet()->GetListUnitRadius2( &ary, 
-// 													(spTarget!=nullptr)? spTarget.get() : nullptr,
-// 													vCenter,
-// 													xMETER_TO_PIXEL(meterRadius), 
-// 													bitSide, 
-// 													numApply, 
-// 													bIncludeCenter );
-// 		//
-// 		// 각각의 대상에게 데미지.
-// 		for( auto spUnit : ary ) {
-// 			if( XASSERT( spUnit ) ) {
-// 				float ratio = 1.f;
-// 				// 중심타겟이 아닌경우는 스플래시 데미지율로.
-// 				if( spTarget && spUnit->GetsnObj() != spTarget->GetsnObj() ) {
-// 					ratio = pBullet->GetratioDamageSplash();
-// 					XBREAK( ratio == 0.f );
-// 				}
-// 				float ratioPenet = GetPenetrationRatio();
-// 				BIT bitHit = XGAME::xBHT_HIT;
-// 				if( bCritical )
-// 					bitHit |= XGAME::xBHT_CRITICAL;
-// 				if( damage == 0 )
-// 					bitHit &= ~XGAME::xBHT_HIT;
-// 				spUnit->DoDamage( this, damage * ratio, ratioPenet, XSKILL::xDMG_RANGE, bitHit, XGAME::xDA_NONE );
-// 			}
-// 		} END_LOOP;
-// 	}
 }
 
 void XUnitTreant::DoDamageToTarget( XSPUnit spTarget

@@ -215,7 +215,7 @@ int XUnitHero::DoSkillMotion( void )
 // 		float secMotion = GetpSprObj()->GetPlayTime();
 // 		StartAttackDelay( nullptr, secMotion );		// 스킬의 공속은 타겟에 영향받지 않는다.
 		//
-		OnShootSkill( m_infoUseSkill );
+		OnShootSkill( m_infoUseSkill, 0 );
 //		CONSOLE("OnShootSkill:%s", pUseSkill->GetpDat()->GetstrIdentifier().c_str() );
 		// 스킬이름 외치기
 		if( IsPlayer() ) {
@@ -280,7 +280,7 @@ void XUnitHero::OnArriveBullet( XObjBullet *pBullet,
 		XSKILL::XSkillObj *pUseSkill = GetSkillObjByIndex( 0 );
 		if( pUseSkill )	{
 			int level = GetSkillLevel( pUseSkill );
-			ApplyEffect( pUseSkill->GetpDat(), level, NULL );
+			ApplyEffect( pUseSkill->GetpDat(), level, nullptr, pUseSkill->GetidSkill() );
 		}
 	}
 	XBaseUnit::OnArriveBullet( pBullet, spAttacker, spTarget, vwDst, damage, bCritical, sprArrive, idActArrive, dwParam );

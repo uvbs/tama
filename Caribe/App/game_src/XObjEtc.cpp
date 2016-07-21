@@ -7,6 +7,7 @@
 #include "XEObjMngWithType.h"
 #include "XLegionObj.h"
 #include "Sprite/SprObj.h"
+#include "XSkillMng.h"
 
 
 
@@ -144,7 +145,11 @@ void XObjBullet::OnArriveBullet( DWORD dwParam )
 													0,
 													m_spTarget.get(), nullptr );
 			XASSERT( infoUseSkill.errCode == XSKILL::xOK );
-			m_spOwner->OnShootSkill( infoUseSkill );
+			ID idCaller = 0;
+			auto pSkillDat = SKILL_MNG->FindByIdentifier( strInvokeSkill );
+			if( pSkillDat )
+				idCaller = pSkillDat->GetidSkill();
+			m_spOwner->OnShootSkill( infoUseSkill, idCaller );
 		}
 	} END_LOOP;
 	// 어태커가 지정되어있을경우 도착 델리게이트를 날려준다.
@@ -855,8 +860,9 @@ void XObjFlame::FrameMove( float dt )
 	if( m_timerDOT.IsOver() ) {
 		// DOT타이머를 먼저 호출해야 한다. (지속시간/DOT둘다 1초일경우 한번은 들어가게)
 		m_timerDOT.Reset();
-		XArrayLinearN<XBaseUnit*, 512> ary;
-		XEObjMngWithType::sGet()->GetListUnitRadius( &ary,
+		//XArrayLinearN<XBaseUnit*, 512> ary;
+		XVector<XSPUnit> ary;
+		XEObjMngWithType::sGet()->GetListUnitRadius2( &ary,
 													nullptr,
 													GetvwPos().ToVec2(),
 													m_Radius,
@@ -864,14 +870,14 @@ void XObjFlame::FrameMove( float dt )
 													5,
 													false,
 													XSKILL::xTL_LIVE );
-		XARRAYLINEARN_LOOP_AUTO( ary, pUnit ) {
+		for( auto pUnit : ary ) {
 			if( XASSERT( pUnit ) ) {
 				BIT bitHit = xBHT_HIT | xBHT_BY_SKILL;
 				if( m_Damage == 0 )
 					bitHit &= ~xBHT_HIT;
 				pUnit->DoDamage( m_spAttacker.get(), m_Damage, 0.f, XSKILL::xDMG_MAGIC, bitHit, xDA_FIRE );
 			}
-		} END_LOOP;
+		}
 	}
 	if( m_timerLife.IsOver() ) {
 		SetDestroy( 1 );

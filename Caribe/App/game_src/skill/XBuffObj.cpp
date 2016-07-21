@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "xSkill.h"
 #include "XEffect.h"
+#include "XESkillMng.h"
 
 
 #ifdef WIN32
@@ -28,17 +29,22 @@ XBuffObj::XBuffObj( XDelegateSkill *pDelegate,
 					XSkillReceiver *pOwner,
 					XSkillDat *pSkillDat,
 					int level,
-					const XE::VEC2& vPos ) 
+					const XE::VEC2& vPos,
+					ID idCallerSkill )
+	: m_idCallerSkill( idCallerSkill )
 {
 	Init();
 	XBREAK( pDelegate == NULL );
 	m_pDelegate = pDelegate;
 	m_pCaster = pCaster;
+	//m_idCaster = pCaster->get
+	m_bitCampCaster = pCaster->GetCampUser();
 	m_pOwner = pOwner;
 	m_pDat = pSkillDat;
 	if( vPos.IsZero() == FALSE )
 		m_vCastPos = vPos;
 	m_Level = level;
+	m_pDatCaller = XESkillMng::sGet()->FindByID( idCallerSkill );
 }
 
 void XBuffObj::Destroy() 
@@ -252,46 +258,48 @@ void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 								XArrayLinearN<XSkillReceiver*, 512> *pOutAryIvkTarget,
 								BOOL bGetListMode )
 {
-	bool bPassProb = true;
-//	bPassProb = DoDiceInvokeRatio( pEffect );
-//	if( bPassProb ) {
-		auto invokeTarget = pEffect->invokeTarget;
-		// virtual. invokeTarget을 하위클래스에서 가공하기 위한 땜빵.
-// 		invokeTarget = pCastingTarget->OnGetInvokeTarget( GetpDat(), pEffect, invokeTarget );
+	bool bProb = true;
+	// 발동확률이 있으면 확률검사. 발동대상 개별적으로 확률적용을 하려면 발동적용확률을 사용해야한다.
+	bProb = DoDiceInvokeRatio( pEffect, level );
+	if( bProb ) {
+		if( !pEffect->m_invokerEff.m_strSpr.empty() ) {
+			const float secPlay = 0.f;		// 1play. 발동자이펙트는 반복플레이가 없음.
+			m_pCaster->CreateSfx( m_pDat, pEffect,
+																pEffect->m_invokerEff.m_strSpr,
+																pEffect->m_invokerEff.m_idAct,
+																pEffect->m_invokerEff.m_Point,
+																secPlay, XE::VEC2() );
+		}
+		const auto invokeTarget = pEffect->invokeTarget;
 		// 발동대상들을 뽑음.
-//		XArrayLinearN<XSkillReceiver*, 512> aryTemp;
 		XArrayLinearN<XSkillReceiver*, 512> ary;
 		int num = GetpCaster()->GetInvokeTarget( 
 											&ary, GetpDat(), level,
 											invokeTarget, pEffect, 
 											pCastingTarget, 
 											m_vCastPos );
-//		if( num > 0 ) {
-// 			XArrayLinearN<XSkillReceiver*, 512> ary;
-// 			ary = aryTemp;
-// 			// 발동대상들을 사용자 정의 필터로 한번더 거른다.
-// 			m_pCaster->CustomInvokeFilter( &ary, aryTemp, pEffect );
-			if( ary.size() > 0 ) {
-				if( bGetListMode ) {
-					// 리스트를 받기만 하는 모드.
-					XBREAK( pOutAryIvkTarget == NULL );
-					if( pOutAryIvkTarget )
-						*pOutAryIvkTarget = ary;
-					// 리스트모드로 호출됐으면 리스트만 받고 리턴
-					return;
-				}
-				// 발동대상들에게 실제 스킬효과를 적용 
-				GetpCaster()->ApplyInvokeEffectWithAry( ary
-																							, GetpDat()
-																							, pEffect
-																							, m_pOwner		// invoker
-																							, bCreateSfx != 0
-																							, m_Level
-																							, XE::VEC2(0)
-																							, this
-																							, nullptr );
-				// 발동대상들에게 실제 스킬효과를 적용 & 이벤트 스크립트 실행(루프안에서 pInvokeTarget->ApplyInvokeEffect()로 변경)
-			} // ary.size > 0 
+		if( ary.size() > 0 ) {
+			if( bGetListMode ) {
+				// 리스트를 받기만 하는 모드.
+				XBREAK( pOutAryIvkTarget == NULL );
+				if( pOutAryIvkTarget )
+					*pOutAryIvkTarget = ary;
+				// 리스트모드로 호출됐으면 리스트만 받고 리턴
+				return;
+			}
+			// 발동대상들에게 실제 스킬효과를 적용 
+			GetpCaster()->ApplyInvokeEffectWithAry( ary
+																						, GetpDat()
+																						, pEffect
+																						, m_pOwner		// invoker
+																						, bCreateSfx != 0
+																						, m_Level
+																						, XE::VEC2(0)
+																						, this
+																						, nullptr );
+			// 발동대상들에게 실제 스킬효과를 적용 & 이벤트 스크립트 실행(루프안에서 pInvokeTarget->ApplyInvokeEffect()로 변경)
+		} // ary.size > 0 
+	}
 }
 
 
@@ -300,9 +308,9 @@ void XBuffObj::CreateInvokeSfx( EFFECT *pEffect, XSkillReceiver *pInvokeTarget )
 	float secPlay = 0;
 	pInvokeTarget->CreateSfx( m_pDat, 
 							pEffect,
-							pEffect->strInvokeEffect,
-							pEffect->idInvokeEffect,
-							pEffect->pointInvokeEffect, 
+							pEffect->m_invokeTargetEff.m_strSpr,
+							pEffect->m_invokeTargetEff.m_idAct,
+							pEffect->m_invokeTargetEff.m_Point, 
 							secPlay );
 }
 
@@ -500,7 +508,7 @@ void XBuffObj::OnEndApplyEffect( XSkillReceiver *pInvokeTarget, EFFECT_OBJ *pEff
 			pLua->InvokeDoScript( pInvokeTarget, pEffect->scriptUninit.c_str() );
 	}
 	// 발동SFX가 있었다면 각 타겟들에게 삭제하라고 요청. id가 0이어도 보내야함
-	if( XE::IsHave( pEffect->strInvokeEffect.c_str() ) )	{
+	if( XE::IsHave( pEffect->m_invokeTargetEff.m_strSpr.c_str() ) )	{
 		pInvokeTarget->OnDestroySFX( this, pEffObj->idInvokeSFX );		// 각 발동대상들에게 SFX파괴를 요청
 	}
 }
@@ -578,6 +586,13 @@ float XBuffObj::GetInvokeSizeByLevel() {
 	이건 그냥 애니메이션 한번 플레이하고 끝나면 된다.
 }
 */
+
+LPCTSTR XBuffObj::GetstrIconByCaller() const 
+{
+	if( m_pDatCaller )
+		return m_pDatCaller->GetstrIcon().c_str();
+	return _T( "" );
+}
 
 
 XE_NAMESPACE_END

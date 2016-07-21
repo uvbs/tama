@@ -177,6 +177,7 @@ public:
 		}
 		return pOutAry->size();
 	}
+	int ReadTableAry2( LPCTSTR szAttrName, LPCTSTR idsSkill, XVector<float>* pOutAry, LPCTSTR szStr, xtValType valType );
 	
 	void LoadCond( TiXmlElement *pElemRoot, EFFECT *pEffect );
 	virtual bool IsInverseParam( int invokeParam ) const { return false; }

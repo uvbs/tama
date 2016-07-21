@@ -110,7 +110,7 @@
     <squad idx_pos="13" grade="xGD_RARE" unit="xUNIT_MINOTAUR" mul_hp="0.5" mul_atk="2.0">
       <!--부장-->
     </squad>
-    <squad idx_pos="12" hero="bedivere" adj_level="2" grade="xGD_EPIC" unit="xUNIT_GOLEM" lv_squad="8" lv_skill="3" mul_atk="25" mul_hp="4">
+    <squad idx_pos="12" hero="bedivere" adj_level="2" grade="xGD_EPIC" unit="xUNIT_GOLEM" lv_squad="8" lv_skill="3" mul_atk="25" mul_hp="3">
       <!--대장-->
     </squad>
   </legion.boss4>

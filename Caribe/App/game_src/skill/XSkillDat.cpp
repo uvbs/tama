@@ -96,52 +96,7 @@ void XSkillDat::ReplaceTokenEach( int idParam
 	}
 }
 
-// void XSkillDat::GetSkillDesc( _tstring *pOut, int level )
-// {
-// 	if( pOut->empty() )
-// 		*pOut = XTEXT( m_idDesc );
-// 	int idxEffect = 0;
-// // 	XList4<EFFECT*>::iterator itor;
-// // 	for( itor = m_listEffects.begin(); itor != m_listEffects.end(); ++itor )
-// 	for( auto pEffect : m_listEffects ) {
-// 		++idxEffect;
-// //		EFFECT *pEffect = (*itor);
-// 		BOOL bReplacedAbil = FALSE;
-// 		BOOL bReplacedDura = FALSE;
-// 		BOOL bReplacedProb = FALSE;
-// 		BOOL bReplacedRadius = FALSE;
-// 		if( idxEffect == 1 )
-// 		{
-// 			// 번호가 안붙어있으면 디폴트로 첫번째 이펙트를 의미한다.
-// 			bReplacedAbil = ReplaceAbility( pEffect, _T("#ability#"), level, pOut );
-// 			if( bReplacedAbil == FALSE && pEffect->strInvokeSkill.empty() == false ) {
-// 				auto pDat = XESkillMng::sGet()->FindByIdentifier( pEffect->strInvokeSkill.c_str() );
-// 				if( pDat )
-// 					pDat->GetSkillDesc( pOut, level );
-// 			}
-// 			bReplacedDura = ReplaceDuration( pEffect, _T("#duration#"), level, pOut );
-// 			bReplacedProb = ReplaceInvokeRatio( pEffect, _T( "#prob#" ), level, pOut );
-// 			bReplacedRadius = ReplaceRadius( pEffect, _T( "#radius#" ), level, pOut );
-// 		}
-// 		if( !bReplacedAbil )
-// 		{
-// 			const _tstring token = XE::Format( _T( "#ability%d#" ), idxEffect );
-// 			ReplaceAbility( pEffect, token.c_str(), level, pOut );
-// 		}
-// 		if( !bReplacedDura ) {
-// 			const _tstring token = XE::Format( _T( "#duration%d#" ), idxEffect );
-// 			ReplaceDuration( pEffect, token.c_str(), level, pOut );
-// 		}
-// 		if( !bReplacedProb ) {
-// 			const _tstring token = XE::Format( _T( "#prob%d#" ), idxEffect );
-// 			ReplaceInvokeRatio( pEffect, token.c_str(), level, pOut );
-// 		}
-// 		if( !bReplacedRadius ) {
-// 			const _tstring token = XE::Format( _T( "#radius%d#" ), idxEffect );
-// 			ReplaceRadius( pEffect, token.c_str(), level, pOut );
-// 		}
-// 	}
-// }
+
 
 BOOL XSkillDat::ReplaceAbility( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut )
 {
@@ -253,18 +208,26 @@ void EFFECT::Serialize( XArchive& ar ) const {
 	ar << (char)castfiltFriendship;
 
 	ar << (char)castfiltPlayerType;
-	ar << (char)pointCasterEffect;
-	ar << (char)castTargetEffectPoint;
-	ar << (char)pointPersistEffect;
+// 	ar << (char)m_CasterEff.m_Point;
+// 	ar << (char)m_CastTargetEff.m_Point;
+// 	ar << (char)m_PersistEff.m_Point;
+	XBREAK( numOverlap > 0xff );
+	XBREAK( invokeNumApply > 0xff );
+	ar << (char)bDuplicate;
+	ar << (char)numOverlap;
+	ar << (char)invokeNumApply;
 
-	ar << strCasterEffect;
-	ar << idCasterEffect;
-	ar << strCastTargetEffect;
-	ar << idCastTargetEffect;
+	ar << m_CasterEff;
+	ar << m_CastTargetEff;
+// 	ar << m_CasterEff.m_strSpr;
+// 	ar << m_CasterEff.m_idAct;
+// 	ar << m_CastTargetEff.m_strSpr;
+// 	ar << m_CastTargetEff.m_idAct;
 	ar << castSize;
 	ar << arySecDuration;
-	ar << strPersistEffect;
-	ar << idPersistEffect;
+	ar << m_PersistEff;
+// 	ar << m_PersistEff.m_strSpr;
+// 	ar << m_PersistEff.m_idAct;
 	ar << idCastSound;
 	ar << (char)invokeTarget;
 	ar << (char)invokefiltFriendship;
@@ -288,12 +251,14 @@ void EFFECT::Serialize( XArchive& ar ) const {
 	ar << _invokeSize;
 	ar << aryInvokeSize;
 	ar << secInvokeDOT;
-	ar << invokeNumApply;
-	ar << strInvokeEffect;
-	ar << idInvokeEffect;
+//	ar << invokeNumApply;
+	ar << m_invokeTargetEff;
+	ar << m_invokerEff;
+// 	ar << m_invokeTargetEff.m_strSpr;
+// 	ar << m_invokeTargetEff.m_idAct;
 	ar << idInvokeSound;
-	ar << bDuplicate;
-	ar << numOverlap;
+//	ar << bDuplicate;
+//	ar << numOverlap;
 	ar << strCreateObj;
 	ar << idCreateObj;
 	for( int i = 0; i < XNUM_ARRAY(createObjParam); ++i ) {
@@ -307,33 +272,40 @@ void EFFECT::Serialize( XArchive& ar ) const {
 	for( int i = 0; i < XNUM_ARRAY( dwParam ); ++i ) {
 		ar << dwParam[i];
 	}
-	ar << (char)pointInvokeEffect;
-	ar << (char)0;
-	ar << (short)0;
+//	ar << (char)m_invokeTargetEff.m_Point;
+// 	ar << (char)0;
+// 	ar << (char)0;
+// 	ar << (short)0;
 }
 
 
 void EFFECT::DeSerialize( XArchive& ar, int ) {
 	char c0;
-	short s0;
+//	short s0;
 	ar >> c0;    castTarget = (xtCastTarget)c0;
 	ar >> c0;    castTargetRange = (xtTargetRangeType)c0;
 	ar >> c0;    castTargetCond = (xtTargetCond)c0;
 	ar >> c0;    castfiltFriendship = (xtFriendshipFilt)c0;
 
 	ar >> c0;    castfiltPlayerType = (xtPlayerTypeFilt)c0;
-	ar >> c0;    pointCasterEffect = (xtPoint)c0;
-	ar >> c0;    castTargetEffectPoint = (xtPoint)c0;
-	ar >> c0;    pointPersistEffect = (xtPoint)c0;
+// 	ar >> c0;    m_CasterEff.m_Point = (xtPoint)c0;
+// 	ar >> c0;    m_CastTargetEff.m_Point = (xtPoint)c0;
+// 	ar >> c0;    m_PersistEff.m_Point = (xtPoint)c0;
+	ar >> c0;		bDuplicate = (c0 != 0);
+	ar >> c0;		numOverlap = c0;
+	ar >> c0;		invokeNumApply = c0;
 
-	ar >> strCasterEffect;
-	ar >> idCasterEffect;
-	ar >> strCastTargetEffect;
-	ar >> idCastTargetEffect;
+	ar >> m_CasterEff;
+	ar >> m_CastTargetEff;
+// 	ar >> m_CasterEff.m_strSpr;
+// 	ar >> m_CasterEff.m_idAct;
+// 	ar >> m_CastTargetEff.m_strSpr;
+// 	ar >> m_CastTargetEff.m_idAct;
 	ar >> castSize;
 	ar >> arySecDuration;
-	ar >> strPersistEffect;
-	ar >> idPersistEffect;
+	ar >> m_PersistEff;
+// 	ar >> m_PersistEff.m_strSpr;
+// 	ar >> m_PersistEff.m_idAct;
 	ar >> idCastSound;
 	ar >> c0;    invokeTarget = (xtInvokeTarget)c0;
 	ar >> c0;    invokefiltFriendship = (xtFriendshipFilt)c0;
@@ -357,12 +329,13 @@ void EFFECT::DeSerialize( XArchive& ar, int ) {
 	ar >> _invokeSize;
 	ar >> aryInvokeSize;
 	ar >> secInvokeDOT;
-	ar >> invokeNumApply;
-	ar >> strInvokeEffect;
-	ar >> idInvokeEffect;
+//	ar >> invokeNumApply;
+	ar >> m_invokeTargetEff;
+// 	ar >> m_invokeTargetEff.m_strSpr;
+// 	ar >> m_invokeTargetEff.m_idAct;
 	ar >> idInvokeSound;
-	ar >> bDuplicate;
-	ar >> numOverlap;
+//	ar >> bDuplicate;
+//	ar >> numOverlap;
 	ar >> strCreateObj;
 	ar >> idCreateObj;
 	for( int i = 0; i < XNUM_ARRAY( createObjParam ); ++i ) {
@@ -376,9 +349,9 @@ void EFFECT::DeSerialize( XArchive& ar, int ) {
 	for( int i = 0; i < XNUM_ARRAY( dwParam ); ++i ) {
 		ar >> dwParam[i];
 	}
-	ar >> c0;    pointInvokeEffect = (xtPoint)c0;
-	ar >> c0;    
-	ar >> s0;
+// 	ar >> c0;    m_invokeTargetEff.m_Point = (xtPoint)c0;
+// 	ar >> c0;    
+// 	ar >> s0;
 }
 
 void XSkillDat::Serialize( XArchive& ar ) const
@@ -399,19 +372,23 @@ void XSkillDat::Serialize( XArchive& ar ) const
 		pEffect->Serialize( ar );
 	}
 	ar << m_idCastMotion;
-	ar << m_strCasterEffect;
-	ar << m_idCasterEffect;
+	ar << m_CasterEff;
+// 	ar << m_m_CasterEff.m_strSpr;
+// 	ar << m_m_CasterEff.m_idAct;
 	ar << m_rangeBaseTargetCond;
-	ar << m_strTargetEffect;
-	ar << m_idTargetEffect;
-	ar << (char)m_pointTargetEffect;
-	ar << (char)m_loopTargetEffect;
-	ar << (char)m_pointShootEffect;
-	ar << (char)m_pointShootTargetEffect;
-	ar << m_strShootEffect;
-	ar << m_idShootEffect;
-	ar << m_strShootTargetEffect;
-	ar << m_idShootTargetEffect;
+	ar << m_TargetEff;
+// 	ar << m_strTargetEffect;
+// 	ar << m_idTargetEffect;
+// 	ar << (char)m_pointTargetEffect;
+// 	ar << (char)m_loopTargetEffect;
+	ar << m_ShootEff;
+	ar << m_ShootTargetEff;
+// 	ar << (char)m_pointShootEffect;
+// 	ar << (char)m_pointShootTargetEffect;
+// 	ar << m_strShootEffect;
+// 	ar << m_idShootEffect;
+// 	ar << m_strShootTargetEffect;
+// 	ar << m_idShootTargetEffect;
 	ar << m_strShootObj;
 	ar << m_idShootObj;
 	ar << m_shootObjSpeed;
@@ -439,19 +416,23 @@ void XSkillDat::DeSerialize( XArchive& ar, int ver )
 		m_listEffects.Add( pEffect );
 	}
 	ar >> m_idCastMotion;
-	ar >> m_strCasterEffect;
-	ar >> m_idCasterEffect;
+	ar >> m_CasterEff;
+// 	ar >> m_m_CasterEff.m_strSpr;
+// 	ar >> m_m_CasterEff.m_idAct;
 	ar >> m_rangeBaseTargetCond;
-	ar >> m_strTargetEffect;
-	ar >> m_idTargetEffect;
-	ar >> c0;    m_pointTargetEffect = (xtPoint)c0;
-	ar >> c0;    m_loopTargetEffect = (xtAniLoop)c0;
-	ar >> c0;    m_pointShootEffect = (xtPoint)c0;
-	ar >> c0;		 m_pointShootTargetEffect = (xtPoint)c0;
-	ar >> m_strShootEffect;
-	ar >> m_idShootEffect;
-	ar >> m_strShootTargetEffect;
-	ar >> m_idShootTargetEffect;
+	ar >> m_TargetEff;
+// 	ar >> m_strTargetEffect;
+// 	ar >> m_idTargetEffect;
+	ar >> m_ShootEff;
+	ar >> m_ShootTargetEff;
+// 	ar >> c0;    m_pointTargetEffect = (xtPoint)c0;
+// 	ar >> c0;    m_loopTargetEffect = (xtAniLoop)c0;
+// 	ar >> c0;    m_pointShootEffect = (xtPoint)c0;
+// 	ar >> c0;		 m_pointShootTargetEffect = (xtPoint)c0;
+// 	ar >> m_strShootEffect;
+// 	ar >> m_idShootEffect;
+// 	ar >> m_strShootTargetEffect;
+// 	ar >> m_idShootTargetEffect;
 	ar >> m_strShootObj;
 	ar >> m_idShootObj;
 	ar >> m_shootObjSpeed;

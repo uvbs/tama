@@ -54,7 +54,7 @@ private:
 	void Destroy();
 	// 효과처리부는 외부에서 부를일이 없으니까 숨겼음
 //	xtError TryCastEffect( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pBaseTarget, XSkillReceiver *pCastingTarget, const XE::VEC2 *pvPos=NULL );	// 효과발동시도
-	virtual xtError UseEffect( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pTarget, const XE::VEC2& vPos );
+	xtError UseEffect( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pTarget, const XE::VEC2& vPos, ID idCallerSkill );
 public:
 	XSkillUser( XESkillMng *pSkillMng ) { 
 		Init(); 
@@ -114,12 +114,12 @@ public:
 // 					XE::VEC2 *pvTouchPos );			// 외부에서 커서로 좌표를 찍었을 경우
 	// 첫번째 보유스킬을 사용한다
 	xUseSkill UseSkill( XSkillReceiver *pTarget, XE::VEC2 *pvPos );
-	xtError OnShootSkill( XSkillObj *pUseSkill, XSkillReceiver *pBaseTarget, int level, const XE::VEC2& vTarget);
-	xtError OnShootSkill( const xUseSkill& infoUseSkill ) {
-		return OnShootSkill( infoUseSkill.pUseSkill, infoUseSkill.pBaseTarget, infoUseSkill.level, infoUseSkill.vTarget );
+	xtError OnShootSkill( XSkillObj *pUseSkill, XSkillReceiver *pBaseTarget, int level, const XE::VEC2& vTarget, ID idCallerSkill);
+	xtError OnShootSkill( const xUseSkill& infoUseSkill, ID idCallerSkill ) {
+		return OnShootSkill( infoUseSkill.pUseSkill, infoUseSkill.pBaseTarget, infoUseSkill.level, infoUseSkill.vTarget, idCallerSkill );
 	}
 	int FrameMove( float dt );
-	xtError CastEffectToCastingTarget( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pBaseTarget, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos );		// 효과발동
+	xtError CastEffectToCastingTarget( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pBaseTarget, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos, ID idCallerSkill );		// 효과발동
 	// virtual
 	virtual XLuaSkill* CreateScript( void ); 		// XLua 객체를 생성하고 전역변수와 API들을 등록하여 돌려준다
 //	virtual xtError IsValidCastingTarget( XSkillObj *pUseSkill, EFFECT *pEffect, XSkillReceiver *pTarget, XE::VEC2 *pvPos  );		// 시전대상 유효성 검사
@@ -212,7 +212,8 @@ public:
 										XSKILL::XSkillReceiver *pCastingTarget, 
 										XSKILL::XSkillDat *pSkillDat,
 										int level,
-										const XE::VEC2& vPos );
+										const XE::VEC2& vPos,
+										ID idCallerSkill );
 	// copy해서 쓰기 좋으라고 일부러 XSKILL을 다 붙임
 	// 발사체오브젝트를 생성하고 월드에 추가시킨다. 효과, 시전대상, 시전자, 좌표
 	virtual XSKILL::XSkillUser* CreateAndAddToWorldShootObj( XSKILL::XSkillDat *pSkillDat,
@@ -239,7 +240,7 @@ public:
 	///< 하위클래스는 cond에 맞는 타겟을 찾아 돌려줘야 한다. this는 시전자가 된다.
 	virtual XSKILL::XSkillReceiver* GetTargetObject( XSKILL::EFFECT *pEffect, XSKILL::xtTargetCond cond ) = 0;
 	virtual void OnAdjustEffectAbility( XSkillDat *pSkillDat, const EFFECT *pEffect, int invokeParam, float *pOutMin ) {}
-	xtError ApplyEffect( XSkillDat *pSkillDat, int level, XSkillReceiver *pTarget, const XE::VEC2& vTouchPos = XE::VEC2(0) );
+	xtError ApplyEffect( XSkillDat *pSkillDat, int level, XSkillReceiver *pTarget, ID idCallerSkill, const XE::VEC2& vTouchPos = XE::VEC2(0) );
 	virtual int GetSkillLevel( XSkillObj* pSkillObj ) { return 0; }
 	virtual XSKILL::XSkillReceiver* GetSkillBaseTarget( XSkillDat *pDat ) { return nullptr; }
 	virtual XE::VEC2 GetSkillBaseTargetPos( XSkillDat *pDat ) { return XE::VEC2(0); }
@@ -247,7 +248,8 @@ public:
 	void CastSkillToBaseTarget( XSkillDat *pSkillDat, 
 								int level, 
 								XSkillReceiver *pBaseTarget, 
-								const XE::VEC2& vPos );
+								const XE::VEC2& vPos
+								, ID idCallerSkill );
 	/**
 	 @brief 하위클래스에게 기준타겟조건에 맞는 기준타겟을 찾아달라고 의뢰
 	*/
@@ -330,18 +332,10 @@ public:
 	XSkillSfx() { Init(); }
 	virtual ~XSkillSfx() { Destroy(); }
 	void RegisterCallback( XSkillUser* pOwner, 
-							XSkillDat *pSkillDat, 
-							int level, 
-							XSkillReceiver *pBaseTarget, 
-							const XE::VEC2& vPos ) {
-		m_Callback.pOwner = pOwner;
-		m_Callback.funcCallback = std::bind( &XSkillUser::CastSkillToBaseTarget, 
-												std::placeholders::_1, 
-												pSkillDat, 
-												level, 
-												pBaseTarget, 
-												vPos );
-	}
+												XSkillDat *pSkillDat, 
+												int level, 
+												XSkillReceiver *pBaseTarget, 
+												const XE::VEC2& vPos );
 	void CallCallbackFunc( void ) {
 //		if( !m_Callback.funcCallback.empty() )
 		if( m_Callback.funcCallback )

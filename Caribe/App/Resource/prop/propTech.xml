@@ -191,62 +191,62 @@
     </abil>
   </paladin>
   <minotaur>
-    <abil id="94" skill="powerful_axe" icon="mino_01.png" id_name="60121" id_desc="60122" tier="1" max_point="5" posx="189" posy="315">
+    <abil id="94" skill="powerful_axe" id_name="60121" id_desc="60122" tier="1" max_point="5" posx="189" posy="315">
       <parent node="0" />
       <child node="95" />
       <child node="96" />
     </abil>
-    <abil id="95" skill="sharp_axe" icon="mino_03.png" id_name="60125" id_desc="60126" tier="2" max_point="5" posx="140" posy="259">
+    <abil id="95" skill="sharp_axe" id_name="60125" id_desc="60126" tier="2" max_point="5" posx="140" posy="259">
       <parent node="94" />
       <child node="97" />
     </abil>
-    <abil id="96" skill="rush" icon="mino_04.png" id_name="60127" id_desc="60128" tier="2" max_point="5" posx="245" posy="259">
+    <abil id="96" skill="rush" id_name="60127" id_desc="60128" tier="2" max_point="5" posx="245" posy="259">
       <parent node="94" />
       <child node="98" />
     </abil>
-    <abil id="97" skill="swing" icon="mino_06.png" id_name="60131" id_desc="60132" tier="3" max_point="5" posx="140" posy="203">
+    <abil id="97" skill="swing" id_name="60131" id_desc="60132" tier="3" max_point="5" posx="140" posy="203">
       <parent node="95" />
       <child node="99" />
       <child node="100" />
     </abil>
-    <abil id="98" skill="shockwave" icon="mino_07.png" id_name="60133" id_desc="60134" tier="3" max_point="5" posx="245" posy="203">
+    <abil id="98" skill="shockwave" id_name="60133" id_desc="60134" tier="3" max_point="5" posx="245" posy="203">
       <parent node="96" />
       <child node="100" />
       <child node="99" />
     </abil>
-    <abil id="99" skill="wide" icon="mino_09.png" id_name="60137" id_desc="60138" tier="4" max_point="5" posx="140" posy="133">
+    <abil id="99" skill="wide" id_name="60137" id_desc="60138" tier="4" max_point="5" posx="140" posy="133">
       <parent node="97" />
       <parent node="98" />
       <child node="101" />
     </abil>
-    <abil id="100" skill="giant_axe" icon="mino_10.png" id_name="60139" id_desc="60140" tier="4" max_point="5" posx="245" posy="133">
+    <abil id="100" skill="giant_axe" id_name="60139" id_desc="60140" tier="4" max_point="5" posx="245" posy="133">
       <parent node="98" />
       <parent node="97" />
       <child node="102" />
     </abil>
-    <abil id="101" skill="mad_cow" icon="mino_12.png" id_name="60143" id_desc="60144" tier="5" max_point="5" posx="140" posy="84">
+    <abil id="101" skill="mad_cow" id_name="60143" id_desc="60144" tier="5" max_point="5" posx="140" posy="84">
       <parent node="99" />
     </abil>
-    <abil id="102" skill="grows" icon="mino_13.png" id_name="60145" id_desc="60146" tier="5" max_point="5" posx="245" posy="77">
+    <abil id="102" skill="grows" id_name="60145" id_desc="60146" tier="5" max_point="5" posx="245" posy="77">
       <parent node="100" />
     </abil>
-    <abil id="103" skill="tough" icon="mino_02.png" id_name="60123" id_desc="60124" tier="1" max_point="5" posx="350" posy="315">
+    <abil id="103" skill="tough" id_name="60123" id_desc="60124" tier="1" max_point="5" posx="350" posy="315">
       <parent node="0" />
       <child node="104" />
     </abil>
-    <abil id="104" skill="roar" icon="mino_05.png" id_name="60129" id_desc="60130" tier="2" max_point="5" posx="350" posy="259">
+    <abil id="104" skill="roar" id_name="60129" id_desc="60130" tier="2" max_point="5" posx="350" posy="259">
       <parent node="103" />
       <child node="105" />
     </abil>
-    <abil id="105" skill="hell_fire_protection" icon="mino_08.png" id_name="60135" id_desc="60136" tier="3" max_point="5" posx="350" posy="196">
+    <abil id="105" skill="hell_fire_protection" id_name="60135" id_desc="60136" tier="3" max_point="5" posx="350" posy="196">
       <parent node="104" />
       <child node="106" />
     </abil>
-    <abil id="106" skill="cowbell" icon="mino_11.png" id_name="60141" id_desc="60142" tier="4" max_point="5" posx="350" posy="133">
+    <abil id="106" skill="cowbell" id_name="60141" id_desc="60142" tier="4" max_point="5" posx="350" posy="133">
       <parent node="105" />
       <child node="107" />
     </abil>
-    <abil id="107" skill="milk_explosion" icon="mino_14.png" id_name="60147" id_desc="60148" tier="5" max_point="5" posx="350" posy="77">
+    <abil id="107" skill="milk_explosion" id_name="60147" id_desc="60148" tier="5" max_point="5" posx="350" posy="77">
       <parent node="106" />
     </abil>
   </minotaur>
@@ -325,7 +325,7 @@
       <child node="123" />
       <child node="126" />
     </abil>
-    <abil id="123" skill="agile_attack" icon="lycan_03.png" id_name="60178" id_desc="60179" tier="3" max_point="5" posx="210" posy="189">
+    <abil id="123" skill="agile_attack" icon="lycan_02.png" id_name="60178" id_desc="60179" tier="3" max_point="5" posx="210" posy="189">
       <parent node="122" />
       <child node="125" />
     </abil>
@@ -363,7 +363,7 @@
       <parent node="129" />
       <parent node="125" />
     </abil>
-    <abil id="132" skill="spurt" icon="lycan_02.png" id_name="60176" id_desc="60177" tier="2" max_point="5" posx="315" posy="259">
+    <abil id="132" skill="spurt" icon="lycan_03.png" id_name="60176" id_desc="60177" tier="2" max_point="5" posx="315" posy="259">
       <parent node="133" />
       <child node="126" />
       <child node="134" />

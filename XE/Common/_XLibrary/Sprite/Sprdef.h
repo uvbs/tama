@@ -21,6 +21,8 @@ enum xRPT_TYPE : int {
 	xRPT_DEFAULT,
 };
 
+#define xtLoop xRPT_TYPE
+
 namespace SPR
 {
 	// 점과 점사이를 잇는 라인타입
@@ -42,4 +44,5 @@ namespace xSpr {
 	, xLT_DUMMY
 	, xLT_MAX
 	};
-}
+
+} // xSpr
