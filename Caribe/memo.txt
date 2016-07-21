@@ -11,6 +11,26 @@ base: 소스
 해결해야할 문제{
 }
 
+XBaseUnit의 메시지방식
+spTarget->DoDamage( 파람1, 파람2, ... );
+
+::DoDamage( 파람n....)
+{
+	pMsg = new MsgDmg;
+	pMsg.SetParam( 파람 );
+	m_Msg.Add( pMsg );
+}
+
+::ProcessMsg()
+{
+	while( !m_Msg.empty() ) {
+		msg = m_Msg.front();
+		msg->Excute( this );
+	}
+}
+
+
+
 
 확률형 효과발동시 발동타겟들 개별적으로 확률이 적용되어야 하는지 발동효과전 확률이 적용되어야 하는지의 문제
 발동확률

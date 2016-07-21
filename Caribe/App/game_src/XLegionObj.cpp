@@ -528,11 +528,19 @@ XSPSquad XLegionObj::GetspSquadObjByIdx( int idx )
 /**
  @brief 치트용. 모든 적유닛을 죽인다.
 */
-void XLegionObj::KillAllUnit( void )
+void XLegionObj::KillAllUnit()
 {
 #ifdef _CHEAT
 	for( auto& spSquad : m_listSquad ) {
 		spSquad->DoDamage( 1000000.f, FALSE );
+	}
+#endif // _CHEAT
+}
+void XLegionObj::DoDamage()
+{
+#ifdef _CHEAT
+	for( auto& spSquad : m_listSquad ) {
+		spSquad->DoDamageByPercent( 0.33, FALSE );
 	}
 #endif // _CHEAT
 }

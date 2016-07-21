@@ -108,4 +108,5 @@ public:
 	inline XSPSquad GetspSquadObjBySN( ID snSquad ) {
 		return GetSquadBySN( snSquad );
 	}
+	void DoDamage();
 };

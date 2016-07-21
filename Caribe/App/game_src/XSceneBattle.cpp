@@ -532,10 +532,18 @@ void XSceneBattle::CreateDebugButtons( void )
 #endif // _XSINGLE
 		pButt = new XWndButtonDebug( v.x, v.y,
 																size.w, size.h,
-																_T( "damage" ),
+																_T( "show dmg" ),
 			XE::GetMain()->GetpGame()->GetpfdSystem() );
 		pButt->SetstrIdentifier( "butt.debug.show.damage" );
 		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnDebugAllKill, 2 );
+		Add( pButt );
+		v.x += size.w;
+		pButt = new XWndButtonDebug( v.x, v.y,
+																size.w, size.h,
+																_T( "suicide" ),
+			XE::GetMain()->GetpGame()->GetpfdSystem() );
+		pButt->SetstrIdentifier( "butt.debug.suicide" );
+		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnDebugAllKill, 3 );
 		Add( pButt );
 		v.x += size.w;
 
@@ -1286,9 +1294,15 @@ int XSceneBattle::OnDebugAllKill( XWnd* pWnd, DWORD p1, DWORD p2 )
 		auto spLegionObj = XBattleField::sGet()->GetLegionObj(1);
 		if( spLegionObj )
 			spLegionObj->KillAllUnit();
-	} else {
+	} else 
+	if( p1 == 2 ) {
 		XAPP->m_bDebugViewDamage = !XAPP->m_bDebugViewDamage;
 		XAPP->XClientMain::SaveCheat();
+	} else
+	if( p1 == 3 ) {
+		auto spLegionObj = XBattleField::sGet()->GetLegionObj( 0 );
+		if( spLegionObj )
+			spLegionObj->DoDamage();
 	}
 	return 1;
 }
