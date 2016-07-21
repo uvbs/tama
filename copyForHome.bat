@@ -1,3 +1,4 @@
+rmdir /s /q "d:\_caribe_today"
 xcopy "c:\xuzhu_work\Project\iPhone_zero\Caribe\App\game_src" "d:\_caribe_today\Caribe\App\game_src"/e /k /i
 xcopy "c:\xuzhu_work\Project\iPhone_zero\Caribe\App\pc_prj" "d:\_caribe_today\Caribe\App\pc_prj"/e /k /i /exclude:exclude.txt
 xcopy "c:\xuzhu_work\Project\iPhone_zero\Caribe\App\Resource" "d:\_caribe_today\Caribe\App\Resource"/e /k /i /exclude:exclude_zip.txt
