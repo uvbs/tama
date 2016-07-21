@@ -32,6 +32,7 @@ static char THIS_FILE[] = __FILE__;
 	objMng->FlipQ();			// 메시지큐 플립
 }
 
+원칙: 공격자는 방어자에게 메시지는 전달가능. 방어자는 const상태여야 한다.
 
 class Unit {
 	메시지큐 qMsgBack;		// 다음프레임에 처리해야할 메시지
