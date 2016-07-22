@@ -1,0 +1,29 @@
+*전체
+*내부개발서버에 패치 => GMO서버로 옮김
+
+*내부개발서버에 패치
+-192.168.0.193(내부개발용 패치서버)에 접속
+  .mtricks_dev1 / Ahqlf099!
+-p4v로 최신 Resource폴더를 끌어온다.
+-배치파일을 실행하여 Caribe/patch폴더로 필요한파일들을 복사한다.
+  .Resource/AutoCopyForPatch.bat
+-Caribe/patch폴더의 모든 파일을 복사해서 Caribe_patch/PatchFile 폴더에 덮어씌운다.
+-Caribe_patch폴더의 실행파일 3개를 실행한다.
+  .Extract.exe
+  .MakePackage.exe
+  .Patchtool.exe(패치될 파일 목록 확인)
+-c:/inetpub/wwwroot/Caribe/Update 폴더의 두 폴더를 전체 압축한다.
+  .Core / Full 폴더
+-압축된 파일의 이름변경
+  .patch0602.zip     => 날짜기반으로.
+-압축된 zip파일을 GMO서버로 옮긴다.
+
+*GMO서버로 옮김
+-193번서버에서 다시 GMO로 원격접속한다.
+  .211.125.93.154
+  .administrator / q#E35ktvhQjnt
+-c:/inetpub/wwwroot/Caribe/Update폴더에 patchXXXX.zip 파일을 복사한다.
+-압축을 풀어 덮어씌운다.
+  .patchXXX.zip은 지우지 않고 놔둔다.(백업용도)
+-apk로 접속해서 패치가 받아지는지 테스트
+-끝
