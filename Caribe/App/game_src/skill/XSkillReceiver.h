@@ -43,7 +43,8 @@ public:
 	virtual ~XSkillReceiver() { Destroy();	}
 	// get/set
 	GET_ACCESSOR( XList2<XBuffObj>&, listSkillRecvObj );
-	GET_SET_ACCESSOR( XSkillReceiver*, pAttacker );
+	GET_ACCESSOR_CONST( const XSkillReceiver*, pAttacker );
+	SET_ACCESSOR( XSkillReceiver*, pAttacker );
 	// this에게 pEffect의 발동효과를 적용시킨다. pInvoker는 효과를 발동시킨자다. 
 	int ApplyInvokeEffect( XSkillDat *pSkillDat, XSkillUser *pCaster, XSkillReceiver* pInvoker, XBuffObj *pBuffObj, const EFFECT *pEffect, int level );		// 효과적용
 	XBuffObj* FindBuffSkill( ID idDat );
@@ -186,7 +187,7 @@ public:
 	}
 	// pure virtual
 	// szVal변수를(보통 invokeObj같은) 상속된 하위클래스형으로 루아변수로 등록한다. 말하자면 XSkillReceiver타입의 invokeObj가 아니고 XUnit타입의 invokeObj로 등록해야한다. 이런 코드 사용-> pLua->RegisterVar( szVal, this ); 	
-	virtual XECompCamp& GetCamp( void ) = 0;		///< this의 진영을 리턴
+	virtual const XECompCamp& GetCamp( void ) const = 0;		///< this의 진영을 리턴
 //	virtual xtSide GetFriendship( void ) = 0;		///< this의 Friendship을 리턴
 //	virtual xtPlayerType GetPlayerType( void ) = 0;		///< this의 플레이어 타입을
 	// 좌표에 놓는형태의 지속스킬에 사용하는데 이제 ,XSkillSfxReceiver를 통해서 하므로 필요없게 됨..
@@ -201,8 +202,8 @@ public:
 //	virtual ID GetReceiverID( void ) = 0;
 	// handler
 	// 누군가에게 맞으면 이 이벤트를 호출해준다.
-	void OnHitFromAttacker( XSkillReceiver *pAttacker, xtDamage typeDamage );
-	virtual void OnAttackMelee( XSkillReceiver *pAttacker, xtDamage typeDamage ) {}
+	void OnHitFromAttacker( const XSkillReceiver *pAttacker, xtDamage typeDamage );
+	virtual void OnAttackMelee( const XSkillReceiver *pAttacker, xtDamage typeDamage ) {}
 	void OnRangeHitFromAttacker( ID idAttacker, int level );
 	void OnAttackToDefender( XSkillReceiver *pDefender, 
 							float damage, 
@@ -210,7 +211,7 @@ public:
 							float ratioPenetration, 
 							XSKILL::xtDamage typeDamage );
 	void OnSkillEventKillEnemy( ID idDead );
-	void OnEventJunctureCommon( ID idEvent, DWORD dwParam = 0, XSkillReceiver *pRecvParam = nullptr );
+	void OnEventJunctureCommon( ID idEvent, DWORD dwParam = 0, const XSkillReceiver *pRecvParam = nullptr );
 	void OnEventBeforeAttack( XSKILL::xtJuncture junc );
 	void OnEventInvokeFromSkill( XSkillDat *pFromSkill, const EFFECT *pFromEffect, XSkillUser *pCaster, XSkillReceiver *pBaseTarget );
 	virtual BOOL IsInvokeAddTarget( ID idAddTarget ) { return FALSE; }

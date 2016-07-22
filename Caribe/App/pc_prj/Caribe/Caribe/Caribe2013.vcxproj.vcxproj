@@ -604,6 +604,7 @@
     <ClInclude Include="..\..\..\game_src\XGuildRaidStage.h" />
     <ClInclude Include="..\..\..\game_src\XHeroH.h" />
     <ClInclude Include="..\..\..\game_src\XLegionObj.h" />
+    <ClInclude Include="..\..\..\game_src\XMsgUnit.h" />
     <ClInclude Include="..\..\..\game_src\XObjEtc.h" />
     <ClInclude Include="..\..\..\game_src\XOption.h" />
     <ClInclude Include="..\..\..\game_src\XOrder.h" />
@@ -809,6 +810,7 @@
     <ClCompile Include="..\..\..\game_src\XGuildRaidCity.cpp" />
     <ClCompile Include="..\..\..\game_src\XGuildRaidStage.cpp" />
     <ClCompile Include="..\..\..\game_src\XLegionObj.cpp" />
+    <ClCompile Include="..\..\..\game_src\XMsgUnit.cpp" />
     <ClCompile Include="..\..\..\game_src\XObjEtc.cpp" />
     <ClCompile Include="..\..\..\game_src\XOption.cpp" />
     <ClCompile Include="..\..\..\game_src\XOrder.cpp" />

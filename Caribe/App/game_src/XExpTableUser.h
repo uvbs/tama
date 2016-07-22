@@ -13,13 +13,13 @@ public:
 	/**
 	 @brief level레벨의 최대경험치를 구한다.
 	*/
-	DWORD GetMaxExp( int level ) {
+	DWORD GetMaxExp( int level ) const {
 		return m_Table[ level ];
 	}
 	/**
 	 @brief 최대가능 레벨을 얻는다
 	*/
-	int GetMaxLevel( void ) {
+	int GetMaxLevel( void ) const {
 		return m_Table.size() - 1;
 	}
 	//

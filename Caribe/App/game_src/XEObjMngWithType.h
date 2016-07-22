@@ -25,14 +25,18 @@ public:
 	}
 private:
 	static XEObjMngWithType* s_pInstance;
-//	XArray< std::list<WorldObjPtr> > m_listTypes;
-	std::list<UnitPtr> m_listUnits;
-	std::list<WorldObjPtr> m_listEtc;
+	XList4<UnitPtr> m_listUnits;
+	XList4<WorldObjPtr> m_listEtc;
 	void Init() {}
 	void Destroy();
 public:
 	XEObjMngWithType( int maxObj, int maxType );
 	virtual ~XEObjMngWithType() { Destroy(); }
+	//
+	GET_ACCESSOR_CONST( const XList4<XSPUnit>&, listUnits );
+	XList4<XSPUnit>& GetlistUnitsMutable() {
+		return m_listUnits;
+	}
 	//
 	virtual void Release();
 	virtual ID AddUnit( const UnitPtr& spObj );

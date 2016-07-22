@@ -45,7 +45,10 @@ public:
 	GET_ACCESSOR_CONST( const XECompCamp&, Camp );
 	GET_ACCESSOR( int, cntLive );
 //	GET_ACCESSOR( XAccount*, pAccount );
-	GET_ACCESSOR( XStatistic*, pStatObj );
+	//GET_ACCESSOR( XStatistic*, pStatObj );
+	XStatistic* GetpStatObj() const {
+		return const_cast<XStatistic*>( m_pStatObj );
+	}
 	GET_ACCESSOR( XList4<SquadPtr>&, listSquad );
   GET_SET_ACCESSOR( float, Def );
 	XHero* GetpLeader();

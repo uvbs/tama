@@ -266,25 +266,9 @@ public:
 	void DelegateOnDestroy( XEBaseScene *pScene );
 	void DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, SceneParamPtr spParam );
 // 	// fsm
-// 	int DoFSMConnect( XGAME::xtFSMConnectState state, XGAME::xtFSMEvent event, DWORD param );
-// 	int SendFSMEvent( XGAME::xtFSMConnectState state, XGAME::xtFSMEvent event, DWORD param );
-// 	void ChangeFSMConnect( XGAME::xtFSMConnectState stateNew, DWORD param = 0);
-// 	LPCTSTR GetStringStateConnect( XGAME::xtFSMConnectState state );
-// 	int FSMDoConnectLoginSvr( XGAME::xtFSMEvent event, DWORD param );
-// 	int FSMConnectedLoginSvr( XGAME::xtFSMEvent event, DWORD param );
-// 	int FSMDoConnectGameSvr( XGAME::xtFSMEvent event, DWORD param );
-// 	int FSMConnectedGameSvr( XGAME::xtFSMEvent event, DWORD param );
-// 	int FSMOnline( XGAME::xtFSMEvent event, DWORD param );
-// 	void DoConnectGameSvr() {
-// 		ChangeFSMConnect( XGAME::xFS_CONNECT_GAMESVR, 0 );
-// 	}
-// 	void DoConnectLoginSvr( XGAME::xtConnectParam typeConnect ) {
-// 		ChangeFSMConnect( XGAME::xFS_CONNECT_LOGINSVR, (DWORD)typeConnect );
-// 	}
-// 	void OnConnectedLoginSvr( ID idAccount, _tstring strIP, WORD port );
 	void DelegateOnCalcTimer( XSpot *pBaseSpot, const XTimer2& timerCalc );
-	virtual DWORD OnDelegateGetMaxExp( XFLevel *pLevel, int level, DWORD param1, DWORD param2 );
-	virtual int OnDelegateGetMaxLevel( XFLevel *pLevel, DWORD param1, DWORD param2 );
+	DWORD OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const override;
+	int OnDelegateGetMaxLevel( const XFLevel *pLevel, DWORD param1, DWORD param2 ) const override;
 
 	void AddBrilliant( ID idWnd, float scale = 1.f );
 	void DelBrilliant( ID idWnd );

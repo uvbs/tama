@@ -8,6 +8,7 @@
 #include "XLegionObj.h"
 #include "Sprite/SprObj.h"
 #include "XSkillMng.h"
+#include "XMsgUnit.h"
 
 
 
@@ -20,6 +21,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 using namespace XGAME;
+using namespace XSKILL;
 
 #ifdef _XMEM_POOL
 template<> XPool<XObjArrow>* XMemPool<XObjArrow>::s_pPool = NULL;
@@ -870,12 +872,20 @@ void XObjFlame::FrameMove( float dt )
 													5,
 													false,
 													XSKILL::xTL_LIVE );
-		for( auto pUnit : ary ) {
-			if( XASSERT( pUnit ) ) {
+		for( auto spUnit : ary ) {
+			if( XASSERT( spUnit ) ) {
 				BIT bitHit = xBHT_HIT | xBHT_BY_SKILL;
 				if( m_Damage == 0 )
 					bitHit &= ~xBHT_HIT;
-				pUnit->DoDamage( m_spAttacker.get(), m_Damage, 0.f, XSKILL::xDMG_MAGIC, bitHit, xDA_FIRE );
+//				pUnit->DoDamage( m_spAttacker.get(), m_Damage, 0.f, XSKILL::xDMG_MAGIC, bitHit, xDA_FIRE );
+				auto pMsg = std::make_shared<xnUnit::XMsgDmg>( m_spAttacker
+																										, spUnit
+																										, m_Damage
+																										, 0.f
+																										, xDMG_MAGIC
+																										, bitHit
+																										, xDA_FIRE );
+				spUnit->PushMsg( pMsg );
 			}
 		}
 	}

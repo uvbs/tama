@@ -946,7 +946,7 @@ BIT XSkillUser::GetFilterSideInvoke( XSkillUser *pCaster,
 }
 
 // this가 pCstTarget에게 발동이 가능한지 검사
-BOOL XSkillUser::IsInvokeAble( XSkillDat *pDat, XSkillReceiver *pCstTarget, const EFFECT *pEffect )
+BOOL XSkillUser::IsInvokeAble( XSkillDat *pDat, const XSkillReceiver *pCstTarget, const EFFECT *pEffect )
 {
 	xtFriendshipFilt invokefiltFriendship = pEffect->invokefiltFriendship;
 	// 발동대상우호가 지정되지 않았으면 시전대상우호를 가져다 쓴다.

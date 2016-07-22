@@ -13,7 +13,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-DWORD XFLevel::GetMaxExp( int level ) 
+DWORD XFLevel::GetMaxExp( int level ) const
 {
 	if( m_pDelegate )
 		return m_pDelegate->OnDelegateGetMaxExp( this, level, 0, 0 );
@@ -23,7 +23,7 @@ DWORD XFLevel::GetMaxExp( int level )
 /**
  @brief 현재 레벨까지의 exp총합을 돌려준다.
 */
-XINT64 XFLevel::GetExpSum( void )
+XINT64 XFLevel::GetExpSum( void ) const
 {
 	XINT64 sum = 0;
 	for( int i = 1; i < m_Level; ++i )
@@ -149,7 +149,7 @@ BOOL XFLevel::DeSerialize( XArchive& ar )
  @brief exp가 만땅상태냐. 수동레벨업 모드에서만 사용한다.
 
 */
-bool XFLevel::IsFullExp() 
+bool XFLevel::IsFullExp() const
 {
 // 	XASSERT( m_bAutoLevelup == false );
 	DWORD expMax = m_pDelegate->OnDelegateGetMaxExp( this, m_Level, 0, 0 );
@@ -175,7 +175,7 @@ bool XFLevel::IsFullExp()
 // 	}
 // }
 
-int XFLevel::GetMaxLevel() 
+int XFLevel::GetMaxLevel() const 
 {
 	XBREAK( m_pDelegate == nullptr );
 	return m_pDelegate->OnDelegateGetMaxLevel( this, 0, 0 );

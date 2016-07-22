@@ -43,7 +43,7 @@ public:
 	bool IsLvLimit() const {
 		return m_Level >= m_lvLimit;
 	}
-	int GetMaxLevel();
+	int GetMaxLevel() const;
 	/**
 	 @brief 꺼내는 동시에 클리어 한다.
 	*/
@@ -55,13 +55,13 @@ public:
 // 	bool IsAutoLevelup() {
 // 		return m_bAutoLevelup;
 // 	}
-	bool IsFullExp();
+	bool IsFullExp() const ;
 	//
-	DWORD GetMaxExp( int level );
-	DWORD GetMaxExpCurrLevel() {
+	DWORD GetMaxExp( int level ) const;
+	DWORD GetMaxExpCurrLevel() const {
 		return GetMaxExp( m_Level );
 	}
-	XINT64 GetExpSum();
+	XINT64 GetExpSum() const;
 	BOOL AddExp( DWORD exp );
 	BOOL AddExp( XINT64 exp );
 	BOOL AddExp( int exp ) {
@@ -69,7 +69,7 @@ public:
 		return AddExp( (DWORD)exp );
 	}
 	/// 렙업하기위해 남은 exp양
-	DWORD GetExpRemain() {
+	DWORD GetExpRemain() const {
 		return GetMaxExpCurrLevel() - GetExp();
 	}
 	BOOL SubExp( DWORD exp );
@@ -77,25 +77,6 @@ public:
 	BOOL Serialize( XArchive& ar ) const;
 	BOOL DeSerialize( XArchive& ar );
 };
-
-// class XDelegateLevel
-// {
-// 	void Init() {}
-// 	void Destroy() {}
-// public:
-// 	XDelegateLevel() { Init(); }
-// 	virtual ~XDelegateLevel() { Destroy(); }
-// 	// 레벨업을 하려면 아래 2개 델리게이트를 구현해야 한다.
-// 	///< level에서의 최대 exp의 값을 돌려줘야 한다.
-// 	virtual DWORD OnDelegateGetMaxExp( XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) { return 0xffffffff; }
-// 	///< 최대 레벨값을 돌려줘야 한다.
-// 	virtual int OnDelegateGetMaxLevel( XFLevel *pLevel, DWORD param1, DWORD param2 ) { return 0; }
-// 	///< 레벨업 했을때 이벤트
-// 	virtual void OnDelegateLevelUp( XFLevel *pLevel ) {}
-// 	///< 레벨다운이 되서 레벨 바닥까지 도달했다.
-// 	virtual void OnDelegateLevelBottom( XFLevel *pLevel ) {}
-// 	
-// };
 
 #define XFLEVEL_ACCESSOR(OBJ) \
 	XFLevel& GetXFLevelObj() { return OBJ; } \
@@ -107,15 +88,15 @@ public:
 	BOOL AddExp( DWORD add ) { return OBJ.AddExp( add ); } \
 	BOOL AddExp( XINT64 add ) { return OBJ.AddExp( add ); } \
 	void SetpDelegateLevel( XDelegateLevel *pDelegate, DWORD idObj = 0 ) { OBJ.SetpDelegate( pDelegate ); OBJ.SetidLevel( idObj ); } \
-	BOOL GetbLevelUp() { return OBJ.GetbLevelUp(); } \
+	BOOL GetbLevelUp() const { return OBJ.GetbLevelUp(); } \
 	int SerializeLevel( XArchive& ar ) const { return OBJ.Serialize( ar ); } \
 	int DeSerializeLevel( XArchive& ar ) { return OBJ.DeSerialize( ar ); } \
 	BOOL GetbLevelUpAndClear() { return OBJ.GetbLevelUpAndClear(); } \
-	XINT64 GetExpSum() { return OBJ.GetExpSum(); } \
-	DWORD GetMaxExp( int level ) { return OBJ.GetMaxExp( level ); } \
-	DWORD GetMaxExpCurrLevel() { return OBJ.GetMaxExpCurrLevel(); } \
-	DWORD GetExpRemain() { return OBJ.GetMaxExpCurrLevel() - OBJ.GetExp(); } \
-	int GetMaxLevel() { return OBJ.GetMaxLevel(); } \
+	XINT64 GetExpSum() const { return OBJ.GetExpSum(); } \
+	DWORD GetMaxExp( int level ) const { return OBJ.GetMaxExp( level ); } \
+	DWORD GetMaxExpCurrLevel() const { return OBJ.GetMaxExpCurrLevel(); } \
+	DWORD GetExpRemain() const { return OBJ.GetMaxExpCurrLevel() - OBJ.GetExp(); } \
+	int GetMaxLevel() const { return OBJ.GetMaxLevel(); } \
 	int GetlvLimit() const { return OBJ.GetlvLimit(); } \
 	void SetlvLimit( int level ) { XBREAK(level <= 1); OBJ.SetlvLimit( level ); } \
 	bool IsLvLimit() const { return OBJ.IsLvLimit(); } \

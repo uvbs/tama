@@ -6,6 +6,7 @@
 #include "XLegionObj.h"
 #include "XEObjMngWithType.h"
 #include "XSquadObj.h"
+#include "XMsgUnit.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -14,6 +15,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 #endif
+
+using namespace XGAME;
+using namespace XSKILL;
 
 ////////////////////////////////////////////////////////////////
 XUnitCyclops::XUnitCyclops( XSquadObj *pSquadObj,
@@ -120,7 +124,15 @@ void XUnitCyclops::sShootLaser( UnitPtr spShooter,
 				if( damage == 0 )
 					bitHit &= ~XGAME::xBHT_HIT;
 				float ratioPenet = spShooter->GetPenetrationRatio();
-				spUnit->DoDamage( spShooter.get(), damage, ratioPenet, XSKILL::xDMG_RANGE, bitHit, XGAME::xDA_FIRE );
+//				spUnit->DoDamage( spShooter.get(), damage, ratioPenet, XSKILL::xDMG_RANGE, bitHit, XGAME::xDA_FIRE );
+				auto pMsg = std::make_shared<xnUnit::XMsgDmg>( spShooter
+																										, spUnit
+																										, damage
+																										, ratioPenet
+																										, xDMG_RANGE
+																										, bitHit
+																										, xDA_FIRE );
+				spUnit->PushMsg( pMsg );
 			}
 		}
 		auto pBuff = spShooter->FindBuffSkill(_T("flame_fit"));

@@ -80,10 +80,14 @@ void XBattleField::DestroyAllObj( void )
 int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 {
 	XPROF_OBJ_AUTO();
-	if( GetpObjMng() )
+	auto& listUnit = XEObjMngWithType::sGet()->GetlistUnitsMutable();
+	for( auto spUnit : listUnit ) {
+		if( XASSERT( spUnit ) ) {
+			spUnit->FlipMsgQ();
+		}
+	}
+	if( GetpObjMng() )	{
 		GetpObjMng()->FrameMoveDelegate( this, 4, dt );
-	if( GetpObjMng() )
-	{
 		// 캐릭터상태와 보정치를 클리어한다.
 		GetpObjMng()->FrameMoveDelegate( this, 1, dt );
 		// XSkillUser::FrameMove()를 일괄 실행한다.
@@ -93,9 +97,16 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 	}
 	GetLegionObj(0)->FrameMove( dt );
 	GetLegionObj(1)->FrameMove( dt );
-// 	m_aryLegion[ 0 ]->FrameMove( dt );
-// 	m_aryLegion[ 1 ]->FrameMove( dt );
-	return XEWorld::Process( pWndWorld, dt );
+	//
+	auto ret = XEWorld::Process( pWndWorld, dt );
+	// 모든 프로세스가 끝난 후 유니트들은 각자 쌓인 메시지큐들을 처리한다.
+	// 만약 위 프로세스에서 A가 B를 타격했다면 B가 피격받은 모습을 즉시 draw해야할거 같아서 process() 아래에 넣음.
+	for( auto spUnit : listUnit ) {
+		if( XASSERT(spUnit) ) {
+			spUnit->ProcessMsgQ();
+		}
+	}
+	return ret;
 }
 
 void XBattleField::OnDelegateFrameMoveEachObj( float dt, 

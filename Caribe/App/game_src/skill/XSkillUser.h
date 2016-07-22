@@ -130,20 +130,11 @@ public:
 	virtual XSkillObj* CreateSkillUseObj( XSkillDat *pSkillDat );
 	BIT GetFilterSideCast( XSkillReceiver *pCastingTarget, xtCastTarget targetType, XSkillReceiver *pBaseTarget, xtFriendshipFilt friendshipFilter );	// 시전대상에 타겟타입으로 effectFilter로 시전/발동 될때 검색해야할 대상의 프렌드쉽 플래그
 	BIT GetFilterSideInvoke( XSkillUser *pCaster/*, XSkillReceiver *pInvoker*/, XSkillReceiver *pCastingTarget, xtInvokeTarget targetType, xtFriendshipFilt friendshipFilter );
-	virtual BOOL IsInvokeAble( XSkillDat *pDat, XSkillReceiver *pCstTarget, const EFFECT *pEffect );
-//	virtual void RegisterScriptUse( XLua *pLua ) {};	// 클래스/상속관계/API등을 등록한다
+	virtual BOOL IsInvokeAble( XSkillDat *pDat, const XSkillReceiver *pCstTarget, const EFFECT *pEffect );
 	virtual void RegisterInhValUse( XLua *pLua, const char *szVal ) = 0; ///< szVal변수를(보통 casterObj) 상속된 하위클래스형으로 루아변수로 등록한다 말하자면 XSkillReceiver타입의 invokeObj가 아니고 XUnit타입의 invokeObj로 등록해야한다. 이런 코드 사용-> pLua->RegisterVar( szVal, this ); 	
-	virtual BIT GetCampUser( void ) { return 0; }		// this의 진영을 리턴. 지형속성같은건 진영이 없기때문에 pure virtual 로 하지 않았다
-//	virtual xtSide GetFriendship( void ) { return xSIDE_NONE; }		// this의 Friendship을 리턴. 지형속성같은건 프레임드쉽이 없기때문에 pure virtual 로 하지 않았다
+	virtual BIT GetCampUser( void ) const { return 0; }		// this의 진영을 리턴. 지형속성같은건 진영이 없기때문에 pure virtual 로 하지 않았다
 	virtual void OnPlaySoundUse( ID id ) { XLOG("경고: PlaySound가 구현되지 않았음"); }
 	// pvPos를 중심으로 발동반경내의 friendship의 우호를 가진...// 이 조건에 맞는 오브젝트들 리스트 invokeNumApply만큼을 버추얼로 요청한다
-/*
-	virtual int GetListObjsInArea( XArrayLinearN<XSkillReceiver*, 100> *plistOutInvokeTarget, 
-									const XE::VEC2 *pvPos, 
-									float radius, 
-									xtSide sideSearchFilt, 
-									int numApply ) { return 0; }
-*/
 	// vStart를 시작으로 vSize크기의 사각영역내의 객체를 찾는다.
 	// pvStart가 널이면 상속받는 하위 클래스에서 this의 좌표를 사용해야 한다.
 	virtual int GetListObjsInRect( XArrayLinearN<XSkillReceiver*, 512> *pAryOutIvkTarget, 

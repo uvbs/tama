@@ -821,12 +821,12 @@ void XGameUser::Process( float dt )
 // 	}
 }
 
-DWORD XGameUser::OnDelegateGetMaxExp( XFLevel *pLevel, int level, DWORD param1, DWORD param2 )
+DWORD XGameUser::OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const
 {
 	return EXP_TABLE_USER->GetMaxExp( level );
 }
 
-int XGameUser::OnDelegateGetMaxLevel( XFLevel *pLevel, DWORD param1, DWORD param2 ) 
+int XGameUser::OnDelegateGetMaxLevel( const XFLevel *pLevel, DWORD param1, DWORD param2 ) const
 { 
 	return EXP_TABLE_USER->GetMaxLevel();
 }

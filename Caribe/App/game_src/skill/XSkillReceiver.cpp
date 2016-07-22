@@ -229,7 +229,7 @@ XBuffObj* XSkillReceiver::FindBuffSkill( LPCTSTR idsSkill )
 /**
  @brief 공격자 idAttacker로부터 근접공격으로 맞았다.
 */
-void XSkillReceiver::OnHitFromAttacker( XSkillReceiver *pAttacker, xtDamage typeDamage )
+void XSkillReceiver::OnHitFromAttacker( const XSkillReceiver *pAttacker, xtDamage typeDamage )
 {
 	OnAttackMelee( pAttacker, typeDamage );	// virtual
 	// 피격자가 가진 버프중에 맞으면 발동하는 스킬이 있으면 이벤트핸들러를 날려준다.
@@ -267,7 +267,7 @@ void XSkillReceiver::OnAttackToDefender( XSkillReceiver *pDefender,
 /**
  @brief 범용 이벤트 전달기
 */
-void XSkillReceiver::OnEventJunctureCommon( ID idEvent, DWORD dwParam, XSkillReceiver *pRecvParam )
+void XSkillReceiver::OnEventJunctureCommon( ID idEvent, DWORD dwParam, const XSkillReceiver* pRecvParam )
 {
 	XLIST2_LOOP( m_listSkillRecvObj, XBuffObj*, pBuff )	{
 		if( pBuff->GetbDestroy() )

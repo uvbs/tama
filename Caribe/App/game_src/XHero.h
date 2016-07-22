@@ -53,8 +53,8 @@ private:
 //	std::shared_ptr<XSKILL::XAdjParam> m_spAdjParam;
 	//
 	ID m_idProp = 0;      // m_pProp을 교체해야할때 필요함.
-	ID m_keyPropHero = 0;
-	XPropHero::xPROP *_m_pProp = nullptr;
+//	ID m_keyPropHero = 0;
+// 	XPropHero::xPROP *_m_pProp = nullptr;
 	ID m_snHero;
 	std::vector<xnHero::xUpgrade> m_aryUpgrade;		// 업글3종세트의 정보가 담김
 	XGAME::xtGrade m_Grade = XGAME::xGD_COMMON;		// 생성되면 1성부터 시작함.
@@ -86,12 +86,12 @@ private:
 	void Destroy();
 public:
 	XHero();
-	XHero( XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit );
+	XHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit );
 	virtual ~XHero() { Destroy(); }
 	//
 //	GET_ACCESSOR( std::shared_ptr<XSKILL::XAdjParam>, spAdjParam );
-	GET_SET_ACCESSOR( XGAME::xtUnit, Unit );
-	int GetnumUnit();
+	GET_SET_ACCESSOR_CONST( XGAME::xtUnit, Unit );
+	int GetnumUnit() const;
 	GET_SET_ACCESSOR_CONST( bool, bLive );
 	inline int GetLevel( XGAME::xtTrain type ) const {
 		if( XASSERT(XGAME::IsValidTrainType( type )) )
@@ -113,13 +113,13 @@ public:
 	inline void SetlevelSquad( int level ) {
 		SetLevel( XGAME::xTR_SQUAD_UP, level );
 	}
-	ID GetsnHero( void ) {
+	ID GetsnHero( void ) const {
 		return m_snHero;
 	}
-	ID getid() {
+	ID getid() const {
 		return m_snHero;
 	}
-  XPropHero::xPROP* GetpProp();
+  const XPropHero::xPROP* GetpProp() const;
   void SetpProp( XPropHero::xPROP* pProp, ID idKey );
   void SetpProp( ID idProp );
   GET_ACCESSOR( ID, idProp );
@@ -204,9 +204,9 @@ public:
 	XBaseItem* GetEquipItem(XGAME::xtParts parts);
 
 	///< level에서의 최대 exp의 값을 돌려줘야 한다.
-	virtual DWORD OnDelegateGetMaxExp( XFLevel *pLevel, int level, DWORD param1, DWORD param2 );
+	DWORD OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const;
 	///< 최대 레벨값을 돌려줘야 한다.
-	virtual int OnDelegateGetMaxLevel( XFLevel *pLevel, DWORD param1, DWORD param2 );
+	int OnDelegateGetMaxLevel( const XFLevel *pLevel, DWORD param1, DWORD param2 ) const;
 //	float GetSquadAttackMeleePower();
 	void GetSquadStat( int levelSquad, xSquadStat *pOut );
 	float GetAdjParamByItem( XGAME::xtParameter adjParam );
@@ -271,31 +271,31 @@ public:
 	bool GetbLevelUpAndClear( XGAME::xtTrain type ) {
 		return m_aryUpgrade[ type ].m_Level.GetbLevelUpAndClear();
 	}
-	int GetlevelSquad() {
+	int GetlevelSquad() const {
 		return GetLevel( XGAME::xTR_SQUAD_UP );
 	}
-	int GetExp() {
+	int GetExp() const {
 		return m_aryUpgrade[ XGAME::xTR_LEVEL_UP ].GetExp();
 	}
-	int GetMaxExpCurrLevel() {
+	int GetMaxExpCurrLevel() const {
 		return m_aryUpgrade[ XGAME::xTR_LEVEL_UP ].GetMaxExpCurrLevel();
 	}
-	int GetExp( XGAME::xtTrain type ) {
+	int GetExp( XGAME::xtTrain type ) const {
 		return m_aryUpgrade[ type ].GetExp();
 	}
-	int GetMaxExpCurrLevel( XGAME::xtTrain type ) {
+	int GetMaxExpCurrLevel( XGAME::xtTrain type ) const {
 		return m_aryUpgrade[ type ].GetMaxExpCurrLevel();
 	}
-	int GetExpRemain( XGAME::xtTrain type ) {
+	int GetExpRemain( XGAME::xtTrain type ) const {
 		return GetMaxExpCurrLevel( type ) - GetExp( type );
 	}
-	XINT64 GetExpSum() {
+	XINT64 GetExpSum() const {
 		return m_aryUpgrade[ XGAME::xTR_LEVEL_UP ].GetExpSum();
 	}
 	XFLevel GetLevelObj( XGAME::xtTrain type ) const {
 		return m_aryUpgrade[ type ].m_Level;
 	}
-	int GetExpWithLevel( XGAME::xtTrain typeTrain, int lvHero ) {
+	int GetExpWithLevel( XGAME::xtTrain typeTrain, int lvHero ) const {
 //		return m_aryUpgrade[ typeTrain ].m_Level.getexp
 		return 0;
 	}

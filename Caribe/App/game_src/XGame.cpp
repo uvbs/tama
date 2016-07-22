@@ -1233,12 +1233,12 @@ void XGame::DelegateOnCalcTimer( XSpot *pBaseSpot, const XTimer2& timerCalc )
 //	sGetpWorld()->SetbUpdate( TRUE );
 }
 
-DWORD XGame::OnDelegateGetMaxExp( XFLevel *pLevel, int level, DWORD param1, DWORD param2 )
+DWORD XGame::OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const
 {
 	return EXP_TABLE_USER->GetMaxExp( level );
 }
 
-int XGame::OnDelegateGetMaxLevel( XFLevel *pLevel, DWORD param1, DWORD param2 ) 
+int XGame::OnDelegateGetMaxLevel( const XFLevel *pLevel, DWORD param1, DWORD param2 ) const
 { 
 	return EXP_TABLE_USER->GetMaxLevel();
 }

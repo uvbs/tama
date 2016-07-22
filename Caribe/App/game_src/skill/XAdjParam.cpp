@@ -26,9 +26,9 @@ void XAdjParam::AddAdjParam( int adjParam,
 	}
 }
 // 오리지널값 val에 보정치를 연산해서 되돌려줌
-float XAdjParam::CalcAdjParam( float val, int adjParam, float addAdjRatio, float addAdjVal )
+float XAdjParam::CalcAdjParam( float val, int adjParam, float addAdjRatio, float addAdjVal ) const
 {
-	XSKILL::ADJ_PARAM *pAdjParam = &m_adjParam[ adjParam ];
+	const auto pAdjParam = &m_adjParam[ adjParam ];
 	float v = val;
 	if( pAdjParam->valFixedImm >= 0 )		// 고정값이 디폴트가 아니면 고정치값만 적용한다
 		return pAdjParam->valFixedImm;

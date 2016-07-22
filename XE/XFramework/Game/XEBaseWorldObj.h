@@ -7,7 +7,6 @@ class XEWndWorld;
 class XArchive;
 class XEBaseWorldObj;
 class XSprObj;
-typedef std::shared_ptr<XEBaseWorldObj> WorldObjPtr;
 
 class XEBaseWorldObj : public XDelegateSprObj,
 					public std::enable_shared_from_this<XEBaseWorldObj>
@@ -23,7 +22,6 @@ public:
 		xFG_ERROR=0x80000000,
 	};
 private:
-//	WorldObjPtr *m_pSharedPtr;	///< 자기자신의 레퍼런스객체의 포인터를 갖고 있는다.
 	int m_Type;					///< 오브젝트의 대분류(유닛인가 or sfx인가 같은...)
 	int m_Destroy;
 	ID m_snObj;					///< 인스턴스의 고유 번호
@@ -44,7 +42,6 @@ private:
 		m_pWndWorld = NULL;
 		m_dwFlag = 0;
 		m_vScale.Set(1.f);
-//		m_pSharedPtr = NULL;
 		m_Alpha = 1.f;
 	}
 	void Destroy();

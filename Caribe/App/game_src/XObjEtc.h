@@ -417,7 +417,7 @@ public:
 	}
 	virtual void Release( void ) {}
 	virtual int OnApplyEffectNotAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) { return 0; }
-	virtual XECompCamp& GetCamp( void ) override {		///< this의 진영을 리턴
+	virtual const XECompCamp& GetCamp( void ) const override {		///< this의 진영을 리턴
 		return m_Camp;
 	}
 	void FrameMove( float dt ) override;

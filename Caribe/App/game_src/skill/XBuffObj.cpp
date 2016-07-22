@@ -101,7 +101,7 @@ void XBuffObj::OnSkillEventKillEnemy( XSkillReceiver *pOwner, ID idDead )
  이 버프가 가진 효과중 피격시 발동하는 효과가 있다면 그 효과를 발동타겟들에게 발동시킨다.
  @param pAttacker는 null일수 있다.
 */
-void XBuffObj::OnHitFromAttacker( XSkillReceiver *pAttacker, 
+void XBuffObj::OnHitFromAttacker( const XSkillReceiver *pAttacker, 
 								XSkillReceiver *pDefender,
 								XSkillReceiver *pOwner, 
 								xtDamage typeDamage )
@@ -109,7 +109,7 @@ void XBuffObj::OnHitFromAttacker( XSkillReceiver *pAttacker,
 	XBREAK( pDefender == nullptr );
 	XBREAK( pOwner == nullptr );
 	// 공격자를 세팅함.
-	pDefender->SetpAttacker( pAttacker );
+	pDefender->SetpAttacker( const_cast<XSkillReceiver*>( pAttacker ) );
 	LIST_LOOP( m_listEffectObjs, EFFECT_OBJ*, itor, pEffObj )	{
 		EFFECT *pEffect = &pEffObj->m_effect;
 		// 이 버프의 효과가 맞으면 발동하는 효과인가?
@@ -172,7 +172,7 @@ void XBuffObj::OnAttackToDefender( XSkillReceiver *pDefender,
 /**
  @brief 발동시점 범용 이벤트 처리기
 */
-void XBuffObj::OnEventJunctureCommon( ID idEvent, DWORD dwParam, XSkillReceiver *pRecvParam )
+void XBuffObj::OnEventJunctureCommon( ID idEvent, DWORD dwParam, const XSkillReceiver *pRecvParam )
 {
 	LIST_LOOP( m_listEffectObjs, EFFECT_OBJ*, itor, pEffObj ) {
 		EFFECT *pEffect = &pEffObj->m_effect;
@@ -186,7 +186,7 @@ void XBuffObj::OnEventJunctureCommon( ID idEvent, DWORD dwParam, XSkillReceiver 
 				}
 			} else
 			if( idEvent == xJC_DEAD )
-				m_pOwner->SetpAttacker( pRecvParam );
+				m_pOwner->SetpAttacker( const_cast<XSkillReceiver*>( pRecvParam ) );
 			if( bApply )
 				ApplyInvokeEffect( pEffect, m_Level, m_pOwner, NULL, TRUE );
 		}

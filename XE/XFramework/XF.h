@@ -8,3 +8,4 @@ namespace XF
 		OBJMNG_YSORT=0x0001,	// 찍기전 y좌표를 소트한다.
 	};
 };
+

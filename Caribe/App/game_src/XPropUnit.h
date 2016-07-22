@@ -50,7 +50,7 @@ public:
 			scale = 1.f;
 		}
 		~xPROP() { }
-		XGAME::xtUnit GetTypeUnit() {
+		XGAME::xtUnit GetTypeUnit() const {
 			return (XGAME::xtUnit) idProp;
 		}
 		bool IsTanker() {
@@ -107,7 +107,7 @@ public:
 	
 	xPROP* GetpProp( LPCTSTR szIdentifier );
 	// strIdentifier는 모두 소문자여야 함.
-	xPROP* GetpProp( _tstring& strIdentifier ) { 
+	xPROP* GetpProp( const _tstring& strIdentifier ) { 
 		XBREAK( strIdentifier.empty() == TRUE ); 
 		return GetpProp( strIdentifier.c_str() ); 
 	}

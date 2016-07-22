@@ -4,6 +4,7 @@
 #include "XWndBattleField.h"
 #include "XBattleField.h"
 #include "XEObjMngWithType.h"
+#include "XMsgUnit.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -179,7 +180,15 @@ void XUnitTreant::DoDamageToTarget( XSPUnit spTarget
 			bitHit |= XGAME::xBHT_CRITICAL;
 		if( damage == 0 )
 			bitHit &= ~XGAME::xBHT_HIT;
-		spTarget->DoDamage( this, damage, ratioPenet, typeDmg, bitHit, typeDmgAttr );
+//		spTarget->DoDamage( this, damage, ratioPenet, typeDmg, bitHit, typeDmgAttr );
+		auto pMsg = std::make_shared<xnUnit::XMsgDmg>( GetThis()
+																								, spTarget
+																								, damage
+																								, ratioPenet
+																								, typeDmg
+																								, bitHit
+																								, typeDmgAttr );
+		spTarget->PushMsg( pMsg );
 	}
 }
 

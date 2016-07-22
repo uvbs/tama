@@ -124,7 +124,7 @@ public:
 	void InvokeDoScript( XLua *pLua, XSkillReceiver *pInvokeTarget, const char *szScript );	// 발동대상에게 스크립트를 실행한다
 	void OnFirstApplyEffect( XSkillReceiver *pInvokeTarget, EFFECT_OBJ *pEffObj );	// 이 효과가 대상에게 처음 적용되는 시점. bInnerApply: Process()에서 호출된건지 ApplyBuff(외부적용상황)에서 불려진건지 플래그
 	void OnEndApplyEffect( XSkillReceiver *pInvokeTarget, EFFECT_OBJ *pEffObj );	// 이 효과가 해제될때
-	void OnHitFromAttacker( XSkillReceiver *pAttacker,
+	void OnHitFromAttacker( const XSkillReceiver *pAttacker,
 							XSkillReceiver *pDefender,
 							XSkillReceiver *pOwner,
 							xtDamage typeDamage );
@@ -135,7 +135,7 @@ public:
 							XSKILL::xtDamage typeDamage );
 	void OnSkillEventKillEnemy( XSkillReceiver *pOwner, ID idDead );
 	void OnCastedEffect( XSkillReceiver *pOwner, EFFECT_OBJ *pEffObj );
-	void OnEventJunctureCommon( ID idEvent, DWORD dwParam = 0, XSkillReceiver *pRecvParam = nullptr );
+	void OnEventJunctureCommon( ID idEvent, DWORD dwParam = 0, const XSkillReceiver *pRecvParam = nullptr );
 	void OnEventBeforeAttack( XSKILL::xtJuncture event );
 	void OnEventInvokeFromSkill( XSkillDat *pFromSkill, const EFFECT *pFromEffect, XSkillUser *pCaster, XSkillReceiver *pBaseTarget );
 	// 효과발동 동작의 일원화를 위한 최종 추상화 함수

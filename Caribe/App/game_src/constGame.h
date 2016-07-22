@@ -18,6 +18,10 @@ class XAccount;
 class XSpot;
 class XPostItem;
 class XPostInfo;
+namespace xnUnit {
+	class XMsgBase;
+}
+typedef std::shared_ptr<xnUnit::XMsgBase> XSPMsg;
 
 typedef std::shared_ptr<XBaseUnit> UnitPtr;
 typedef std::shared_ptr<XSquadObj> SquadPtr;

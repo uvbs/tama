@@ -20,6 +20,28 @@ namespace XSKILL {
 class XSkillDat;
 struct EFFECT;
 }
+namespace xnUnit {
+	class XMsgQ;
+	class XMsgBase;
+	class XMsgDmg;
+	class XMsgDmgFeedback;
+	struct xDmg {
+		XSPWorldObj m_spAtkObj;
+		XSPUnit m_spUnitAtker;
+		XSPUnit m_spTarget;
+		float m_Damage = 0.f;
+		float m_ratioPanet = 0.f;
+		XSKILL::xtDamage m_typeDmg = XSKILL::xDMG_NONE;
+		const BIT m_bitAttrHit = 0;
+		XGAME::xtDamageAttr m_attrDamage = XGAME::xDA_NONE;
+		bool m_bCritical = false;
+		xDmg( XSPWorldObjConst spAtkObj, XSPUnit spTarget, float damage, float ratioPenet, XSKILL::xtDamage typeDamage, const BIT bitAttrHit, XGAME::xtDamageAttr attrDamage, bool bCritical );
+		inline XBaseUnit* GetpUnit() const {
+			return (m_spUnitAtker)? m_spUnitAtker.get() : nullptr;
+		}
+	};
+}
+
 class XWndBattleField;
 class XEBaseFSM;
 class XFSMIdle;
@@ -78,12 +100,10 @@ private:
 	XE::xtHorizDir m_Dir;		///< 바라보고 있는 방향
 	XSquadObj *m_pSquadObj;		///< 이 유닛이 속해있는 분대객체(weak)
 	UnitPtr m_spTarget;		///< 추적목표 객체
-//	SquadPtr m_spTargetSquad;		///<< 타겟 부대
 	XE::VEC3 m_vwTarget;		///< spTarget이 null일때 좌표만으로 이동할 목표
 	const XE::VEC3 m_vLocalFromSquad;	///< 분대내에서의 로컬좌표
 	int m_idxAttackedAngle;			///< 근접공격자가 this를 타겟잡을때마다 겹치지 않고 둘러쌀수 있도록 적당한 위치를 내보내준다. 그것을 위해 필요한 인덱스
 	XArrayN<UnitPtr,8> m_aryAttacked;	///< this를 둘러싸고 공격하고 있는 공격자들.
-//	XE::VEC2 m_vlVecFromTarget;		///< 타겟을 잡으면 타겟의 어느쪽에 설건지 벡터를 받아둔다.
 	XE::VEC2 m_vwBind;				///< 전투를 위해 이동할 좌표가 확정됨.
 	XE::VEC3 m_vlActionEvent;		///< 액션이벤트때 타점좌표를 저장해둔다.(유닛로컬좌표)
 	CTimer m_timerDamage;			///< 데미지 입으면 타이머가 작동한다.
@@ -97,11 +117,8 @@ private:
 	CTimer m_timerHpRegen;		///< 체력리젠 타이머
 	int m_cntAttack = 0;			///< 평타 휘두른 횟수
 	int m_cntHit = 0;				///< 피격횟수
-//	UnitPtr m_spProtectorGolem;		///< this유닛을 보호중인 골렘.
-//	bool m_bInvokeHitter = false;			///< 쏜즈어택류를 처리할때 한프레임에 한번의 피격이벤트만 발생시키기 위해 플래그를 둠.
 	CTimer m_timerInvokeHitter;		///< 쏜즈어택류를 처리할때 피격이벤트가 일어날때마다 데미지를 입히니까 너무 쎄서 일정 시간이 지나야 다시 쏜즈효과가 발동되도록 함.
 	int m_cntShell = 0;					///< 골렘의 "보호"특성을 위한 껍질 개수.
-// 	int m_cntPerSec = 0;				///< 1초마다 하나씩 올라가는 카운터(엔트의 광합성 특성에 사용)
 	BIT m_bitFlags = 0;				///< 각종플래그들(xFL_...)
   int m_Count = 0;          ///< 디버깅용 FrameMove카운터
 	XPropUnit::xPROP *m_pPropUnit = nullptr;	///< 유닛 프로퍼티.(this가 영웅이어도 갖고 있다)
@@ -112,6 +129,9 @@ private:
 	std::vector<xIconBuff> m_aryBuffIcon;				// 버프용 아이콘 
 	CTimer m_timerDead;
 	CTimer m_timerDisappear;
+	// 객체간 전달용 메시지 큐(flip용으로 두개)
+	std::shared_ptr<xnUnit::XMsgQ> m_spMsgQ1;			// 현재 front msgq
+	std::shared_ptr<xnUnit::XMsgQ> m_spMsgQ2;			// back msgq
 public:
 //	CTimer m_timerSlow;			// 테스트용
 private:
@@ -189,8 +209,13 @@ public:
 	bool IsUnit() const {
 		return !IsHero();
 	}
-	XPropHero::xPROP* GetpPropHero();
+	const XPropHero::xPROP* GetpPropHero();
 	XHero* GetHero();
+	inline XHero* GetpHero() {
+		return GetHero();
+	}
+	const XHero* GetpHeroConst() const;
+	ID GetsnHero() const;
 	virtual bool IsLeader() {return FALSE;}
 	UnitPtr GetspLeader();
 	UnitPtr GetThisUnit() {
@@ -224,35 +249,33 @@ public:
 		XE::VEC2 vSize = m_bbLocal.GetSize();
 		return XE::VEC3(vSize.w, 0.f, vSize.h);
 	}
-	BOOL IsBig() {
+	BOOL IsBig() const {
 		return GetUnitSize() == XGAME::xSIZE_BIG;
 	}
-	BOOL IsMiddle() {
+	BOOL IsMiddle() const {
 		return GetUnitSize() == XGAME::xSIZE_MIDDLE;
 	}
-	BOOL IsSmall() {
+	BOOL IsSmall() const {
 		return GetUnitSize() == XGAME::xSIZE_SMALL;
 	}
 
 	/**
 	 @brief 로컬 바운드박스 좌표를 리턴한다.
 	*/
-	XE::xRECT& GetBoundBox() {
+	const XE::xRECT& GetBoundBox() const {
 		return m_bbLocal;
 	}
 	// XBaseUnit은 영웅이 될수도 있으므로 아래같은건 사실 여기다 두면 안되는데.
-	inline XGAME::xtUnit GetType() {
+	inline XGAME::xtUnit GetType() const {
  		return GetUnitType();
 	}
 	// 이 객체의 유닛종류.(영웅이면 자기가이끄는 유닛이된다)
-	inline XGAME::xtUnit GetUnitType() {
+	inline XGAME::xtUnit GetUnitType() const {
 		auto unit = GetSquadUnit();
 		XBREAK( unit != m_pPropUnit->GetTypeUnit() );	// 이런경우 발생안하면 바로 프로퍼티에서 뽑아쓰도록 고칠것.
 		return GetSquadUnit();
-// 		return m_pPropUnit->GetTypeUnit();
-//  		return GetSquadUnit();
 	}
-	XGAME::xtUnit GetSquadUnit();
+	XGAME::xtUnit GetSquadUnit() const;
 
 	XFSMBase* GetpFSM() {
 		return SafeCast<XFSMBase*, XEBaseFSM*>( XEControllerFSM::GetpBaseFSM() );
@@ -279,7 +302,7 @@ public:
 	 @brief this가 속한 군단을 리턴한다.
 	*/
 	XSPLegionObj GetspLegionObj();
-//	BOOL DoChaseNewTarget();
+	XSPLegionObjConst GetspLegionObjConst() const;
 	BOOL RequestNewMission();
 	BOOL IsDead() {
 		return !IsLive();
@@ -301,9 +324,11 @@ public:
 			return XGAME::xSIDE_OTHER;
 		return XGAME::xSIDE_PLAYER;
 	}
-	void CreateHitSfx( XBaseUnit *pAttacker, BOOL bCritical, BOOL bAbsolute = FALSE );
+	void CreateHitSfx( const XBaseUnit *pAttacker, BOOL bCritical, BOOL bAbsolute = FALSE );
 //	void DoDamage( XEBaseWorldObj *pAttacker, float damage, BOOL bCritical, float ratioPenetration, XSKILL::xtDamage typeDamage, bool bBySkill );
-	void DoDamage( XEBaseWorldObj *pAttacker, float damage, float ratioPenetration, XSKILL::xtDamage typeDamage, const BIT bitAttrHit, XGAME::xtDamageAttr attrDamage );
+private:
+	void DoDamage( const XEBaseWorldObj* pAttacker, float damage, float ratioPenetration, XSKILL::xtDamage typeDamage, const BIT bitAttrHit, XGAME::xtDamageAttr attrDamage );
+public:
 
 	float AddHp( float add ) {
 		if( m_HP == 0 )
@@ -360,30 +385,30 @@ public:
 	float GetAttackRangeDamage( UnitPtr spTarget );
 	float GetAddRateByStat( XGAME::xtStat statType, XSPUnit spTarget );
 	float GetDefensePower();
-	inline XGAME::xtSize GetUnitSize() {
+	inline XGAME::xtSize GetUnitSize() const {
 		return m_pPropUnit->size;		// 이제 영웅도 유닛사이즈를 따른다.(상성때문)
 	}
 	virtual float GetPropScale() = 0;
-	inline XGAME::xtAttack GetTypeAtk() {
+	inline XGAME::xtAttack GetTypeAtk() const {
 		return m_pPropUnit->typeAtk;
 	}
-	inline int GetMovSpeedNormal() {
+	inline int GetMovSpeedNormal() const {
 		return m_pPropUnit->movSpeedNormal;
 	}
 	float GetCriticalRatio();
 	float GetCriticalPower();
-	float GetEvadeRatio( XSKILL::xtDamage typeDamage, XBaseUnit *pAttacker );
-	float GetPenetrationRatio();
+	float GetEvadeRatio( XSKILL::xtDamage typeDamage, const XBaseUnit *pAttacker ) const;
+	float GetPenetrationRatio() const;
 	// stat관련
 	//////////////////////////////////////////////////////////////////////////
 	XFSMChase* DoChaseAndAttack( const UnitPtr& spTarget );
 	void DoChaseAndAttackCurrent();
 	void DoChase( const XE::VEC3& vwDst );
 	void DoIdle();
-	BOOL IsPenaltyMOS( XBaseUnit *pDefender );
-	BOOL IsPenaltySize( XBaseUnit *pDefender );
-	bool IsSuperiorMOS( XBaseUnit *pDefender );
-	bool IsSuperiorSize( XBaseUnit *pDefender );
+	BOOL IsPenaltyMOS( XBaseUnit *pDefender ) const;
+	BOOL IsPenaltySize( XBaseUnit *pDefender ) const;
+	bool IsSuperiorMOS( XBaseUnit *pDefender ) const;
+	bool IsSuperiorSize( XBaseUnit *pDefender ) const;
 	float GetAdjDamage( float damage, BOOL bCritical, XSKILL::xtDamage typeDamage, XGAME::xtDamageAttr attrDamage );
 	void DoAttackTargetByBind( const UnitPtr& spTarget, BOOL bFirstDash );
 	virtual XSKILL::xtPlayerType GetPlayerType() {
@@ -423,10 +448,10 @@ public:
 	virtual XSKILL::XSkillUser* GetCaster( ID snObj ) override;
 	virtual void DelegateResultEventBeforeAttack( XSKILL::XBuffObj *pBuffObj, XSKILL::EFFECT *pEffect ) override;
 	BOOL IsInvokeTargetCondition( XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, XSKILL::xtCondition condition, DWORD condVal ) override;
-	virtual XECompCamp& GetCamp() override {		///< this의 진영을 리턴
+	virtual const XECompCamp& GetCamp() const override {		///< this의 진영을 리턴
 		return m_Camp;
 	}
-	virtual BIT GetCampUser() override { 
+	virtual BIT GetCampUser() const override { 
 		return m_Camp;
 	}		
 // 	virtual XE::VEC2 GetCurrentPosForSkill() {
@@ -550,7 +575,7 @@ public:
 								LPCTSTR sprArrive, ID idActArrive,
 								DWORD dwParam ) override;
 
-	virtual bool OnDie( XBaseUnit *pAttacker );
+	virtual bool OnDie( const xnUnit::xDmg& dmg/*const XBaseUnit *pAttacker*/ );
 	// 현재 바인드타겟을 추적중인가.
 	BOOL IsBindChase() {
 		return ((GetpFSM()->GetidFSM() == XFSMBase::xFSM_CHASE) && IsBindTarget());
@@ -597,10 +622,11 @@ public:
 	UnitPtr GetNearUnit( float meter, BIT bitCamp, bool bFindOutRange );
 	WorldObjPtr AddObj( XEBaseWorldObj *pNewObj );
 	bool IsCritical( UnitPtr spTarget );
-	bool IsEvade( XSKILL::xtDamage typeDamage, XBaseUnit *pAttacker );
+	bool IsEvade( XSKILL::xtDamage typeDamage, const XBaseUnit *pAttacker ) const;
 	bool IsHit( UnitPtr spTarget );
 	float hardcode_OnToDamage( UnitPtr& spTarget, float damage, XGAME::xtMelee typeMelee );
-	void OnDamage( XBaseUnit *pAttacker, float damage, BOOL bCritical, XSKILL::xtDamage typeDamage, const BIT bitAttrHit );
+// 	void OnDamage( const XBaseUnit* pAttacker, float damage, BOOL bCritical, XSKILL::xtDamage typeDamage, const BIT bitAttrHit );
+	void OnDamage( const xnUnit::xDmg& dmgInfo );
 	void OnAttackToDefender( XBaseUnit *pAttacker, float damage, BOOL bCritical, float ratioPenetration, XSKILL::xtDamage typeDamage );
 	void OnStartBattle();
 	void OnAfterStartBattle();
@@ -648,11 +674,12 @@ public:
 	float GetInvokeRatioByBuff( XGAME::xtUnit unit, LPCTSTR sid );
 	float GetVampiricRatio();
 	UnitPtr GetSacrificeGolemInAttacker();
-	void DoDie( XBaseUnit *pUnitAttacker );
+	void DoDie( XSPUnitConst spAtker );
 	bool IsInvisible() {
 		return IsState( XGAME::xST_INVISIBLE ) == TRUE;
 	}
-	XStatistic* GetpStatObj();
+	XStatistic* GetpStatObj() const;
+// 	const XStatistic* GetpStatObjConst() const;
 	float AddDamageDeal( float damage );
 	bool IsAI() {
 		return m_bitFlags & xFL_AI;
@@ -665,14 +692,28 @@ public:
 	}
 	// 유닛의 크기비용
 	virtual int GetSizeCost();
+// 	std::shared_ptr<const xnUnit::XMsgQ> GetspMsgQ() const {
+//		return m_spMsgQ1;
+// 	}
+	std::shared_ptr<xnUnit::XMsgQ> GetspMsgQ() const {
+		return std::static_pointer_cast<xnUnit::XMsgQ>( m_spMsgQ1 );
+	}
+	void PushMsg( XSPMsg spMsg );
+	void ProcessMsgQ();
+	void FlipMsgQ() {
+		std::swap( m_spMsgQ1, m_spMsgQ2 );
+	}
 protected:
 	void CreateDamageNumber( float damage, BIT bitAttrHit );
 	void OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) override;
 	void DrawDebugStr( XE::VEC2* pvLT, XCOLOR col, float sizeFont, const _tstring& strDebug );
-// 	bool IsCheatFilterPlayer() const;
-// 	bool IsCheatFilterHero() const;
 	bool IsCheatFiltered();
-	friend class XFSMBase;
+private:
+	void OnDamagedToTarget( const xnUnit::xDmg& dmg );
+
+friend class XFSMBase;
 friend class XFSMIdle;
+friend class xnUnit::XMsgDmg;
+friend class xnUnit::XMsgDmgFeedback;
 };
 

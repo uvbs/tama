@@ -28,12 +28,8 @@ XE_NAMESPACE_START( xnHero )
 
 struct xUpgrade {
 	XFLevel m_Level;
-//	bool m_bLevelupReady = false;	// 영웅 각종 레벨업 여부
 	bool m_bTrainComplete = false;	// 영웅 훈련완료 여부
 	//
-// 	xUpgrade( XDelegateLevel *pDelegate ) {
-// 		m_Level.SetpDelegate( pDelegate );
-// 	}
 	XFLEVEL_ACCESSOR( m_Level );
 	int Serialize( XArchive& ar ) const {
 		m_Level.Serialize( ar );

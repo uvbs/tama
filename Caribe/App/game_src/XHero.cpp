@@ -85,19 +85,14 @@ XHero* XHero::sCreateHero( XPropHero::xPROP *pProp,
 
 ////////////////////////////////////////////////////////////////
 XHero::XHero()
-//	: XAdjParam( XGAME::xMAX_PARAM, 0 )
 	: m_aryUpgrade(XGAME::xTR_MAX)
 	, m_aryUnitsAbil( XGAME::xUNIT_MAX )
 {
 	// DeSerialize용
 	Init();
-//	m_spAdjParam = std::make_shared<XSKILL::XAdjParam>( XGAME::xMAX_PARAM, 0 );
 }
 
-XHero::XHero( XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit )
-// XHero::XHero( XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit, XGAME::xtClan clan )
-// 	: XAdjParam( XGAME::xMAX_PARAM, 0 )
-// 	: m_AdjParam( XGAME::xMAX_PARAM, 0 )
+XHero::XHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit )
 	: m_aryUpgrade(XGAME::xTR_MAX)
 	, m_aryUnitsAbil( XGAME::xUNIT_MAX )
 {
@@ -107,22 +102,17 @@ XHero::XHero( XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit )
 	auto& propSquad = PROP_SQUAD->GetTable( levelSquad );
 	int numUnit = propSquad.GetMaxUnit( unit );
 	m_snHero = XE::GenerateID();
-//	SetpDelegateLevel( this );
 	XBREAK( unit >= XGAME::xUNIT_MAX || unit <= XGAME::xUNIT_NONE );
 	XBREAK( numUnit > XGAME::MAX_UNIT_SMALL );
 //	m_levelSquad = levelSquad;
 	m_aryUpgrade[ XGAME::xTR_SQUAD_UP ].SetLevel( levelSquad );
 	m_Unit = unit;
-//	m_numUnit = numUnit;
-	_m_pProp = pProp;
-	m_keyPropHero = PROP_HERO->GetidKey();
+// 	_m_pProp = pProp;
+// 	m_keyPropHero = PROP_HERO->GetidKey();
 	m_idProp = pProp->idProp;
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 	AssignSkillPtr();
 #endif
-// 	m_Clan = clan;
-// 	XBREAK( m_Clan <= 0 || m_Clan >= XGAME::xCL_MAX );
-//	m_Grade = pProp->GetGrade();
 	m_Grade = XGAME::xGD_COMMON;
 }
 
@@ -139,30 +129,29 @@ void XHero::InitAryAbil()
 	}
 }
 
-XPropHero::xPROP* XHero::GetpProp()
+const XPropHero::xPROP* XHero::GetpProp() const
 {
-	if( m_keyPropHero != PROP_HERO->GetidKey() ) {
-		_m_pProp = PROP_HERO->GetpProp( m_idProp );
-		m_keyPropHero = PROP_HERO->GetidKey();
-	}
-	return _m_pProp;
+// 	if( m_keyPropHero != PROP_HERO->GetidKey() ) {
+// 		_m_pProp = PROP_HERO->GetpProp( m_idProp );
+// 		m_keyPropHero = PROP_HERO->GetidKey();
+// 	}
+	return PROP_HERO->GetpProp( m_idProp );
+//	return static_cast<const XPropHero::xPROP*>( _m_pProp );
 }
 
 void XHero::SetpProp( XPropHero::xPROP* pProp, ID idKey )
 {
-	_m_pProp = pProp;
-	m_keyPropHero = idKey;
-//	m_Grade = _m_pProp->GetGrade();
+// 	_m_pProp = pProp;
+// 	m_keyPropHero = idKey;
 }
 void XHero::SetpProp( ID idProp )
 {
-	auto pProp = PROP_HERO->GetpProp( idProp );
-	if( XASSERT( pProp ) ) {
-		m_idProp = idProp;
-		_m_pProp = pProp;
-		m_keyPropHero = PROP_HERO->GetidKey();
-//		m_Grade = _m_pProp->grade;
-	}
+// 	auto pProp = PROP_HERO->GetpProp( idProp );
+// 	if( XASSERT( pProp ) ) {
+// 		m_idProp = idProp;
+// 		_m_pProp = pProp;
+// 		m_keyPropHero = PROP_HERO->GetidKey();
+// 	}
 }
 
 int XHero::Serialize( XArchive& ar )
@@ -207,10 +196,13 @@ int XHero::DeSerialize(XArchive& ar, XSPAcc spAcc, int verHero )
 	
 	ar >> m_snHero;
 	ar >> w0;	idProp = w0;
-	SetpProp( idProp );
-	auto pProp = _m_pProp;
+// 	SetpProp( idProp );
+// 	auto pProp = _m_pProp;
+#if _DEV_LEVEL <= DLV_DEV_EXTERNAL
+	auto pProp = PROP_HERO->GetpProp( idProp );
 	if( XBREAK( pProp == nullptr ) )
 		return FALSE;
+#endif
 	ar >> b0;	m_Unit = ( XGAME::xtUnit )b0;;
 	if( verHero >= 8 ) {
 		ar >> b0;		m_numRemainAbilPoint = b0;
@@ -263,7 +255,7 @@ int XHero::DeSerializeUpgrade( XArchive& ar )
 }
 
 ///< level에서의 최대 exp의 값을 돌려줘야 한다.
-DWORD XHero::OnDelegateGetMaxExp( XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) 
+DWORD XHero::OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const
 { 
 	auto type = (XGAME::xtTrain)pLevel->GetidLevel();
 	if( XASSERT(XGAME::IsValidTrainType( type )) ) {
@@ -272,7 +264,7 @@ DWORD XHero::OnDelegateGetMaxExp( XFLevel *pLevel, int level, DWORD param1, DWOR
 	return 0;
 }
 ///< 최대 레벨값을 돌려줘야 한다.
-int XHero::OnDelegateGetMaxLevel( XFLevel *pLevel, DWORD param1, DWORD param2 ) 
+int XHero::OnDelegateGetMaxLevel( const XFLevel *pLevel, DWORD param1, DWORD param2 ) const
 { 
 	auto type = ( XGAME::xtTrain )pLevel->GetidLevel();
 	if( XASSERT( XGAME::IsValidTrainType( type ) ) ) {
@@ -281,7 +273,7 @@ int XHero::OnDelegateGetMaxLevel( XFLevel *pLevel, DWORD param1, DWORD param2 )
 	return 0;
 }
 
-int XHero::GetnumUnit()
+int XHero::GetnumUnit() const
 {
 	const int lvSquad = GetlevelSquad();
 	auto& propSquad = PROP_SQUAD->GetTable( lvSquad );

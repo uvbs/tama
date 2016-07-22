@@ -689,6 +689,7 @@
     <ClInclude Include="..\..\..\XFramework\XEToolTip.h" />
     <ClInclude Include="..\..\..\XFramework\XF.h" />
     <ClInclude Include="..\..\..\XFramework\XFacebook.h" />
+    <ClInclude Include="..\..\..\XFramework\XFType.h" />
     <ClInclude Include="..\..\..\XFramework\XGlobal.h" />
     <ClInclude Include="..\..\..\XFramework\XInApp.h" />
     <ClInclude Include="..\..\..\XFramework\XParamObj.h" />

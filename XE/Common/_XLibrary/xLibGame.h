@@ -27,6 +27,7 @@
 #include <list>
 #include <memory>
 
+#include "XFramework/XFType.h"
 #include "XE3d.h"
 #include "etc/XGraphics.h"
 #include "XImage.h"

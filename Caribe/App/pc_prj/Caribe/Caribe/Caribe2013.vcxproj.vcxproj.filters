@@ -53,9 +53,6 @@
     <ClCompile Include="..\..\..\game_src\XPropWorld.cpp">
       <Filter>source\prop</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\game_src\XSceneBattle.cpp">
-      <Filter>source\scean</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\game_src\XScenePatchClient.cpp">
       <Filter>source\scean</Filter>
     </ClCompile>
@@ -112,9 +109,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XEBaseFSM.cpp">
       <Filter>source\main</Filter>
-    </ClCompile>
-    <ClCompile Include="DlgBattle11.cpp">
-      <Filter>source\dlg</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XSceneHero.cpp">
       <Filter>source\scean</Filter>
@@ -395,9 +389,6 @@
     <ClCompile Include="..\..\..\game_src\XPropOrder.cpp">
       <Filter>source\system\help</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\game_src\XWndBattle.cpp">
-      <Filter>source\ui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\game_src\XWndQuest.cpp">
       <Filter>source\ui</Filter>
     </ClCompile>
@@ -504,9 +495,6 @@
     <ClCompile Include="..\..\..\game_src\XWndBattleField.cpp">
       <Filter>source\battle</Filter>
     </ClCompile>
-    <ClCompile Include="DlgBattleOption.cpp">
-      <Filter>source\dlg</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\game_src\XWndCampaign.cpp">
       <Filter>source\campaign</Filter>
     </ClCompile>
@@ -518,6 +506,21 @@
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XSpotDaily.cpp">
       <Filter>source\world and spot</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgBattle11.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgBattleOption.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneBattle.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XWndBattle.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XMsgUnit.cpp">
+      <Filter>source\battle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1104,6 +1107,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\skill\XEffect.h">
       <Filter>source\skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XMsgUnit.h">
+      <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

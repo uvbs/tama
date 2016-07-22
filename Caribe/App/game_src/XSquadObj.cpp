@@ -18,6 +18,7 @@
 #include "client/XAppMain.h"
 #endif
 #include "XSoundMng.h"
+#include "XMsgUnit.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -28,6 +29,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 using namespace XGAME;
+using namespace XSKILL;
 
 #define LIVE_UNIT_LOOP( PSPUNIT ) {		\
 	for( auto& spUnit : m_listUnit ) { \
@@ -260,7 +262,7 @@ void XSquadObj::CreateAndAddUnit( XPropUnit::xPROP *pProp
 */
 BOOL XSquadObj::CreateSquad( XWndBattleField *pWndWorld, const XECompCamp& camp )
 {
-	XPropUnit::xPROP *pProp = PROP_UNIT->GetpProp( m_pHero->GetUnit() );
+	auto pProp = PROP_UNIT->GetpProp( m_pHero->GetUnit() );
 	int numUnit = m_pHero->GetnumUnit();
 
 	// 대장 유닛
@@ -274,7 +276,7 @@ BOOL XSquadObj::CreateSquad( XWndBattleField *pWndWorld, const XECompCamp& camp 
 BOOL XSquadObj::CreateSquadsDebug( XWndBattleField *pWndWorld, 
 								XECompCamp& camp )
 {
-	XPropUnit::xPROP *pProp = PROP_UNIT->GetpProp( GetpHero()->GetUnit() );
+	auto pProp = PROP_UNIT->GetpProp( GetpHero()->GetUnit() );
 	XBREAK( GetpHero()->GetpProp()->IsRange() && pProp->IsRange() == FALSE );
 	int numUnit = m_pHero->GetnumUnit();
 // 	if( camp == XGAME::xSIDE_PLAYER )
@@ -1226,7 +1228,15 @@ void XSquadObj::DoDamage( float damage, BOOL bCritical )
 			bitHit |= XGAME::xBHT_CRITICAL;
 		if( damage == 0 )
 			bitHit &= ~XGAME::xBHT_HIT;
-		spUnit->DoDamage( NULL, damage, -1, XSKILL::xDMG_NONE, bitHit, XGAME::xDA_NONE );
+//		spUnit->DoDamage( NULL, damage, -1, XSKILL::xDMG_NONE, bitHit, XGAME::xDA_NONE );
+		auto spMsg = std::make_shared<xnUnit::XMsgDmg>( nullptr
+																								, spUnit
+																								, damage
+																								, -1.f
+																								, xDMG_NONE
+																								, bitHit
+																								, xDA_NONE );
+		spUnit->PushMsg( spMsg );
 	} END_LOOP;
 }
 
@@ -1243,7 +1253,15 @@ void XSquadObj::DoDamageByPercent( float ratio, BOOL bCritical )
 			bitHit |= XGAME::xBHT_CRITICAL;
 		if( damage == 0 )
 			bitHit &= ~XGAME::xBHT_HIT;
-		spUnit->DoDamage( NULL, damage, -1, XSKILL::xDMG_NONE, bitHit, XGAME::xDA_NONE );
+//		spUnit->DoDamage( NULL, damage, -1, XSKILL::xDMG_NONE, bitHit, XGAME::xDA_NONE );
+		auto pMsg = std::make_shared<xnUnit::XMsgDmg>( nullptr
+																								, spUnit
+																								, damage
+																								, -1.f
+																								, xDMG_NONE
+																								, bitHit
+																								, xDA_NONE );
+		spUnit->PushMsg( pMsg );
 	} END_LOOP;
 }
 

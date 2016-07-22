@@ -164,30 +164,28 @@ void XPropHero::Add( xPROP *pProp )
 	m_mapID[pProp->idProp] = pProp;		// ID로 검색용 맵에도 넣음.
 }
 
-XPropHero::xPROP* XPropHero::GetpProp( LPCTSTR szIdentifier )
+const XPropHero::xPROP* XPropHero::GetpProp( LPCTSTR szIdentifier ) const
 {
 	TCHAR szBuff[ 256 ];
 	_tcscpy_s( szBuff, szIdentifier );
 	_tcslwr_s( szBuff );
-	std::map<_tstring, xPROP*>::iterator itor;
-	itor = m_mapData.find( szBuff );
+	auto itor = m_mapData.find( szBuff );
 	if( itor == m_mapData.end() )
 		return nullptr;							// 못찾았으면 널 리턴
-	xPROP* pProp = (*itor).second;
+	auto pProp = (*itor).second;
 	XBREAK( pProp == nullptr );			// 위에서 find로 검사했기때문에 nullptr나와선 안됨.
 	return pProp;
 }
 
-XPropHero::xPROP* XPropHero::GetpProp( ID idProp )
+const XPropHero::xPROP* XPropHero::GetpProp( ID idProp ) const
 {
 	if( idProp == 0 )
 		return nullptr;
-	std::map<ID, xPROP*>::iterator itor;
-	itor = m_mapID.find( idProp );
+	auto itor = m_mapID.find( idProp );
 	if( itor == m_mapID.end() ) {
 		return nullptr;							// 못찾았으면 에러 리턴
 	}
-	xPROP *pProp = (*itor).second;
+	auto pProp = (*itor).second;
 	XBREAK( pProp == nullptr );			// 위에서 find로 검사했기때문에 nullptr나와선 안됨.
 	return pProp; 
 }

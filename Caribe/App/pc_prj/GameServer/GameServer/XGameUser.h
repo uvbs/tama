@@ -103,9 +103,9 @@ public:
 	void DelegateOnSpawnTimer( XSpot *pSpot, xSec secAdjustOffline ) override;
 	void DelegateReleaseSpotBefore( XSpot *pSpot ) override;
 	void DelegateReleaseSpotAfter( XSpot *pSpot ) override;
-	virtual DWORD OnDelegateGetMaxExp( XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) override;
-	virtual int OnDelegateGetMaxLevel( XFLevel *pLevel, DWORD param1, DWORD param2 ) override;
-	virtual void OnDelegateLevelUp( XFLevel *pLevel ) override;
+	DWORD OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const override;
+	int OnDelegateGetMaxLevel( const XFLevel *pLevel, DWORD param1, DWORD param2 ) const override;
+	void OnDelegateLevelUp( XFLevel *pLevel ) override;
 	//
 	int RecvSpotRecon( XPacket& p );
 	int RecvSpotAttack( XPacket& p );

@@ -101,8 +101,8 @@ public:
 	virtual void Process( void );
 	virtual void ConsoleMessage( LPCTSTR szMsg );
 	virtual void DelegateConnect( XENetworkConnection *pConnect, DWORD param );
-	DWORD OnDelegateGetMaxExp( XFLevel *pLevel, int level, DWORD param1, DWORD param2 );
-	int OnDelegateGetMaxLevel( XFLevel *pLevel, DWORD param1, DWORD param2 );
+	DWORD OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const;
+	int OnDelegateGetMaxLevel( const XFLevel *pLevel, DWORD param1, DWORD param2 ) const;
 	XEContents* CreateContents( void );
 	int GetPublicKeyWithEncrypted( XCrypto* pCryptObj, BYTE* pOut, const int sizeMax );
 	void UpdateSleepServer( const XEOption* pEnv, XEWinSocketSvr* pSocketSvr );

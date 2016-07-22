@@ -105,7 +105,7 @@ public:
 	/**
 	 @brief val값을 Adj파라메터로 보정해서 돌려준다.
 	*/
-	float CalcAdjParam( float val, int adjParam, float addAdjRatio=0.f, float addAdjVal=0.f );
+	float CalcAdjParam( float val, int adjParam, float addAdjRatio=0.f, float addAdjVal=0.f ) const;
 	float GetAdjValue( float val, int adjParam );
 	float GetAdjValue( int adjParam );
 	// 매 게임루프마다 객체의 process루프를 돌기전에 clearAdjParam을 하는 루프를 먼저 돌리도록 한다.

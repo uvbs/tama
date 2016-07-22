@@ -1,4 +1,5 @@
-﻿#include "stdafx.h"
+﻿xFL_AI
+#include "stdafx.h"
 #include "XBaseUnit.h"
 #include "XWndBattleField.h"
 #include "XPropUnit.h"
@@ -25,9 +26,12 @@
 #include "XSquadron.h"
 #include "XGlobalConst.h"
 #include "XSystem.h"
+#include "XMsgUnit.h"
 
 using namespace XSKILL;
 using namespace XGAME;
+using namespace xnUnit;
+
 #ifdef WIN32
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,6 +41,34 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 bool XBaseUnit::s_bNotUseActiveByEnemy = false;		// 적영웅 스킬사용금지
+
+
+XE_NAMESPACE_START( xnUnit )
+//
+
+xDmg::xDmg( XSPWorldObjConst spAtkObj
+					, XSPUnit spTarget
+					, float damage
+					, float ratioPenet
+					, XSKILL::xtDamage typeDamage
+					, const BIT bitAttrHit
+					, XGAME::xtDamageAttr attrDamage
+					, bool bCritical )
+	: m_spAtkObj( std::static_pointer_cast<XEBaseWorldObj>( spAtkObj ) )
+	, m_spTarget( spTarget )
+	, m_Damage( damage )
+	, m_ratioPanet( ratioPenet )
+	, m_typeDmg( typeDamage )
+	, m_bitAttrHit( bitAttrHit )
+	, m_attrDamage( attrDamage )
+	, m_bCritical( bCritical ) {
+	//
+	if( spAtkObj && spAtkObj->GetType() == XGAME::xOT_UNIT ) {
+		m_spUnitAtker = std::static_pointer_cast<XBaseUnit>( m_spAtkObj );
+	}
+}
+//
+XE_NAMESPACE_END; // xnUnit
 
 
 #ifdef WIN32
@@ -107,11 +139,10 @@ XBaseUnit* XBaseUnit::sCreateHero( XSquadObj *pSquadObj,
 
 ////////////////////////////////////////////////////////////////
 XBaseUnit::XBaseUnit( XSquadObj *pSquadObj,
-//						XPropUnit::xPROP *pProp,
-						ID idProp,
-						BIT bitCamp,
-						const XE::VEC3& vPos,
-						float multipleAbility )
+											ID idProp,
+											BIT bitCamp,
+											const XE::VEC3& vPos,
+											float multipleAbility )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_UNIT, vPos )
 	, XSKILL::XSkillReceiver( 32, XGAME::xMAX_PARAM, XGAME::xST_MAX )
 	, XSKILL::XSkillUser( SKILL_MNG )
@@ -121,8 +152,8 @@ XBaseUnit::XBaseUnit( XSquadObj *pSquadObj,
 	m_idProp = idProp;
 	XEBaseWorldObj::SetType( XGAME::xOT_UNIT );
 	m_pSquadObj = pSquadObj;
-//	m_pProp = pProp;
-//	m_pHero = pSquadObj->GetpHero();
+	m_spMsgQ1 = std::make_shared<XMsgQ>();
+	m_spMsgQ2 = std::make_shared<XMsgQ>();
 	auto pHero = GetHero();
 	XBREAK( pHero == nullptr );
 	m_pPropUnit = PROP_UNIT->GetpProp( pHero->GetUnit() );
@@ -141,10 +172,6 @@ XBaseUnit::XBaseUnit( XSquadObj *pSquadObj,
 	// 특성스킬 세팅
 #if defined(WIN32) && defined(_CHEAT)
 	if( IsCheatFiltered() )
-// 	if( (IsPlayer() && IsHero() && (XAPP->m_dwFilter & 0x01))	
-// 		|| (IsPlayer() && IsUnit() && (XAPP->m_dwFilter & 0x02))
-// 		|| (!IsPlayer() && IsHero() && (XAPP->m_dwFilter & 0x04)) 
-// 		|| (!IsPlayer() && IsUnit() && (XAPP->m_dwFilter & 0x04)) ) 
 #endif // defined(WIN32) && defined(_CHEAT)
 	{
 		for( auto itor : pHero->GetTechTree( pSquadObj->GetUnit() ) ) {
@@ -256,17 +283,30 @@ XHero* XBaseUnit::GetHero()
 {
 	XBREAK( m_pSquadObj == NULL );
 	XBREAK( m_pSquadObj->GetpHero() == NULL );
+	return const_cast<XHero*>( m_pSquadObj->GetpHero() );
+}
+
+const XHero* XBaseUnit::GetpHeroConst() const
+{
+	XBREAK( m_pSquadObj == NULL );
+	XBREAK( m_pSquadObj->GetpHero() == NULL );
 	return m_pSquadObj->GetpHero();
 }
 
-XPropHero::xPROP* XBaseUnit::GetpPropHero()
+ID XBaseUnit::GetsnHero() const
 {
-	const auto pHero = GetHero();
-	XBREAK( pHero->GetpProp() == NULL );
+	const auto pHero = GetpHeroConst();
+	return pHero->GetsnHero();
+}
+
+const XPropHero::xPROP* XBaseUnit::GetpPropHero()
+{
+	auto pHero = GetpHeroConst();
+	XBREAK( pHero->GetpProp() == nullptr );
 	return pHero->GetpProp();
 }
 
-void XBaseUnit::CreateHitSfx( XBaseUnit *pAttacker, BOOL bCritical, BOOL bAbsolute )
+void XBaseUnit::CreateHitSfx( const XBaseUnit *pAttacker, BOOL bCritical, BOOL bAbsolute )
 {
 #ifdef _XUZHU_HOME
 	return;
@@ -898,10 +938,18 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 			if( bCritical )
 				bitAttrHit |= xBHT_CRITICAL;
 			//
-			spTarget->DoDamage( this, damageFinal, ratioPenet, XSKILL::xDMG_MELEE, bitAttrHit, xDA_NONE );
+//			spTarget->DoDamage( this, damageFinal, ratioPenet, XSKILL::xDMG_MELEE, bitAttrHit, xDA_NONE );
+			auto pMsg = std::make_shared<xnUnit::XMsgDmg>( GetThisUnit()
+																									, spTarget
+																									, damageFinal
+																									, ratioPenet
+																									, xDMG_MELEE
+																									, bitAttrHit
+																									, xDA_NONE );
+			spTarget->PushMsg( pMsg );
 		} else {
 			// xMT_RANGE
-			UnitPtr spTarget = GetspTarget();
+			auto spTarget = GetspTarget();
 			if( spTarget ) {
 				// 쏘려는 타점에서 적이 이미 죽었으면 다른타겟으로 쏜다.
 				if( spTarget->IsDead() ) {
@@ -911,7 +959,7 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 					}
 				}
 			}
-			XE::VEC3 vwDst = spTarget->GetvCenterWorld();
+			auto vwDst = spTarget->GetvCenterWorld();
 			// virtual처리로 공격케이스별로 프로세스를 달리한다.
 			// 빗나가면 데미지를 0으로 준다.
 			if( bHit == false )
@@ -956,15 +1004,23 @@ void XBaseUnit::OnArriveBullet( XObjBullet *pBullet,
 								LPCTSTR sprArrive, ID idActArrive,
 								DWORD dwParam )
 {
-	if( spTarget != nullptr && spTarget->IsLive() ) {
-		float ratioPenet = GetPenetrationRatio();
+	if( spTarget && spTarget->IsLive() ) {
+		const float ratioPenet = GetPenetrationRatio();
 		if( damage ) {	// 스킬 발사체의 경우 damage가 0인채로 오므로 들어가지 않게 함. 스킬발사체의 데미지는 스킬시스템에서 줌.
 			BIT bitAttrHit = xBHT_HIT;
 			if( bCritical )
 				bitAttrHit |= xBHT_CRITICAL;
 			if( damage == 0 )
 				bitAttrHit &= ~xBHT_HIT;
-			spTarget->DoDamage( spAttacker.get(), damage, ratioPenet, XSKILL::xDMG_RANGE, bitAttrHit, xDA_NONE );
+			auto pMsg = std::make_shared<xnUnit::XMsgDmg>( spAttacker
+																									, spTarget
+																									, damage
+																									, ratioPenet
+																									, xDMG_RANGE
+																									, bitAttrHit
+																									, xDA_NONE );
+			spTarget->PushMsg( pMsg );
+//			spTarget->DoDamage( spAttacker.get(), damage, ratioPenet, XSKILL::xDMG_RANGE, bitAttrHit, xDA_NONE );
 		}
 	}
 }
@@ -1075,7 +1131,7 @@ XObjArrow* XBaseUnit::ShootArrow( UnitPtr& spTarget,
  @param ratioPenetration 관통율. 기본 0%이며 100%면 상대 방어력을 완전히 무시한다. -1이면 파라메터 값을 무시하고 pAttacker로부터 얻는다.
  @param typeDamage 데미지타입(근접/원거리/마법). 0은 속성없음
 */
-void XBaseUnit::DoDamage( XEBaseWorldObj *pAttacker,
+void XBaseUnit::DoDamage( const XEBaseWorldObj* pAttacker,
 													float damage,
 													float ratioPenetration,
 													XSKILL::xtDamage typeDamage,
@@ -1087,39 +1143,42 @@ void XBaseUnit::DoDamage( XEBaseWorldObj *pAttacker,
 	const bool bMiss = (bitAttrHit & xBHT_HIT) == 0;
 	const bool bPoison = (bitAttrHit & xBHT_POISON) != 0;
 	const auto damageOrig = damage;
+	const XBaseUnit* pUnitAttacker = ( pAttacker && pAttacker->GetType() == xOT_UNIT )
+																			? SafeCast<const XBaseUnit*>( pAttacker ) 
+																			: nullptr;
+	const auto spUnitAtker = (pUnitAttacker)
+														? std::static_pointer_cast<const XBaseUnit>( pUnitAttacker->shared_from_this() )
+														: nullptr;
+	// pUnitAtker는 const로 하고 공격자의 메시지큐객체만 mutable로 해서 메시지를 푸쉬할수 있게 한다.
+//	auto spMsgQAtker = std::static_pointer_cast<XMsgQ>( pUnitAttacker->GetspMsgQ() );
+	auto spMsgQAtker = pUnitAttacker->GetspMsgQ();
 	if( IsDead() ) {
 		// 피격자가 죽었을때라도 스킬타입은 데미지를 표시함.
 		// 스킬(특성)타입 데미지일때 예외처리
-		if( pAttacker->GetType() == xOT_UNIT && (bitAttrHit & xBHT_BY_SKILL) ) {
-			auto pUnitAttacker = SafeCast<XBaseUnit*>( pAttacker );
-			if( XASSERT(pAttacker) ) {
-				// 시전자가 소형병사일 경우 스킬(특성)으로 인한 데미지ui는 표시하지 않는다.
-				bool bDraw = true;
-				if( pUnitAttacker && !pUnitAttacker->IsHero() &&
-					pUnitAttacker->GetUnitSize() == XGAME::xSIZE_SMALL )
-					bDraw = false;		// 소형이
-				if( bDraw )
-					CreateDamageNumber( damage, bitAttrHit );
+		if( pUnitAttacker && (bitAttrHit & xBHT_BY_SKILL) ) {
+			// 시전자가 소형병사일 경우 스킬(특성)으로 인한 데미지ui는 표시하지 않는다.
+			bool bDraw = true;
+			if( pUnitAttacker && !pUnitAttacker->IsHero() && pUnitAttacker->IsSmall() ) {
+				bDraw = false;
 			}
+			if( bDraw )
+				CreateDamageNumber( damage, bitAttrHit );
 		}
 		return;
 	}
-	if( damage < 0 )
+	if( damage < 0 ) {
 		damage = -damage;
-// 		damage = abs(damage);
-	XBaseUnit *pUnitAttacker = nullptr;
-	if( pAttacker && pAttacker->GetType() == XGAME::xOT_UNIT )
-		pUnitAttacker = SafeCast<XBaseUnit*>( pAttacker );
+	}
 	if( pUnitAttacker ) {
-//		ADD_LOG( m_strLog, "피해량:" );
 		ADD_LOG( m_strLog, "Damage:공격:%s, 방어:%s 피해량:", pUnitAttacker->GetstrcIds().c_str()
 																							, GetstrcIds().c_str() );
 	} else {
 		ADD_LOG( m_strLog, "Damage:방어:%s 피해량:", GetstrcIds().c_str() );
 	}
 	// 공격자에게 "타격시"이벤트를 발생시킨다.
-	if( pUnitAttacker && !bBySkill )	// DoDamage()재귀호출이 일어날수 있으니 스킬에 의한 이벤트는 발생하지 않는다.
-		pUnitAttacker->OnAttackToDefender( this, damage, bCritical, ratioPenetration, typeDamage );
+// 	if( pUnitAttacker && !bBySkill ) {	// DoDamage()재귀호출이 일어날수 있으니 스킬에 의한 이벤트는 발생하지 않는다.
+// 		pUnitAttacker->OnAttackToDefender( this, damage, bCritical, ratioPenetration, typeDamage );
+// 	}
 	if( IsDead() )
 		return;
 // 	// 공격받은 데미지 누적(받는데미지는 방어자의 능력으로 보정되기전 순수 데미지를 누적한다.)
@@ -1194,14 +1253,18 @@ void XBaseUnit::DoDamage( XEBaseWorldObj *pAttacker,
 	XBREAK( IsDead() );
 	if( damage > 0 ) {
 		if( pUnitAttacker ) {
+			const ID snHero = pUnitAttacker->GetsnHero();
 			float d = ( m_HP < damage ) ? m_HP : damage;
 			// 공격한 데미지 누적. 공격데미지는 실제 입힌 데미지만 누적시킨다.
-			pUnitAttacker->AddDamageDeal( d );
+//			auto pStatObj = const_cast<XStatistic*>( pUnitAttacker->GetpStatObj() );
+			auto pStatObj = pUnitAttacker->GetpStatObj();
+			pStatObj->AddDamageDeal( snHero, damage );
+//			pUnitAttacker->AddDamageDeal( d );
 			// 크리티컬로 입힌 데미지 누적
 			if( bCritical )
-				pUnitAttacker->GetpStatObj()->AddDamageDealByCritical( pUnitAttacker->GetHero()->GetsnHero(), d );
+				pStatObj->AddDamageDealByCritical( snHero, d );
 			if( bBySkill && pUnitAttacker->IsHero() )
-				pUnitAttacker->GetpStatObj()->AddDamageDealBySkill( pUnitAttacker->GetHero()->GetsnHero(), d );
+				pStatObj->AddDamageDealBySkill( snHero, d );
 		}
 	}
 	// 피해데미지 누적.(실제 입힌 데미지만 누적시킨다.),
@@ -1214,19 +1277,10 @@ void XBaseUnit::DoDamage( XEBaseWorldObj *pAttacker,
 	// 데미지양이 최대hp의 x배 크면 즉사로 처리
 	if( damage >= GetMaxHp() * 3 )
 		bVorpal = true;
-// #ifdef _XSINGLE
-// #ifdef _CHEAT
-// 	if( XAPP->m_bDebugMode ) {
-// 		if( XAPP->m_bBattleLogging && pUnitAttacker ) {
-// 			CONSOLE_TAG( "battle_dmg", "공격:%s 피격:%s dmg=%d", pUnitAttacker->GetstrIds().c_str()
-// 																								, GetstrIds().c_str()
-// 																								, damage );
-// 		}
-// 	}
-// #endif // _CHEAT
-// #endif // _XSINGLE
 	ADD_LOG( m_strLog, "피해적용전:hp=%0.f", (float)GetHp() );
+	//
 	AddHp( -damage );
+	//
 	ADD_LOG( m_strLog, "피해적용:hp=%.0f/%.0f, 최종피해량:%1.f ", (float)GetHp(), (float)GetMaxHp(), damage );
 	bool bNumberEffect = false;
 	// 스킬류데미지면 데미지숫자를 표시
@@ -1254,7 +1308,9 @@ void XBaseUnit::DoDamage( XEBaseWorldObj *pAttacker,
 //			}
 		}
 #endif
-		OnDamage( pUnitAttacker, damage, bCritical, typeDamage, bitAttrHit );
+		xnUnit::xDmg dmg( spUnitAtker, GetThisUnit(), damage, ratioPenetration, typeDamage, bitAttrHit, attrDamage, bCritical );
+//		OnDamage( pUnitAttacker, damage, bCritical, typeDamage, bitAttrHit );
+		OnDamage( dmg );
 	}
 	if( bBySkill ) {	// 스킬타입 데미지일때
 		if( pUnitAttacker // 공격자가 소형일경우 데미지숫자 표시하지 않음.
@@ -1298,10 +1354,10 @@ void XBaseUnit::DoDamage( XEBaseWorldObj *pAttacker,
 	}
 	if( GetHp() <= 0 ) {
 		ADD_LOG( m_strLog, "사망: " );
-		DoDie( pUnitAttacker );
+		DoDie( spUnitAtker );
 	}
 	m_timerDamage.Set(3.f);
-}
+} // DoDamage
 /**
  @brief 데미지숫자 이펙트를 생성한다.
 */
@@ -1327,14 +1383,13 @@ void XBaseUnit::CreateDamageNumber( float damage, BIT bitAttrHit )
 	AddObj( pDmg );
 }
 
-void XBaseUnit::DoDie( XBaseUnit *pUnitAttacker )
+void XBaseUnit::DoDie( XSPUnitConst spAtker )
 {
 	m_HP = 0;
 	XTRACE( "Die:%d ", GetsnObj() );
-	if( OnDie( pUnitAttacker ) ) {
-// 		// 무덤 객체 생성
-// 		auto pObj = new XObjLoop( GetvwPos(), _T("obj_grave.spr"), 2, 0 );
-// 		GetpWndWorld()->AddObj( WorldObjPtr( pObj ) );
+	// 아직은 DoDie시 다른 데미지 파라메터가 필요없어서 초기값으로 지정함.
+	xnUnit::xDmg dmg( spAtker, GetThisUnit(), 0.f, 0.f, xDMG_NONE, 0, xDA_NONE, false );
+	if( OnDie( dmg ) ) {
 		m_timerDead.Set( 10.f );
 		//
 		ChangeFSM( XFSMBase::xFSM_DIE );
@@ -1344,16 +1399,31 @@ void XBaseUnit::DoDie( XBaseUnit *pUnitAttacker )
 /**
  @brief 데미지를 입었을때 이벤트
 */
-void XBaseUnit::OnDamage( XBaseUnit *pAttacker
-												, float damage
-												, BOOL bCritical
-												, XSKILL::xtDamage typeDamage
-												, const BIT bitAttrHit )
+// void XBaseUnit::OnDamage( const XBaseUnit *pAttacker
+// 												, float damage
+// 												, BOOL bCritical
+// 												, XSKILL::xtDamage typeDamage
+// 												, const BIT bitAttrHit )
+void XBaseUnit::OnDamage( const xnUnit::xDmg& dmgInfo )
 {
-	// 반사데미지 형태는 '피격시' 이펙트를 발생시키지 않는다.
-	if( !(bitAttrHit & xBHT_THORNS_DAMAGE) )
-		XSkillReceiver::OnHitFromAttacker( pAttacker, typeDamage );
+	// 반사데미지 형태는 '피격시' 이벤트를 발생시키지 않는다.
+	if( !(dmgInfo.m_bitAttrHit & xBHT_THORNS_DAMAGE) ) {
+		XSkillReceiver::OnHitFromAttacker( (dmgInfo.m_spUnitAtker)? dmgInfo.m_spUnitAtker.get() : nullptr
+																			, dmgInfo.m_typeDmg );
+	}
 	GetpFSM()->OnDamage();
+	// 공격자에게 데미지 피드백메시지
+	if( dmgInfo.m_spUnitAtker ) {
+		auto spMsg = std::make_shared<XMsgDmgFeedback>( dmgInfo );
+		dmgInfo.m_spUnitAtker->PushMsg( spMsg );
+//		// 공격자가 흡혈중이면 공격자에게 hp를 채운다.
+// 		float ratioVampiric = pAttacker->GetVampiricRatio();
+// 		if( ratioVampiric > 0 ) {
+// 			float hpSteal = damage * ratioVampiric;
+// 			if(  (int)hpSteal > 0 )
+// 				pAttacker->DoHeal( hpSteal );
+// 		}
+	}
 	if( IsDead() )
 		return;
 	if( GetUnitType() == XGAME::xUNIT_MINOTAUR ) {
@@ -1371,15 +1441,6 @@ void XBaseUnit::OnDamage( XBaseUnit *pAttacker
 			AddAdjParam( pBuff->GetEffectIndex(0)->invokeParameter, xPERCENT, currAdj );
 		}
 	}
-	// 공격자가 흡혈중이면 공격자에게 hp를 채운다.
-	if( pAttacker ) {
-		float ratioVampiric = pAttacker->GetVampiricRatio();
-		if( ratioVampiric > 0 ) {
-			float hpSteal = damage * ratioVampiric;
-			if(  (int)hpSteal > 0 )
-				pAttacker->DoHeal( hpSteal );
-		}
-	}
 	{
 		// 고통의 재생
 		auto pBuff = FindBuffSkill(_T("regen_suffering"));
@@ -1393,12 +1454,30 @@ void XBaseUnit::OnDamage( XBaseUnit *pAttacker
 	}
 }
 
-bool XBaseUnit::OnDie( XBaseUnit *pAttacker )
+/**
+ @brief this가 m_spTarget에게 데미지를 입혔다.
+*/
+void XBaseUnit::OnDamagedToTarget( const xDmg& dmg )
 {
-	if( pAttacker )
-	{
-		pAttacker->OnEventJunctureCommon( xJC_KILL_ENEMY, 0, this );
-		OnEventJunctureCommon( xJC_DEAD, 0, pAttacker );
+	// this는 공격자여야 한다.
+	XBREAK( GetsnObj() == dmg.m_spAtkObj->GetsnObj() );
+	// this(공격자)가 흡혈속성이 있었으면 그만큼 힐을 한다.
+	const float ratioVampiric = GetVampiricRatio();
+	if( ratioVampiric > 0 ) {
+		float hpSteal = dmg.m_Damage * ratioVampiric;
+		if( (int)hpSteal > 0 )
+			DoHeal( hpSteal );
+	}
+}
+
+bool XBaseUnit::OnDie( const xDmg& dmg /*const XBaseUnit *pAttacker*/ )
+{
+	if( dmg.m_spUnitAtker )	{
+		// 타겟(this)을 "사살"했음을 메시지로 날림
+		auto spMsg = std::make_shared<XMsgKillTarget>( dmg );
+		dmg.m_spUnitAtker->GetspMsgQ()->AddMsg( spMsg );
+//		pAttacker->OnEventJunctureCommon( xJC_KILL_ENEMY, 0, this );
+		OnEventJunctureCommon( xJC_DEAD, 0, dmg.GetpUnit() );
 	}
 	// 불사의 피
 	if( GetUnitType() == xUNIT_LYCAN )
@@ -1635,6 +1714,12 @@ XSPLegionObj XBaseUnit::GetspLegionObj()
 	return m_pSquadObj->GetspLegionObj();
 }
 
+XSPLegionObjConst XBaseUnit::GetspLegionObjConst() const
+{
+	XBREAK( m_pSquadObj == nullptr );
+	return m_pSquadObj->GetspLegionObj();
+}
+
 /**
  @brief this가 공격을 당할때 공격자의 적절한 위치를 잡아준다.
 */
@@ -1677,7 +1762,7 @@ XE::VEC2 XBaseUnit::GetAttackedPos( const UnitPtr& unitAttacker )
 /**
  @brief 병과 패널티가 적용되는지 검사
 */
-BOOL XBaseUnit::IsPenaltyMOS( XBaseUnit *pDefender )
+BOOL XBaseUnit::IsPenaltyMOS( XBaseUnit *pDefender ) const
 {
 	if( GetTypeAtk() == XGAME::xAT_TANKER &&
 		pDefender->GetTypeAtk() == XGAME::xAT_RANGE )
@@ -1694,7 +1779,7 @@ BOOL XBaseUnit::IsPenaltyMOS( XBaseUnit *pDefender )
 /**
  @brief 크기 패널티가 적용되는지 검사
 */
-BOOL XBaseUnit::IsPenaltySize( XBaseUnit *pDefender )
+BOOL XBaseUnit::IsPenaltySize( XBaseUnit *pDefender ) const
 {
 	if( GetUnitSize() == XGAME::xSIZE_SMALL &&
 		pDefender->GetUnitSize() == XGAME::xSIZE_MIDDLE )
@@ -1711,7 +1796,7 @@ BOOL XBaseUnit::IsPenaltySize( XBaseUnit *pDefender )
 /**
  @brief this가 pDefender에 비해 우세상성인가.
 */
-bool XBaseUnit::IsSuperiorMOS( XBaseUnit *pDefender )
+bool XBaseUnit::IsSuperiorMOS( XBaseUnit *pDefender ) const
 {
 	if( GetTypeAtk() == XGAME::xAT_TANKER &&
 		pDefender->GetTypeAtk() == XGAME::xAT_SPEED )
@@ -1728,7 +1813,7 @@ bool XBaseUnit::IsSuperiorMOS( XBaseUnit *pDefender )
 /**
  @brief 크기 패널티가 적용되는지 검사
 */
-bool XBaseUnit::IsSuperiorSize( XBaseUnit *pDefender )
+bool XBaseUnit::IsSuperiorSize( XBaseUnit *pDefender ) const
 {
 	if( GetUnitSize() == XGAME::xSIZE_SMALL &&
 		pDefender->GetUnitSize() == XGAME::xSIZE_BIG )
@@ -1847,8 +1932,15 @@ int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
 						bitAttr |= xBHT_THORNS_DAMAGE;		// 반사형 데미지
 					// 상대가 죽은상태라도 데미지UI는 뜰것.
 					// 스킬로 맞은 데미지는 데미지숫자를 표시
-					DoDamage( pAttacker, -abilMin, -1, typeDamage, bitAttr, xDA_NONE );
-// 				  DoDamage( pAttacker, -abilMin, bCritical, -1, typeDamage, true );
+//					DoDamage( pAttacker, -abilMin, -1, typeDamage, bitAttr, xDA_NONE );
+					auto pMsg = std::make_shared<xnUnit::XMsgDmg>( pAttacker->GetThis()
+																											, GetThisUnit()
+																											, -abilMin
+																											, -1.f
+																											, typeDamage
+																											, bitAttr
+																											, xDA_NONE );
+					PushMsg( pMsg );
 				}
 				// 상대가 죽은상태라도 데미지UI는 뜰것.
 				// 스킬로 맞은 데미지는 데미지숫자를 표시
@@ -2538,7 +2630,7 @@ bool XBaseUnit::IsCritical( UnitPtr spTarget )
 /**
  @brief 현재 회피율을 바탕으로 랜덤돌려서 회피했는지 리턴받는다.
 */
-bool XBaseUnit::IsEvade( XSKILL::xtDamage typeDamage, XBaseUnit* pAttacker )
+bool XBaseUnit::IsEvade( XSKILL::xtDamage typeDamage, const XBaseUnit* pAttacker ) const
 {
 	float ratio = GetEvadeRatio( typeDamage, pAttacker );
 	int prob = (int)( ratio * 1000 );
@@ -2548,7 +2640,7 @@ bool XBaseUnit::IsEvade( XSKILL::xtDamage typeDamage, XBaseUnit* pAttacker )
 	return false;
 }
 
-float XBaseUnit::GetEvadeRatio( XSKILL::xtDamage typeDamage, XBaseUnit* pAttacker )
+float XBaseUnit::GetEvadeRatio( XSKILL::xtDamage typeDamage, const XBaseUnit* pAttacker ) const
 {
 	float ratio = 0.f;
 	if( typeDamage == XSKILL::xDMG_MELEE )
@@ -2650,7 +2742,7 @@ float XBaseUnit::hardcode_OnToDamage( UnitPtr& spTarget, float damage, XGAME::xt
 	@brief this부대의 유닛.  GetType()을 쓰지말고 이걸 쓸것.
 	영웅이라도 부대유닛을 돌려준다.
 */
-XGAME::xtUnit XBaseUnit::GetSquadUnit()
+XGAME::xtUnit XBaseUnit::GetSquadUnit() const
 {
 	return m_pSquadObj->GetUnit();
 }
@@ -3317,7 +3409,7 @@ float XBaseUnit::GetDefensePower()
 	float def = ( m_pPropUnit->def ) * pHero->GetDefenseRatio();
 	return CalcAdjParam( def, XGAME::xADJ_DEFENSE );
 }
-float XBaseUnit::GetPenetrationRatio()
+float XBaseUnit::GetPenetrationRatio() const
 {
 	float ratio = 0.f;
 	return CalcAdjParam( ratio, XGAME::xADJ_PENETRATION_RATE );
@@ -3458,10 +3550,15 @@ float XBaseUnit::OnInvokeTargetSize( XSKILL::XSkillDat *pSkillDat,
 /**
  @brief 자신의 전투 통계 객체를 꺼낸다.
 */
-XStatistic* XBaseUnit::GetpStatObj()
+XStatistic* XBaseUnit::GetpStatObj() const
 {
-	return GetspLegionObj()->GetpStatObj();
+	return const_cast<XStatistic*>( GetspLegionObjConst()->GetpStatObj() );
 }
+
+// const XStatistic* GetpStatObjConst() const 
+// {
+// 	return GetspLegionObjConst()->GetpStatObj();
+// }
 
 /**
  @brief this유닛의 데미지 딜링양을 누적시킨다.
@@ -3538,3 +3635,20 @@ int XBaseUnit::GetSizeCost()
 {
 	return _XGC->m_arySizeCost[ GetUnitSize() ];
 }
+
+/**
+ @brief front 메시지큐에 메시지를 추가한다.
+*/
+void XBaseUnit::PushMsg( XSPMsg spMsg )
+{
+	m_spMsgQ1->AddMsg( spMsg );
+}
+
+/**
+ @brief ::FrameMove()에서 쌓였던 front 메시지들을 처리한다.
+*/
+void XBaseUnit::ProcessMsgQ()
+{
+	m_spMsgQ1->Process();
+}
+

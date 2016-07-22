@@ -151,13 +151,13 @@ public:
 //	void GetNextClear( void ) { m_itorID = m_mapID.begin(); }		// 반복자 초기화
 	BOOL ReadProp( CToken& token, DWORD dwParam ) override;					// txt 파싱
 	
-	xPROP* GetpProp( LPCTSTR szIdentifier );
+	const xPROP* GetpProp( LPCTSTR szIdentifier ) const;
 	// strIdentifier는 모두 소문자여야 함.
-	xPROP* GetpProp( const _tstring& strIdentifier ) { 
+	const xPROP* GetpProp( const _tstring& strIdentifier ) const { 
 		XBREAK( strIdentifier.empty() == TRUE ); 
 		return GetpProp( strIdentifier.c_str() ); 
 	}
-	xPROP* GetpProp( ID idProp );
+	const xPROP* GetpProp( ID idProp ) const;
 	
 	void Add( const _tstring& strIdentifier, xPROP *pProp );
 	void Add( xPROP *pProp );
@@ -165,7 +165,7 @@ public:
 	virtual int GetSize( void ) { return m_mapData.size(); }
 
 	LPCTSTR GetszSpr( ID idProp ) {
-		XPropHero::xPROP *pProp = GetpProp( idProp );
+		auto pProp = GetpProp( idProp );
 		if( pProp == nullptr )
 			return nullptr;
 		return pProp->strSpr.c_str();

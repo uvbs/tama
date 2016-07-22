@@ -1106,6 +1106,9 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\xVector.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XFType.h">
+      <Filter>source\Framework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\..\Third_Party_lib\curl\libcurl_imp.lib" />

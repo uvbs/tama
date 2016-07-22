@@ -125,8 +125,8 @@ public:
 		return m_vwPos;
 	}
 	GET_ACCESSOR_CONST( XSPLegionObj, spLegionObj );
-	GET_ACCESSOR( XHero*, pHero );
-	GET_ACCESSOR( float, Radius );
+	GET_ACCESSOR_CONST( const XHero*, pHero );
+	GET_ACCESSOR_CONST( float, Radius );
 	GET_SET_ACCESSOR( BOOL, bNearOther );
 	GET_ACCESSOR( const XSPUnit, spHeroUnit );
 	GET_ACCESSOR_CONST( const XSquadron*, pSquadron );
@@ -159,7 +159,7 @@ public:
 	 @brief this와 비교해서 pDst는 적인가
 	*/
 	const XECompCamp& GetCamp() const;
-	BOOL IsEnemy( XSquadObj *pDst ) {
+	BOOL IsEnemy( XSquadObj *pDst ) const {
 		return GetCamp().IsEnemy( pDst->GetCamp() );
 	}
 	bool IsPlayer() const {
