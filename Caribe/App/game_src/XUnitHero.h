@@ -64,9 +64,9 @@ public:
 	int OnBeforeAttackMotion( void );
 	void OnHitEventSkill( const XE::VEC3& vwSrc );
 // 	int OnApplyEffectNotAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, XSKILL::EFFECT *pEffect, int level ) override;
-	virtual void OnArriveBullet( XObjBullet *pBullet,
-								const UnitPtr& spAttacker,
-								const UnitPtr& spTarget,
+	void OnArriveBullet( XObjBullet *pBullet,
+								UnitPtr spAttacker,
+								UnitPtr spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,

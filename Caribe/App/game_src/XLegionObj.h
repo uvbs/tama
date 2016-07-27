@@ -95,8 +95,8 @@ public:
 							bool bIncludeFinder );
 	void OnStartBattle();
 	void OnAfterStartBattle();
-	int GetAllUnit( XArrayLinearN<XSKILL::XSkillReceiver*,512> *pOutAry );
-	int GetAllUnit( XArrayLinearN<XBaseUnit*, 512> *pOutAry );
+	int GetAllUnit( XVector<XSKILL::XSkillReceiver*> *pOutAry );
+	int GetAllUnit( XVector<XBaseUnit*> *pOutAry );
 	UnitPtr GetHeroUnit( ID idHero );
 	void DoFullHp();
 	SquadPtr FindSquadTakeTargetAndClosed( XSquadObj *pFinder, XSquadObj *pTarget, XGAME::xtUnit unitFilter = XGAME::xUNIT_NONE );

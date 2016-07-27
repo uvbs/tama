@@ -266,8 +266,8 @@ void XUnitHero::OnHitEventSkill( const XE::VEC3& vwSrc )
 
 
 void XUnitHero::OnArriveBullet( XObjBullet *pBullet,
-								const UnitPtr& spAttacker,
-								const UnitPtr& spTarget,
+								UnitPtr spAttacker,
+								UnitPtr spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,
@@ -279,8 +279,9 @@ void XUnitHero::OnArriveBullet( XObjBullet *pBullet,
 	{
 		XSKILL::XSkillObj *pUseSkill = GetSkillObjByIndex( 0 );
 		if( pUseSkill )	{
-			int level = GetSkillLevel( pUseSkill );
-			ApplyEffect( pUseSkill->GetpDat(), level, nullptr, pUseSkill->GetidSkill() );
+			const int level = GetSkillLevel( pUseSkill );
+//			ApplyEffect( pUseSkill->GetpDat(), level, nullptr, pUseSkill->GetidSkill() );
+			CastSkillToBaseTarget( pUseSkill->GetpDat(), level, spTarget.get(), XE::VEC2(), pUseSkill->GetidSkill() );
 		}
 	}
 	XBaseUnit::OnArriveBullet( pBullet, spAttacker, spTarget, vwDst, damage, bCritical, sprArrive, idActArrive, dwParam );

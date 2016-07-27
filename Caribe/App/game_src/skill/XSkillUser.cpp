@@ -97,13 +97,13 @@ XSkillUser::xUseSkill XSkillUser::UseSkill( XSkillObj *pUseSkill,
 		pUseSkill->GettimerCool().Set( pSkillDat->GetfCoolTime() );
 	// 시전자 이펙트(시전시작 시점에 발생되는 이펙트)
 	if( pSkillDat->GetCasterEff().m_strSpr.empty() == false ) {
-		xtPoint pointSfx = XSKILL::xPT_TARGET_BOTTOM;
+//		xtPoint pointSfx = XSKILL::xPT_TARGET_BOTTOM;
 		float secPlay = 0.f;	// play once
 		CreateSfx( pSkillDat, 
-					nullptr,
+//					nullptr,
 					pSkillDat->GetCasterEff().m_strSpr, 
 					pSkillDat->GetCasterEff().m_idAct,
-					pointSfx,
+					pSkillDat->GetCasterEff().m_Point,
 					secPlay, vTouchPos );
 	}
 
@@ -170,7 +170,7 @@ XSkillUser::xUseSkill XSkillUser::UseSkill( XSkillObj *pUseSkill,
  @param secPlay 0:once 0>:해당시간동안 루핑 -1:무한루핑
 */
 void XSkillUser::CreateSfx( XSkillDat *pSkillDat,
-														EFFECT *pEffect,
+//														EFFECT *pEffect,
 														const _tstring& strEffect, 
 														ID idAct,
 														xtPoint pointSfx,
@@ -188,7 +188,7 @@ void XSkillUser::CreateSfx( XSkillDat *pSkillDat,
 	if( idAct == 0 )
 		idAct = 1;
 	OnCreateSkillSfx( pSkillDat, 
-										pEffect,
+//										pEffect,
 										pointSfx,
 										strEffect.c_str(),
 										idAct,
@@ -233,7 +233,7 @@ xtError XSkillUser::OnShootSkill( XSkillObj *pUseSkill
 	{
 		float secPlay = 0;	// once
 		CreateSfx( pSkillDat,
-					nullptr,
+//					nullptr,
 					pSkillDat->GetShootEff().m_strSpr,
 					pSkillDat->GetShootEff().m_idAct,
 					pSkillDat->GetShootEff().m_Point,
@@ -287,13 +287,22 @@ void XSkillUser::CastSkillToBaseTarget( XSkillDat *pSkillDat
 																			, const XE::VEC2& vPos
 																			, ID idCallerSkill)
 {
+// 	// 시전자 이펙트
+// 	if( !pSkillDat->GetCasterEff().m_strSpr.empty() ) {
+// 		auto& eff = pSkillDat->GetCasterEff();
+// 		float secPlay = 0;
+// 		CreateSfx( pSkillDat,
+// 								eff.m_strSpr,
+// 								eff.m_idAct,
+// 								eff.m_Point,
+// 								secPlay );
+// 	}
 	// 스킬이 가진 효과들 기준타겟에게 사용한다.
-	LIST_LOOP( pSkillDat->GetlistEffects(), EFFECT*, itor, pEffect )
-	{
+	for( auto pEffect : pSkillDat->GetlistEffects() )	{
 		xtError err = UseEffect( pSkillDat, pEffect, level, pBaseTarget, vPos, idCallerSkill );
 		if( err != xOK )
 			return;
-	} END_LOOP;
+	}
 }
 
 /**
@@ -308,7 +317,7 @@ xtError XSkillUser::UseEffect( XSkillDat *pSkillDat,
 								const XE::VEC2& _vPos
 								, ID idCallerSkill )
 {
-	XArrayLinearN<XSkillReceiver*, 512> listCastingTargets;		// 시전대상
+	XVector<XSkillReceiver*> aryCastingTargets;		// 시전대상
 	// 시전대상을 선정한다. 대상은 객체일수도 있고 좌표일수도 있다.
 	// 기준타겟이 객체일경우
 	XE::VEC2 vPos = _vPos;		// 시전대상이 좌표로 넘어올경우 여기로 받는다. 디폴트로는 외부좌표를 받는다.
@@ -320,14 +329,14 @@ xtError XSkillUser::UseEffect( XSkillDat *pSkillDat,
 				float sec = pEffect->GetDuration( level );
 				XBREAK( sec <= 0 );
 				XSkillReceiver *pSfx = CreateSfxReceiver( pEffect, sec );
-				listCastingTargets.Add( pSfx );
+				aryCastingTargets.Add( pSfx );
 			}
 			// 
 		} else
 		// 객체류를 시전대상으로 한다.
 		{
 			// 타겟조건에 따라 시전대상을 가려낸다. 시전대상이 좌표일경우 vPos로 받는다.
-			int numCastingTarget = GetCastingTargetList( &listCastingTargets,
+			int numCastingTarget = GetCastingTargetList( &aryCastingTargets,
 														pEffect->castTarget,
 														pSkillDat,
 														pEffect,
@@ -342,11 +351,11 @@ xtError XSkillUser::UseEffect( XSkillDat *pSkillDat,
 			XALERT( "%s", _T("아직 구현되지 않음. 기준타겟:좌표") );
 		return xERR_GENERAL;
 	}
-	if( listCastingTargets.size() == 0 && vPos.IsZero() )
+	if( aryCastingTargets.size() == 0 && vPos.IsZero() )
 		return xERR_NOT_FOUND_CASTING_TARGET;		// 시전대상을 찾지 못함
 	// 캐스팅 대상들의 루프
-	XARRAYLINEARN_LOOP( listCastingTargets, XSkillReceiver*, pCastingTarget )
-	{
+//	XARRAYLINEARN_LOOP( listCastingTargets, XSkillReceiver*, pCastingTarget )
+	for( auto pCastingTarget : aryCastingTargets ) {
 		{	// 즉시발동 or 버프방식
 			CastEffectToCastingTarget( pSkillDat, 
 									pEffect, 
@@ -356,7 +365,7 @@ xtError XSkillUser::UseEffect( XSkillDat *pSkillDat,
 									vPos
 									, idCallerSkill );
 		}
-	} END_LOOP
+	}
 	// "사용"스크립트 실행
 	if( pEffect->scriptUse.empty() == false )	// 스크립이 있을때만
 	{
@@ -383,7 +392,7 @@ xtError XSkillUser::UseEffect( XSkillDat *pSkillDat,
  @brief 
 */
 int XSkillUser::GetCastingTargetList( 
-					XArrayLinearN<XSkillReceiver*, 512> *pAryOutCastingTarget,			// 시전대상얻기 결과가 담겨짐
+					XVector<XSkillReceiver*> *pAryOutCastingTarget,			// 시전대상얻기 결과가 담겨짐
 					xtCastTarget castTarget,	// 시전대상타입
 					XSkillDat *pSkillDat,				// 스킬사용 오브젝트
 					const EFFECT *pEffect,					// 효과
@@ -496,7 +505,7 @@ xtError XSkillUser::CastEffectToCastingTarget(
 		if( pSkillDat->GetTargetEff().m_Loop == xAL_LOOP )
 			secPlay = pEffect->GetDuration( level );
 		pBaseTarget->CreateSfx( pSkillDat,
-								pEffect,
+//								pEffect,
 								pSkillDat->GetTargetEff().m_strSpr,
 								pSkillDat->GetTargetEff().m_idAct,
 								pSkillDat->GetTargetEff().m_Point,
@@ -507,7 +516,7 @@ xtError XSkillUser::CastEffectToCastingTarget(
 	{
 		float secPlay = 0;
 		pCastingTarget->CreateSfx( pSkillDat,
-									pEffect,
+//									pEffect,
 									pEffect->m_CastTargetEff.m_strSpr,
 									pEffect->m_CastTargetEff.m_idAct,
 									pEffect->m_CastTargetEff.m_Point,
@@ -577,7 +586,7 @@ xtError XSkillUser::CastEffectToCastingTarget(
 			{
 				float secPlay = pEffect->GetDuration(level);	// 지속이펙트는 무조건 루핑.
 				pCastingTarget->CreateSfx( pSkillDat,
-										pEffect,
+//										pEffect,
 										pEffect->m_PersistEff.m_strSpr,
 										pEffect->m_PersistEff.m_idAct,
 										pEffect->m_PersistEff.m_Point,
@@ -587,7 +596,7 @@ xtError XSkillUser::CastEffectToCastingTarget(
 	} else
 	{	// 즉시발동형(지속시간 0)
 		// 시전대상들에게 즉시 효과가 발동된다.
-		XArrayLinearN<XSkillReceiver*, 512> listInvokeTarget;
+		XVector<XSkillReceiver*> listInvokeTarget;
 		// 1회성이기때문에 루아도 쓰고 바로 파괴되는걸로 함
 		XLuaSkill *pLua = NULL;
 		// "시전"스크립트 실행
@@ -640,7 +649,7 @@ xtError XSkillUser::CastEffectToCastingTarget(
 // 스킬발동대상얻기
 // this는 시전자
 int XSkillUser::GetInvokeTarget( 
-						XArrayLinearN<XSkillReceiver*, 512> *_plistOutInvokeTarget,		// 결과를 이곳에 받습니다
+						XVector<XSkillReceiver*> *_plistOutInvokeTarget,		// 결과를 이곳에 받습니다
 						XSkillDat *pBuff,
 						int level,
 						xtInvokeTarget invokeTarget,		// virtual이라서 사용자쪽에서 어떤변수를 써야하는지 분명히 알게 하기위해 직접 변수를 넘김
@@ -651,7 +660,8 @@ int XSkillUser::GetInvokeTarget(
 	// virtual. invokeTarget을 하위클래스에서 가공하기 위한 땜빵.
 	invokeTarget = pCastingTarget->OnGetInvokeTarget( pBuff, pEffect, invokeTarget );
 	//
-	XArrayLinearN<XSkillReceiver*, 512> aryTempInvokes;
+	auto& aryTempInvokes = *_plistOutInvokeTarget;
+//	XArrayLinearN<XSkillReceiver*, 512> aryTempInvokes;
 	xtFriendshipFilt filtIvkFriendship = pEffect->invokefiltFriendship;
 	if( filtIvkFriendship == xfNONESHIP )
 		filtIvkFriendship = pEffect->castfiltFriendship;
@@ -709,8 +719,8 @@ int XSkillUser::GetInvokeTarget(
 	case xIVT_ATTACKED_TARGET_PARTY:
 		// 기준타겟으로부터 그룹내 오브젝트들을 의뢰한다.
 		pCastingTarget->GetGroupList( &aryTempInvokes,
-			pBuff,
-			pEffect );
+																	pBuff,
+																	pEffect );
 		break;
 	case xIVT_CURR_TARGET: {
 		// 현재 공격대상을 얻는다.
@@ -722,7 +732,7 @@ int XSkillUser::GetInvokeTarget(
 	case xIVT_ATTACKER: {
 		auto pAttacker = pCastingTarget->GetpAttacker();
 		if( pAttacker && IsInvokeAble( pBuff, pAttacker, pEffect ) )
-			aryTempInvokes.push_back( pAttacker );
+			aryTempInvokes.push_back( const_cast<XSkillReceiver*>( pAttacker ) );
 	} break;
  	case xIVT_RANDOM_PARTY: {
 		xtGroup typeGroup;
@@ -767,7 +777,7 @@ int XSkillUser::GetInvokeTarget(
  @param pInvoker pEffect효과를 발동시킨측. pCaster와는 다르다.
 */
 void XSkillUser::ApplyInvokeEffectWithAry( 
-																			XArrayLinearN<XSkillReceiver*, 512>& aryInvokers
+																			const XVector<XSkillReceiver*>& aryInvokTarget
 																			, XSkillDat *pDat
 																			, const EFFECT *pEffect
 																			, XSkillReceiver *pInvoker
@@ -777,7 +787,8 @@ void XSkillUser::ApplyInvokeEffectWithAry(
 																			, XBuffObj *pBuffObj
 																			, XLuaSkill *pLua )
 {
-	XARRAYLINEARN_LOOP_AUTO( aryInvokers, pInvokeTarget ) {
+//	XARRAYLINEARN_LOOP_AUTO( aryInvokers, pInvokeTarget ) {
+	for( auto pInvokeTarget : aryInvokTarget ) {
 		// 발동확률이 있다면 확률검사를 통과해야 한다.(XBuffObj에 이것이 있을때는 GetInvokeTarget을 하기전에 수행되었는데 지금은 발동타겟 개별적으로 확률검사를 하도록 바뀜. 이게 맞는거 같아서)
 		bool bOk = XSKILL::DoDiceInvokeApplyRatio( pEffect, level );
 		if( bOk ) {
@@ -797,7 +808,7 @@ void XSkillUser::ApplyInvokeEffectWithAry(
 				// 발동대상이펙트가 있다면 생성해준다.
 				if( bCreateSfx ) {
 					const float secPlay = 0.f;		// 1play. 발동이펙트는 반복플레이가 없음.
-					pInvokeTarget->CreateSfx( pDat, pEffect,
+					pInvokeTarget->CreateSfx( pDat, /*pEffect,*/
 																		pEffect->m_invokeTargetEff.m_strSpr,
 																		pEffect->m_invokeTargetEff.m_idAct,
 																		pEffect->m_invokeTargetEff.m_Point,
@@ -812,7 +823,7 @@ void XSkillUser::ApplyInvokeEffectWithAry(
 				//m_pDelegate->OnDotApply( pEffect );
 			}
 		}
-	} END_LOOP;
+	}
 }
 /**
  @brief 발동조건이 있다면 조건검사를 한다.
@@ -838,21 +849,21 @@ bool XSkillUser::IsInvokeTargetCondition( XSkillDat *pDat
 	return false;
 }
 
-xtError XSkillUser::ApplyEffect( XSkillDat *pSkillDat, 
-								int level, 
-								XSkillReceiver *pTarget,
-								ID idCallerSkill,
-								const XE::VEC2& vPos )
-{
-	// 효과 사용
-	LIST_LOOP( pSkillDat->GetlistEffects(), EFFECT*, itor, pEffect )	{
-		xtError err;
-		if( ( err = UseEffect( pSkillDat, pEffect, level, pTarget, vPos, idCallerSkill ) ) != xOK )
-			return err;
-	}
-	END_LOOP;
-	return XSKILL::xERR_OK;
-}
+// xtError XSkillUser::ApplyEffect( XSkillDat *pSkillDat, 
+// 								int level, 
+// 								XSkillReceiver *pTarget,
+// 								ID idCallerSkill,
+// 								const XE::VEC2& vPos )
+// {
+// 	// 효과 사용
+// 	LIST_LOOP( pSkillDat->GetlistEffects(), EFFECT*, itor, pEffect )	{
+// 		xtError err;
+// 		if( ( err = UseEffect( pSkillDat, pEffect, level, pTarget, vPos, idCallerSkill ) ) != xOK )
+// 			return err;
+// 	}
+// 	END_LOOP;
+// 	return XSKILL::xERR_OK;
+// }
 
 int XSkillUser::FrameMove( float dt )
 {

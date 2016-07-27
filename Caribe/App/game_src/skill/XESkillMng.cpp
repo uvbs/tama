@@ -342,6 +342,18 @@ BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr,
 	{
 		pSkillDat->m_TargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
 	} else
+	if( XSAME( cAttrName, 135 ) )	// 시전자이펙트
+	{	
+		pSkillDat->m_CasterEff.m_strSpr = U82SZ( cParam );
+	} else
+	if( XSAME( cAttrName, 137 ) )	// 시전자이펙트생성지점
+	{
+		pSkillDat->m_CasterEff.m_Point = (xtPoint) ParsingParam( cParam );
+	} else
+	if( XSAME( cAttrName, 136 ) )	// 시전자이펙트id
+	{	
+		pSkillDat->m_CasterEff.m_idAct = (int)pAttr->IntValue();
+	} else
 	if( XSAME( cAttrName, 64 ) )	// 슈팅이펙트
 	{
 		pSkillDat->m_ShootEff.m_strSpr = U82SZ( cParam );
@@ -437,22 +449,22 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 // 	{	
 // 		pEffect->castTime = (float)pAttr->DoubleValue();
 // 	} else
-	if( XSAME( cAttrName, 135 ) )	// 시전자이펙트
-	{	
-		pEffect->m_CasterEff.m_strSpr = U82SZ( cParam );
-	} else
-	if( XSAME( cAttrName, 137 ) )	// 시전자이펙트생성지점
-	{
-		pEffect->m_CasterEff.m_Point = (xtPoint) ParsingParam( cParam );
-	} else
-// 	if( XSAME( cAttrName, 155 ) )	// 시전자이펙트반복
-// 	{
-// 		pEffect->casterEffectPlayMode = (xtAniLoop) ParsingParam( cParam );
+// 	if( XSAME( cAttrName, 135 ) )	// 시전자이펙트
+// 	{	
+// 		pEffect->m_CasterEff.m_strSpr = U82SZ( cParam );
 // 	} else
-	if( XSAME( cAttrName, 136 ) )	// 시전자이펙트id
-	{	
-		pEffect->m_CasterEff.m_idAct = (int)pAttr->IntValue();
-	} else
+// 	if( XSAME( cAttrName, 137 ) )	// 시전자이펙트생성지점
+// 	{
+// 		pEffect->m_CasterEff.m_Point = (xtPoint) ParsingParam( cParam );
+// 	} else
+// // 	if( XSAME( cAttrName, 155 ) )	// 시전자이펙트반복
+// // 	{
+// // 		pEffect->casterEffectPlayMode = (xtAniLoop) ParsingParam( cParam );
+// // 	} else
+// 	if( XSAME( cAttrName, 136 ) )	// 시전자이펙트id
+// 	{	
+// 		pEffect->m_CasterEff.m_idAct = (int)pAttr->IntValue();
+// 	} else
 	if( XSAME( cAttrName, 20 ) )	// 시전대상이펙트
 	{	
 		pEffect->m_CastTargetEff.m_strSpr = U82SZ( cParam );

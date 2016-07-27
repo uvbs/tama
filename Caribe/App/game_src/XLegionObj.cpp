@@ -540,7 +540,7 @@ void XLegionObj::DoDamage()
 {
 #ifdef _CHEAT
 	for( auto& spSquad : m_listSquad ) {
-		spSquad->DoDamageByPercent( 0.33, FALSE );
+		spSquad->DoDamageByPercent( 0.33f, FALSE );
 	}
 #endif // _CHEAT
 }
@@ -553,24 +553,19 @@ XHero* XLegionObj::GetpLeader()
 /**
  @brief 군단내 모든 유닛과 영웅을 담는다.
 */
-int XLegionObj::GetAllUnit( XArrayLinearN<XSKILL::XSkillReceiver*,512> *pOutAry )
+int XLegionObj::GetAllUnit( XVector<XSKILL::XSkillReceiver*> *pOutAry )
 {
 	for( auto& spSquad : m_listSquad ) {
-		XArrayLinearN<XSKILL::XSkillReceiver*, 512> ary;
-		spSquad->GetListMember( &ary );
-		pOutAry->Add( ary );
+		spSquad->GetListMember( pOutAry );
 		
 	}
 	return pOutAry->size();
 }
 
-int XLegionObj::GetAllUnit( XArrayLinearN<XBaseUnit*, 512> *pOutAry )
+int XLegionObj::GetAllUnit( XVector<XBaseUnit*> *pOutAry )
 {
 	for( auto& spSquad : m_listSquad ) {
-		XArrayLinearN<XBaseUnit*, 512> ary;
-		spSquad->GetListMember( &ary );
-		pOutAry->Add( ary );
-
+		spSquad->GetListMember( pOutAry );
 	}
 	return pOutAry->size();
 }
@@ -592,12 +587,11 @@ UnitPtr XLegionObj::GetHeroUnit( ID idHero )
 */
 void XLegionObj::DoFullHp()
 {
-	XArrayLinearN<XBaseUnit*, 512> ary;
+	XVector<XBaseUnit*> ary;
 	GetAllUnit( &ary );
-	XARRAYLINEARN_LOOP_AUTO( ary, pUnit )
-	{
+	for( auto pUnit : ary )	{
 		pUnit->DoFullHp();
-	} END_LOOP;
+	}
 }
 
 /**

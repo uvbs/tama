@@ -66,7 +66,9 @@ public:
 	//
 	WorldObjPtr GetThis() {
 		return shared_from_this();
-
+	}
+	XSPWorldObjConst GetThisConst() const {
+		return shared_from_this();
 	}
 	void SetDestroy( int n ) { m_Destroy = n; }
 	GET_ACCESSOR_CONST( int, Type );

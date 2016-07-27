@@ -8,14 +8,9 @@
 #pragma once
 
 #include "skill/SkillDef.h"
+#include "XBaseUnitH.h"
 
 XE_NAMESPACE_START( xnUnit )
-
-struct xDmg;
-enum xtMsg {
-	xUM_NONE,
-	xUM_DMG,
-};
 
 class XMsgBase;
 

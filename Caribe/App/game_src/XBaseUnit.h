@@ -15,6 +15,7 @@
 #include "XObjEtc.h"
 #include "skill/XSkillUser.h"
 #include "skill/XSkillReceiver.h"
+#include "XBaseUnitH.h"
 
 namespace XSKILL {
 class XSkillDat;
@@ -25,21 +26,7 @@ namespace xnUnit {
 	class XMsgBase;
 	class XMsgDmg;
 	class XMsgDmgFeedback;
-	struct xDmg {
-		XSPWorldObj m_spAtkObj;
-		XSPUnit m_spUnitAtker;
-		XSPUnit m_spTarget;
-		float m_Damage = 0.f;
-		float m_ratioPanet = 0.f;
-		XSKILL::xtDamage m_typeDmg = XSKILL::xDMG_NONE;
-		const BIT m_bitAttrHit = 0;
-		XGAME::xtDamageAttr m_attrDamage = XGAME::xDA_NONE;
-		bool m_bCritical = false;
-		xDmg( XSPWorldObjConst spAtkObj, XSPUnit spTarget, float damage, float ratioPenet, XSKILL::xtDamage typeDamage, const BIT bitAttrHit, XGAME::xtDamageAttr attrDamage, bool bCritical );
-		inline XBaseUnit* GetpUnit() const {
-			return (m_spUnitAtker)? m_spUnitAtker.get() : nullptr;
-		}
-	};
+	struct xDmg;
 }
 
 class XWndBattleField;
@@ -327,7 +314,7 @@ public:
 	void CreateHitSfx( const XBaseUnit *pAttacker, BOOL bCritical, BOOL bAbsolute = FALSE );
 //	void DoDamage( XEBaseWorldObj *pAttacker, float damage, BOOL bCritical, float ratioPenetration, XSKILL::xtDamage typeDamage, bool bBySkill );
 private:
-	void DoDamage( const XEBaseWorldObj* pAttacker, float damage, float ratioPenetration, XSKILL::xtDamage typeDamage, const BIT bitAttrHit, XGAME::xtDamageAttr attrDamage );
+	void DoDamage( XSPWorldObj pAtkObj, float damage, float ratioPenetration, XSKILL::xtDamage typeDamage, const BIT bitAttrHit, XGAME::xtDamageAttr attrDamage );
 public:
 
 	float AddHp( float add ) {
@@ -411,7 +398,7 @@ public:
 	bool IsSuperiorSize( XBaseUnit *pDefender ) const;
 	float GetAdjDamage( float damage, BOOL bCritical, XSKILL::xtDamage typeDamage, XGAME::xtDamageAttr attrDamage );
 	void DoAttackTargetByBind( const UnitPtr& spTarget, BOOL bFirstDash );
-	virtual XSKILL::xtPlayerType GetPlayerType() {
+	XSKILL::xtPlayerType GetPlayerType() const {
 		return ( m_Camp == XGAME::xSIDE_PLAYER ) ? XSKILL::xHUMAN : XSKILL::xAI;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -431,9 +418,6 @@ public:
 							BIT bitSideInvokeTarget,	// 발동되어야 하는 발동대상우호
 							XSKILL::XSkillReceiver *pBaseTarget,
 							const XE::VEC2& vPos ) override;
-// 	XE::VEC2 GetCurrentPosForSkill() override {
-// 		return GetvwPos().ToVec2();
-// 	}
 	BOOL IsLive() override {
 		if( IsDestroy() )
 			return FALSE;
@@ -442,7 +426,6 @@ public:
 		return TRUE;
 	}
 	virtual void OnAdjustEffectAbility( XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int invokeParam, float *pOutMin ) override;
-//	virtual void OnSkillAmplifyReceiver( XSKILL::XSkillDat *pDat, XSKILL::XSkillReceiver *pIvkTarget, const XSKILL::EFFECT *pEffect, float *pOutRatio, float *pOutAdd ) override;
 	virtual void OnSkillAmplifyUser( XSKILL::XSkillDat *pDat, XSKILL::XSkillReceiver *pIvkTarget, const XSKILL::EFFECT *pEffect, XSKILL::xtEffectAttr attrParam, float *pOutRatio, float *pOutAdd ) override;
 	virtual XSKILL::XSkillReceiver* GetTarget( ID snObj ) override;
 	virtual XSKILL::XSkillUser* GetCaster( ID snObj ) override;
@@ -458,8 +441,8 @@ public:
 // 		return GetvwPos().ToVec2();
 // 	}
 	/// 이게임에선 루아를 사용하지 않으므로 비워둠.
-	virtual void RegisterInhValUse( XLua *pLua, const char *szVal ) { }
-	virtual XSKILL::XSkillReceiver* GetThisRecv() override {
+	void RegisterInhValUse( XLua *pLua, const char *szVal ) override { }
+	XSKILL::XSkillReceiver* GetThisRecv() override {
 		return this;
 	}
 	virtual XSKILL::XDelegateSkill* GetpDelegate() override;
@@ -476,7 +459,7 @@ public:
 															, XSKILL::XSkillDat* pSkillDat
 															, const XSKILL::EFFECT *pEffect
 															, float abilMin ) override;
-	int GetListObjsRadius( XArrayLinearN<XSKILL::XSkillReceiver*, 512> *plistOutInvokeTarget,
+	int GetListObjsRadius( XVector<XSKILL::XSkillReceiver*> *plistOutInvokeTarget,
 									const XSKILL::EFFECT *pEffect,
 									XSKILL::XSkillReceiver *pBaseTarget,
 									const XE::VEC2& vBasePos,
@@ -486,7 +469,7 @@ public:
 									BOOL bIncludeCenter ) override;
 	ID GetId() override { return GetsnObj(); }
 	void OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDatw,
-									const XSKILL::EFFECT *pEffect,
+//									const XSKILL::EFFECT *pEffect,
 									XSKILL::xtPoint createPoint,
 									LPCTSTR szSpr,
 									ID idAct,
@@ -501,31 +484,24 @@ public:
 									float secPlay,
 									const XE::VEC2& vPos) override;
 	void OnDestroySFX( XSKILL::XBuffObj *pSkillRecvObj, ID idSFX ) override;
-	int GetGroupList( XArrayLinearN<XSKILL::XSkillReceiver*, 512> *pAryOutGroupList,
+	int GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList,
 					XSKILL::XSkillDat *pSkillDat,
 					const XSKILL::EFFECT *pEffect,
 					XSKILL::xtGroup typeGroup ) override;
 	XSKILL::XSkillReceiver* GetTargetObject( XSKILL::EFFECT *pEffect, XSKILL::xtTargetCond cond ) override;
 	XSKILL::XSkillReceiver* GetSkillBaseTarget( XSKILL::XSkillDat *pDat ) override;
 	XSkillReceiver* CreateSfxReceiver( XSKILL::EFFECT *pEffect, float sec ) override;
-	void cbOnArriveBullet( XObjArrow *pArrow, float damage );
-	void cbOnArriveSkillObj( XSkillShootObj *pArrow,
-							XSKILL::XSkillDat *pSkillDat,
-// 							XSKILL::EFFECT *pEffect,
-							int level,
-							XSKILL::XSkillReceiver *pBaseTarget );
-//							XSKILL::XSkillReceiver *pCastingTarget );
-	BOOL IsInvokeAddTarget( ID idAddTarget );
-	virtual BOOL OnApplyState( XSKILL::XSkillUser *pCaster, XSKILL::XSkillReceiver* pInvoker, XSKILL::EFFECT *pEffect, int idxState, BOOL flagState );
+	BOOL IsInvokeAddTarget( ID idAddTarget ) const override;
+	virtual BOOL OnApplyState( XSKILL::XSkillUser *pCaster, XSKILL::XSkillReceiver* pInvoker, const XSKILL::EFFECT *pEffect, int idxState, BOOL flagState ) override;
 	virtual BOOL OnFirstApplyState( XSKILL::XSkillUser *pCaster, XSKILL::XSkillReceiver* pInvoker, const XSKILL::EFFECT *pEffect, int idxState, BOOL flagState, int level ) override;
 	virtual XSKILL::XSkillReceiver* GetBaseTargetByCondition( XSKILL::XSkillDat *pSkillDat,
 													XSKILL::xtBaseTargetCond cond,
 													float meter,
 													int level,
 													XSKILL::XSkillReceiver *pCurrTarget,
-													const XE::VEC2& vPos );
-	virtual int GetSkillLevel( XSKILL::XSkillObj* pSkillObj );
-	virtual XSkillReceiver* GetCurrTarget();
+													const XE::VEC2& vPos ) override;
+	virtual int GetSkillLevel( XSKILL::XSkillObj* pSkillObj ) override;
+	virtual XSkillReceiver* GetCurrTarget() override;
 	virtual bool OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster, XSKILL::XBuffObj *pBuffObj, XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int level ) override;
 	virtual void OnEventFirstApplyEffect( XSKILL::XSkillDat *pDat, XSKILL::XSkillUser* pCaster, XSKILL::EFFECT *pEffect, int level ) override;
 	virtual bool OnInvokeSkill( _tstring& strOut, 
@@ -535,6 +511,11 @@ public:
 								int level ) override;
 	// SKILL
 	//////////////////////////////////////////////////////////////////////////
+	void cbOnArriveBullet( XObjArrow *pArrow, float damage );
+	void cbOnArriveSkillObj( XSkillShootObj *pArrow,
+							XSKILL::XSkillDat *pSkillDat,
+							int level,
+							XSKILL::XSkillReceiver *pBaseTarget );
 	void OnBeforeFrameMove();
 	virtual void FrameMove( float dt ) override;
 	void FrameMoveAI( float dt );
@@ -567,8 +548,8 @@ public:
 							float damage,
 							bool bCritical );
 	virtual void OnArriveBullet( XObjBullet *pBullet,
-								const UnitPtr& spAttacker,
-								const UnitPtr& spTarget,
+								UnitPtr spAttacker,
+								UnitPtr spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,
@@ -674,7 +655,7 @@ public:
 	float GetInvokeRatioByBuff( XGAME::xtUnit unit, LPCTSTR sid );
 	float GetVampiricRatio();
 	UnitPtr GetSacrificeGolemInAttacker();
-	void DoDie( XSPUnitConst spAtker );
+	void DoDie( XSPUnit spAtker );
 	bool IsInvisible() {
 		return IsState( XGAME::xST_INVISIBLE ) == TRUE;
 	}

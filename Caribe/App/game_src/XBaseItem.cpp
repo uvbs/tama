@@ -255,7 +255,7 @@ ID XBaseItem::GetidHero()
 {
 	if (XBREAK(GetpProp()->type != XGAME::xIT_SOUL))
 		return 0;
-	XPropHero::xPROP *pProp = PROP_HERO->GetpProp(GetpProp()->strIdHero);
+	auto pProp = PROP_HERO->GetpProp(GetpProp()->strIdHero);
 	if (pProp)
 		return pProp->idProp;
 	return 0;

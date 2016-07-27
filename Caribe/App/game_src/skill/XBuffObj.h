@@ -55,17 +55,18 @@ class XBuffObj //: public XMemPool<XBuffObj>
 	int m_Level;
 	ID m_idCallerSkill = 0;			// 이 버프객체를 생성한 상위 스킬의 아이디
 	XSkillDat* m_pDatCaller = nullptr;		// idCallerSkill의 아이디
+	int m_numApply = 0;					// 효과 적용횟수
 #ifdef _CLIENT
 	XSurface *m_psfcIcon;		///< 스킬 아이콘
 #endif
 	void Init() {
-		m_pDelegate = NULL;
+		m_pDelegate = nullptr;
 		m_idBuff = XE::GenerateID();
-		m_pDat = NULL;
-		m_pCaster = NULL;
-		m_pOwner = NULL;
+		m_pDat = nullptr;
+		m_pCaster = nullptr;
+		m_pOwner = nullptr;
 		m_bDestroy = FALSE;
-		m_pluaScript = NULL;
+		m_pluaScript = nullptr;
 		m_nCount = 0;
 		m_Level = 0;
 #ifdef _CLIENT
@@ -144,7 +145,7 @@ public:
 							XSkillReceiver *pOwner, 
 							const char *cScript, 
 							BOOL bCreateSfx,
-							XArrayLinearN<XSkillReceiver*, 512> *pOutAryIvkTarget=NULL, 
+							XVector<XSkillReceiver*> *pOutAryIvkTarget = nullptr, 
 							BOOL bGetListMode=FALSE );
 	void AddImmunity( ID idObj ) {
 		m_listImmunity.Add( idObj );

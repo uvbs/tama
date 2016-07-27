@@ -90,7 +90,7 @@
       <Filter>source\main</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XSkillMng.cpp">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XExpTableHero.cpp">
       <Filter>source\prop</Filter>
@@ -123,31 +123,31 @@
       <Filter>source\prop</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\skill\XAdjParam.cpp">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\skill\XBuffObj.cpp">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\skill\XESkillMng.cpp">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\skill\XLuaSkill.cpp">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\skill\xSkill.cpp">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\skill\XSkillDat.cpp">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\skill\XSkillObj.cpp">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\skill\XSkillReceiver.cpp">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\skill\XSkillUser.cpp">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XSceneTrader.cpp">
       <Filter>source\scean</Filter>
@@ -714,10 +714,10 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Resource\VerPacket.h" />
     <ClInclude Include="..\..\..\game_src\skill\SkillDef.h">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\skill\SkillType.h">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XSceneTrader.h">
       <Filter>header</Filter>
@@ -1106,10 +1106,13 @@
       <Filter>source\world and spot</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\skill\XEffect.h">
-      <Filter>source\skill</Filter>
+      <Filter>source\battle\skill</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XMsgUnit.h">
       <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XBaseUnitH.h">
+      <Filter>source\battle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1186,9 +1189,6 @@
     <Filter Include="source\dlg">
       <UniqueIdentifier>{02c597a4-97ea-45ab-9fba-5cfc36549a5b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\skill">
-      <UniqueIdentifier>{33075e7d-422d-4b5c-8dfc-665283c46d5d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="source\system">
       <UniqueIdentifier>{c01884a7-e8fd-4cd9-a698-a523560552f3}</UniqueIdentifier>
     </Filter>
@@ -1221,6 +1221,9 @@
     </Filter>
     <Filter Include="source\world and spot">
       <UniqueIdentifier>{98f8943e-acd1-47ae-a8b9-421f17d4c8af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\battle\skill">
+      <UniqueIdentifier>{33075e7d-422d-4b5c-8dfc-665283c46d5d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -169,7 +169,7 @@ public:
 	float OnDelegateGetScaleViewport() override;
 	void OnReload() override;
 	void CreateParticleSfx();
-	void OnControlSquad( XHero *pHero );
+	void OnControlSquad( const XHero *pHero );
 //	int OnClickOkByTutorialPopup( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnEndCutScene( const std::string& idsEndSeq ) override;
 	bool IsDialogMsg( DWORD idSeqPopup );

@@ -12,7 +12,7 @@ class XWnd;
 
 XE_NAMESPACE_START( XGAME )
 
-void UpdateHeroTooltip( XPropHero::xPROP *pProp, XWnd *pRoot, int cost );
+void UpdateHeroTooltip( const XPropHero::xPROP *pProp, XWnd *pRoot, int cost );
 void UpdateHeroTooltip( LPCTSTR idsHero, XWnd *pRoot, int cost );
 inline void UpdateHeroTooltip( const _tstring& idsHero, XWnd *pRoot, int cost ) {
 	UpdateHeroTooltip( idsHero.c_str(), pRoot, cost );

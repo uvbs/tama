@@ -125,7 +125,7 @@ public:
 		return m_vwPos;
 	}
 	GET_ACCESSOR_CONST( XSPLegionObj, spLegionObj );
-	GET_ACCESSOR_CONST( const XHero*, pHero );
+	GET_ACCESSOR_CONST( XHero*, pHero );
 	GET_ACCESSOR_CONST( float, Radius );
 	GET_SET_ACCESSOR( BOOL, bNearOther );
 	GET_ACCESSOR( const XSPUnit, spHeroUnit );
@@ -225,8 +225,8 @@ public:
 					XPropUnit::xPROP *pProp,
 					int numUnit,
 					const XECompCamp& camp );
-	int GetListMember( XArrayLinearN<XSKILL::XSkillReceiver*, 512> *pAry );
-	int GetListMember( XArrayLinearN<XBaseUnit*, 512> *pAry );
+	int GetListMember( XVector<XSKILL::XSkillReceiver*> *pAry );
+	int GetListMember( XVector<XBaseUnit*> *pAry );
 	XBaseUnit* GetLiveMember();
 	BOOL IsNear( XSquadObj *pTarget );
 private:

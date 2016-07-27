@@ -109,7 +109,7 @@ public:
 	// secLife==0.f는 1번플레이
 	virtual ID OnCreateInvokeSFX( XBuffObj *pSkillRecvObj, EFFECT *pEffect, XSkillUser *pCaster, const XE::VEC2 *pvPos, LPCTSTR szSFX, ID idAct, xtPoint pointEffect, float secLife=0.f ) { return 0;}
 	virtual void OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
-									const EFFECT *pEffect,
+//									const EFFECT *pEffect,
 									XSKILL::xtPoint createPoint,
 									LPCTSTR szSpr,
 									ID idAct,
@@ -128,7 +128,7 @@ public:
 									float secPlay,
 									const XE::VEC2& vPos) { return nullptr; }
 	void CreateSfx( XSkillDat *pSkillDat,
-					const EFFECT *pEffect,
+//					const EFFECT *pEffect,
 					const _tstring& strEffect,
 					ID idAct,
 					xtPoint pointSfx,
@@ -188,11 +188,7 @@ public:
 	// pure virtual
 	// szVal변수를(보통 invokeObj같은) 상속된 하위클래스형으로 루아변수로 등록한다. 말하자면 XSkillReceiver타입의 invokeObj가 아니고 XUnit타입의 invokeObj로 등록해야한다. 이런 코드 사용-> pLua->RegisterVar( szVal, this ); 	
 	virtual const XECompCamp& GetCamp( void ) const = 0;		///< this의 진영을 리턴
-//	virtual xtSide GetFriendship( void ) = 0;		///< this의 Friendship을 리턴
-//	virtual xtPlayerType GetPlayerType( void ) = 0;		///< this의 플레이어 타입을
-	// 좌표에 놓는형태의 지속스킬에 사용하는데 이제 ,XSkillSfxReceiver를 통해서 하므로 필요없게 됨..
-//	virtual XE::VEC2 GetCurrentPosForSkill( void ) = 0;		
-	virtual int GetGroupList( XArrayLinearN<XSKILL::XSkillReceiver*, 512> *pAryOutGroupList, 
+	virtual int GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList, 
 							XSKILL::XSkillDat *pSkillDat, 
 							const XSKILL::EFFECT *pEffect,
 							xtGroup typeGroup = xGT_ME ) { 
@@ -214,7 +210,7 @@ public:
 	void OnEventJunctureCommon( ID idEvent, DWORD dwParam = 0, const XSkillReceiver *pRecvParam = nullptr );
 	void OnEventBeforeAttack( XSKILL::xtJuncture junc );
 	void OnEventInvokeFromSkill( XSkillDat *pFromSkill, const EFFECT *pFromEffect, XSkillUser *pCaster, XSkillReceiver *pBaseTarget );
-	virtual BOOL IsInvokeAddTarget( ID idAddTarget ) { return FALSE; }
+	virtual BOOL IsInvokeAddTarget( ID idAddTarget ) const { return FALSE; }
 	// this에게 pEffect가 발동이 될수 있는지 검사
 	virtual BOOL IsInvokeTargetCondition( XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, XSKILL::xtCondition condition, DWORD condVal ) { return TRUE; }
 	virtual bool OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster, XSKILL::XBuffObj *pBuffObj, XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int level ) { return true; }

@@ -102,10 +102,16 @@ void XSceneTech::Create( void )
 #ifdef _CHEAT
 	if( XAPP->m_bDebugMode ) {
 		XE::VEC2 v(572,87);
-		XE::VEC2 size(30,30);
-		auto pButt = new XWndButtonDebug( v, size, _T("금화추가") );
+		const XE::VEC2 size(30,30);
+		auto 
+		pButt = new XWndButtonDebug( v, size, _T("금화추가") );
 		pButt->SetstrIdentifier("butt.debug.brave");
-		pButt->SetEvent( XWM_CLICKED, this, &XSceneTech::OnCheat, 200 );
+		pButt->SetEvent( XWM_CLICKED, this, &XSceneTech::OnCheat, 3 );
+		Add( pButt );
+		v.y += size.h;
+		pButt = new XWndButtonDebug( v, size, _T( "자원추가" ) );
+		pButt->SetstrIdentifier( "butt.debug.res" );
+		pButt->SetEvent( XWM_CLICKED, this, &XSceneTech::OnCheat, 7 );
 		Add( pButt );
 	}
 #endif // cheat
@@ -1606,12 +1612,18 @@ int XSceneTech::OnCheat( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("OnCheat");
 	//
+	const float multiply = ( XE::GetMain()->m_bCtrl ) ? 10.f : 1.f;
+	const float plusMinus = ( XE::GetMain()->m_bAlt ) ? -1.f : 1.f;
 	int type = (int)p1;
-	if( type == 200 )	{
-		const int add = 50000;
-		GAMESVR_SOCKET->SendCheat( this, type, add );
-//		ACCOUNT->AddBrave( add );
-		ACCOUNT->AddGold( add );
+	if( type == 3 )	{
+		auto addGold = 500000.f * multiply * plusMinus;
+		GAMESVR_SOCKET->SendCheat( this, type, (int)addGold );
+	} else
+	if( type == 7 ) {
+		auto add = 50000.f * multiply * plusMinus;
+		for( int i = 0; i < XGAME::xRES_MAX; ++i )
+			ACCOUNT->AddResource( ( XGAME::xtResource )i, (int)add );
+		GAMESVR_SOCKET->SendCheat( this, type, (int)add );
 	}
 	if( SCENE_TECH )
 		SCENE_TECH->SetbUpdate( true );

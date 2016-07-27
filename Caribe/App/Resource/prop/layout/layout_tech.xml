@@ -105,7 +105,7 @@
           <text posx="11" posy="4" font_style="stroke" font="font_res_num" font_size="20" text_col="green" key="text.remain.unlock" width="20" align="right"></text>
         </img>
       </img>
-      <img posx="57" posy="63" file="bg_heroes.png">
+      <img posx="57" posy="63" file="bg_heroes.png" format="argb8888">
         <!--영웅리스트-->
         <list posx="4" posy="8" height="281" type="thumb" dir="vert" key="list.hero" width="75" />
       </img>

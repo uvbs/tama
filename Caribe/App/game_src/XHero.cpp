@@ -69,7 +69,7 @@ XHero* XHero::sCreateDeSerialize( XArchive& ar, XSPAcc spAcc )
 }
 
 #if defined(_XSINGLE) || !defined(_CLIENT)
-XHero* XHero::sCreateHero( XPropHero::xPROP *pProp, 
+XHero* XHero::sCreateHero( const XPropHero::xPROP *pProp, 
 						int levelSquad, 
 						XGAME::xtUnit unit )
 {
@@ -129,7 +129,7 @@ void XHero::InitAryAbil()
 	}
 }
 
-const XPropHero::xPROP* XHero::GetpProp() const
+XPropHero::xPROP* const XHero::GetpProp() const
 {
 // 	if( m_keyPropHero != PROP_HERO->GetidKey() ) {
 // 		_m_pProp = PROP_HERO->GetpProp( m_idProp );

@@ -1,7 +1,8 @@
-﻿xFL_AI
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "XMsgUnit.h"
 #include "XBaseUnit.h"
+#include "XBaseUnitH.h"
+
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -18,10 +19,10 @@ XE_NAMESPACE_START( xnUnit )
 //
 void XMsgQ::Process()
 {
-	while( !m_qMsg1->empty() ) {
-		auto& spMsg = m_qMsg1->GetFirst();
+	while( !m_qMsg1.empty() ) {
+		auto& spMsg = m_qMsg1.GetFirst();
 		spMsg->Process();
-		m_qMsg1->pop_front();
+		m_qMsg1.pop_front();
 	}
 }
 
@@ -33,7 +34,7 @@ void XMsgDmg::Process()
 	if( m_spTarget->IsDead() || m_spTarget->IsDestroy() )
 		return;
 	XSPUnit spUnitAtker;
-	if( m_spAtkObj->GetType() == xOT_UNIT ) {
+	if( m_spAtkObj && m_spAtkObj->GetType() == xOT_UNIT ) {
 		spUnitAtker = std::static_pointer_cast<XBaseUnit>( m_spAtkObj );
 	}
 	const bool bCritical = ( m_bitAttrHit & xBHT_CRITICAL ) != 0;
@@ -45,7 +46,7 @@ void XMsgDmg::Process()
 		spUnitAtker->OnAttackToDefender( spUnitAtker.get(), std::abs(m_Dmg), bCritical, m_ratioPenet, m_typeDmg );
 	}
 
-	m_spTarget->DoDamage( pAtkObj
+	m_spTarget->DoDamage( m_spAtkObj
 											, m_Dmg
 											, m_ratioPenet
 											, m_typeDmg
@@ -55,6 +56,7 @@ void XMsgDmg::Process()
 
 //////////////////////////////////////////////////////////////////////////
 XMsgDmgFeedback::XMsgDmgFeedback( const xDmg& dmgInfo )
+	: XMsgBase( xUM_DMG_FEEDBACK )
 {
 	m_dmgInfo = dmgInfo;
 }
@@ -70,6 +72,7 @@ void XMsgDmgFeedback::Process()
 
 //////////////////////////////////////////////////////////////////////////
 XMsgKillTarget::XMsgKillTarget( const xDmg& dmgInfo )
+	: XMsgBase( xUM_KILL_TARGET )
 {
 	m_dmgInfo = dmgInfo;
 }

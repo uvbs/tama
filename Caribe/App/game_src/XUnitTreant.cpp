@@ -101,8 +101,8 @@ void XUnitTreant::ShootRangeAttack( UnitPtr& spTarget,
 
 // 2/3/4/5/6
 void XUnitTreant::OnArriveBullet( XObjBullet *pBullet,
-								const UnitPtr& spAttacker,
-								const UnitPtr& spTarget,
+								UnitPtr spAttacker,
+								UnitPtr spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,

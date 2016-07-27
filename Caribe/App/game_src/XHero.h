@@ -31,9 +31,7 @@ public:
 	static XHero* sCreateDeSerialize( XArchive& ar, XSPAcc spAcc );
 	static int sGetMaxExpWithLevel( XGAME::xtTrain type, int level );
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	static XHero* sCreateHero( XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit );
-//	static XHero* sCreateHero( XPropHero::xPROP *pProp, XGAME::xtUnit unit, int numUnit );
-//	static XHero* sCreateHero( ID idProp, XGAME::xtUnit unit, int numUnit );
+	static XHero* sCreateHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 	struct xItem {
 	private:
@@ -119,19 +117,19 @@ public:
 	ID getid() const {
 		return m_snHero;
 	}
-  const XPropHero::xPROP* GetpProp() const;
+  XPropHero::xPROP* const GetpProp() const;
   void SetpProp( XPropHero::xPROP* pProp, ID idKey );
   void SetpProp( ID idProp );
-  GET_ACCESSOR( ID, idProp );
+  GET_ACCESSOR_CONST( ID, idProp );
   GET_SET_ACCESSOR( XGAME::xtGrade, Grade );
 	/// 영웅등급
-	const _tstring& GetstrIdentifer() {
+	const _tstring& GetstrIdentifer() const {
 		return GetpProp()->strIdentifier;
 	}
-	const _tstring& GetstrName() {
+	const _tstring& GetstrName() const {
 		return TEXT_TBL->GetstrText( GetpProp()->idName );
 	}
-	XGAME::xtSize GetSizeUnit() {
+	XGAME::xtSize GetSizeUnit() const {
 		return XGAME::GetSizeUnit( m_Unit );
 	}
 #ifdef _CLIENT

@@ -11,7 +11,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-int XECompBit::Serialize( XArchive& ar ) 
+int XECompBit::Serialize( XArchive& ar ) const 
 {
 	ar << (DWORD)m_Bit;
 	return 1;

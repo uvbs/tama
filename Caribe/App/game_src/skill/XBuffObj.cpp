@@ -13,7 +13,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 #ifdef _XMEM_POOL
-template<> XPool<XSKILL::XBuffObj>* XMemPool<XSKILL::XBuffObj>::s_pPool = NULL;
+template<> XPool<XSKILL::XBuffObj>* XMemPool<XSKILL::XBuffObj>::s_pPool = nullptr;
 #endif // _XMEM_POOL
 
 XE_NAMESPACE_START( XSKILL )
@@ -21,7 +21,7 @@ XE_NAMESPACE_START( XSKILL )
 XBuffObj::XBuffObj( XDelegateSkill *pDelegate ) 
 {
 	Init();
-	XBREAK( pDelegate == NULL );
+	XBREAK( pDelegate == nullptr );
 	m_pDelegate = pDelegate;
 }
 XBuffObj::XBuffObj( XDelegateSkill *pDelegate,
@@ -34,7 +34,7 @@ XBuffObj::XBuffObj( XDelegateSkill *pDelegate,
 	: m_idCallerSkill( idCallerSkill )
 {
 	Init();
-	XBREAK( pDelegate == NULL );
+	XBREAK( pDelegate == nullptr );
 	m_pDelegate = pDelegate;
 	m_pCaster = pCaster;
 	//m_idCaster = pCaster->get
@@ -67,7 +67,7 @@ EFFECT_OBJ* XBuffObj::FindEffect( EFFECT *pEffect )
 			return pEffObj;
 	}
 	END_LOOP;
-	return NULL;
+	return nullptr;
 }
 
 // 이펙트오브젝트를 추가한다
@@ -91,7 +91,7 @@ void XBuffObj::OnSkillEventKillEnemy( XSkillReceiver *pOwner, ID idDead )
 		EFFECT *pEffect = &pEffObj->m_effect;
 		// 이 버프의 효과가 죽이면 발동하는 효과인가?
 		if( pEffect->invokeJuncture == xJC_KILL_ENEMY )		{
-			ApplyInvokeEffect( pEffect, m_Level, pOwner, NULL, TRUE);
+			ApplyInvokeEffect( pEffect, m_Level, pOwner, nullptr, TRUE);
 		}
 	} END_LOOP;
 }
@@ -116,15 +116,15 @@ void XBuffObj::OnHitFromAttacker( const XSkillReceiver *pAttacker,
 		// 근접타격이 들어왔을때 발동조건이 근접피격시 이거나 모든피격시라면 적용
 		if( typeDamage == xDMG_MELEE && 
 			(pEffect->invokeJuncture == xJC_CLOSE_HIT || pEffect->invokeJuncture == xJC_ALL_HIT) )		{
-			ApplyInvokeEffect( pEffect, m_Level, pDefender, NULL, TRUE );
+			ApplyInvokeEffect( pEffect, m_Level, pDefender, nullptr, TRUE );
 		} else
 		if( typeDamage == xDMG_RANGE && pEffect->invokeJuncture == xJC_RANGE_HIT )		{
-			ApplyInvokeEffect( pEffect, m_Level, pDefender, NULL, TRUE );
+			ApplyInvokeEffect( pEffect, m_Level, pDefender, nullptr, TRUE );
 		} else
 		// 데미지타입이 무속성일때 발동조건이 모든피격시면 적용
 		if( typeDamage == 0 && 
 			(pEffect->invokeJuncture == xJC_ALL_HIT) )		{
-			ApplyInvokeEffect( pEffect, m_Level, pDefender, NULL, TRUE );
+			ApplyInvokeEffect( pEffect, m_Level, pDefender, nullptr, TRUE );
 		}
 
 	} END_LOOP;
@@ -152,19 +152,19 @@ void XBuffObj::OnAttackToDefender( XSkillReceiver *pDefender,
 			(pEffect->invokeJuncture == xJC_CLOSE_ATTACK ||
 			 pEffect->invokeJuncture == xJC_ATTACK) )		{
 			// 이때 pCastingTarget은 피격자가 된다.
-			ApplyInvokeEffect( pEffect, m_Level, pDefender, NULL, TRUE );
+			ApplyInvokeEffect( pEffect, m_Level, pDefender, nullptr, TRUE );
 		} else
 		if( typeDamage == xDMG_RANGE &&
 			( pEffect->invokeJuncture == xJC_RANGE_ATTACK_ARRIVE ||
  			  pEffect->invokeJuncture == xJC_ATTACK ) )		{
 			// 이때 pCastingTarget은 피격자가 된다.
-			ApplyInvokeEffect( pEffect, m_Level, pDefender, NULL, TRUE );
+			ApplyInvokeEffect( pEffect, m_Level, pDefender, nullptr, TRUE );
 		} else
 		// 공격타입이 무속성일땐 모든공격시일때만 발동
 		if( typeDamage == 0 && 
 			pEffect->invokeJuncture == xJC_ATTACK )		{
 			// 이때 pCastingTarget은 피격자가 된다.
-			ApplyInvokeEffect( pEffect, m_Level, pDefender, NULL, TRUE );
+			ApplyInvokeEffect( pEffect, m_Level, pDefender, nullptr, TRUE );
 		}
 	} END_LOOP;
 }
@@ -179,16 +179,21 @@ void XBuffObj::OnEventJunctureCommon( ID idEvent, DWORD dwParam, const XSkillRec
 		if( pEffect->invokeJuncture == idEvent ) {
 			bool bApply = true;
 			if( idEvent == xJC_HP_UNDER && m_pOwner->IsLive() ) {
-				if( dwParam > pEffect->dwParam[0] ) {
-					bApply = false;
-				} else {
-					XTRACE("temp");
+				bApply = false;
+				if( dwParam <= pEffect->dwParam[0] ) {
+					if( m_numApply == 0 )
+						bApply = true;			// 최초한번만 적용.
 				}
+// 				if( dwParam > pEffect->dwParam[0] ) {
+// 					bApply = false;
+// 				} else {
+// 					XTRACE("temp");
+// 				}
 			} else
 			if( idEvent == xJC_DEAD )
 				m_pOwner->SetpAttacker( const_cast<XSkillReceiver*>( pRecvParam ) );
 			if( bApply )
-				ApplyInvokeEffect( pEffect, m_Level, m_pOwner, NULL, TRUE );
+				ApplyInvokeEffect( pEffect, m_Level, m_pOwner, nullptr, TRUE );
 		}
 	} END_LOOP;
 }
@@ -255,7 +260,7 @@ void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 								XSkillReceiver *pCastingTarget, 
 								const char *cScript, 
 								BOOL bCreateSfx,
-								XArrayLinearN<XSkillReceiver*, 512> *pOutAryIvkTarget,
+								XVector<XSkillReceiver*> *pOutAryIvkTarget,
 								BOOL bGetListMode )
 {
 	bool bProb = true;
@@ -264,7 +269,7 @@ void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 	if( bProb ) {
 		if( !pEffect->m_invokerEff.m_strSpr.empty() ) {
 			const float secPlay = 0.f;		// 1play. 발동자이펙트는 반복플레이가 없음.
-			m_pCaster->CreateSfx( m_pDat, pEffect,
+			m_pCaster->CreateSfx( m_pDat, /*pEffect,*/
 																pEffect->m_invokerEff.m_strSpr,
 																pEffect->m_invokerEff.m_idAct,
 																pEffect->m_invokerEff.m_Point,
@@ -272,7 +277,7 @@ void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 		}
 		const auto invokeTarget = pEffect->invokeTarget;
 		// 발동대상들을 뽑음.
-		XArrayLinearN<XSkillReceiver*, 512> ary;
+		XVector<XSkillReceiver*> ary;
 		int num = GetpCaster()->GetInvokeTarget( 
 											&ary, GetpDat(), level,
 											invokeTarget, pEffect, 
@@ -281,7 +286,7 @@ void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 		if( ary.size() > 0 ) {
 			if( bGetListMode ) {
 				// 리스트를 받기만 하는 모드.
-				XBREAK( pOutAryIvkTarget == NULL );
+				XBREAK( pOutAryIvkTarget == nullptr );
 				if( pOutAryIvkTarget )
 					*pOutAryIvkTarget = ary;
 				// 리스트모드로 호출됐으면 리스트만 받고 리턴
@@ -297,6 +302,7 @@ void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 																						, XE::VEC2(0)
 																						, this
 																						, nullptr );
+			++m_numApply;
 			// 발동대상들에게 실제 스킬효과를 적용 & 이벤트 스크립트 실행(루프안에서 pInvokeTarget->ApplyInvokeEffect()로 변경)
 		} // ary.size > 0 
 	}
@@ -307,7 +313,7 @@ void XBuffObj::CreateInvokeSfx( EFFECT *pEffect, XSkillReceiver *pInvokeTarget )
 {
 	float secPlay = 0;
 	pInvokeTarget->CreateSfx( m_pDat, 
-							pEffect,
+//							pEffect,
 							pEffect->m_invokeTargetEff.m_strSpr,
 							pEffect->m_invokeTargetEff.m_idAct,
 							pEffect->m_invokeTargetEff.m_Point, 
@@ -392,7 +398,7 @@ void XBuffObj::OnCastedEffect( XSkillReceiver *pOwner, EFFECT_OBJ *pEffObj )
 XLuaSkill* XBuffObj::CreateScript( void )
 {
 	XLuaSkill *pLua = GetpluaScript();
-	if( pLua == NULL ) {
+	if( pLua == nullptr ) {
 //		pLua = GetpCastingTarget()->CreateScript();		// virtual
 		pLua = GetpCaster()->CreateScript();		// virtual
 		pLua->RegisterScript( GetpCaster(), GetpOwner() );
@@ -453,7 +459,7 @@ int XBuffObj::Process( XSkillReceiver *pOwner )
 			// 발동시점이 "마지막" 이면 효과가 해제되는 시점에 발동된다.
 			if( pOwner->IsLive() ) {
 				if( pEffect->invokeJuncture == xJC_LAST )
-					ApplyInvokeEffect( pEffect, m_Level, pOwner, NULL, TRUE );
+					ApplyInvokeEffect( pEffect, m_Level, pOwner, nullptr, TRUE );
 			}
 			// 버프가 끝날때 하는일을 요청한다
 			pEffObj->Active = 0;		// 효과정지
@@ -526,7 +532,7 @@ void XBuffObj::AddAbilMin( float val )
 
 ID XBuffObj::GetidSkill() 
 {
-	XBREAK( m_pDat == NULL );
+	XBREAK( m_pDat == nullptr );
 	return m_pDat->GetidSkill();
 }
 

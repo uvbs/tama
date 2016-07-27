@@ -83,18 +83,18 @@ public:
 	 @brief this와 비교해서 bitDst는 우호적인 편인가
 	 공유되는 비트가 있으면 같은편으로 본다.
 	*/
-	bool IsFriendly( BIT bitDst ) {
+	bool IsFriendly( BIT bitDst ) const {
 		XBREAK( m_bitCamp == 0 );	// 초기화값이 있으면 안된다.
 		return ( m_bitCamp & bitDst ) != 0;
 	}
 	/**
 	 @brief this가 bitDst와 같은 진영인가
 	*/
-	bool IsSameSide( BIT bitDst ) {
+	bool IsSameSide( BIT bitDst ) const {
 		XBREAK( m_bitCamp == 0 );	// 초기화값이 있으면 안된다.
 		return ( m_bitCamp == bitDst );
 	}
-	bool IsSameSide( XECompCamp& camp ) {
+	bool IsSameSide( XECompCamp& camp ) const {
 		XBREAK( m_bitCamp == 0 );	// 초기화값이 있으면 안된다.
 		return ( m_bitCamp == camp.GetbitCamp() );
 	}
@@ -102,7 +102,7 @@ public:
 	 @brief this가 bitDst와 다른진영인가
 	 적인가 아군인가를 구분하는게 아님을 주의.
 	*/
-	bool IsDifferentSide( DWORD bitDst ) {
+	bool IsDifferentSide( DWORD bitDst ) const {
 		XBREAK( m_bitCamp == 0 );	// 초기화값이 있으면 안된다.
 		return ( m_bitCamp != bitDst );
 	}
@@ -122,14 +122,14 @@ public:
 	XECompBit() { Init(); }
 	virtual ~XECompBit() { Destroy(); }
 	// 해당비트(bit)가 1인지
-	inline bool IsBit( BIT bit ) {
+	inline bool IsBit( BIT bit ) const {
 		return (m_Bit & bit) != 0;
 	}
 	// 해당비트(bit)가 1이 아닌지
-	inline bool IsNotBit( BIT bit ) {
+	inline bool IsNotBit( BIT bit ) const {
 		return !IsBit( bit );
 	}
-	inline bool GetBit( BIT bit ) {
+	inline bool GetBit( BIT bit ) const {
 		return IsBit( bit );
 	}
 	// 해당비트(bit)를 1로 만든다.
@@ -146,10 +146,10 @@ public:
 	inline void Set( BIT bits ) {
 		m_Bit = bits;
 	}
-	inline BIT Get() {
+	inline BIT Get() const {
 		return m_Bit;
 	}
-	int Serialize( XArchive& ar );
+	int Serialize( XArchive& ar ) const ;
 	int DeSerialize( XArchive& ar, int ver = 0 );
 }; // class XECompBit
 

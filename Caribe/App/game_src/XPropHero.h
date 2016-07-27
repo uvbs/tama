@@ -151,13 +151,13 @@ public:
 //	void GetNextClear( void ) { m_itorID = m_mapID.begin(); }		// 반복자 초기화
 	BOOL ReadProp( CToken& token, DWORD dwParam ) override;					// txt 파싱
 	
-	const xPROP* GetpProp( LPCTSTR szIdentifier ) const;
+	xPROP* const GetpProp( LPCTSTR szIdentifier ) const;
 	// strIdentifier는 모두 소문자여야 함.
-	const xPROP* GetpProp( const _tstring& strIdentifier ) const { 
+	xPROP* const GetpProp( const _tstring& strIdentifier ) const { 
 		XBREAK( strIdentifier.empty() == TRUE ); 
 		return GetpProp( strIdentifier.c_str() ); 
 	}
-	const xPROP* GetpProp( ID idProp ) const;
+	xPROP* const GetpProp( ID idProp ) const;
 	
 	void Add( const _tstring& strIdentifier, xPROP *pProp );
 	void Add( xPROP *pProp );

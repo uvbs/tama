@@ -183,8 +183,8 @@ public:
 	virtual ~XDelegateObjBullet() { Destroy(); }
 	//
 	virtual void OnArriveBullet( XObjBullet *pBullet,
-								const UnitPtr& spAttacker,
-								const UnitPtr& spTarget,
+								UnitPtr spAttacker,
+								UnitPtr spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,

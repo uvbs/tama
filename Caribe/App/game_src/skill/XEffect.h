@@ -18,20 +18,11 @@ struct EFFECT	{
 	xtTargetCond		castTargetCond;		// 시전조건
 	xtFriendshipFilt	castfiltFriendship;		// 시전대상우호-모두,아군,적군,중립군
 	xtPlayerTypeFilt	castfiltPlayerType;	// 시전대상플레이어-인간/AI
-	xEffSfx m_CasterEff;							// 시전자 이펙트
-// 	_tstring			m_CasterEff.m_strSpr;		// 시전자이펙트
-// 	ID					m_CasterEff.m_idAct;			// 시전자이펙트id
-// 	xtPoint				m_CasterEff.m_Point;		// 시전자이펙트생성지점
+//	xEffSfx m_CasterEff;							// 시전자 이펙트
 	xEffSfx m_CastTargetEff;						// 시전대상이펙트, 시전대상에 하나씩 이펙트가 생긴다.
-// 	_tstring			m_CastTargetEff.m_strSpr;			// 시전대상이펙트, 시전대상에 하나씩 이펙트가 생긴다.
-// 	ID					m_CastTargetEff.m_idAct;			// 시전대상이펙트id(spr로 쓸땐 액션번호로, 이펙트자체를 아이디타입으로 쓸땐 이펙트id로)
-// 	xtPoint				m_CastTargetEff.m_Point;		// 시전대상이펙트생성지점
 	XE::VEC2			castSize;				// 시전범위(반지름)/시전길이/시전폭
 	XArrayLinearN<float, XGAME::MAX_SKILL_LEVEL> arySecDuration;	// (시전)지속시간
 	xEffSfx m_PersistEff;					// 지속이펙트
-// 	_tstring			m_PersistEff.m_strSpr;		// 지속이펙트
-// 	ID					m_PersistEff.m_idAct;			// 지속이펙트id
-// 	xtPoint				m_PersistEff.m_Point;		// 지속이펙트생성지점
 	ID					idCastSound;			// 시전사운드
 	// 발동
 	xtInvokeTarget		invokeTarget;		// 발동대상-시전대상과 같음. 발동대상이 광역인데 지속시간까지 있는경우는 "발동스킬"을 써서 스킬하나를 더 만들것
@@ -62,9 +53,6 @@ struct EFFECT	{
 	int					invokeNumApply;		// 적용대상수, 시전/발동효과가 적용될 개체수(0은 제한없음)
 	xEffSfx m_invokerEff;					// 발동자이펙트
 	xEffSfx m_invokeTargetEff;		// 발동대상이펙트
-// 	_tstring			m_invokeTargetEff.m_strSpr;	// 발동이펙트
-// 	ID					m_invokeTargetEff.m_idAct;		// 발동이펙트id
-// 	xtPoint				m_invokeTargetEff.m_Point;		// 발동이펙트생성지점
 	ID					idInvokeSound;			// 발동사운드
 	//
 	BOOL				bDuplicate;			// 중복가능, 같은 버프/디버프가 두개이상 걸릴수 있는가. 물론 자기가 두개거는건 무조건 안되고 여러사람이 한타겟에 같은 스킬을 쓸때의 가능여부다
@@ -97,14 +85,6 @@ struct EFFECT	{
 		castTargetCond = xTC_NONE;
 		castfiltFriendship = xfALL_FRIENDSHIP;
 		castfiltPlayerType = xfALL_PLAYER_TYPE;
-// 		m_CasterEff.m_idAct = 0;
-// 		m_CastTargetEff.m_idAct = 0;
-// 		m_CasterEff.m_Point = xPT_TARGET_POS;
-//			casterEffectPlayMode = xAL_NONE;
-//			castTargetEffectPlayMode = xAL_NONE;
-// 		m_CastTargetEff.m_Point = xPT_TARGET_POS;
-// 		m_PersistEff.m_idAct = 0;
-// 		m_PersistEff.m_Point = xPT_TARGET_POS;
 		idCastSound = 0;
 		invokeTarget = xIVT_CAST_TARGET;
 		invokefiltFriendship = xfNONESHIP;	// 따로지정하지 않으면 시전대상우호값으로 사툥하도록 바뀜
@@ -117,8 +97,6 @@ struct EFFECT	{
 		invokeState = 0;
 		secInvokeDOT = 0;
 		invokeNumApply = 0;
-// 		m_invokeTargetEff.m_idAct = 0;
-// 		m_invokeTargetEff.m_Point = xPT_NONE;
 		idInvokeSound = 0;
 		bDuplicate = FALSE;
 		numOverlap = 1;		// 기본적으로 1개는 걸린다

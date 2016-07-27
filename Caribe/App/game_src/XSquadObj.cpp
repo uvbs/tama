@@ -959,7 +959,7 @@ void XSquadObj::OnDieMember( XBaseUnit *pUnit )
 /**
  @brief 분대내 살아있는 유닛의 리스트를 ary에 담아준다.
 */
-int XSquadObj::GetListMember( XArrayLinearN<XSKILL::XSkillReceiver*, 512> *pAry )
+int XSquadObj::GetListMember( XVector<XSKILL::XSkillReceiver*> *pAry )
 {
 	LIVE_UNIT_LOOP( spUnit )	{
 		pAry->Add( spUnit.get() );
@@ -967,7 +967,7 @@ int XSquadObj::GetListMember( XArrayLinearN<XSKILL::XSkillReceiver*, 512> *pAry 
 	return pAry->size();
 }
 
-int XSquadObj::GetListMember( XArrayLinearN<XBaseUnit*, 512> *pAry )
+int XSquadObj::GetListMember( XVector<XBaseUnit*> *pAry )
 {
 	LIVE_UNIT_LOOP( spUnit )	{
 		pAry->Add( spUnit.get() );

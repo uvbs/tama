@@ -25,11 +25,11 @@ void XStatistic::Destroy()
 	XLIST4_DESTROY( m_listSquads );
 }
 
-void XStatistic::AddSquad( XHero *pHero )
+void XStatistic::AddSquad( const XHero *pHero )
 {
 	XBREAK( pHero == nullptr );
 	xSquad *pSquad = new xSquad;
-	pSquad->pHero = pHero;
+	pSquad->pHero = const_cast<XHero*>( pHero );
 	m_listSquads.Add( pSquad );
 	XBREAK( m_listSquads.size() > 15 );
 }

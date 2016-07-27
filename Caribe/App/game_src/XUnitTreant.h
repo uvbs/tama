@@ -34,8 +34,8 @@ public:
 							const std::string& strType,
 							const _tstring& strSpr ) override;
 	void OnArriveBullet( XObjBullet *pBullet,
-								const UnitPtr& spAttacker,
-								const UnitPtr& spTarget,
+								UnitPtr spAttacker,
+								UnitPtr spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,

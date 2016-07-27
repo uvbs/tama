@@ -66,6 +66,9 @@ using namespace xCampaign;
 #ifdef _CHEAT
 BOOL XSockGameSvr::SendCheat( XWnd *pTimeoutCallback, int type, DWORD param1, DWORD param2, DWORD param3, DWORD param4, const _tstring& strParam )
 {
+#ifdef _XSINGLE
+	return TRUE;
+#endif // _XSINGLE
 	_XCHECK_CONNECT(0);
 	//
 	XPacket ar( (ID)xCL2GS_CHEAT);

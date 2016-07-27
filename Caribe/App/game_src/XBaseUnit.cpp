@@ -1,5 +1,4 @@
-﻿xFL_AI
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "XBaseUnit.h"
 #include "XWndBattleField.h"
 #include "XPropUnit.h"
@@ -27,6 +26,8 @@
 #include "XGlobalConst.h"
 #include "XSystem.h"
 #include "XMsgUnit.h"
+#include "XFramework/XFType.h"
+
 
 using namespace XSKILL;
 using namespace XGAME;
@@ -46,7 +47,7 @@ bool XBaseUnit::s_bNotUseActiveByEnemy = false;		// 적영웅 스킬사용금지
 XE_NAMESPACE_START( xnUnit )
 //
 
-xDmg::xDmg( XSPWorldObjConst spAtkObj
+xDmg::xDmg( XSPWorldObj spAtkObj
 					, XSPUnit spTarget
 					, float damage
 					, float ratioPenet
@@ -505,7 +506,11 @@ void XBaseUnit::FrameMoveLive( float dt )
 	// hp가 일정 이하가 되면 작동하는 이벤트를 실행함.
 	{
 		int ratio100 = (int)( ( (float)GetHp() / GetMaxHp() ) * 100.f );
-		OnEventJunctureCommon( xJC_HP_UNDER, ratio100 );
+		if( ratio100 < 100 ) {
+//			if( ratio100 <= 기준값 )
+				OnEventJunctureCommon( xJC_HP_UNDER, ratio100 );
+//			기준값 = ratio100 + 1;
+		}
 	}
 	// 미노타우르스 하드코딩
 	if( GetUnitType() == XGAME::xUNIT_MINOTAUR ) {
@@ -996,8 +1001,8 @@ void XBaseUnit::cbOnArriveBullet( XObjArrow *pArrow, float damage )
 }
 
 void XBaseUnit::OnArriveBullet( XObjBullet *pBullet,
-								const UnitPtr& spAttacker,
-								const UnitPtr& spTarget,
+								UnitPtr spAttacker,
+								UnitPtr spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,
@@ -1131,7 +1136,7 @@ XObjArrow* XBaseUnit::ShootArrow( UnitPtr& spTarget,
  @param ratioPenetration 관통율. 기본 0%이며 100%면 상대 방어력을 완전히 무시한다. -1이면 파라메터 값을 무시하고 pAttacker로부터 얻는다.
  @param typeDamage 데미지타입(근접/원거리/마법). 0은 속성없음
 */
-void XBaseUnit::DoDamage( const XEBaseWorldObj* pAttacker,
+void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 													float damage,
 													float ratioPenetration,
 													XSKILL::xtDamage typeDamage,
@@ -1143,15 +1148,17 @@ void XBaseUnit::DoDamage( const XEBaseWorldObj* pAttacker,
 	const bool bMiss = (bitAttrHit & xBHT_HIT) == 0;
 	const bool bPoison = (bitAttrHit & xBHT_POISON) != 0;
 	const auto damageOrig = damage;
-	const XBaseUnit* pUnitAttacker = ( pAttacker && pAttacker->GetType() == xOT_UNIT )
-																			? SafeCast<const XBaseUnit*>( pAttacker ) 
-																			: nullptr;
-	const auto spUnitAtker = (pUnitAttacker)
-														? std::static_pointer_cast<const XBaseUnit>( pUnitAttacker->shared_from_this() )
+//	XSPWorldObj spAtkObj =  pAtkObj->GetThisConst();
+// 	XBaseUnit* pUnitAttacker = ( pAtkObj && pAtkObj->GetType() == xOT_UNIT )
+// 																			? SafeCast<const XBaseUnit*>( pAtkObj ) 
+// 																			: nullptr;
+	XSPUnit spUnitAtker = (spAtkObj)
+														? std::static_pointer_cast<XBaseUnit>( spAtkObj )
 														: nullptr;
 	// pUnitAtker는 const로 하고 공격자의 메시지큐객체만 mutable로 해서 메시지를 푸쉬할수 있게 한다.
 //	auto spMsgQAtker = std::static_pointer_cast<XMsgQ>( pUnitAttacker->GetspMsgQ() );
-	auto spMsgQAtker = pUnitAttacker->GetspMsgQ();
+	auto pUnitAttacker = spUnitAtker.get();
+//	auto spMsgQAtker = pUnitAttacker->GetspMsgQ();
 	if( IsDead() ) {
 		// 피격자가 죽었을때라도 스킬타입은 데미지를 표시함.
 		// 스킬(특성)타입 데미지일때 예외처리
@@ -1308,7 +1315,8 @@ void XBaseUnit::DoDamage( const XEBaseWorldObj* pAttacker,
 //			}
 		}
 #endif
-		xnUnit::xDmg dmg( spUnitAtker, GetThisUnit(), damage, ratioPenetration, typeDamage, bitAttrHit, attrDamage, bCritical );
+		xnUnit::xDmg dmg( spAtkObj
+										, GetThisUnit(), damage, ratioPenetration, typeDamage, bitAttrHit, attrDamage, bCritical );
 //		OnDamage( pUnitAttacker, damage, bCritical, typeDamage, bitAttrHit );
 		OnDamage( dmg );
 	}
@@ -1383,12 +1391,13 @@ void XBaseUnit::CreateDamageNumber( float damage, BIT bitAttrHit )
 	AddObj( pDmg );
 }
 
-void XBaseUnit::DoDie( XSPUnitConst spAtker )
+void XBaseUnit::DoDie( XSPUnit spAtker )
 {
 	m_HP = 0;
 	XTRACE( "Die:%d ", GetsnObj() );
 	// 아직은 DoDie시 다른 데미지 파라메터가 필요없어서 초기값으로 지정함.
-	xnUnit::xDmg dmg( spAtker, GetThisUnit(), 0.f, 0.f, xDMG_NONE, 0, xDA_NONE, false );
+	xnUnit::xDmg dmg( spAtker
+									, GetThisUnit(), 0.f, 0.f, xDMG_NONE, 0, xDA_NONE, false );
 	if( OnDie( dmg ) ) {
 		m_timerDead.Set( 10.f );
 		//
@@ -1435,10 +1444,10 @@ void XBaseUnit::OnDamage( const xnUnit::xDmg& dmgInfo )
 			if( scale > scaleMax )
 				scale = scaleMax;
 			SetScaleObj( GetScaleUnitOrg() * scale );
-			XBREAK( pBuff->GetEffectIndex(0)->invokeParameter != XGAME::xADJ_ATTACK );
-			float maxAdj = pBuff->GetAbilMinbyLevel();
-			float currAdj = scale / scaleMax;
-			AddAdjParam( pBuff->GetEffectIndex(0)->invokeParameter, xPERCENT, currAdj );
+//			XBREAK( pBuff->GetEffectIndex(0)->invokeParameter != XGAME::xADJ_ATTACK );
+// 			float maxAdj = pBuff->GetAbilMinbyLevel();
+// 			float currAdj = scale / scaleMax;
+// 			AddAdjParam( pBuff->GetEffectIndex(0)->invokeParameter, xPERCENT, currAdj );
 		}
 	}
 	{
@@ -1460,7 +1469,7 @@ void XBaseUnit::OnDamage( const xnUnit::xDmg& dmgInfo )
 void XBaseUnit::OnDamagedToTarget( const xDmg& dmg )
 {
 	// this는 공격자여야 한다.
-	XBREAK( GetsnObj() == dmg.m_spAtkObj->GetsnObj() );
+	XASSERT( GetsnObj() == dmg.m_spAtkObj->GetsnObj() );
 	// this(공격자)가 흡혈속성이 있었으면 그만큼 힐을 한다.
 	const float ratioVampiric = GetVampiricRatio();
 	if( ratioVampiric > 0 ) {
@@ -1470,7 +1479,7 @@ void XBaseUnit::OnDamagedToTarget( const xDmg& dmg )
 	}
 }
 
-bool XBaseUnit::OnDie( const xDmg& dmg /*const XBaseUnit *pAttacker*/ )
+bool XBaseUnit::OnDie( const xDmg& dmg )
 {
 	if( dmg.m_spUnitAtker )	{
 		// 타겟(this)을 "사살"했음을 메시지로 날림
@@ -1480,8 +1489,7 @@ bool XBaseUnit::OnDie( const xDmg& dmg /*const XBaseUnit *pAttacker*/ )
 		OnEventJunctureCommon( xJC_DEAD, 0, dmg.GetpUnit() );
 	}
 	// 불사의 피
-	if( GetUnitType() == xUNIT_LYCAN )
-	{
+	if( GetUnitType() == xUNIT_LYCAN )	{
 		auto pBuff = FindBuffSkill(_T("immortal_blood"));
 		if( pBuff )
 		{
@@ -1989,7 +1997,7 @@ int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
  @param numApply 최대 선택해야할 오브젝트수. 0이면 제한이 없다.
  @param bIncludeCenter 기준타겟을 포함하여 선택할것인지 아닌지.
 */
-int XBaseUnit::GetListObjsRadius( XArrayLinearN<XSkillReceiver*, 512> *plistOutInvokeTarget,
+int XBaseUnit::GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget,
 								const XSKILL::EFFECT *pEffect,
 								XSKILL::XSkillReceiver *pBaseTarget,
 								const XE::VEC2& vBasePos,
@@ -2044,7 +2052,7 @@ int XBaseUnit::GetListObjsRadius( XArrayLinearN<XSkillReceiver*, 512> *plistOutI
  @param pvPos null이 아니면 이 좌표에 생성시켜야 한다.
 */
 void XBaseUnit::OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
-								const EFFECT *pEffect,
+// 								const EFFECT *pEffect,
 								XSKILL::xtPoint createPoint,
 								LPCTSTR szSpr,
 								ID idAct,
@@ -2074,12 +2082,12 @@ XSKILL::XSkillSfx* XBaseUnit::OnCreateSkillSfxShootTarget(
  @param bScale this객체의 크기에 비례해서 sfx의 크기도 변해야 한다면 TRUE
 */
 XObjLoop* XBaseUnit::CreateSfxObj( XSKILL::xtPoint createPoint,
-								LPCTSTR szSpr,
-								ID idAct,
-								float secPlay,
-								BOOL bScale /*= FALSE*/,
-								float wAdjZ/* = 0.f*/,
-								const XE::VEC2& vPos/* = XE::VEC2(0)*/ )
+																		LPCTSTR szSpr,
+																		ID idAct,
+																		float secPlay,
+																		BOOL bScale /*= FALSE*/,
+																		float wAdjZ/* = 0.f*/,
+																		const XE::VEC2& vPos/* = XE::VEC2(0)*/ )
 {
 	XObjLoop *pSfx = NULL;
 	if( vPos.IsZero() == FALSE ) {
@@ -2230,7 +2238,7 @@ void XBaseUnit::OnDestroySFX( XBuffObj *pSkillRecvObj, ID idSFX )
 {
 }
 
-int XBaseUnit::GetGroupList( XArrayLinearN<XSKILL::XSkillReceiver*, 512> *pAryOutGroupList,
+int XBaseUnit::GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList,
 							XSKILL::XSkillDat *pSkillDat,
 							const XSKILL::EFFECT *pEffect,
 							xtGroup typeGroup )
@@ -2330,7 +2338,7 @@ XSKILL::XSkillReceiver* XBaseUnit::GetSkillBaseTarget( XSkillDat *pDat )
 	}
 	return this;	// 일단 이렇게 땜빵.
 }
-BOOL XBaseUnit::IsInvokeAddTarget( ID idAddTarget )
+BOOL XBaseUnit::IsInvokeAddTarget( ID idAddTarget ) const
 {
 	return idAddTarget == m_idProp;
 }
@@ -2339,7 +2347,7 @@ BOOL XBaseUnit::IsInvokeAddTarget( ID idAddTarget )
 */
 BOOL XBaseUnit::OnApplyState( XSkillUser *pCaster,
 								XSkillReceiver* pInvoker,
-								EFFECT *pEffect,
+								const EFFECT *pEffect,
 								int idxState,
 								BOOL flagState )
 {

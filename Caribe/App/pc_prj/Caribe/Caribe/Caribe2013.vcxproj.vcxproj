@@ -583,6 +583,7 @@
     <ClInclude Include="..\..\..\game_src\XAppLayout.h" />
     <ClInclude Include="..\..\..\game_src\XBaseItem.h" />
     <ClInclude Include="..\..\..\game_src\XBaseUnit.h" />
+    <ClInclude Include="..\..\..\game_src\XBaseUnitH.h" />
     <ClInclude Include="..\..\..\game_src\XBattleField.h" />
     <ClInclude Include="..\..\..\game_src\XCampObj.h" />
     <ClInclude Include="..\..\..\game_src\XCampObjHero.h" />

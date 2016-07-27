@@ -123,8 +123,8 @@ public:
 	// virtual
 	virtual XLuaSkill* CreateScript( void ); 		// XLua 객체를 생성하고 전역변수와 API들을 등록하여 돌려준다
 //	virtual xtError IsValidCastingTarget( XSkillObj *pUseSkill, EFFECT *pEffect, XSkillReceiver *pTarget, XE::VEC2 *pvPos  );		// 시전대상 유효성 검사
-	virtual int GetCastingTargetList( XArrayLinearN<XSkillReceiver*, 512> *pAryOutCastingTarget, xtCastTarget castTarget, XSkillDat *pSkillDat, const EFFECT *pEffect, XSkillReceiver *pOutBaseTarget, XE::VEC2 *pvOutPos = nullptr );		// 시전대상얻기
-	virtual int GetInvokeTarget( XArrayLinearN<XSkillReceiver*, 512> *plistOutInvokeTarget, XSkillDat *pBuff, int level, xtInvokeTarget invokeTarget, const EFFECT *pEffect, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos );		// 스킬발동대상얻기
+	virtual int GetCastingTargetList( XVector<XSkillReceiver*> *pAryOutCastingTarget, xtCastTarget castTarget, XSkillDat *pSkillDat, const EFFECT *pEffect, XSkillReceiver *pOutBaseTarget, XE::VEC2 *pvOutPos = nullptr );		// 시전대상얻기
+	virtual int GetInvokeTarget( XVector<XSkillReceiver*> *plistOutInvokeTarget, XSkillDat *pBuff, int level, xtInvokeTarget invokeTarget, const EFFECT *pEffect, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos );		// 스킬발동대상얻기
 	virtual void OnCoolTimeOver( XSkillObj *pUseSkill ) {}	// 쿨타임시간이 끝나면 호출된다
 	// XSkillObj에 아직은 버추얼이 많지 않아서 pure로 하지 않았는데 필요해지면 pure로 다시 보내야 한다
 	virtual XSkillObj* CreateSkillUseObj( XSkillDat *pSkillDat );
@@ -137,7 +137,7 @@ public:
 	// pvPos를 중심으로 발동반경내의 friendship의 우호를 가진...// 이 조건에 맞는 오브젝트들 리스트 invokeNumApply만큼을 버추얼로 요청한다
 	// vStart를 시작으로 vSize크기의 사각영역내의 객체를 찾는다.
 	// pvStart가 널이면 상속받는 하위 클래스에서 this의 좌표를 사용해야 한다.
-	virtual int GetListObjsInRect( XArrayLinearN<XSkillReceiver*, 512> *pAryOutIvkTarget, 
+	virtual int GetListObjsInRect( XVector<XSkillReceiver*> *pAryOutIvkTarget, 
 									const XE::VEC2 *pvStart,	// vStart부터 vSize만큼의 직사각형이 되나, vStart의 y지점은 vSize.h의 중간지점이다.
 									const XE::VEC2& vSize, 
 									BIT bitSideSearchFilt, 
@@ -151,7 +151,7 @@ public:
 	 @param numApply 최대 선택해야할 오브젝트수. 0이면 제한이 없다.
 	 @param bIncludeCenter 기준타겟을 포함하여 선택할것인지 아닌지.
 	*/
-	virtual int GetListObjsRadius( XArrayLinearN<XSkillReceiver*, 512> *plistOutInvokeTarget, 
+	virtual int GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget, 
 									const EFFECT *pEffect,
 									XSkillReceiver *pBaseTarget, 
 									const XE::VEC2& vBasePos,
@@ -169,7 +169,7 @@ public:
 									const XE::VEC2& vPos ) {}
 //	virtual void OnCreateCasterSfx( EFFECT *pEffect, xtPoint createPoint, LPCTSTR szSpr, ID idAct, float secPlay ) {}
 	virtual void OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
-									const EFFECT *pEffect,
+//									const EFFECT *pEffect,
 									XSKILL::xtPoint createPoint,
 									LPCTSTR szSpr,
 									ID idAct,
@@ -179,14 +179,14 @@ public:
 	 @brief pEffect는 null이 올수 있음.
 	*/
 	void CreateSfx( XSkillDat *pSkillDat,
-					EFFECT *pEffect,
+//					EFFECT *pEffect,
 					const _tstring& strEffect,
 					ID idAct,
 					xtPoint pointSfx,
 					float secPlay,
 					const XE::VEC2& vPos = XE::VEC2(0) );
 	virtual XSkillReceiver* GetGroundReceiver( void ) { return NULL; }
-	virtual int GetListPartyMember(XArrayLinearN<XSkillReceiver*, 512> *pAryOutIvkTarget, BIT bitSideSearchFilt, xtTargetFilter filter ) {
+	virtual int GetListPartyMember(XVector<XSkillReceiver*> *pAryOutIvkTarget, BIT bitSideSearchFilt, xtTargetFilter filter ) {
 		XLOG("virtual 함수가 구현되지 않음");
 		return 0;
 	}
@@ -215,8 +215,8 @@ public:
 												XSKILL::XSkillUser *pCaster, 
 												const XE::VEC2& vPos ) = 0;		
 //	virtual XE::VEC2 GetCurrentPosForSkill( void ) = 0;
-	virtual void CustomInvokeFilter( XArrayLinearN<XSkillReceiver*, 512> *pOutAryIvkTarget,
-							XArrayLinearN<XSkillReceiver*, 512>& arySrc,
+	virtual void CustomInvokeFilter( XVector<XSkillReceiver*> *pOutAryIvkTarget,
+							XVector<XSkillReceiver*>& arySrc,
 							const EFFECT *pEffect ) {}
 	/**
 	 @brief 효과의 발동조건
@@ -231,7 +231,7 @@ public:
 	///< 하위클래스는 cond에 맞는 타겟을 찾아 돌려줘야 한다. this는 시전자가 된다.
 	virtual XSKILL::XSkillReceiver* GetTargetObject( XSKILL::EFFECT *pEffect, XSKILL::xtTargetCond cond ) = 0;
 	virtual void OnAdjustEffectAbility( XSkillDat *pSkillDat, const EFFECT *pEffect, int invokeParam, float *pOutMin ) {}
-	xtError ApplyEffect( XSkillDat *pSkillDat, int level, XSkillReceiver *pTarget, ID idCallerSkill, const XE::VEC2& vTouchPos = XE::VEC2(0) );
+	//xtError ApplyEffect( XSkillDat *pSkillDat, int level, XSkillReceiver *pTarget, ID idCallerSkill, const XE::VEC2& vTouchPos = XE::VEC2(0) );
 	virtual int GetSkillLevel( XSkillObj* pSkillObj ) { return 0; }
 	virtual XSKILL::XSkillReceiver* GetSkillBaseTarget( XSkillDat *pDat ) { return nullptr; }
 	virtual XE::VEC2 GetSkillBaseTargetPos( XSkillDat *pDat ) { return XE::VEC2(0); }
@@ -288,8 +288,7 @@ public:
 	bool IsInvokeTargetCondition( XSkillDat *pDat
 															, const EFFECT *pEffect
 															, XSkillReceiver *pInvokeTarget );
-	void ApplyInvokeEffectWithAry( 
-														XArrayLinearN<XSkillReceiver*, 512>& aryInvokers
+	void ApplyInvokeEffectWithAry( const XVector<XSkillReceiver*>& aryInvokers
 														, XSkillDat *pDat
 														, const EFFECT *pEffect
 														, XSkillReceiver *pInvoker

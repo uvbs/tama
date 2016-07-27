@@ -1364,7 +1364,7 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 	XBREAK(pLegion->GetSquadron(idxSquad) != nullptr);
 	auto pPropHero = PROP_HERO->GetpProp( idsHero );
 	XBREAK( pPropHero == nullptr );
-	XHero *pHero = XHero::sCreateHero(pPropHero, lvSquad, unit);
+	auto pHero = XHero::sCreateHero(pPropHero, lvSquad, unit);
 	XBREAK(pHero == nullptr);
 	pHero->SetLevel( XGAME::xTR_LEVEL_UP, lvHero);
 	pHero->SetGrade( grade );

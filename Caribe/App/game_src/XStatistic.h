@@ -33,7 +33,7 @@ public:
 	//
 	GET_ACCESSOR( XList4<xSquad*>&, listSquads );
 
-	void AddSquad( XHero *pHero );
+	void AddSquad( const XHero *pHero );
 	float AddDamageDeal( ID snHero, float damage );
 	float AddDamageAttacked( ID snHero, float damage );
 	float AddDamageDealByCritical( ID snHero, float damage );

@@ -323,7 +323,7 @@ void XSkillReceiver::OnSkillEventKillEnemy( ID idDead )
  @param secPlay 0:once 0>:해당시간동안 루핑 -1:무한루핑
 */
 void XSkillReceiver::CreateSfx( XSkillDat *pSkillDat,
-								const EFFECT *pEffect,
+//								const EFFECT *pEffect,
 								const _tstring& strEffect, 
 								ID idAct,
 								xtPoint pointSfx,
@@ -339,7 +339,7 @@ void XSkillReceiver::CreateSfx( XSkillDat *pSkillDat,
 	if( idAct == 0 )
 		idAct = 1;
 	OnCreateSkillSfx( pSkillDat, 
-										pEffect,
+//										pEffect,
 										pointSfx,
 										strEffect.c_str(),
 										idAct,

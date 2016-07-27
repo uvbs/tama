@@ -39,7 +39,7 @@ void XGAME::UpdateHeroTooltip( LPCTSTR idsHero, XWnd *pRoot, int cost )
  @brief pRoot아래에 있는 아이템 툴팁모듈을 업데이트한다.
  @param cost 아이템 가격을 표시해야할때 가격을 넘겨준다.
 */
-void XGAME::UpdateHeroTooltip( XPropHero::xPROP *pProp, XWnd *pRoot, int cost )
+void XGAME::UpdateHeroTooltip( const XPropHero::xPROP *pProp, XWnd *pRoot, int cost )
 {
 	// 영웅 이미지
 	if( pProp == nullptr )

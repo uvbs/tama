@@ -1411,7 +1411,7 @@ void XSceneBattle::CreateParticleSfx()
 /**
  @brief 아군부대를 선택해서 적부대나 바닥을 클릭함.
 */
-void XSceneBattle::OnControlSquad( XHero *pHero )
+void XSceneBattle::OnControlSquad( const XHero *pHero )
 {
 #ifndef _XSINGLE
 	if( ACCOUNT->GetFlagTutorial().bControlSquadInBattle == 0 ) {
