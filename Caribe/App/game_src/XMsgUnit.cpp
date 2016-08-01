@@ -43,7 +43,7 @@ void XMsgDmg::Process()
 	const bool bPoison = ( m_bitAttrHit & xBHT_POISON ) != 0;
 	// 공격자에게 "타격시"이벤트를 발생시킨다.
 	if( spUnitAtker && !bBySkill ) {		// 일단 스킬데미지는 "타격시"이벤트를 발생시키지 않도록.
-		spUnitAtker->OnAttackToDefender( spUnitAtker.get(), std::abs(m_Dmg), bCritical, m_ratioPenet, m_typeDmg );
+		spUnitAtker->OnAttackToDefender( m_spTarget.get(), std::abs(m_Dmg), bCritical, m_ratioPenet, m_typeDmg );
 	}
 
 	m_spTarget->DoDamage( m_spAtkObj

@@ -21,7 +21,7 @@ class XUnitCyclops : public XUnitCommon
 	void Init() {}
 	void Destroy() {}
 public:
-	XUnitCyclops( XSquadObj *pSquadObj, 
+	XUnitCyclops( XSPSquad spSquadObj,
 								ID idProp,
 								BIT bitSide, 
 								const XE::VEC3& vPos,

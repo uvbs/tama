@@ -272,6 +272,7 @@ public:
 	bool IsAbleTarget();
 	XSPSquad DoAttackAutoTargetEnemy();
 	void DoRequestMoveMode();
+	void OnSkillEvent( XSKILL::xtJuncture event );
 	float GetSumHpAllMember();
 	float GetMaxHpAllMember() const;
 	float DrawMembersHp( const XE::VEC2& v );

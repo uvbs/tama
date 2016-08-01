@@ -365,10 +365,6 @@ void XBattleField::OnStartBattle()
 			spLegionObj->OnAfterStartBattle();
 		}
 	}
-// 	for( int i = 0; i < 2; ++i )
-// 		m_aryLegion[ i ]->OnStartBattle();
-// 	for( int i = 0; i < 2; ++i )
-// 		m_aryLegion[ i ]->OnAfterStartBattle();
 }
 
 void XBattleField::SetAI( bool bFlag )
@@ -379,8 +375,6 @@ void XBattleField::SetAI( bool bFlag )
 			spLegionObj->SetAI( bFlag );
 		}
 	}
-//   for( int i = 0; i < 2; ++i )
-//     m_aryLegion[ i ]->SetAI( bFlag );
 }
 /**
  @brief 군단이 전멸했다.
@@ -398,25 +392,28 @@ void XBattleField::OnDieLegion( XSPLegionObj spLegion )
 	SCENE_BATTLE->OnFinishBattle( bitCampWin, false );
 }
 
-void XBattleField::OnDieSquad( XSquadObj* pSquadObj )
+void XBattleField::OnDieSquad( XSPSquad spSquadObj )
 {
 //	CONSOLE( "%s부대전멸", pSquadObj->GetpHero()->GetstrName().c_str() );
-	auto& aryLoots = pSquadObj->GetaryLoots();
+#ifndef _XSINGLE
+	auto& aryLoots = spSquadObj->GetaryLoots();
 	if( aryLoots.size() > 0 ) {
-		auto spLegion = pSquadObj->GetspLegionObj()->GetspLegion();
+		auto spLegion = spSquadObj->GetspLegionObj()->GetspLegion();
 		// 자원부대였으면 자원오브젝트를 떨어트린다.
 		// 부대가 할당받은 떨어트릴양을 얻는다.ㅣ
 		// 자원부대가 죽으면 자원오브젝트를 생성한다.
-#ifndef _XSINGLE
 		if( spLegion ) {
 			for( auto& res : aryLoots ) {
-				auto pObj = new XObjRes( pSquadObj->GetvwPos(), res.type, (int)res.num );
+				auto pObj = new XObjRes( spSquadObj->GetvwPos(), res.type, (int)res.num );
 				AddpObj( pObj );
 			}
 		}
-#endif // not _XSINGLE
 	}
-	SCENE_BATTLE->OnDieSquad( pSquadObj );
+#else
+	auto pObj = new XObjRes( spSquadObj->GetvwPos(), xRES_WOOD, 100 );
+	AddpObj( pObj );
+#endif // not _XSINGLE
+	SCENE_BATTLE->OnDieSquad( spSquadObj );
 }
 
 SquadPtr XBattleField::GetPickSquad( const XE::VEC3& vwPick, 

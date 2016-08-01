@@ -256,7 +256,7 @@ void XSYSTEM::CutStringByChar( const _tstring& strSrc
 	TCHAR szBuff[ 1024 ];
 	int idxBuff = 0;
 	const auto len = strSrc.length();
-	for( int i = 0; i < len; ++i ) {
+	for( int i = 0; i < (int)len; ++i ) {
 		const TCHAR cc = strSrc.at(i);
 		if( cc != cDiv ) {
 			szBuff[idxBuff++] = cc;

@@ -18,12 +18,12 @@ using namespace XSKILL;
 using namespace XGAME;
 
 ////////////////////////////////////////////////////////////////
-XUnitTreant::XUnitTreant( XSquadObj *pSquadObj, 
+XUnitTreant::XUnitTreant( XSPSquad spSquadObj,
 													ID idProp,
 													BIT bitSide, const 
 													XE::VEC3& vPos,
 													float multipleAbility )
-: XUnitCommon( pSquadObj, idProp, bitSide, vPos, multipleAbility )
+: XUnitCommon( spSquadObj, idProp, bitSide, vPos, multipleAbility )
 {
 	Init();
 

@@ -28,6 +28,10 @@ public:
 	ID m_idMouseOverNodeT = 0;								// 현재 마우스 오버된 노드의 아이디
 	XPropTech::xNodeAbil *m_pSelNodeT;				///< 선택된 노드
 	XPropTech::xNodeAbil *m_pDeletedNodeT;			///< 삭제될 노드. 노드를 삭제시키면 언두를 위해서 잠시 받아둠.
+#ifdef _XSINGLE
+	bool m_bUpdated = false;		// 싱글모드에서 특성값을 바꾸면 true가 된다.
+#endif // _XSINGLE
+
 private:
 	XLayoutObj m_Layout;
 	XE::VEC2 m_vMouse, m_vMousePrev;

@@ -148,21 +148,30 @@ public:
 
 	GET_ACCESSOR_CONST( const XVector<xPROP*>&, aryProp );
 	
-//	void GetNextClear( void ) { m_itorID = m_mapID.begin(); }		// 반복자 초기화
+//	void GetNextClear() { m_itorID = m_mapID.begin(); }		// 반복자 초기화
 	BOOL ReadProp( CToken& token, DWORD dwParam ) override;					// txt 파싱
 	
-	xPROP* const GetpProp( LPCTSTR szIdentifier ) const;
-	// strIdentifier는 모두 소문자여야 함.
-	xPROP* const GetpProp( const _tstring& strIdentifier ) const { 
+	xPROP* GetpProp( LPCTSTR szIdentifier ) const;
+	inline const xPROP* GetpPropConst( LPCTSTR szIdentifier ) const {
+		return GetpProp( szIdentifier );
+	}
+	inline const xPROP* GetpPropConst( const _tstring& strIdentifier ) const {
+		return GetpProp( strIdentifier.c_str() );
+	}
+		// strIdentifier는 모두 소문자여야 함.
+	xPROP* GetpProp( const _tstring& strIdentifier ) const { 
 		XBREAK( strIdentifier.empty() == TRUE ); 
 		return GetpProp( strIdentifier.c_str() ); 
 	}
-	xPROP* const GetpProp( ID idProp ) const;
-	
+	xPROP* GetpProp( ID idProp ) const;
+	inline const xPROP* GetpPropConst( ID idProp ) const {
+		return GetpProp( idProp );
+	}
+
 	void Add( const _tstring& strIdentifier, xPROP *pProp );
 	void Add( xPROP *pProp );
 	
-	virtual int GetSize( void ) { return m_mapData.size(); }
+	int GetSize() override { return m_mapData.size(); }
 
 	LPCTSTR GetszSpr( ID idProp ) {
 		auto pProp = GetpProp( idProp );
@@ -175,10 +184,10 @@ public:
 	void OnDidBeforeReadProp( CToken& token ) override;
 
 	xPROP* GetpPropFromName( LPCTSTR szName );
-	xPROP* GetPropRandom( void ) {
+	xPROP* GetPropRandom() {
 		return m_aryProp.GetFromRandom();
 	}
-	xPROP* GetPropRandomTemp( void );
+	xPROP* GetPropRandomTemp();
 	int GetpPropBySizeToAry( XArrayLinearN<XPropHero::xPROP*,256>& ary, 
 														XGAME::xtAttack typeAtk, int lvLimit = 0);
 //							XGAME::xtGrade gradeMax=XGAME::xGD_NONE );

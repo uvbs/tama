@@ -3073,3 +3073,28 @@ etTgzD99U2f5UyEncC1BECCNNpWpFef5mFXOvebYqXsSguopFia6EIfP6A+Hf0sY04azuZdHN3rqWfGo
 03-31 14:57:37.884: V/Activity(24758): onResume com.pgman.inappbilling.pgmanstore_IAB_dlg@41e2f720
 03-31 14:57:38.284: I/ActivityManager(24758): Timeline: Activity_idle id: android.os.BinderProxy@41e2eef0 time:33299915
 03-31 14:57:38.294: V/Activity(24758): onSaveInstanceState com.mtricks.caribe.MyMainActivity@41b091f8: Bundle[{android:viewHierarchyState=Bundle[{android:views={16908290=android.view.AbsSavedState$1@41908598}}]}]
+class XTest {
+public:
+	int val = 0;
+	std::shared_ptr<XTest> m_spTarget;
+	XTest( int v ) {
+		val = v;
+		TRACE("생성:%d", val );
+	}
+	~XTest() {
+		TRACE( "파괴:%d", val );
+	}
+};
+	{
+		std::shared_ptr<XTest> spA = std::make_shared<XTest>( 1 );
+		std::shared_ptr<XTest> spB = std::make_shared<XTest>( 2 );
+		spA->m_spTarget = spB;
+		spB->m_spTarget = spA;
+	}
+
+
+}
+
+
+roar => invoke_roar(지속시간 5초)
+add_damage => invoke_add_damage(지속시간 9999)

@@ -96,6 +96,7 @@ void XSkillDat::ReplaceTokenEach( int idParam
 		break;
 	case 3:
 		ReplaceInvokeRatio( pEffect, strToken.c_str(), lvSkill, pOut );
+		ReplaceInvokeApplyRatio( pEffect, strToken.c_str(), lvSkill, pOut );
 		break;
 	case 4:
 		ReplaceRadius( pEffect, strToken.c_str(), lvSkill, pOut );
@@ -194,6 +195,25 @@ BOOL XSkillDat::ReplaceInvokeRatio( const EFFECT *pEffect, LPCTSTR szToken, int 
 	} else
 		return FALSE;
 	return TRUE;
+}
+
+bool XSkillDat::ReplaceInvokeApplyRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut )
+{
+	_tstring::size_type idxStart = pOut->find( szToken );	// #XXXXX#의 시작인덱스
+	if( pEffect->m_aryInvokeApplyRatio.size() == 0 )
+		return false;
+	if( pEffect->m_aryInvokeApplyRatio.size() == 1 )
+		level = 0;
+	if( XBREAK( level > pEffect->m_aryInvokeApplyRatio.Size() ) )
+		return false;
+	int len = _tcslen( szToken );				// 교체할 문자열 길이
+	if( idxStart != _tstring::npos ) {
+		float ability = fabs( pEffect->m_aryInvokeApplyRatio[level] * 100.f );
+		LPCTSTR szReplace = XE::Format( _T( "%.0f%%" ), ability );
+		pOut->replace( idxStart, len, szReplace );
+	} else
+		return false;
+	return true;
 }
 
 BOOL XSkillDat::ReplaceRadius( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut )
@@ -411,14 +431,33 @@ void XSkillDat::DeSerialize( XArchive& ar, int ver )
 	ar >> m_shootObjSpeed;
 }
 
-BOOL XSkillDat::IsBuff( const EFFECT *pEffect ) 
+/**
+ @brief 지속시간이 있는 버프류
+*/
+BOOL XSkillDat::IsBuff( const EFFECT *pEffect ) const
 {
 	return (pEffect->IsDuration()
 					 || pEffect->secInvokeDOT > 0
 					 || IsPassive() || IsAbility()) ? TRUE : FALSE;
 }
+
+/**
+ @brief 유한한 시간의 버프인가(패시브나 특성이 아닌 버프들)
+*/
+bool XSkillDat::IsBuffShort() const
+{
+	for( auto pEff : m_listEffects ) {
+		if( pEff->IsDuration() ) {
+			// 지속시간이 있는것중 지속시간이 유한한것이 하나라도 있으면 short버프타입
+			if( !pEff->IsDurationInfinite() )
+				return true;
+		}
+	}
+	return false;
+}
+
 // 자신이나 자신의 부대에게만 쓰는 버프인가.
-bool XSkillDat::IsSelfBuff() 
+bool XSkillDat::IsSelfBuff() const
 {
 	if( m_baseTarget != xBST_SELF )
 		return false;

@@ -20,38 +20,38 @@ int XSkillObj::IsCastCondition()
 	return FALSE;
 }
 
-std::list<EFFECT*>& XSkillObj::GetEffectList() 
+const XList4<EFFECT*>& XSkillObj::GetEffectList() const
 {
 	return GetpDat()->GetlistEffects();
 }
-BOOL XSkillObj::IsActive() 
+BOOL XSkillObj::IsActive() const 
 {
 	return GetpDat()->IsActive();
 }
-BOOL XSkillObj::IsPassive() 
+BOOL XSkillObj::IsPassive() const
 {
 	return GetpDat()->IsPassive();
 }
-BOOL XSkillObj::IsAbility() 
+BOOL XSkillObj::IsAbility() const
 {
 	return GetpDat()->IsAbility();
 }
-ID XSkillObj::GetidSkill() 
+ID XSkillObj::GetidSkill() const
 {
 	XBREAK( m_pDat == NULL );
 	return m_pDat->GetidSkill();
 }
-const _tstring& XSkillObj::GetStrIdentifier() 
+const _tstring& XSkillObj::GetStrIdentifier() const
 {
 	XBREAK( m_pDat == NULL );
 	return m_pDat->GetstrIdentifier();
 }
-LPCTSTR XSkillObj::GetIdsSkill() 
+LPCTSTR XSkillObj::GetIdsSkill() const
 {
 	XBREAK( m_pDat == NULL );
 	return m_pDat->GetstrIdentifier().c_str();
 }
-BOOL XSkillObj::IsSameCastMethod( xCastMethod castMethod ) 
+BOOL XSkillObj::IsSameCastMethod( xCastMethod castMethod ) const
 {
 	return m_pDat->IsSameCastMethod( castMethod );
 }

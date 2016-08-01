@@ -13,6 +13,7 @@ IMPLEMENT_DYNAMIC(CDlgBattleOption, CDialogEx)
 
 CDlgBattleOption::CDlgBattleOption(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CDlgBattleOption::IDD, pParent)
+	, m_bHeroInfoToConsole( FALSE )
 {
 
 }
@@ -23,13 +24,14 @@ CDlgBattleOption::~CDlgBattleOption()
 
 void CDlgBattleOption::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CDialogEx::DoDataExchange( pDX );
 	DDX_Check( pDX, IDC_CHECK_PLAYER_HERO, m_bCheckPlayerHero );
 	DDX_Check( pDX, IDC_CHECK_PLAYER_UNIT, m_bCheckPlayerUnit );
 	DDX_Check( pDX, IDC_CHECK_ENEMY_HERO, m_bCheckEnemyHero );
 	DDX_Check( pDX, IDC_CHECK_ENEMY_UNIT, m_bCheckEnemyUnit );
 	DDX_Check( pDX, IDC_CHECK_FACE, XAPP->m_bShowFace );
 	DDX_Check( pDX, IDC_CHECK_WAIT_AFTER_WIN, XAPP->m_bWaitAfterWin );
+	DDX_Check( pDX, IDC_CHECK_HERO_INFO_TO_CONSOLE, m_bHeroInfoToConsole );
 }
 
 

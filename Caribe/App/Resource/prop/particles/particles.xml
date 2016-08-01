@@ -62,4 +62,19 @@
       </particle>
     </emitter>
   </fire_cracker>
+  <fire_cracker2>
+    <!--불꽃 튀기기-->
+    <emitter spr="sfx_fire_particle.spr" idx_spr="0,1,2,3" blend="add">
+      <angle val="225,315" func="random" />
+      <speed val="2,4" func="random" />
+      <scale val="0.5,1" func="random" />
+      <interval val="0.05" />
+      <life val="0.25" />
+      <num_emit val="10" />
+      <particle>
+        <gravity val="0.1" />
+        <life val="2" />
+      </particle>
+    </emitter>
+  </fire_cracker2>
 </root>

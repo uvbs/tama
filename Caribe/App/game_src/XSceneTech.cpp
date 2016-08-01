@@ -43,9 +43,10 @@ XSceneTech *SCENE_TECH = NULL;
 void XSceneTech::Destroy() 
 {	
 #ifdef _XSINGLE
-	XPropLegion::sGet()->UpdatePropWithAcc( "single1_player", ACCOUNT );
-	XPropLegion::sGet()->Save( _T( "propLegion_s.xml" ) );
-	// 	XPropLegion::sGet()->SaveWithAcc(_T("propLegion_s.xml"), ACCOUNT );
+	if( m_bUpdated ) {
+		XPropLegion::sGet()->UpdatePropWithAcc( "single1_player", ACCOUNT );
+		XPropLegion::sGet()->Save( _T( "propLegion_s.xml" ) );
+	}
 #endif // _XSINGLE
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcArrow );
 	XBREAK( SCENE_TECH == NULL );
@@ -113,6 +114,13 @@ void XSceneTech::Create( void )
 		pButt->SetstrIdentifier( "butt.debug.res" );
 		pButt->SetEvent( XWM_CLICKED, this, &XSceneTech::OnCheat, 7 );
 		Add( pButt );
+#ifdef _XSINGLE
+		v.y += size.h;
+		pButt = new XWndButtonDebug( v, size, _T( "clear" ) );
+		pButt->SetstrIdentifier( "butt.debug.clear" );
+		pButt->SetEvent( XWM_CLICKED, this, &XSceneTech::OnCheat, 25 );
+		Add( pButt );
+#endif // _XSINGLE
 	}
 #endif // cheat
 }
@@ -1526,6 +1534,7 @@ int XSceneTech::OnOkResearch( XWnd* pWnd, DWORD p1, DWORD p2 )
 	if( point < 5 ) {
 		++point;
 		pHero->SetAbilPoint( m_unitSelected, m_idSelectedNode, point );
+		m_bUpdated = true;
 		SetbUpdate( true );
 	}
 #endif // single
@@ -1624,6 +1633,20 @@ int XSceneTech::OnCheat( XWnd* pWnd, DWORD p1, DWORD p2 )
 		for( int i = 0; i < XGAME::xRES_MAX; ++i )
 			ACCOUNT->AddResource( ( XGAME::xtResource )i, (int)add );
 		GAMESVR_SOCKET->SendCheat( this, type, (int)add );
+	} else
+	if( type == 25 ) {
+		// 특성초기화. 
+		if( m_idSelectedNode ) {
+			auto pHero = ACCOUNT->GetHero( m_snSelectedHero );
+			if( XBREAK( pHero == nullptr ) )
+				return 1;
+			const auto abil = pHero->GetAbilNode( m_unitSelected, m_idSelectedNode );
+			auto pProp = XPropTech::sGet()->GetpNode( m_unitSelected, m_idSelectedNode );
+			XBREAK( pProp == nullptr );
+			pHero->SetAbilPoint( m_unitSelected, m_idSelectedNode, 0 );
+			m_bUpdated = true;
+			SetbUpdate( true );
+		}
 	}
 	if( SCENE_TECH )
 		SCENE_TECH->SetbUpdate( true );

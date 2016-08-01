@@ -10,7 +10,7 @@
 #include "XFramework/client/XLayout.h"
 #include "XAccount.h"
 #include "XSceneWorld.h"
-#include "XUnitHero.h"
+//#include "XUnitHero.h"
 #include "XBaseItem.h"
 #include "XSockGameSvr.h"
 #include "XSceneUnitOrg.h"
@@ -230,11 +230,11 @@ XWndInvenHeroElem* XWndInvenHeroElem::sUpdateCtrl( XWndList *pWndList, XHero *pH
  @brief 
 */
 XWndInvenHeroElem::XWndInvenHeroElem( XHero* pHero, XLegion *pLegion )
-//	: XWndStoragyItemElem( XE::VEC2(0), pHero )
+	: m_pProp( pHero->GetpProp() )
 {
 	Init();
 	m_pHero = pHero;
-	m_pProp = pHero->GetpProp();
+//	m_pProp = pHero->GetpProp();
 	if( XBREAK( m_pHero == nullptr ) )
 		return;
 	m_pLegion = pLegion;

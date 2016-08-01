@@ -45,7 +45,7 @@ void XHero::xItem::Set( XBaseItem *_pItem ) {
 		// snItem값은 남아있을 수 있음.
 	}
 }
-XBaseItem* XHero::xItem::GetpItem() {
+XBaseItem* XHero::xItem::GetpItem() const {
 	XBREAK( pItem && pItem->GetsnItem() != snItem );
 	return pItem;
 }
@@ -87,6 +87,7 @@ XHero* XHero::sCreateHero( const XPropHero::xPROP *pProp,
 XHero::XHero()
 	: m_aryUpgrade(XGAME::xTR_MAX)
 	, m_aryUnitsAbil( XGAME::xUNIT_MAX )
+	, m_aryEquip( XGAME::xPARTS_MAX )
 {
 	// DeSerialize용
 	Init();
@@ -95,6 +96,7 @@ XHero::XHero()
 XHero::XHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit )
 	: m_aryUpgrade(XGAME::xTR_MAX)
 	, m_aryUnitsAbil( XGAME::xUNIT_MAX )
+	, m_aryEquip( XGAME::xPARTS_MAX )
 {
 	Init();
 //	m_spAdjParam = std::make_shared<XSKILL::XAdjParam>( XGAME::xMAX_PARAM, 0 );
@@ -129,7 +131,7 @@ void XHero::InitAryAbil()
 	}
 }
 
-XPropHero::xPROP* const XHero::GetpProp() const
+XPropHero::xPROP* const XHero::GetpProp()
 {
 // 	if( m_keyPropHero != PROP_HERO->GetidKey() ) {
 // 		_m_pProp = PROP_HERO->GetpProp( m_idProp );
@@ -137,6 +139,11 @@ XPropHero::xPROP* const XHero::GetpProp() const
 // 	}
 	return PROP_HERO->GetpProp( m_idProp );
 //	return static_cast<const XPropHero::xPROP*>( _m_pProp );
+}
+
+const XPropHero::xPROP* const XHero::GetpPropConst() const
+{
+	return PROP_HERO->GetpProp( m_idProp );
 }
 
 void XHero::SetpProp( XPropHero::xPROP* pProp, ID idKey )
@@ -178,7 +185,7 @@ int XHero::Serialize( XArchive& ar )
 		// 검사루틴 반드시 넣을것. -xuzhu-
 		if( XBREAK( XGAME::IsInvalidParts( (XGAME::xtParts)parts ) ) )
 			return 0;
-		auto& item = m_aryEquip[parts];
+		const auto& item = m_aryEquip[parts];
 		if (item.GetpItem()) {
 			XBREAK( item.GetpItem()->GetsnItem() != item.GetsnItem() );
 			ar << item.GetpItem()->GetsnItem();
@@ -221,7 +228,7 @@ int XHero::DeSerialize(XArchive& ar, XSPAcc spAcc, int verHero )
 	XBREAK( !m_Grade );
 	DeSerializeUpgrade( ar );
 	DeserializeAbil( ar, verHero );
-	m_aryEquip.Clear( xItem() );
+	m_aryEquip.Fill( xItem() );
 	for (int parts = 1; parts < XGAME::xPARTS_MAX; ++parts) {
 		ID idParts, snItem;
 		ar >> idParts;
@@ -520,10 +527,11 @@ void XHero::GetSquadStat( int levelSquad, xSquadStat *pOut )
  @brief 
  @param bForShow UI에 표기되는 용도의 값
 */
-float XHero::GetAttackMeleeRatio( int lvHero, bool bForShow )
+float XHero::GetAttackMeleeRatio( int lvHero, bool bForShow ) const
 {
+	auto pProp = GetpPropConst();
 	// 기본프로퍼티 값에 레벨에 따른 증가량을 곱해서 보정한다.
-	float val = GetpProp()->GetStat2( XGAME::xSTAT_ATK_MELEE, GetGrade(), lvHero );
+	float val = pProp->GetStat2( XGAME::xSTAT_ATK_MELEE, GetGrade(), lvHero );
 	float multiply = 0;
 	multiply += GetAdjParamByItem( XGAME::xADJ_ATTACK );	// 공격력증가 옵션을 더한다.
 	multiply += GetAdjParamByItem( XGAME::xADJ_ATTACK_MELEE_TYPE );	// 근접공격력 증가 옵션을 더한다.
@@ -533,12 +541,13 @@ float XHero::GetAttackMeleeRatio( int lvHero, bool bForShow )
 	return statVal;
 }
 
-float XHero::GetAttackRangeRatio( int lvHero, bool bForShow )
+float XHero::GetAttackRangeRatio( int lvHero, bool bForShow ) const
 {
 	// 기본프로퍼티 값에 레벨에 따른 증가량을 곱해서 보정한다.
+	auto pProp = GetpPropConst();
 	float addGrade = GetGrade() * 0.1f;		// 등급당 10%씩 증가
-	float atkRange = GetpProp()->atkRange + addGrade;	// 기본스탯에 등급스탯을 더함.
-	float val = atkRange + ( lvHero * GetpProp()->atkRangeAdd );
+	float atkRange = pProp->atkRange + addGrade;	// 기본스탯에 등급스탯을 더함.
+	float val = atkRange + ( lvHero * pProp->atkRangeAdd );
 	float multiply = 0;
 	multiply += GetAdjParamByItem( XGAME::xADJ_ATTACK );	// 공격력증가 옵션을 더한다.
 	multiply += GetAdjParamByItem( XGAME::xADJ_ATTACK_RANGE_TYPE );	// 근접공격력 증가 옵션을 더한다.
@@ -551,11 +560,12 @@ float XHero::GetAttackRangeRatio( int lvHero, bool bForShow )
 	}
 	return statVal;
 }
-float XHero::GetDefenseRatio( int lvHero, bool bForShow )
+float XHero::GetDefenseRatio( int lvHero, bool bForShow ) const
 {
+	auto pProp = GetpPropConst();
 	float addGrade = GetGrade() * 0.1f;		// 등급당 10%씩 증가
-	float defense = GetpProp()->defense + addGrade;	// 기본스탯에 등급스탯을 더함.
-	float val = defense + ( lvHero * GetpProp()->defenseAdd );
+	float defense = pProp->defense + addGrade;	// 기본스탯에 등급스탯을 더함.
+	float val = defense + ( lvHero * pProp->defenseAdd );
 	float multiply = 0;
 	multiply += GetAdjParamByItem( XGAME::xADJ_DEFENSE );
 	const auto statVal = val * ( 1.f + multiply );
@@ -563,11 +573,12 @@ float XHero::GetDefenseRatio( int lvHero, bool bForShow )
 		return statVal * HERO_STAT_MULTIPLY;
 	return statVal;
 }
-float XHero::GetHpMaxRatio( int lvHero, bool bForShow )
+float XHero::GetHpMaxRatio( int lvHero, bool bForShow ) const
 {
+	auto pProp = GetpPropConst();
 	float addGrade = GetGrade() * 0.1f;		// 등급당 10%씩 증가
-	float hpMax = GetpProp()->hpMax + addGrade;	// 기본스탯에 등급스탯을 더함.
-	float val = hpMax + ( lvHero * GetpProp()->hpAdd );
+	float hpMax = pProp->hpMax + addGrade;	// 기본스탯에 등급스탯을 더함.
+	float val = hpMax + ( lvHero * pProp->hpAdd );
 	float multiply = 0;
 	multiply += GetAdjParamByItem( XGAME::xADJ_MAX_HP );
 // 	return val * ( 1.f + multiply );
@@ -579,9 +590,10 @@ float XHero::GetHpMaxRatio( int lvHero, bool bForShow )
 /**
 	@brief 몇초에 한번씩 공격하는가
 */
-float XHero::GetAttackSpeed( int lvHero, bool bForShow )
+float XHero::GetAttackSpeed( int lvHero, bool bForShow ) const
 {
-	float val = GetpProp()->attackSpeed + ( lvHero * GetpProp()->attackSpeedAdd );
+	auto pProp = GetpPropConst();
+	float val = pProp->attackSpeed + ( lvHero * pProp->attackSpeedAdd );
 	float multiply = 0;
 	multiply += GetAdjParamByItem( XGAME::xADJ_ATTACK_SPEED );
 // 	return val * ( 1.f + multiply );
@@ -590,9 +602,10 @@ float XHero::GetAttackSpeed( int lvHero, bool bForShow )
 		return statVal * HERO_STAT_MULTIPLY;
 	return statVal;
 }
-float XHero::GetMoveSpeed( int lvHero, bool bForShow )
+float XHero::GetMoveSpeed( int lvHero, bool bForShow ) const
 {
-	float val = GetpProp()->moveSpeed + (lvHero * GetpProp()->moveSpeedAdd);
+	auto pProp = GetpPropConst();
+	float val = pProp->moveSpeed + (lvHero * pProp->moveSpeedAdd);
 	float multiply = 0;
 	multiply += GetAdjParamByItem( XGAME::xADJ_MOVE_SPEED );
 // 	return val * ( 1.f + multiply );
@@ -605,10 +618,11 @@ float XHero::GetMoveSpeed( int lvHero, bool bForShow )
 /**
  @brief adjParam보정파라메터를 가진 아이템의 보정값을 모두 합하여 리턴한다.
 */
-float XHero::GetAdjParamByItem( XGAME::xtParameter adjParam )
+float XHero::GetAdjParamByItem( XGAME::xtParameter adjParam ) const
 {
 	float add = 0.f;
-	XARRAYN_LOOP_AUTO( m_aryEquip, &item ) {
+//	XARRAYN_LOOP_AUTO( m_aryEquip, const& item ) {
+	for( const auto& item : m_aryEquip ) {
 		if( item.GetpItem() ) {
 //			XARRAYLINEARN_LOOP_AUTO( item.GetpItem()->GetpProp()->aryAdjParam, &adj )	{
 			for( const auto& adj : item.GetpItem()->GetpProp()->aryAdjParam ) {
@@ -618,7 +632,7 @@ float XHero::GetAdjParamByItem( XGAME::xtParameter adjParam )
 				}
 			}// END_LOOP;
 		}
-	} END_LOOP;
+	}
 	return add;
 }
 
@@ -628,8 +642,8 @@ float XHero::GetAdjParamByItem( XGAME::xtParameter adjParam )
 void XHero::UpdateEquipItem( ID snItem, XBaseItem *pNewItem )
 {
 	bool bChanged = false;
-	XARRAYN_LOOP_AUTO( m_aryEquip, &item )
-	{
+//	XARRAYN_LOOP_AUTO( m_aryEquip, &item )
+	for( auto& item : m_aryEquip ) {
 		if( item.GetsnItem() ) {
 			if( snItem == item.GetsnItem() ) {
 				XBREAK( bChanged == true );		// 같은 시리얼번호의 장착아이템이 하나더 있다는뜻.
@@ -640,19 +654,18 @@ void XHero::UpdateEquipItem( ID snItem, XBaseItem *pNewItem )
 			return;
 #endif
 		}
-		} END_LOOP;
+	}
 }
 
 /**
  @brief snItem을 장착중인지 확인
 */
-bool XHero::IsEquip( ID snItem )
+bool XHero::IsEquip( ID snItem ) const
 {
-	XARRAYN_LOOP_AUTO( m_aryEquip, &item )
-	{
+	for( const auto& item : m_aryEquip ) {
 		if( item.GetpItem() && item.GetpItem()->GetsnItem() == snItem )
 			return true;
-	} END_LOOP;
+	}
 	return false;
 }
 
@@ -765,7 +778,7 @@ int XHero::GetLvLimitByAccLv( int lvAcc, XGAME::xtTrain type )
 /**
  @brief 영웅의 unit특성중 idNode특성의 구조체를 꺼낸다.
 */
-const XGAME::xAbil XHero::GetAbilNode( XGAME::xtUnit unit, ID idNode ) 
+const XGAME::xAbil XHero::GetAbilNode( XGAME::xtUnit unit, ID idNode )  const
 {
 	do {
 		if( !unit )

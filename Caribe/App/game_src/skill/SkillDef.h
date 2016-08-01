@@ -156,31 +156,31 @@ XE_NAMESPACE_START( XSKILL )
 						xCOND_ALWAYS=0,		///< 항상
 	};	
 	// 발동시점
-	enum xtJuncture { xJC_NONE,
-						xJC_FIRST,		///< 최초(최초한번만 효과가 발동됨)
-						xJC_PERSIST,	///< 지속발동(지속시간내내 효과가 발동됨)
-						xJC_HIT_POINT,	///< 슈팅타겟이펙트타점
-						xJC_ATTACK,		///< 모든공격시
-						xJC_CLOSE_ATTACK,	///< 근접공격시
-						xJC_RANGE_ATTACK_START,	// 원거리공격시작시
-						xJC_RANGE_ATTACK_ARRIVE,	// 원거리타격시
-						xJC_ALL_HIT,	// 모든피격시
-						xJC_CLOSE_HIT,	// 근접피격시
-						xJC_RANGE_HIT,	// 원거리피격시
-						xJC_DEFENSE,	// 방어시
-						xJC_EVADE,		// 회피시
-						xJC_DEAD,		// 사망시
-						xJC_KILL_ENEMY,	// 적사살시
-						xJC_ARRIVE_TARGET, ///< 목표타겟에 도착시
-						xJC_LAST,		// 마지막, 지속시간의 마지막
-						xJC_INVOKE_SKILL,	// 스킬발동시(지정된 스킬이 발동되면 이 스킬도 함께 발동된다)
-//						xJC_HAVE_BUFF,		///< 발동조건스킬(지정한 버프를 갖고 있어야 발동이된다)
-
-						xJC_HP_UNDER,		// 체력이하
-						//////////////////////////////////////////////////////////////////////////
-						xJC_START_BATTLE,	///< 전투시작시
-						xJC_ATTACK_COUNTER,	// 공격카운터
-						xJC_DAMAGE_ACCU,	// 피해누적
+	enum xtJuncture : int { 
+		xJC_NONE,
+		xJC_FIRST,		///< 최초(최초한번만 효과가 발동됨)
+		xJC_PERSIST,	///< 지속발동(지속시간내내 효과가 발동됨)
+		xJC_HIT_POINT,	///< 슈팅타겟이펙트타점
+		xJC_ATTACK,		///< 모든공격시
+		xJC_CLOSE_ATTACK,	///< 근접공격시
+		xJC_RANGE_ATTACK_START,	// 원거리공격시작시
+		xJC_RANGE_ATTACK_ARRIVE,	// 원거리타격시
+		xJC_ALL_HIT,	// 모든피격시
+		xJC_CLOSE_HIT,	// 근접피격시
+		xJC_RANGE_HIT,	// 원거리피격시
+		xJC_DEFENSE,	// 방어시
+		xJC_EVADE,		// 회피시
+		xJC_DEAD,		// 사망시
+		xJC_KILL_ENEMY,	// 적사살시
+		xJC_ARRIVE_TARGET, ///< 목표타겟에 도착시
+		xJC_LAST,		// 마지막, 지속시간의 마지막
+		xJC_INVOKE_SKILL,	// 스킬발동시(지정된 스킬이 발동되면 이 스킬도 함께 발동된다)
+		xJC_HP_UNDER,		// 체력이하
+		//////////////////////////////////////////////////////////////////////////
+		xJC_START,			// 패시브 발동시킬 타이밍땜에 임시로 만든건데 xJC_FIRST와 겹친다.
+		xJC_START_BATTLE,	///< 전투시작시
+		xJC_ATTACK_COUNTER,	// 공격카운터
+		xJC_DAMAGE_ACCU,	// 피해누적
 	};
 	// 능력치 연산타입
 	enum xtValType { xNONE_VALTYPE=0, 
@@ -215,7 +215,8 @@ XE_NAMESPACE_START( XSKILL )
 		xTF_NONE = 0,
 		xTF_LIVE = 0x0001,		// 생존자만
 		xTF_DEAD = 0x0002,		// 사망자만
-		xTF_ALL = 0xffffffff,	// 모두
+		xTF_ALL = 0x0003,	// 모두(생존/사망)
+		xTF_DIFF_SQUAD = 0x0004,	// 각기 다른 부대의 타겟으로
 	};
 	// 피해타입
 	enum xtDamage {
@@ -475,6 +476,12 @@ struct xEffSfx {
 	xtAniLoop m_Loop = xAL_ONCE;
 	void Serialize( XArchive& ar ) const;
 	void DeSerialize( XArchive& ar, int );
+	inline bool IsEmpty() const {
+		return m_strSpr.empty();
+	}
+	inline bool IsHave() const {
+		return !m_strSpr.empty();
+	}
 };
 
 XE_NAMESPACE_END

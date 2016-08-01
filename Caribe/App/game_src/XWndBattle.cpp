@@ -108,7 +108,7 @@ XWndSkillButton::XWndSkillButton( float x, float y,
 	Add( pImg );
 	if( pUnitHero ) {
 		m_timerCool = pUnitHero->GettimerCool();
-		m_snHero = pUnitHero->GetHero()->GetsnHero();
+		m_snHero = pUnitHero->GetpHero()->GetsnHero();
 	}
 // 	if( ( m_timerCool.IsOver() || m_timerCool.IsOff() ) )
 // 		SetbActive( TRUE );

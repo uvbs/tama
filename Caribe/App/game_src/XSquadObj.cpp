@@ -180,13 +180,13 @@ void XSquadObj::CreateHero( XWndBattleField *pWndWorld,
 		v -= vDistHero;
 	auto mulByLvSquad = PROP_SQUAD->GetMulByLvSquad( pProp->size, 0, m_pHero->GetlevelSquad() );
 //	auto pPropHero = PROP_HERO->GetpProp( m_pHero->GetstrIdentifer() );
-	auto pUnit = XBaseUnit::sCreateHero( this, 
+	auto pUnit = XBaseUnit::sCreateHero( GetThis(), 
 												m_pHero,
 												pProp->idProp,
 												camp.GetbitCamp(),
 												v, 
 												mulByLvSquad );
-	UnitPtr spUnit = AddUnit( pUnit );
+	auto spUnit = AddUnit( pUnit );
 	pWndWorld->GetpWorld()->AddObj( spUnit );
 	m_spHeroUnit = spUnit;
 	int a = 0;
@@ -250,7 +250,7 @@ void XSquadObj::CreateAndAddUnit( XPropUnit::xPROP *pProp
 {
 	// 부대레벨에 따른 능력치 배수를 넣음.
 // 	float mulByLvSquad = PROP_SQUAD->GetMulByLvSquad( pProp->size, idxUnit, m_pHero->GetlevelSquad() );
-	auto pUnit = XBaseUnit::sCreateUnit( this, pProp->idProp,
+	auto pUnit = XBaseUnit::sCreateUnit( GetThis(), pProp->idProp,
 																			camp.GetbitCamp(),
 																			vCurr, mulByLvSquad );
 
@@ -345,6 +345,19 @@ XSPSquad XSquadObj::DoAttackAutoTargetEnemy()
 void XSquadObj::DoRequestMoveMode()
 {
 	SetCmdRequest( xCMD_CHANGE_MOVEMODE );
+}
+
+/**
+ @brief 범용 이벤트 전달기
+*/
+void XSquadObj::OnSkillEvent( XSKILL::xtJuncture event )
+{
+	for( auto& spUnit : m_listUnit ) {
+		if( !spUnit->IsLive() ) {
+			continue;
+		}
+		spUnit->OnEventBySkillUser( event );
+	}
 }
 
 void XSquadObj::OnStartBattle()
@@ -947,7 +960,7 @@ void XSquadObj::OnDieMember( XBaseUnit *pUnit )
 		if( pUnit->IsHero() )
 			m_spHeroUnit.reset();	// 죽은게 영웅이었으면 shared_ptr도 지워줌
 		if( m_cntLive == 0 ) {
-			m_spLegionObj->OnDieSuqad( this );
+			m_spLegionObj->OnDieSuqad( GetThis() );
 			for( auto& spUnit : m_listUnit ) {
 				XBREAK( spUnit->IsLive() );
 			}
@@ -1485,12 +1498,14 @@ float XSquadObj::DrawMembersHp( const XE::VEC2& vPos )
 																															, m_pHero->GetlevelSquad() );
 	v.y += sizeFont;
 	for( auto& spUnit : m_listUnit ) {
-		XCOLOR col = XCOLOR_WHITE;
-		if( spUnit->IsDead() )
-			col = XCOLOR_RED;
-		PUT_STRINGF_SMALL( v.x, v.y, col
-												, "%d/%d", (int)spUnit->GetHp(), spUnit->GetMaxHp() );
-		v.y += sizeFont;
+		if( !spUnit->IsDestroy() ) {
+			XCOLOR col = XCOLOR_WHITE;
+			if( spUnit->IsDead() )
+				col = XCOLOR_RED;
+			PUT_STRINGF_SMALL( v.x, v.y, col
+												 , "%d/%d", (int)spUnit->GetHp(), spUnit->GetMaxHp() );
+			v.y += sizeFont;
+		}
 	}
 	if( m_secDie > 0 ) {
 		PUT_STRINGF_SMALL( v.x, v.y, XCOLOR_YELLOW

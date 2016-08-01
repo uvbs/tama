@@ -18,12 +18,12 @@ static char THIS_FILE[] = __FILE__;
 template<> XPool<XUnitArcher>* XMemPool<XUnitArcher>::s_pPool = NULL;
 #endif
 ////////////////////////////////////////////////////////////////
-XUnitArcher::XUnitArcher( XSquadObj *pSquadObj, 
+XUnitArcher::XUnitArcher( XSPSquad spSquadObj,
 						ID idProp,
 						BIT bitSide, 
 						const XE::VEC3& vPos,
 						float multipleAbility )
-: XUnitCommon( pSquadObj, idProp, bitSide, vPos, multipleAbility )
+: XUnitCommon( spSquadObj, idProp, bitSide, vPos, multipleAbility )
 {
 	Init();
 

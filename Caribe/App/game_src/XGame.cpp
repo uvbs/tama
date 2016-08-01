@@ -98,13 +98,6 @@ _tstring XGame::s_strSessionKey;		// 임시
 std::list<_tstring> XGame::s_masterMessages;
 
 
-// XWorld* sGetpWorld() 
-// {
-// 	if( !XAccount::sGetPlayer() )
-// 		return nullptr;
-// 	return XAccount::sGetPlayer()->GetpWorld();
-// }
-
 //////////////////////////////////////////////////////////////////////////
 /**
  @brief 
@@ -114,9 +107,6 @@ XGame::XGame()
 	GAME = this;
 
 	Init();
-// 	XE::LANG.SetSelectedKey("english");
-//	XEProfile::sCreateSingleton();
-//	XLOGXN("ver:%s", GAME_VER);
 	XWndButton::s_modeAnimationDefault = XE::xBA_MOVE;	// 버튼들의 눌릴때 애니메이션 방식
 #ifdef _XUZHU
 // 	s_bXuzhuMode = true;		// 내컴에선 항상 트루

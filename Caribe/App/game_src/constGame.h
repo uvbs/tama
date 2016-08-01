@@ -28,6 +28,7 @@ typedef std::shared_ptr<XSquadObj> SquadPtr;
 typedef std::weak_ptr<XSquadObj> SquadPtrWeak;
 typedef std::shared_ptr<XLegion> LegionPtr;
 typedef std::shared_ptr<XLegionObj> XSPLegionObj;
+typedef std::weak_ptr<XLegionObj> XSPLegionObjWeak;
 typedef std::shared_ptr<const XBaseUnit> XSPUnitConst;
 typedef std::shared_ptr<const XLegion> XSPLegionConst;
 typedef std::shared_ptr<const XSquadObj> XSPSquadObjConst;
@@ -45,6 +46,7 @@ typedef std::shared_ptr<const XPostInfo> XSPPostInfoConst;
 
 #define XSPLegion LegionPtr
 #define XSPSquad SquadPtr
+#define XSPSquadW SquadPtrWeak
 #define XSPUnit UnitPtr
 #define XSPHero HeroPtr
 #define XSPItem ItemPtr

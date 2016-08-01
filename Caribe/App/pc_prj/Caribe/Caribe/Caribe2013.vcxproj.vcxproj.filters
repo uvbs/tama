@@ -101,9 +101,6 @@
     <ClCompile Include="..\..\..\game_src\XPropItem.cpp">
       <Filter>source\prop</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\game_src\XObjEtc.cpp">
-      <Filter>source\obj</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\game_src\XSceneStorage.cpp">
       <Filter>source\scean</Filter>
     </ClCompile>
@@ -520,6 +517,9 @@
       <Filter>source\battle</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XMsgUnit.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XObjEtc.cpp">
       <Filter>source\battle</Filter>
     </ClCompile>
   </ItemGroup>

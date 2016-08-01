@@ -38,7 +38,7 @@ class XUnitHero : public XBaseUnit
 	}
 	void Destroy();
 public:
-	XUnitHero( XSquadObj *pSquadObj, XHero *pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vPos, float multipleAbility );
+	XUnitHero( XSPSquad spSquadObj, XHero *pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vPos, float multipleAbility );
 	virtual ~XUnitHero() { Destroy(); }
 	virtual void OnCreate( void );
 	///< 

@@ -12,10 +12,10 @@ struct EFFECT;
 class XSkillDat : public XRefObj
 {
 	static ID s_idGlobal;				// SkillDat m_idSkill제네레이트용 글로벌아이디
-	static ID GenerateGlobalID( void ) { return ++s_idGlobal; }
+	static ID GenerateGlobalID() { return ++s_idGlobal; }
 public:
 	static ID GetidGlobal() { return s_idGlobal; }
-	static void sResetGlobalID( void ) { 
+	static void sResetGlobalID() { 
 		s_idGlobal = 0; 
 	}
 private:
@@ -59,6 +59,7 @@ private:
 	BOOL ReplaceAbility( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut );
 	BOOL ReplaceDuration( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut );
 	BOOL ReplaceInvokeRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut );
+	bool ReplaceInvokeApplyRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut );
 	BOOL ReplaceRadius( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut );
 	void ReplaceToken( int idxEffect
 									, const EFFECT* pEffect
@@ -69,84 +70,85 @@ private:
 											, const EFFECT* pEffect
 											, int lvSkill
 											, _tstring* pOut );
-	GET_SET_ACCESSOR( XSKILL::xCastMethod, CastMethod );
+	GET_SET_ACCESSOR_CONST( XSKILL::xCastMethod, CastMethod );
 public:
 	XSkillDat(void) { Init(); }
 	virtual ~XSkillDat(void) { Destroy(); }
 	// get/set
-	GET_SET_ACCESSOR( const _tstring&, strIdentifier );
-	GET_SET_ACCESSOR( ID, idSkill );
-	GET_SET_ACCESSOR(ID, idName );
-	GET_SET_ACCESSOR(ID, idDesc );
-	GET_SET_ACCESSOR( float, fCoolTime );
+	GET_SET_ACCESSOR_CONST( const _tstring&, strIdentifier );
+	GET_SET_ACCESSOR_CONST( ID, idSkill );
+	GET_SET_ACCESSOR_CONST(ID, idName );
+	GET_SET_ACCESSOR_CONST(ID, idDesc );
+	GET_SET_ACCESSOR_CONST( float, fCoolTime );
 	GET_ACCESSOR_CONST( const _tstring&, strIcon );
-	LPCTSTR GetResIcon() {
+	LPCTSTR GetResIcon() const {
 		return XE::MakePath(DIR_IMG, m_strIcon );
 	}
-	GET_SET_ACCESSOR( ID, idCastMotion );
+	GET_SET_ACCESSOR_CONST( ID, idCastMotion );
 	GET_ACCESSOR_CONST( const xEffSfx&, CasterEff );
 	GET_ACCESSOR_CONST( const xEffSfx&, TargetEff );
-	GET_ACCESSOR( xtBaseTarget, baseTarget );
-	GET_ACCESSOR( xtFriendshipFilt, bitBaseTarget );
-	GET_ACCESSOR( xtBaseTargetCond, condBaseTarget );
+	GET_ACCESSOR_CONST( xtBaseTarget, baseTarget );
+	GET_ACCESSOR_CONST( xtFriendshipFilt, bitBaseTarget );
+	GET_ACCESSOR_CONST( xtBaseTargetCond, condBaseTarget );
 	GET_ACCESSOR_CONST( const xEffSfx&, ShootEff );
 	GET_ACCESSOR_CONST( const xEffSfx&, ShootTargetEff );
-	GET_ACCESSOR( float, rangeBaseTargetCond );
-	GET_ACCESSOR( const _tstring&, strShootObj );
-	GET_ACCESSOR( ID, idShootObj );
-	GET_ACCESSOR( float, shootObjSpeed );
-	GET_ACCESSOR( xtWhenCasting, whenCasting );
-	bool IsShootingType() {
+	GET_ACCESSOR_CONST( float, rangeBaseTargetCond );
+	GET_ACCESSOR_CONST( const _tstring&, strShootObj );
+	GET_ACCESSOR_CONST( ID, idShootObj );
+	GET_ACCESSOR_CONST( float, shootObjSpeed );
+	GET_ACCESSOR_CONST( xtWhenCasting, whenCasting );
+	inline bool IsShootingType() const {
 		return !m_strShootObj.empty();
 	}
-	void SetszIcon( LPCTSTR szIcon ) {
+	inline void SetszIcon( LPCTSTR szIcon ) {
 		m_strIcon = szIcon;
 	}
-	LPCTSTR GetszIdentifier( void ) {
+	inline LPCTSTR GetszIdentifier() const {
 		return m_strIdentifier.c_str();
 	}
-	GET_ACCESSOR( XList4<XSKILL::EFFECT*>&, listEffects );
+	GET_ACCESSOR_CONST( const XList4<XSKILL::EFFECT*>&, listEffects );
 //	GET_SET_ACCESSOR( xtUseType, UseType );
-	BOOL IsPassive( void ) { 
+	inline BOOL IsPassive() const {
 		return m_CastMethod == XSKILL::xPASSIVE; 
 	}
-	BOOL IsActive( void ) {
+	inline BOOL IsActive() const {
 		return m_CastMethod == XSKILL::xACTIVE;
 	}
-	BOOL IsAbility( void ) {
+	inline BOOL IsAbility() const {
 		return m_CastMethod == XSKILL::xABILITY;
 	}
-	BOOL IsToggle( void ) {
+	inline BOOL IsToggle() const {
 		return m_CastMethod == XSKILL::xTOGGLE;
 	}
 	// 버프타입의 스킬인가
-	BOOL IsBuff( const XSKILL::EFFECT *pEffect );
+	BOOL IsBuff( const XSKILL::EFFECT *pEffect ) const;
+	bool IsBuffShort() const;
 	// 자신이나 자신의 부대에게만 쓰는 버프인가.
-	bool IsSelfBuff();
+	bool IsSelfBuff() const;
 	/// 패시브형 스킬인가(패시브,특성)
-	BOOL IsPassiveType() {
+	BOOL IsPassiveType() const {
 		return m_CastMethod == xPASSIVE || m_CastMethod == xABILITY;
 	}
 	//
 	void AddEffect( XSKILL::EFFECT *pEffect );
-	int GetNumEffect( void ) {
+	inline int GetNumEffect() const {
 		return m_listEffects.size();
 	}
-	EFFECT* GetEffectByIdx( int idx ) {
+	inline const EFFECT* GetEffectByIdx( int idx ) const {
 		XBREAK( m_listEffects.size() == 0 );
-		return *(m_listEffects.GetpByIndex( idx ));
+		return *(m_listEffects.GetpByIndexConst( idx ));
 	}
 	void GetSkillDesc( _tstring *pOut, int level );
-	void GetstrDesc( _tstring *pOut, int level ) {
+	inline void GetstrDesc( _tstring *pOut, int level ) {
 		GetSkillDesc( pOut, level );
 	}
-	LPCTSTR GetstrName() {
+	inline LPCTSTR GetstrName() const {
 		return XTEXT( m_idName );
 	}
-	LPCTSTR GetSkillName( void ) {
+	inline LPCTSTR GetSkillName() const {
 		return GetstrName();
 	}
-	BOOL IsSameCastMethod( xCastMethod castMethod ) {
+	inline BOOL IsSameCastMethod( xCastMethod castMethod ) const {
 		return m_CastMethod == castMethod;
 	}
 	void Serialize( XArchive& ar ) const;

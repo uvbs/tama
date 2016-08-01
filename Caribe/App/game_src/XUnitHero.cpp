@@ -25,13 +25,13 @@ static char THIS_FILE[] = __FILE__;
 using namespace XSKILL;
 
 ////////////////////////////////////////////////////////////////
-XUnitHero::XUnitHero( XSquadObj *pSquadObj, 
+XUnitHero::XUnitHero( XSPSquad spSquadObj,
 					XHero *pHero,
 					ID idPropUnit, 
 					BIT bitSide, 
 					const XE::VEC3& vPos,
 					float multipleAbility )
-	: XBaseUnit( pSquadObj, pHero->GetidProp(), bitSide, vPos, multipleAbility ) {
+	: XBaseUnit( spSquadObj, pHero->GetidProp(), bitSide, vPos, multipleAbility ) {
 	Init();
 	m_pHero = pHero;
 	m_pProp = pHero->GetpProp();
@@ -219,7 +219,7 @@ int XUnitHero::DoSkillMotion( void )
 //		CONSOLE("OnShootSkill:%s", pUseSkill->GetpDat()->GetstrIdentifier().c_str() );
 		// 스킬이름 외치기
 		if( IsPlayer() ) {
-			SCENE_BATTLE->OnUseSkill( GetpSquadObj(), pUseSkill->GetpDat()->GetSkillName() );
+			SCENE_BATTLE->OnUseSkill( GetspSquadObj(), pUseSkill->GetpDat()->GetSkillName() );
 			auto v = GetvwPos();
 			v.z -= 85.f;
 			XCOLOR col = (IsPlayer())? XCOLOR_WHITE : XCOLOR_RED;
@@ -281,7 +281,7 @@ void XUnitHero::OnArriveBullet( XObjBullet *pBullet,
 		if( pUseSkill )	{
 			const int level = GetSkillLevel( pUseSkill );
 //			ApplyEffect( pUseSkill->GetpDat(), level, nullptr, pUseSkill->GetidSkill() );
-			CastSkillToBaseTarget( pUseSkill->GetpDat(), level, spTarget.get(), XE::VEC2(), pUseSkill->GetidSkill() );
+			CastSkillToBaseTarget( pUseSkill->GetpDatMutable(), level, spTarget.get(), XE::VEC2(), pUseSkill->GetidSkill() );
 		}
 	}
 	XBaseUnit::OnArriveBullet( pBullet, spAttacker, spTarget, vwDst, damage, bCritical, sprArrive, idActArrive, dwParam );
@@ -408,23 +408,15 @@ XE::VEC2 XUnitHero::DrawName( const XE::VEC2& vPos, float scaleFactor, float sca
 {
 	auto pHero = m_pHero;
 	XE::VEC2 vDrawName; // = vPos;
-//	const XE::VEC2 sizeNameBar = XE::VEC2( 100 * scaleFactor * scale, 10 * scale );
-//	vDrawName.x -= sizeNameBar.w * 0.5f;
 	vDrawName.x = vDrawHp.x;
 	vDrawName.y = vDrawHp.y - ( 3.f * scaleFactor * m_pProp->scale );
-// XCOLOR col = (IsPlayer())? XCOLOR_WHITE : XCOLOR_RED;
 	XCOLOR col = XGAME::GetGradeColor( m_pHero->GetGrade() );
 	XBREAK( m_pfoName == nullptr );
-//	m_pfoName->SetLineLength( sizeNameBar.w );
 	m_pfoName->SetColor( col );
 #ifdef _DEBUG
-//	const _tstring str = XFORMAT( "Lv%d %s", pHero->GetLevel(), pHero->GetstrName().c_str() );
-// 	if( GetpSquadObj()->IsResourceSquad() )
-// 		str += _T("(R)");
 #else
 	const _tstring str = XFORMAT( "Lv%d %s", pHero->GetLevel(), pHero->GetstrName().c_str() );
 #endif
-// 	m_pfoName->DrawString( vDrawName, str );
 #ifdef _DEBUG
 	if( GetpSquadObj()->IsResourceSquad() ) {
 		m_pfoName->DrawString( vDrawName

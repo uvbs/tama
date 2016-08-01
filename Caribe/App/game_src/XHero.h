@@ -39,8 +39,8 @@ public:
 		XBaseItem *pItem = nullptr;
 	public:
 		void Set( XBaseItem *_pItem );
-		XBaseItem* GetpItem();
-		ID GetsnItem() {
+		XBaseItem* GetpItem() const;
+		ID GetsnItem() const {
 			return snItem;
 		}
 	};
@@ -56,7 +56,7 @@ private:
 	ID m_snHero;
 	std::vector<xnHero::xUpgrade> m_aryUpgrade;		// 업글3종세트의 정보가 담김
 	XGAME::xtGrade m_Grade = XGAME::xGD_COMMON;		// 생성되면 1성부터 시작함.
-	XArrayN<xItem, XGAME::xPARTS_MAX> m_aryEquip;
+	XVector<xItem> m_aryEquip;
 	XGAME::xtUnit m_Unit;		// 인솔중인 유닛
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 	ID m_keySkillMng = 0;
@@ -73,8 +73,8 @@ private:
 		m_snHero = 0;
 		m_Unit = XGAME::xUNIT_NONE;
 		InitAryAbil();
- 		for (int i = 0; i < XGAME::xPARTS_MAX; ++i)
- 			m_aryEquip[i].Set( nullptr );
+//  		for (int i = 0; i < XGAME::xPARTS_MAX; ++i)
+//  			m_aryEquip[i].Set( nullptr );
 		for( int i = 0; i < XGAME::xTR_MAX; ++i ) {
 			if( i > 0 ) {
 				m_aryUpgrade[ i ].SetpDelegateLevel( this, i );
@@ -117,19 +117,20 @@ public:
 	ID getid() const {
 		return m_snHero;
 	}
-  XPropHero::xPROP* const GetpProp() const;
-  void SetpProp( XPropHero::xPROP* pProp, ID idKey );
+  XPropHero::xPROP* const GetpProp();
+	const XPropHero::xPROP* const GetpPropConst() const;
+	void SetpProp( XPropHero::xPROP* pProp, ID idKey );
   void SetpProp( ID idProp );
   GET_ACCESSOR_CONST( ID, idProp );
-  GET_SET_ACCESSOR( XGAME::xtGrade, Grade );
+  GET_SET_ACCESSOR_CONST( XGAME::xtGrade, Grade );
 	/// 영웅등급
-	const _tstring& GetstrIdentifer() const {
-		return GetpProp()->strIdentifier;
+	inline const _tstring& GetstrIdentifer() const {
+		return GetpPropConst()->strIdentifier;
 	}
-	const _tstring& GetstrName() const {
-		return TEXT_TBL->GetstrText( GetpProp()->idName );
+	inline const _tstring& GetstrName() const {
+		return TEXT_TBL->GetstrText( GetpPropConst()->idName );
 	}
-	XGAME::xtSize GetSizeUnit() const {
+	inline XGAME::xtSize GetSizeUnit() const {
 		return XGAME::GetSizeUnit( m_Unit );
 	}
 #ifdef _CLIENT
@@ -145,40 +146,40 @@ public:
 	void AddRemainAbilUnlock( int add );
 	void AddcntInitAbil( int add );
 	//
-	float GetAttackMeleeRatio( int lvHero, bool bForShow = false );
-	float GetAttackRangeRatio( int lvHero, bool bForShow = false );
-	float GetDefenseRatio( int lvHero, bool bForShow = false );
-	float GetHpMaxRatio( int lvHero, bool bForShow = false );
-	float GetAttackSpeed( int lvHero, bool bForShow = false );
-	float GetMoveSpeed( int lvHero, bool bForShow = false ); 
+	float GetAttackMeleeRatio( int lvHero, bool bForShow = false ) const;
+	float GetAttackRangeRatio( int lvHero, bool bForShow = false ) const;
+	float GetDefenseRatio( int lvHero, bool bForShow = false ) const;
+	float GetHpMaxRatio( int lvHero, bool bForShow = false ) const;
+	float GetAttackSpeed( int lvHero, bool bForShow = false ) const;
+	float GetMoveSpeed( int lvHero, bool bForShow = false ) const;
 	/// 장비의 효과가 적용된 스탯치
-	float GetAttackMeleeRatio( bool bForShow = false ) {
+	float GetAttackMeleeRatio( bool bForShow = false ) const {
 		return GetAttackMeleeRatio( GetLevelHero(), bForShow );
 	}
-	float GetAttackRangeRatio(  bool bForShow = false ) {
+	float GetAttackRangeRatio(  bool bForShow = false ) const {
 		return GetAttackRangeRatio( GetLevelHero(), bForShow );
 	}
-	float GetDefenseRatio( bool bForShow = false ) {
+	float GetDefenseRatio( bool bForShow = false ) const {
 		return GetDefenseRatio( GetLevelHero(), bForShow );
 	}
-	float GetHpMaxRatio( bool bForShow = false ) {
+	float GetHpMaxRatio( bool bForShow = false ) const {
 		return GetHpMaxRatio( GetLevelHero(), bForShow );
 	}
 	/// 몇초에 한번씩 공격하는가
-	float GetAttackSpeed( bool bForShow = false ) {
+	float GetAttackSpeed( bool bForShow = false ) const {
 		return GetAttackSpeed( GetLevelHero(), bForShow );
 	}
-	float GetMoveSpeed( bool bForShow = false ) {
+	float GetMoveSpeed( bool bForShow = false ) const {
 		return GetMoveSpeed( GetLevelHero(), bForShow );
 	}
 	//
-	float GetAttackRadiusRatio( void ) {
+	float GetAttackRadiusRatio( void ) const {
 //		return GetpProp()->radiusAtk;	// 사거리는 레벨증가에 따른 증가치 없음.
 		return 1.f;		// 사거리는 일단 증폭이 안되는걸로 함.
 	}
 	/// 일단 지휘력은 보정값이 없는걸로 하고 추가 패치하자
-	BOOL IsRange( void ) {
-		return GetpProp()->IsRange();
+	BOOL IsRange( void )  const {
+		return GetpPropConst()->IsRange();
 	}
 	/**
 	 @brief 스킬 포인터를 꺼냄
@@ -207,9 +208,9 @@ public:
 	int OnDelegateGetMaxLevel( const XFLevel *pLevel, DWORD param1, DWORD param2 ) const;
 //	float GetSquadAttackMeleePower();
 	void GetSquadStat( int levelSquad, xSquadStat *pOut );
-	float GetAdjParamByItem( XGAME::xtParameter adjParam );
+	float GetAdjParamByItem( XGAME::xtParameter adjParam ) const;
 	void UpdateEquipItem( ID snItem, XBaseItem *pNewItem );
-	bool IsEquip( ID snItem );
+	bool IsEquip( ID snItem ) const;
 	const XPropUpgrade::xPropSkill* GetpPropSkillupNext( XGAME::xtTrain type ) const;
 	const XPropUpgrade::xPropSkill* GetpPropSkillupNextNext( XGAME::xtTrain type ) const;
 	const XPropSquad::xPROP* GetpPropSquadupNext() const;
@@ -260,10 +261,10 @@ public:
 	bool IsFullExp( XGAME::xtTrain type ) {
 		return m_aryUpgrade[ type ].m_Level.IsFullExp();
 	}
-	inline int GetlvPassive() {
+	inline int GetlvPassive() const {
 		return GetLevel( XGAME::xTR_SKILL_PASSIVE_UP );
 	}
-	inline int GetlvActive() {
+	inline int GetlvActive() const {
 		return GetLevel( XGAME::xTR_SKILL_ACTIVE_UP );
 	}
 	bool GetbLevelUpAndClear( XGAME::xtTrain type ) {
@@ -301,16 +302,16 @@ public:
 	bool IsActivationSkill( XGAME::xtTrain type );
 	XGAME::xtError _IsPromotionForXAccount();
 	// 특성
-	const XGAME::xAbil GetAbilNode(XGAME::xtUnit unit, ID idNode);
-	inline std::map<ID, XGAME::xAbil>& GetTechTree( XGAME::xtUnit unit ) {
+	const XGAME::xAbil GetAbilNode(XGAME::xtUnit unit, ID idNode) const;
+	inline const std::map<ID, XGAME::xAbil>& GetTechTree( XGAME::xtUnit unit ) const {
 		return m_aryUnitsAbil[ unit ];
 	}
-	inline const std::map<ID, XGAME::xAbil>& GetmapAbil( XGAME::xtUnit unit ) {
+	inline const std::map<ID, XGAME::xAbil>& GetmapAbil( XGAME::xtUnit unit ) const {
 		return m_aryUnitsAbil[ unit ];
 	}
 	bool SetUnlockAbil( XGAME::xtUnit unit, ID idNode );
 	void SetAbilPoint( XGAME::xtUnit unit, ID idNode, int point );
-	int GetLevelAbil( XGAME::xtUnit unit, ID idNode ) {
+	int GetLevelAbil( XGAME::xtUnit unit, ID idNode ) const {
 		auto abil = GetAbilNode( unit, idNode );
 		return abil.point;
 	}

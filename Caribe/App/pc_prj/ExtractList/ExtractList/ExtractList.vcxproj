@@ -58,11 +58,16 @@
     <ProjectGuid>{34C374D5-01E8-480D-AF18-581CE9A42CA0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ExtractList</RootNamespace>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccProvider>
+    </SccProvider>
     <ProjectName>1_ExtractList</ProjectName>
-    <SccAuxPath>SAK</SccAuxPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

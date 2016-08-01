@@ -13,10 +13,10 @@ class XSkillObj
 {
 	XSkillDat	*m_pDat;			// 스킬데이타 포인터. 참조용(파괴금지)
 	CTimer m_timerCool;		// 쿨타이머
-	BOOL m_bAlreadyCast;		// 이미 시전됨-패시브용
+//	BOOL m_bAlreadyCast;		// 이미 시전됨-패시브용
 	void Init() {
 		m_pDat = NULL;
-		m_bAlreadyCast = FALSE;
+//		m_bAlreadyCast = FALSE;
 	}
 	void Destroy() {}
 public:
@@ -28,16 +28,22 @@ public:
 	virtual ~XSkillObj() { Destroy(); }
 	// get/set/is
 	GET_ACCESSOR( ::CTimer&, timerCool );
-	GET_ACCESSOR( XSkillDat*, pDat );
-	GET_SET_ACCESSOR( BOOL, bAlreadyCast );
-	std::list<EFFECT*>& GetEffectList();
-	BOOL IsActive();
-	BOOL IsPassive();
-	BOOL IsAbility();
-	ID GetidSkill();
-	const _tstring& GetStrIdentifier();
-	LPCTSTR GetIdsSkill();
-	BOOL IsSameCastMethod( xCastMethod castMethod );
+	GET_ACCESSOR_CONST( const XSkillDat*, pDat );
+	inline XSkillDat* GetpDatMutable() {
+		return m_pDat;
+	}
+//	GET_SET_ACCESSOR( BOOL, bAlreadyCast );
+	const XList4<EFFECT*>& GetEffectList() const;
+	BOOL IsActive() const;
+	BOOL IsPassive() const;
+	BOOL IsAbility() const;
+	ID GetidSkill() const;
+	inline ID getid() const {
+		return GetidSkill();
+	}
+	const _tstring& GetStrIdentifier() const;
+	LPCTSTR GetIdsSkill() const;
+	BOOL IsSameCastMethod( xCastMethod castMethod ) const;
 	// virtual
 	virtual int IsCastCondition();		// 시전조건인가?
 };

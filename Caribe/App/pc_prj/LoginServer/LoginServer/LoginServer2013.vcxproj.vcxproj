@@ -44,10 +44,14 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}</ProjectGuid>
-    <SccProjectName>Perforce Project</SccProjectName>
-    <SccLocalPath>..\..\..\..\..</SccLocalPath>
-    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccProvider>
+    </SccProvider>
     <ProjectName>LoginServer_2013</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

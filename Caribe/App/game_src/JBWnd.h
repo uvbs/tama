@@ -105,7 +105,6 @@ private:
 		m_pHero = NULL;
 		m_pBG = NULL;
 		m_pFace = NULL;
-//		XCLEAR_ARRAY( m_pStar );
 		m_pNameCard = NULL;
 		m_pName = nullptr;
 		m_pUnitFace = nullptr;

@@ -19,8 +19,8 @@ using namespace XGAME;
 template<> XPool<XUnitCommon>* XMemPool<XUnitCommon>::s_pPool = NULL;
 #endif // _XMEM_POOL
 
-XUnitCommon::XUnitCommon( XSquadObj *pSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vPos, float multipleAbility )
-	: XBaseUnit( pSquadObj, idProp, bitSide, vPos, multipleAbility ) {
+XUnitCommon::XUnitCommon( XSPSquad spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vPos, float multipleAbility )
+	: XBaseUnit( spSquadObj, idProp, bitSide, vPos, multipleAbility ) {
 	Init();
 }
 void XUnitCommon::Destroy()

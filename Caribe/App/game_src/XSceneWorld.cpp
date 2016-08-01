@@ -2994,6 +2994,9 @@ int XSceneWorld::OnCheat( XWnd* pWnd, DWORD p1, DWORD p2 )
 	if( type == 24 ) {
 		GAME->ToggleSound();
 	} else
+	if( type == 25 ) {
+		// 특성초기화. XSceneTech::OnCheat에서 사용
+	} else
 	if( type == 99 ) {
 //		DoBlinkSpotCode( 225547, 5.f );
 //		DoMoveToCodeSpots( 225547 );

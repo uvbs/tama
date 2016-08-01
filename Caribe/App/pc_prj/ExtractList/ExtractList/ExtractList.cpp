@@ -241,7 +241,7 @@ int XMain::WriteFullList( const XVector<XPatch::XRES_INFO>& aryAll )
 	for( auto& info : aryAll ) {
 		strcpy_s( cBuff, SZ2C( info.strFile.c_str() ) );
 		strReplace( cBuff, '\\', '/' );
-		fprintf_s( fp, "\"%s\"\t%d\t%u\n", cBuff, info.size, info.llChecksum );
+		fprintf_s( fp, "\"%s\"\t%d\t%llu\n", cBuff, info.size, info.llChecksum );
 	}
 	fprintf_s( fp, "// num files %d \n", aryAll.size() );
 	fclose( fp );

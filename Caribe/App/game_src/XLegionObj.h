@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////
 namespace XSKILL {
 class XSkillReceiver;
+enum xtJuncture : int;
 }
 class XBaseUnit;
 class XHero;
@@ -72,13 +73,14 @@ public:
 		return m_cntLive;
 	}
 	void SetAI( BOOL bFlag );
+	void OnSkillEvent( XSKILL::xtJuncture event );
 	SquadPtr FindNearSquad( XSquadObj *pFinder );
 	SquadPtr FindNearSquad( XSquadObj *pFinder, bool( *pFunc )( SquadPtr& ) );
 	UnitPtr FindNearUnit( const XE::VEC3& vwSrc, float meterRadius ) const;
 //	UnitPtr FindAttackTargetInSquad( XSquadObj *pFinder, const SquadPtr& spAt, SquadPtr *pOutSquad );
 	void FrameMove( float dt );
 	void Draw( XEWndWorld *pWndWorld );
-	void OnDieSuqad( XSquadObj *pSquad );
+	void OnDieSuqad( XSPSquad spSquad );
 	BOOL IsNearestSquad( const SquadPtr& spBase, SquadPtr& spOut );
 	SquadPtr GetPickSquad( const XE::VEC3& vwPick, BIT bitCamp, ID snExclude = 0 );
 	int GetNearSquad( XSquadObj *pSquadSrc,

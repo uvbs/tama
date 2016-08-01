@@ -179,36 +179,29 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 			}
 		} while (( pElemChild = pElemChild->NextSiblingElement() ));
 	}
-	if( pSkillDat )
-	{
-		if( pSkillDat->GetstrIdentifier() == _T("chill_blast_arrow") )
-		{
+	if( pSkillDat )	{
+		if( pSkillDat->GetstrIdentifier() == _T("chill_blast_arrow") )		{
 			int a = 0;
 		}
 		// "효과"블럭이 추가된게 있었으면 디폴트용으로 생성되었던 이펙트 블럭은 필요없으므로 지운다.
-		if( pSkillDat->GetNumEffect() > 0 )
-		{
+		if( pSkillDat->GetNumEffect() > 0 ) {
 			SAFE_DELETE( pEffect );
 		}
 		else
 		// 효과폴더가 없고 발동파라메터가 지정되지 않은 폴더는 스킬이 아니라고 보고 지운다.
-		if( pSkillDat->GetNumEffect() == 0 )
-		{
+		if( pSkillDat->GetNumEffect() == 0 ) {
 			if( pEffect->invokeParameter == 0 && 
 				pEffect->invokeState == 0 &&
 				pEffect->strInvokeSkill.empty() && 
 				pEffect->idInvokeSkill == 0 &&
 				pEffect->invokeAbilityMin.size() == 0 &&
-				pEffect->invokeJuncture != 99 )		// 발동시점:하드코딩
-			{
+				pEffect->invokeJuncture != 99 )	{	// 발동시점:하드코딩
 				SAFE_RELEASE_REF( pSkillDat );
 				SAFE_DELETE( pEffect );
-			}
-			else
+			} else
 				// "효과"블럭으로 추가된게 없고 발동파라메터는 지정되었으면 디폴트 이펙트를 이펙트로 추가한다.
 				pSkillDat->AddEffect( pEffect );
-		} else
-		{
+		} else {
 			XBREAK(1);
 		}
 		if( pSkillDat )
@@ -216,11 +209,9 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 			if( pSkillDat->m_strShootObj.empty() == false && pSkillDat->m_idShootObj == 0 )
 				pSkillDat->m_idShootObj = 1;
 			// 파라메터 보정
-			LIST_LOOP( pSkillDat->GetlistEffects(), EFFECT*, itor, pEffect )
-			{
+			for( const auto pEffect : pSkillDat->GetlistEffects() ) {
 				// 디폴트 파라메터일때.
-				if( pEffect->invokeJuncture == xJC_FIRST )
-				{
+				if( pEffect->invokeJuncture == xJC_FIRST ) {
 					if( pSkillDat->IsPassiveType() )
 						pEffect->invokeJuncture = xJC_PERSIST;
 					else
@@ -234,8 +225,7 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 // 					XBREAK( pEffect->strInvokeTimeSkill.empty() );
 // 				}
 				// 발동시점스킬이 지정되어 있다면 발동시점은 무조건 스킬발동시가 된다.
-				if( pEffect->strInvokeTimeSkill.empty() == false )
-				{
+				if( pEffect->strInvokeTimeSkill.empty() == false ) {
 					pEffect->invokeJuncture = xJC_INVOKE_SKILL;	// 이걸하지않으면 지속형 스킬이 되어버림.
 				}
 				// 발동대상우호가 지정되지 않았으면 시전대상우호를 가져다 쓴다.
@@ -257,10 +247,11 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 						XALERT("스킬\"%s\":발동범위가 지정되지 않음", pSkillDat->GetstrIdentifier().c_str() );
 				}
 				AdjustEffectParam( pSkillDat, pEffect );	// virtual
-			} END_LOOP;
+			}
 		}
-	} else
+	} else {
 		SAFE_DELETE( pEffect );
+	}
 	return pSkillDat;
 }
 

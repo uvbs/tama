@@ -33,27 +33,16 @@ public:
 		}
 	};
 private:
-	XList<XSkillObj*> m_listUseSkill;		// 보유 스킬
+//	XList<XSkillObj*> m_listUseSkill;		// 보유 스킬
+	XList4<XSkillObj*> m_listUseSkill;		// 보유스킬
 	XESkillMng *m_prefSkillMng;
-//	ID m_idEventHitter;		// 피격자, this가 때린자
-//	ID m_idEventAttacker;	// 공격자, this를 공격한자
 	ID m_idDead;			// 사살된자, this가 죽인넘
-// 	XSkillObj *m_pUseSkill;	///< UseSkill()로 사용된 스킬객체. OnCastSkill()에서 다시 사용된다.
-// 	int m_Level;			///< UseSkill()로 건네준 스킬레벨
-// 	XSkillReceiver *m_pBaseTarget;	///< 기준타겟
-// 	XE::VEC2 m_vTarget;				///< 기준좌표
 	void Init() {
-		m_prefSkillMng = NULL;
-//		m_idEventHitter = 0;
-//		m_idEventAttacker = 0;
+		m_prefSkillMng = nullptr;
 		m_idDead = 0;
-// 		m_pUseSkill = nullptr;
-// 		m_pBaseTarget = nullptr;
-// 		m_Level = 0;
 	}
 	void Destroy();
 	// 효과처리부는 외부에서 부를일이 없으니까 숨겼음
-//	xtError TryCastEffect( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pBaseTarget, XSkillReceiver *pCastingTarget, const XE::VEC2 *pvPos=NULL );	// 효과발동시도
 	xtError UseEffect( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pTarget, const XE::VEC2& vPos, ID idCallerSkill );
 public:
 	XSkillUser( XESkillMng *pSkillMng ) { 
@@ -65,53 +54,36 @@ public:
 	void OnCreate();
 	// get/set/is
 	// 보유스킬 수 리턴
-	int GetNumUseSkill( void ) { return m_listUseSkill.size(); }
-	// 주어진 시전방식에 해당하는 스킬들의 개수를 구함
-	int GetNumUseSkill( xCastMethod castMethod ) {		
-		int n = 0;
-		XLIST_LOOP( m_listUseSkill, XSkillObj*, pSkillUseObj ) {
-			if( pSkillUseObj->IsSameCastMethod( castMethod ) )
-				n++;
-		} END_LOOP;
-		return n;
+	inline int GetNumUseSkill() const { 
+		return m_listUseSkill.size(); 
 	}
-	GET_ACCESSOR( XSkillObj_List&, listUseSkill );	// 이건 나중에 내부로 숨겨야한다
-//	GET_SET_ACCESSOR( ID, idEventHitter );
-//	GET_SET_ACCESSOR( ID, idEventAttacker );
-	GET_SET_ACCESSOR( ID, idDead );
-//	GET_SET_ACCESSOR( xTYPE_FRIENDSHIP, useFriendship );
+	void OnEventBySkillUser( xtJuncture event );
+	// 주어진 시전방식에 해당하는 스킬들의 개수를 구함
+	int GetNumUseSkill( xCastMethod castMethod ) const;
+	GET_ACCESSOR_CONST( const XList4<XSkillObj*>&, listUseSkill );	// 이건 나중에 내부로 숨겨야한다
+	GET_SET_ACCESSOR_CONST( ID, idDead );
 	XSkillObj* GetSkillObjByIndex( int idx ) {
-		if( m_listUseSkill.size() == 0 )
-			return NULL;
-		return m_listUseSkill.GetFromIndex(0);
+		if( m_listUseSkill.empty() )
+			return nullptr;
+		return m_listUseSkill.GetByIndex( idx );
 	}
 	//
 	XSkillObj* FindUseSkillByID( ID idSkillDat );
-//	XSkillObj* FindUseSkillByName( LPCTSTR szName );
 	XSkillObj* FindUseSkillByIdentifier( LPCTSTR szIdentifier );
 
 	// pUseSkill을 보유스킬목록에 추가합니다
 	void AddUseSkill( XSkillObj *pUseSkill );
 	// idSkillDat스킬로 사용스킬객체를 만들어서 보유한다
 	XSkillObj* CreateAddUseSkillByID( ID idSkillDat );		
-//	XSkillObj* CreateAddUseSkillByName( LPCTSTR szName );
 	XSkillObj* CreateAddUseSkillByIdentifier( LPCTSTR szIdentifier );
-	void DestroyAllSkill( void ) {
-		XLIST_DESTROY( m_listUseSkill, XSkillObj* );
-	}
+	void DestroyAllSkill();
 
 	xUseSkill UseSkillByID( XSkillObj **ppOutUseSkill, int level, ID idSkillDat, XSkillReceiver *pTarget, XE::VEC2 *pvPos );
-//	xtError UseSkillByName( XSkillObj **ppOutUseSkill, LPCTSTR szSkillName, XSkillReceiver *pTarget, XE::VEC2 *pvPos );
-	xUseSkill UseSkillByIdentifier( LPCTSTR szIdentifier, int level, XSkillReceiver *pTarget, XE::VEC2 *pvPos, XSkillObj **ppOutUseSkill=NULL );
+	xUseSkill UseSkillByIdentifier( LPCTSTR szIdentifier, int level, XSkillReceiver *pTarget, XE::VEC2 *pvPos, XSkillObj **ppOutUseSkill=nullptr );
 	xUseSkill UseSkill( XSkillObj *pUseSkill, 
 					int level, 
 					XSkillReceiver *pCurrTarget, 
 					XE::VEC2 *pvPos );
-// 	xtError	UseSkill( XSkillObj *pUseSkill, 
-// 					int level,
-// //					xCastMethod castMethod,
-// 					XSkillReceiver *pCurrTarget,	// 외부에서 커서로 타겟을 찍었을 경우
-// 					XE::VEC2 *pvTouchPos );			// 외부에서 커서로 좌표를 찍었을 경우
 	// 첫번째 보유스킬을 사용한다
 	xUseSkill UseSkill( XSkillReceiver *pTarget, XE::VEC2 *pvPos );
 	xtError OnShootSkill( XSkillObj *pUseSkill, XSkillReceiver *pBaseTarget, int level, const XE::VEC2& vTarget, ID idCallerSkill);
@@ -119,9 +91,8 @@ public:
 		return OnShootSkill( infoUseSkill.pUseSkill, infoUseSkill.pBaseTarget, infoUseSkill.level, infoUseSkill.vTarget, idCallerSkill );
 	}
 	int FrameMove( float dt );
-	xtError CastEffectToCastingTarget( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pBaseTarget, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos, ID idCallerSkill );		// 효과발동
 	// virtual
-	virtual XLuaSkill* CreateScript( void ); 		// XLua 객체를 생성하고 전역변수와 API들을 등록하여 돌려준다
+	virtual XLuaSkill* CreateScript(); 		// XLua 객체를 생성하고 전역변수와 API들을 등록하여 돌려준다
 //	virtual xtError IsValidCastingTarget( XSkillObj *pUseSkill, EFFECT *pEffect, XSkillReceiver *pTarget, XE::VEC2 *pvPos  );		// 시전대상 유효성 검사
 	virtual int GetCastingTargetList( XVector<XSkillReceiver*> *pAryOutCastingTarget, xtCastTarget castTarget, XSkillDat *pSkillDat, const EFFECT *pEffect, XSkillReceiver *pOutBaseTarget, XE::VEC2 *pvOutPos = nullptr );		// 시전대상얻기
 	virtual int GetInvokeTarget( XVector<XSkillReceiver*> *plistOutInvokeTarget, XSkillDat *pBuff, int level, xtInvokeTarget invokeTarget, const EFFECT *pEffect, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos );		// 스킬발동대상얻기
@@ -132,7 +103,7 @@ public:
 	BIT GetFilterSideInvoke( XSkillUser *pCaster/*, XSkillReceiver *pInvoker*/, XSkillReceiver *pCastingTarget, xtInvokeTarget targetType, xtFriendshipFilt friendshipFilter );
 	virtual BOOL IsInvokeAble( XSkillDat *pDat, const XSkillReceiver *pCstTarget, const EFFECT *pEffect );
 	virtual void RegisterInhValUse( XLua *pLua, const char *szVal ) = 0; ///< szVal변수를(보통 casterObj) 상속된 하위클래스형으로 루아변수로 등록한다 말하자면 XSkillReceiver타입의 invokeObj가 아니고 XUnit타입의 invokeObj로 등록해야한다. 이런 코드 사용-> pLua->RegisterVar( szVal, this ); 	
-	virtual BIT GetCampUser( void ) const { return 0; }		// this의 진영을 리턴. 지형속성같은건 진영이 없기때문에 pure virtual 로 하지 않았다
+	virtual BIT GetCampUser() const { return 0; }		// this의 진영을 리턴. 지형속성같은건 진영이 없기때문에 pure virtual 로 하지 않았다
 	virtual void OnPlaySoundUse( ID id ) { XLOG("경고: PlaySound가 구현되지 않았음"); }
 	// pvPos를 중심으로 발동반경내의 friendship의 우호를 가진...// 이 조건에 맞는 오브젝트들 리스트 invokeNumApply만큼을 버추얼로 요청한다
 	// vStart를 시작으로 vSize크기의 사각영역내의 객체를 찾는다.
@@ -152,6 +123,7 @@ public:
 	 @param bIncludeCenter 기준타겟을 포함하여 선택할것인지 아닌지.
 	*/
 	virtual int GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget, 
+									const XSkillDat* pSkillDat,
 									const EFFECT *pEffect,
 									XSkillReceiver *pBaseTarget, 
 									const XE::VEC2& vBasePos,
@@ -167,9 +139,7 @@ public:
 									EFFECT *pEffect,
 									XSkillReceiver *pCastingTarget,
 									const XE::VEC2& vPos ) {}
-//	virtual void OnCreateCasterSfx( EFFECT *pEffect, xtPoint createPoint, LPCTSTR szSpr, ID idAct, float secPlay ) {}
 	virtual void OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
-//									const EFFECT *pEffect,
 									XSKILL::xtPoint createPoint,
 									LPCTSTR szSpr,
 									ID idAct,
@@ -178,25 +148,27 @@ public:
 	/**
 	 @brief pEffect는 null이 올수 있음.
 	*/
-	void CreateSfx( XSkillDat *pSkillDat,
-//					EFFECT *pEffect,
-					const _tstring& strEffect,
-					ID idAct,
-					xtPoint pointSfx,
-					float secPlay,
-					const XE::VEC2& vPos = XE::VEC2(0) );
-	virtual XSkillReceiver* GetGroundReceiver( void ) { return NULL; }
+	void CreateSfx( const XSkillDat *pSkillDat,
+									const _tstring& strEffect,
+									ID idAct,
+									xtPoint pointSfx,
+									float secPlay,
+									const XE::VEC2& vPos = XE::VEC2(0) );
+	void CreateSfx( const XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos );
+	virtual XSkillReceiver* GetGroundReceiver() {
+		return nullptr;
+	}
 	virtual int GetListPartyMember(XVector<XSkillReceiver*> *pAryOutIvkTarget, BIT bitSideSearchFilt, xtTargetFilter filter ) {
 		XLOG("virtual 함수가 구현되지 않음");
 		return 0;
 	}
 	// pure virtual
-	/// XSkillReceiver타입까지 상속받은 하위클래스는 이 함수를 구현해야한다. 상속받지 않았다면 NULL을 리턴하게 한다
-	virtual XSkillReceiver* GetThisRecv( void ) = 0;		
+	/// XSkillReceiver타입까지 상속받은 하위클래스는 이 함수를 구현해야한다. 상속받지 않았다면 nullptr을 리턴하게 한다
+	virtual XSkillReceiver* GetThisRecv() = 0;		
 	// 스킬버프객체 생성. 웬만하면 하위클래스 만들어서 구현할것
 private:
 	/// GetTarget( ID )를 사용하기 위해 델리게이터를 지정해준다. 보통 월드다.
-	virtual XSKILL::XDelegateSkill* GetpDelegate( void ) = 0;
+	virtual XSKILL::XDelegateSkill* GetpDelegate() = 0;
 public:
 	// copy해서 쓰기 좋으라고 일부러 XSKILL을 다 붙임
 	virtual XSKILL::XBuffObj* CreateSkillBuffObj( XSKILL::XSkillUser *pCaster, 
@@ -214,7 +186,7 @@ public:
 // 												XSKILL::XSkillReceiver *pCastingTarget, 
 												XSKILL::XSkillUser *pCaster, 
 												const XE::VEC2& vPos ) = 0;		
-//	virtual XE::VEC2 GetCurrentPosForSkill( void ) = 0;
+//	virtual XE::VEC2 GetCurrentPosForSkill() = 0;
 	virtual void CustomInvokeFilter( XVector<XSkillReceiver*> *pOutAryIvkTarget,
 							XVector<XSkillReceiver*>& arySrc,
 							const EFFECT *pEffect ) {}
@@ -226,7 +198,7 @@ public:
 // 			return TRUE;
 // 		return FALSE;
 // 	}
-	void InvokePassiveSkill( void );
+//	void InvokePassiveSkill();
 	virtual void OnSkillPlaySound( ID idSound ) {}
 	///< 하위클래스는 cond에 맞는 타겟을 찾아 돌려줘야 한다. this는 시전자가 된다.
 	virtual XSKILL::XSkillReceiver* GetTargetObject( XSKILL::EFFECT *pEffect, XSKILL::xtTargetCond cond ) = 0;
@@ -251,7 +223,7 @@ public:
 													XSKILL::XSkillReceiver *pCurrTarget,
 													const XE::VEC2& vPos ) { 
 		XBREAK(1);
-		return NULL; 
+		return nullptr; 
 	}
 	virtual XSKILL::XSkillReceiver* GetCurrTarget() { XBREAK(1); return nullptr; }
 	/**
@@ -288,15 +260,22 @@ public:
 	bool IsInvokeTargetCondition( XSkillDat *pDat
 															, const EFFECT *pEffect
 															, XSkillReceiver *pInvokeTarget );
-	void ApplyInvokeEffectWithAry( const XVector<XSkillReceiver*>& aryInvokers
-														, XSkillDat *pDat
-														, const EFFECT *pEffect
-														, XSkillReceiver *pInvoker
-														, bool bCreateSfx
-														, int level
-														, const XE::VEC2& vPos
-														, XBuffObj *pBuffObj
-														, XLuaSkill *pLua );
+// 	void ApplyInvokeEffectWithAry( const XVector<XSkillReceiver*>& aryInvokers
+// 														, XSkillDat *pDat
+// 														, const EFFECT *pEffect
+// 														, XSkillReceiver *pInvoker
+// 														, bool bCreateSfx
+// 														, int level
+// 														, const XE::VEC2& vPos
+// 														, XBuffObj *pBuffObj
+// 														, XLuaSkill *pLua );
+//	void ApplyInvokeEffectWithAry2( const XVector<XSkillReceiver*>& aryIvkTarget, XSkillDat *pDat, const EFFECT *pEffect, XSkillReceiver *pInvoker, bool bCreateSfx, int level, const XE::VEC2& vPos, XBuffObj *pBuffObj );
+	void ApplyInvokeEffectToInvokeTarget( XSkillReceiver* pInvokeTarget, XSkillDat *pDat, const EFFECT *pEffect, XSkillReceiver *pInvoker, bool bCreateSfx, int level, const XE::VEC2& vPos, XBuffObj *pBuffObj );
+private:
+	// 캐스팅대상에 효과를 시전한다.
+	xtError CastEffToCastTarget( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pBaseTarget, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos, ID idCallerSkill );
+	xtError CastEffToCastTargetByBuff( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos, ID idCallerSkill );
+	xtError CastEffToCastTargetByDirect( XSkillDat *pSkillDat, const EFFECT *pEffect, int level, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos );
 }; // XSkillUser
 
 /****************************************************************
@@ -326,7 +305,7 @@ public:
 												int level, 
 												XSkillReceiver *pBaseTarget, 
 												const XE::VEC2& vPos );
-	void CallCallbackFunc( void ) {
+	void CallCallbackFunc() {
 //		if( !m_Callback.funcCallback.empty() )
 		if( m_Callback.funcCallback )
 			m_Callback.funcCallback( m_Callback.pOwner );

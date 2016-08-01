@@ -20,12 +20,12 @@ using namespace XGAME;
 using namespace XSKILL;
 
 ////////////////////////////////////////////////////////////////
-XUnitCyclops::XUnitCyclops( XSquadObj *pSquadObj,
+XUnitCyclops::XUnitCyclops( XSPSquad spSquadObj,
 							ID idProp,
 							BIT bitSide, 
 							const XE::VEC3& vPos,
 							float multipleAbility )
-	: XUnitCommon( pSquadObj, idProp, bitSide, vPos, multipleAbility )
+	: XUnitCommon( spSquadObj, idProp, bitSide, vPos, multipleAbility )
 {
 	Init();
 }
@@ -98,7 +98,7 @@ void XUnitCyclops::sShootLaser( UnitPtr spShooter,
 		// 범위공격 대상 선정
 		XVector<XSPUnit> ary;
 		BIT bitSide = ~(spShooter->GetCamp());
-		float radius = 3.f;
+		float radius = 5.f;
 		{
 			auto pBuff = spShooter->FindBuffSkill(_T("spread"));
 			if( pBuff )

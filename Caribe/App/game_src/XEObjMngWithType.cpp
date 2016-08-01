@@ -500,53 +500,137 @@ UnitPtr XEObjMngWithType::FindNearUnitByMore( XBaseUnit *pSrcObj,
  @param bIncludeCenter 중심타겟(pCenter가 있을경우)을 대상에 포함할지 말지. pCenter가 없다면 이 옵션은 무시된다.
 */
 int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
-																				 XEBaseWorldObj *pCenter,
-																				 const XE::VEC2& vCenter,
-																				 float pixelRadius,
-																				 BIT bitSideFilter,
-																				 int numCost,
-																				 bool bIncludeCenter,
-																				 BIT bitLive ) const		// 생존필터  
+																					XEBaseWorldObj *pCenter,
+																					const XE::VEC2& vCenter,
+																					float pixelRadius,
+																					BIT bitSideFilter,
+																					int numCost,
+																					bool bIncludeCenter,
+																					BIT bitFlag ) const		// 생존필터  
 {
 	if( numCost < 0 )
 		return 0;
-	int currCost = numCost;
+	//
+	int costSum = 0;
 	for( auto spUnit : m_listUnits ) {
 		XBREAK( spUnit == nullptr );
 		if( (spUnit->GetCamp() & bitSideFilter) == 0 )
 			continue;
-		if( (bitLive & XSKILL::xTL_LIVE) == 0 && spUnit->IsLive() )
+		if( (bitFlag & XSKILL::xTF_LIVE) == 0 && spUnit->IsLive() )
 			continue;
-		if( (bitLive & XSKILL::xTL_DEAD) == 0 && spUnit->IsDead() )
+		if( (bitFlag & XSKILL::xTF_DEAD) == 0 && spUnit->IsDead() )
 			continue;
 		// 시전대상을 포함하지 않는 조건일때 유닛이 시전대상이면 스킵
-		if( pCenter 
+		if( pCenter
 				&& pCenter->GetsnObj() == spUnit->GetsnObj()		// spUnit이 중심타겟일때
 				&& bIncludeCenter == false )										// 중심타겟안포함 옵션이면 스킵한다.
 			continue;
-		const XE::VEC2 vDist = spUnit->GetvwPos().ToVec2() - vCenter;
-		const float distsq = vDist.Lengthsq();
-		if( distsq <= pixelRadius * pixelRadius ) {
-			// 코스트가 0이면 코스트에 관계없이 타겟하나만 선택한다.
-			if( numCost == 0 ) {
-				pOutAry->Add( spUnit );
-				return 1;			
-			} else {
-				const auto costUnit = spUnit->GetSizeCost();
-				if( costUnit <= currCost ) {
-					// 유닛 코스트가 남은 코스트를 깔수 있을때만.
-					currCost -= costUnit;
-					XBREAK( currCost < 0 );
-					pOutAry->Add( spUnit );
-					if( currCost == 0 )				// 코스트를 다 채웠으면 리턴.
-						return pOutAry->Size();
+		if( bitFlag & XSKILL::xTF_DIFF_SQUAD ) {
+			// spUnit이 이미 찾은 유닛과 같은 부대면 스킵
+			bool bExisted = false;
+			for( auto& spFinded : *pOutAry ) {
+				if( spUnit->GetpSquadObj()->GetsnSquadObj() == spFinded->GetpSquadObj()->GetsnSquadObj() ) {
+					bExisted = true;
+					break;
 				}
 			}
+			if( bExisted )
+				continue;
+		}
+		const XE::VEC2 vDist = spUnit->GetvwPos().ToVec2() - vCenter;
+		const float distsq = vDist.Lengthsq();
+		// 코스트와 관계없이 일단 범위안에 들어가는 타겟은 모두 담은후 거기서 다시 코스트에 따라 랜덤으로 꺼낸다.
+		if( distsq <= pixelRadius * pixelRadius ) {
+			pOutAry->Add( spUnit );
+			costSum += spUnit->GetSizeCost();		// 배열에 들어간 유닛들의 토탈코스트
 		} // in radius
 	} // for
-
+	// 목표코스트를 다 못채웠으면 랜덤으로 뽑아낼필요 없음.
+	if( costSum <= numCost )
+		return pOutAry->Size();
+	int currCost = numCost;
+	XVector<XSPUnit> ary = *pOutAry;
+	pOutAry->Clear();
+	// 영역안에 들어온 타겟들을 대상으로 다시 코스트에 따라 실제 타겟을 선정한다.
+	while( ary.Size() > 0 ) {
+		auto spUnit = ary.PopFromRandom();
+		if( numCost == 0 ) {
+			pOutAry->Add( spUnit );
+			return 1;
+		} else {
+			const auto costUnit = spUnit->GetSizeCost();
+			if( costUnit <= currCost ) {
+				// 유닛 코스트가 남은 코스트를 깔수 있을때만.
+				currCost -= costUnit;
+				XBREAK( currCost < 0 );
+				pOutAry->Add( spUnit );
+				if( currCost == 0 )				// 코스트를 다 채웠으면 리턴.
+					return pOutAry->Size();
+			}
+		}
+	}
 	return pOutAry->size();
 }
+// int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
+// 																				 XEBaseWorldObj *pCenter,
+// 																				 const XE::VEC2& vCenter,
+// 																				 float pixelRadius,
+// 																				 BIT bitSideFilter,
+// 																				 int numCost,
+// 																				 bool bIncludeCenter,
+// 																				 BIT bitFlag ) const		// 생존필터  
+// {
+// 	if( numCost < 0 )
+// 		return 0;
+// 	int currCost = numCost;
+// 	for( auto spUnit : m_listUnits ) {
+// 		XBREAK( spUnit == nullptr );
+// 		if( (spUnit->GetCamp() & bitSideFilter) == 0 )
+// 			continue;
+// 		if( (bitFlag & XSKILL::xTF_LIVE) == 0 && spUnit->IsLive() )
+// 			continue;
+// 		if( (bitFlag & XSKILL::xTF_DEAD) == 0 && spUnit->IsDead() )
+// 			continue;
+// 		// 시전대상을 포함하지 않는 조건일때 유닛이 시전대상이면 스킵
+// 		if( pCenter 
+// 				&& pCenter->GetsnObj() == spUnit->GetsnObj()		// spUnit이 중심타겟일때
+// 				&& bIncludeCenter == false )										// 중심타겟안포함 옵션이면 스킵한다.
+// 			continue;
+// 		if( bitFlag & XSKILL::xTF_DIFF_SQUAD ) {
+// 			// spUnit이 이미 찾은 유닛과 같은 부대면 스킵
+// 			bool bExisted = false;
+// 			for( auto& spFinded : *pOutAry ) {
+// 				if( spUnit->GetpSquadObj()->GetsnSquadObj() == spFinded->GetpSquadObj()->GetsnSquadObj() ) {
+// 					bExisted = true;
+// 					break;
+// 				}
+// 			}
+// 			if( bExisted )
+// 				continue;
+// 		}
+// 		const XE::VEC2 vDist = spUnit->GetvwPos().ToVec2() - vCenter;
+// 		const float distsq = vDist.Lengthsq();
+// 		if( distsq <= pixelRadius * pixelRadius ) {
+// 			// 코스트가 0이면 코스트에 관계없이 타겟하나만 선택한다.
+// 			if( numCost == 0 ) {
+// 				pOutAry->Add( spUnit );
+// 				return 1;			
+// 			} else {
+// 				const auto costUnit = spUnit->GetSizeCost();
+// 				if( costUnit <= currCost ) {
+// 					// 유닛 코스트가 남은 코스트를 깔수 있을때만.
+// 					currCost -= costUnit;
+// 					XBREAK( currCost < 0 );
+// 					pOutAry->Add( spUnit );
+// 					if( currCost == 0 )				// 코스트를 다 채웠으면 리턴.
+// 						return pOutAry->Size();
+// 				}
+// 			}
+// 		} // in radius
+// 	} // for
+// 
+// 	return pOutAry->size();
+// }
 /**
  @brief 윈도우좌표vsPos에서 픽킹되는 bitCamp진영 유닛을 찾아낸다.
  @param snExcludeSquad 검색에서 제외해야할 부대

@@ -47,10 +47,14 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>xe_client</RootNamespace>
-    <SccProjectName>Perforce Project</SccProjectName>
-    <SccLocalPath>..\..\..\..</SccLocalPath>
-    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccProvider>
+    </SccProvider>
     <ProjectName>xe_client2013</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'" Label="Configuration">
@@ -524,6 +528,7 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\Sound\iPhone\XSoundMngOpenAL.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\Ogg\XOgg.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\aldlist.h" />
@@ -708,6 +713,7 @@
     <ClCompile Include="..\..\..\Common\XInterpolationObj.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\CrashHandler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
@@ -770,6 +776,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\iPhone\XSoundMngOpenAL.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\Ogg\XOgg.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\aldlist.cpp" />

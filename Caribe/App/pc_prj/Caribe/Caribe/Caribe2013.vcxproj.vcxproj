@@ -52,10 +52,14 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1565A2CB-DB14-4F22-8545-F51B7C11C502}</ProjectGuid>
-    <SccProjectName>Perforce Project</SccProjectName>
-    <SccLocalPath>..\..\..\..\..</SccLocalPath>
-    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccProvider>
+    </SccProvider>
     <ProjectName>Caribe2013</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'" Label="Configuration">
@@ -383,7 +387,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;..\..\..\..\..\XE\bin\Debug;;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xe_clientd_gles2.lib;libGLESv2.lib;libgles_cm.lib;windowscodecs.lib;winmm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xe_clientd_gles2.lib;libGLESv2.lib;libgles_cm.lib;windowscodecs.lib;winmm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

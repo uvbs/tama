@@ -212,10 +212,19 @@ void XLegionObj::SetAI( BOOL bFlag )
 	}
 }
 
+/**
+ @brief 양측 군단이 모두 생성된 직후 발생
+*/
+void XLegionObj::OnSkillEvent( XSKILL::xtJuncture event )
+{
+	for( auto &spSquadObj : m_listSquad ) {
+		spSquadObj->OnSkillEvent( event );
+	}
+}
+
 void XLegionObj::OnStartBattle()
 {
-	for( auto &spSquadObj : m_listSquad )
-	{
+	for( auto &spSquadObj : m_listSquad )	{
 		spSquadObj->OnStartBattle();
 	}
 }
@@ -446,16 +455,16 @@ void XLegionObj::Draw( XEWndWorld *pWndWorld )
 /**
  @brief 분대가 전멸했다.
 */
-void XLegionObj::OnDieSuqad( XSquadObj *pSquad )
+void XLegionObj::OnDieSuqad( XSPSquad spSquad )
 {
-//	BOOL bSuccess = m_listSquad.DelByID( pSquad->getid() );
-	XSPSquad *pspFound = m_listSquad.FindpByID( pSquad->getid() );
-	XBREAK( pspFound == nullptr );
-	if( pspFound ) {
+// 	auto spFound = m_listSquad.FindByIDNonPtr( spSquad->getid() );
+	auto spFound = m_listSquad.FindByID( spSquad->getid() );
+	XBREAK( spFound == nullptr );
+	if( spFound ) {
 		AddCntLive( -1 );
-		XBattleField::sGet()->OnDieSquad( pSquad );
+		XBattleField::sGet()->OnDieSquad( spSquad );
 #ifdef _XSINGLE
-		pSquad->m_secDie = pSquad->m_timerDie.GetPassSec();
+		spSquad->m_secDie = spSquad->m_timerDie.GetPassSec();
 #endif // _XSINGLE
 		if( m_cntLive == 0 )
 			XBattleField::sGet()->OnDieLegion( GetThis() );

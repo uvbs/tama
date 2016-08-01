@@ -227,17 +227,15 @@ SquadPtr XWndBattleField::PickingSquad( float lx, float ly, BIT bitCamp )
 															snExcludeSquad, 
 															&bPickExclude );
 	SquadPtr spSquad;
-	if( unitPick == nullptr )
-	{
+	if( unitPick == nullptr )	{
 		// 해당 픽킹위치가 반경내에 들어가는 부대가 있는지 검사.
 		spSquad = XBattleField::sGet()->GetPickSquad( vwPick, bitCamp );
 		if( spSquad == nullptr )	// 이걸로도 못찾았는데
 			if( bPickExclude )		// 이전선택된 부대는 픽킹되었다면
 				return m_spSelectSquad;	// 이전선택된 부대를 돌려준다.
-	} else
-	{
+	} else	{
 		// 유닛이 걸렸으면 그 유닛의 부대를 선택한다.
-		spSquad = unitPick->GetpSquadObj()->GetThis();
+		spSquad = unitPick->GetspSquadObj();
 	}
 	return spSquad;
 }

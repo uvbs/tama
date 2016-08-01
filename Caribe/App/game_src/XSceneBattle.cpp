@@ -51,6 +51,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 using namespace XGAME;
+using namespace XSKILL;
 
 XSceneBattle *SCENE_BATTLE = nullptr;
 XGAME::xBattleStart XSceneBattle::s_BattleStart;
@@ -182,7 +183,7 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 	// 전투타입을 지정한다.
 	XBattleField::sGet()->SettypeBattle( s_BattleStart.m_typeBattle );
 
-	XObjDamageNumber::s_strFont = FONT_BADABOOM;
+	XObjDmgNum::s_strFont = FONT_BADABOOM;
 	SetbUpdate( true );
 }
 
@@ -245,6 +246,11 @@ void XSceneBattle::CreateCamps()
 		camp.CreateSquadObj( m_pWndWorld, s_BattleStart.m_typeBattle );
 		camp.m_psfcProfile = nullptr;
 	}
+	// 각 유닛들에게 OnStart이벤트
+	for( auto& camp : m_aryCamp ) {
+		camp.m_spLegionObj->OnSkillEvent( xJC_START );
+	}
+	//
 	s_BattleStart.Release();		// spAcc가 파괴되기전에 미리 해제시켜줘야 함.
 }
 BOOL XSceneBattle::OnCreate()
@@ -279,7 +285,7 @@ BOOL XSceneBattle::OnCreate()
 #ifndef _XSINGLE
 	if( m_pSpot && m_pSpot->GettypeSpot() == XGAME::xSPOT_CASTLE ) {
 		// 자원부대 리스트를 얻는다.
-		XVector<SquadPtr> arySquads;
+		XVector<XSPSquad> arySquads;
 		auto pLegionObj = XBattleField::sGet()->GetAILegionObj();
 		pLegionObj->GetArySquadByResource( &arySquads );
 		XVector<xRES_NUM> aryRes, aryLoots;
@@ -763,7 +769,7 @@ void XSceneBattle::Draw( void )
 		PUT_STRINGF( 384, 25, XCOLOR_WHITE, "%d/%d", (int)pb->GetLegionObj(1)->GetSumHpAllSquad(), (int)m_hpMaxLegion[1] );
 	}
 	if( XAPP->m_bDebugMode && XAPP->m_bDebugViewSquadInfo )	{
-		SquadPtr spSquad = WND_WORLD->GetspSelectSquad();
+		XSPSquad spSquad = WND_WORLD->GetspSelectSquad();
 		if( spSquad != nullptr )		{
 			XBaseUnit *pUnit = spSquad->GetLiveMember();
 			if( pUnit )			{
@@ -794,6 +800,15 @@ void XSceneBattle::GetSquadInfoToAry( XSPSquad spSquad, XBaseUnit* pUnit, XVecto
 {
 	pOut->clear();
 	_tstring str;
+	{
+		auto spTarget = spSquad->GetspTarget();
+		if( spTarget ) {
+			str = XFORMAT( "타겟:%s(%s)(0x%x)", spTarget->GetpHero()->GetstrName().c_str()
+																				, XGAME::GetStrUnit( spTarget->GetpHero()->GetUnit() )
+																				, spTarget->GetsnSquadObj() );
+			pOut->Add( str );
+		}
+	}
 	str = XE::Format( _T( "영웅:%s" ), spSquad->GetpHero()->GetstrName().c_str() );
 	pOut->Add( str );
 	str = XE::Format( _T( "유닛:%s" ), pUnit->GetstrIds().c_str() );
@@ -1086,10 +1101,13 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 		for( auto& camp : m_aryCamp ) {
 			if( bRecreate ) {
 				camp.CreateLegion( camp.m_idsLegion, camp.m_bitSide );
-//				camp.ReCreateLegion( m_pWndWorld );
 			}
 			camp.CreateLegionObj();
 			camp.CreateSquadObj( m_pWndWorld, camp.m_bitOption );
+		}
+		// 각 유닛들에게 OnStart이벤트
+		for( auto& camp : m_aryCamp ) {
+			camp.m_spLegionObj->OnSkillEvent( xJC_START );
 		}
 		// 배틀 씬프로세스를 종료시켜 다시 레디상태로 가게 한다.
 		m_pProcess->SetbDestroy( TRUE );
@@ -1136,7 +1154,7 @@ int XSceneBattle::OnUseSkillByButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 	if( XBREAK( pButt == NULL ) )
 		return 1;
 	if( !pButt->IsCoolTime() ) {
-		SquadPtr spSquad = WORLD->GetSquadBySN( XGAME::xLI_PLAYER, snSquad );
+		XSPSquad spSquad = WORLD->GetSquadBySN( XGAME::xLI_PLAYER, snSquad );
 		if( spSquad != nullptr && spSquad->IsLive() ) {
 			if( spSquad->GetspHeroUnit() != nullptr ) {
 				XUnitHero *pUnitHero = SafeCast<XUnitHero*, XBaseUnit*>( spSquad->GetspHeroUnit().get() );
@@ -1161,9 +1179,9 @@ XWndFaceInBattle* XSceneBattle::GetpWndFace( ID snHero )
  @brief 영웅유닛이 스킬을 쓰면 호출된다.
  영웅 초상화에 스킬사용 연출이 등장한다.
 */
-void XSceneBattle::OnUseSkill( XSquadObj* pSquadObj, const _tstring& strText )
+void XSceneBattle::OnUseSkill( XSPSquad spSquadObj, const _tstring& strText )
 {
-	auto pHero = pSquadObj->GetpHero();
+	auto pHero = spSquadObj->GetpHero();
 	auto pWndFace = GetpWndFace( pHero->GetsnHero() );
 	if( pWndFace ) {
 		pWndFace->OnUseSkill( strText );
@@ -1173,7 +1191,7 @@ void XSceneBattle::OnUseSkill( XSquadObj* pSquadObj, const _tstring& strText )
 /**
  @brief 아군 부대를 선택했을때
 */
-void XSceneBattle::OnSelectSquad( const SquadPtr& spSquadSelect )
+void XSceneBattle::OnSelectSquad( const XSPSquad& spSquadSelect )
 {
 	XE::VEC2 sizeGame = XE::GetGameSize();
 	XBREAK( spSquadSelect == nullptr );
@@ -1205,7 +1223,8 @@ void XSceneBattle::OnSelectSquad( const SquadPtr& spSquadSelect )
 	Add( pButt );
 	//
 #ifdef _XSINGLE
-	if( XAPP->m_bDebugMode && XAPP->m_bDebugViewSquadInfo )	{
+	// 부대선택시 정보출력이 켜져있고 영웅정보는 콘솔에 출력도 켜져있으면 콘솔에 출력.
+	if( XAPP->m_bDebugMode && XAPP->m_bDebugViewSquadInfo && (XAPP->m_dwFilter & 0x10))	{
 		auto pUnit = spSquadSelect->GetspHeroUnit().get();
 		XVector<_tstring> aryStr;
 		GetSquadInfoToAry( spSquadSelect, pUnit, &aryStr );
@@ -1216,32 +1235,32 @@ void XSceneBattle::OnSelectSquad( const SquadPtr& spSquadSelect )
 #endif
 }
 
-void XSceneBattle::OnDieSquad( XSquadObj* pSquadObj )
+void XSceneBattle::OnDieSquad( XSPSquad spSquadObj )
 {
 	auto pButtSkill = dynamic_cast<XWndSkillButton*>( Find("butt.skill") );
 	if( pButtSkill ) {
-		if( pButtSkill->GetsnHero() == pSquadObj->GetpHero()->GetsnHero() ) {
+		if( pButtSkill->GetsnHero() == spSquadObj->GetpHero()->GetsnHero() ) {
 			OnCancelSelect( nullptr, 0, 0 );
 		}
 	}
 #ifdef _XSINGLE
 	if( XAPP->m_bWaitAfterWin ) {
-		const auto snHero = pSquadObj->GetpHero()->GetsnHero();
-		auto idxSquad = pSquadObj->GetspLegionObj()->GetspLegion()->GetIdxSquadByHeroSN( snHero );
+		const auto snHero = spSquadObj->GetpHero()->GetsnHero();
+		auto idxSquad = spSquadObj->GetspLegionObj()->GetspLegion()->GetIdxSquadByHeroSN( snHero );
 		// 한 부대가 전멸하면 같은 라인의 부대를 모두 멈춘다.
 		for( auto& camp : m_aryCamp ) {
 			int idxCol = (idxSquad % 5);
-			auto spSquadObj = camp.m_spLegionObj->GetspSquadObjByIdx( idxCol );
-			if( spSquadObj )
-				spSquadObj->SetAI( FALSE );
+			auto spSquadObjTarget = camp.m_spLegionObj->GetspSquadObjByIdx( idxCol );
+			if( spSquadObjTarget )
+				spSquadObjTarget->SetAI( FALSE );
 			idxCol += 5;
-			spSquadObj = camp.m_spLegionObj->GetspSquadObjByIdx( idxCol );
-			if( spSquadObj )
-				spSquadObj->SetAI( FALSE );
+			spSquadObjTarget = camp.m_spLegionObj->GetspSquadObjByIdx( idxCol );
+			if( spSquadObjTarget )
+				spSquadObjTarget->SetAI( FALSE );
 			idxCol += 5;
-			spSquadObj = camp.m_spLegionObj->GetspSquadObjByIdx( idxCol );
-			if( spSquadObj )
-				spSquadObj->SetAI( FALSE );
+			spSquadObjTarget = camp.m_spLegionObj->GetspSquadObjByIdx( idxCol );
+			if( spSquadObjTarget )
+				spSquadObjTarget->SetAI( FALSE );
 		}
 	}
 #endif // _XSINGLE
@@ -1451,7 +1470,7 @@ XHero* XSceneBattle::GetpHero( ID idHero )
 {
 	auto spUnit = XBattleField::sGet()->GetHeroUnit( idHero );
 	if( spUnit ) {
-		return spUnit->GetHero();
+		return spUnit->GetpHeroMutable();
 	}
 	return nullptr;
 }
@@ -1475,7 +1494,7 @@ int XSceneBattle::OnClickPlay( XWnd* pWnd, DWORD p1, DWORD p2 )
 	return 1;
 }
 
-SquadPtr XSceneBattle::GetspSquadObj( ID snSquad )
+XSPSquad XSceneBattle::GetspSquadObj( ID snSquad )
 {
 	auto spLegionObj = XBattleField::sGet()->GetLegionObj( 0 );
 	if( spLegionObj ) {

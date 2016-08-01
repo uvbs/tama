@@ -46,8 +46,8 @@ class XBaseUnit : public XEBaseWorldObj, public XEControllerFSM
 										, public XDelegateObjBullet
 {
 public:
-	static XBaseUnit* sCreateUnit( XSquadObj *pSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
-	static XBaseUnit* sCreateHero( XSquadObj *pSquadObj, XHero *pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
+	static XBaseUnit* sCreateUnit( XSPSquad spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
+	static XBaseUnit* sCreateHero( XSPSquad spSquadObj, XHero *pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
 	static BOOL sGetMoveDstDelta( const XE::VEC3& vwCurr, const XE::VEC3& vwDst, float speedMove, XE::VEC3 *pOutDelta );
 	static bool s_bNotUseActiveByEnemy;		// 적영웅 스킬사용금지
 #ifdef WIN32
@@ -60,6 +60,7 @@ protected:
 	};
 	XArrayLinearN<xInvokeEffect,4> m_aryInvokeSkillByAttack;		// 평타공격시 발동확률이 있는 스킬이 있을경우 확률에 걸리면 이곳에 정보가 쌓인다
 private:
+	static const float c_maxDmgShake;
 	enum { 
 		xFL_NONE = 0,
 		xFL_AI = 0x0001,	// ai중인가.
@@ -73,6 +74,7 @@ private:
 	std::string m_strcIds;
 //#endif // WIN32
 	ID m_idProp;			// 자주쓰는거라 최적화를 위해 변수로 빼놓음. 
+	XHero* m_pHero = nullptr;
 	XECompCamp m_Camp;
 	XE::VEC3 m_vDelta;
 	CTimer m_Timer;
@@ -85,7 +87,7 @@ private:
 	XE::xRECT m_bbLocal;	///< 일반적인 모션의 바운딩박스를 미리구해둔다.(주로 Idle모션을 사용)
 	XE::VEC2 m_vlHitSfx;	///< 타격시 이펙트가 발생될 로컬기준좌표
 	XE::xtHorizDir m_Dir;		///< 바라보고 있는 방향
-	XSquadObj *m_pSquadObj;		///< 이 유닛이 속해있는 분대객체(weak)
+	XSquadObj* m_pSquadObj;		///< 이 유닛이 속해있는 분대객체(weak)
 	UnitPtr m_spTarget;		///< 추적목표 객체
 	XE::VEC3 m_vwTarget;		///< spTarget이 null일때 좌표만으로 이동할 목표
 	const XE::VEC3 m_vLocalFromSquad;	///< 분대내에서의 로컬좌표
@@ -113,6 +115,7 @@ private:
 		ID m_idSkill = 0;
 		XSurface *m_psfcIcon = nullptr;
 	};
+	float m_cntDmgShake;
 	std::vector<xIconBuff> m_aryBuffIcon;				// 버프용 아이콘 
 	CTimer m_timerDead;
 	CTimer m_timerDisappear;
@@ -129,7 +132,7 @@ private:
 		m_cntTargeting = 0;
 		m_psfcShadow = nullptr;
 		m_Dir = XE::HDIR_NONE;
-		m_pSquadObj = NULL;
+//		m_pSquadObj = NULL;
 		m_idxAttackedAngle = 0;
 		m_vwBind.Set(-1.f);		// 초기화 값
 		m_speedBind = 0;
@@ -144,7 +147,7 @@ private:
 protected:
 // 	GET_ACCESSOR( int, cntPerSec );
 public:
-	XBaseUnit( XSquadObj *pSquadObj
+	XBaseUnit( XSPSquad spSquadObj
 					, ID idProp
 					, BIT bitSide
 					, const XE::VEC3& vPos
@@ -152,97 +155,91 @@ public:
 	virtual ~XBaseUnit() { Destroy(); }
 	//
 	GET_ACCESSOR_CONST( ID, idProp );
-	GET_ACCESSOR( const XE::VEC3&, vDelta );
+	GET_ACCESSOR_CONST( float, cntDmgShake );
+	GET_ACCESSOR_CONST( const XE::VEC3&, vDelta );
 	GET_ACCESSOR( UnitPtr&, spTarget );
 	SET_ACCESSOR( const UnitPtr&, spTarget );
-	GET_ACCESSOR( const XE::VEC2&, vsPos );
+	GET_ACCESSOR_CONST( const XE::VEC2&, vsPos );
 	GET_ACCESSOR( XPropUnit::xPROP*, pPropUnit );
 	GET_SET_ACCESSOR_CONST( const std::string&, strcIds );
-//	GET_ACCESSOR( XHero*, pHero );
- 	GET_ACCESSOR( float, multipleAbility );
+	GET_ACCESSOR_CONST( const XHero*, pHero );
+	inline XHero* GetpHeroMutable() {
+		return m_pHero;
+	}
+ 	GET_ACCESSOR_CONST( float, multipleAbility );
 	GET_SET_ACCESSOR( XGAME::xtMelee, typeCurrMeleeType );
-// 	void SetspTarget( const UnitPtr& spTarget ) {
-// 		m_spTarget = spTarget;
-// 	}
-	GET_ACCESSOR( int, cntTargeting );
+	GET_ACCESSOR_CONST( int, cntTargeting );
 	GET_SET_ACCESSOR( XE::xtHorizDir, Dir );
-	GET_ACCESSOR( XSquadObj*, pSquadObj );	///< this가 속한 부대를 리턴한다.
-//	GET_ACCESSOR( const SquadPtr&, spTargetSquad );		///< 현재 타겟으로 잡은 부대
-	GET_ACCESSOR( const XE::VEC3&, vwTarget );
-//	GET_ACCESSOR( const XE::VEC2&, vlVecFromTarget );
-	GET_SET_ACCESSOR( const XE::VEC2&, vwBind );
-	GET_SET_ACCESSOR( float, speedBind );	///< 프레임당 이동픽셀
-	GET_SET_ACCESSOR( XGAME::xtTribe, Tribe );
-// 	ID GetIdProp() const {
-// 		return m_pProp->idProp;
-// 	}
-	GET_ACCESSOR( const XE::VEC3&, vLocalFromSquad );
-	GET_SET_ACCESSOR( const XE::VEC3&, vlActionEvent );
-	GET_SET_ACCESSOR( int, cntAttack );
-	GET_ACCESSOR( int, cntShell );
-	int AddCntAttack() {
+	GET_ACCESSOR_CONST( XSquadObj*, pSquadObj );	///< this가 속한 부대를 리턴한다.
+	XSPSquad GetspSquadObj() const;
+	GET_ACCESSOR_CONST( const XE::VEC3&, vwTarget );
+	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vwBind );
+	GET_SET_ACCESSOR_CONST( float, speedBind );	///< 프레임당 이동픽셀
+	GET_SET_ACCESSOR_CONST( XGAME::xtTribe, Tribe );
+	GET_ACCESSOR_CONST( const XE::VEC3&, vLocalFromSquad );
+	GET_SET_ACCESSOR_CONST( const XE::VEC3&, vlActionEvent );
+	GET_SET_ACCESSOR_CONST( int, cntAttack );
+	GET_ACCESSOR_CONST( int, cntShell );
+	inline int AddCntAttack() {
 		return ++m_cntAttack;
 	}
-	GET_SET_ACCESSOR( int, cntHit );
-	int AddCntHit() {
+	GET_SET_ACCESSOR_CONST( int, cntHit );
+	inline int AddCntHit() {
 		return ++m_cntHit;
 	}
 // 	virtual BOOL IsHero() {
-	BOOL IsHero() const {
+	inline BOOL IsHero() const {
 		if( m_idProp > 0 && m_idProp < XGAME::xUNIT_MAX )
 			return FALSE;
 		return TRUE;
 	}
-	bool IsUnit() const {
+	inline bool IsUnit() const {
 		return !IsHero();
 	}
 	const XPropHero::xPROP* GetpPropHero();
-	XHero* GetHero();
-	inline XHero* GetpHero() {
-		return GetHero();
-	}
-	const XHero* GetpHeroConst() const;
+//	XHero* GetpHero();
+// 	inline XHero* GetpHero() {
+// 		return GetHero();
+// 	}
+//	const XHero* GetpHeroConst() const;
 	ID GetsnHero() const;
 	virtual bool IsLeader() {return FALSE;}
 	UnitPtr GetspLeader();
-	UnitPtr GetThisUnit() {
+	inline UnitPtr GetThisUnit() {
 		return std::static_pointer_cast<XBaseUnit>( GetThis() );
 	}
 	/**
 	 @brief 현재 타겟의 아이디를 돌려준다.
 	*/
-	ID GetidTarget() {
+	inline ID GetidTarget() {
 		if( m_spTarget != nullptr )
 			return m_spTarget->GetsnObj();
 		return 0;
 	}
 	/// 타겟이 살아있는지 검사
-	BOOL IsTargetLive() {
+	inline BOOL IsTargetLive() {
 		if( m_spTarget != nullptr )
 			return m_spTarget->IsLive();
 		return FALSE;
 	}
-	BOOL IsBindTarget() {
+	inline BOOL IsBindTarget() {
 		return m_vwBind.IsMinus() == FALSE;
 	}
-	void ClearBind() {
+	inline void ClearBind() {
 		m_vwBind.Set(-1.f);
 	}
 	void DoDirToTarget( const XE::VEC3& vwDst );
 	/**
 	 @brief 바운딩박스를 기반으로 오브젝트의 크기를 구함
 	*/
-	virtual XE::VEC3 GetSize() const {
-		XE::VEC2 vSize = m_bbLocal.GetSize();
-		return XE::VEC3(vSize.w, 0.f, vSize.h);
-	}
-	BOOL IsBig() const {
+	virtual XE::VEC3 GetSize() const override;
+	inline BOOL IsBig() const {
 		return GetUnitSize() == XGAME::xSIZE_BIG;
 	}
-	BOOL IsMiddle() const {
+	inline BOOL IsMiddle() const {
 		return GetUnitSize() == XGAME::xSIZE_MIDDLE;
 	}
-	BOOL IsSmall() const {
+	inline BOOL IsSmall() const {
 		return GetUnitSize() == XGAME::xSIZE_SMALL;
 	}
 
@@ -264,25 +261,25 @@ public:
 	}
 	XGAME::xtUnit GetSquadUnit() const;
 
-	XFSMBase* GetpFSM() {
+	inline XFSMBase* GetpFSM() {
 		return SafeCast<XFSMBase*, XEBaseFSM*>( XEControllerFSM::GetpBaseFSM() );
 	}
 	/**
 	 @brief 플레이어가 직접 조종하는 진영인가.
 	*/
-	bool IsPlayer() const {
+	inline bool IsPlayer() const {
 		return (m_Camp == XGAME::xSIDE_PLAYER);
 	}
-	bool IsEnemy() const {
+	inline bool IsEnemy() const {
 		return !IsPlayer();
 	}
 	/**
 	 @brief this와 비교해서 pDst는 적인가
 	*/
-	BOOL IsEnemyWithUnit( XBaseUnit *pDst ) {
+	inline BOOL IsEnemyWithUnit( XBaseUnit *pDst ) {
 		return m_Camp.IsEnemy( pDst->GetCamp() );
 	}
-	BOOL IsFriendlyWithUnit( XBaseUnit *pDst ) {
+	inline BOOL IsFriendlyWithUnit( XBaseUnit *pDst ) {
 		return !IsEnemyWithUnit( pDst );
 	}
 	/**
@@ -291,13 +288,13 @@ public:
 	XSPLegionObj GetspLegionObj();
 	XSPLegionObjConst GetspLegionObjConst() const;
 	BOOL RequestNewMission();
-	BOOL IsDead() {
+	inline BOOL IsDead() {
 		return !IsLive();
 	}
-	void AddDelta( const XE::VEC3& vDelta ) {
+	inline void AddDelta( const XE::VEC3& vDelta ) {
 		m_vDelta += vDelta;
 	}
-	void AddCntTargeting( int add ) {
+	inline void AddCntTargeting( int add ) {
 		m_cntTargeting += add;
 		if( m_cntTargeting < 0 )
 			m_cntTargeting = 0;
@@ -325,8 +322,7 @@ public:
 		m_HP += (int)add;
 		if( m_HP <= 0 )
 			m_HP = 0;
-		else 
-		{
+		else 	{
 			int hpMax = GetMaxHp();
 			if( m_HP > hpMax )
 				m_HP = hpMax;
@@ -339,16 +335,16 @@ public:
 	// stat관련
 	// 프레임당 이동속도(픽셀단위)
 	/// 유닛의 반지름크기
-	float GetSizeRadius() {
+	inline float GetSizeRadius() {
 		return GetSize().w / 2.f;
 	}
 	int GetHp();
-	int DoFullHp() {
+	inline int DoFullHp() {
 		int max = GetMaxHp();
 		m_HP = max;
 		return m_HP;
 	}
-	BOOL IsRange() {
+	inline BOOL IsRange() {
 		return m_pPropUnit->IsRange();
 	}
 	virtual LPCTSTR GetszSpr() = 0;
@@ -460,6 +456,7 @@ public:
 															, const XSKILL::EFFECT *pEffect
 															, float abilMin ) override;
 	int GetListObjsRadius( XVector<XSKILL::XSkillReceiver*> *plistOutInvokeTarget,
+									const XSKILL::XSkillDat* pSkillDat,
 									const XSKILL::EFFECT *pEffect,
 									XSKILL::XSkillReceiver *pBaseTarget,
 									const XE::VEC2& vBasePos,
@@ -504,11 +501,11 @@ public:
 	virtual XSkillReceiver* GetCurrTarget() override;
 	virtual bool OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster, XSKILL::XBuffObj *pBuffObj, XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int level ) override;
 	virtual void OnEventFirstApplyEffect( XSKILL::XSkillDat *pDat, XSKILL::XSkillUser* pCaster, XSKILL::EFFECT *pEffect, int level ) override;
-	virtual bool OnInvokeSkill( _tstring& strOut, 
-								XSKILL::XSkillDat *pDat,
-								const XSKILL::EFFECT *pEffect,
-								XSKILL::XSkillReceiver* pTarget,
-								int level ) override;
+	virtual bool OnInvokeSkill( XSKILL::XSkillDat *pDat,
+															const XSKILL::EFFECT *pEffect,
+															XSKILL::XSkillReceiver* pTarget,
+															int level, 
+															_tstring* pstrOut ) override;
 	// SKILL
 	//////////////////////////////////////////////////////////////////////////
 	void cbOnArriveBullet( XObjArrow *pArrow, float damage );
@@ -685,7 +682,7 @@ public:
 		std::swap( m_spMsgQ1, m_spMsgQ2 );
 	}
 protected:
-	void CreateDamageNumber( float damage, BIT bitAttrHit );
+	void CreateDmgNum( float damage, BIT bitAttrHit );
 	void OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) override;
 	void DrawDebugStr( XE::VEC2* pvLT, XCOLOR col, float sizeFont, const _tstring& strDebug );
 	bool IsCheatFiltered();

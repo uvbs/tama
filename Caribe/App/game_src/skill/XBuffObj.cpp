@@ -255,78 +255,75 @@ int XBuffObj::ProcessApplyEffect( XSkillReceiver *pInvokeTarget,
 /**
  @brief 효과발동 동작의 일원화를 위한 최종 추상화 함수
 */
-void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect, 
-								int level, 
-								XSkillReceiver *pCastingTarget, 
-								const char *cScript, 
-								BOOL bCreateSfx,
-								XVector<XSkillReceiver*> *pOutAryIvkTarget,
-								BOOL bGetListMode )
+void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
+																	int level,
+																	XSkillReceiver *pCastingTarget,
+																	const char *cScript,
+																	BOOL bCreateSfx,
+																	XVector<XSkillReceiver*> *pOutAryIvkTarget,
+																	BOOL bGetListMode )
 {
-	bool bProb = true;
 	// 발동확률이 있으면 확률검사. 발동대상 개별적으로 확률적용을 하려면 발동적용확률을 사용해야한다.
-	bProb = DoDiceInvokeRatio( pEffect, level );
+	const bool bProb = DoDiceInvokeRatio( pEffect, level );
 	if( bProb ) {
-		if( !pEffect->m_invokerEff.m_strSpr.empty() ) {
+		if( pEffect->m_invokerEff.IsHave() ) {
 			const float secPlay = 0.f;		// 1play. 발동자이펙트는 반복플레이가 없음.
-			m_pCaster->CreateSfx( m_pDat, /*pEffect,*/
-																pEffect->m_invokerEff.m_strSpr,
-																pEffect->m_invokerEff.m_idAct,
-																pEffect->m_invokerEff.m_Point,
-																secPlay, XE::VEC2() );
+			m_pCaster->CreateSfx( m_pDat,
+														pEffect->m_invokerEff.m_strSpr,
+														pEffect->m_invokerEff.m_idAct,
+														pEffect->m_invokerEff.m_Point,
+														secPlay, XE::VEC2() );
 		}
-		const auto invokeTarget = pEffect->invokeTarget;
 		// 발동대상들을 뽑음.
-		XVector<XSkillReceiver*> ary;
-		int num = GetpCaster()->GetInvokeTarget( 
-											&ary, GetpDat(), level,
-											invokeTarget, pEffect, 
-											pCastingTarget, 
-											m_vCastPos );
-		if( ary.size() > 0 ) {
+		XVector<XSkillReceiver*> aryIvkTarget;
+		int num = GetpCaster()->GetInvokeTarget( &aryIvkTarget, m_pDat,
+																						 level,
+																						 pEffect->invokeTarget,
+																						 pEffect,
+																						 pCastingTarget,
+																						 m_vCastPos );
+		if( aryIvkTarget.size() > 0 ) {
 			if( bGetListMode ) {
 				// 리스트를 받기만 하는 모드.
 				XBREAK( pOutAryIvkTarget == nullptr );
 				if( pOutAryIvkTarget )
-					*pOutAryIvkTarget = ary;
+					*pOutAryIvkTarget = aryIvkTarget;
 				// 리스트모드로 호출됐으면 리스트만 받고 리턴
 				return;
 			}
 			// 발동대상들에게 실제 스킬효과를 적용 
-			GetpCaster()->ApplyInvokeEffectWithAry( ary
-																						, GetpDat()
-																						, pEffect
-																						, m_pOwner		// invoker
-																						, bCreateSfx != 0
-																						, m_Level
-																						, XE::VEC2(0)
-																						, this
-																						, nullptr );
+			for( auto pInvokeTarget : aryIvkTarget ) {
+				GetpCaster()->ApplyInvokeEffectToInvokeTarget( pInvokeTarget,
+																											 m_pDat,
+																											 pEffect,
+																											 m_pOwner,		// invoker
+																											 bCreateSfx != 0,
+																											 m_Level,
+																											 XE::VEC2( 0 ),
+																											 this );
+			}
 			++m_numApply;
 			// 발동대상들에게 실제 스킬효과를 적용 & 이벤트 스크립트 실행(루프안에서 pInvokeTarget->ApplyInvokeEffect()로 변경)
 		} // ary.size > 0 
-	}
+	} // bProb
 }
 
 
 void XBuffObj::CreateInvokeSfx( EFFECT *pEffect, XSkillReceiver *pInvokeTarget )
 {
 	float secPlay = 0;
-	pInvokeTarget->CreateSfx( m_pDat, 
-//							pEffect,
-							pEffect->m_invokeTargetEff.m_strSpr,
-							pEffect->m_invokeTargetEff.m_idAct,
-							pEffect->m_invokeTargetEff.m_Point, 
-							secPlay );
+	pInvokeTarget->CreateSfx( m_pDat,
+														pEffect->m_invokeTargetEff.m_strSpr,
+														pEffect->m_invokeTargetEff.m_idAct,
+														pEffect->m_invokeTargetEff.m_Point,
+														secPlay );
 }
 
 // 시전대상에게 시전후 최초 발동대상들에게 발동되는 전용 발동함수. DOT초기화를 포함.
 void XBuffObj::FirstApplyEffectToInvokeTargets( EFFECT_OBJ *pEffObj, XSkillReceiver *pOwner )
 {
 	EFFECT *pEffect = &pEffObj->m_effect;
-//	XArrayLinearN<XSkillReceiver*, 512> aryInvokeTarget;
-	if( pEffect->secInvokeDOT > 0 )
-	{
+	if( pEffect->secInvokeDOT > 0 )	{
 		// 도트효과의 도트시간 처리.
 		// 예) 3초지속시간 1초간격도트의 경우
 		// 0초에 첫번째적용, 1초에 두번째적용, 2초에 세번째적용, 3초에 효과끝.
@@ -336,8 +333,7 @@ void XBuffObj::FirstApplyEffectToInvokeTargets( EFFECT_OBJ *pEffObj, XSkillRecei
 		BOOL bCreateSfx = TRUE;
 		// 발동대상들에게 효과적용
 		ApplyInvokeEffect( pEffect, m_Level, pOwner, pEffect->scriptDOT.c_str(), bCreateSfx );
-	} else
-	{
+	} else	{
 		// 발동대상들에게 효과적용
 		BOOL bCreateSfx = TRUE;
 		ApplyInvokeEffect( pEffect, m_Level, pOwner, pEffect->scriptProcess.c_str(), bCreateSfx );
@@ -435,8 +431,8 @@ int XBuffObj::Process( XSkillReceiver *pOwner )
 
 	LIST_MANUAL_LOOP( m_listEffectObjs, EFFECT_OBJ*, itor, pEffObj ) {
 		EFFECT *pEffect = &pEffObj->m_effect;
-		if( XBREAK( GetpDat()->IsBuff( pEffect ) == FALSE ) ) {		// 효과가 버프/도트류가 아니면 에러
-			XLOG("buffObj:%s is not buff", GetpDat()->GetstrIdentifier().c_str() );
+		if( XBREAK( m_pDat->IsBuff( pEffect ) == FALSE ) ) {		// 효과가 버프/도트류가 아니면 에러
+			XLOG("buffObj:%s is not buff", m_pDat->GetstrIdentifier().c_str() );
 			return 0;
 		}
 		// 효과끝난건 리스트에서 삭제
@@ -455,7 +451,7 @@ int XBuffObj::Process( XSkillReceiver *pOwner )
 			}
 		}
 		// 효과 해제조건인가
-		if( IsClearCondition( pEffObj, GetpDat(), pOwner ) ) {
+		if( IsClearCondition( pEffObj, m_pDat, pOwner ) ) {
 			// 발동시점이 "마지막" 이면 효과가 해제되는 시점에 발동된다.
 			if( pOwner->IsLive() ) {
 				if( pEffect->invokeJuncture == xJC_LAST )
@@ -463,7 +459,7 @@ int XBuffObj::Process( XSkillReceiver *pOwner )
 			}
 			// 버프가 끝날때 하는일을 요청한다
 			pEffObj->Active = 0;		// 효과정지
-			pOwner->OnClearSkill( GetpDat(), pEffObj );		// 버프가 끝날때 버프가지고 있던놈에게 호출됨
+			pOwner->OnClearSkill( m_pDat, pEffObj );		// 버프가 끝날때 버프가지고 있던놈에게 호출됨
 		} // IsClearCondition
 		else
 			bAllRelease = FALSE;		// 하나라도 돌아가고 있다면 해제하면 안됨
@@ -484,8 +480,8 @@ int XBuffObj::IsClearCondition( EFFECT_OBJ *pEffObj, XSkillDat *pSkillDat, XSkil
 	// 토글이나 패시브스킬의경우는 지속시간이 무한대여서 타이머가 첨부터 켜지지 않는다. 그러므로 항상 0을 리턴
 	// 패시브나 토글스킬도 아닌데 타이머가 꺼져있는경우가 있다면 에러
 	if( XBREAK( pEffObj->timerDuration.IsOff() && 
-			(GetpDat()->IsToggle() == FALSE && GetpDat()->IsActive() ) ) ) {
-		XLOG( "buffObj:%s", GetpDat()->GetstrIdentifier().c_str() );
+			(m_pDat->IsToggle() == FALSE && m_pDat->IsActive() ) ) ) {
+		XLOG( "buffObj:%s", m_pDat->GetstrIdentifier().c_str() );
 	}
 	return 0;
 }
@@ -530,39 +526,39 @@ void XBuffObj::AddAbilMin( float val )
 	}
 }
 
-ID XBuffObj::GetidSkill() 
+ID XBuffObj::GetidSkill() const
 {
 	XBREAK( m_pDat == nullptr );
 	return m_pDat->GetidSkill();
 }
 
-EFFECT_LIST& XBuffObj::GetEffectList() {
+const EFFECT_LIST& XBuffObj::GetEffectList() const {
 	return GetpDat()->GetlistEffects();
 }
-EFFECT* XBuffObj::GetEffectIndex( int idx ) {
-	if( idx >= GetpDat()->GetNumEffect() )
+const EFFECT* XBuffObj::GetEffectIndex( int idx ) const {
+	if( idx >= m_pDat->GetNumEffect() )
 		return nullptr;
-	return *(GetpDat()->GetlistEffects().GetpByIndex( idx ));
+	return *(m_pDat->GetlistEffects().GetpByIndexConst( idx ));
 }
-int XBuffObj::GetNumEffect() {
-	return GetpDat()->GetNumEffect();
+int XBuffObj::GetNumEffect() const {
+	return m_pDat->GetNumEffect();
 }
-float XBuffObj::GetAbilMinbyLevel( int idx ) {
-	EFFECT *pEffet = GetEffectIndex( idx );
+float XBuffObj::GetAbilMinbyLevel( int idx ) const {
+	auto pEffet = GetEffectIndex( idx );
 	if( pEffet )
 		return pEffet->GetAbilityMin( m_Level );
 	return 0;
 }
-float XBuffObj::GetInvokeRatioByLevel() {
+float XBuffObj::GetInvokeRatioByLevel() const {
 	XBREAK( GetNumEffect() > 1 );
-	EFFECT *pEffet = GetEffectIndex( 0 );
+	auto pEffet = GetEffectIndex( 0 );
 	if( pEffet )
 		return pEffet->aryInvokeRatio[m_Level];
 	return 0;
 }
-float XBuffObj::GetInvokeSizeByLevel() {
+float XBuffObj::GetInvokeSizeByLevel() const {
 	XBREAK( GetNumEffect() > 1 );
-	EFFECT *pEffet = GetEffectIndex( 0 );
+	auto pEffet = GetEffectIndex( 0 );
 	if( pEffet )
 		return pEffet->GetInvokeSize( m_Level );
 	return 0;

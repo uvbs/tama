@@ -146,8 +146,8 @@ public:
 	int OnDebugProfile( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnUseSkillByButton( XWnd* pWnd, DWORD p1, DWORD p2 );
 	XWndFaceInBattle* GetpWndFace( ID snHero );
-	void OnUseSkill( XSquadObj* pSquadObj, const _tstring& strText );
-	void OnSelectSquad( const SquadPtr& squadSelect );
+	void OnUseSkill( XSPSquad spSquadObj, const _tstring& strText );
+	void OnSelectSquad( const XSPSquad& squadSelect );
 	void OnStartSkillMotion( XUnitHero *pUnitHero, float secCool );
 	int OnCancelSelect( XWnd* pWnd, DWORD p1, DWORD p2 );
 	void OnFinishBattle( XGAME::xtSide bitCampWin, bool bRetreatSulfur );
@@ -177,7 +177,7 @@ public:
 	XE::VEC2 GetvwCamera();
 	void OnCreateOrderDialog( ID idHero ) override;
 	XHero* GetpHero( ID idHero ) override;
-	void OnDieSquad( XSquadObj* pSquadObj );
+	void OnDieSquad( XSPSquad spSquadObj );
 #ifdef _XSINGLE
 	static void sSetAbilHeroes();
 	static void sSetAbilHero( XHero *pHero, XGAME::xtUnit unit, LPCTSTR idsAbil, int point );
@@ -189,7 +189,7 @@ private:
 	void OnEnterBattle();
 	void CreateProcessReady();
 	int OnClickPlay( XWnd* pWnd, DWORD p1, DWORD p2 );
-	SquadPtr GetspSquadObj( ID snSquad );
+	XSPSquad GetspSquadObj( ID snSquad );
 	int OnTouchHeroFace( XWnd* pWnd, DWORD snSquad, DWORD );
 	static void sSetBattleParamForSingle();
 	void CreateCamps();

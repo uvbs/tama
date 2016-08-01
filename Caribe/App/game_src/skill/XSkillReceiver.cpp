@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "xSkill.h"
 #include "XFramework/Game/XEComponents.h"
+#include "XBuffObj.h"
 //using namespace XSKILL;
 
 #ifdef WIN32
@@ -12,6 +13,19 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 XE_NAMESPACE_START( XSKILL )
+
+XSkillReceiver::XSkillReceiver( int maxBuff, int maxParam, int maxState )
+	: XAdjParam( maxParam, maxState )
+{
+	Init();
+//	m_listSkillRecvObj.Create( maxBuff );
+}
+
+void XSkillReceiver::Destroy() 
+{
+	XLIST4_DESTROY( m_listSkillRecvObj );
+}
+
 // 버프리스트에 버프객체를 추가함
 int XSkillReceiver::AddSkillRecvObj( XBuffObj *pSkillRecvObj )
 {
@@ -135,17 +149,22 @@ int XSkillReceiver::ApplyInvokeEffect( XSkillDat *pSkillDat,
 	// 발동스킬이 있는가?
 	if( pEffect->strInvokeSkill.empty() == false ) {
 		_tstring strInvokeSkill = pEffect->strInvokeSkill;
-		bool bInvoke = pInvoker->OnInvokeSkill( strInvokeSkill, pSkillDat, pEffect, this, level );
+		// strInvokeSkill이 바뀔수 있음.
+		bool bInvoke = pInvoker->OnInvokeSkill( pSkillDat, pEffect, this, level, &strInvokeSkill );
 		if( bInvoke ) {
 #ifdef _XSINGLE
 //			XLOGXN( "스킬발동: %s", pEffect->strInvokeSkill.c_str() );
 #endif // _XSINGLE
-			// 발동스킬을 액티브로 실행시킨다. 기준타겟은 this로 된다.
-			auto infoUseSkill = pCaster->UseSkillByIdentifier( pEffect->strInvokeSkill.c_str(),
-																												level,
-																												this, NULL );
-			XASSERT( infoUseSkill.errCode == xOK );
-			pCaster->OnShootSkill( infoUseSkill, pBuffObj->GetidSkill() );
+			// 발동스킬을 실행시킨다. 기준타겟은 this로 된다.
+			auto infoUseSkill 
+				= pCaster->UseSkillByIdentifier( pEffect->strInvokeSkill.c_str(),
+																				level,
+																				this, nullptr );
+			XASSERT( infoUseSkill.errCode == xOK /*|| infoUseSkill.errCode == xERR_ALREADY_APPLY_SKILL*/ );
+			const ID idCallerBuff = (pBuffObj)? pBuffObj->GetidSkill() : 0;
+			if( infoUseSkill.errCode == xOK )
+				// 발동스킬은 지속형일수도 있고 즉시발동형일수도 있다.
+				pCaster->OnShootSkill( infoUseSkill, idCallerBuff );
 		}
 	}
 	// 효과발동자(시전대상)에게 이 스킬로 부터 발동될 스킬이 있으면 발생시킨다.
@@ -163,68 +182,89 @@ int XSkillReceiver::ApplyInvokeEffect( XSkillDat *pSkillDat,
 */
 int XSkillReceiver::FrameMove( float dt )
 {
-	// 보정치를 초기화한다
-//	ClearAdjParam();
 #ifdef _DEBUG
 	XBREAK( IsClearAdjParam() == FALSE );
 #endif
 	m_pAttacker = nullptr;		// 이것은 휘발성으로 매 프레임 초기화 된다.
-	// this가 받은 버프의 프로세스를 돈다
-	XLIST2_MANUAL_LOOP( m_listSkillRecvObj, XBuffObj*, itor, pBuff ) {
+	//
+	for( auto itor = m_listSkillRecvObj.begin(); itor != m_listSkillRecvObj.end(); ) {
+		auto pBuff = (*itor);
 		if( pBuff->GetbDestroy() ) {
-			DestroySkillRecvObj( pBuff );		// 여기서 실제로 버프객체 삭제
-//			XLOG( "id:%d %s 삭제", pBuff->GetidBuff(), pBuff->GetpDat()->GetszName() );
-			m_listSkillRecvObj.Delete( itor++ );
+			SAFE_DELETE( pBuff );
+			m_listSkillRecvObj.erase( itor++ );
 		} else
 		if( pBuff->Process( this ) == 0 ) {		// 버프소멸됨
-//			CONSOLE("XSkillReceiver:pBuff->Process==0: addr=0x%08x buffaddr=0x%08x, Skill:%s", (int)this, (int)pBuff, pBuff->GetpDat()->GetszName() );
 			pBuff->SetbDestroy( TRUE );		// XUnit::Draw()에서 아직 써야하므로 당장삭제시키진 않는다.
-			itor ++;
-		} else 
-			itor ++;
+			++itor;
+		} else {
+			++itor;
+		}
 	}
-	END_LOOP; 
+	// this가 받은 버프의 프로세스를 돈다
+// 	XLIST2_MANUAL_LOOP( m_listSkillRecvObj, XBuffObj*, itor, pBuff ) {
+// 		if( pBuff->GetbDestroy() ) {
+// 			DestroySkillRecvObj( pBuff );		// 여기서 실제로 버프객체 삭제
+// 			m_listSkillRecvObj.Delete( itor++ );
+// 		} else
+// 		if( pBuff->Process( this ) == 0 ) {		// 버프소멸됨
+// 			pBuff->SetbDestroy( TRUE );		// XUnit::Draw()에서 아직 써야하므로 당장삭제시키진 않는다.
+// 			itor ++;
+// 		} else 
+// 			itor ++;
+// 	}
+// 	END_LOOP; 
 	//
-#ifdef _DEBUG
-	// 클리어 검사용 값으로 클리어 시킨다.
-//	ClearDebugAdjParam();
-#endif
 	return 1;
 }
 
-XBuffObj* XSkillReceiver::FindBuffSkill( ID idDat ) 
-{
-	XLIST2_LOOP( m_listSkillRecvObj, XBuffObj*, pSkill ) {
-		if( pSkill->GetbDestroy() )	continue;
-		if( pSkill->GetpDat()->GetidSkill() == idDat )
-			return pSkill;
+/**
+ @brief // this에 pSkillRecvObj버프가 걸려있는지 확인
+*/
+bool XSkillReceiver::FindBuff( XBuffObj *pSkillRecvObj ) const
+{		
+	for( auto pBuffObj : m_listSkillRecvObj ) {
+		if( pBuffObj->GetidBuff() == pSkillRecvObj->GetidBuff() )
+			return true;
 	}
-	END_LOOP; 
-	return NULL;
+	return false;
+// 	return m_listSkillRecvObj.Find( pSkillRecvObj );
+}
+
+XBuffObj* XSkillReceiver::FindBuffSkill( ID idSkillDat ) 
+{
+	for( auto pBuff : m_listSkillRecvObj ) {
+		if( pBuff->GetbDestroy() )	
+			continue;
+		if( pBuff->GetpDat()->GetidSkill() == idSkillDat )
+			return pBuff;
+	}
+	return nullptr;
 }
 // 스킬id도 같고 시전자도 같은 같은 버프를 찾음
-XBuffObj* XSkillReceiver::FindBuffSkill( ID idDat, XSkillUser *pCaster ) 
+XBuffObj* XSkillReceiver::FindBuffSkill( ID idSkillDat, XSkillUser *pCaster ) 
 {
-	XLIST2_LOOP( m_listSkillRecvObj, XBuffObj*, pBuff ) {
-		if( pBuff->GetbDestroy() )	continue;
-		if( pBuff->GetidSkill() == idDat && 
-			pBuff->GetpCaster() == pCaster )
+	for( auto pBuff : m_listSkillRecvObj ) {
+		if( pBuff->GetbDestroy() )	
+			continue;
+		if( pBuff->GetidSkill() == idSkillDat 
+				&& pBuff->GetpCaster() == pCaster ) {
 			return pBuff;
-	} END_LOOP; 
-	return NULL;
+		}
+	}
+	return nullptr;
 }
 
 XBuffObj* XSkillReceiver::FindBuffSkill( LPCTSTR idsSkill )
 {
-	XSkillDat *pDat = XESkillMng::sGet()->FindByIdentifier( idsSkill );
+	auto pDat = XESkillMng::sGet()->FindByIdentifier( idsSkill );
 	XBREAK( pDat == nullptr );
-	XLIST2_LOOP( m_listSkillRecvObj, XBuffObj*, pSkill ) {
-		if( pSkill->GetbDestroy() )	continue;
-		if( pSkill->GetpDat()->GetidSkill() == pDat->GetidSkill() )
-			return pSkill;
+	for( auto pBuff : m_listSkillRecvObj ) {
+		if( pBuff->GetbDestroy() )	
+			continue;
+		if( pBuff->GetpDat()->GetidSkill() == pDat->GetidSkill() )
+			return pBuff;
 	}
-	END_LOOP;
-	return NULL;
+	return nullptr;
 }
 /**
  @brief 공격자 idAttacker로부터 근접공격으로 맞았다.
@@ -233,11 +273,11 @@ void XSkillReceiver::OnHitFromAttacker( const XSkillReceiver *pAttacker, xtDamag
 {
 	OnAttackMelee( pAttacker, typeDamage );	// virtual
 	// 피격자가 가진 버프중에 맞으면 발동하는 스킬이 있으면 이벤트핸들러를 날려준다.
-	XLIST2_LOOP( m_listSkillRecvObj, XBuffObj*, pBuff )	{
+	for( auto pBuff : m_listSkillRecvObj )	{
 		if( pBuff->GetbDestroy() )	
 			continue;
 		pBuff->OnHitFromAttacker( pAttacker, this, this, typeDamage );
-	} END_LOOP;
+	}
 }
 
 // 공격자 idAttacker로부터 원거리공격으로 맞았다.
@@ -256,12 +296,12 @@ void XSkillReceiver::OnAttackToDefender( XSkillReceiver *pDefender,
 										XSKILL::xtDamage typeDamage )
 {
 	// 공격자의 버프중에서 타격시 발동하는 이벤트가 있다면 발동시킨다.
-	XLIST2_LOOP( m_listSkillRecvObj, XBuffObj*, pBuff ) {
+	for( auto pBuff : m_listSkillRecvObj ) {
 		if( pBuff->GetbDestroy() )	
 			continue;
 		// 각 버프객체에 이벤트 전달
 		pBuff->OnAttackToDefender( pDefender, damage, bCritical, ratioPenetration, typeDamage );
-	} END_LOOP;
+	}
 }
 
 /**
@@ -269,11 +309,11 @@ void XSkillReceiver::OnAttackToDefender( XSkillReceiver *pDefender,
 */
 void XSkillReceiver::OnEventJunctureCommon( ID idEvent, DWORD dwParam, const XSkillReceiver* pRecvParam )
 {
-	XLIST2_LOOP( m_listSkillRecvObj, XBuffObj*, pBuff )	{
+	for( auto pBuff : m_listSkillRecvObj ) {
 		if( pBuff->GetbDestroy() )
 			continue;
 		pBuff->OnEventJunctureCommon( idEvent, dwParam, pRecvParam );
-	} END_LOOP;
+	}
 }
 
 /**
@@ -286,11 +326,11 @@ void XSkillReceiver::OnEventInvokeFromSkill( XSkillDat *pFromSkill
 																						, XSkillReceiver *pBaseTarget )
 {
 	// 피격자가 가진 버프중에 맞으면 발동하는 스킬이 있으면 이벤트핸들러를 날려준다.
-	XLIST2_LOOP( m_listSkillRecvObj, XBuffObj*, pBuff )	{
+	for( auto pBuff : m_listSkillRecvObj ) {
 		if( pBuff->GetbDestroy() )
 			continue;
 		pBuff->OnEventInvokeFromSkill( pFromSkill, pFromEffect, pCaster, pBaseTarget );
-	} END_LOOP;
+	}
 }
 
 
@@ -301,21 +341,21 @@ void XSkillReceiver::OnEventInvokeFromSkill( XSkillDat *pFromSkill
 void XSkillReceiver::OnEventBeforeAttack( XSKILL::xtJuncture junc )
 {
 	// 피격자가 가진 버프중에 맞으면 발동하는 스킬이 있으면 이벤트핸들러를 날려준다.
-	XLIST2_LOOP( m_listSkillRecvObj, XBuffObj*, pBuff )	{
+	for( auto pBuff : m_listSkillRecvObj ) {
 		if( pBuff->GetbDestroy() )
 			continue;
 		pBuff->OnEventBeforeAttack( junc );
-	} END_LOOP;
+	}
 }
 
 void XSkillReceiver::OnSkillEventKillEnemy( ID idDead )
 {
-	XLIST2_LOOP( m_listSkillRecvObj, XBuffObj*, pBuff )	{
-		if( pBuff->GetbDestroy() )	
+	for( auto pBuff : m_listSkillRecvObj ) {
+		if( pBuff->GetbDestroy() )
 			continue;
 		// 각 버프객체에 이벤트 전달
 		pBuff->OnSkillEventKillEnemy( this, idDead );
-	} END_LOOP;
+	}
 }
 
 /**
@@ -323,7 +363,6 @@ void XSkillReceiver::OnSkillEventKillEnemy( ID idDead )
  @param secPlay 0:once 0>:해당시간동안 루핑 -1:무한루핑
 */
 void XSkillReceiver::CreateSfx( XSkillDat *pSkillDat,
-//								const EFFECT *pEffect,
 								const _tstring& strEffect, 
 								ID idAct,
 								xtPoint pointSfx,
@@ -332,19 +371,25 @@ void XSkillReceiver::CreateSfx( XSkillDat *pSkillDat,
 {
 	if( strEffect.empty() )
 		return;
-	float secLife = 0.f;
+	const float secLife = 0.f;
 	// 이펙트생성지점이 정해져있지 않으면 디폴트로 타겟 아래쪽에
 	if( pointSfx == xPT_NONE )
 		pointSfx = xPT_TARGET_BOTTOM;
 	if( idAct == 0 )
 		idAct = 1;
 	OnCreateSkillSfx( pSkillDat, 
-//										pEffect,
 										pointSfx,
 										strEffect.c_str(),
 										idAct,
 										secPlay, vPos );
 }
 
+void XSkillReceiver::CreateSfx( XSkillDat *pSkillDat
+																, const xEffSfx& effSfx
+																, float secPlay
+																, const XE::VEC2& vPos )
+{
+	CreateSfx( pSkillDat, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
+}
 
 XE_NAMESPACE_END

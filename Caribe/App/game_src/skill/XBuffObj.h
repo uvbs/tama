@@ -89,8 +89,14 @@ public:
 	// get/set/is
 	//GET_ACCESSOR( ID, id );
 	GET_ACCESSOR( XDelegateSkill*, pDelegate );
-	ID GetidBuff() { return m_idBuff; }
-	GET_ACCESSOR( XSkillDat*, pDat );
+	ID GetidBuff() const { return m_idBuff; }
+// 	inline ID getid() const {
+// 		return m_idBuff;
+// 	}
+	GET_ACCESSOR_CONST( const XSkillDat*, pDat );
+	inline XSkillDat* GetpDatMutable() {
+		return m_pDat;
+	}
 	GET_ACCESSOR_CONST( ID, idCallerSkill );
 	LPCTSTR GetstrIconByCaller() const;
 //	GET_ACCESSOR_CONST( ID, idCaster );
@@ -105,10 +111,13 @@ public:
 	/**
 	 @brief 최초 프로세스 상태인가.
 	*/
-	inline BOOL IsFirstProcess() {
+	inline BOOL IsFirstProcess() const {
 		return m_nCount == 0;
 	}
-	ID GetidSkill();
+	ID GetidSkill() const;
+// 	inline ID getid() const {
+// 		return GetidSkill();
+// 	}
 	//
 	EFFECT_OBJ* FindEffect( EFFECT *pEffect );
 	EFFECT_OBJ* AddEffect( EFFECT *pEffect );		// 이펙트오브젝트를 추가한다
@@ -155,12 +164,12 @@ public:
 	}
 	// virtual
 	virtual BOOL OnDOTTimerSet( const EFFECT *pEffect ) { return TRUE; }		// 도트효과적용후 도트타이머를 리셋시킬지 여부
-	EFFECT_LIST& GetEffectList();
-	EFFECT* GetEffectIndex( int idx );
-	int GetNumEffect();
-	float GetAbilMinbyLevel( int idx = 0 );
-	float GetInvokeRatioByLevel();
-	float GetInvokeSizeByLevel();
+	const EFFECT_LIST& GetEffectList() const;
+	const EFFECT* GetEffectIndex( int idx ) const;
+	int GetNumEffect() const;
+	float GetAbilMinbyLevel( int idx = 0 ) const;
+	float GetInvokeRatioByLevel() const;
+	float GetInvokeSizeByLevel() const;
 	//	bool DoDiceInvokeRatio( EFFECT *pEffect );
 	///
 

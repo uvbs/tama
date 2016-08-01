@@ -1687,13 +1687,23 @@ public:
 			return &( *iter );
 		return nullptr;
 	}
-	T* FindByIDNonPtr( ID idNode ) {
+	T* FindByIDNonPtr( ID idNode ) {		// ?? NonPtr인데 왜 *를 리턴하징?
 		auto iter = std::find_if(this->begin(), this->end(),
 			[idNode](T pElem)->bool {  
 			return pElem.getid() == idNode;
 		} );
 		if (iter != this->end())
 			return &( *iter );
+		return nullptr;
+	}
+	// shared_ptr전용
+	T FindByID( ID idNode ) {		
+		auto iter = std::find_if( this->begin(), this->end(),
+															[idNode]( T pElem )->bool {
+			return pElem->getid() == idNode;
+		} );
+		if( iter != this->end() )
+			return (*iter);
 		return nullptr;
 	}
 	int GetIndex( T& elem ) {
@@ -1724,6 +1734,14 @@ public:
 	T* GetpByIndex( int idx ) {
 		int i = 0;
 		for (auto iter = this->begin(); iter != this->end(); ++iter) {
+			if( i++ == idx )
+				return &(*iter);
+		}
+		return nullptr;
+	}
+	const T* GetpByIndexConst( int idx ) const {
+		int i = 0;
+		for( auto iter = this->begin(); iter != this->end(); ++iter ) {
 			if( i++ == idx )
 				return &(*iter);
 		}
@@ -1900,6 +1918,15 @@ public:
 			++idx;
 		}
 	}
+	inline typename std::vector<T>::iterator GetItorByIdx( int idx ) {
+		XBREAK( idx < 0 || idx >= Size() );
+		for( auto itor = std::vector<T>::begin(); itor != std::vector<T>::end(); ++itor ) {
+			if( idx == 0 )
+				return itor;
+			--idx;
+		}
+		return std::vector<T>::end();
+	}
 	inline int Size() const {
 		return (int)std::vector<T>::size();
 	}
@@ -1909,6 +1936,15 @@ public:
 	}
 	inline void Fill( const T& val ) {
 		std::vector<T>::assign( Size(), val );
+	}
+	T PopFromRandom() {
+		XBREAK( Size() == 0 );	// 크기0인 상태에서 호출하지 말것.
+		const int idxRand = xRandom( Size() );		// 전체 크기중에서 랜덤으로 인덱스 하나 꺼냄
+		auto itor = GetItorByIdx( idxRand );
+		XBREAK( itor == std::vector<T>::end() );
+		const T ret = *itor;
+		std::vector<T>::erase( itor );
+		return ret;
 	}
 // 	template<typename T>
 // 	void DeSerializeSharedPtrElem( XArchive& ar, int ver ) {

@@ -124,6 +124,9 @@ DWORD xRandom( DWORD nRange );
 int xRandom( int min, int max );
 float xRandomF( float fRange );
 float xRandomF( float start, float end ); 
+inline float xRandomF( const XE::VEC2& vRange ) {
+	return xRandomF( vRange.v1, vRange.v2 );
+}
 void xSRand( DWORD seed );
 //DWORD xGetSeed();
 inline int random( DWORD range ) {

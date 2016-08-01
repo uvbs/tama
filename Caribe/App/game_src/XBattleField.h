@@ -67,7 +67,7 @@ public:
 //	void CreateSquadObj( XWndBattleField *pWndWorld );
 	void OnStartBattle();
 	void OnDieLegion( XSPLegionObj spLegion );
-	void OnDieSquad( XSquadObj* pSquadObj );
+	void OnDieSquad( XSPSquad spSquadObj );
 	void OnDelegateFrameMoveEachObj( float dt, ID idEvent, WorldObjPtr spObj );
 	SquadPtr GetPickSquad( const XE::VEC3& vwPick, BIT bitCamp, ID snExclude = 0 );
 	XSPLegionObj GetEnemyLegionObj( XSquadObj *pSrc );

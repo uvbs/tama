@@ -2432,7 +2432,7 @@ void CMainFrame::OnReloadLayout()
 void CMainFrame::OnTestParticle()
 {
 	CDlgLayerTest dlg;
-	dlg.m_strXml = _T("");
+	dlg.m_strXml = _T("particles.xml");
 	dlg.m_strNode = C2SZ( GAME->m_strcNodeParticle );
 	if( dlg.DoModal() == IDOK ) {
 		GAME->m_strcNodeParticle = SZ2C( (LPCTSTR)dlg.m_strNode );
@@ -2441,7 +2441,7 @@ void CMainFrame::OnTestParticle()
 }
 void CMainFrame::OnReloadParticle()
 {
-
+	XPropParticle::sGet()->Load( _T( "particles/particles.xml" ) );
 }
 
 void CMainFrame::OnModeTestParticle()
@@ -2535,6 +2535,8 @@ void CMainFrame::OnBattleOption()
 		dlg.m_bCheckEnemyHero = TRUE;
 	if( XAPP->m_dwFilter & 0x08 )
 		dlg.m_bCheckEnemyUnit = TRUE;
+	if( XAPP->m_dwFilter & 0x10 )
+		dlg.m_bHeroInfoToConsole = TRUE;
 	if( dlg.DoModal() ) {
 		if( dlg.m_bCheckPlayerHero )	XAPP->m_dwFilter |= 0x01;
 		else													XAPP->m_dwFilter &= ~0x01;
@@ -2544,6 +2546,8 @@ void CMainFrame::OnBattleOption()
 		else													XAPP->m_dwFilter &= ~0x04;
 		if( dlg.m_bCheckEnemyUnit )		XAPP->m_dwFilter |= 0x08;
 		else													XAPP->m_dwFilter &= ~0x08;
+		if( dlg.m_bHeroInfoToConsole )	XAPP->m_dwFilter |= 0x10;
+		else														XAPP->m_dwFilter &= ~0x10;
 		XAPP->XClientMain::SaveCheat();
 	}
 }

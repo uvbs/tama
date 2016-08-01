@@ -54,9 +54,7 @@ class XCompObjFont : public XCompObjBase
 {
 public:
 	XCompObjFont();
-	virtual ~XCompObjFont() {
-		Destroy();
-	}
+	~XCompObjFont() {	Destroy();	}
 	// get/setter
 	GET_SET_ACCESSOR_CONST( const _tstring&, strText );
 	GET_SET_ACCESSOR_CONST( xFONT::xtStyle, Style );
@@ -75,6 +73,42 @@ private:
 	void Init() {}
 	void Destroy();
 }; // class XCompObjFont
+
+/****************************************************************
+* @brief
+* @author xuzhu
+* @date	2016/05/28 17:02
+*****************************************************************/
+class XCompObjBounce : public XCompObjBase {
+public:
+	// ex:power=20.f dAngZ=280.f
+	XCompObjBounce( const float power, const float dAngZ );
+	XCompObjBounce( float power, const XE::VEC2& vdAngZRange ) 
+		: XCompObjBounce( power, xRandomF( vdAngZRange.v1, vdAngZRange.v2 ) ) {}
+	XCompObjBounce( const XE::VEC2& vPowerRange, const XE::VEC2& vdAngZRange )
+		: XCompObjBounce( xRandomF( vPowerRange.v1, vPowerRange.v2 )
+										, xRandomF( vdAngZRange.v1, vdAngZRange.v2 ) ) {}
+	~XCompObjBounce() {	Destroy(); }
+	// get/setter
+//	GET_ACCESSOR_CONST( const XE::VEC3&, vwDelta );
+	GET_SET_ACCESSOR_CONST( const XE::VEC3&, vwPos );
+	GET_ACCESSOR_CONST( int, State );
+	SET_ACCESSOR( float, Gravity );
+	// public member
+	int FrameMove( float dt );
+private:
+	// private member
+	int m_State = 0;		// 0:튀어오름 1:바닥에 떨어져있음 2:사라지는중
+//	XE::VEC3 m_vwDelta;		// gravity값 더해지기전 값
+	XE::VEC3 m_vwDeltaNext;
+	XE::VEC3 m_vwPos;		// 현재 객체의 위치. FrameMove()전에 세팅되어야 한다.
+	bool m_bBounce = true;	// 바닥에 떨어지면 다시 튀어오를건지.
+	float m_Gravity = 1.f;
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+}; // class XCompObjBounce
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -126,7 +160,7 @@ public:
 				float secFly=0.3f );
 	virtual ~XObjBullet() { Destroy(); }
 	//
-	virtual void Release( void ) {
+	virtual void Release() {
 		m_spOwner.reset();
 		m_spTarget.reset();
 	}
@@ -150,7 +184,7 @@ public:
 	void SetSecFly( float secFly ) {
 		m_timerLife.Set( secFly );
 	}
-	float GetSecFly( void ) {
+	float GetSecFly() {
 		return m_timerLife.GetWaitSec();
 	}
 	/**
@@ -240,7 +274,7 @@ public:
 		m_Callback.pOwner = pOwner;
 		m_Callback.funcCallback = std::bind( func, std::placeholders::_1, std::placeholders::_2, damage );
 	}
-	virtual void CallCallbackFunc( void ) {
+	virtual void CallCallbackFunc() {
 //		if( !m_Callback.funcCallback.empty() )
 		if( m_Callback.funcCallback )
 			m_Callback.funcCallback( m_Callback.pOwner, this );
@@ -285,7 +319,7 @@ public:
 											std::placeholders::_2, 
 											p1, p2, p3/*, p4, p5*/ );
 	}
-	virtual void CallCallbackFunc( void );
+	virtual void CallCallbackFunc();
 	XE::VEC3 OnInterpolation( const XE::VEC3& vSrc, const XE::VEC3& vDst, float lerpTime ) override;
 }; // class XSkillShootObj
 /**
@@ -353,7 +387,7 @@ public:
 	//
 	void FrameMove( float dt );
 	void Draw( const XE::VEC2& vPos, float scale = 1.f, float alpha=1.f );
-	virtual void Release( void );
+	virtual void Release();
 };
 
 /****************************************************************
@@ -370,6 +404,7 @@ class XObjLoop : public XEBaseWorldObj, public XSKILL::XSkillSfx
 	BOOL m_bTraceRefObj;		///< 레퍼런스 객체를 따라다녀야 한다면 TRUE
 	XE::VEC3 m_vAdjust;			///< this의 위치 보정치
 	int m_State = 0;
+	std::shared_ptr<XCompObjBounce> m_spCompBounce;
 	void Init() {
 		m_secLife = 0.f;	// 0은 한번만 플레이하고 중지. -1은 무한루프
 		m_Dir = XE::HDIR_NONE;
@@ -385,11 +420,16 @@ public:
 	///< 
 	SET_ACCESSOR( XE::xtHorizDir, Dir );
 	SET_ACCESSOR( const XE::VEC3&, vAdjust );
+	GET_ACCESSOR( std::shared_ptr<XCompObjBounce>, spCompBounce );
 	void SetvAdjust( float x, float y, float z ) {
 		m_vAdjust.Set( x, y, z );
 	}
+	void SetBounce( float power, float dAngZ, float gravity = 1.f );
+	inline void SetBounce( const XE::VEC2& vrPower, const XE::VEC2& vrdAngZ, float gravity = 1.f ) {
+		SetBounce( xRandomF( vrPower ), xRandomF( vrdAngZ ), gravity );
+	}
 	//
-	void Release( void ) {
+	void Release() {
 		m_spRefUnit.reset();
 	}
 	void FrameMove( float dt );
@@ -412,12 +452,12 @@ class XSkillSfxReceiver : public XEBaseWorldObj, public XSKILL::XSkillReceiver
 public:
 	XSkillSfxReceiver( BIT bitCamp, const XE::VEC3& vwPos, float sec );
 	virtual ~XSkillSfxReceiver() { Destroy(); }
-	virtual ID GetId( void ) {
+	virtual ID GetId() {
 		return GetsnObj();
 	}
-	virtual void Release( void ) {}
+	virtual void Release() {}
 	virtual int OnApplyEffectNotAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) { return 0; }
-	virtual const XECompCamp& GetCamp( void ) const override {		///< this의 진영을 리턴
+	virtual const XECompCamp& GetCamp() const override {		///< this의 진영을 리턴
 		return m_Camp;
 	}
 	void FrameMove( float dt ) override;
@@ -454,7 +494,7 @@ namespace XGAME {
 		xBHT_THORNS_DAMAGE = 0x80,		// 반사데미지
 	};
 };
-class XObjDamageNumber : public XEBaseWorldObj
+class XObjDmgNum : public XEBaseWorldObj
 
 {
 public:
@@ -463,12 +503,13 @@ private:
 	int m_Number;
 	_tstring m_strNumber;
 	XGAME::xtHit m_typeHit = XGAME::xHT_HIT;
-//	BOOL m_bCritical;
 	XE::VEC3 m_vDelta;
 	XBaseFontDat *m_pfdNumber;
 	CTimer m_timerLife;
 	int m_State;
 	XCOLOR m_Col = 0;
+	XCompObjBounce m_compBounce;
+	//
 	void Init() {
 		m_Number = 0;
 //		m_bCritical = FALSE;
@@ -477,15 +518,15 @@ private:
 	}
 	void Destroy();
 public:
-	XObjDamageNumber( float num
+	XObjDmgNum( float num
 									, XGAME::xtHit typeHit, int paramHit
 									, const XE::VEC3& vwPos, XCOLOR col = 0 );
-	XObjDamageNumber( LPCTSTR szStr
+	XObjDmgNum( LPCTSTR szStr
 									, const XE::VEC3& vwPos, XCOLOR col = 0 );
-	XObjDamageNumber( const _tstring& str
+	XObjDmgNum( const _tstring& str
 									, const XE::VEC3& vwPos, XCOLOR col = 0 ) 
-	: XObjDamageNumber( str.c_str(), vwPos, col ) {}
-	virtual ~XObjDamageNumber() { Destroy(); }
+	: XObjDmgNum( str.c_str(), vwPos, col ) {}
+	virtual ~XObjDmgNum() { Destroy(); }
 	//
 	GET_SET_ACCESSOR( XCOLOR, Col );
 	//
@@ -562,16 +603,14 @@ public:
  @brief 전투중 떨어지는 자원객체. 생성되면 살짝 튀었다 떨어져서 일정시간 생존하다 사라진다.
  아군 유닛이 닿으면 획득 애니메이션이 나오고 사라진다.
 */
-class XObjRes : public XEBaseWorldObj 	
-{
-	int m_State = 0;		// 0:튀어오름 1:바닥에 떨어져있음 2:사라지는중
-	XE::VEC3 m_vwDelta;
+class XObjRes : public XEBaseWorldObj {
 	XSurface* m_psfcShadow = nullptr;
 	CTimer m_timerAlpha;
 	XVector<XGAME::xRES_NUM> m_aryLoots;
 	XGAME::xtResource m_resType = XGAME::xRES_NONE;
 	int m_numRes = 0;
 	XCompObjFont m_compFont;
+	XCompObjBounce m_compBounce;
 public:
 	XObjRes( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, const XVector<XGAME::xRES_NUM>& aryLoots );
 	XObjRes( const XE::VEC3& vwPos, XGAME::xtResource resType, int num );
@@ -581,6 +620,26 @@ public:
 	void FrameMove( float dt ) override;
 	void Draw( const XE::VEC2& vPos, float scale, float alpha ) override;
 };
+// class XObjRes : public XEBaseWorldObj 	
+// {
+// 	int m_State = 0;		// 0:튀어오름 1:바닥에 떨어져있음 2:사라지는중
+// 	XE::VEC3 m_vwDelta;
+// 	XSurface* m_psfcShadow = nullptr;
+// 	CTimer m_timerAlpha;
+// 	XVector<XGAME::xRES_NUM> m_aryLoots;
+// 	XGAME::xtResource m_resType = XGAME::xRES_NONE;
+// 	int m_numRes = 0;
+// 	XCompObjFont m_compFont;
+// 	XCompObjBounce m_compBounce;
+// public:
+// 	XObjRes( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, const XVector<XGAME::xRES_NUM>& aryLoots );
+// 	XObjRes( const XE::VEC3& vwPos, XGAME::xtResource resType, int num );
+// 	~XObjRes();
+// 	//
+// 	void Release() {}
+// 	void FrameMove( float dt ) override;
+// 	void Draw( const XE::VEC2& vPos, float scale, float alpha ) override;
+// };
 
 /****************************************************************
 * @brief 자원아이콘과 개수숫자를 그린다. UI타입으로 가장 상위 레이어에 찍힌다. 

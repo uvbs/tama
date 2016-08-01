@@ -164,7 +164,7 @@ void XPropHero::Add( xPROP *pProp )
 	m_mapID[pProp->idProp] = pProp;		// ID로 검색용 맵에도 넣음.
 }
 
-XPropHero::xPROP* const XPropHero::GetpProp( LPCTSTR szIdentifier ) const
+XPropHero::xPROP* XPropHero::GetpProp( LPCTSTR szIdentifier ) const
 {
 	TCHAR szBuff[ 256 ];
 	_tcscpy_s( szBuff, szIdentifier );
@@ -177,7 +177,7 @@ XPropHero::xPROP* const XPropHero::GetpProp( LPCTSTR szIdentifier ) const
 	return pProp;
 }
 
-XPropHero::xPROP* const XPropHero::GetpProp( ID idProp ) const
+XPropHero::xPROP* XPropHero::GetpProp( ID idProp ) const
 {
 	if( idProp == 0 )
 		return nullptr;

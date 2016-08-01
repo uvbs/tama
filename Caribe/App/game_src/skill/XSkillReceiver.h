@@ -1,10 +1,7 @@
-﻿//#ifndef __XSkillReceiver_H__
-//#define __XSkillReceiver_H__
-#pragma once
-#ifdef _XSKILL_SYS
+﻿#pragma once
 #include "xLib.h"
 #include "SkillDef.h"
-#include "XBuffObj.h"
+//#include "XBuffObj.h"
 #include "XLuaSkill.h"
 #include "XList.h"
 #include "XAdjParam.h"
@@ -12,37 +9,23 @@
 
 class XECompCamp;
 XE_NAMESPACE_START( XSKILL )
-
+class XBuffObj;
+struct EFFECT_OBJ;
 class XSkillSfx;
+class XSkillDat;
 // 스킬의 효과를 받을 수 있는 베이스오브젝트
 class XSkillReceiver : public XAdjParam 
 {
-	XList2<XBuffObj>		m_listSkillRecvObj;							// 버프리스트
-//	float m_MP, m_MaxMP;						// 보유마나. 구조가 이상하다 마나를 보유할수 있는건 Recv타겟 Use타겟 모두 쓰는건데
+	XList4<XBuffObj*> m_listSkillRecvObj;							// 버프리스트
 	XSkillReceiver *m_pAttacker = nullptr;		// this를 공격한자.
-	void Init() {
-//		m_MP = m_MaxMP = 100;
-	}
-	void Destroy() {
-		XLIST2_DESTROY( m_listSkillRecvObj, XBuffObj* );
-	}	
+	void Init() {	}
+	void Destroy();
 public:
-//	XSkillReceiver() { 
-//		Init(); 
-//	}
 	/// 최대버프 개수를 지정한다.
-	XSkillReceiver( int maxBuff, int maxParam, int maxState ) 
-	: XAdjParam( maxParam, maxState )
-#ifdef _CLIENT
-	, m_listSkillRecvObj(_T("XSkillReceiver")) 
-#endif
-	{
-		Init();
-		m_listSkillRecvObj.Create( maxBuff );
-	}
+	XSkillReceiver( int maxBuff, int maxParam, int maxState );
 	virtual ~XSkillReceiver() { Destroy();	}
 	// get/set
-	GET_ACCESSOR( XList2<XBuffObj>&, listSkillRecvObj );
+	GET_ACCESSOR_CONST( const XList4<XBuffObj*>&, listSkillRecvObj );
 	GET_ACCESSOR_CONST( const XSkillReceiver*, pAttacker );
 	SET_ACCESSOR( XSkillReceiver*, pAttacker );
 	// this에게 pEffect의 발동효과를 적용시킨다. pInvoker는 효과를 발동시킨자다. 
@@ -51,14 +34,8 @@ public:
 	// 시전자와 스킬id가  같은 버프를 찾음
 	XBuffObj* FindBuffSkill( ID idDat, XSkillUser *pCaster );
 	XBuffObj* FindBuffSkill( LPCTSTR idsSkill );
-	// 
-
-	BOOL FindBuff( XBuffObj *pSkillRecvObj ) {		// this에 pSkillRecvObj버프가 걸려있는지 확인
-		return m_listSkillRecvObj.Find( pSkillRecvObj );
-	}
-//	int ApplyBuff( XBuffObj_List *plistOutApplyBuff, XSkillReceiver *pCastingTarget, XSkillReceiver *pInvokeTarget, BOOL bFirst );	// 
+	bool FindBuff( XBuffObj *pSkillRecvObj ) const;
 	int FrameMove( float dt );
-	
 	// virtual
 	virtual ID GetId( void ) = 0;
 	int	ApplyEffectNotAdjParam( XSkillDat *pSkillDat, XSkillUser* pCaster, const EFFECT *pEffect, int level );	// 비보정파라메터에 대한 효과적용
@@ -68,72 +45,49 @@ public:
 	virtual BOOL IsInvoking( XBuffObj *pSkillRecvObj ) { return FindBuff( pSkillRecvObj ); }
 	virtual LPCTSTR	GetObjName( void ) { return _T("이름없음"); }
 	virtual int	AddSkillRecvObj( XBuffObj *pSkillRecvObj );		// 버프리스트추가
-	virtual void DestroySkillRecvObj( XBuffObj *pSkillRecvObj ) { SAFE_DELETE( pSkillRecvObj ); }		// 버프리스트삭제
+//	virtual void DestroySkillRecvObj( XBuffObj *pSkillRecvObj ) { SAFE_DELETE( pSkillRecvObj ); }		// 버프리스트삭제
 	virtual int	OnClearSkill( XSkillDat *pSkillDat, EFFECT_OBJ *pEffObj ) { return 1; }		// 버프효과가 끝나면 호출됨
 	virtual void OnFirstApplyBuff( XBuffObj *pSkillRecvObj, BOOL bInnerApply ) {}	// 이 대상에 pSkillRecvObj버프(효과아님)가 최초 적용되는 순간
 	virtual void OnEndApplyBuff( XBuffObj *pSkillRecvObj ) {}		// 이 대상에 pSkillRecvObj버프(효과아님)가 사라지는 순간
 	virtual void OnEndApplyBuffFromCastingTarget( XBuffObj *pSkillRecvObj ) {}		// 이 대상에 pSkillRecvObj버프(효과아님)가 사라지는 순간 캐스팅타겟에게서 버프가 사라짐을 알림.
 	virtual void OnAddSkillRecvObj( XBuffObj *pSkillRecvObj, EFFECT *pEffect ) {}		// 이대상에게 버프스킬이 추가된 직후 호출된다.
-/*
-	virtual float	GetMP( void ) {
-		float val = m_MP;		
-		return CalcAdjParam( val, xADJ_MP );
-	}
-	virtual SET_ACCESSOR( float, MP );
-	virtual float GetMaxMP( void ) {
-		float val = m_MaxMP;		
-		return CalcAdjParam( val, xADJ_MAX_MP );
-	}
-
-	virtual SET_ACCESSOR( float, MaxMP );
-	virtual float AddMP( float mp ) {
-		m_MP += mp;
-		if( mp > 0 ) {
-			if( GetMP() > GetMaxMP() )
-				SetMP( GetMaxMP() );
-		} else 
-		if( mp < 0 ) {
-			if( GetMP() < 0 )
-				SetMP( 0 );
-		}
-		return GetMP();
-	}
-*/
-	//--------------------- script
-//	virtual XLuaSkill* CreateScript( void ) { return new XLuaSkill; } 		// XSkillUser로 감 XLua 객체를 생성하고 전역변수와 API들을 등록하여 돌려준다
-	// XCivLua에 모두 통합됨
-//	virtual void RegisterScript( XLua *pLua ) {		// 클래스/상속관계/API등을 등록한다
-//		pLua->Register_Class<XSkillReceiver>( "XSkillReceiver" );
-//	}	
 	virtual BOOL IsApplyBuff( XBuffObj *pBuff, XSkillReceiver *pCastingTarget, XSkillReceiver *pInvokeTarget ) { return TRUE;}
 	// secLife==0.f는 1번플레이
 	virtual ID OnCreateInvokeSFX( XBuffObj *pSkillRecvObj, EFFECT *pEffect, XSkillUser *pCaster, const XE::VEC2 *pvPos, LPCTSTR szSFX, ID idAct, xtPoint pointEffect, float secLife=0.f ) { return 0;}
 	virtual void OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
-//									const EFFECT *pEffect,
-									XSKILL::xtPoint createPoint,
-									LPCTSTR szSpr,
-									ID idAct,
-									float secPlay,
-									const XE::VEC2& vPos ) {}
+																 XSKILL::xtPoint createPoint,
+																 LPCTSTR szSpr,
+																 ID idAct,
+																 float secPlay,
+																 const XE::VEC2& vPos ) {}
 	/**
 	 @brief 슈팅타겟이펙트 전용 생성기
 	 슈팅타겟이펙트에는 반드시 타점이 있어야 한다.
 	*/
 	virtual XSKILL::XSkillSfx* OnCreateSkillSfxShootTarget( XSKILL::XSkillDat *pSkillDat,
-									XSKILL::XSkillReceiver *pBaseTarget,
-									int level,
-									const _tstring& strSpr,
-									ID idAct,
-									XSKILL::xtPoint createPoint,
-									float secPlay,
-									const XE::VEC2& vPos) { return nullptr; }
+																													XSKILL::XSkillReceiver *pBaseTarget,
+																													int level,
+																													const _tstring& strSpr,
+																													ID idAct,
+																													XSKILL::xtPoint createPoint,
+																													float secPlay,
+																													const XE::VEC2& vPos ) {		return nullptr;	}
+	inline XSKILL::XSkillSfx* OnCreateSkillSfxShootTarget( XSKILL::XSkillDat *pSkillDat,
+																												 XSKILL::XSkillReceiver *pBaseTarget,
+																												 int level,
+																												 const xEffSfx& effSfx,
+																												 float secPlay,
+																												 const XE::VEC2& vPos ) {
+		return OnCreateSkillSfxShootTarget( pSkillDat, pBaseTarget, level, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
+	}
+
 	void CreateSfx( XSkillDat *pSkillDat,
-//					const EFFECT *pEffect,
-					const _tstring& strEffect,
-					ID idAct,
-					xtPoint pointSfx,
-					float secPlay,
-					const XE::VEC2& vPos = XE::VEC2(0) );
+									const _tstring& strEffect,
+									ID idAct,
+									xtPoint pointSfx,
+									float secPlay,
+									const XE::VEC2& vPos = XE::VEC2( 0 ) );
+	void CreateSfx( XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos = XE::VEC2() );
 	virtual void OnDestroySFX( XBuffObj *pSkillRecvObj, ID idSFX ) {}
 	virtual void OnPlaySoundRecv( ID id ) { XLOG("경고: 가상함수가 구현되지 않았음"); }
 	/**
@@ -150,17 +104,6 @@ public:
 	virtual void OnStartSkillState( XSkillUser *pCaster, XSkillReceiver* pInvoker, EFFECT *pEffect ) {}
 	virtual void RegisterInhValRecv( XLua *pLua, const char *szVal ) {} 
 	// this에 fDamage만큼의 데미지를 준다
-/*
-	virtual int OnSkillDamage( XSkillUser* pAttacker, float val, xtValType opType ) {
-		XBREAKF(1,"경고: 가상함수가 구현되지 않았음");
-		return 0;
-	}		
-	// this에 fHP만큼의 체력을 회복시킴
-	virtual int OnSkillHeal( float val, xtValType opType ) {
-		XBREAKF(1,"경고: 가상함수가 구현되지 않았음");
-		return 0;
-	}		
-*/
 	/**
 	 @brief 비보정 파라메터의 효과가 적용될때 호출된다. 비보정파라메터는 음수값을 쓴다.
 	 @return 효과를 적용했으면 1을 리턴하고 그렇지 않으면 0을 리턴시켜야 한다.
@@ -219,11 +162,11 @@ public:
 	 @brief 발동스킬이 발동되기전에 호출된다. false가 리턴되면 발동스킬을 발동시키지 않는다.
 	 strOut에 다른 스킬의 식별자를 넣어돌려주면 그 스킬이 대신 발동된다.
 	*/
-	virtual bool OnInvokeSkill( _tstring& strOut, 
-								XSKILL::XSkillDat *pDat,
-								const XSKILL::EFFECT *pEffect,
-								XSKILL::XSkillReceiver* pTarget,
-								int level ) { return true; }
+	virtual bool OnInvokeSkill( XSKILL::XSkillDat *pDat,
+															const XSKILL::EFFECT *pEffect,
+															XSKILL::XSkillReceiver* pTarget,
+															int level,
+															_tstring* pstrOut ) { return true; }
 	virtual BOOL IsLive( void ) { return TRUE; }
 	// GetInvokeTarget전 invokeTarget을 한번더 가공한다.
 	virtual XSKILL::xtInvokeTarget 
@@ -237,4 +180,3 @@ public:
 XE_NAMESPACE_END
 
 
-#endif // xskill_sys

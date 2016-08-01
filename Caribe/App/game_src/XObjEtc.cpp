@@ -50,6 +50,35 @@ void XCompObjFont::Draw( const XE::VEC2& vPos, float scale )
 {
 	m_pfdFont->DrawStringWithStyle( vPos, m_strText, m_Style, m_Col );
 }
+//////////////////////////////////////////////////////////////////////////
+XCompObjBounce::XCompObjBounce( const float power, const float dAngZ )
+{
+	auto vDZ = XE::GetAngleVector( dAngZ, power );
+	auto vXY = XE::GetAngleVector( xRandomF( 360.f ), vDZ.x );
+	m_vwDeltaNext.x = vXY.x;
+	m_vwDeltaNext.y = vXY.y;
+	m_vwDeltaNext.z = vDZ.y;
+}
+int XCompObjBounce::FrameMove( float dt )
+{
+	bool bUpdated = false;			// 상태가 변함.
+	if( m_State == 0 ) {
+		m_vwPos += m_vwDeltaNext * dt;
+		m_vwDeltaNext.z += m_Gravity * dt;
+		if( m_vwPos.z >= 0 ) {
+			m_vwDeltaNext.z *= -0.2f;		// 바운스 되어서 벡터 방향 바뀜
+			m_vwPos.z = -m_vwPos.z;		// 바닥을 뚫고 지나온만큼을 역으로 되돌린다.
+			if( m_vwDeltaNext.z > -1.f * dt ) {		// 바운스힘이 일정 이하면 끝냄
+				m_vwDeltaNext.Set( 0 );
+				m_vwPos.z = 0;
+				m_State = 1;
+				bUpdated = true;
+			}
+		}
+	}
+	return (bUpdated)? 1 : 0;		// 상태변화가 있었으면 1을 리턴
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 XObjBullet::XObjBullet( ID idBullet, 
@@ -465,7 +494,7 @@ XObjLoop::XObjLoop( int typeObj, const UnitPtr& spTrace, LPCTSTR szSpr, ID idAct
  @brief 이펙트 생성은 vwPos에 생성되나 spTrace를 참조해야 하는 버전
 */
 XObjLoop::XObjLoop( int typeObj, const UnitPtr& spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGet(), typeObj, vwPos, szSpr, 1 )
+	: XEBaseWorldObj( XWndBattleField::sGet(), typeObj, vwPos, szSpr, idAct )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -479,8 +508,12 @@ XObjLoop::XObjLoop( int typeObj, const UnitPtr& spTrace, const XE::VEC3& vwPos, 
 }
 
 
-void XObjLoop::Destroy()
+void XObjLoop::Destroy() {}
+
+void XObjLoop::SetBounce( float power, float dAngZ, float gravity )
 {
+	m_spCompBounce = std::make_shared<XCompObjBounce>( power, dAngZ );
+	m_spCompBounce->SetGravity( gravity );
 }
 
 void XObjLoop::FrameMove( float dt )
@@ -491,6 +524,11 @@ void XObjLoop::FrameMove( float dt )
 			if( m_spRefUnit->IsDead() )
 				SetDestroy( 1 );
 		}
+	}
+	if( m_spCompBounce ) {
+		m_spCompBounce->SetvwPos( GetvwPos() );
+		m_spCompBounce->FrameMove( dt );
+		SetvwPos( m_spCompBounce->GetvwPos() );
 	}
 	if( m_State == 0 ) {
 		if( m_secLife > 0.f ) {
@@ -594,24 +632,18 @@ XE::VEC3 XSkillShootObj::OnInterpolation( const XE::VEC3& vSrc,
 }
 
 ////////////////////////////////////////////////////////////////
-//_tstring XObjDamageNumber::s_strFond = FONT_NANUM_BOLD;
-_tstring XObjDamageNumber::s_strFont = _T("damage.ttf");
-//_tstring XObjDamageNumber::s_strFont = _T( "Channel_Slanted2.ttf" );
-//_tstring XObjDamageNumber::s_strFont = _T( "Elkwood - Free.ttf" );
-//_tstring XObjDamageNumber::s_strFont = _T( "Les Mysteres de Paris.ttf" );
-//_tstring XObjDamageNumber::s_strFont = _T( "OptimusPrincepsSemiBold.ttf" );
-//_tstring XObjDamageNumber::s_strFont = _T( "Rookies Showtimes.otf" );
-//_tstring XObjDamageNumber::s_strFont = _T( "True Lies.ttf" );
+_tstring XObjDmgNum::s_strFont = _T("damage.ttf");
 /**
  @brief 
  @param paramHit typeHit가 xHT_STATE(상태이상)일경우 어떤상태이상인지 파라메터가 붙는다.
 */
-XObjDamageNumber::XObjDamageNumber( float num
-																, XGAME::xtHit typeHit
-																, int paramHit
-																, const XE::VEC3& vwPos
-																, XCOLOR col )
+XObjDmgNum::XObjDmgNum( float num
+											, XGAME::xtHit typeHit
+											, int paramHit
+											, const XE::VEC3& vwPos
+											, XCOLOR col )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos )
+	, m_compBounce( XE::VEC2(10, 15), XE::VEC2(225, 315) )
 {
 	Init();
 	m_Number = (int)num;
@@ -645,30 +677,30 @@ XObjDamageNumber::XObjDamageNumber( float num
 	InitEffect();
 }
 
-XObjDamageNumber::XObjDamageNumber( LPCTSTR szStr
-																	, const XE::VEC3& vwPos, XCOLOR col )
+XObjDmgNum::XObjDmgNum( LPCTSTR szStr
+											, const XE::VEC3& vwPos, XCOLOR col )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos )
+	, m_compBounce( XE::VEC2( 10, 15 ), XE::VEC2( 225, 315 ) )
 {
 	Init();
 	m_strNumber = szStr;
 	m_Number = 0;
 	m_Col = col;
 	m_typeHit = xHT_CUSTOM;
+	m_compBounce.SetGravity( 1.f );
 	InitEffect();
 }
 
-void XObjDamageNumber::InitEffect()
+void XObjDmgNum::InitEffect()
 {
 	m_vDelta.Set( 0, 0, -4 );
 	float size = 18.f;
-//	const _tstring strFont = FONT_NANUM_BOLD;
 	_tstring strFont;
 	if( XE::IsAsciiStr(m_strNumber.c_str()) ) {
 		strFont = _T("damage.ttf");
 		size = 20.f;
 	} else
 		strFont = FONT_NANUM_BOLD;
-//	const _tstring strFont = (m_typeHit == xHT_HIT)? _T("damage.ttf") : FONT_NANUM_BOLD;
 	XBREAK( m_pfdNumber != nullptr );
 	m_pfdNumber = FONTMNG->Load( strFont.c_str(), size );
 	m_timerLife.Set(0.1f);
@@ -677,41 +709,83 @@ void XObjDamageNumber::InitEffect()
 		m_vDelta.z *= 2.f;
 }
 
-void XObjDamageNumber::Destroy()
+void XObjDmgNum::Destroy()
 {
 	SAFE_RELEASE2( FONTMNG, m_pfdNumber );
 }
 
-void XObjDamageNumber::FrameMove( float dt )
+void XObjDmgNum::FrameMove( float dt )
 {
-	AddPos( m_vDelta * dt );
-	if( m_State == 0 ) {
-		// 떠오르기
-		if( m_timerLife.IsOver() ) {
-			// 1.5초간 대기.
-			m_State = 1;
-			m_timerLife.Set(1.0f);
-			m_vDelta.Set(0,0,-0.5f);	// 서서히 올라간다.
+	m_compBounce.SetvwPos( GetvwPos() );
+	if( m_compBounce.FrameMove( dt ) == 1 ) {
+		if( m_compBounce.GetState() == 1 ) {
+			m_timerLife.Set( 1.f );
 		}
-	} else 
-	if( m_State == 1 ) {
-		// 대기
-		if( m_timerLife.IsOver() ) {
-			// x초간 빠르게 떠오르며 사라진다.
-			m_State = 2;
-			m_timerLife.Set(2.0f);
-			m_vDelta.z = -2.f;
-		}
-	} else {
+	}
+	SetvwPos( m_compBounce.GetvwPos() );
+	if( m_compBounce.GetState() == 1 ) {
 		float alpha = 1.0f - m_timerLife.GetSlerp();
 		SetAlpha( alpha );
-		if( m_timerLife.IsOver() )
-			SetDestroy(1);
+		if( m_timerLife.IsOver() ) {
+			SetDestroy( 1 );
+		}
 	}
+// 	AddPos( m_vDelta * dt );
+// 	if( m_State == 0 ) {
+// 		// 떠오르기
+// 		if( m_timerLife.IsOver() ) {
+// 			// 1.5초간 대기.
+// 			m_State = 1;
+// 			m_timerLife.Set(1.0f);
+// 			m_vDelta.Set(0,0,-0.5f);	// 서서히 올라간다.
+// 		}
+// 	} else 
+// 	if( m_State == 1 ) {
+// 		// 대기
+// 		if( m_timerLife.IsOver() ) {
+// 			// x초간 빠르게 떠오르며 사라진다.
+// 			m_State = 2;
+// 			m_timerLife.Set(2.0f);
+// 			m_vDelta.z = -2.f;
+// 		}
+// 	} else {
+// 		float alpha = 1.0f - m_timerLife.GetSlerp();
+// 		SetAlpha( alpha );
+// 		if( m_timerLife.IsOver() )
+// 			SetDestroy(1);
+// 	}
 	XEBaseWorldObj::FrameMove( dt );
 }
+// void XObjDmgNum::FrameMove( float dt )
+// {
+// 	AddPos( m_vDelta * dt );
+// 	if( m_State == 0 ) {
+// 		// 떠오르기
+// 		if( m_timerLife.IsOver() ) {
+// 			// 1.5초간 대기.
+// 			m_State = 1;
+// 			m_timerLife.Set(1.0f);
+// 			m_vDelta.Set(0,0,-0.5f);	// 서서히 올라간다.
+// 		}
+// 	} else 
+// 	if( m_State == 1 ) {
+// 		// 대기
+// 		if( m_timerLife.IsOver() ) {
+// 			// x초간 빠르게 떠오르며 사라진다.
+// 			m_State = 2;
+// 			m_timerLife.Set(2.0f);
+// 			m_vDelta.z = -2.f;
+// 		}
+// 	} else {
+// 		float alpha = 1.0f - m_timerLife.GetSlerp();
+// 		SetAlpha( alpha );
+// 		if( m_timerLife.IsOver() )
+// 			SetDestroy(1);
+// 	}
+// 	XEBaseWorldObj::FrameMove( dt );
+// }
 
-void XObjDamageNumber::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ )
+void XObjDmgNum::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ )
 {
 //#ifndef _XUZHU_HOME
 	BYTE a = (BYTE)(GetAlpha() * 255);
@@ -720,12 +794,11 @@ void XObjDamageNumber::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float 
 	XCOLOR col = XCOLOR_RGBA( 209, 21, 21, a );
 	if( m_Col != 0 ) {
 		col = m_Col;
-		BYTE r = XCOLOR_RGB_R( col );
-		BYTE g = XCOLOR_RGB_G( col );
-		BYTE b = XCOLOR_RGB_B( col );
+		const BYTE r = XCOLOR_RGB_R( col );
+		const BYTE g = XCOLOR_RGB_G( col );
+		const BYTE b = XCOLOR_RGB_B( col );
 		col = XCOLOR_RGBA(r,g,b,a);
 	}
-//	m_pfdNumber->DrawString( vPos.x, vPos.y, m_strNumber.c_str(), col );
 	m_pfdNumber->DrawStringStyle( vPos.x, vPos.y, col, xFONT::xSTYLE_STROKE, m_strNumber.c_str() );
 //#endif 
 }
@@ -899,14 +972,8 @@ void XObjFlame::FrameMove( float dt )
 XObjRes::XObjRes( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct
 									, const XVector<XGAME::xRES_NUM>& aryLoots )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos, szSpr, idAct )
+	, m_compBounce( 20.f, XE::VEC2( 270.f, 290.f ) )
 {
-	static float power = 20.f;
-	const auto dAngZ = xRandomF( 270.f, 270.f + 20.f );
-	auto vDZ = XE::GetAngleVector( dAngZ, power );
-	auto vXY = XE::GetAngleVector( xRandomF(360.f), vDZ.x );
-	m_vwDelta.x = vXY.x;
-	m_vwDelta.y = vXY.y;
-	m_vwDelta.z = vDZ.y;
 	m_psfcShadow = IMAGE_MNG->Load( TRUE, PATH_IMG( "shadow.png" ) );
 	m_aryLoots = aryLoots;
 	m_compFont.Load( FONT_RESNUM, 18.f );
@@ -930,26 +997,14 @@ XObjRes::~XObjRes()
 //
 void XObjRes::FrameMove( float dt )
 {
-	if( m_State == 0 ) {
-		static float gravity = 1.f;
-		AddPos( m_vwDelta * dt );
-		m_vwDelta.z += gravity * dt;
-		auto vwPos = GetvwPos();
-		if( vwPos.z >= 0 ) {
-//			vwPos.z = 0;
-			static float bounce = -0.2f;
-			m_vwDelta.z *= bounce;		// 바운스 되어서 벡터 방향 바뀜
-			vwPos.z = -vwPos.z;		// 바닥을 뚫고 지나온만큼을 역으로 되돌린다.
-			if( m_vwDelta.z > -1.f * dt ) {		// 바운스힘이 일정 이하면 끝냄
-				m_vwDelta.Set(0);
-				vwPos.z = 0;
-				m_State = 1;
-				m_timerAlpha.Set( 5.f );		// 5초후엔 자동으로 먹어짐
-			}
-			SetvwPos( vwPos );
-		}
-	} else
-	if( m_State == 1 ) {
+	m_compBounce.SetvwPos( GetvwPos() );
+	if( m_compBounce.FrameMove( dt ) ) {
+		if( m_compBounce.GetState() == 1 )	// 바닥에 떨어져서 멈춤
+			m_timerAlpha.Set( 5.f );		// 5초후엔 자동으로 먹어짐
+	}
+	SetvwPos( m_compBounce.GetvwPos() );
+	//
+	if( m_compBounce.GetState() == 1 ) {
 		// 대기상태( 유닛이 닿으면 2로 바뀐다 )
 		// 동시에 먹은리소스아이콘과 +숫자로 얼마를 먹었는지 표시
 		// 리소스 종류가 여러개면 차례대로 올라온다.
@@ -959,35 +1014,8 @@ void XObjRes::FrameMove( float dt )
 			auto pUI = new XObjResNum( GetvwPos(), m_resType, m_numRes );
 			XBattleField::sGet()->AddpObj( pUI );
 			SetDestroy( 1 );		// 바로 삭제
-// 			m_State = 2;
-// 			m_timerAlpha.Set( 1.5f );	// delay용으로 사용함.
-			//
 		}
-	} 
-// 	else
-// 	if( m_State == 2 ) {
-// 		// 그냥 올라가는중
-// 		auto vwPos = GetvwPos();
-// 		vwPos.z -= 1.5f * dt;
-// 		SetvwPos( vwPos );
-// 		if( m_timerAlpha.IsOver() ) {
-// 			m_timerAlpha.Set( 0.5f );
-// 			m_State = 3;
-// 		}
-// 	} else
-// 	if( m_State == 3 ) {
-// 		// 사라지는 중
-// 		auto vwPos = GetvwPos();
-// 		vwPos.z -= 1.f * dt;
-// 		SetvwPos( vwPos );
-// 		auto lerp = m_timerAlpha.GetSlerp();
-// 		if( lerp > 1.f )
-// 			lerp = 1.f;
-// 		SetAlpha( 1.0f - lerp );
-// 		if( lerp >= 1.f )
-// 			SetDestroy( 1 );
-// 	}
-
+	}
 	XEBaseWorldObj::FrameMove( dt );
 }
 
