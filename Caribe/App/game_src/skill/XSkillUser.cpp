@@ -486,15 +486,14 @@ xtError XSkillUser::CastEffToCastTargetByBuff( XSkillDat *pDat,
 		// 시전자는 달라도 아이디는 같은 버프는 있는가?
 		pBuffObj = pCastingTarget->FindBuffSkill( pDat->GetidSkill() );
 		if( pBuffObj ) {	// 시전자는 다르고 아이디만 같은 경우
-			if( !pEffect->bDuplicate ) {
-				// 중복불가 버프
-				// 이런경우는 기존버프에 시간만 리셋해준다
-				bCreateBuff = false;
+			if( pEffect->bDuplicate ) {
+				// 중복생성가능. 새로 버프를 생성시키도록 null로 클리어 한다.
+				pBuffObj = nullptr;
 			}
 		}
 	}
 	// 지속시간형 객체를 생성한다.
-	if( bCreateBuff && pBuffObj == nullptr ) {
+	if( pBuffObj == nullptr ) {
 		// 버프오브젝트만 일단 생성하고 이펙트오브젝트는 시전대상에 맞는것만 따로 추가한다
 		pBuffObj = CreateSkillBuffObj( this,
 																	 pCastingTarget,
@@ -507,28 +506,33 @@ xtError XSkillUser::CastEffToCastTargetByBuff( XSkillDat *pDat,
 		pCastingTarget->AddSkillRecvObj( pBuffObj );
 		// 시전대상에게 버프가 추가된 직후 이벤트가 발생한다.
 		pCastingTarget->OnAddSkillRecvObj( pBuffObj, pEffect );
+		// 지속이펙트생성(효과가 여러개여도 지속이펙트는 1개)
+		if( pEffect->m_PersistEff.IsHave() ) {
+			const float secPlay = pEffect->GetDuration( level );	// 지속이펙트는 무조건 루핑.
+			pCastingTarget->CreateSfx( pDat, pEffect->m_PersistEff, secPlay );
+		}
+		// 시전사운드 플레이
+		if( pEffect->idCastSound ) {
+			OnPlaySoundUse( pEffect->idCastSound );		// virtual
+		}
 	}
 	XBREAK( pBuffObj == nullptr );
 	// 효과를 추가하고 타이머를 작동시킴
 	// 이펙트오브젝트를 추가. 이미 효과가 있으면 기존거를 리턴
-	EFFECT_OBJ *pEffObj = pBuffObj->AddEffect( pEffect );
-	// "시전"스크립트 실행
-	pBuffObj->ExecuteScript( GetThisRecv(), pEffect->scriptCast.c_str() );
-	// 시전사운드 플레이
-	if( pEffect->idCastSound ) {
-		OnPlaySoundUse( pEffect->idCastSound );		// virtual
+
+	EFFECT_OBJ *pEffObj = pBuffObj->FindEffect( pEffect );
+	if( pEffObj == nullptr ) {
+		pEffObj = pBuffObj->AddEffect( pEffect );
+		// "시전"스크립트 실행
+		pBuffObj->ExecuteScript( GetThisRecv(), pEffect->scriptCast.c_str() );
+		// 버프객체에 이벤트 발생
+		pBuffObj->OnCastedEffect( pCastingTarget, pEffObj );
 	}
-	// 지속시간 타이머를 셋
+	// 지속시간 타이머를 셋. 이미 효과가 걸려있으면 타이머만 리셋
 	if( pEffect->IsDuration() ) {
 		const auto sec = pEffect->GetDuration( level );
 		pEffObj->timerDuration.Set( sec );
 		pEffObj->cntDot = 0;
-	}
-	// 버프객체에 이벤트 발생
-	pBuffObj->OnCastedEffect( pCastingTarget, pEffObj );
-	if( pEffect->m_PersistEff.IsHave() ) {
-		const float secPlay = pEffect->GetDuration( level );	// 지속이펙트는 무조건 루핑.
-		pCastingTarget->CreateSfx( pDat, pEffect->m_PersistEff, secPlay );
 	}
 	return xOK;
 } // CastEffToCastTargetByBuff
