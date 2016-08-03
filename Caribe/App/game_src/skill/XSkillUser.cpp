@@ -169,36 +169,35 @@ XSkillUser::xUseSkill XSkillUser::UseSkill( XSkillObj *pUseSkill,
  @brief 이펙트를 만드는 공통 함수.
  @param secPlay 0:once 0>:해당시간동안 루핑 -1:무한루핑
 */
-void XSkillUser::CreateSfx( const XSkillDat *pSkillDat,
-														const _tstring& strEffect, 
-														ID idAct,
-														xtPoint pointSfx,
-														float secPlay,
-														const XE::VEC2& vPos )
+ID XSkillUser::CreateSfx( const XSkillDat *pSkillDat,
+													const _tstring& strEffect,
+													ID idAct,
+													xtPoint pointSfx,
+													float secPlay,
+													const XE::VEC2& vPos )
 {
 	if( strEffect.empty() )
-		return;
+		return 0;
 	float secLife = 0.f;
 	// 이펙트생성지점이 정해져있지 않으면 디폴트로 타겟 아래쪽에
 	if( pointSfx == xPT_NONE )
 		pointSfx = xPT_TARGET_BOTTOM;
 	if( idAct == 0 )
 		idAct = 1;
-	OnCreateSkillSfx( const_cast<XSkillDat*>( pSkillDat ), 
-//										pEffect,
-										pointSfx,
-										strEffect.c_str(),
-										idAct,
-										secPlay,
-										vPos );
+	return OnCreateSkillSfx( const_cast<XSkillDat*>( pSkillDat ),
+													 pointSfx,
+													 strEffect.c_str(),
+													 idAct,
+													 secPlay,
+													 vPos );
 }
 
-void XSkillUser::CreateSfx( const XSkillDat *pSkillDat
+ID XSkillUser::CreateSfx( const XSkillDat *pSkillDat
 														, const xEffSfx& effSfx
 														, float secPlay
 														, const XE::VEC2& vPos )
 {
-	CreateSfx( pSkillDat, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
+	return CreateSfx( pSkillDat, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
 }
 
 /**
@@ -508,8 +507,12 @@ xtError XSkillUser::CastEffToCastTargetByBuff( XSkillDat *pDat,
 		pCastingTarget->OnAddSkillRecvObj( pBuffObj, pEffect );
 		// 지속이펙트생성(효과가 여러개여도 지속이펙트는 1개)
 		if( pEffect->m_PersistEff.IsHave() ) {
-			const float secPlay = pEffect->GetDuration( level );	// 지속이펙트는 무조건 루핑.
-			pCastingTarget->CreateSfx( pDat, pEffect->m_PersistEff, secPlay );
+//			const float secPlay = pEffect->GetDuration( level );	// 지속이펙트는 무조건 루핑.
+			const float secPlay = -1;		// 무한으로 돌리고 버프객체측에서 효과가 종료될때 삭제시킨다.
+			ID idSfx = pCastingTarget->CreateSfx( pDat, pEffect->m_PersistEff, secPlay );
+			if( idSfx ) {
+				pBuffObj->SetidSfx( idSfx );
+			}
 		}
 		// 시전사운드 플레이
 		if( pEffect->idCastSound ) {

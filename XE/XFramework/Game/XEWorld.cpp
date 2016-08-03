@@ -49,14 +49,14 @@ void XEWorld::SetObjMng( XEObjMng *pObjMng )
 	m_pObjMng = pObjMng;
 }
 
-ID XEWorld::AddObj( const WorldObjPtr& spObj )
+ID XEWorld::AddObj( const XSPWorldObj& spObj )
 {
 	XBREAK( m_pObjMng == NULL );
 	m_pObjMng->Add( spObj );
 	return spObj->GetsnObj();
 }
 
-ID XEWorld::AddObj( int type, const WorldObjPtr& spObj )
+ID XEWorld::AddObj( int type, const XSPWorldObj& spObj )
 {
 	XBREAK( m_pObjMng == NULL );
 	m_pObjMng->Add( type, spObj );
@@ -85,7 +85,7 @@ void XEWorld::Draw( XEWndWorld *pWndWorld )
  @todo 함수포인터 형태로 모두 바꾸기 위해 삭제함.
 */
 /*
-WorldObjPtr XEWorld::FindNearObjByFilter( const XE::VEC3& vwPos, 
+XSPWorldObj XEWorld::FindNearObjByFilter( const XE::VEC3& vwPos, 
 										float radiusSight, 
 										BIT bitSide )
 {
@@ -95,24 +95,24 @@ WorldObjPtr XEWorld::FindNearObjByFilter( const XE::VEC3& vwPos,
 }
 
 */
-// WorldObjPtr XEWorld::FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
+// XSPWorldObj XEWorld::FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
 // 										const XE::VEC3& vwPos,
 // 										float radiusSight,
 // 										BOOL ( *pFunc )( XEBaseWorldObj*, XEBaseWorldObj* ) )
 // {
 // 	if( XBREAK( m_pObjMng == NULL ) )
-// 		return WorldObjPtr();
+// 		return XSPWorldObj();
 // 	return m_pObjMng->FindNearObjByFunc( pSrcObj, vwPos, radiusSight, pFunc );
 // }
 // 
-// WorldObjPtr XEWorld::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
+// XSPWorldObj XEWorld::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
 // 										const XE::VEC3& vwPos,
 // 										float radiusSight,
 // 										BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ),
 // 										BOOL( *pfuncCompare )( XEBaseWorldObj*, XEBaseWorldObj*, XEBaseWorldObj* ) )
 // {
 // 	if( XBREAK( m_pObjMng == NULL ) )
-// 		return WorldObjPtr();
+// 		return XSPWorldObj();
 // 	return m_pObjMng->FindNearObjByMore( pSrcObj, vwPos, radiusSight, pfuncFilter, pfuncCompare );
 // }
 
@@ -144,4 +144,11 @@ XE::VEC3 XEWorld::ClippingObj( const XE::VEC3& vwPos, const XE::VEC3& vSize )
 XEObjMng* XEWorld::CreateObjMng( int maxObj ) 
 {
 	return new XEObjMng( maxObj );
+}
+
+XSPWorldObj XEWorld::GetObjByidObj( ID idObj ) 
+{
+	if( idObj == 0 )
+		return nullptr;
+	return m_pObjMng->Find( idObj );
 }

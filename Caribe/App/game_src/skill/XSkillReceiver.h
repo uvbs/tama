@@ -40,13 +40,11 @@ public:
 	virtual ID GetId( void ) = 0;
 	int	ApplyEffectNotAdjParam( XSkillDat *pSkillDat, XSkillUser* pCaster, const EFFECT *pEffect, int level );	// 비보정파라메터에 대한 효과적용
 	int	ApplyEffectAdjParam( XSkillDat *pSkillDat, XSkillUser *pCaster, const EFFECT *pEffect, int level, XBuffObj *pBuffObj );		// 보정파라메터에 대한 효과적용
-//	virtual BOOL IsInvokeAble( XSkillReceiver *pCastingTarget, const EFFECT *pEffect ); // { XBREAKF( 1, "%s: %s가 구현되지 않았습니다", _T(__FUNCTION__), GetObjName() ); return 0; }
-//	virtual BOOL IsCastAble( XSkillUser *pCaster, const EFFECT *pEffect ); // { XBREAKF( 1, "%s: %s가 구현되지 않았습니다", _T(__FUNCTIOIN__), GetObjName() ); return 0; }
 	virtual BOOL IsInvoking( XBuffObj *pSkillRecvObj ) { return FindBuff( pSkillRecvObj ); }
 	virtual LPCTSTR	GetObjName( void ) { return _T("이름없음"); }
 	virtual int	AddSkillRecvObj( XBuffObj *pSkillRecvObj );		// 버프리스트추가
 //	virtual void DestroySkillRecvObj( XBuffObj *pSkillRecvObj ) { SAFE_DELETE( pSkillRecvObj ); }		// 버프리스트삭제
-	virtual int	OnClearSkill( XSkillDat *pSkillDat, EFFECT_OBJ *pEffObj ) { return 1; }		// 버프효과가 끝나면 호출됨
+	virtual int	OnClearSkill( XBuffObj* pBuffObj, XSkillDat *pSkillDat, EFFECT_OBJ *pEffObj ) { return 1; }		// 버프효과가 끝나면 호출됨
 	virtual void OnFirstApplyBuff( XBuffObj *pSkillRecvObj, BOOL bInnerApply ) {}	// 이 대상에 pSkillRecvObj버프(효과아님)가 최초 적용되는 순간
 	virtual void OnEndApplyBuff( XBuffObj *pSkillRecvObj ) {}		// 이 대상에 pSkillRecvObj버프(효과아님)가 사라지는 순간
 	virtual void OnEndApplyBuffFromCastingTarget( XBuffObj *pSkillRecvObj ) {}		// 이 대상에 pSkillRecvObj버프(효과아님)가 사라지는 순간 캐스팅타겟에게서 버프가 사라짐을 알림.
@@ -54,12 +52,12 @@ public:
 	virtual BOOL IsApplyBuff( XBuffObj *pBuff, XSkillReceiver *pCastingTarget, XSkillReceiver *pInvokeTarget ) { return TRUE;}
 	// secLife==0.f는 1번플레이
 	virtual ID OnCreateInvokeSFX( XBuffObj *pSkillRecvObj, EFFECT *pEffect, XSkillUser *pCaster, const XE::VEC2 *pvPos, LPCTSTR szSFX, ID idAct, xtPoint pointEffect, float secLife=0.f ) { return 0;}
-	virtual void OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
+	virtual ID OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
 																 XSKILL::xtPoint createPoint,
 																 LPCTSTR szSpr,
 																 ID idAct,
 																 float secPlay,
-																 const XE::VEC2& vPos ) {}
+																 const XE::VEC2& vPos ) { return 0;}
 	/**
 	 @brief 슈팅타겟이펙트 전용 생성기
 	 슈팅타겟이펙트에는 반드시 타점이 있어야 한다.
@@ -81,13 +79,13 @@ public:
 		return OnCreateSkillSfxShootTarget( pSkillDat, pBaseTarget, level, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
 	}
 
-	void CreateSfx( XSkillDat *pSkillDat,
+	ID CreateSfx( XSkillDat *pSkillDat,
 									const _tstring& strEffect,
 									ID idAct,
 									xtPoint pointSfx,
 									float secPlay,
 									const XE::VEC2& vPos = XE::VEC2( 0 ) );
-	void CreateSfx( XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos = XE::VEC2() );
+	ID CreateSfx( XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos = XE::VEC2() );
 	virtual void OnDestroySFX( XBuffObj *pSkillRecvObj, ID idSFX ) {}
 	virtual void OnPlaySoundRecv( ID id ) { XLOG("경고: 가상함수가 구현되지 않았음"); }
 	/**

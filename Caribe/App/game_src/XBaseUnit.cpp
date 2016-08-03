@@ -291,9 +291,15 @@ void XBaseUnit::CreateFSMObj()
 
 void XBaseUnit::Release()
 {
+	m_spTarget->Release();
 	m_spTarget.reset();
 	for( int i = 0; i < m_aryAttacked.GetMax(); ++i )
-		m_aryAttacked[i].reset();
+		m_aryAttacked[i]->Release();
+	m_aryAttacked.Clear();
+	m_spMsgQ1->Release();
+	m_spMsgQ1.reset();
+	m_spMsgQ2->Release();
+	m_spMsgQ2.reset();
 	XEControllerFSM::Release();
 }
 
@@ -513,13 +519,6 @@ void XBaseUnit::FrameMoveLive( float dt )
 			float hpAdd = GetAdjValue( hpMax, XGAME::xADJ_HP_REGEN );
 			if( IsLive() ) {
 				DoHeal( hpAdd );
-// 				AddHp( hpAdd );
-// 				XObjDamageNumber *pDmg = new XObjDamageNumber( hpAdd,
-// 																FALSE,
-// 																GetvwTop() );
-// 				if( this->IsPlayer() )
-// 					pDmg->SetCol( XCOLOR_GREEN );
-// 				AddObj( pDmg );
 			}
 			m_timerHpRegen.Reset();
 		}
@@ -779,8 +778,9 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 						const auto bitCaster = pBuffObj->GetbitCampCaster();
 						if( m_Camp.IsEnemy( bitCaster ) )
 							psfc->SetColor( XCOLOR_RGBA(200,0,0,255) );
-						float scaleIcon = 0.5f * scale;
-						XE::VEC2 sizeIcon = psfc->GetSize() * scaleIcon;
+						const float scaleBuff = (GetUnitSize() == xSIZE_SMALL)? 0.25f : 0.5f;
+						const float scaleIcon = scaleBuff * scale;
+						const XE::VEC2 sizeIcon = psfc->GetSize() * scaleIcon;
 						XE::VEC2 vDrawBuffIcon = vPos;
 						vDrawBuffIcon.x -= ( sizeIcon.w * idx ) * 0.5f;
 						vDrawBuffIcon.y = vDrawName.y - ( ( 2.f * scale ) + sizeIcon.h );
@@ -2093,13 +2093,12 @@ int XBaseUnit::GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget
  @brief 새 스킬시스템에서 공통으로 사용할 이펙트 생성 함수.
  @param pvPos null이 아니면 이 좌표에 생성시켜야 한다.
 */
-void XBaseUnit::OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
-// 								const EFFECT *pEffect,
-								XSKILL::xtPoint createPoint,
-								LPCTSTR szSpr,
-								ID idAct,
-								float secPlay,
-								const XE::VEC2& vPos )
+ID XBaseUnit::OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
+																XSKILL::xtPoint createPoint,
+																LPCTSTR szSpr,
+																ID idAct,
+																float secPlay,
+																const XE::VEC2& vPos )
 {
 	auto pSfx = CreateSfxObj( createPoint, szSpr, idAct, secPlay, TRUE, 25.f, vPos );
 	if( pSfx ) {
@@ -2107,7 +2106,9 @@ void XBaseUnit::OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
 			const float gravity = 0.1f;
 			pSfx->SetBounce( XE::VEC2( 1, 2 ), XE::VEC2( 205, 335 ), gravity );
 		}
+		return pSfx->GetsnObj();
 	}
+	return 0;
 }
 
 XSkillSfx* XBaseUnit::OnCreateSkillSfxShootTarget(
@@ -2174,7 +2175,6 @@ XObjLoop* XBaseUnit::CreateSfxObj( XSKILL::xtPoint createPoint,
 													szSpr, idAct, secPlay );
 		} else
 		if( createPoint == XSKILL::xPT_TARGET_TRACE_BOTTOM ) {
-			// this를 따라다니지 않음.
 			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, GetThisUnit(),
 													szSpr, idAct, secPlay );
 		} else
@@ -2187,6 +2187,12 @@ XObjLoop* XBaseUnit::CreateSfxObj( XSKILL::xtPoint createPoint,
 		if( createPoint == XSKILL::xPT_TARGET_TOP ) {
 			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(), GetvwTop( wAdjZ ),
 													szSpr, idAct, secPlay );
+		} else 
+		if( createPoint == XSKILL::xPT_TARGET_TRACE_TOP ) {
+			// 타겟의 좌표를 따라다님
+			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(), 
+													szSpr, idAct, secPlay );
+			pSfx->SetvAdjust( 0.f, 0.f, -GetSize().h * 0.5f );
 		} else {
 			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(), GetvCenterWorld(),
 													szSpr, idAct, secPlay );
@@ -2472,7 +2478,7 @@ BOOL XBaseUnit::OnFirstApplyState( XSkillUser *pCaster,
 /**
  @brief 버프효과가 끝나면 호출됨
 */
-int	XBaseUnit::OnClearSkill( XSkillDat *pSkillDat, EFFECT_OBJ *pEffObj )
+int	XBaseUnit::OnClearSkill( XBuffObj* pBuffObj, XSkillDat *pSkillDat, EFFECT_OBJ *pEffObj )
 {
 	auto pEffect = &pEffObj->m_effect;
 	if( pEffect->invokeState )	{
@@ -2483,6 +2489,10 @@ int	XBaseUnit::OnClearSkill( XSkillDat *pSkillDat, EFFECT_OBJ *pEffObj )
 		default:
 			break;
 		}
+	}
+	// 버프에 딸린 sfx가 있었으면 삭제시킴.
+	if( pBuffObj->GetidSfx() ) {
+		XEObjMngWithType::sGet()->DestroyObjWithType( xOT_SFX, pBuffObj->GetidSfx() );
 	}
 	return 1;
 }

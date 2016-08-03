@@ -16,12 +16,13 @@ public:
 	XDelegateObjMng() { Init(); }
 	virtual ~XDelegateObjMng() { Destroy(); }
 	//
-	virtual void OnDelegateFrameMoveEachObj( float dt, ID idEvent, WorldObjPtr spObj ) {}
+	virtual void OnDelegateFrameMoveEachObj( float dt, ID idEvent, XSPWorldObj spObj ) {}
 };
 ////////////////////////////////////////////////////////////////
 class XEObjMng
 {
-	std::list<WorldObjPtr> m_listObj;
+	XList4<XSPWorldObj> m_listObj;
+	std::map<ID, XSPWorldObj> m_mapObj;
 	CTimer m_timerSort;
 	DWORD m_Attr;		// 오브젝트 매니저 각종 속성들( XF::OBJMNG_시리즈 )
 	BOOL m_bAdded;	// 이번프레임에 오브젝트가 추가되었으면 TRUE
@@ -37,27 +38,27 @@ public:
 	//
 	virtual void Release();
 	GET_SET_ACCESSOR( DWORD, Attr );
-	GET_ACCESSOR( std::list<WorldObjPtr>&, listObj );
-	int GetNumObj( void ) {
+	GET_ACCESSOR_CONST( const std::list<XSPWorldObj>&, listObj );
+	inline int GetNumObj( void ) const {
 		return m_listObj.size();
 	}
-	int GetNumVisibleObj( void ) {
+	inline int GetNumVisibleObj( void ) const {
 		return m_aryVisible.size();
 	}
 	//
-//	virtual WorldObjPtr FindNearObjByFilter( const XE::VEC3& vwPos, float radius, BIT bitSide );
-	WorldObjPtr FindNearObjByFunc( XEBaseWorldObj *pSrcObj, const XE::VEC3& vwPos, float radius, BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ) );
-	WorldObjPtr FindNearObjByMore( XEBaseWorldObj *pSrcObj,
+	XSPWorldObj FindNearObjByFunc( XEBaseWorldObj *pSrcObj, const XE::VEC3& vwPos, float radius, BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ) );
+	XSPWorldObj FindNearObjByMore( XEBaseWorldObj *pSrcObj,
 											const XE::VEC3& vwPos,
 											float radius,
 											BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ),
 											BOOL( *pfuncCompare )( XEBaseWorldObj*, XEBaseWorldObj*, XEBaseWorldObj* ) );
 	//
-	virtual ID Add( const WorldObjPtr& spObj );
-	virtual void Add( ID snObj, const WorldObjPtr& spObj );
+	virtual ID Add( const XSPWorldObj& spObj );
+	virtual void Add( ID snObj, const XSPWorldObj& spObj );
 //	virtual void Del( XEBaseWorldObj *pObj );
-	virtual void DestroyAllObj( void );
-	virtual WorldObjPtr* Find( ID snObj );
+	virtual XSPWorldObj Find( ID snObj );
+	void DestroyObjWithSN( ID snObj );
+
 	void FrameMove( XEWndWorld *pWndWorld, float dt );
 	void FrameMoveDelegate( XDelegateObjMng *pDelegate, ID idEvent, float dt );
 	void Draw( XEWndWorld *pWndWorld );
@@ -68,4 +69,6 @@ public:
 	 @brief pObj가 FrameMove()에서 파괴되기전에 호출된다.
 	*/
 	virtual void OnDestroyObj( XEBaseWorldObj *pObj ) {}
+private:
+	virtual void DestroyAllObj( void );
 };

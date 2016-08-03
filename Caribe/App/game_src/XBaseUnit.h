@@ -20,6 +20,7 @@
 namespace XSKILL {
 class XSkillDat;
 struct EFFECT;
+class XBuffObj;
 }
 namespace xnUnit {
 	class XMsgQ;
@@ -405,7 +406,7 @@ public:
 							int level,
 							XSKILL::XSkillReceiver *pCastingTarget,
 							float size ) override;
-	int	OnClearSkill( XSKILL::XSkillDat *pSkillDat, XSKILL::EFFECT_OBJ *pEffObj ) override;		// 버프효과가 끝나면 호출됨
+	int	OnClearSkill( XSKILL::XBuffObj* pBuffObj, XSKILL::XSkillDat *pSkillDat, XSKILL::EFFECT_OBJ *pEffObj ) override;		// 버프효과가 끝나면 호출됨
 	void OnCastEffectToPos( XSKILL::XSkillDat *pSkillDat,
 							XSKILL::EFFECT *pEffect,
 							int level,
@@ -443,48 +444,44 @@ public:
 	}
 	virtual XSKILL::XDelegateSkill* GetpDelegate() override;
 	// 발사체오브젝트를 생성하고 월드에 추가시킨다. 효과, 시전대상, 시전자, 좌표
-	XSKILL::XSkillUser* CreateAndAddToWorldShootObj( 
-									XSKILL::XSkillDat *pSkillDat,
-// 									XSKILL::EFFECT *pEffect,
-									int level,
-									XSKILL::XSkillReceiver *pBaseTarget,
-// 									XSKILL::XSkillReceiver *pCastingTarget,
-									XSKILL::XSkillUser *pCaster,
-									const XE::VEC2& vPos ) override;
+	XSKILL::XSkillUser* CreateAndAddToWorldShootObj( XSKILL::XSkillDat *pSkillDat,
+																									 int level,
+																									 XSKILL::XSkillReceiver *pBaseTarget,
+																									 XSKILL::XSkillUser *pCaster,
+																									 const XE::VEC2& vPos ) override;
 	int OnApplyEffectNotAdjParam( XSKILL::XSkillUser *pCaster
-															, XSKILL::XSkillDat* pSkillDat
-															, const XSKILL::EFFECT *pEffect
-															, float abilMin ) override;
+																, XSKILL::XSkillDat* pSkillDat
+																, const XSKILL::EFFECT *pEffect
+																, float abilMin ) override;
 	int GetListObjsRadius( XVector<XSKILL::XSkillReceiver*> *plistOutInvokeTarget,
-									const XSKILL::XSkillDat* pSkillDat,
-									const XSKILL::EFFECT *pEffect,
-									XSKILL::XSkillReceiver *pBaseTarget,
-									const XE::VEC2& vBasePos,
-									float meter,
-									BIT bitSideFilter,
-									int numApply,
-									BOOL bIncludeCenter ) override;
+												 const XSKILL::XSkillDat* pSkillDat,
+												 const XSKILL::EFFECT *pEffect,
+												 XSKILL::XSkillReceiver *pBaseTarget,
+												 const XE::VEC2& vBasePos,
+												 float meter,
+												 BIT bitSideFilter,
+												 int numApply,
+												 BOOL bIncludeCenter ) override;
 	ID GetId() override { return GetsnObj(); }
-	void OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDatw,
-//									const XSKILL::EFFECT *pEffect,
-									XSKILL::xtPoint createPoint,
-									LPCTSTR szSpr,
-									ID idAct,
-									float secPlay,
-									const XE::VEC2& vPos ) override;
+	ID OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDatw,
+											 XSKILL::xtPoint createPoint,
+											 LPCTSTR szSpr,
+											 ID idAct,
+											 float secPlay,
+											 const XE::VEC2& vPos ) override;
 	XSKILL::XSkillSfx* OnCreateSkillSfxShootTarget( XSKILL::XSkillDat *pSkillDat,
-									XSKILL::XSkillReceiver *pBaseTarget,
-									int level,
-									const _tstring& strSpr,
-									ID idAct,
-									XSKILL::xtPoint createPoint,
-									float secPlay,
-									const XE::VEC2& vPos) override;
+																									XSKILL::XSkillReceiver *pBaseTarget,
+																									int level,
+																									const _tstring& strSpr,
+																									ID idAct,
+																									XSKILL::xtPoint createPoint,
+																									float secPlay,
+																									const XE::VEC2& vPos ) override;
 	void OnDestroySFX( XSKILL::XBuffObj *pSkillRecvObj, ID idSFX ) override;
 	int GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList,
-					XSKILL::XSkillDat *pSkillDat,
-					const XSKILL::EFFECT *pEffect,
-					XSKILL::xtGroup typeGroup ) override;
+										XSKILL::XSkillDat *pSkillDat,
+										const XSKILL::EFFECT *pEffect,
+										XSKILL::xtGroup typeGroup ) override;
 	XSKILL::XSkillReceiver* GetTargetObject( XSKILL::EFFECT *pEffect, XSKILL::xtTargetCond cond ) override;
 	XSKILL::XSkillReceiver* GetSkillBaseTarget( XSKILL::XSkillDat *pDat ) override;
 	XSkillReceiver* CreateSfxReceiver( XSKILL::EFFECT *pEffect, float sec ) override;
@@ -492,11 +489,11 @@ public:
 	virtual BOOL OnApplyState( XSKILL::XSkillUser *pCaster, XSKILL::XSkillReceiver* pInvoker, const XSKILL::EFFECT *pEffect, int idxState, BOOL flagState ) override;
 	virtual BOOL OnFirstApplyState( XSKILL::XSkillUser *pCaster, XSKILL::XSkillReceiver* pInvoker, const XSKILL::EFFECT *pEffect, int idxState, BOOL flagState, int level ) override;
 	virtual XSKILL::XSkillReceiver* GetBaseTargetByCondition( XSKILL::XSkillDat *pSkillDat,
-													XSKILL::xtBaseTargetCond cond,
-													float meter,
-													int level,
-													XSKILL::XSkillReceiver *pCurrTarget,
-													const XE::VEC2& vPos ) override;
+																														XSKILL::xtBaseTargetCond cond,
+																														float meter,
+																														int level,
+																														XSKILL::XSkillReceiver *pCurrTarget,
+																														const XE::VEC2& vPos ) override;
 	virtual int GetSkillLevel( XSKILL::XSkillObj* pSkillObj ) override;
 	virtual XSkillReceiver* GetCurrTarget() override;
 	virtual bool OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster, XSKILL::XBuffObj *pBuffObj, XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int level ) override;

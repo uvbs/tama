@@ -66,14 +66,6 @@ public:
 							float radius,
 					BOOL( *pfuncFilter )( XBaseUnit*, XBaseUnit* ),
 					BOOL( *pfuncCompare )( XBaseUnit*, XBaseUnit*, XBaseUnit* ));
-// 	int GetListUnitRadius( XArrayLinearN<XBaseUnit*, 512> *plistOutInvokeTarget,
-// 							XEBaseWorldObj *pCastingTarget,
-// 							const XE::VEC2& vCenter,
-// 							float radius,
-// 							BIT bitSideFilter,
-// 							int numApply,
-// 							BOOL bIncludeCenter,
-// 							BIT bitLive = XSKILL::xTF_LIVE );		// 생존필터;
 	int GetListUnitRadius2( XVector<XSPUnit> *pOutAry
 												, XEBaseWorldObj *pCenter
 												, const XE::VEC2& vCenter
@@ -83,7 +75,7 @@ public:
 												, bool bIncludeCenter
 												, BIT bitLive = XSKILL::xTF_LIVE ) const;
 	void DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible ) override;
-//	void DrawVisible( XEWndWorld *pWndWorld, const XList4<XEBaseWorldObj*>& aryVisible ) override;
 	UnitPtr GetPickUnit( XWndBattleField *pWndWorld, const XE::VEC2& vsPos, BIT bitCamp, ID snExcludeSquad=0, BOOL *pOutPickExclude=NULL );
+	void DestroyObjWithType( int type, ID snObj );
 };
 

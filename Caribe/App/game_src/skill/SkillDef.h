@@ -199,6 +199,7 @@ XE_NAMESPACE_START( XSKILL )
 		xPT_TARGET_BOTTOM,	// 타겟바닥(완전히 지면에 깔리는류(ex:장판)의 에 사용)
 		xPT_TARGET_TRACE_BOTTOM,		// 타겟바닥추적(타겟바닥의 추적버전)
 		xPT_TARGET_TOP,		// 타겟머리(타겟의 머리위)
+		xPT_TARGET_TRACE_TOP,		// 타겟머리추적(타겟의 머리위)
 		xPT_TARGET_CENTER,	// 타겟중심
 		xPT_ACTION_EVENT,	// 액션이벤트(애니메이션 이벤트 지점)
 		xPT_WINDOW_CENTER,	// 윈도우 중앙

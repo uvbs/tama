@@ -449,7 +449,7 @@ bool XSkillDat::IsBuffShort() const
 	for( auto pEff : m_listEffects ) {
 		if( pEff->IsDuration() ) {
 			// 지속시간이 있는것중 지속시간이 유한한것이 하나라도 있으면 short버프타입
-			if( !pEff->IsDurationInfinite() )
+			if( !pEff->IsDurationInfinite(0) )
 				return true;
 		}
 	}

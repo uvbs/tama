@@ -26,6 +26,22 @@ void XMsgQ::Process()
 	}
 }
 
+void XMsgQ::Release()
+{
+	for( auto spMsg : m_qMsg1 )
+		spMsg->Release();
+	for( auto spMsg : m_qMsg2 )
+		spMsg->Release();
+}
+
+void XMsgDmg::Release()
+{
+	m_spAtkObj->Release();
+	m_spTarget->Release();
+	m_spAtkObj.reset();
+	m_spTarget.reset();
+}
+
 //////////////////////////////////////////////////////////////////////////
 void XMsgDmg::Process()
 {

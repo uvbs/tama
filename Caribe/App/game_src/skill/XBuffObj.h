@@ -38,12 +38,10 @@ class XSkillReceiver;
 class XBuffObj;
 class XBuffObj //: public XMemPool<XBuffObj>
 {
-//	DWORD			timeStamp;
 	XDelegateSkill *m_pDelegate;
 	ID m_idBuff;			// 고유아이디
 	XSkillDat *m_pDat;			// 스킬데이타 참조용 포인터(파괴금지)
 	XSkillUser *m_pCaster;		// 시전자
-//	ID m_idCaster = 0;				// 시전자(아이디)
 	BIT m_bitCampCaster = 0;		// 시전자 진영(땜빵)
 	XSkillReceiver *m_pOwner;		// 
 	XE::VEC2 m_vCastPos;				// 지역시전으로 했을때 그 중심좌표
@@ -57,7 +55,8 @@ class XBuffObj //: public XMemPool<XBuffObj>
 	XSkillDat* m_pDatCaller = nullptr;		// idCallerSkill의 아이디
 	int m_numApply = 0;					// 효과 적용횟수
 #ifdef _CLIENT
-	XSurface *m_psfcIcon;		///< 스킬 아이콘
+	XSurface *m_psfcIcon = nullptr;		///< 스킬 아이콘
+	ID m_idSfx = 0;							// 지속효과 sfx객체의 아이디
 #endif
 	void Init() {
 		m_pDelegate = nullptr;
@@ -69,9 +68,6 @@ class XBuffObj //: public XMemPool<XBuffObj>
 		m_pluaScript = nullptr;
 		m_nCount = 0;
 		m_Level = 0;
-#ifdef _CLIENT
-		m_psfcIcon = nullptr;
-#endif // _CLIENT
 	}
 	void Destroy();
 protected:
@@ -87,16 +83,13 @@ public:
 				ID idCallerSkill );
 	virtual ~XBuffObj() { Destroy(); }
 	// get/set/is
-	//GET_ACCESSOR( ID, id );
 	GET_ACCESSOR( XDelegateSkill*, pDelegate );
 	ID GetidBuff() const { return m_idBuff; }
-// 	inline ID getid() const {
-// 		return m_idBuff;
-// 	}
 	GET_ACCESSOR_CONST( const XSkillDat*, pDat );
 	inline XSkillDat* GetpDatMutable() {
 		return m_pDat;
 	}
+	GET_SET_ACCESSOR_CONST( ID, idSfx );
 	GET_ACCESSOR_CONST( ID, idCallerSkill );
 	LPCTSTR GetstrIconByCaller() const;
 //	GET_ACCESSOR_CONST( ID, idCaster );

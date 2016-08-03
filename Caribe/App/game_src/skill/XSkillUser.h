@@ -139,22 +139,22 @@ public:
 									EFFECT *pEffect,
 									XSkillReceiver *pCastingTarget,
 									const XE::VEC2& vPos ) {}
-	virtual void OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
+	virtual ID OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
 									XSKILL::xtPoint createPoint,
 									LPCTSTR szSpr,
 									ID idAct,
 									float secPlay,
-									const XE::VEC2& vPos) {}
+									const XE::VEC2& vPos) { return 0; }
 	/**
 	 @brief pEffect는 null이 올수 있음.
 	*/
-	void CreateSfx( const XSkillDat *pSkillDat,
+	ID CreateSfx( const XSkillDat *pSkillDat,
 									const _tstring& strEffect,
 									ID idAct,
 									xtPoint pointSfx,
 									float secPlay,
 									const XE::VEC2& vPos = XE::VEC2(0) );
-	void CreateSfx( const XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos );
+	ID CreateSfx( const XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos );
 	virtual XSkillReceiver* GetGroundReceiver() {
 		return nullptr;
 	}

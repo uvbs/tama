@@ -12,8 +12,8 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // struct compY {
-// 	bool operator()( const XList3<WorldObjPtr>::xNode &lhs,
-// 		const XList3<WorldObjPtr>::xNode &rhs ){
+// 	bool operator()( const XList3<XSPWorldObj>::xNode &lhs,
+// 		const XList3<XSPWorldObj>::xNode &rhs ){
 // 		float y1 = lhs.value->GetvwPos().y;
 // 		float y2 = rhs.value->GetvwPos().y;
 // 		if( y1 == y2 )
@@ -68,7 +68,11 @@ XEObjMng::XEObjMng( int maxObj )
 
 void XEObjMng::Destroy()
 {
-	DestroyAllObj();
+	// 모든 객체의 레퍼런스 카운트가 1인상태여야지 실제 이곳에서 객체가 파괴된다.
+	for( auto spObj : m_listObj ) {
+		const auto cnt = spObj.use_count();
+		XBREAK( cnt != 1 );
+	}
 }
 
 void XEObjMng::Release()
@@ -77,51 +81,65 @@ void XEObjMng::Release()
 		spObj->Release();
 	}
 	m_aryVisible.clear();
-	m_listObj.clear();
+//	m_listObj.clear();
 }
 
 void XEObjMng::DestroyAllObj( void )
 {
 	// 최종 반환되며 실제 삭제된다.
 	for( auto spObj : m_listObj ) {
-		const auto cnt = spObj.use_count();
-		XBREAK( cnt != 1 );
+		spObj->SetDestroy( 1 );
 	}
+// 	for( auto spObj : m_listObj ) {
+// 		const auto cnt = spObj.use_count();
+// 		XBREAK( cnt != 1 );
+// 	}
 }
 
-ID XEObjMng::Add( const WorldObjPtr& spObj )
+ID XEObjMng::Add( const XSPWorldObj& spObj )
 {
 	m_listObj.push_back( spObj );
+	m_mapObj[ spObj->GetsnObj() ] = spObj;
 	m_bAdded = TRUE;
 	return spObj->GetsnObj();
 }
 
-void XEObjMng::Add( ID snObj, const WorldObjPtr& spObj )
+void XEObjMng::Add( ID snObj, const XSPWorldObj& spObj )
 {
 	spObj->SetsnObj( snObj );
 	m_listObj.push_back( spObj );
+	m_mapObj[ snObj ] = spObj;
 	m_bAdded = TRUE;
 }
 
-WorldObjPtr* XEObjMng::Find( ID snObj )
+XSPWorldObj XEObjMng::Find( ID snObj )
 {
 	if( snObj == 0 )
-		return NULL;
-	std::list<WorldObjPtr>::iterator itor;
-	// 최종 반환되며 실제 삭제된다.
-	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
-//	LISTREF_LOOP( m_listObj, WorldObjPtr, itor )
-	{
-		if( ( *itor )->GetsnObj() == snObj )
-			return &(*itor);
-	}// END_LOOP;
-	return NULL;
+		return nullptr;
+	auto itor = m_mapObj.find( snObj );
+	if( itor != m_mapObj.end() ) {
+		return itor->second;
+	}
+// 	for( auto spObj : m_listObj ) {
+// 		if( spObj->GetsnObj() == snObj )
+// 			return spObj;
+// 	}
+	return nullptr;
 }
+
+void XEObjMng::DestroyObjWithSN( ID snObj )
+{
+	auto spObj = Find( snObj );
+	if( spObj ) {
+		spObj->SetDestroy( 1 );
+	}
+}
+
 
 void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 {
 	XPROF_OBJ_AUTO();
-// 	std::list<WorldObjPtr>::iterator itor;
+// 	std::list<XSPWorldObj>::iterator itor;
 	for( auto itor = m_listObj.begin(); itor != m_listObj.end(); )
 	{
 		XEBaseWorldObj *pObj = itor->get();
@@ -138,7 +156,7 @@ void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 			OnDestroyObj( pObj );		// virtual
 			if( pWndWorld->GetpWorld() )
 				pWndWorld->GetpWorld()->OnDestroyObj( pObj );
-			WorldObjPtr *p = &( *itor );
+			XSPWorldObj *p = &( *itor );
 //			m_aryDestroy.Add( (*itor) );
 			m_listObj.erase( itor++ );
 		}
@@ -146,7 +164,7 @@ void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 			++itor;
 	}
 	// 삭제될 오브젝트를 한꺼번에 반환시킨다.
-// 	XARRAYLINEARN_LOOP( m_aryDestroy, WorldObjPtr*, pspObj )
+// 	XARRAYLINEARN_LOOP( m_aryDestroy, XSPWorldObj*, pspObj )
 // 	{
 // 		// 소유권 반환
 // 		(*pspObj).reset();
@@ -159,11 +177,11 @@ void XEObjMng::FrameMoveDelegate( XDelegateObjMng *pDelegate,
 								ID idEvent, 
 								float dt )
 {
-// 	std::list<WorldObjPtr>::iterator itor;
+// 	std::list<XSPWorldObj>::iterator itor;
 	// 최종 반환되며 실제 삭제된다.
 	for( auto itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
 		pDelegate->OnDelegateFrameMoveEachObj( dt, idEvent, (*itor) );
-// 	LISTREF_LOOP( m_listObj, WorldObjPtr, itor )
+// 	LISTREF_LOOP( m_listObj, XSPWorldObj, itor )
 // 	{
 // 		pDelegate->OnDelegateFrameMoveEachObj( dt, idEvent, (*itor) );
 // 	} END_LOOP;
@@ -177,11 +195,11 @@ void XEObjMng::Draw( XEWndWorld *pWndWorld )
 		XPROF_OBJ("select");
 		// 화면에 보이는 만큼 추려냄
 		m_aryVisible.Clear();
-		std::list<WorldObjPtr>::iterator itor;
+		std::list<XSPWorldObj>::iterator itor;
 		{
 		// 최종 반환되며 실제 삭제된다.
 		for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
-//		LISTREF_LOOP( m_listObj, WorldObjPtr, itor )
+//		LISTREF_LOOP( m_listObj, XSPWorldObj, itor )
 		{
 			XPROF_OBJ( "select-sel" );
 			XEBaseWorldObj *pObj = itor->get();
@@ -269,13 +287,13 @@ void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*
 void XEObjMng::OnLButtonUp( float lx, float ly )
 {
 #ifdef _XOBJMNG_OPTIMIZE
-	XList3<WorldObjPtr>::iterator itor;
+	XList3<XSPWorldObj>::iterator itor;
 #else
-	std::list<WorldObjPtr>::iterator itor;
+	std::list<XSPWorldObj>::iterator itor;
 #endif
 	// 최종 반환되며 실제 삭제된다.
 	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
-//	LISTREF_LOOP( m_listObj, WorldObjPtr, itor )
+//	LISTREF_LOOP( m_listObj, XSPWorldObj, itor )
 	{
 		XEBaseWorldObj *pObj = itor->get();
 		if( pObj->GetTouchable() && pObj->GetDestroy() == 0 )
@@ -291,15 +309,15 @@ void XEObjMng::OnLButtonUp( float lx, float ly )
  @param bitSide 피아식별 필터
 */
 /*
-WorldObjPtr XEObjMng::FindNearObjByFilter( const XE::VEC3& vwPos,
+XSPWorldObj XEObjMng::FindNearObjByFilter( const XE::VEC3& vwPos,
 												float radius,
 												BIT bitSide )
 {
 	float minDist = 9999999;
-	WorldObjPtr spMinObj(NULL);
+	XSPWorldObj spMinObj(nullptr);
 	float minDistAll = 9999999;
-	WorldObjPtr spMinObjAll(NULL);
-	std::list<WorldObjPtr>::iterator itor;
+	XSPWorldObj spMinObjAll(nullptr);
+	std::list<XSPWorldObj>::iterator itor;
 	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
 	{
 		if( bitSide & (*itor)->GetbitSide() )
@@ -320,26 +338,26 @@ WorldObjPtr XEObjMng::FindNearObjByFilter( const XE::VEC3& vwPos,
 		}
 	}
 	// 만약 범위내에서 못찾았으면 범위바깥에서 찾은거라도 돌려준다.
-	if( spMinObj == NULL )
+	if( spMinObj == nullptr )
 		return spMinObjAll;
 	return spMinObj;
 
 }
 */
 
-WorldObjPtr XEObjMng::FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
+XSPWorldObj XEObjMng::FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
 										const XE::VEC3& vwPos,
 										float radius,
 										BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ) )
 {
 	float minDist = 9999999;
-	WorldObjPtr spMinObj(nullptr);
+	XSPWorldObj spMinObj(nullptr);
 	float minDistAll = 9999999;
-	WorldObjPtr spMinObjAll;
+	XSPWorldObj spMinObjAll;
 #ifdef _XOBJMNG_OPTIMIZE
-	XList3<WorldObjPtr>::iterator itor;
+	XList3<XSPWorldObj>::iterator itor;
 #else
-	std::list<WorldObjPtr>::iterator itor;
+	std::list<XSPWorldObj>::iterator itor;
 #endif
 	// 최종 반환되며 실제 삭제된다.
 	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
@@ -363,7 +381,7 @@ WorldObjPtr XEObjMng::FindNearObjByFunc( XEBaseWorldObj *pSrcObj,
 		}
 	}
 	// 만약 범위내에서 못찾았으면 범위바깥에서 찾은거라도 돌려준다.
-	if( spMinObj == NULL )
+	if( spMinObj == nullptr )
 		return spMinObjAll;
 	return spMinObj;
 
@@ -372,19 +390,19 @@ WorldObjPtr XEObjMng::FindNearObjByFunc( XEBaseWorldObj *pSrcObj,
 /**
  @brief 조건함수를 이용해 더 ~한 오브젝트를 찾는다.
 */
-WorldObjPtr XEObjMng::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
+XSPWorldObj XEObjMng::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
 										const XE::VEC3& vwPos,
 										float radius,
 										BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ),
 										BOOL( *pfuncCompare )( XEBaseWorldObj*, XEBaseWorldObj*, XEBaseWorldObj* ) )
 {
-	WorldObjPtr spCompObj;
+	XSPWorldObj spCompObj;
 	float minDist = 99999999.f;
-	WorldObjPtr spCompObjForAll;
+	XSPWorldObj spCompObjForAll;
 #ifdef _XOBJMNG_OPTIMIZE
-	XList3<WorldObjPtr>::iterator itor;
+	XList3<XSPWorldObj>::iterator itor;
 #else
-	std::list<WorldObjPtr>::iterator itor;
+	std::list<XSPWorldObj>::iterator itor;
 #endif
 	// 최종 반환되며 실제 삭제된다.
 	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
@@ -418,7 +436,7 @@ WorldObjPtr XEObjMng::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
 				bCondition = TRUE;
 			if( bCondition )
 			{
-				if( spCompObj == NULL )
+				if( spCompObj == nullptr )
 					spCompObj = ( *itor );
 				else
 					// 사용자 정의 비교함수를 호출해서 TRUE인것만 취한다.
@@ -428,10 +446,10 @@ WorldObjPtr XEObjMng::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
 		}
 	}
 	// 거리내에 조건을 만족하는게 없다.
-	if( spCompObj == NULL )
+	if( spCompObj == nullptr )
 	{
 		// 그렇다면 거리밖에있는것들중에 가장가까운것을 리턴한다.
-		if( spCompObjForAll != NULL )
+		if( spCompObjForAll != nullptr )
 			return spCompObjForAll;
 		else
 			return spCompObj;	// 거리밖에서 조차 없다면 그냥 널리턴

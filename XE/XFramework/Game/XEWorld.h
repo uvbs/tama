@@ -21,23 +21,12 @@ public:
 	GET_ACCESSOR( const XE::VEC2&, vwSize );
 	void SetObjMng( XEObjMng *pObjMng );
 	//
-	WorldObjPtr* GetObjByidObj( ID idObj ) {
-		if( idObj == 0 )
-			return NULL;
-		return m_pObjMng->Find( idObj );
-	}
-//	WorldObjPtr FindNearObjByFilter( const XE::VEC3& vwPos, float radiusSight, BIT bitSide );
-// 	WorldObjPtr FindNearObjByFunc( XEBaseWorldObj *pSrcObj, const XE::VEC3& vwPos, float radius, BOOL ( *pFunc )( XEBaseWorldObj*, XEBaseWorldObj* ) );
-// 	WorldObjPtr FindNearObjByMore( XEBaseWorldObj *pSrcObj, 
-// 									const XE::VEC3& vwPos, 
-// 									float radius, 
-// 									BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ), 
-// 									BOOL( *pfuncCompare )( XEBaseWorldObj*, XEBaseWorldObj*, XEBaseWorldObj* ) );
+	XSPWorldObj GetObjByidObj( ID idObj );
 	XE::VEC3 ClippingObj( const XE::VEC3& vwPos, const XE::VEC3& vSize );
 	virtual void DestroyAllObj( void );
 	//
-	ID AddObj( const WorldObjPtr& spObj );
-	ID AddObj( int type, const WorldObjPtr& spObj );
+	ID AddObj( const XSPWorldObj& spObj );
+	ID AddObj( int type, const XSPWorldObj& spObj );
 	virtual XEObjMng* CreateObjMng( int maxObj );
 	virtual int Process( XEWndWorld *pWndWorld, float dt );
 	virtual void Draw( XEWndWorld *pWndWorld );

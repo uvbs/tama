@@ -459,7 +459,7 @@ int XBuffObj::Process( XSkillReceiver *pOwner )
 			}
 			// 버프가 끝날때 하는일을 요청한다
 			pEffObj->Active = 0;		// 효과정지
-			pOwner->OnClearSkill( m_pDat, pEffObj );		// 버프가 끝날때 버프가지고 있던놈에게 호출됨
+			pOwner->OnClearSkill( this, m_pDat, pEffObj );		// 버프가 끝날때 버프가지고 있던놈에게 호출됨
 		} // IsClearCondition
 		else
 			bAllRelease = FALSE;		// 하나라도 돌아가고 있다면 해제하면 안됨

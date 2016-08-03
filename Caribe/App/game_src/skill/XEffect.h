@@ -119,15 +119,18 @@ struct EFFECT	{
 		return arySecDuration[0] != 0;
 	}
 	// 무한지속시간의 효과인가(패시브/특성)
-	bool IsDurationInfinite( int level = 0 ) const {
+	bool IsDurationInfinite( int level ) const {
 		const auto sec = GetDuration( level );
 		return sec == 9999.f;
 	}
 	float GetDuration( int level ) const {
 		if( arySecDuration.size() == 0 )
 			return 0;
-		else if( arySecDuration.size() > 1 )
+		else if( arySecDuration.size() > 1 ) {
+			if( level <= 0 )
+				level = 1;
 			return arySecDuration[ level ];
+		}
 		return arySecDuration[ 0 ];
 	}
 	float GetAbilityMin( int level ) const {

@@ -167,23 +167,17 @@ void XBattleField::Draw( XEWndWorld *pWndWorld )
 
 XSKILL::XSkillReceiver* XBattleField::GetTarget( ID snObj )
 {
-	WorldObjPtr* pspObj = GetpObjMng()->Find( snObj );
-	if( pspObj )
-	{
-		if( XBREAK(pspObj->get() == nullptr ) )
-			return nullptr;
-		return dynamic_cast<XSKILL::XSkillReceiver*>( pspObj->get() );
+	auto spObj = GetpObjMng()->Find( snObj );
+	if( spObj )	{
+		return SafeCast<XSKILL::XSkillReceiver*>( spObj.get() );
 	}
 	return nullptr;
 }
 XSKILL::XSkillUser* XBattleField::GetCaster( ID snObj )
 {
-	WorldObjPtr* pspObj = GetpObjMng()->Find( snObj );
-	if( pspObj )
-	{
-		if( XBREAK( pspObj->get() == nullptr ) )
-			return nullptr;
-		return dynamic_cast<XSKILL::XSkillUser*>( pspObj->get() );
+	auto spObj = GetpObjMng()->Find( snObj );
+	if( spObj )	{
+		return SafeCast<XSKILL::XSkillUser*>( spObj.get() );
 	}
 	return nullptr;
 }
