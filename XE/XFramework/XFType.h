@@ -10,6 +10,7 @@
 class XEBaseWorldObj;
 
 typedef std::shared_ptr<XEBaseWorldObj> WorldObjPtr;
+typedef std::weak_ptr<XEBaseWorldObj> XSPWorldObjW;
 typedef std::shared_ptr<const XEBaseWorldObj> XSPWorldObjConst;
 
 #define XSPWorldObj WorldObjPtr

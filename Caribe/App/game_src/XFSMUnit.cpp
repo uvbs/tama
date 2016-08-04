@@ -481,7 +481,7 @@ void XFSMNormalAttack::Destroy()
 
 void XFSMNormalAttack::Release()
 {
-	m_spLastTargetSquad.reset();
+//	m_spLastTargetSquad.reset();
 }
 
 void XFSMNormalAttack::Init( void )
@@ -582,8 +582,8 @@ void XFSMNormalAttack::DoAttackMotion( void )
 		} // if( nExec )
 //		m_timerAttack.Set( m_pUnit->GetSpeedAttack() );
 		// 마지막으로 공격한 타겟부대
-		if( m_spLastTargetSquad != nullptr &&
-			m_spLastTargetSquad->GetsnSquadObj() != m_pUnit->GetpSquadObj()->GetspTarget()->GetsnSquadObj() )
+		if( !m_spLastTargetSquad.expired() &&
+			m_spLastTargetSquad.lock()->GetsnSquadObj() != m_pUnit->GetpSquadObj()->GetspTarget()->GetsnSquadObj() )
 			m_pUnit->SetcntAttack( 0 );
 
 		m_spLastTargetSquad = m_pUnit->GetpSquadObj()->GetspTarget();

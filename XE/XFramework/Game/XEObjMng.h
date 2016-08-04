@@ -69,6 +69,6 @@ public:
 	 @brief pObj가 FrameMove()에서 파괴되기전에 호출된다.
 	*/
 	virtual void OnDestroyObj( XEBaseWorldObj *pObj ) {}
-private:
 	virtual void DestroyAllObj( void );
+private:
 };

@@ -1579,14 +1579,18 @@ public:
 		this->push_back( elem );
 		return elem;
 	}
-	inline T Add( const T&& elem ) {
-		this->push_back( elem );
-		return elem;
-	}
+// 	inline T Add( const T&& elem ) {
+// 		this->push_back( elem );
+// 		return elem;
+// 	}
 	inline T Add( const T& elem ) {
 		this->push_back( elem );
 		return elem;
 	}
+// 	inline T Add( T& elem ) {
+// 		this->push_back( elem );
+// 		return elem;
+// 	}
 	void Del( T& elem ) {
 		auto iter = std::find( this->begin(), this->end(), elem );
 		if( iter != this->end() )
@@ -1619,6 +1623,18 @@ public:
 			return false;
 		} );
 		if (iter != this->end()) {
+			this->erase( iter );
+			return true;
+		}
+		return false;
+	}
+	bool DelwpByID( ID idElem ) {
+		auto iter = std::find_if( this->begin(), this->end(), [idElem]( T& elem )->bool {
+			if( elem.lock()->getid() == idElem )
+				return true;
+			return false;
+		} );
+		if( iter != this->end() ) {
 			this->erase( iter );
 			return true;
 		}
@@ -1705,6 +1721,15 @@ public:
 		if( iter != this->end() )
 			return (*iter);
 		return nullptr;
+	}
+	T FindwpByID( ID idNode ) {
+		auto iter = std::find_if( this->begin(), this->end(),
+															[idNode]( T pElem )->bool {
+			return pElem.lock()->getid() == idNode;
+		} );
+		if( iter != this->end() )
+			return (*iter);
+		return T();
 	}
 	int GetIndex( T& elem ) {
 		int idx = 0;

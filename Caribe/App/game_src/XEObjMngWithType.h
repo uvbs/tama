@@ -45,7 +45,7 @@ public:
 	virtual void Add( ID idObj, const WorldObjPtr& spObj );
 	virtual void OnDestroyObj( XEBaseWorldObj *pObj );
 	virtual WorldObjPtr Find( int type, ID idObj );
-	virtual void DestroyAllObj( void );
+//	virtual void DestroyAllObj( void );
 //	WorldObjPtr FindNearObjByFilter( const XE::VEC3& vwPos, float radius, BIT bitSide );
 	UnitPtr FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
 								const XE::VEC3& vwPos, 

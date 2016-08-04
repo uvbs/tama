@@ -46,10 +46,10 @@ void XEObjMngWithType::Release()
 	XEObjMng::Release();
 }
 
-void XEObjMngWithType::DestroyAllObj( void )
-{
-	XEObjMng::DestroyAllObj();
-}
+// void XEObjMngWithType::DestroyAllObj( void )
+// {
+// 	XEObjMng::DestroyAllObj();
+// }
 /**
  @brief 오브젝트 추가 명령이 들어오면 독자적인 분류배열에도 넣는다.
 */

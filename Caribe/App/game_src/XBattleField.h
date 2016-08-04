@@ -20,8 +20,6 @@ public:
 	}
 private:
 	static XBattleField *s_pInstance;
-//	XVector<XSPLegionObj> m_aryLegion;	// 0:아군 1:적군
-//	LegionPtr m_spLegionEnemy;
 	XGAME::xtBattle m_typeBattle = XGAME::xBT_NONE;
 	XVector<XGAME::xRES_NUM> m_aryLoots;
 	void Init() {
@@ -32,9 +30,6 @@ public:
 	virtual ~XBattleField() { Destroy(); }
 	//
 	GET_SET_ACCESSOR( XGAME::xtBattle, typeBattle );
-// 	inline XSPLegionObj GetLegionObj( int idx ) const {
-// 		return m_aryLegion[idx];
-// 	}
 	XSPLegionObj GetLegionObj( int idx ) const;
 	///< 
 	virtual void Release( void );
@@ -47,7 +42,6 @@ public:
 	virtual XE::VEC2 GetPosWorldToWindow( const XE::VEC3& vwPos ) {
 		return XE::VEC2( 0 );
 	}
-// 	BOOL CreateLegionObj( LegionPtr& spLegion, BIT bitSide, BOOL bDestroyLegion );
 	virtual int Process( XEWndWorld *pWndWorld, float dt );
 	virtual void Draw( XEWndWorld *pWndWorld );
 	//////////////////////////////////////////////////////////////////////////
@@ -59,17 +53,12 @@ public:
 	virtual XSKILL::XSkillUser* GetCaster( ID snObj );
 	// SKILL
 	//////////////////////////////////////////////////////////////////////////
-	SquadPtr FindNearSquadEnemy( XSquadObj *pFinder );
-#if defined(_XSINGLE) || !defined(_CLIENT)
-// 	void ResetLegionObj( /*XWndBattleField *pWndWorld*/ );
-// 	void RecreateLegionObj( /*XWndBattleField *pWndWorld*/ );
-#endif // defined(_XSINGLE) || !defined(_CLIENT)
-//	void CreateSquadObj( XWndBattleField *pWndWorld );
+	XSPSquad FindNearSquadEnemy( XSquadObj *pFinder );
 	void OnStartBattle();
 	void OnDieLegion( XSPLegionObj spLegion );
 	void OnDieSquad( XSPSquad spSquadObj );
-	void OnDelegateFrameMoveEachObj( float dt, ID idEvent, WorldObjPtr spObj );
-	SquadPtr GetPickSquad( const XE::VEC3& vwPick, BIT bitCamp, ID snExclude = 0 );
+	void OnDelegateFrameMoveEachObj( float dt, ID idEvent, XSPWorldObj spObj );
+	XSPSquad GetPickSquad( const XE::VEC3& vwPick, BIT bitCamp, ID snExclude = 0 );
 	XSPLegionObj GetEnemyLegionObj( XSquadObj *pSrc );
 	XSPLegionObj GetAILegionObj() const {
 		return GetLegionObj( 1 );
@@ -78,17 +67,17 @@ public:
 		return GetLegionObj( 0 );
 	}
 	int GetNearSquadEnemy( XSquadObj *pSquadSrc,
-					XArrayLinearN<SquadPtr, 64> *pOutAry,
+					XArrayLinearN<XSPSquad, 64> *pOutAry,
 					float radius );
 	int GetNearSquad( XSquadObj *pSquadSrc,
-					XArrayLinearN<SquadPtr, 64> *pOutAry,
+					XArrayLinearN<XSPSquad, 64> *pOutAry,
 					float radius );
-	SquadPtr GetSquadBySN( XGAME::xtLegionIdx idxLegion, ID snSquad );
+	XSPSquad GetSquadBySN( XGAME::xtLegionIdx idxLegion, ID snSquad );
 	void SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit, bool bEnemy );
   void SetAI( bool bFlag );
 	void DrawLegionBar( const XE::VEC2& vPos, int idxLegion );
-	UnitPtr GetHeroUnit( ID idProp );
-	WorldObjPtr AddpObj( XEBaseWorldObj *pNewObj );
+	XSPUnit GetHeroUnit( ID idProp );
+	XSPWorldObj AddpObj( XEBaseWorldObj *pNewObj );
 	void SetLootRes( const XVector<XGAME::xRES_NUM>& aryLoots );
 	void Clear();
 };

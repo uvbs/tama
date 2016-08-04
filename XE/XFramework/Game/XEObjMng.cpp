@@ -11,38 +11,6 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-// struct compY {
-// 	bool operator()( const XList3<XSPWorldObj>::xNode &lhs,
-// 		const XList3<XSPWorldObj>::xNode &rhs ){
-// 		float y1 = lhs.value->GetvwPos().y;
-// 		float y2 = rhs.value->GetvwPos().y;
-// 		if( y1 == y2 )
-// 		{
-// 			DWORD snObj1 = lhs.value->GetsnObj();
-// 			DWORD snObj2 = rhs.value->GetsnObj();
-// 			return snObj1 < snObj2;
-// 		} else
-// 			return y1 < y2;
-// 	}
-// };
-
-// static int compY( const void *p1, const void *p2 )
-// {
-// 	XEBaseWorldObj **ppObj1 = (XEBaseWorldObj **)p1; 
-// 	XEBaseWorldObj **ppObj2 = (XEBaseWorldObj **)p2;
-// 	int y1 = (*ppObj1)? (int)(*ppObj1)->GetvwPos().y : 9999;
-// 	int y2 = (*ppObj2)? (int)(*ppObj2)->GetvwPos().y : 9999;
-// 	if( y1 == y2 )
-// 	{
-// 		// y값이 같다면 snObj값으로 소트한다
-// 		DWORD snObj1 = (*ppObj1)? (int)(*ppObj1)->GetsnObj() : 0x7fffffff;
-// 		DWORD snObj2 = (*ppObj2)? (int)(*ppObj2)->GetsnObj() : 0x7fffffff;
-// 		return snObj1 - snObj2;
-// 	} else
-// 		return y1 - y2;
-// 	// 그래도 소트껌뻑이는게 거슬린다면 x좌표소트, snObj소트도 할것.
-// }
-
 static bool compY( const XEBaseWorldObj *pObj1, const XEBaseWorldObj *pObj2 )
 {
 // 	XEBaseWorldObj **ppObj1 = (XEBaseWorldObj **)p1;
@@ -63,7 +31,6 @@ static bool compY( const XEBaseWorldObj *pObj1, const XEBaseWorldObj *pObj2 )
 XEObjMng::XEObjMng( int maxObj ) 
 { 
 	Init(); 
-//	m_aryVisible.Create( maxObj );
 }
 
 void XEObjMng::Destroy()
@@ -84,12 +51,14 @@ void XEObjMng::Release()
 //	m_listObj.clear();
 }
 
+/**
+ @brief 모든 객체를 날린다. 
+*/
 void XEObjMng::DestroyAllObj( void )
 {
-	// 최종 반환되며 실제 삭제된다.
-	for( auto spObj : m_listObj ) {
-		spObj->SetDestroy( 1 );
-	}
+	m_aryVisible.Clear();
+	m_mapObj.clear();
+	m_listObj.clear();
 // 	for( auto spObj : m_listObj ) {
 // 		const auto cnt = spObj.use_count();
 // 		XBREAK( cnt != 1 );

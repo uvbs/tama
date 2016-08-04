@@ -41,9 +41,7 @@ void XEControllerFSM::Destroy()
 
 void XEControllerFSM::Release( void )
 {
-	XARRAYLINEARN_LOOP( m_aryStates, XEBaseFSM*, pFSM )
-	{
-//		pFSM->Uninit();
+	XARRAYLINEARN_LOOP( m_aryStates, XEBaseFSM*, pFSM )	{
 		pFSM->Release();
 	} END_LOOP;
 }

@@ -54,7 +54,7 @@ public:
 	XEWorld* GetWorld( void );
 	/// 타겟이 this보다 오른쪽에 있는가
 	BOOL IsTargetRight( const XE::VEC3& vwDst );
-	XFSMChase* DoChase( const UnitPtr& spTarget, XFSMBase::xtFSM fsmNext );
+	XFSMChase* DoChase( const XSPUnit& spTarget, XFSMBase::xtFSM fsmNext );
 	XFSMChase* DoChase( const XE::VEC3& vwTarget );
 	virtual void OnDamage( void ) {}
 
@@ -120,7 +120,7 @@ public:
 	/**
 	 @brief 상태 초기화 함수
 	*/
-//	void Init( UnitPtr& spUnit );
+//	void Init( XSPUnit& spUnit );
 };
 
 /****************************************************************
@@ -133,7 +133,7 @@ class XFSMNormalAttack : public XFSMBase
 	XE::VEC3 m_vTarget;			///< 목표가 좌표형태일 경우
 //	CTimer m_timerAttack;	///< 공속타이머
 //	XGAME::xtMelee m_typeCurrMeleeType;	///< 현재 어떤 공격중이었는가.
-	SquadPtr m_spLastTargetSquad;		///< 마지막으로 공격하고 있던 타겟부대
+	XSPSquadW m_spLastTargetSquad;		///< 마지막으로 공격하고 있던 타겟부대
 	void _Init() {
 
 	}
@@ -149,7 +149,7 @@ public:
 	/**
 	 @brief 상태 초기화 함수
 	*/
-	void Init( UnitPtr& spUnit );
+	void Init( XSPUnit& spUnit );
 	void DoAttackMotion( void );
 	virtual void AddDebugStr( _tstring& str ) {
 		str += XE::Format( _T( "NAttack\n" ) );

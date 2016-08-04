@@ -30,7 +30,7 @@ public:
 		m_qMsg1.push_back( spMsg );
 	}
 	void Process();
-	void Release();
+//	void Release();
 private:
 	// private member
 	XList4<XSPMsg> m_qMsg1, m_qMsg2;			// 객체간 전달용 메시지 큐(flip용으로 두개)
@@ -62,7 +62,7 @@ public:
 	}
 	// public member
 	virtual void Process() = 0;
-	virtual void Release() = 0;
+//	virtual void Release() = 0;
 private:
 	// private member
 	xtMsg m_Type = xUM_NONE;
@@ -101,11 +101,10 @@ public:
 	// get/setter
 	// public member
 	void Process() override;
-	void Release() override;
 private:
 	// private member
-	XSPWorldObj m_spAtkObj;
-	XSPUnit m_spTarget;
+	XSPWorldObjW m_spAtkObj;
+	XSPUnitW m_spTarget;
 	float m_Dmg = 0;
 	float m_ratioPenet = 0.f;
 	XSKILL::xtDamage m_typeDmg = XSKILL::xDMG_NONE;

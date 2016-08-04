@@ -47,8 +47,8 @@ class XBaseUnit : public XEBaseWorldObj, public XEControllerFSM
 										, public XDelegateObjBullet
 {
 public:
-	static XBaseUnit* sCreateUnit( XSPSquad spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
-	static XBaseUnit* sCreateHero( XSPSquad spSquadObj, XHero *pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
+	static XSPUnit sCreateUnit( XSPSquad spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
+	static XSPUnit sCreateHero( XSPSquad spSquadObj, XHero *pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
 	static BOOL sGetMoveDstDelta( const XE::VEC3& vwCurr, const XE::VEC3& vwDst, float speedMove, XE::VEC3 *pOutDelta );
 	static bool s_bNotUseActiveByEnemy;		// 적영웅 스킬사용금지
 #ifdef WIN32
@@ -89,11 +89,11 @@ private:
 	XE::VEC2 m_vlHitSfx;	///< 타격시 이펙트가 발생될 로컬기준좌표
 	XE::xtHorizDir m_Dir;		///< 바라보고 있는 방향
 	XSquadObj* m_pSquadObj;		///< 이 유닛이 속해있는 분대객체(weak)
-	UnitPtr m_spTarget;		///< 추적목표 객체
+	XSPUnitW m_spTarget;		///< 추적목표 객체
 	XE::VEC3 m_vwTarget;		///< spTarget이 null일때 좌표만으로 이동할 목표
 	const XE::VEC3 m_vLocalFromSquad;	///< 분대내에서의 로컬좌표
 	int m_idxAttackedAngle;			///< 근접공격자가 this를 타겟잡을때마다 겹치지 않고 둘러쌀수 있도록 적당한 위치를 내보내준다. 그것을 위해 필요한 인덱스
-	XArrayN<UnitPtr,8> m_aryAttacked;	///< this를 둘러싸고 공격하고 있는 공격자들.
+	XArrayN<XSPUnitW,8> m_aryAttacked;	///< this를 둘러싸고 공격하고 있는 공격자들.
 	XE::VEC2 m_vwBind;				///< 전투를 위해 이동할 좌표가 확정됨.
 	XE::VEC3 m_vlActionEvent;		///< 액션이벤트때 타점좌표를 저장해둔다.(유닛로컬좌표)
 	CTimer m_timerDamage;			///< 데미지 입으면 타이머가 작동한다.
@@ -158,8 +158,17 @@ public:
 	GET_ACCESSOR_CONST( ID, idProp );
 	GET_ACCESSOR_CONST( float, cntDmgShake );
 	GET_ACCESSOR_CONST( const XE::VEC3&, vDelta );
-	GET_ACCESSOR( UnitPtr&, spTarget );
-	SET_ACCESSOR( const UnitPtr&, spTarget );
+ 	GET_SHARED_ACCESSOR( XSPUnit, spTarget );
+ 	SET_ACCESSOR( const XSPUnit, spTarget );
+// 	inline XSPUnit GetspTarget() const {
+// 		return m_spTarget.lock();
+// 	}
+// 	inline void SetspTarget( XSPUnit spUnit ) {
+// 		m_spTarget = spUnit;
+// 	}
+// 	inline void SetspTarget( XSPUnitW spUnit ) {
+// 		m_spTarget = spUnit;
+// 	}
 	GET_ACCESSOR_CONST( const XE::VEC2&, vsPos );
 	GET_ACCESSOR( XPropUnit::xPROP*, pPropUnit );
 	GET_SET_ACCESSOR_CONST( const std::string&, strcIds );
@@ -205,22 +214,22 @@ public:
 //	const XHero* GetpHeroConst() const;
 	ID GetsnHero() const;
 	virtual bool IsLeader() {return FALSE;}
-	UnitPtr GetspLeader();
-	inline UnitPtr GetThisUnit() {
+	XSPUnit GetspLeader();
+	inline XSPUnit GetThisUnit() {
 		return std::static_pointer_cast<XBaseUnit>( GetThis() );
 	}
 	/**
 	 @brief 현재 타겟의 아이디를 돌려준다.
 	*/
 	inline ID GetidTarget() {
-		if( m_spTarget != nullptr )
-			return m_spTarget->GetsnObj();
+		if( m_spTarget.lock() )
+			return m_spTarget.lock()->GetsnObj();
 		return 0;
 	}
 	/// 타겟이 살아있는지 검사
 	inline BOOL IsTargetLive() {
-		if( m_spTarget != nullptr )
-			return m_spTarget->IsLive();
+		if( m_spTarget.lock() )
+			return m_spTarget.lock()->IsLive();
 		return FALSE;
 	}
 	inline BOOL IsBindTarget() {
@@ -330,7 +339,7 @@ public:
 		}
 		return (float)m_HP;
 	}
-	BOOL IsNear( const UnitPtr& spUnit );
+	BOOL IsNear( const XSPUnit& spUnit );
 	virtual void OnCreate();
 	//////////////////////////////////////////////////////////////////////////
 	// stat관련
@@ -361,12 +370,12 @@ public:
 	inline float GetSpeedAttackBase() {
 		return m_pPropUnit->atkSpeed;
 	}
-	float GetSpeedAttack( UnitPtr spTarget );
+	float GetSpeedAttack( XSPUnit spTarget );
 	int GetMaxHp();
 	float GetAttackMeleePower();
 	float GetAttackRangePower();
-	float GetAttackMeleeDamage( UnitPtr spTarget );
-	float GetAttackRangeDamage( UnitPtr spTarget );
+	float GetAttackMeleeDamage( XSPUnit spTarget );
+	float GetAttackRangeDamage( XSPUnit spTarget );
 	float GetAddRateByStat( XGAME::xtStat statType, XSPUnit spTarget );
 	float GetDefensePower();
 	inline XGAME::xtSize GetUnitSize() const {
@@ -385,7 +394,7 @@ public:
 	float GetPenetrationRatio() const;
 	// stat관련
 	//////////////////////////////////////////////////////////////////////////
-	XFSMChase* DoChaseAndAttack( const UnitPtr& spTarget );
+	XFSMChase* DoChaseAndAttack( const XSPUnit& spTarget );
 	void DoChaseAndAttackCurrent();
 	void DoChase( const XE::VEC3& vwDst );
 	void DoIdle();
@@ -394,7 +403,7 @@ public:
 	bool IsSuperiorMOS( XBaseUnit *pDefender ) const;
 	bool IsSuperiorSize( XBaseUnit *pDefender ) const;
 	float GetAdjDamage( float damage, BOOL bCritical, XSKILL::xtDamage typeDamage, XGAME::xtDamageAttr attrDamage );
-	void DoAttackTargetByBind( const UnitPtr& spTarget, BOOL bFirstDash );
+	void DoAttackTargetByBind( const XSPUnit& spTarget, BOOL bFirstDash );
 	XSKILL::xtPlayerType GetPlayerType() const {
 		return ( m_Camp == XGAME::xSIDE_PLAYER ) ? XSKILL::xHUMAN : XSKILL::xAI;
 	}
@@ -522,7 +531,7 @@ public:
 //	virtual void OnEventSprObj( XSprObj *pSprObj, XKeyEvent *pKey, float lx, float ly, ID idEvent, float fAngle, float fOverSec ) override;
 	virtual void OnEventHit( const xSpr::xEvent& event ) override;
 	virtual void CreateFSMObj();
-	XE::VEC2 GetAttackedPos( const UnitPtr& unitAttacker );
+	XE::VEC2 GetAttackedPos( const XSPUnit& unitAttacker );
 	/// this에 비해 pTarget이 오른쪽에 있는가.
 	BOOL IsRight( XBaseUnit *pTarget ) {
 		if( pTarget->GetvwPos().x > GetvwPos().x )
@@ -535,15 +544,15 @@ public:
 	virtual void OnDebugStr( _tstring& str ) {}
 	virtual void OnHitEventSkill( const XE::VEC3& vwSrc ) {}
 	virtual int OnEndNormalAttackMotion() { return 0; }
-// 	XObjArrow* ShootArrow( LPCTSTR szIdentifier, LPCTSTR szSpr, ID idAct, UnitPtr spTarget, const XE::VEC3& vwSrc, float factorSpeed = 8.f );
-	XObjArrow* ShootArrow( UnitPtr& spTarget, 
+// 	XObjArrow* ShootArrow( LPCTSTR szIdentifier, LPCTSTR szSpr, ID idAct, XSPUnit spTarget, const XE::VEC3& vwSrc, float factorSpeed = 8.f );
+	XObjArrow* ShootArrow( XSPUnit& spTarget, 
 							const XE::VEC3& vwSrc,
 							const XE::VEC3& vwDst,
 							float damage,
 							bool bCritical );
 	virtual void OnArriveBullet( XObjBullet *pBullet,
-								UnitPtr spAttacker,
-								UnitPtr spTarget,
+								XSPUnit spAttacker,
+								XSPUnit spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,
@@ -570,7 +579,7 @@ public:
 	/**
 	 @brief 공속딜레이를 시작한다.
 	*/
-	void StartAttackDelay( UnitPtr spTarget = nullptr, float secMin = 0.f );
+	void StartAttackDelay( XSPUnit spTarget = nullptr, float secMin = 0.f );
 	/**
 	 @brief 공속딜레이를 끈다.
 	*/
@@ -594,12 +603,12 @@ public:
 		pFsm->Init( secStun );
 		return pFsm;
 	}
-	UnitPtr GetNearUnit( float meter, BIT bitCamp, bool bFindOutRange );
-	WorldObjPtr AddObj( XEBaseWorldObj *pNewObj );
-	bool IsCritical( UnitPtr spTarget );
+	XSPUnit GetNearUnit( float meter, BIT bitCamp, bool bFindOutRange );
+	XSPWorldObj AddObj( XEBaseWorldObj *pNewObj );
+	bool IsCritical( XSPUnit spTarget );
 	bool IsEvade( XSKILL::xtDamage typeDamage, const XBaseUnit *pAttacker ) const;
-	bool IsHit( UnitPtr spTarget );
-	float hardcode_OnToDamage( UnitPtr& spTarget, float damage, XGAME::xtMelee typeMelee );
+	bool IsHit( XSPUnit spTarget );
+	float hardcode_OnToDamage( XSPUnit& spTarget, float damage, XGAME::xtMelee typeMelee );
 // 	void OnDamage( const XBaseUnit* pAttacker, float damage, BOOL bCritical, XSKILL::xtDamage typeDamage, const BIT bitAttrHit );
 	void OnDamage( const xnUnit::xDmg& dmgInfo );
 	void OnAttackToDefender( XBaseUnit *pAttacker, float damage, BOOL bCritical, float ratioPenetration, XSKILL::xtDamage typeDamage );
@@ -618,7 +627,7 @@ public:
 			return TRUE;
 		return FALSE;
 	}
-	virtual void ShootRangeAttack( UnitPtr& spTarget,
+	virtual void ShootRangeAttack( XSPUnit& spTarget,
 									const XE::VEC3& vwSrc,
 									const XE::VEC3& vwDst,
 									float damage,
@@ -628,12 +637,12 @@ public:
 		// 원거리유닛 아닌것이 이쪽으로 들어올수 없다.
 		XBREAKF(1, "not ranged obj");		
 	}
-	void SetTarget( UnitPtr& spTarget ) {
+	void SetTarget( XSPUnit spTarget ) {
 		m_spTarget = spTarget;
-		if( m_spTarget != nullptr )
-			m_spTarget->AddCntTargeting( 1 );
+		if( spTarget )
+			spTarget->AddCntTargeting( 1 );
 	}
-	float GetAddRatioDamage( UnitPtr spTarget );
+	float GetAddRatioDamage( XSPUnit spTarget );
 	void DoHeal( float addHp );
 	XSKILL::XBuffObj* GetAdjParamByBuff( float *pOutAdj, LPCTSTR sid, XGAME::xtParameter adjParam );
 	float GetScaleUnitOrg() {
@@ -648,7 +657,7 @@ public:
 	}
 	float GetInvokeRatioByBuff( XGAME::xtUnit unit, LPCTSTR sid );
 	float GetVampiricRatio();
-	UnitPtr GetSacrificeGolemInAttacker();
+	XSPUnit GetSacrificeGolemInAttacker();
 	void DoDie( XSPUnit spAtker );
 	bool IsInvisible() {
 		return IsState( XGAME::xST_INVISIBLE ) == TRUE;
@@ -659,7 +668,7 @@ public:
 	bool IsAI() {
 		return m_bitFlags & xFL_AI;
 	}
-	virtual void OnArriveTarget( UnitPtr spUnit, const XE::VEC3& vwDst );
+	virtual void OnArriveTarget( XSPUnit spUnit, const XE::VEC3& vwDst );
 	// AI가 작동하기 시작하거나 꺼지면 호출된다.
 	virtual void OnAISet( bool bSet ) {}
 	virtual _tstring GetstrIds() {

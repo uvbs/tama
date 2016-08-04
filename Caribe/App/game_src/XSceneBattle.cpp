@@ -1031,12 +1031,10 @@ int XSceneBattle::OnSulfurRetreat( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("OnSulfurRetreat");
 	//
-	if( ACCOUNT->IsEnoughCash( XGAME::xCS_SULFUR_RETREAT ) )
-	{
+	if( ACCOUNT->IsEnoughCash( XGAME::xCS_SULFUR_RETREAT ) )	{
 		OnFinishBattle( XGAME::xSIDE_PLAYER, true );
 		pWnd->GetpParent()->SetbDestroy( TRUE );
-	} else
-	{
+	} else	{
 		// 캐쉬를 구매할거냐는 창이 뜨고 캐쉬 구매팝업을 띄운다.
 	}
 	
@@ -1078,9 +1076,11 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 			GAME->LoadPropLegion();
 //			XPropLegion::sGet()->Save( _T( "test.xml" ) );
 		}
-		// 군단과 군단객체를 새로 만든다.
+		// objmng의 모든 객체를 삭제
+		XBattleField::sGet()->Clear();
+		// 군단객체 삭제
 		for( auto& camp : m_aryCamp ) {
-			camp.m_spLegionObj->Release();
+//			camp.m_spLegionObj->Release();
 			camp.m_spLegionObj.reset();
 			if( bRecreate ) {
 				camp.m_spLegion.reset();
@@ -1089,10 +1089,10 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 		if( bRecreate ) {
 			// XLegion과 XHero들을 모두 파괴한다.
 			XAccount::sDestroyPlayer();
+			// 계정과 XLegion을 새로 구성
 			sCreateAcc();
 		}
-		// objmng를 파괴한다.
-		XBattleField::sGet()->Clear();
+		// 참조가 없는 모든 자원 해제
 		SPRMNG->DoFlushCache();
 		IMAGE_MNG->DoFlushCache();
 		//

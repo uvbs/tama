@@ -210,61 +210,14 @@ SquadPtr XBattleField::FindNearSquadEnemy( XSquadObj *pFinder )
 
 #if defined(_XSINGLE) || !defined(_CLIENT)
 /**
- @brief 군단객체(XLegionObj)만 다시 만든다. XLegion은 그대로 쓴다.
-*/
-// void XBattleField::ResetLegionObj( /*XWndBattleField *pWndWorld*/ )
-// {
-// // 	auto spLegion = m_spLegionEnemy;
-// //	auto spLegion = GetLegionObj( xSI_OTHER );
-// 	Release();
-// // 	m_spLegionEnemy = spLegion;
-// 	DestroyAllObj();
-// // 	auto spLegionPlayer = ACCOUNT->GetCurrLegion();
-// // 	CreateLegionObj( spLegionPlayer, XGAME::xSIDE_PLAYER, FALSE );	// 아군 군대
-// // 	CreateLegionObj( m_spLegionEnemy, XGAME::xSIDE_OTHER, TRUE );	// 적군 군대
-// // 	CreateSquadObj( pWndWorld);
-// }
-
-/**
- @brief XLegion까지 새로 만든다.
-*/
-// void XBattleField::RecreateLegionObj( XWndBattleField *pWndWorld )
-// {
-// 	Release();
-// 	DestroyAllObj();
-// 
-// 	ACCOUNT->DestroyLegion();
-// 	ACCOUNT->DestroyHeros();
-// //	SAFE_DELETE( pLegion[1] );
-// 	m_spLegionEnemy.reset();
-// //	m_aryLegion[1]->GetspLegion().reset();
-// 	int lvAcc = 50;
-// 	ACCOUNT->CreateLegionByRandom( 15, lvAcc );	// 어카운트의 군단을 새로 만든다.
-// 	auto spLegion = ACCOUNT->GetCurrLegion();
-// 	spLegion->SetpLeader( spLegion->GetpHeroByIdxSquad( 2 ) );
-// 	XSceneBattle::sSetAbilHeroes();
-// 	XGAME::xLegionParam info;
-// 	info.unit = (XGAME::xtUnit)XAPP->m_nDebugRespawnUnit;
-// 	info.bRandom = XAPP->m_bDebugRespawnNumRandom != FALSE;
-// 	auto pLegion = XLegion::sCreateLegionForNPC( lvAcc, 0, info );
-// 	m_spLegionEnemy = LegionPtr(pLegion);
-// 	CreateLegionObj( ACCOUNT->GetCurrLegion(), XGAME::xSIDE_PLAYER, FALSE );	// 아군 군대
-// 	CreateLegionObj( m_spLegionEnemy, XGAME::xSIDE_OTHER, TRUE );	// 적군 군대
-// 	//
-// 	CreateSquadObj( pWndWorld );
-// }
-
-
-/**
- @brief XLegion과 XLegionObj를 다시 만든다.
+ @brief 
 */
 void XBattleField::Clear()
 {
-	Release();
-	DestroyAllObj();
+//	Release();
+	//DestroyAllObj();
+	XEWorld::DestroyAllObj();
 }
-
-
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 
 /**
@@ -276,48 +229,6 @@ XSPLegionObj XBattleField::GetLegionObj( int idx ) const
 	return camp.m_spLegionObj;
 }
 
-
-
-// void XBattleField::CreateSquadObj( XWndBattleField *pWndWorld )
-// {
-// 	XE::VEC3 vCenterWorld = GetvwSize() / 2.f;
-// 	vCenterWorld.y = 231.f;
-// 	for( int i = 0; i < 2; ++i )
-// 	{
-// 		auto spLegionObj = m_aryLegion[i];
-// 		// m_pLegion을 바탕으로 내부에서 분대 객체를 만듬. 분대객체안에서는 다시 유닛 객체를 만듬.
-// #ifdef _CHEAT
-// #ifdef _XSINGLE
-// 		if( XAPP->GetbDebugMode() && XAPP->m_bDebugSquad )
-// 		{
-// 			auto bitOption = XGAME::xLO_DEFAULT;
-// 			if( i == 0 )
-// 				spLegionObj->CreateLegionDebug( pWndWorld, vCenterWorld - XE::VEC3( 240, 0 ), bitOption );
-// 			else {
-// 				spLegionObj->CreateLegionDebug( pWndWorld, vCenterWorld + XE::VEC3( 240, 0 ), bitOption );
-// 				spLegionObj->MakeResource();
-// 			}
-// 		} else
-// #endif // _XSINGLE
-// 		{
-// 			BIT bit = 0;
-// 			if( i == 0 )
-// 				spLegionObj->CreateLegion( pWndWorld, vCenterWorld - XE::VEC3( 240, 0 ), (XGAME::xtLegionOption)bit );
-// 			else {
-// 				if( m_typeBattle == XGAME::xBT_GUILD_RAID ) {
-// 					bit |= XGAME::xLO_NO_CREATE_DEAD;		// 길드레이드시 적부대엔 사망부대는 생성하지 않음.
-// 				}
-// 				spLegionObj->CreateLegion( pWndWorld, vCenterWorld + XE::VEC3( 240, 0 ), (XGAME::xtLegionOption)bit );
-// //				pLegionObj->MakeResource();
-// 			}
-// 
-// 		}
-// #else
-// 		spLegionObj->CreateLegion( pWndWorld, vCenterWorld + XE::VEC3( 240, 0 ) );
-// #endif // CHEAT
-// 	}
-// }
-
 /**
  @brief 부대생성 치트기능
  vPos화면위치에 unit부대 하나를 생성한다.
@@ -325,11 +236,6 @@ XSPLegionObj XBattleField::GetLegionObj( int idx ) const
 void XBattleField::SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit, bool bEnemy )
 {
 #ifdef _XSINGLE
-// 	XSPLegionObj spLegionObj;
-// 	if( bEnemy )
-// 		spLegionObj = m_aryLegion[1];
-// 	else
-// 		spLegionObj = m_aryLegion[0];
 	const auto idxSide = (bEnemy)? xSI_OTHER : xSI_PLAYER;
 	auto spLegionObj = SCENE_BATTLE->GetspLegionObjMutable( idxSide );
 

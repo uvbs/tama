@@ -77,47 +77,6 @@ void XEWorld::Draw( XEWndWorld *pWndWorld )
 }
 
 /**
- @brief 지정된 좌표를 중심으로 반경내에 있는 오브젝트중 가장 가까운 오브젝트를 찾는다.
- @param vwPos 중심좌표
- @param radiusSight 시야거리. 만약 시야거리내에 오브젝트가 없다면 시야를 적용하지 않고 다시 검사한다.
- @param bitSide 어느편 오브젝트를 검색할지 필터. 비트형태로 써야한다.
- @return 찾은 오브젝트의 포인터를 리턴한다.
- @todo 함수포인터 형태로 모두 바꾸기 위해 삭제함.
-*/
-/*
-XSPWorldObj XEWorld::FindNearObjByFilter( const XE::VEC3& vwPos, 
-										float radiusSight, 
-										BIT bitSide )
-{
-	if( XBREAK( m_pObjMng == NULL ) )
-		return NULL;
-	return m_pObjMng->FindNearObjByFilter( vwPos, radiusSight, bitSide );
-}
-
-*/
-// XSPWorldObj XEWorld::FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
-// 										const XE::VEC3& vwPos,
-// 										float radiusSight,
-// 										BOOL ( *pFunc )( XEBaseWorldObj*, XEBaseWorldObj* ) )
-// {
-// 	if( XBREAK( m_pObjMng == NULL ) )
-// 		return XSPWorldObj();
-// 	return m_pObjMng->FindNearObjByFunc( pSrcObj, vwPos, radiusSight, pFunc );
-// }
-// 
-// XSPWorldObj XEWorld::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
-// 										const XE::VEC3& vwPos,
-// 										float radiusSight,
-// 										BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ),
-// 										BOOL( *pfuncCompare )( XEBaseWorldObj*, XEBaseWorldObj*, XEBaseWorldObj* ) )
-// {
-// 	if( XBREAK( m_pObjMng == NULL ) )
-// 		return XSPWorldObj();
-// 	return m_pObjMng->FindNearObjByMore( pSrcObj, vwPos, radiusSight, pfuncFilter, pfuncCompare );
-// }
-
-
-/**
  @brief 오브젝트를 넘겨주면 배틀필드내 좌표로 보정해서 다시 돌려준다.
  3d 월드좌표계임을 주의
 */
