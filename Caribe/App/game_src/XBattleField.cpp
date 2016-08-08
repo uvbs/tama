@@ -81,7 +81,8 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 {
 	XPROF_OBJ_AUTO();
 	auto& listUnit = XEObjMngWithType::sGet()->GetlistUnitsMutable();
-	for( auto spUnit : listUnit ) {
+	for( auto spwUnit : listUnit ) {
+		auto spUnit = spwUnit.lock();
 		if( XASSERT( spUnit ) ) {
 			spUnit->FlipMsgQ();
 		}
@@ -101,7 +102,8 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 	auto ret = XEWorld::Process( pWndWorld, dt );
 	// 모든 프로세스가 끝난 후 유니트들은 각자 쌓인 메시지큐들을 처리한다.
 	// 만약 위 프로세스에서 A가 B를 타격했다면 B가 피격받은 모습을 즉시 draw해야할거 같아서 process() 아래에 넣음.
-	for( auto spUnit : listUnit ) {
+	for( auto spwUnit : listUnit ) {
+		auto spUnit = spwUnit.lock();
 		if( XASSERT(spUnit) ) {
 			spUnit->ProcessMsgQ();
 		}
@@ -182,7 +184,7 @@ XSKILL::XSkillUser* XBattleField::GetCaster( ID snObj )
 	return nullptr;
 }
 
-UnitPtr XBattleField::GetHeroUnit( ID idProp )
+XSPUnit XBattleField::GetHeroUnit( ID idProp )
 {
 	auto spUnitHero = GetLegionObj(1)->GetHeroUnit( idProp );
 	if( spUnitHero == nullptr ) {
@@ -194,7 +196,7 @@ UnitPtr XBattleField::GetHeroUnit( ID idProp )
 /**
  @brief pFinder의 적군단에서 가장가까운 적부대를 찾는다.
 */
-SquadPtr XBattleField::FindNearSquadEnemy( XSquadObj *pFinder )
+XSPSquad XBattleField::FindNearSquadEnemy( XSquadObj *pFinder )
 {
 	XSPLegionObj spEnemy;
 	// pFinder의 적부대를 찾는다.
@@ -247,7 +249,7 @@ void XBattleField::SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit,
 	auto pHero = new XHero( pPropHero, 1, unit );
 	auto pSquadObj = new XSquadObj( spLegionObj, pHero, vwPos );
 	pSquadObj->CreateSquad( XWndBattleField::sGet(), spLegionObj->GetCamp() );
-	spLegionObj->AddSquad( SquadPtr( pSquadObj ) );
+	spLegionObj->AddSquad( XSPSquad( pSquadObj ) );
 	pSquadObj->OnStartBattle();	// 치트로 생성한 부대는 첨에 전투시작 이벤트 한번 날려줌.
 #endif // _XSINGLE
 
@@ -316,7 +318,7 @@ void XBattleField::OnDieSquad( XSPSquad spSquadObj )
 	SCENE_BATTLE->OnDieSquad( spSquadObj );
 }
 
-SquadPtr XBattleField::GetPickSquad( const XE::VEC3& vwPick, 
+XSPSquad XBattleField::GetPickSquad( const XE::VEC3& vwPick, 
 																			BIT bitCamp, 
 																			ID snExclude /*= 0*/ )
 {
@@ -333,7 +335,7 @@ SquadPtr XBattleField::GetPickSquad( const XE::VEC3& vwPick,
  아군이란 src의 아군을 의미한다.
 */
 int XBattleField::GetNearSquad( XSquadObj *pSquadSrc, 
-								XArrayLinearN<SquadPtr,64> *pOutAry, 
+								XArrayLinearN<XSPSquad,64> *pOutAry, 
 								float radius )
 {
 	auto spFriendly = pSquadSrc->GetspLegionObj();
@@ -347,7 +349,7 @@ int XBattleField::GetNearSquad( XSquadObj *pSquadSrc,
  적이란 src의 상대적이다.
 */
 int XBattleField::GetNearSquadEnemy( XSquadObj *pSquadSrc, 
-								XArrayLinearN<SquadPtr,64> *pOutAry, 
+								XArrayLinearN<XSPSquad,64> *pOutAry, 
 								float radius )
 {
 	auto spEnemy = GetEnemyLegionObj( pSquadSrc );
@@ -370,7 +372,7 @@ XSPLegionObj XBattleField::GetEnemyLegionObj( XSquadObj *pSrc )
 // 	return m_aryLegion[0];
 }
 
-SquadPtr XBattleField::GetSquadBySN( XGAME::xtLegionIdx idxLegion, ID snSquad )
+XSPSquad XBattleField::GetSquadBySN( XGAME::xtLegionIdx idxLegion, ID snSquad )
 {
 	auto spLegionObj = SCENE_BATTLE->GetspLegionObjMutable( (xtSideIndex)idxLegion );
 	return (spLegionObj)? spLegionObj->GetSquadBySN( snSquad ) : nullptr;

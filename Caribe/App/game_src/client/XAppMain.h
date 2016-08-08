@@ -50,7 +50,7 @@ public:
 // 	bool m_bFilterUnit = true;
 // 	bool m_bFilterPlayer = true;				// 필터:아군
 // 	bool m_bFilterEnemy = true;					// 필터:적군 
-	DWORD m_dwFilter = 0;
+	DWORD m_dwFilter = 0x0f;
 	bool m_bViewCutScene = true;
 	bool m_bViewHexaIdx = false;				// 헥사 인덱스
 	bool m_bViewAreaCost = false;				// 툴모드시 지역가격을 표시할건지.

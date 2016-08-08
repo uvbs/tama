@@ -17,25 +17,22 @@ public:
 private:
 	static XWndBattleField *s_pInstance;
 	XBattleField *m_prefBattleField;
-	SquadPtr m_spTempSelect;		///< 임시선택
-	SquadPtr m_spSelectSquad;		///< 선택된 아군 부대
-	SquadPtr m_spTempSelectEnemy;	///< 적진영 임시선택
+	XSPSquadW m_spTempSelect;		///< 임시선택
+	XSPSquadW m_spSelectSquad;		///< 선택된 아군 부대
+	XSPSquadW m_spTempSelectEnemy;	///< 적진영 임시선택
 	XE::VEC2 m_vTouch;				///< 터치다운시 좌표
-
-
 	void Init() {
 		m_prefBattleField = NULL;
 	}
-
 	void Destroy();
 public:
 	XWndBattleField();
 	virtual ~XWndBattleField() { Destroy(); }
 	///< 
 	GET_ACCESSOR( XBattleField*, prefBattleField );
-	GET_SET_ACCESSOR( const SquadPtr&, spSelectSquad );
-	GET_ACCESSOR( const SquadPtr&, spTempSelect );
-	GET_ACCESSOR( const SquadPtr&, spTempSelectEnemy );
+	GET_SET_SHARED_ACCESSOR( XSPSquad, spSelectSquad );
+	GET_SHARED_ACCESSOR( XSPSquad, spTempSelect );
+	GET_SHARED_ACCESSOR( XSPSquad, spTempSelectEnemy );
 	ID GetidSelectSquad( void );
 	/// 선택한 부대를 해제시킨다.
 	void ClearSelectSquad( void ) {
@@ -50,7 +47,7 @@ public:
 	virtual void OnMouseMove( float lx, float ly );
 	virtual void OnLButtonUp( float lx, float ly );
 	BOOL OnCreate() override;
-	SquadPtr PickingSquad( float lx, float ly, BIT bitCamp );
+	XSPSquad PickingSquad( float lx, float ly, BIT bitCamp );
 	BOOL IsSelectedSquad( XSquadObj *pSquadObj );
 #ifdef _CHEAT
 	void OnReset( bool bReCreate );

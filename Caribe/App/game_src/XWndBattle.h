@@ -77,12 +77,12 @@ class XWndFaceInBattle : public XWndStoragyItemElem
 {
 	XHero* m_pHero = nullptr;
 	int m_Side = 0;		// 1은 아군 2는 적군
-	SquadPtr m_spSquadObj;
+	XSPSquadW m_spSquadObj;
 	XSprObj* m_psoSkill = nullptr;
 	_tstring m_strText;
 public:
 	/// @param side 1:아군 2:적군
-	XWndFaceInBattle( SquadPtr spSquadObj, int side );
+	XWndFaceInBattle( XSPSquad spSquadObj, int side );
 	~XWndFaceInBattle();
 	//
 	BOOL OnCreate() override;

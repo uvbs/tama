@@ -72,6 +72,7 @@ int XSkillReceiver::ApplyEffectNotAdjParam( XSkillDat *pSkillDat,
 		invokeAbilityMin = invokeAbilityMin + invokeAbilityMin * addMultiply;
 		// 능력치값을 다른 다른형태로 변형해서 사용하고 싶다면 아래 핸들러를 정의해서 바꾼다.
 		pCaster->OnAdjustEffectAbility( pSkillDat, pEffect, pEffect->invokeParameter, &invokeAbilityMin );
+		//
 		return OnApplyEffectNotAdjParam( pCaster, pSkillDat, pEffect, invokeAbilityMin );
 	}
 	return 0;

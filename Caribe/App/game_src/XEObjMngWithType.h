@@ -25,43 +25,43 @@ public:
 	}
 private:
 	static XEObjMngWithType* s_pInstance;
-	XList4<UnitPtr> m_listUnits;
-	XList4<WorldObjPtr> m_listEtc;
+	XList4<XSPUnitW> m_listUnits;
+	XList4<XSPWorldObjW> m_listEtc;
 	void Init() {}
 	void Destroy();
 public:
 	XEObjMngWithType( int maxObj, int maxType );
 	virtual ~XEObjMngWithType() { Destroy(); }
 	//
-	GET_ACCESSOR_CONST( const XList4<XSPUnit>&, listUnits );
-	XList4<XSPUnit>& GetlistUnitsMutable() {
+	GET_ACCESSOR_CONST( const XList4<XSPUnitW>&, listUnits );
+	XList4<XSPUnitW>& GetlistUnitsMutable() {
 		return m_listUnits;
 	}
 	//
 	virtual void Release();
-	virtual ID AddUnit( const UnitPtr& spObj );
-	virtual void AddUnit( ID idObj, const UnitPtr& spObj );
-	virtual ID Add( const WorldObjPtr& spObj );
-	virtual void Add( ID idObj, const WorldObjPtr& spObj );
+	virtual ID AddUnit( const XSPUnit& spObj );
+	virtual void AddUnit( ID idObj, const XSPUnit& spObj );
+	virtual ID Add( const XSPWorldObj& spObj );
+	virtual void Add( ID idObj, const XSPWorldObj& spObj );
 	virtual void OnDestroyObj( XEBaseWorldObj *pObj );
-	virtual WorldObjPtr Find( int type, ID idObj );
-//	virtual void DestroyAllObj( void );
-//	WorldObjPtr FindNearObjByFilter( const XE::VEC3& vwPos, float radius, BIT bitSide );
-	UnitPtr FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
+	virtual XSPWorldObj Find( int type, ID idObj );
+	void DestroyAllObj( void ) override;
+//	XSPWorldObj FindNearObjByFilter( const XE::VEC3& vwPos, float radius, BIT bitSide );
+	XSPUnit FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
 								const XE::VEC3& vwPos, 
 								float meterRadius, 
 								BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ) );
-	UnitPtr FindNearUnitByFunc( XBaseUnit *pSrcObj,
+	XSPUnit FindNearUnitByFunc( XBaseUnit *pSrcObj,
 							const XE::VEC3& vwPos,
 							float meterRadius,
 							bool bFindOutRange,
 							BOOL( *pfuncFilter )( XBaseUnit*, XBaseUnit* ) );
-	WorldObjPtr FindNearObjByMore( XEBaseWorldObj *pSrcObj, 
+	XSPWorldObj FindNearObjByMore( XEBaseWorldObj *pSrcObj, 
 									const XE::VEC3& vwPos, 
 									float radius, 
 									BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ), 
 									BOOL( *pfuncCompare )( XEBaseWorldObj*, XEBaseWorldObj*, XEBaseWorldObj* ) );
-	UnitPtr FindNearUnitByMore( XBaseUnit *pSrcObj,
+	XSPUnit FindNearUnitByMore( XBaseUnit *pSrcObj,
 							const XE::VEC3& vwPos,
 							float radius,
 					BOOL( *pfuncFilter )( XBaseUnit*, XBaseUnit* ),
@@ -75,7 +75,7 @@ public:
 												, bool bIncludeCenter
 												, BIT bitLive = XSKILL::xTF_LIVE ) const;
 	void DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible ) override;
-	UnitPtr GetPickUnit( XWndBattleField *pWndWorld, const XE::VEC2& vsPos, BIT bitCamp, ID snExcludeSquad=0, BOOL *pOutPickExclude=NULL );
+	XSPUnit GetPickUnit( XWndBattleField *pWndWorld, const XE::VEC2& vsPos, BIT bitCamp, ID snExcludeSquad=0, BOOL *pOutPickExclude=NULL );
 	void DestroyObjWithType( int type, ID snObj );
 };
 

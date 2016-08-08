@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugSingleHome|Win32">
+      <Configuration>DebugSingleHome</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug_Bot2|Win32">
       <Configuration>Debug_Bot2</Configuration>
       <Platform>Win32</Platform>
@@ -81,6 +85,14 @@
     <UseOfMfc>Dynamic</UseOfMfc>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>false</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -149,6 +161,9 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -184,6 +199,12 @@
     <IntDir>$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
+    <TargetName>xe_clientd_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Debug\</OutDir>
     <TargetName>xe_clientd_gles2</TargetName>
@@ -269,6 +290,25 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>..\..\..\Third_Party_lib\OpenAL 1.1 SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
@@ -466,6 +506,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\Network\client\XNetworkConnection.h" />
@@ -509,6 +550,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid2.h">
@@ -518,6 +560,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\Sound\iPhone\AVAudio.h">
@@ -529,6 +572,7 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\Sound\iPhone\XSoundMngOpenAL.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\Ogg\XOgg.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\aldlist.h" />
@@ -628,18 +672,21 @@
     <None Include="..\..\..\XFramework\android\com_mtricks_xe_Cocos2dxHelper.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
     </None>
     <None Include="..\..\..\XFramework\android\com_mtricks_xe_Cocos2dxHelperListener.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
     </None>
     <None Include="..\..\..\XFramework\android\com_mtricks_xe_XRenderer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
     </None>
@@ -650,6 +697,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\..\XFramework\android\CocosDenshion\android\opensl\android\asset_manager_jni.h">
@@ -659,6 +707,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\..\XFramework\android\JniHelper.h">
@@ -714,6 +763,7 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\CrashHandler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
@@ -738,6 +788,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Network\client\XNetworkConnection.cpp" />
@@ -763,6 +814,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid2.cpp">
@@ -772,11 +824,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\iPhone\XSoundMngOpenAL.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\Ogg\XOgg.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\aldlist.cpp" />
@@ -862,12 +916,14 @@
     <None Include="..\..\..\XFramework\android\com_mtricks_xe_Cocos2dxHelper.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
     </None>
     <None Include="..\..\..\XFramework\android\com_mtricks_xe_XRenderer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
     </None>
@@ -915,6 +971,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

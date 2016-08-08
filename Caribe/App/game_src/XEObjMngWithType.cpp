@@ -46,21 +46,23 @@ void XEObjMngWithType::Release()
 	XEObjMng::Release();
 }
 
-// void XEObjMngWithType::DestroyAllObj( void )
-// {
-// 	XEObjMng::DestroyAllObj();
-// }
+void XEObjMngWithType::DestroyAllObj( void )
+{
+	m_listUnits.clear();
+	m_listEtc.clear();
+	XEObjMng::DestroyAllObj();
+}
 /**
  @brief 오브젝트 추가 명령이 들어오면 독자적인 분류배열에도 넣는다.
 */
-ID XEObjMngWithType::AddUnit( const UnitPtr& spObj )
+ID XEObjMngWithType::AddUnit( const XSPUnit& spObj )
 {
 	XBREAK( spObj->GetType() == XGAME::xUNIT_NONE );	// 오브젝트는 반드시 타입이 있어야 한다.
 	m_listUnits.push_back( spObj );
 	return XEObjMng::Add( spObj );
 }
 
-void XEObjMngWithType::AddUnit( ID idObj, const UnitPtr& spObj )
+void XEObjMngWithType::AddUnit( ID idObj, const XSPUnit& spObj )
 {
 	XBREAK( spObj->GetType() == XGAME::xUNIT_NONE );	// 오브젝트는 반드시 타입이 있어야 한다.
 	m_listUnits.push_back( spObj );
@@ -72,7 +74,7 @@ ID XEObjMngWithType::Add( const XSPWorldObj& spObj )
 	XBREAK( spObj->GetType() == XGAME::xOT_NONE );	// 오브젝트는 반드시 타입이 있어야 한다.
 	if( spObj->GetType() == XGAME::xOT_UNIT )
 	{
-		UnitPtr spUnit = std::static_pointer_cast<XBaseUnit>( spObj );
+		XSPUnit spUnit = std::static_pointer_cast<XBaseUnit>( spObj );
 		m_listUnits.push_back( spUnit );
 	} else
 		m_listEtc.push_back( spObj );
@@ -84,7 +86,7 @@ void XEObjMngWithType::Add( ID idObj, const XSPWorldObj& spObj )
 	XBREAK( spObj->GetType() == XGAME::xOT_NONE );	// 오브젝트는 반드시 타입이 있어야 한다.
 	if( spObj->GetType() == XGAME::xOT_UNIT )
 	{
-		UnitPtr spUnit = std::static_pointer_cast<XBaseUnit>( spObj );
+		XSPUnit spUnit = std::static_pointer_cast<XBaseUnit>( spObj );
 		m_listUnits.push_back( spUnit );
 	} else
 		m_listEtc.push_back( spObj );
@@ -102,11 +104,11 @@ void XEObjMngWithType::OnDestroyObj( XEBaseWorldObj *pObj )
 	XBREAK( type == XGAME::xOT_NONE );	// 오브젝트는 반드시 타입이 있어야 한다.
 	BOOL bFound = FALSE;
 	if( type == XGAME::xOT_UNIT )	{
-		std::list<UnitPtr>::iterator itor;
-		for( itor = m_listUnits.begin(); itor != m_listUnits.end(); )		{
-			if( ( *itor )->GetsnObj() == pObj->GetsnObj() )			{
+		for( auto itor = m_listUnits.begin(); itor != m_listUnits.end(); )		{
+			auto& spUnit = (*itor).lock();
+			if( spUnit->GetsnObj() == pObj->GetsnObj() )			{
 				// 소유권 반환
-				( *itor ).reset();
+				spUnit.reset();
 				m_listUnits.erase( itor++ );
 				bFound = TRUE;
 				break;
@@ -116,11 +118,11 @@ void XEObjMngWithType::OnDestroyObj( XEBaseWorldObj *pObj )
 		}
 	} else
 	{
-		std::list<XSPWorldObj>::iterator itor;
-		for( itor = m_listEtc.begin(); itor != m_listEtc.end(); )		{
-			if( ( *itor )->GetsnObj() == pObj->GetsnObj() )			{
+		for( auto itor = m_listEtc.begin(); itor != m_listEtc.end(); )		{
+			auto& spEtc = (*itor).lock();
+			if( spEtc->GetsnObj() == pObj->GetsnObj() )			{
 				// 소유권 반환
-				( *itor ).reset();
+				spEtc.reset();
 				m_listEtc.erase( itor++ );
 				bFound = TRUE;
 				break;
@@ -146,7 +148,7 @@ XSPWorldObj XEObjMngWithType::Find( int type, ID snObj )
 // 	{
 // 
 // 	}
-// 	std::list<UnitPtr>::iterator itor;
+// 	std::list<XSPUnit>::iterator itor;
 // 	for( itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor )
 // 	{
 // 		if( (*itor)->GetsnObj() == snObj )
@@ -172,32 +174,32 @@ void XEObjMngWithType::DestroyObjWithType( int type, ID snObj )
  @brief 가장 가까운 오브젝트를 찾는다. 조건은 함수포인터로 전달한다.
  @param radius 특정거리내에서 검색한다. 0은 거리제한이 없다.
 */
-UnitPtr XEObjMngWithType::FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
+XSPUnit XEObjMngWithType::FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
 												const XE::VEC3& vwPos, 
 												float meterRadius, 
 							BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ) )
 {
 	float radius = xMETER_TO_PIXEL(meterRadius);
 	float minDist = 99999999.f;
-	UnitPtr spMinObj( nullptr );
+	XSPUnit spMinObj( nullptr );
 	float minDistAll = 99999999.f;
-	UnitPtr spMinObjAll;
-	std::list<XSPWorldObj>::iterator itor;
-	for( itor = m_listEtc.begin(); itor != m_listEtc.end(); ++itor ) {
+	XSPUnit spMinObjAll;
+	for( auto itor = m_listEtc.begin(); itor != m_listEtc.end(); ++itor ) {
+		auto& spEtc = (*itor).lock();
 		// 사용자 정의 조건함수를 호출해서 통과한것만 거리테스트를 한다.
-		if( pfuncFilter( pSrcObj, (*itor).get() ) ) {
-			XE::VEC3 vDist = (*itor)->GetvwPos() - vwPos;
+		if( pfuncFilter( pSrcObj, spEtc.get() ) ) {
+			const XE::VEC3 vDist = spEtc->GetvwPos() - vwPos;
 			float distsq = vDist.Lengthsq();
 			// 주어진 거리내에 있는가. 0은 거리제한 없음.
 			if( (distsq <= radius * radius) || radius == 0 ) {
 				if( distsq < minDist ) {
 					minDist = distsq;
-					spMinObj = std::static_pointer_cast<XBaseUnit>(*itor);
+					spMinObj = std::static_pointer_cast<XBaseUnit>(spEtc);
 				}
 			} else {
 				// 못찾을경우를 대비해서 범위바깥의 오브젝트중에 가장 가까운것도 찾는다.
 				minDistAll = distsq;
-				spMinObjAll = std::static_pointer_cast<XBaseUnit>(*itor);
+				spMinObjAll = std::static_pointer_cast<XBaseUnit>(spEtc);
 			}
 		}
 	}
@@ -216,7 +218,7 @@ UnitPtr XEObjMngWithType::FindNearObjByFunc( XEBaseWorldObj *pSrcObj,
 /**
  @brief XBaseUnit버전
 */
-UnitPtr XEObjMngWithType::FindNearUnitByFunc( XBaseUnit *pSrcObj,
+XSPUnit XEObjMngWithType::FindNearUnitByFunc( XBaseUnit *pSrcObj,
 											const XE::VEC3& vwPos,
 											float meterRadius,
 											bool bFindOutRange,
@@ -224,41 +226,33 @@ UnitPtr XEObjMngWithType::FindNearUnitByFunc( XBaseUnit *pSrcObj,
 {
 	float radius = xMETER_TO_PIXEL( meterRadius );
 	float minDist = 99999999.f;
-	UnitPtr spMinObj( nullptr );
+	XSPUnit spMinObj( nullptr );
 	float minDistAll = 99999999.f;
-	UnitPtr spMinObjAll;
-	std::list<UnitPtr>::iterator itor;
-	for( itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor )
-	{
+	XSPUnit spMinObjAll;
+	for( auto itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor ) {
+		auto& spUnit = (*itor).lock();
 		// 사용자 정의 조건함수를 호출해서 통과한것만 거리테스트를 한다.
-		if( pfuncFilter( pSrcObj, ( *itor ).get() ) )
-		{
-			XE::VEC3 vDist = ( *itor )->GetvwPos() - vwPos;
+		if( pfuncFilter( pSrcObj, spUnit.get() ) )	{
+			XE::VEC3 vDist = spUnit->GetvwPos() - vwPos;
 			float distsq = vDist.Lengthsq();
 			// 주어진 거리내에 있는가. 0은 거리제한 없음.
-			if( ( distsq <= radius * radius ) || radius == 0 )
-			{
-				if( distsq < minDist )
-				{
+			if( ( distsq <= radius * radius ) || radius == 0 ) {
+				if( distsq < minDist ) {
 					minDist = distsq;
-					spMinObj = *itor;
+					spMinObj = spUnit;
 				}
-			}
-			else
-			{
+			} else {
 				// 못찾을경우를 대비해서 범위바깥의 오브젝트중에 가장 가까운것도 찾는다.
 				minDistAll = distsq;
-				spMinObjAll = *itor;
+				spMinObjAll = spUnit;
 			}
 		}
 	}
 	// 만약 범위내에서 못찾았으면 범위바깥에서 찾은거라도 돌려준다.
-	if( spMinObj == nullptr )
-	{
+	if( spMinObj == nullptr ) {
 		if( spMinObjAll != nullptr && bFindOutRange )
 			return spMinObjAll;
-		else
-		{
+		else {
 			// 에러검증. 여기서 못찾았는데 상위함수로 찾으면 있는 경우는 잘못된것.
 		}
 	}
@@ -279,50 +273,41 @@ XSPWorldObj XEObjMngWithType::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
 	XSPWorldObj spCompObj;
 	float minDist = 99999999.f;
 	XSPWorldObj spCompObjForAll;
-	std::list<XSPWorldObj>::iterator itor;
-	for( itor = m_listEtc.begin(); itor != m_listEtc.end(); ++itor )
-	{
+	for( auto itor = m_listEtc.begin(); itor != m_listEtc.end(); ++itor ) {
+		auto& spEtc = (*itor).lock();
 		BOOL bCondition = FALSE;
 		// 사용자 정의 필터함수를 호출해서 TRUE인것만 대상으로 한다.
-		if( (*itor)->GetsnObj() != pSrcObj->GetsnObj() &&
-			pfuncFilter( pSrcObj, itor->get() ) )
-		{
-			if( radius > 0 )
-			{
+		if( spEtc->GetsnObj() != pSrcObj->GetsnObj() 
+				&& pfuncFilter( pSrcObj, spEtc.get() ) ) {
+			if( radius > 0 ) {
 				// 일단 주어진 거리내에 있어야 한다.
-				XE::VEC3 vDist = ( *itor )->GetvwPos() - vwPos;
+				const XE::VEC3 vDist = spEtc->GetvwPos() - vwPos;
 				float distsq = vDist.Lengthsq();
-				if( distsq <= radius * radius )
-				{
+				if( distsq <= radius * radius ) {
 					bCondition = TRUE;
-				}
-				else
-				{
+				} else	{
 					// 거리밖에 있는것들중에서 젤 가까운것도 찾아둔다.
-					if( distsq < minDist )	// 자기자신은 검색하지 않는다.
-					{
+					if( distsq < minDist ) {	// 자기자신은 검색하지 않는다.
 						minDist = distsq;
-						spCompObjForAll = ( *itor );
+						spCompObjForAll = spEtc;
 					}
 				}
-			}
-			else
+			} else {
 				// 범위가 없으면 거리 검사 안함.
 				bCondition = TRUE;
-			if( bCondition )
-			{
+			}
+			if( bCondition ) {
 				if( spCompObj == nullptr )
-					spCompObj = ( *itor );
+					spCompObj = spEtc;
 				else
 					// 사용자 정의 비교함수를 호출해서 TRUE인것만 취한다.
-					if( pfuncCompare( pSrcObj, itor->get(), spCompObj.get() ) )
-						spCompObj = ( *itor );
+					if( pfuncCompare( pSrcObj, spEtc.get(), spCompObj.get() ) )
+						spCompObj = spEtc;
 			}
 		}
 	}
 	// 거리내에 조건을 만족하는게 없다.
-	if( spCompObj == nullptr )
-	{
+	if( spCompObj == nullptr )	{
 		// 그렇다면 거리밖에있는것들중에 가장가까운것을 리턴한다.
 		if( spCompObjForAll != nullptr )
 			return spCompObjForAll;
@@ -335,59 +320,51 @@ XSPWorldObj XEObjMngWithType::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
 /**
  @brief XBaseUnit버전
 */
-UnitPtr XEObjMngWithType::FindNearUnitByMore( XBaseUnit *pSrcObj,
+XSPUnit XEObjMngWithType::FindNearUnitByMore( XBaseUnit *pSrcObj,
 												const XE::VEC3& vwPos,
 												float radius,
 	BOOL( *pfuncFilter )( XBaseUnit*, XBaseUnit* ),
 	BOOL( *pfuncCompare )( XBaseUnit*, XBaseUnit*, XBaseUnit* ))
 {
-	UnitPtr spCompObj;
+	XSPUnit spCompObj;
 	float minDist = 99999999.f;
-	UnitPtr spCompObjForAll;
-	std::list<UnitPtr>::iterator itor;
-	for( itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor )
-	{
+	XSPUnit spCompObjForAll;
+	for( auto itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor ) {
+		auto& spUnit = (*itor).lock();
 		BOOL bCondition = FALSE;
 		// 사용자 정의 필터함수를 호출해서 TRUE인것만 대상으로 한다.
-		if( (*itor)->GetsnObj() != pSrcObj->GetsnObj() &&
-			pfuncFilter( pSrcObj, itor->get() ) )
-		{
-			if( radius > 0 )
-			{
+		if( spUnit->GetsnObj() != pSrcObj->GetsnObj() 
+				&& pfuncFilter( pSrcObj, spUnit.get() ) ) {
+			if( radius > 0 ) {
 				// 일단 주어진 거리내에 있어야 한다.
-				XE::VEC3 vDist = ( *itor )->GetvwPos() - vwPos;
+				XE::VEC3 vDist = spUnit->GetvwPos() - vwPos;
 				float distsq = vDist.Lengthsq();
-				if( distsq <= radius * radius )
-				{
+				if( distsq <= radius * radius ) {
 					bCondition = TRUE;
-				}
-				else
-				{
+				} else {
 					// 거리밖에 있는것들중에서 젤 가까운것도 찾아둔다.
-					if( distsq < minDist )	// 자기자신은 검색하지 않는다.
-					{
+					if( distsq < minDist ) {	// 자기자신은 검색하지 않는다.
 						minDist = distsq;
-						spCompObjForAll = ( *itor );
+						spCompObjForAll = spUnit;
 					}
 				}
-			}
-			else
+			} else {
 				// 범위가 없으면 거리 검사 안함.
 				bCondition = TRUE;
-			if( bCondition )
-			{
-				if( spCompObj == nullptr )
-					spCompObj = ( *itor );
-				else
-					// 사용자 정의 비교함수를 호출해서 TRUE인것만 취한다.
-					if( pfuncCompare( pSrcObj, itor->get(), spCompObj.get() ) )
-						spCompObj = ( *itor );
+			}
+			if( bCondition ) {
+				if( spCompObj == nullptr ) {
+					spCompObj = spUnit;
+				} else
+				// 사용자 정의 비교함수를 호출해서 TRUE인것만 취한다.
+				if( pfuncCompare( pSrcObj, spUnit.get(), spCompObj.get() ) ) {
+					spCompObj = spUnit;
+				}
 			}
 		}
 	}
 	// 거리내에 조건을 만족하는게 없다.
-	if( spCompObj == nullptr )
-	{
+	if( spCompObj == nullptr ) {
 		// 그렇다면 거리밖에있는것들중에 가장가까운것을 리턴한다.
 		if( spCompObjForAll != nullptr )
 			return spCompObjForAll;
@@ -464,7 +441,8 @@ int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
 		return 0;
 	//
 	int costSum = 0;
-	for( auto spUnit : m_listUnits ) {
+	for( auto spwUnit : m_listUnits ) {
+		auto spUnit = spwUnit.lock();
 		XBREAK( spUnit == nullptr );
 		if( (spUnit->GetCamp() & bitSideFilter) == 0 )
 			continue;
@@ -588,40 +566,36 @@ int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
  @param snExcludeSquad 검색에서 제외해야할 부대
  @param pOutPickExclude snExcludeSquad로 제외시킨부대가 먼저 픽킹된다면 TRUE가 된다.
 */
-UnitPtr XEObjMngWithType::GetPickUnit( XWndBattleField *pWndWorld, 
+XSPUnit XEObjMngWithType::GetPickUnit( XWndBattleField *pWndWorld, 
 										const XE::VEC2& vsPos, 
 										BIT bitCamp,
 										ID snExcludeSquad/*=0*/,
 										BOOL *pOutPickExclude/*=nullptr*/)
 {
-	std::list<UnitPtr>::iterator itor;
-	for( itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor )
-	{
-		XBaseUnit *pUnit = SafeCast<XBaseUnit*, XEBaseWorldObj*>( ( *itor ).get() );
+	for( auto itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor )	{
+		auto pUnit = SafeCast<XBaseUnit*>( ( *itor ).lock().get() );
 		if( XBREAK( pUnit == nullptr ) )
-			return UnitPtr();
+			return nullptr;
 		if( pUnit->IsDead() )
 			continue;;
 		// bitCamp와 같은진영만 검사한다. 제외부대가 지정되어있을경우 해당부대의 유닛은 제외한다.
-		if( pUnit->GetCamp().IsFriendly( bitCamp ) )
-		{
+		if( pUnit->GetCamp().IsFriendly( bitCamp ) )	{
 			XE::VEC2 vPos = pUnit->GetvsPos();
 			XE::VEC2 vLT = vPos + pUnit->GetBoundBox().vLT * pWndWorld->GetscaleCamera();
 			XE::VEC2 vRB = vPos + pUnit->GetBoundBox().vRB * pWndWorld->GetscaleCamera();
-			if( XE::IsInside( vsPos, vLT, vRB ) )
-			{
+			if( XE::IsInside( vsPos, vLT, vRB ) )			{
 				if( snExcludeSquad == 0 ||
 					( snExcludeSquad && pUnit->GetpSquadObj()->GetsnSquadObj() != snExcludeSquad ) )
 					return pUnit->GetThisUnit();
-				else
-				{
-					if( pOutPickExclude )
+				else		{
+					if( pOutPickExclude ) {
 						*pOutPickExclude = TRUE;	// 제외된 부대가 선택되었다.
+					}
 				}
 			}
 		}
 	}
-	return UnitPtr();
+	return nullptr;
 }
 
 void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible )

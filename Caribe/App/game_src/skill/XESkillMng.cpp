@@ -212,9 +212,9 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 			for( const auto pEffect : pSkillDat->GetlistEffects() ) {
 				// 디폴트 파라메터일때.
 				if( pEffect->invokeJuncture == xJC_FIRST ) {
-					if( pSkillDat->IsPassiveType() )
-						pEffect->invokeJuncture = xJC_PERSIST;
-					else
+// 					if( pSkillDat->IsPassiveType() )
+// 						pEffect->invokeJuncture = xJC_PERSIST;
+// 					else
 					if( pEffect->IsDuration() )
 						// 지속시간 타입이 발동시점 "최초"로 되어있으면 지속형으로 바꾼다.
 						pEffect->invokeJuncture = xJC_PERSIST;		

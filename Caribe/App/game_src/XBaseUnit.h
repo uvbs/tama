@@ -116,7 +116,7 @@ private:
 		ID m_idSkill = 0;
 		XSurface *m_psfcIcon = nullptr;
 	};
-	float m_cntDmgShake;
+	float m_cntDmgShake = 0;
 	std::vector<xIconBuff> m_aryBuffIcon;				// 버프용 아이콘 
 	CTimer m_timerDead;
 	CTimer m_timerDisappear;
@@ -694,6 +694,7 @@ protected:
 	bool IsCheatFiltered();
 private:
 	void OnDamagedToTarget( const xnUnit::xDmg& dmg );
+	bool IsDrawBuff( const XSKILL::XSkillDat* pDat );
 
 friend class XFSMBase;
 friend class XFSMIdle;

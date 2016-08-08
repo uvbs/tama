@@ -115,6 +115,7 @@ SafeRelease(
 #define GET_SET_ACCESSOR( x, y )   SET_ACCESSOR( x, y ) GET_ACCESSOR( x, y )
 #define GET_SET_ACCESSOR_CONST( x, y )   SET_ACCESSOR( x, y ) GET_ACCESSOR_CONST( x, y )
 #define GET_SHARED_ACCESSOR( x, y )       inline x Get##y() const { return m_##y.lock(); };
+#define GET_SET_SHARED_ACCESSOR( x, y )       SET_ACCESSOR( x, y ) GET_SHARED_ACCESSOR( x, y )
 ///< 
 /**
  @brief type형 m_name변수의 add macro(템플릿 객체형태로 만들면 더 좋을듯.)

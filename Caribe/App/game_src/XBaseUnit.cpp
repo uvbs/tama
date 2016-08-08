@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 bool XBaseUnit::s_bNotUseActiveByEnemy = false;		// 적영웅 스킬사용금지
-const float XBaseUnit::c_maxDmgShake = 5.f;
+const float XBaseUnit::c_maxDmgShake = 20.f;
 
 
 XE_NAMESPACE_START( xnUnit )
@@ -215,7 +215,7 @@ void XBaseUnit::OnCreate()
 	//
 	if( GetUnitSize() <= XGAME::xSIZE_MIDDLE ) {
 		m_psoHit = new XSprObj( _T( "eff_hit02.spr" ) );
-		m_psoHit->SetAction( 1, xRPT_1PLAY );
+		m_psoHit->SetAction( 2, xRPT_1PLAY );
 		m_psoHit->DoFinish();	// 사전 로딩한거기땜에 애니메이션이 나오면 안되서.
 	}
 	// 유닛의 spr을 읽는다.
@@ -316,18 +316,19 @@ void XBaseUnit::CreateHitSfx( const XBaseUnit *pAttacker, BOOL bCritical, BOOL b
 // #ifdef _XUZHU_HOME
 // 	return;
 // #endif
+	bAbsolute = TRUE;
 	if( pAttacker == NULL )
 		return;
 	if( pAttacker->GetUnitSize() == XGAME::xSIZE_BIG )	// 공격자가 대형이면 타격이펙트를 표시한다.
 		bAbsolute = TRUE;
-	if( bAbsolute || 1 ) {	// 강제생성 메시지가 들어오면 유닛크기에 관계없이 sfx를 로딩한다.
+	if( bAbsolute ) {	// 강제생성 메시지가 들어오면 유닛크기에 관계없이 sfx를 로딩한다.
 		if( m_psoHit == NULL ) {
 			if( GetUnitSize() <= XGAME::xSIZE_MIDDLE || bAbsolute ) {
 				m_psoHit = new XSprObj( _T( "eff_hit02.spr" ) );
 				if( bCritical )
 					m_psoHit->SetAction( 2, xRPT_1PLAY );
 				else
-					m_psoHit->SetAction( 1, xRPT_1PLAY );
+					m_psoHit->SetAction( 2, xRPT_1PLAY );
 				m_psoHit->DoFinish();	// 사전 로딩한거기땜에 애니메이션이 나오면 안되서.
 			}
 		}
@@ -341,7 +342,7 @@ void XBaseUnit::CreateHitSfx( const XBaseUnit *pAttacker, BOOL bCritical, BOOL b
 				if( bCritical )
 					m_psoHit->SetAction( 2, xRPT_1PLAY );
 				else
-					m_psoHit->SetAction( 1, xRPT_1PLAY );
+					m_psoHit->SetAction( 2, xRPT_1PLAY );
 			}
 		}
 	}
@@ -672,7 +673,8 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		XPROF_OBJ( "draw unit" );
 		if( IsState( XGAME::xST_INVISIBLE ) )
 			alpha = 0.5f;	// 현재 투명도에서 다시 1/2한다.
-		const float xAdjShake = ( m_cntDmgShake > 0 )? xRandomF( -2, 2 ) : 0;
+		float range = 2.f * scaleFactor;
+		const float xAdjShake = ( m_cntDmgShake > 0 )? xRandomF( -range, range ) : 0;
 		float col = (m_cntDmgShake > 0 )? (255.f * (1.0f - (m_cntDmgShake / c_maxDmgShake))) : 255.f;
 		GetpSprObj()->SetColor( XCOLOR_RGBA(255, (int)col, (int)col, 255) );
 		XEBaseWorldObj::Draw( vPos + (XE::VEC2(xAdjShake, 0) * scale), scale, alpha );
@@ -684,7 +686,7 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		XE::VEC2 v = GetvsCenter();
 		v += m_vHitOffset * scale;
 		// 맞는측의 크기에 비례해서 타격이펙트도 커진다.
-		m_psoHit->SetScale( scaleFactor * scaleProp * 0.5f );
+		m_psoHit->SetScale( scaleFactor * scaleProp * scale /* * 0.5f*/ );
 		m_psoHit->Draw( v );
 	}
 //#endif
@@ -730,8 +732,9 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 //				if( pSkillDat->IsActive() && pSkillDat->GetidName() ) {
 //			if( pSkillDat->IsActive() && !pSkillDat->GetstrIcon().empty() ) {
 //				if( pSkillDat->IsActive() ) {
+				bool bDrawBuff = IsDrawBuff( pSkillDat );
 				// 버프중에서도 지속시간이 유한한 버프만 출력.
-				if( pSkillDat->IsBuffShort() ) {
+				if( pSkillDat->IsBuffShort() || bDrawBuff ) {
 					auto strIcon = pSkillDat->GetstrIcon();
 					if( strIcon.empty() ) {
 						strIcon = pBuffObj->GetstrIconByCaller();
@@ -870,6 +873,12 @@ void XBaseUnit::DrawDebugStr( XE::VEC2* pvLT, XCOLOR col, float sizeFont, const 
 	}
 }
 
+bool XBaseUnit::IsDrawBuff( const XSkillDat* pDat )
+{
+	if( pDat->GetstrIdentifier() == _T("invoke_protect_shell") )
+		return true;
+	return false;
+}
 /**
  @brief spr의 타점이벤트때 호출
 */
@@ -2285,7 +2294,8 @@ int XBaseUnit::GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList,
 		auto spSquad = spLegionObj->FindSquadRandom( GetpSquadObj(),
 													xMETER_TO_PIXEL(999.f),
 													false );
-		spSquad->GetListMember( pAryOutGroupList );
+		if( spSquad )
+			spSquad->GetListMember( pAryOutGroupList );
 	} else
 	if( typeGroup == xGT_RANDOM_PARTY_ENEMY )	{
 		auto spLegionObj = XBattleField::sGet()->GetEnemyLegionObj( m_pSquadObj );
@@ -3037,6 +3047,15 @@ void XBaseUnit::OnAdjustEffectAbility( XSkillDat *pSkillDat,
 	}
 }
 
+
+
+memo.txt의 맨 마지막.
+새 스킬시스템 수도코드하다맘
+
+
+
+
+
 /**
  @brief 치명타배수
 */
@@ -3135,13 +3154,10 @@ XBuffObj* XBaseUnit::GetAdjParamByBuff( float *pOutAdj, LPCTSTR sid, XGAME::xtPa
 {
 	float adjVal = 0.f;
 	auto pBuff = FindBuffSkill( sid );
-	if( pBuff )
-	{
-		for( int i = 0; i < pBuff->GetNumEffect(); ++i )
-		{
+	if( pBuff )	{
+		for( int i = 0; i < pBuff->GetNumEffect(); ++i )		{
 			auto pEffect = pBuff->GetEffectIndex( i );
-			if( pEffect && pEffect->invokeParameter == adjParam )
-			{
+			if( pEffect && pEffect->invokeParameter == adjParam )			{
 				// 특성 발동효과가 2개인것이 있어 뺌.
 //				XBREAK( pEffect->invokeParameter != adjParam );
 				if( pOutAdj )

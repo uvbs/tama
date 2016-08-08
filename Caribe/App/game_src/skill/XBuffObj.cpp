@@ -443,7 +443,8 @@ int XBuffObj::Process( XSkillReceiver *pOwner )
 		itor++;
 		// 발동시점 지속발동형이나 도트형 효과들을 위해 매프레임 프로세스를 돌며
 		// 효과를 적용시킨다.
-		if( pEffect->invokeJuncture == xJC_PERSIST ) {
+//		if( pEffect->invokeJuncture == xJC_PERSIST ) {
+		if( pEffect->IsDuration() ) {
 			if( pOwner->IsLive() ) {
 				PersistApplyEffectToInvokeTargets( pEffObj, pOwner );
 				if( IsFirstProcess() )

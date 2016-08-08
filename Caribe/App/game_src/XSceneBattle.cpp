@@ -1092,6 +1092,7 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 			// 계정과 XLegion을 새로 구성
 			sCreateAcc();
 		}
+
 		// 참조가 없는 모든 자원 해제
 		SPRMNG->DoFlushCache();
 		IMAGE_MNG->DoFlushCache();
