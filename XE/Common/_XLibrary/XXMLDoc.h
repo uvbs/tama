@@ -150,7 +150,7 @@ public:
 		_tstring strToken;
 		std::string cstr;
 		CToken token;
-		if( token.LoadString( strSrc.c_str() ) ) {
+		if( token.LoadStr( strSrc.c_str() ) ) {
 			while(1) {
 				T val;
 				token.GetToken( &val );

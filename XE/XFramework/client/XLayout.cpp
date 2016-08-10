@@ -2379,7 +2379,7 @@ const char* XLayout::GetAttrValueF( TiXmlElement *elem, const char *cKey, float 
 //			if( strchr( cStr, '-' ) || strchr( cStr, '+' ) || strchr( cStr, '*' ) || strchr( cStr, '/' ))
 			{
 				CToken token;
-				token.LoadString( C2SZ(cStr) );
+				token.LoadStr( C2SZ(cStr) );
 				token.GetToken();
 				float valConst = 0;
 				if( token == _T("scr_height") ) {

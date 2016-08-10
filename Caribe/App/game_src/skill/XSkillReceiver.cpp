@@ -201,19 +201,6 @@ int XSkillReceiver::FrameMove( float dt )
 			++itor;
 		}
 	}
-	// this가 받은 버프의 프로세스를 돈다
-// 	XLIST2_MANUAL_LOOP( m_listSkillRecvObj, XBuffObj*, itor, pBuff ) {
-// 		if( pBuff->GetbDestroy() ) {
-// 			DestroySkillRecvObj( pBuff );		// 여기서 실제로 버프객체 삭제
-// 			m_listSkillRecvObj.Delete( itor++ );
-// 		} else
-// 		if( pBuff->Process( this ) == 0 ) {		// 버프소멸됨
-// 			pBuff->SetbDestroy( TRUE );		// XUnit::Draw()에서 아직 써야하므로 당장삭제시키진 않는다.
-// 			itor ++;
-// 		} else 
-// 			itor ++;
-// 	}
-// 	END_LOOP; 
 	//
 	return 1;
 }

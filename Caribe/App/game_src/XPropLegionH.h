@@ -30,6 +30,7 @@ struct xSquad {
 	float mulHp = 1.f;		// 체력보정
 #ifdef _XSINGLE
 	bool m_bShow = true;	// 부대hp정보 보이기
+	int m_numAbil = 0;		// 랜덤으로 특성을 생성할때 최대 몇종류의 특성을 가질것인지.
 #endif // _XSINGLE
 	XList4<xAbil2> m_listAbil;		// 이 부대 영웅의 특성트리
 #ifdef _DEBUG

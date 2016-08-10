@@ -17,6 +17,10 @@ static char THIS_FILE[] = __FILE__;
 #define _XDEBUG_SKILL
 #endif
 
+#define LCONSOLE( EXP, F, ... ) \
+			(((EXP)) ? (__xLogfTag( "skill", XLOGTYPE_LOG, _T("%s:")##_T(F), pSkillDat->GetstrIdentifier().c_str(), ##__VA_ARGS__), 1) : 0)
+
+
 XE_NAMESPACE_START( XSKILL )
 
 XESkillMng *XESkillMng::s_pInstance = NULL;
@@ -210,19 +214,20 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 				pSkillDat->m_idShootObj = 1;
 			// 파라메터 보정
 			for( const auto pEffect : pSkillDat->GetlistEffects() ) {
-				// 디폴트 파라메터일때.
-				if( pEffect->invokeJuncture == xJC_FIRST ) {
-// 					if( pSkillDat->IsPassiveType() )
-// 						pEffect->invokeJuncture = xJC_PERSIST;
-// 					else
-					if( pEffect->IsDuration() )
-						// 지속시간 타입이 발동시점 "최초"로 되어있으면 지속형으로 바꾼다.
-						pEffect->invokeJuncture = xJC_PERSIST;		
+				// 지속시간이 있는데 발동시점이 지정안되면 디폴트로 persist동작을 하도록 수정.(버프라도 지속시간계속 발동하는게 있고 버프받는최초에만 적용되는게 있다, 버프끝날때 발동되는것도 있고.
+				if( pEffect->IsDuration() && pEffect->invokeJuncture == xJC_NONE ) {
+						pEffect->invokeJuncture = xJC_PERSIST;
 				}
-				// 발동시점이 스킬발동시 일때 발동시점스킬이 지정되어 있지 않다면 에러.
-// 				if( pEffect->invokeJuncture == xJC_INVOKE_SKILL )
-// 				{
-// 					XBREAK( pEffect->strInvokeTimeSkill.empty() );
+				LCONSOLE( !pEffect->IsDuration() && pEffect->invokeJuncture == xJC_PERSIST
+						 , "%s", _T("지속시간이 없는스킬인데 지속발동으로 지정되어 있음.") );
+//				XBREAK( !pEffect->IsDuration() && pEffect->invokeJuncture == xJC_PERSIST );
+// 				if( pEffect->invokeJuncture == xJC_FIRST ) {
+// // 					if( pSkillDat->IsPassiveType() )
+// // 						pEffect->invokeJuncture = xJC_PERSIST;
+// // 					else
+// 					if( pEffect->IsDuration() )
+// 						// 지속시간 타입이 발동시점 "최초"로 되어있으면 지속형으로 바꾼다.
+// 						pEffect->invokeJuncture = xJC_PERSIST;		
 // 				}
 				// 발동시점스킬이 지정되어 있다면 발동시점은 무조건 스킬발동시가 된다.
 				if( pEffect->strInvokeTimeSkill.empty() == false ) {
@@ -240,12 +245,12 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 					pEffect->castTargetRange = xTR_CIRCLE;
 				if( pEffect->invokeTarget == xIVT_NONE )
 					pEffect->invokeTarget = xIVT_CAST_TARGET;
-				if( pEffect->invokeTarget == xIVT_CAST_TARGET_RADIUS ||
-					pEffect->invokeTarget == xIVT_CAST_TARGET_SURROUND )
-				{
+				if( pEffect->invokeTarget == xIVT_CAST_TARGET_RADIUS 
+						|| pEffect->invokeTarget == xIVT_CAST_TARGET_SURROUND ) {
 					if( pEffect->IsHaveInvokeSize() == false )
 						XALERT("스킬\"%s\":발동범위가 지정되지 않음", pSkillDat->GetstrIdentifier().c_str() );
 				}
+				
 				AdjustEffectParam( pSkillDat, pEffect );	// virtual
 			}
 		}
@@ -298,8 +303,19 @@ BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr,
 	{
 		pSkillDat->SetszIcon( U82SZ(cParam) );
 	} else
-	if( XSAME( cAttrName, 249) ) {	// 시전시점
-		pSkillDat->m_whenCasting = (xtWhenCasting)ParsingParam( cParam );
+	if( strAttrName == "tag" ) {
+		CToken token;
+		if( token.LoadStr( U82SZ(cParam) ) ) {
+			XVector<std::string> ary;
+			if( token.GetTokenToAry( &ary ) ) {
+				for( auto& tag : ary ) {
+					pSkillDat->AddTag( tag );
+				}
+			}
+		}
+	} else
+	if( XSAME( cAttrName, 249) ) {	// 시전(사용)시점
+		pSkillDat->m_whenUse = (xtWhenUse)ParsingParam( cParam );
 	} else
 	if( XSAME( cAttrName, 57) )		// 기준타겟
 	{
@@ -511,10 +527,6 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	} else
 	if( XSAME( cAttrName, 122 ) )	// 발동시점
 	{
-		if( pSkillDat->GetstrIdentifier() == _T("chill_blast_arrow") )
-		{
-			int a = 0;
-		}
 		pEffect->invokeJuncture = (xtJuncture) ParsingParam( cParam );
 	} else
 	if( XSAME( cAttrName, 25 ) )	// 발동대상조건
@@ -563,7 +575,7 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	if( XSAME( cAttrName, 8 ) )	// 능력치
 	{	
 		CToken token;
-		token.LoadString( U82SZ( cParam ) );
+		token.LoadStr( U82SZ( cParam ) );
 		token.GetToken();
 		pEffect->valtypeInvokeAbility = GetValType( token.m_Token[0] );
 		if( pEffect->valtypeInvokeAbility == xNONE_VALTYPE )
@@ -879,7 +891,7 @@ void XESkillMng::AddConstant( void )
 	CONSTANT->Add( XSKTEXT( 8 ), xEA_ABILITY );		// 능력치
 	CONSTANT->Add( XSKTEXT( 60 ), xEA_CAST_RADIUS );	// 시전범위
 	//
-	CONSTANT->Add( XSKTEXT( 250 ), xWC_IMMEDIATELY ); // 즉시
+	CONSTANT->Add( XSKTEXT( 250 ), xWC_EVENT_IMMEDIATELY ); // 즉시
 	CONSTANT->Add( XSKTEXT( 251 ), xWC_BASE_TARGET_NEAR ); // 기준타겟근접
 	CONSTANT->Add( XSKTEXT( 252 ), xWC_ATTACK_TARGET_NEAR ); // 공격타겟근접
 
@@ -980,7 +992,7 @@ XSkillDat* XESkillMng::FindByRandomActive( void )
 	XArrayLinearN<XSkillDat*, 1024> ary;
 	for( auto pSkillDat : m_listSkillDat )
 	{
-		if( pSkillDat->GetCastMethod() == XSKILL::xACTIVE )
+		if( pSkillDat->IsActiveCategory() )
 			ary.Add( pSkillDat );
 	}
 
@@ -995,7 +1007,7 @@ XSkillDat* XESkillMng::FindByRandomPassive( void )
 	XArrayLinearN<XSkillDat*, 1024> ary;
 	for( auto pSkillDat : m_listSkillDat )
 	{
-		if( pSkillDat->GetCastMethod() == XSKILL::xPASSIVE )
+		if( pSkillDat->IsPassiveCategory() )
 			ary.Add( pSkillDat );
 	}
 
@@ -1117,7 +1129,7 @@ int XESkillMng::ReadTableAry2( LPCTSTR szAttrName,
 															LPCTSTR szStr,
 															xtValType valType ) {
 	CToken token;
-	token.LoadString( szStr );
+	token.LoadStr( szStr );
 	int idx = 0;
 	// pOutAry.size() != 0 경우도 있다. 상위블럭에서 값을 입력한 경우 하위에 상속되기때문에. 그러므로 그런경우는 클리어 시키고 다시 읽는다.
 	pOutAry->Clear();

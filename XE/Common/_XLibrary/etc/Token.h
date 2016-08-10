@@ -65,17 +65,9 @@ public:
 	///< GetToken()을 하면 토큰이 발견되기 전까지의 주석(//)들을 라인단위로 리스트에 붙인다.
 	XList4<_tstring> m_listRemarkPrev;	///< 토큰 이전의 주석리스트
 	XList4<_tstring> m_listRemarkCurrLine;	///< 토큰 라인의 주석
-//	XList<_tstring> m_listRemarkNext;	///< 토큰 이후의 주석리스트.
 #endif
 public:
 	CToken() { Init(); }
-/*	CToken( TCHAR *szString ) {
-		m_codeType = TXT_UTF16;
-		m_pBuff = szString;
-		mpCurr = m_pBuff;
-		m_pBackupPos = m_pBuff;
-		m_nSize = _tcslen( szString );
-	} */
 	virtual ~CToken() { Destroy(); }
 
 	BOOL	IsNumeric( TCHAR cData );
@@ -106,7 +98,7 @@ public:
 	inline xRESULT LoadFile( const _tstring& strFileName, XE::xtENCODING codeType ) {			// 파일로 부터 스크립트를 읽음.
 		return LoadFile( strFileName.c_str(), codeType );
 	}
-	xRESULT LoadString( LPCTSTR szString );		// 
+	xRESULT LoadStr( LPCTSTR szString );		// 
 	void SkipSpaceAndRemark( LPCTSTR &pCurr, int &nCurrLine, XList4<_tstring> *pOutListRemark, BOOL bReadRemark1Line = FALSE );
 
 	LPCTSTR GetToken( void );						// 읽은 스크립트로부터 토큰 하나를 읽음
@@ -114,19 +106,19 @@ public:
 	_tstring GetTokenByComma();
 	LPCTSTR GetNextToken( void );				// 이번에 읽을토큰을 포인터이동없이 읽어낸다.
 	/// true를 리턴하면 eof다.
-	bool GetToken( int *pOut ) {
+	inline bool GetToken( int *pOut ) {
 		if( pOut )
 			*pOut = GetNumber();
 		return IsEof() != FALSE;
 	}
 	/// true를 리턴하면 eof다.
-	bool GetToken( float *pOut ) {
+	inline bool GetToken( float *pOut ) {
 		if( pOut )
 			*pOut = GetNumberF();
 		return IsEof() != FALSE;
 	}
 	/// true를 리턴하면 eof다.
-	bool GetToken( XINT64 *pOut ) {
+	inline bool GetToken( XINT64 *pOut ) {
 		if( pOut )
 			*pOut = GetNumber64();
 		return IsEof() != FALSE;
@@ -150,8 +142,10 @@ public:
 	void PushPos( void );			// 현재 위치와 토큰을 백업받는다
 	void PopPos( void );				// PushPos으로 백업받은 위치와 토큰을 되살린다
 	_tstring GetTokenPath();
-
-
+	int GetTokenToAry( XVector<std::string>* pOut );
+#ifdef WIN32
+	int GetTokenToAry( XVector<_tstring>* pOut );
+#endif // WIN32
 	BOOL operator == (LPCTSTR s1)
 	{ return _tcsicmp( m_Token, s1 ) == 0; }
 	BOOL operator != (LPCTSTR s1)

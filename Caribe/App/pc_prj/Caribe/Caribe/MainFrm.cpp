@@ -50,6 +50,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+using namespace XGAME;
 // CMainFrame
 CMainFrame *g_pMainFrm = nullptr;
 
@@ -325,8 +326,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	DockControlBar(&m_wndToolBar);
 
 	// wndConsole
-	if (!m_wndConsole.Create(this, &m_dlgConsole, CString("Console"), IDD_CONSOLE, IDM_VIEW_CONSOLE, WS_CHILD | WS_VISIBLE | CBRS_BOTTOM ))
-	{
+	if( !m_wndConsole.Create( this,
+														&m_dlgConsole,
+														CString( "Console" ),
+														IDD_CONSOLE,
+														IDM_VIEW_CONSOLE,
+														WS_CHILD | WS_VISIBLE | CBRS_RIGHT ) ) {
 		TRACE0("Failed to create dialogbar\n");
 		return -1;      // fail to create
 	}
@@ -371,11 +376,11 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	if( scrH <= PHY_HEIGHT )
 		cs.cx = 600;
 	cs.cy = (int)(cs.cx * ratio);// 430 * 2;
-	cs.cx += 20;
-	cs.cy += 217;		// 1280x720일 경우
-//	cs.x = scrW/2 - (cs.cx/2);
-//	cs.y = 0; 
-
+// 	cs.cx += 20;
+// 	cs.cy += 217;		// 1280x720일 경우
+	// 892,831
+	cs.cx += 408;
+	cs.cy += 106;		// 1280x720/콘솔창 오른쪽
 	return TRUE;
 }
 
@@ -2527,27 +2532,36 @@ void CMainFrame::OnUpdateOnViewDamageLogging( CCmdUI *pCmdUI )
 void CMainFrame::OnBattleOption()
 {
 	CDlgBattleOption dlg;
-	if( XAPP->m_dwFilter & 0x01 )
+	if( XAPP->m_dwFilter & xBIT_PLAYER_HERO )
 		dlg.m_bCheckPlayerHero = TRUE;
-	if( XAPP->m_dwFilter & 0x02 )
+	if( XAPP->m_dwFilter & xBIT_PLAYER_UNIT )
 		dlg.m_bCheckPlayerUnit = TRUE;
-	if( XAPP->m_dwFilter & 0x04 )
+	if( XAPP->m_dwFilter & xBIT_ENEMY_HERO )
 		dlg.m_bCheckEnemyHero = TRUE;
-	if( XAPP->m_dwFilter & 0x08 )
+	if( XAPP->m_dwFilter & xBIT_ENEMY_UNIT )
 		dlg.m_bCheckEnemyUnit = TRUE;
-	if( XAPP->m_dwFilter & 0x10 )
+	if( XAPP->m_dwFilter & xBIT_HERO_INFO_CONSOLE )
 		dlg.m_bHeroInfoToConsole = TRUE;
+	if( XAPP->m_dwFilter & xBIT_FLUSH_IMG )
+		dlg.m_bCheckFlushImg = TRUE;
+	if( XAPP->m_dwFilter & xBIT_FLUSH_SPR )
+		dlg.m_bCheckFlushSpr = TRUE;
+	//
 	if( dlg.DoModal() ) {
-		if( dlg.m_bCheckPlayerHero )	XAPP->m_dwFilter |= 0x01;
-		else													XAPP->m_dwFilter &= ~0x01;
-		if( dlg.m_bCheckPlayerUnit )	XAPP->m_dwFilter |= 0x02;
-		else													XAPP->m_dwFilter &= ~0x02;
-		if( dlg.m_bCheckEnemyHero )		XAPP->m_dwFilter |= 0x04;
-		else													XAPP->m_dwFilter &= ~0x04;
-		if( dlg.m_bCheckEnemyUnit )		XAPP->m_dwFilter |= 0x08;
-		else													XAPP->m_dwFilter &= ~0x08;
-		if( dlg.m_bHeroInfoToConsole )	XAPP->m_dwFilter |= 0x10;
-		else														XAPP->m_dwFilter &= ~0x10;
+		if( dlg.m_bCheckPlayerHero )	XAPP->m_dwFilter |= xBIT_PLAYER_HERO;
+		else													XAPP->m_dwFilter &= ~xBIT_PLAYER_HERO;
+		if( dlg.m_bCheckPlayerUnit )	XAPP->m_dwFilter |= xBIT_PLAYER_UNIT;
+		else													XAPP->m_dwFilter &= ~xBIT_PLAYER_UNIT;
+		if( dlg.m_bCheckEnemyHero )		XAPP->m_dwFilter |= xBIT_ENEMY_HERO;
+		else													XAPP->m_dwFilter &= ~xBIT_ENEMY_HERO;
+		if( dlg.m_bCheckEnemyUnit )		XAPP->m_dwFilter |= xBIT_ENEMY_UNIT;
+		else													XAPP->m_dwFilter &= ~xBIT_ENEMY_UNIT;
+		if( dlg.m_bHeroInfoToConsole )	XAPP->m_dwFilter |= xBIT_HERO_INFO_CONSOLE;
+		else														XAPP->m_dwFilter &= ~xBIT_HERO_INFO_CONSOLE;
+		if( dlg.m_bCheckFlushImg )	XAPP->m_dwFilter |= xBIT_FLUSH_IMG;
+		else												XAPP->m_dwFilter &= ~xBIT_FLUSH_IMG;
+		if( dlg.m_bCheckFlushSpr )	XAPP->m_dwFilter |= xBIT_FLUSH_SPR;
+		else												XAPP->m_dwFilter &= ~xBIT_FLUSH_SPR;
 		XAPP->XClientMain::SaveCheat();
 	}
 }

@@ -191,6 +191,11 @@ void xPutsTimeStringW( FILE *fp );
 			((!(EXP)) ? (XBREAK_POINT(), __xLogf( XLOGTYPE_ERROR, _T("%s(%d) %s():*********************\r\n%s\n"), __FILENAME, __LINE__, __TFUNC__, #EXP ), 0) : 1)		// 브레이크부터 걸리고 로그기록함.
 	#define XASSERTF(EXP, F, ...) \
 			((!(EXP)) ? (XBREAK_POINT(), __xLogf( XLOGTYPE_ERROR, XTSTR3("%s\n%s(%d) %s():*********************\r\n", F, "\n"), #EXP, __FILENAME, __LINE__, __TFUNC__,##__VA_ARGS__ ), 0) : 1)		// 브레이크부터 걸리고 로그기록함.
+	// 평가식에 따라 콘솔에 로그를 남긴다. 브레이크를 걸지는 않는다.
+	#define CONSOLE_EXP(EXP, TAG, MSG) \
+			(((EXP)) ? (__xLogTag( TAG, XLOGTYPE_LOG, MSG), 1) : 0)
+	#define CONSOLEF_EXP(EXP, TAG, F, ...) \
+			(((EXP)) ? (__xLogfTag( TAG, XLOGTYPE_LOG, _T(F),##__VA_ARGS__), 1) : 0)
 // _XDEBUG
 #else
 // not _XDEBUG

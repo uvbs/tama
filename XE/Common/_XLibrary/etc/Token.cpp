@@ -240,7 +240,7 @@ xRESULT	CToken::_Load( XBaseRes *pRes, XE::xtENCODING codeType )
 	return xSUCCESS;
 }
 
-xRESULT CToken::LoadString( LPCTSTR szString )
+xRESULT CToken::LoadStr( LPCTSTR szString )
 {
 	int len = _tcslen( szString );
 	m_pBuff = new TCHAR[ len + 1];
@@ -980,3 +980,22 @@ _tstring CToken::GetTokenPath()
 		str += _T( "\\" );
 	return str;
 }
+
+// 읽어들인 문자열을 토큰으로 분해해 배열에 넣어준다.
+int CToken::GetTokenToAry( XVector<std::string>* pOut )
+{
+	while( GetToken() ) {
+		pOut->push_back( SZ2C(m_Token) );
+	}
+	return pOut->Size();
+}
+
+#ifdef WIN32
+int CToken::GetTokenToAry( XVector<_tstring>* pOut )
+{
+	while( GetToken() ) {
+		pOut->push_back( m_Token );
+	}
+	return pOut->Size();
+}
+#endif // WIN32

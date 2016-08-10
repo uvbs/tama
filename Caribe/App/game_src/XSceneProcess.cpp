@@ -75,6 +75,7 @@ XSceneProcessBattle::XSceneProcessBattle( XSceneBattle *pScene,
 //	m_aryLegion = aryLegion;
 	// 유닛 인공지능 시작
 	pWorld->OnStartBattle();
+	CONSOLE("xJC_START_BATTLE");
 }
 
 void XSceneProcessBattle::Destroy()

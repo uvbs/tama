@@ -506,12 +506,12 @@ public:
 	virtual int GetSkillLevel( XSKILL::XSkillObj* pSkillObj ) override;
 	virtual XSkillReceiver* GetCurrTarget() override;
 	virtual bool OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster, XSKILL::XBuffObj *pBuffObj, XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int level ) override;
-	virtual void OnEventFirstApplyEffect( XSKILL::XSkillDat *pDat, XSKILL::XSkillUser* pCaster, XSKILL::EFFECT *pEffect, int level ) override;
 	virtual bool OnInvokeSkill( XSKILL::XSkillDat *pDat,
 															const XSKILL::EFFECT *pEffect,
 															XSKILL::XSkillReceiver* pTarget,
 															int level, 
 															_tstring* pstrOut ) override;
+//	void OnAddSkillRecvObj( XSKILL::XBuffObj *pSkillRecvObj, XSKILL::EFFECT *pEffect ) override;		// 이대상에게 버프스킬이 추가된 직후 호출된다.
 	// SKILL
 	//////////////////////////////////////////////////////////////////////////
 	void cbOnArriveBullet( XObjArrow *pArrow, float damage );

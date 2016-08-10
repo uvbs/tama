@@ -79,13 +79,27 @@ public:
 	template<typename T>
 	BOOL ParsingParamList( const char *cParam, XList<T>& listOut ) {
 		CToken token;
-		if( token.LoadString( U82SZ( cParam ) ) == xFAIL ) {
+		if( token.LoadStr( U82SZ( cParam ) ) == xFAIL ) {
 			XLOG( "%s: load string error.", U82SZ( cParam ) );
 			return FALSE;
 		}
 		while(token.GetToken()) {
 			if( token.m_Token[0] != ',' ) {
 				listOut.Add( (T)ParsingParam( token.m_Token ) );
+			}
+		}
+		return TRUE;
+	}
+	template<typename T>
+	BOOL ParsingParamList2( const char *cParam, XList4<T>* pOut ) {
+		CToken token;
+		if( token.LoadStr( U82SZ( cParam ) ) == xFAIL ) {
+			XLOG( "%s: load string error.", U82SZ( cParam ) );
+			return FALSE;
+		}
+		while( token.GetToken() ) {
+			if( token.m_Token[0] != ',' ) {
+				pOut->Add( (T)ParsingParam( token.m_Token ) );
 			}
 		}
 		return TRUE;
@@ -124,7 +138,7 @@ public:
 						LPCTSTR szStr, 
 						xtValType valType ) {
 		CToken token;
-		token.LoadString( szStr );
+		token.LoadStr( szStr );
 		int idx = 0;
 		// pOutAry.size() != 0 경우도 있다. 상위블럭에서 값을 입력한 경우 하위에 상속되기때문에. 그러므로 그런경우는 클리어 시키고 다시 읽는다.
 		pOutAry->Clear();

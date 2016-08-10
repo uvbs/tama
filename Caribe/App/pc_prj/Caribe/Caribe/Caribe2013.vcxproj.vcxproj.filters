@@ -404,7 +404,6 @@
     <ClCompile Include="..\..\..\game_src\XWndUnitOrg.cpp">
       <Filter>source\ui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\game_src\XTemp.cpp" />
     <ClCompile Include="..\..\..\game_src\XBaseUnit.cpp">
       <Filter>source\battle</Filter>
     </ClCompile>
@@ -521,6 +520,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XObjEtc.cpp">
       <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XTemp.cpp">
+      <Filter>source\main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1026,7 +1028,6 @@
     <ClInclude Include="..\..\..\game_src\XGuildH.h">
       <Filter>source\guild</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\game_src\XTemp.h" />
     <ClInclude Include="..\..\..\game_src\XGlobalConst.h">
       <Filter>header</Filter>
     </ClInclude>
@@ -1113,6 +1114,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XBaseUnitH.h">
       <Filter>source\battle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XTemp.h">
+      <Filter>source\main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1232,8 +1236,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\Resource\prop\text_ko.txt" />
     <Text Include="..\..\..\..\balance.txt" />
+    <Text Include="..\..\..\Resource\prop\text_ko.txt">
+      <Filter>resource</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\Resource\prop\layout\hero_portrait.xml">

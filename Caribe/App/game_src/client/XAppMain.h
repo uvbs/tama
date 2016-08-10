@@ -6,6 +6,19 @@
 #define XRESO_WIDTH		640
 #define XRESO_HEIGHT	360
 
+namespace XGAME {
+	enum {
+		xBIT_PLAYER_HERO = 0x01,
+		xBIT_PLAYER_UNIT= 0x02,
+		xBIT_ENEMY_HERO = 0x04,
+		xBIT_ENEMY_UNIT = 0x08,
+		xBIT_SIDE_FILTER = 0x0f,
+		xBIT_HERO_INFO_CONSOLE = 0x10,
+		xBIT_FLUSH_IMG = 0x00001000,
+		xBIT_FLUSH_SPR = 0x00002000,
+	};
+}
+
 class XGame;
 ////////////////////////////////////////////////////////////////
 class XAppMain : public XClientMain
@@ -46,11 +59,7 @@ public:
 	bool m_bDebugViewSquadsHp = false;		///< 각 부대 hp보이기
 	bool m_bStopPassive = false;					///< 패시브스킬 금지
 	bool m_bStopActive = false;					///< 액티브스킬 금지
-// 	bool m_bFilterHero = true;						// 모든 치트기능의 필터.
-// 	bool m_bFilterUnit = true;
-// 	bool m_bFilterPlayer = true;				// 필터:아군
-// 	bool m_bFilterEnemy = true;					// 필터:적군 
-	DWORD m_dwFilter = 0x0f;
+	DWORD m_dwFilter = XGAME::xBIT_SIDE_FILTER;
 	bool m_bViewCutScene = true;
 	bool m_bViewHexaIdx = false;				// 헥사 인덱스
 	bool m_bViewAreaCost = false;				// 툴모드시 지역가격을 표시할건지.

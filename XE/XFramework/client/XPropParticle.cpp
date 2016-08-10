@@ -157,7 +157,7 @@ int XPropParticle::LoadFunc( XEXmlNode& nodeRoot, const char *cKey, xParticle::x
 	_tstring strVal = node.GetTString( "val" );
 	float v1 = 0, v2 = 0;
 	CToken token;
-	if( token.LoadString( strVal.c_str() ) ) {
+	if( token.LoadStr( strVal.c_str() ) ) {
 		v1 = token.GetNumberF();
 		++ret;
 		if( !token.IsEof() ) {

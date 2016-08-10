@@ -1094,8 +1094,10 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 		}
 
 		// 참조가 없는 모든 자원 해제
-		SPRMNG->DoFlushCache();
-		IMAGE_MNG->DoFlushCache();
+		if( XAPP->m_dwFilter & xBIT_FLUSH_SPR )
+			SPRMNG->DoFlushCache();
+		if( XAPP->m_dwFilter & xBIT_FLUSH_IMG )
+			IMAGE_MNG->DoFlushCache();
 		//
 		m_aryCamp[xSI_PLAYER].m_idsLegion = "single1_player";
 		m_aryCamp[xSI_OTHER].m_idsLegion = "single1_enemy";
@@ -1225,7 +1227,7 @@ void XSceneBattle::OnSelectSquad( const XSPSquad& spSquadSelect )
 	//
 #ifdef _XSINGLE
 	// 부대선택시 정보출력이 켜져있고 영웅정보는 콘솔에 출력도 켜져있으면 콘솔에 출력.
-	if( XAPP->m_bDebugMode && XAPP->m_bDebugViewSquadInfo && (XAPP->m_dwFilter & 0x10))	{
+	if( XAPP->m_bDebugMode && XAPP->m_bDebugViewSquadInfo && (XAPP->m_dwFilter & xBIT_HERO_INFO_CONSOLE))	{
 		auto pUnit = spSquadSelect->GetspHeroUnit().get();
 		XVector<_tstring> aryStr;
 		GetSquadInfoToAry( spSquadSelect, pUnit, &aryStr );

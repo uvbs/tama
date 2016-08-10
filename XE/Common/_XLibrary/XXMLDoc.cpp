@@ -75,7 +75,7 @@ bool XXMLDoc::Load( LPCTSTR resXml )
 		XLOGXNA("failed open xml: %s\n%s", m_strFullpath.c_str(), m_Doc.ErrorDesc() );
 		return false;
 	}
-	XLOGXNA("%s loaded...", m_strFullpath.c_str() );
+	CONSOLE("%s loaded...", C2SZ(m_strFullpath) );
 	m_bLoad = TRUE;
 	m_resXml = resXml;
 	//
@@ -259,7 +259,7 @@ int XEXmlNode::GetStringAry( const char *cKey, std::vector<std::string> *pOutAry
 	_tstring strToken;
 	std::string cstr;
 	CToken token;
-	if( token.LoadString( strSrc.c_str() ) ) {
+	if( token.LoadStr( strSrc.c_str() ) ) {
 		int num = 0;
 		while(1) {
 			strToken = token.GetTokenByComma();

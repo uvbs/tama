@@ -5507,7 +5507,7 @@ int XAccount::ProcessCheatCmd( const _tstring& strCmdLine )
 {
 	XGAME::xtParamSync param = xPS_NONE;
 	CToken token;
-	token.LoadString( strCmdLine.c_str() );
+	token.LoadStr( strCmdLine.c_str() );
 	while( 1 ) {
 		token.GetToken();
 		if( token.IsEof() && token.m_Token[0] == 0 )

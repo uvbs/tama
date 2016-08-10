@@ -13,28 +13,28 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 XE_NAMESPACE_START( XSKILL )
-int XSkillObj::IsCastCondition()
-{
-	if( IsPassive() || IsAbility() )
-		return TRUE;
-	return FALSE;
-}
+// int XSkillObj::IsCastCondition()
+// {
+// 	if( IsPassive() || IsAbility() )
+// 		return TRUE;
+// 	return FALSE;
+// }
 
 const XList4<EFFECT*>& XSkillObj::GetEffectList() const
 {
 	return GetpDat()->GetlistEffects();
 }
-BOOL XSkillObj::IsActive() const 
+bool XSkillObj::IsActiveCategory() const 
 {
-	return GetpDat()->IsActive();
+	return GetpDat()->IsActiveCategory();
 }
-BOOL XSkillObj::IsPassive() const
+bool XSkillObj::IsPassiveCategory() const
 {
-	return GetpDat()->IsPassive();
+	return GetpDat()->IsPassiveCategory();
 }
-BOOL XSkillObj::IsAbility() const
+bool XSkillObj::IsAbilityCategory() const
 {
-	return GetpDat()->IsAbility();
+	return GetpDat()->IsAbilityCategory();
 }
 ID XSkillObj::GetidSkill() const
 {

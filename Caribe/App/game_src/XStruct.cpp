@@ -836,12 +836,14 @@ bool xSquad::LoadFromXML( XEXmlNode& nodeSquad, LPCTSTR szTag )
 			if( mulHp <= 0.01f )
 				mulHp = 1.f;
 		} else 
-		if( attr.GetcstrName() == "show" ) {
 #ifdef _XSINGLE
+		if( attr.GetcstrName() == "show" ) {
 			m_bShow = attr.GetBool();
-
-#endif // _XSINGLE
 		} else
+		if( attr.GetcstrName() == "num_abil" ) {
+			m_numAbil = attr.GetInt();
+		} else
+#endif // _XSINGLE
 #ifdef _DEBUG
 		if( attr.GetcstrName() == "debug" ) {
 			debug = attr.GetInt();

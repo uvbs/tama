@@ -274,14 +274,15 @@ void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 														pEffect->m_invokerEff.m_Point,
 														secPlay, XE::VEC2() );
 		}
+		auto pCaster = GetpCaster();
 		// 발동대상들을 뽑음.
 		XVector<XSkillReceiver*> aryIvkTarget;
-		int num = GetpCaster()->GetInvokeTarget( &aryIvkTarget, m_pDat,
-																						 level,
-																						 pEffect->invokeTarget,
-																						 pEffect,
-																						 pCastingTarget,
-																						 m_vCastPos );
+		int num = pCaster->GetInvokeTarget( &aryIvkTarget, m_pDat,
+																				level,
+																				pEffect->invokeTarget,
+																				pEffect,
+																				pCastingTarget,
+																				m_vCastPos );
 		if( aryIvkTarget.size() > 0 ) {
 			if( bGetListMode ) {
 				// 리스트를 받기만 하는 모드.
@@ -293,14 +294,15 @@ void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 			}
 			// 발동대상들에게 실제 스킬효과를 적용 
 			for( auto pInvokeTarget : aryIvkTarget ) {
-				GetpCaster()->ApplyInvokeEffectToInvokeTarget( pInvokeTarget,
-																											 m_pDat,
-																											 pEffect,
-																											 m_pOwner,		// invoker
-																											 bCreateSfx != 0,
-																											 m_Level,
-																											 XE::VEC2( 0 ),
-																											 this );
+				const XE::VEC2 vZero;
+				pCaster->ApplyInvokeEffectToInvokeTarget( pInvokeTarget,
+																									m_pDat,
+																									pEffect,
+																									m_pOwner,		// invoker
+																									bCreateSfx != 0,
+																									m_Level,
+																									vZero,
+																									this );
 			}
 			++m_numApply;
 			// 발동대상들에게 실제 스킬효과를 적용 & 이벤트 스크립트 실행(루프안에서 pInvokeTarget->ApplyInvokeEffect()로 변경)
@@ -351,10 +353,10 @@ void XBuffObj::PersistApplyEffectToInvokeTargets( EFFECT_OBJ *pEffObj, XSkillRec
 		if( pEffObj->timerDOT.IsOff() || pEffObj->timerDOT.IsOver() ) 		{
 			int maxDot = 0;
 			// 지속시간 / 발동주기로 총 일어나야할 DOT횟수를 구한다.
-			if( m_pDat->IsPassive() || m_pDat->IsAbility() )
-				maxDot = (int)(99999.f / pEffect->secInvokeDOT);	// 지속시간 무한대
-			else
-				maxDot = (int)(pEffect->GetDuration(m_Level) / pEffect->secInvokeDOT);
+// 			if( m_pDat->IsPassive() || m_pDat->IsAbility() )
+// 				maxDot = (int)(99999.f / pEffect->secInvokeDOT);	// 지속시간 무한대
+// 			else
+			maxDot = (int)(pEffect->GetDuration(m_Level) / pEffect->secInvokeDOT);	// 이제 패시브나 특성도 지속시간을 갖도록 바꿈.
 			if( pEffObj->cntDot++ < maxDot )			{
 				// 발동대상들에게 효과적용
 				BOOL bCreateSfx = TRUE;
@@ -426,15 +428,16 @@ void XBuffObj::ExecuteScript( XSkillReceiver *pTarget, const char *cScript  )
 // 버프/디버프/도트류로 걸려있는 스킬들은 매루프 이걸 실행한다. pOwner:버프소유자
 int XBuffObj::Process( XSkillReceiver *pOwner )	
 {
+	XBREAK( GetbDestroy() );
 	BOOL bAllRelease = TRUE;		// 효과가 전부 소멸됐는가
 	BOOL bApply = FALSE;			
 
 	LIST_MANUAL_LOOP( m_listEffectObjs, EFFECT_OBJ*, itor, pEffObj ) {
 		EFFECT *pEffect = &pEffObj->m_effect;
-		if( XBREAK( m_pDat->IsBuff( pEffect ) == FALSE ) ) {		// 효과가 버프/도트류가 아니면 에러
-			XLOG("buffObj:%s is not buff", m_pDat->GetstrIdentifier().c_str() );
-			return 0;
-		}
+// 		if( XBREAK( !pEffect->IsDuration() ) ) {		// 효과가 버프/도트류가 아니면 에러
+// 			XLOG("buffObj:%s is not buff", m_pDat->GetstrIdentifier().c_str() );
+// 			return 0;
+// 		}
 		// 효과끝난건 리스트에서 삭제
 		if( pEffObj->Active == 0 ) {
 			m_listEffectObjs.erase( itor++ );		// 끝 스크립까지 다실행한 효과는 아예 날려버린다. pUnit쪽에서 끝스크립을 또 실행하기 때문이다
@@ -443,8 +446,8 @@ int XBuffObj::Process( XSkillReceiver *pOwner )
 		itor++;
 		// 발동시점 지속발동형이나 도트형 효과들을 위해 매프레임 프로세스를 돌며
 		// 효과를 적용시킨다.
-//		if( pEffect->invokeJuncture == xJC_PERSIST ) {
-		if( pEffect->IsDuration() ) {
+		if( pEffect->invokeJuncture == xJC_PERSIST ) {
+//		if( pEffect->IsDuration() ) {		// 지속시간이 있다고 모두 persist는 아님
 			if( pOwner->IsLive() ) {
 				PersistApplyEffectToInvokeTargets( pEffObj, pOwner );
 				if( IsFirstProcess() )
@@ -461,11 +464,10 @@ int XBuffObj::Process( XSkillReceiver *pOwner )
 			// 버프가 끝날때 하는일을 요청한다
 			pEffObj->Active = 0;		// 효과정지
 			pOwner->OnClearSkill( this, m_pDat, pEffObj );		// 버프가 끝날때 버프가지고 있던놈에게 호출됨
-		} // IsClearCondition
-		else
+		} else { // IsClearCondition
 			bAllRelease = FALSE;		// 하나라도 돌아가고 있다면 해제하면 안됨
-	}
-	END_LOOP;
+		}
+	}	END_LOOP;
 	m_nCount++;
 	// 효과가 전부 정지됐는가?
 	if( bAllRelease )
@@ -478,12 +480,12 @@ int XBuffObj::IsClearCondition( EFFECT_OBJ *pEffObj, XSkillDat *pSkillDat, XSkil
 {
 	if( pEffObj->timerDuration.IsOver() )		// 지속시간이 끝났는가?
 		return 1;
-	// 토글이나 패시브스킬의경우는 지속시간이 무한대여서 타이머가 첨부터 켜지지 않는다. 그러므로 항상 0을 리턴
-	// 패시브나 토글스킬도 아닌데 타이머가 꺼져있는경우가 있다면 에러
-	if( XBREAK( pEffObj->timerDuration.IsOff() && 
-			(m_pDat->IsToggle() == FALSE && m_pDat->IsActive() ) ) ) {
-		XLOG( "buffObj:%s", m_pDat->GetstrIdentifier().c_str() );
-	}
+// 	// 토글이나 패시브스킬의경우는 지속시간이 무한대여서 타이머가 첨부터 켜지지 않는다. 그러므로 항상 0을 리턴
+// 	// 패시브나 토글스킬도 아닌데 타이머가 꺼져있는경우가 있다면 에러
+// 	if( XBREAK( pEffObj->timerDuration.IsOff() 
+// // 		&& (!m_pDat->IsToggle() && m_pDat->IsActive() ) ) ) {
+// 		XLOG( "buffObj:%s", m_pDat->GetstrIdentifier().c_str() );
+// 	}
 	return 0;
 }
 

@@ -12,7 +12,7 @@ struct EFFECT;
 class XSkillObj
 {
 	XSkillDat	*m_pDat;			// 스킬데이타 포인터. 참조용(파괴금지)
-	CTimer m_timerCool;		// 쿨타이머
+//	CTimer m_timerCool;		// 쿨타이머
 //	BOOL m_bAlreadyCast;		// 이미 시전됨-패시브용
 	void Init() {
 		m_pDat = NULL;
@@ -27,16 +27,16 @@ public:
 	}
 	virtual ~XSkillObj() { Destroy(); }
 	// get/set/is
-	GET_ACCESSOR( ::CTimer&, timerCool );
+//	GET_ACCESSOR( ::CTimer&, timerCool );
 	GET_ACCESSOR_CONST( const XSkillDat*, pDat );
 	inline XSkillDat* GetpDatMutable() {
 		return m_pDat;
 	}
 //	GET_SET_ACCESSOR( BOOL, bAlreadyCast );
 	const XList4<EFFECT*>& GetEffectList() const;
-	BOOL IsActive() const;
-	BOOL IsPassive() const;
-	BOOL IsAbility() const;
+	bool IsActiveCategory() const;
+	bool IsPassiveCategory() const;
+	bool IsAbilityCategory() const;
 	ID GetidSkill() const;
 	inline ID getid() const {
 		return GetidSkill();
@@ -45,7 +45,7 @@ public:
 	LPCTSTR GetIdsSkill() const;
 	BOOL IsSameCastMethod( xCastMethod castMethod ) const;
 	// virtual
-	virtual int IsCastCondition();		// 시전조건인가?
+//	virtual int IsCastCondition();		// 시전조건인가?
 };
 
 XE_NAMESPACE_END

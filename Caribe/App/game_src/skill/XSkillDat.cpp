@@ -376,7 +376,7 @@ void XSkillDat::Serialize( XArchive& ar ) const
 	ar << s_idGlobal;
 	ar << m_strIdentifier << m_idSkill << m_idName << m_idDesc;
 	ar << (char)m_CastMethod;
-	ar << (char)m_whenCasting;
+	ar << (char)m_whenUse;
 	ar << (char)m_baseTarget;
 	ar << (char)m_condBaseTarget;
 	ar << m_fCoolTime;
@@ -405,7 +405,7 @@ void XSkillDat::DeSerialize( XArchive& ar, int ver )
 	ar >> s_idGlobal;
 	ar >> m_strIdentifier >> m_idSkill >> m_idName >> m_idDesc;
 	ar >> c0;    m_CastMethod = (xCastMethod)c0;
-	ar >> c0;    m_whenCasting = (xtWhenCasting)c0;
+	ar >> c0;    m_whenUse = (xtWhenUse)c0;
 	ar >> c0;    m_baseTarget = (xtBaseTarget)c0;
 	ar >> c0;    m_condBaseTarget = (xtBaseTargetCond)c0;
 	ar >> m_fCoolTime;
@@ -434,17 +434,17 @@ void XSkillDat::DeSerialize( XArchive& ar, int ver )
 /**
  @brief 지속시간이 있는 버프류
 */
-BOOL XSkillDat::IsBuff( const EFFECT *pEffect ) const
-{
-	return (pEffect->IsDuration()
-					 || pEffect->secInvokeDOT > 0
-					 || IsPassive() || IsAbility()) ? TRUE : FALSE;
-}
+// BOOL XSkillDat::IsBuff( const EFFECT *pEffect ) const
+// {
+// 	return (pEffect->IsDuration()
+// 					 || pEffect->secInvokeDOT > 0
+// 					 || IsPassive() || IsAbility()) ? TRUE : FALSE;
+// }
 
 /**
  @brief 유한한 시간의 버프인가(패시브나 특성이 아닌 버프들)
 */
-bool XSkillDat::IsBuffShort() const
+bool XSkillDat::IsBuffFinite() const
 {
 	for( auto pEff : m_listEffects ) {
 		if( pEff->IsDuration() ) {

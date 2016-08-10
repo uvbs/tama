@@ -29,7 +29,8 @@ private:
 	XList4<EFFECT*> m_listEffects;	// 하나의 스킬에는 여러개의 효과를 가질수 있다
 	ID m_idCastMotion;			///< 시전동작
 	xEffSfx m_CasterEff;		// 시전자 이펙트
-	xtWhenCasting m_whenCasting = xWC_BASE_TARGET_NEAR;	// 시전시점
+	xtJuncture m_castJuncture = xJC_NONE;			// 시전시점
+	xtWhenUse m_whenUse = xWC_NONE;	// 시전시점(스킬버튼(혹은AI)버튼을 눌렀을때 언제 UseSkill을 하는지에 대한. 0이면 버튼눌러사용하는스킬(=액티브)이 아니다.
 	xtBaseTarget m_baseTarget;	///< 기준타겟
 	xtFriendshipFilt m_bitBaseTarget;	///< 기준타겟우호
 	xtBaseTargetCond m_condBaseTarget;	///< 기준타겟조건
@@ -41,6 +42,7 @@ private:
 	ID m_idShootObj = 1;			// 발사체id
 	float m_shootObjSpeed = 0.6f;		// 발사체속도
 	int m_Debug = 0;
+	XVector<std::string> m_aryTag;
 	void Init() {
 		m_idSkill = GenerateGlobalID();
 		m_CastMethod = XSKILL::xNONE_CAST;
@@ -70,7 +72,7 @@ private:
 											, const EFFECT* pEffect
 											, int lvSkill
 											, _tstring* pOut );
-	GET_SET_ACCESSOR_CONST( XSKILL::xCastMethod, CastMethod );
+	SET_ACCESSOR( XSKILL::xCastMethod, CastMethod );
 public:
 	XSkillDat(void) { Init(); }
 	virtual ~XSkillDat(void) { Destroy(); }
@@ -96,7 +98,7 @@ public:
 	GET_ACCESSOR_CONST( const _tstring&, strShootObj );
 	GET_ACCESSOR_CONST( ID, idShootObj );
 	GET_ACCESSOR_CONST( float, shootObjSpeed );
-	GET_ACCESSOR_CONST( xtWhenCasting, whenCasting );
+	GET_ACCESSOR_CONST( xtWhenUse, whenUse );
 	inline bool IsShootingType() const {
 		return !m_strShootObj.empty();
 	}
@@ -107,28 +109,36 @@ public:
 		return m_strIdentifier.c_str();
 	}
 	GET_ACCESSOR_CONST( const XList4<XSKILL::EFFECT*>&, listEffects );
-//	GET_SET_ACCESSOR( xtUseType, UseType );
-	inline BOOL IsPassive() const {
+	// 이제 이것은 단순히 스킬종류의 분류를 뜻한다. 지속시간이 무한이냐라는 의미로 이것을 사용해선 안된다.
+	// 발동스킬과 비발동스킬도 하나의 카테고리에 들어간다.
+	inline bool IsPassiveCategory() const {
 		return m_CastMethod == XSKILL::xPASSIVE; 
 	}
-	inline BOOL IsActive() const {
+	inline bool IsActiveCategory() const {
 		return m_CastMethod == XSKILL::xACTIVE;
 	}
-	inline BOOL IsAbility() const {
+	inline bool IsAbilityCategory() const {
 		return m_CastMethod == XSKILL::xABILITY;
 	}
-	inline BOOL IsToggle() const {
+	inline bool IsToggleCategory() const {
 		return m_CastMethod == XSKILL::xTOGGLE;
 	}
+	// 액티브사용타입의 스킬인가?(일반적으로 스킬버튼 눌러서 사용하는 스킬을 의미)
+	inline bool IsActiveUseType() const {
+		return m_whenUse != xWC_NONE;
+	}
+	inline bool IsInvoke() const {
+		return !IsTag( "invoke" );
+	}
 	// 버프타입의 스킬인가
-	BOOL IsBuff( const XSKILL::EFFECT *pEffect ) const;
-	bool IsBuffShort() const;
+//	BOOL IsBuff( const XSKILL::EFFECT *pEffect ) const;
+	bool IsBuffFinite() const;
 	// 자신이나 자신의 부대에게만 쓰는 버프인가.
 	bool IsSelfBuff() const;
 	/// 패시브형 스킬인가(패시브,특성)
-	BOOL IsPassiveType() const {
-		return m_CastMethod == xPASSIVE || m_CastMethod == xABILITY;
-	}
+// 	BOOL IsPassiveType() const {
+// 		return m_CastMethod == xPASSIVE || m_CastMethod == xABILITY;
+// 	}
 	//
 	void AddEffect( XSKILL::EFFECT *pEffect );
 	inline int GetNumEffect() const {
@@ -150,6 +160,13 @@ public:
 	}
 	inline BOOL IsSameCastMethod( xCastMethod castMethod ) const {
 		return m_CastMethod == castMethod;
+	}
+	inline void AddTag( const std::string& strTag ) {
+		if( !m_aryTag.IsExist( strTag ) )
+			m_aryTag.push_back( strTag );
+	}
+	inline bool IsTag( const std::string& strTag ) const {
+		return m_aryTag.IsExist( strTag );
 	}
 	void Serialize( XArchive& ar ) const;
 	void DeSerialize( XArchive& ar, int );

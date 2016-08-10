@@ -78,13 +78,13 @@ XSkillUser::xUseSkill XSkillUser::UseSkill( XSkillObj *pUseSkill,
 		return infoUseSkill;
 	}
 	// 쿨타임 검사.(쿨타임은 사용하지 않는 경우도 많으니 콤포넌트형태로 빼서 옵션처럼 사용할수 있도록 하자)
-	if( pUseSkill->GettimerCool().IsOn() ) {				// 쿨타임이 꺼져있으면 쿨타임 다 돈거니까 걍 통과
-		if( pUseSkill->GettimerCool().IsOver() == FALSE ) {		// 쿨링이 아직 안끝났으면
-			infoUseSkill.errCode = xERR_READY_COOLTIME;			// 재사용 대기중입니다
-			return infoUseSkill;
-		}
-		pUseSkill->GettimerCool().Off();	// 쿨링타이머 끔
-	}
+// 	if( pUseSkill->GettimerCool().IsOn() ) {				// 쿨타임이 꺼져있으면 쿨타임 다 돈거니까 걍 통과
+// 		if( pUseSkill->GettimerCool().IsOver() == FALSE ) {		// 쿨링이 아직 안끝났으면
+// 			infoUseSkill.errCode = xERR_READY_COOLTIME;			// 재사용 대기중입니다
+// 			return infoUseSkill;
+// 		}
+// 		pUseSkill->GettimerCool().Off();	// 쿨링타이머 끔
+// 	}
 	auto pSkillDat = pUseSkill->GetpDatMutable();
 	// 이미 시전된 패시브는 다시 시전하지 않게 한다
 // 	if( pUseSkill->GetpDat()->IsPassiveType() )  {	이제 패시브의 최초 발동은 xJC_START이벤트에서 하므로 이게 필요가 없음.
@@ -99,9 +99,9 @@ XSkillUser::xUseSkill XSkillUser::UseSkill( XSkillObj *pUseSkill,
 	// 쿨타이머셋이 UseEffect보다 먼저 있는 이유: 
 	// 만약 지역마법을 썼는데 그자리에 아무도 없었다면 캐스팅타겟 없음으로 해서 UseEffect가 리턴된다 
 	// 그러나 이경우에도 쿨타이머는 돌아가야 하기때문이다
-	if( pSkillDat->GetfCoolTime() != 0 ) {
-		pUseSkill->GettimerCool().Set( pSkillDat->GetfCoolTime() );
-	}
+// 	if( pSkillDat->GetfCoolTime() != 0 ) {
+// 		pUseSkill->GettimerCool().Set( pSkillDat->GetfCoolTime() );
+// 	}
 	// 시전자 이펙트(시전시작 시점에 발생되는 이펙트)
 	if( !pSkillDat->GetCasterEff().m_strSpr.empty() ) {
 		const float secPlay = 0.f;	// play once
@@ -448,7 +448,7 @@ xtError XSkillUser::CastEffToCastTarget( XSkillDat *pDat,
 		float secPlay = 0;
 		pCastingTarget->CreateSfx( pDat, pEffect->m_CastTargetEff, secPlay );
 	}
-	if( pDat->IsBuff(pEffect) ) {
+	if( pEffect->IsDuration() ) {
 		if( pCastingTarget ) {
 			// 지속시간이 있는 버프형 효과를 타겟에게 시전한다.
 			CastEffToCastTargetByBuff( pDat, pEffect, level, pCastingTarget, vPos, idCallerSkill );
@@ -508,7 +508,7 @@ xtError XSkillUser::CastEffToCastTargetByBuff( XSkillDat *pDat,
 		// 지속이펙트생성(효과가 여러개여도 지속이펙트는 1개)
 		if( pEffect->m_PersistEff.IsHave() ) {
 //			const float secPlay = pEffect->GetDuration( level );	// 지속이펙트는 무조건 루핑.
-			const float secPlay = -1;		// 무한으로 돌리고 버프객체측에서 효과가 종료될때 삭제시킨다.
+			const float secPlay = pEffect->GetDuration(level);		// 무한으로 돌리고 버프객체측에서 효과가 종료될때 삭제시킨다.
 			ID idSfx = pCastingTarget->CreateSfx( pDat, pEffect->m_PersistEff, secPlay );
 			if( idSfx ) {
 				pBuffObj->SetidSfx( idSfx );
@@ -875,9 +875,9 @@ int XSkillUser::GetNumUseSkill( xCastMethod castMethod ) const
 void XSkillUser::OnEventBySkillUser( xtJuncture event )
 {
 	for( auto pUseSkill : m_listUseSkill ) {
-		if( event == xJC_START ) {
+		if( event == xJC_START ) {	// 땜빵
 			// jc_start이벤트때는 패시브나 특성스킬이 시전된다.
-			if( pUseSkill->IsPassive() || pUseSkill->IsAbility() ) {
+			if( pUseSkill->IsPassiveCategory() || pUseSkill->IsAbilityCategory() ) {
 				const int level = GetSkillLevel( pUseSkill );
 				const auto info = UseSkill( pUseSkill, level, nullptr, nullptr );
 				if( info.errCode == xOK ) {

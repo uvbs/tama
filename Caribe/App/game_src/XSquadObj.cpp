@@ -729,23 +729,25 @@ int XSquadObj::GetLevelByAbil( XGAME::xtUnit unit, ID idAbil )
 
 /**
  @brief 이 스킬(특성)의 발동확률을 얻는다.
+ sid는 비 발동스킬을 의미한다. 장차 이함수는 사라져야한다.
 */
 float XSquadObj::GetInvokeRatioAbil( LPCTSTR sid, XGAME::xtUnit unit )
 {
+	// 이함수가 꼭 필요한가.
 	auto pSkillDat = SKILL_MNG->FindByIdentifier( sid );
 	if( pSkillDat == nullptr )
 		return 0;
 	int level = 0;
-	if( pSkillDat->IsAbility() ) {
+	if( pSkillDat->IsAbilityCategory() ) {
 		// 특성
 		XBREAK( unit == XGAME::xUNIT_NONE );
 		level = GetLevelByAbil( unit, sid );
 	} else
-	if( pSkillDat->IsPassive() ) {
+	if( pSkillDat->IsPassiveCategory() ) {
 		// 패시브
 		level = m_pHero->GetlvPassive();
 	} else
-	if( pSkillDat->IsActive() ) {
+	if( pSkillDat->IsActiveCategory() ) {
 		level = m_pHero->GetlvActive();
 	} else {
 		XBREAK(1);
@@ -755,7 +757,7 @@ float XSquadObj::GetInvokeRatioAbil( LPCTSTR sid, XGAME::xtUnit unit )
 	XBREAK( pSkillDat->GetlistEffects().size() != 1 );
 	auto pEffect = pSkillDat->GetEffectByIdx( 0 );
 	XBREAK( pEffect == nullptr );
-	XBREAK( level > 0 && level < XGAME::MAX_SKILL_LEVEL - 1 );
+	XBREAK( level < 0 || level >= XGAME::MAX_SKILL_LEVEL );
 	return pEffect->aryInvokeRatio[ level ];
 }
 /**
@@ -900,37 +902,37 @@ XSPSquad XSquadObj::FindAttackSquad()
 */
 XSPUnit XSquadObj::FindAttackTarget( BOOL bIncludeHero )
 {
-	XSPUnit *pspCompObj = nullptr;
-	XSPUnit *pspHero = nullptr;
+	XSPUnit spCompObj = nullptr;
+	XSPUnit spHero = nullptr;
 	LIVE_UNIT_LOOP( spUnit ) {
 		// 타겟카운팅이 가장 적은 유닛을 찾아낸다.
-		if( pspCompObj == nullptr ||
-			spUnit->GetcntTargeting() < (*pspCompObj)->GetcntTargeting() ) {
+		if( spCompObj == nullptr ||
+			spUnit->GetcntTargeting() < spCompObj->GetcntTargeting() ) {
 			if( spUnit->IsState(XGAME::xST_INVISIBLE) == FALSE ) {
 				// 영웅포함해서 검색하는 조건일때
 				if( bIncludeHero ) {
 					// 조건없이 바로 선택한다.
-					pspCompObj = &spUnit;
+					spCompObj = spUnit;
 				} else {
 					// 영웅빼고 검색하는 조건이면
 					// 영웅이 아닐때만 선택함.
 					if( spUnit->IsHero() == FALSE )
-						pspCompObj = &spUnit;
+						spCompObj = spUnit;
 					else
-						pspHero = &spUnit;		// 영웅은 별도로 받아둔다.
+						spHero = spUnit;		// 영웅은 별도로 받아둔다.
 				}
 			}
 		}
 	} END_LOOP;
 	// 결과를 못찾았을때
-	if( pspCompObj == nullptr ) {
+	if( spCompObj == nullptr ) {
 		// 영웅빼고검색조건에서 영웅찾아놓은거 있으면 그걸 리턴
-		if( bIncludeHero == FALSE && pspHero )
-			return (*pspHero);
+		if( bIncludeHero == FALSE && spHero )
+			return spHero;
 		// 없으면 널리턴
-		return XSPUnit();
+		return nullptr;
 	}
-	return (*pspCompObj);
+	return spCompObj;
 }
 
 /**
@@ -1368,7 +1370,7 @@ void XSquadObj::HardcodingBreakthrough( float& speedMultiply, XArrayLinearN<XSPS
 	{
 		m_timerBreakThrough.Reset();
 		// 매초당 인접한 적부대에게 데미지를 입힌다.
-		XARRAYLINEARN_LOOP_AUTO( aryNear, &spSquad )
+		XARRAYLINEARN_LOOP_AUTO( aryNear, spSquad )
 		{
 			spSquad->DoDamageByPercent( 0.05f, false );
 		} END_LOOP;

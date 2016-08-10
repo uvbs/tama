@@ -648,10 +648,10 @@ float XBaseUnit::GetScaleFactor()
 */
 bool XBaseUnit::IsCheatFiltered()
 {
-	return( (IsPlayer() && IsHero() && (XAPP->m_dwFilter & 0x01))	
-		|| (IsPlayer() && IsUnit() && (XAPP->m_dwFilter & 0x02))
-		|| (!IsPlayer() && IsHero() && (XAPP->m_dwFilter & 0x04)) 
-		|| (!IsPlayer() && IsUnit() && (XAPP->m_dwFilter & 0x08)) );
+	return( (IsPlayer() && IsHero() && (XAPP->m_dwFilter & xBIT_PLAYER_HERO))	
+		|| (IsPlayer() && IsUnit() && (XAPP->m_dwFilter & xBIT_PLAYER_UNIT))
+		|| (!IsPlayer() && IsHero() && (XAPP->m_dwFilter & xBIT_ENEMY_HERO)) 
+		|| (!IsPlayer() && IsUnit() && (XAPP->m_dwFilter & xBIT_ENEMY_UNIT)) );
 }
 
 void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
@@ -732,9 +732,9 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 //				if( pSkillDat->IsActive() && pSkillDat->GetidName() ) {
 //			if( pSkillDat->IsActive() && !pSkillDat->GetstrIcon().empty() ) {
 //				if( pSkillDat->IsActive() ) {
-				bool bDrawBuff = IsDrawBuff( pSkillDat );
+//				bool bDrawBuff = IsDrawBuff( pSkillDat );
 				// 버프중에서도 지속시간이 유한한 버프만 출력.
-				if( pSkillDat->IsBuffShort() || bDrawBuff ) {
+				if( pSkillDat->IsBuffFinite() /*|| bDrawBuff*/ ) {
 					auto strIcon = pSkillDat->GetstrIcon();
 					if( strIcon.empty() ) {
 						strIcon = pBuffObj->GetstrIconByCaller();
@@ -767,7 +767,7 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 						vDrawBuffIcon.y = vDrawName.y - ( ( 2.f * scale ) + sizeIcon.h );
 						psfc->SetScale( scaleIcon );
 						psfc->Draw( vDrawBuffIcon );
-						if( pSkillDat->GetstrIdentifier() == _T( "invoke_protect_shell" ) ) {
+						if( pSkillDat->GetstrIdentifier() == _T( "invoke_protect" ) ) {
 							PUT_STRINGF_SMALL( vDrawBuffIcon + XE::VEC2(1,1), XCOLOR_WHITE, _T("%d"), m_cntShell );
 						}
 					}
@@ -875,7 +875,7 @@ void XBaseUnit::DrawDebugStr( XE::VEC2* pvLT, XCOLOR col, float sizeFont, const 
 
 bool XBaseUnit::IsDrawBuff( const XSkillDat* pDat )
 {
-	if( pDat->GetstrIdentifier() == _T("invoke_protect_shell") )
+	if( pDat->GetstrIdentifier() == _T("invoke_protect") )
 		return true;
 	return false;
 }
@@ -1263,9 +1263,10 @@ void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 	if( m_cntShell > 0 ) {
 		damage = 0;
 		--m_cntShell;
-		auto pBuff = FindBuffSkill( _T("invoke_protect_shell") );
+		auto pBuff = FindBuffSkill( _T("invoke_protect") );
 		if( pBuff ) {
-			pBuff->SetbDestroy( TRUE );
+			if( m_cntShell <= 0 )
+				pBuff->SetbDestroy( TRUE );
 		}
 	}
 	XBREAK( IsDead() );
@@ -2174,12 +2175,22 @@ XObjLoop* XBaseUnit::CreateSfxObj( XSKILL::xtPoint createPoint,
 			// 타겟의 좌표를 따라다님
 			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(), 
 													szSpr, idAct, secPlay );
-			pSfx->SetvAdjust( 0.f, 0.f, -GetSize().h * 0.5f );
+			pSfx->SetvAdjust( 0.f, 0.f, -GetSize().h );
 		} else {
 			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(), GetvCenterWorld(),
 													szSpr, idAct, secPlay );
 		}
 	}
+
+
+
+
+	모든 유닛들 초반 특성들 한번씩 다 테스트해보고
+	구글버전으로 빌드.
+	버프 아이콘 변경
+
+
+
 	XBREAK( pSfx == NULL );
 	pSfx->SetDir( GetDir() );
 	if( XE::IsSame(szSpr, _T("sfx_frozen.spr")) ) {
@@ -2319,25 +2330,21 @@ int XBaseUnit::GetSkillLevel( XSKILL::XSkillObj* pSkillObj )
 {
 // 	if( IsPlayer() == false )
 // 		return 0;
-	if( pSkillObj->IsAbility() )
-	{
-		XGAME::xtUnit unit = GetSquadUnit();
-		XPropTech::xNodeAbil *pNode
-			= XPropTech::sGet()->GetpNodeBySkill( unit, pSkillObj->GetStrIdentifier() );
+	if( pSkillObj->IsAbilityCategory() )	{
+		const auto unit = GetSquadUnit();
+		auto pNode = XPropTech::sGet()->GetpNodeBySkill( unit, pSkillObj->GetStrIdentifier() );
 		XBREAK( pNode == nullptr );
 		auto pHero = GetpHero();
 		XBREAK( pHero == nullptr );
 		const auto abil = pHero->GetAbilNode( unit, pNode->idNode );
-// 		auto pAbil = GetspLegionObj()->GetpAccount()->GetAbilNode( unit, pNode->idNode );
-// 		XBREAK( pAbil == nullptr );
 		XBREAK( abil.point == 0 );	// 일단은 테스트중이니 삭제.
 		return abil.point;
 	} else {
 		auto pHero = GetpHero();
 		if( XASSERT(pHero) ) {
-			if( pSkillObj->IsPassive() )
+			if( pSkillObj->IsPassiveCategory() )
 				return pHero->GetlvPassive();
-			else if( pSkillObj->IsActive() )
+			else if( pSkillObj->IsActiveCategory() )
 				return pHero->GetlvActive();
 		}
 	}
@@ -2853,46 +2860,53 @@ void XBaseUnit::OnAfterStartBattle()
 }
 
 /**
- @brief 발동타겟에게 효과가 걸리기 직전에 발생한다.
+ @brief 발동타겟에게 효과들이 걸리기 직전에 발생한다.
 */
 bool XBaseUnit::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
-										XSKILL::XBuffObj *pBuffObj,
-										XSKILL::XSkillDat *pSkillDat,
-										const XSKILL::EFFECT *pEffect,
-										int level )
+																					XSKILL::XBuffObj *pBuffObj,
+																					XSKILL::XSkillDat *pSkillDat,
+																					const XSKILL::EFFECT *pEffect,
+																					int level )
 {
-	if( pSkillDat->GetstrIdentifier() == _T("morale") ||
-		pSkillDat->GetstrIdentifier() == _T("divine_protection") ||
-		pSkillDat->GetstrIdentifier() == _T("blessing") )	{
-		XBaseUnit *pCasterUnit = dynamic_cast<XBaseUnit*>( pCaster );
-		if( !pCasterUnit->IsHero() )
+	const auto& idsSkill = pSkillDat->GetstrIdentifier();
+	if( idsSkill == _T("morale") 
+			|| idsSkill == _T("divine_protection") 
+			|| idsSkill == _T("blessing") )	{
+		auto pCasterUnit = dynamic_cast<XBaseUnit*>( pCaster );
+		if( pCasterUnit->IsUnit() )
 			return false;
 	} else
-	if( pSkillDat->GetstrIdentifier() == _T("protect") ||
-		pSkillDat->GetstrIdentifier() == _T("view_blocked") ||
-		pSkillDat->GetstrIdentifier() == _T("stigma"))	{
+	if( idsSkill == _T("protect") 
+			|| idsSkill == _T("view_blocked") 
+			|| idsSkill == _T("stigma"))	{
 		// 하드코딩
 		// 이들 특성의 경우 한부대만 걸려야 하는데 부대엔 영웅까지 2명이 있어서
-		// 두부대가 걸리게 된다. 그래서 영웅의 발동은 제외시킴.
-		XBaseUnit *pCasterUnit = dynamic_cast<XBaseUnit*>( pCaster );
-		if( pCasterUnit->IsHero() )
+		// 두부대가 걸리게 된다. 그래서 반드시 한명인 영웅만 발동시키고 유닛의 발동은 취소시킴. 
+		// 궁극적으로 이런 스킬은 부대에 시전해서 각 멤버들에게 발동, 혹은 다른 부대에 발동방식으로 바껴야 직관적이다.
+		auto pCasterUnit = dynamic_cast<XBaseUnit*>( pCaster );
+		if( pCasterUnit->IsUnit() )
 			return false;
 	} else
-	if( pSkillDat->GetstrIdentifier() == _T("invoke_protect"))	{
+	if( idsSkill == _T("invoke_protect"))	{
+		// 여기에 넣어도 동작은 하지만 함수자체가 버프기간동안 단한번만 불리는용도가 아니므로 헷갈릴수 있다. 
+		// 버프처음에 한번만 불리는 확실한 핸들러로 옮기는게 덜 헷갈림.
+		// 근데 xml에 발동시점:(최초)이 바뀔수도 있기때문에 한번만 불리는곳으로 옮기면 그건 하드코딩이 된다.
+		// "최초"의 처리는 버프쪽에서 알아서 할문제이므로 여기다 넣는게 맞는거 같다.
+		XASSERT( pBuffObj->IsFirstProcess() );
 		float val = pEffect->GetAbilityMin( level );
 		m_cntShell = (int)val;
 		XBREAK( m_cntShell == 0 );
 	} else
-	if( pSkillDat->GetstrIdentifier() == _T("destruct"))	{
+	if( idsSkill == _T("destruct"))	{
 		this->DoDie( nullptr );
 	} else
-	if( pSkillDat->GetstrIdentifier() == _T("phytoncide"))	{
+	if( idsSkill == _T("phytoncide"))	{
 		XBaseUnit *pCasterUnit = dynamic_cast<XBaseUnit*>( pCaster );
 		// 피톤치트의 경우는 같은 부대원(예를들어 영웅)에게는 발동되지 않는다.
 		if( pCasterUnit->GetpSquadObj()->GetsnSquadObj() == GetpSquadObj()->GetsnSquadObj() )
 			return false;
 	}// else
-// 	if( pSkillDat->GetstrIdentifier() == _T("photosynthesis") )	{
+// 	if( idsSkill == _T("photosynthesis") )	{
 // 		static int si = 0;
 // 		if( GetUnitType() == xUNIT_TREANT )		{
 // 			if( m_cntPerSec < 50 )
@@ -2907,16 +2921,6 @@ bool XBaseUnit::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
 // 	}
 
 	return true;
-}
-
-/**
- @brief 지속형 효과의 경우 최초 발동될때 한번 호출된다.
-*/
-void XBaseUnit::OnEventFirstApplyEffect( XSKILL::XSkillDat *pDat,
-										XSKILL::XSkillUser* pCaster,
-										XSKILL::EFFECT *pEffect,
-										int level )
-{
 }
 
 /**
@@ -2951,16 +2955,16 @@ void XBaseUnit::DelegateResultEventBeforeAttack( XSKILL::XBuffObj *pBuffObj, XSK
 	m_aryInvokeSkillByAttack.Add( eff );
 }
 
-// /**
-//  @brief 이대상에게 버프스킬이 추가된 직후 호출된다.
-// */
-// void XBaseUnit::OnAddSkillRecvObj( XBuffObj *pSkillRecvObj, EFFECT *pEffect )
+/**
+ @brief 이대상에게 버프스킬이 추가된 직후 호출된다.
+ 버프가 걸린후 단한번만 오느
+*/
+// void XBaseUnit::OnAddSkillRecvObj( XBuffObj *pBuff, EFFECT *pEffect )
 // {
-// 	pSkillRecvObj->setde
 // }
-//
-//
-//
+
+
+
 /**
  @brief SkillUser에서 어떤 효과값을 적용하기전에 스킬에 따라 그 값을 증폭시킴.
 */
@@ -3046,15 +3050,6 @@ void XBaseUnit::OnAdjustEffectAbility( XSkillDat *pSkillDat,
 		}
 	}
 }
-
-
-
-memo.txt의 맨 마지막.
-새 스킬시스템 수도코드하다맘
-
-
-
-
 
 /**
  @brief 치명타배수

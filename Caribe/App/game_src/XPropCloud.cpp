@@ -174,7 +174,7 @@ bool XPropCloud::OnDidFinishLoad()
 //			XVector<xHexa> aryIdxs;
 			_tstring strIdxs = U82SZ(childNode.GetString("idx"));
 			CToken token;
-			token.LoadString( strIdxs.c_str() );
+			token.LoadStr( strIdxs.c_str() );
 			int idx = 0;
 			while(1) {
 				if( token.IsEof() )

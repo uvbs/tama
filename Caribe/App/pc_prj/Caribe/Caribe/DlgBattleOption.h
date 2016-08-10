@@ -20,6 +20,8 @@ public:
 	BOOL m_bCheckPlayerUnit = FALSE;
 	BOOL m_bCheckEnemyHero = FALSE;
 	BOOL m_bCheckEnemyUnit = FALSE;
+	BOOL m_bCheckFlushImg = FALSE;
+	BOOL m_bCheckFlushSpr = FALSE;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 

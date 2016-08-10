@@ -1,29 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <single1_player name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="1" boss="percival" mul_atk="1" mul_hp="1">
-    <squad_default idx_pos="-1" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="" size_unit="xSIZE_NONE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1" />
-    <_squad idx_pos="1" hero="unluny" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_TREANT" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1">
-      <abil>
-        <entangling point="5" />
-        <phytoncide point="5" />
-        <photosynthesis point="5" />
-      </abil>
-    </_squad>
-    <squad idx_pos="2" hero="unluny" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_ARCHER" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" />
-    <_squad idx_pos="2" hero="laynar" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_PALADIN" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" />
-    <squad idx_pos="1" hero="ricky" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_GOLEM" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1">
-      <abil>
-        <protect point="5" />
-      </abil>
-    </squad>
+  <single1_player name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="16" boss="percival" mul_atk="1" mul_hp="1">
+    <squad_default idx_pos="-1" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" num_abil="15" />
   </single1_player>
-  <single1_enemy name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="1" boss="percival" mul_atk="1" mul_hp="1">
-    <squad_default idx_pos="-1" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_SPEARMAN" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" />
-    <_squad idx_pos="1" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_MINOTAUR" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" />
-    <_squad idx_pos="1" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_GOLEM" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" />
-    <squad idx_pos="2" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_GOLEM" size_unit="xSIZE_NONE" lv_squad="16" lv_skill="1" mul_atk="1" mul_hp="1" />
-    <_squad idx_pos="2" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_SPEARMAN" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" />
-    <_squad idx_pos="2" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_MINOTAUR" size_unit="xSIZE_NONE" lv_squad="16" lv_skill="1" mul_atk="1" mul_hp="1" />
+  <single1_enemy name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="16" boss="percival" mul_atk="1" mul_hp="1">
+    <squad_default idx_pos="-1" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" />
   </single1_enemy>
   <boss3 name="0" level="0" grade="xGL_ELITE" lv_limit="0" adj_level="0" num_squad="8" boss="kay" mul_atk="0.33" mul_hp="3.3">
     <squad_default idx_pos="-1" type_atk="xAT_NONE" lv_hero="0" grade="xGD_COMMON" unit="xUNIT_NONE" size_unit="xSIZE_NONE" lv_squad="0" lv_skill="0" mul_atk="1" mul_hp="1" />

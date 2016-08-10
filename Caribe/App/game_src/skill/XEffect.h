@@ -28,7 +28,7 @@ struct EFFECT	{
 	xtInvokeTarget		invokeTarget;		// 발동대상-시전대상과 같음. 발동대상이 광역인데 지속시간까지 있는경우는 "발동스킬"을 써서 스킬하나를 더 만들것
 	xtFriendshipFilt	invokefiltFriendship;	// 발동대상우호
 	xtPlayerTypeFilt	invokefiltPlayerType;	// 발동대상플레이어-인간/AI
-	xtJuncture			invokeJuncture;			// 발동시점
+	xtJuncture			invokeJuncture = xJC_NONE;			// 발동시점. 디폴트값은 0으로 두고 지속시간이 있으면 자동으로 persist로 동작하고 없으면 노버프first로 동작하도록 수정
 	bool IsInvokeByHit() const {
 		// 이 이펙트는 맞았을때 발동되는 류이다.
 		return invokeJuncture == xJC_CLOSE_HIT || invokeJuncture == xJC_ALL_HIT || invokeJuncture == xJC_RANGE_HIT;
@@ -89,7 +89,6 @@ struct EFFECT	{
 		invokeTarget = xIVT_CAST_TARGET;
 		invokefiltFriendship = xfNONESHIP;	// 따로지정하지 않으면 시전대상우호값으로 사툥하도록 바뀜
 		invokefiltPlayerType = xfALL_PLAYER_TYPE;
-		invokeJuncture = xJC_FIRST;
 		invokeTargetCondition = xNONE_COND;
 		idInvokeSkill = 0;
 		invokeParameter = 0;

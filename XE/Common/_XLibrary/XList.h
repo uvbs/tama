@@ -1679,6 +1679,9 @@ public:
 			return &(*iter);
 		return nullptr;
 	}
+	bool IsExist( const T& elem ) const {
+		return std::find( this->begin(), this->end(), elem ) != this->end();
+	}
 	T* Findp( const T& elem  ) {
 		auto iter = std::find(this->begin(), this->end(), elem);
 		if (iter != this->end())
@@ -1823,12 +1826,21 @@ public:
 	}
 	T& GetFromRandom() {
 		int max = this->size();
-		return GetpByIndex( xRandom( max ) );
+		return GetByIndex( xRandom( max ) );
 	}
 	// 리스트내에서 랜덤으로 한 노드의 이터레이터를 꺼낸다.
 	typename XList4<T>::iterator GetItorFromRandom() {
 		int max = this->size();
 		return GetItorByIndex( xRandom(max) );
+	}
+	T PopFromRandom() {
+		XBREAK( std::list<T>::empty() );	// 크기0인 상태에서 호출하지 말것.
+		const int idxRand = xRandom( std::list<T>::size() );		// 전체 크기중에서 랜덤으로 인덱스 하나 꺼냄
+		auto itor = GetItorByIndex( idxRand );
+		XBREAK( itor == std::list<T>::end() );
+		const T ret = *itor;
+		std::list<T>::erase( itor );
+		return ret;
 	}
 	// 리스트 요소중 numDel개만큼 삭제한다.
 	bool DelByRandom( int numDel ) {
@@ -1935,7 +1947,7 @@ public:
 	inline void Clear() {
 		std::vector<T>::clear();
 	}
-	inline int GetIdx( const T& val ) {
+	inline int GetIdx( const T& val ) const {
 		int idx = 0;
 		for( auto& v : this ) {
 			if( v == val )
@@ -1951,6 +1963,9 @@ public:
 			--idx;
 		}
 		return std::vector<T>::end();
+	}
+	inline bool IsExist( const T& val ) const {
+		return std::vector<T>::end() != std::find( std::vector<T>::begin(), std::vector<T>::end(), val );
 	}
 	inline int Size() const {
 		return (int)std::vector<T>::size();

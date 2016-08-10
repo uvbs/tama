@@ -32,6 +32,8 @@ void CDlgBattleOption::DoDataExchange(CDataExchange* pDX)
 	DDX_Check( pDX, IDC_CHECK_FACE, XAPP->m_bShowFace );
 	DDX_Check( pDX, IDC_CHECK_WAIT_AFTER_WIN, XAPP->m_bWaitAfterWin );
 	DDX_Check( pDX, IDC_CHECK_HERO_INFO_TO_CONSOLE, m_bHeroInfoToConsole );
+	DDX_Check( pDX, IDC_CHECK_FLUSH_IMG, m_bCheckFlushImg );
+	DDX_Check( pDX, IDC_CHECK_FLUSH_SPR, m_bCheckFlushSpr );
 }
 
 

@@ -127,14 +127,14 @@ void XUnitHero::FrameMove( float dt )
 				// 스킬 쿨타임도 아니고 AI가 작동중일때.
 				if( !IsSkillCool() && IsLive() ) {
 					float distAttack = GetAttackRadiusByPixel();
-					if( pSkillDat->GetwhenCasting() == xWC_IMMEDIATELY ) {
+					if( pSkillDat->GetwhenUse() == xWC_EVENT_IMMEDIATELY ) {
 						// 시전시점:즉시(자신에게 쓰는 버프나 힐류)
 						DoSkillMotion();
 					} else 
 					// 시전시점: 기준타겟근접
 					// 시전시점: 공격타겟근접
-					if( pSkillDat->GetwhenCasting() == xWC_ATTACK_TARGET_NEAR
-						|| pSkillDat->GetwhenCasting() == xWC_BASE_TARGET_NEAR ) {
+					if( pSkillDat->GetwhenUse() == xWC_ATTACK_TARGET_NEAR
+						|| pSkillDat->GetwhenUse() == xWC_BASE_TARGET_NEAR ) {
 						if( pTarget ) {
 							float distsq = ( pTarget->GetvwPos() - GetvwPos() ).Lengthsq();
 							if( distsq < distAttack * distAttack ) {
@@ -186,8 +186,11 @@ int XUnitHero::DoSkillMotion( void )
 	m_bUseSkill = FALSE;
 	if( pUseSkill == nullptr )
 		return 0;
-	if( pUseSkill->IsPassive() )
+	// 패시브나 특성은 이걸로 사용되어선 안됨.
+	if(XBREAK( pUseSkill->IsPassiveCategory() || pUseSkill->IsAbilityCategory() ))
 		return 0;
+// 	if( pUseSkill->IsPassive() || pUseSkill->IsAbility() )
+// 		return 0;
 	if( IsState( XGAME::xST_SILENCE ) )
 		return 0;
 	XBREAK( IsDead() );
@@ -372,7 +375,8 @@ XUnitHero::OnGetInvokeTarget( XSKILL::XSkillDat *pDat,
 {
 	if( pDat->GetstrIdentifier() == _T("paralysis_arrow") )
 		return invokeTarget; 
-	if( IsLeader() && pDat->IsPassive() ) {
+	// 시전방식-패시브 카테고리에 있는 스킬만 리더스킬로 발동시킬수 있다. 발동스킬은 이에 해당하지 않는다.
+	if( IsLeader() && pDat->IsPassiveCategory() && !pDat->IsInvoke() ) {
 		// 아래처럼 한것은 아마 리더스킬로 발동되게 하기 위해 한것같다.
 		invokeTarget = XSKILL::xIVT_ALL;
 	}
