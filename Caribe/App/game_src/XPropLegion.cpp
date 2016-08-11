@@ -58,7 +58,8 @@ bool XPropLegion::OnDidFinishLoad( void )
 	// "legion.xxx"블럭들을 읽음.
 	while( !nodeLegion.IsEmpty() ) {
 		auto pNewProp = LoadLegionNode( nodeLegion );
-		AddProp( pNewProp );
+		if( pNewProp )
+			AddProp( pNewProp );
 		// 다음 노드로
 		nodeLegion = nodeLegion.GetNext();
 	}

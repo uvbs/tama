@@ -771,12 +771,12 @@ void XSceneBattle::Draw( void )
 	if( XAPP->m_bDebugMode && XAPP->m_bDebugViewSquadInfo )	{
 		XSPSquad spSquad = WND_WORLD->GetspSelectSquad();
 		if( spSquad != nullptr )		{
-			XBaseUnit *pUnit = spSquad->GetLiveMember();
-			if( pUnit )			{
+			auto spUnit = spSquad->GetspLiveMember();
+			if( spUnit )			{
 				const float distY = 8.f;
-				XE::VEC2 v(539,145+36);
+				XE::VEC2 v(500,145+36);
 				XVector<_tstring> aryStr;
-				GetSquadInfoToAry( spSquad, pUnit, &aryStr );
+				GetSquadInfoToAry( spSquad, spUnit.get(), &aryStr );
 				for( auto& str : aryStr ) {
 					PUT_STRING_SMALL( v.x, v.y, XCOLOR_WHITE, str.c_str() );
 					v.y += distY;
@@ -809,20 +809,24 @@ void XSceneBattle::GetSquadInfoToAry( XSPSquad spSquad, XBaseUnit* pUnit, XVecto
 			pOut->Add( str );
 		}
 	}
-	str = XE::Format( _T( "영웅:%s" ), spSquad->GetpHero()->GetstrName().c_str() );
+	auto pHero = spSquad->GetpHero();
+	str = XE::Format( _T( "영웅:%s(%s)" ), pHero->GetstrName().c_str(), pHero->GetstrIdentifer().c_str() );
 	pOut->Add( str );
 	str = XE::Format( _T( "유닛:%s" ), pUnit->GetstrIds().c_str() );
-//	str = XE::Format( _T( "유닛:%s" ), XGAME::GetStrUnit( spSquad->GetUnitType() ) );
 	pOut->Add( str );
+	auto spTargetUnit = pUnit->GetspTarget();
 	auto secAtk = pUnit->GetSpeedAttack( pUnit->GetspTarget() );
-	auto dmgMelee = pUnit->GetAttackMeleeDamage( nullptr );
-	auto dmgRange = pUnit->GetAttackRangeDamage( nullptr );
+	auto dmgMelee = pUnit->GetAttackMeleeDamage( spTargetUnit );
+	auto dmgRange = pUnit->GetAttackRangeDamage( spTargetUnit );
+	float dmgMeleeAdd = dmgMelee - pUnit->GetBaseAtkMeleeDmg();		// 버프보정으로 늘어난 데미지량
+	float dmgRangeAdd = dmgRange - pUnit->GetBaseAtkRangeDmg();
 	_tstring 
 	strAdd = XFORMAT("%+.0f%%", pUnit->GetAddRateByStat( xSTAT_ATK_MELEE, pUnit->GetspTarget() ) * 100.f);
-	str = XE::Format( _T( "근접피해량:%.1f(%s)(dps:%1.f)" ), dmgMelee, strAdd.c_str(), dmgMelee / secAtk );
+	//
+	str = XE::Format( _T( "근접피해량:%.1f(%+.1f,%s)(dps:%1.f)" ), dmgMelee, dmgMeleeAdd, strAdd.c_str(), dmgMelee / secAtk );
 	pOut->Add( str );
 	strAdd = XFORMAT( "%+.0f%%", pUnit->GetAddRateByStat( xSTAT_ATK_RANGE, pUnit->GetspTarget() ) * 100.f );
-	str = XE::Format( _T( "원거리피해량:%.1f(%s)(dps:%1.f)" ), dmgRange, strAdd.c_str(), dmgRange / secAtk );
+	str = XE::Format( _T( "원거리피해량:%.1f(%+.1f,%s)(dps:%1.f)" ), dmgRange, dmgRangeAdd, strAdd.c_str(), dmgRange / secAtk );
 	pOut->Add( str );
 	strAdd = XFORMAT( "%+.1f%%", pUnit->GetAddRateByStat( xSTAT_SPEED_ATK, pUnit->GetspTarget() ) * 100.f );
 	str = XE::Format( _T( "공격속도:%.1f(%s)" ), secAtk, strAdd.c_str() );
@@ -840,11 +844,11 @@ void XSceneBattle::GetSquadInfoToAry( XSPSquad spSquad, XBaseUnit* pUnit, XVecto
 	pOut->Add( str );
 	str = XE::Format( _T( "치명타율:%.1f%%" ), pUnit->GetCriticalRatio() * 100.f );
 	pOut->Add( str );
-	//str = XE::Format( _T( "회피율:%.1f%%" ), pUnit->GetEvadeRatio( XSKILL::xDMG_NONE ) );
-//	pOut->Add( str );
-	str = XE::Format( _T( "회피율:%.1f%%" ), pUnit->GetEvadeRatio( XSKILL::xDMG_NONE, nullptr ) * 100.f );
-	pOut->Add( str );
 	str = XE::Format( _T( "치명타배수:x%.1f" ), pUnit->GetCriticalPower() );
+	pOut->Add( str );
+	str = XE::Format( _T( "적중율:%.1f%%" ), pUnit->GetHitRate( spTargetUnit ) * 100.f );
+	pOut->Add( str );
+	str = XE::Format( _T( "회피율:%.1f%%" ), pUnit->GetEvadeRatio( XSKILL::xDMG_NONE, spTargetUnit.get() ) * 100.f );
 	pOut->Add( str );
 	str = XE::Format( _T( "관통율:%.1f%%" ), pUnit->GetPenetrationRatio() * 100.f );
 	pOut->Add( str );
@@ -1151,7 +1155,7 @@ int XSceneBattle::OnDebugProfile( XWnd* pWnd, DWORD p1, DWORD p2 )
 *****************************************************************/
 int XSceneBattle::OnUseSkillByButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
-	CONSOLE( "OnUseSkill" );
+//	CONSOLE( "OnUseSkill" );
 	ID snSquad = (ID)p1;
 	auto pButt = dynamic_cast<XWndSkillButton*>( pWnd );
 	if( XBREAK( pButt == NULL ) )

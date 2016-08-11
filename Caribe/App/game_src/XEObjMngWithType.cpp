@@ -440,6 +440,8 @@ int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
 	if( numCost < 0 )
 		return 0;
 	//
+	XVector<XSPUnit> aryInNew;				// pOutAry에 이미 타겟이 있는채로 들어왔을때 그것은 제한 리스트
+	XVector<XSPUnit> aryIn = *pOutAry;	// 기존타겟에 반경검사타겟까지 포함.
 	int costSum = 0;
 	for( auto spwUnit : m_listUnits ) {
 		auto spUnit = spwUnit.lock();
@@ -458,7 +460,7 @@ int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
 		if( bitFlag & XSKILL::xTF_DIFF_SQUAD ) {
 			// spUnit이 이미 찾은 유닛과 같은 부대면 스킵
 			bool bExisted = false;
-			for( auto& spFinded : *pOutAry ) {
+			for( auto& spFinded : aryIn ) {
 				if( spUnit->GetpSquadObj()->GetsnSquadObj() == spFinded->GetpSquadObj()->GetsnSquadObj() ) {
 					bExisted = true;
 					break;
@@ -471,7 +473,8 @@ int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
 		const float distsq = vDist.Lengthsq();
 		// 코스트와 관계없이 일단 범위안에 들어가는 타겟은 모두 담은후 거기서 다시 코스트에 따라 랜덤으로 꺼낸다.
 		if( distsq <= pixelRadius * pixelRadius ) {
-			pOutAry->Add( spUnit );
+			aryIn.Add( spUnit );
+			aryInNew.Add( spUnit );
 			costSum += spUnit->GetSizeCost();		// 배열에 들어간 유닛들의 토탈코스트
 		} // in radius
 	} // for
@@ -479,13 +482,14 @@ int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
 	if( costSum <= numCost )
 		return pOutAry->Size();
 	int currCost = numCost;
-	XVector<XSPUnit> ary = *pOutAry;
-	pOutAry->Clear();
+// 	XVector<XSPUnit> ary = *pOutAry;
+// 	pOutAry->Clear();
 	// 영역안에 들어온 타겟들을 대상으로 다시 코스트에 따라 실제 타겟을 선정한다.
-	while( ary.Size() > 0 ) {
-		auto spUnit = ary.PopFromRandom();
+	while( aryInNew.Size() > 0 ) {
+		auto spUnit = aryInNew.PopFromRandom();
 		if( numCost == 0 ) {
-			pOutAry->Add( spUnit );
+			if( pOutAry->Size() == 0 )
+				pOutAry->Add( spUnit );
 			return 1;
 		} else {
 			const auto costUnit = spUnit->GetSizeCost();

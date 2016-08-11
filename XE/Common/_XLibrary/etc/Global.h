@@ -140,7 +140,7 @@ SafeRelease(
 		} \
 		return false; \
 	} \
-	inline int Add##name( type add ) { \
+	inline type Add##name( type add ) { \
 		if( add < 0 ) { \
 			if( m_##name < -add ) \
 				m_##name = 0; \

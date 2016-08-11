@@ -372,6 +372,8 @@ public:
 	}
 	float GetSpeedAttack( XSPUnit spTarget );
 	int GetMaxHp();
+	float GetBaseAtkMeleeDmg();
+	float GetBaseAtkRangeDmg();
 	float GetAttackMeleePower();
 	float GetAttackRangePower();
 	float GetAttackMeleeDamage( XSPUnit spTarget );
@@ -607,6 +609,7 @@ public:
 	XSPWorldObj AddObj( XEBaseWorldObj *pNewObj );
 	bool IsCritical( XSPUnit spTarget );
 	bool IsEvade( XSKILL::xtDamage typeDamage, const XBaseUnit *pAttacker ) const;
+	float GetHitRate( XSPUnit spTarget );
 	bool IsHit( XSPUnit spTarget );
 	float hardcode_OnToDamage( XSPUnit& spTarget, float damage, XGAME::xtMelee typeMelee );
 // 	void OnDamage( const XBaseUnit* pAttacker, float damage, BOOL bCritical, XSKILL::xtDamage typeDamage, const BIT bitAttrHit );
@@ -695,8 +698,7 @@ protected:
 private:
 	void OnDamagedToTarget( const xnUnit::xDmg& dmg );
 	bool IsDrawBuff( const XSKILL::XSkillDat* pDat );
-
-friend class XFSMBase;
+	friend class XFSMBase;
 friend class XFSMIdle;
 friend class xnUnit::XMsgDmg;
 friend class xnUnit::XMsgDmgFeedback;

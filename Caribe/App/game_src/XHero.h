@@ -267,6 +267,12 @@ public:
 	inline int GetlvActive() const {
 		return GetLevel( XGAME::xTR_SKILL_ACTIVE_UP );
 	}
+	inline void SetlvPassive( int lv ) {
+		SetLevel( XGAME::xTR_SKILL_PASSIVE_UP, lv );
+	}
+	inline void SetlvActive( int lv ) {
+		SetLevel( XGAME::xTR_SKILL_ACTIVE_UP, lv );
+	}
 	bool GetbLevelUpAndClear( XGAME::xtTrain type ) {
 		return m_aryUpgrade[ type ].m_Level.GetbLevelUpAndClear();
 	}

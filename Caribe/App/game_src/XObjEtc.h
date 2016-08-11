@@ -17,98 +17,11 @@
 class XWndBattleField;
 class XDelegateObjBullet;
 class XBaseUnit;
+class XCompObjMove;
+class XCompObjFont;
 namespace XGAME {
 struct xRES_NUM;
 };
-
-/****************************************************************
-* @brief
-* @author xuzhu
-* @date	2016/05/28 17:03
-*****************************************************************/
-class XCompObjBase
-{
-public:
-	XCompObjBase() {
-		Init();
-	}
-	virtual ~XCompObjBase() {
-		Destroy();
-	}
-	// get/setter
-	// public member
-private:
-	// private member
-private:
-	// private method
-	void Init() {}
-	void Destroy() {}
-}; // class XCompObjBase
-
-/****************************************************************
-* @brief
-* @author xuzhu
-* @date	2016/05/28 17:02
-*****************************************************************/
-class XCompObjFont : public XCompObjBase
-{
-public:
-	XCompObjFont();
-	~XCompObjFont() {	Destroy();	}
-	// get/setter
-	GET_SET_ACCESSOR_CONST( const _tstring&, strText );
-	GET_SET_ACCESSOR_CONST( xFONT::xtStyle, Style );
-	GET_SET_ACCESSOR_CONST( XCOLOR, Col );
-	// public member
-	bool Load( LPCTSTR szFont, float size );
-	void Draw( const XE::VEC2& vPos, float scale );
-private:
-	// private member
-	XBaseFontDat *m_pfdFont = nullptr;
-	_tstring m_strText;
-	xFONT::xtStyle m_Style = xFONT::xSTYLE_NORMAL;
-	XCOLOR m_Col = XCOLOR_WHITE;
-private:
-	// private method
-	void Init() {}
-	void Destroy();
-}; // class XCompObjFont
-
-/****************************************************************
-* @brief
-* @author xuzhu
-* @date	2016/05/28 17:02
-*****************************************************************/
-class XCompObjBounce : public XCompObjBase {
-public:
-	// ex:power=20.f dAngZ=280.f
-	XCompObjBounce( const float power, const float dAngZ );
-	XCompObjBounce( float power, const XE::VEC2& vdAngZRange ) 
-		: XCompObjBounce( power, xRandomF( vdAngZRange.v1, vdAngZRange.v2 ) ) {}
-	XCompObjBounce( const XE::VEC2& vPowerRange, const XE::VEC2& vdAngZRange )
-		: XCompObjBounce( xRandomF( vPowerRange.v1, vPowerRange.v2 )
-										, xRandomF( vdAngZRange.v1, vdAngZRange.v2 ) ) {}
-	~XCompObjBounce() {	Destroy(); }
-	// get/setter
-//	GET_ACCESSOR_CONST( const XE::VEC3&, vwDelta );
-	GET_SET_ACCESSOR_CONST( const XE::VEC3&, vwPos );
-	GET_ACCESSOR_CONST( int, State );
-	SET_ACCESSOR( float, Gravity );
-	// public member
-	int FrameMove( float dt );
-private:
-	// private member
-	int m_State = 0;		// 0:튀어오름 1:바닥에 떨어져있음 2:사라지는중
-//	XE::VEC3 m_vwDelta;		// gravity값 더해지기전 값
-	XE::VEC3 m_vwDeltaNext;
-	XE::VEC3 m_vwPos;		// 현재 객체의 위치. FrameMove()전에 세팅되어야 한다.
-	bool m_bBounce = true;	// 바닥에 떨어지면 다시 튀어오를건지.
-	float m_Gravity = 1.f;
-private:
-	// private method
-	void Init() {}
-	void Destroy() {}
-}; // class XCompObjBounce
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -141,7 +54,8 @@ protected:
 //	float m_offsetZ;		///< 목표의 정중앙에서 랜덤하게 벗어난 값을 미리 갖는다.
 	XE::VEC3 m_vOffset;		///< 타겟위치에 약간씩 변화를 주고싶을때 오프셋을 준다.
 	_tstring m_strIdentifier;		///< OnArriveBullet등에서 사용하는 총알 고유 식별자.
-	XArrayLinearN<_tstring,4> m_aryInvokeSkill;		///< 발사체가 목표에 도달한 후 발동될 발동스킬. 발동스킬을 여러개가 한꺼번에 붙을수 있으므로 복수로 했다.
+//	XArrayLinearN<_tstring,4> m_aryInvokeSkill;		///< 발사체가 목표에 도달한 후 발동될 발동스킬. 발동스킬을 여러개가 한꺼번에 붙을수 있으므로 복수로 했다.
+	XVector<_tstring> m_aryInvokeSkill;
 	bool m_bCritical = false;
 	//
 	GET_ACCESSOR( CTimer&, timerLife );
@@ -200,12 +114,7 @@ public:
 	virtual void FrameMove( float dt );
 	virtual void OnArriveBullet( DWORD dwParam );
 	virtual XE::VEC3 OnInterpolation( const XE::VEC3& vSrc, const XE::VEC3& vDst, float lerpTime );
-	int AddInvokeSkill( const _tstring& strInvokeSkill ) {
-		if( m_aryInvokeSkill.size() >= m_aryInvokeSkill.GetMax() )
-			return m_aryInvokeSkill.GetMax();
-		m_aryInvokeSkill.Add( strInvokeSkill );
-		return m_aryInvokeSkill.size();
-	}
+	int AddInvokeSkill( const _tstring& strInvokeSkill );
 };
 
 class XDelegateObjBullet
@@ -404,7 +313,7 @@ class XObjLoop : public XEBaseWorldObj, public XSKILL::XSkillSfx
 	BOOL m_bTraceRefObj;		///< 레퍼런스 객체를 따라다녀야 한다면 TRUE
 	XE::VEC3 m_vAdjust;			///< this의 위치 보정치
 	int m_State = 0;
-	std::shared_ptr<XCompObjBounce> m_spCompBounce;
+	std::shared_ptr<XCompObjMove> m_spCompMove;		// 이동을 제어하는 컴포넌트
 	void Init() {
 		m_secLife = 0.f;	// 0은 한번만 플레이하고 중지. -1은 무한루프
 		m_Dir = XE::HDIR_NONE;
@@ -420,7 +329,7 @@ public:
 	///< 
 	SET_ACCESSOR( XE::xtHorizDir, Dir );
 	SET_ACCESSOR( const XE::VEC3&, vAdjust );
-	GET_ACCESSOR( std::shared_ptr<XCompObjBounce>, spCompBounce );
+	GET_ACCESSOR( std::shared_ptr<XCompObjMove>, spCompMove );
 	void SetvAdjust( float x, float y, float z ) {
 		m_vAdjust.Set( x, y, z );
 	}
@@ -505,38 +414,46 @@ private:
 	XGAME::xtHit m_typeHit = XGAME::xHT_HIT;
 	XE::VEC3 m_vDelta;
 	XBaseFontDat *m_pfdNumber;
-	CTimer m_timerLife;
+//	CTimer m_timerLife;
 	int m_State;
 	XCOLOR m_Col = 0;
-	XCompObjBounce m_compBounce;
+	std::shared_ptr<XCompObjMove> m_spCompMove;
+// 	XCompObjBounce m_compBounce;
 	//
 	void Init() {
 		m_Number = 0;
-//		m_bCritical = FALSE;
 		m_pfdNumber = nullptr;
 		m_State = 0;
 	}
 	void Destroy();
 public:
 	XObjDmgNum( float num
-									, XGAME::xtHit typeHit, int paramHit
-									, const XE::VEC3& vwPos, XCOLOR col = 0 );
+							, XGAME::xtHit typeHit, int paramHit
+							, const XE::VEC3& vwPos, XCOLOR col = 0 );
 	XObjDmgNum( LPCTSTR szStr
-									, const XE::VEC3& vwPos, XCOLOR col = 0 );
+							, const XE::VEC3& vwPos, XCOLOR col = 0 );
 	XObjDmgNum( const _tstring& str
-									, const XE::VEC3& vwPos, XCOLOR col = 0 ) 
-	: XObjDmgNum( str.c_str(), vwPos, col ) {}
-	virtual ~XObjDmgNum() { Destroy(); }
+							, const XE::VEC3& vwPos, XCOLOR col = 0 )
+							: XObjDmgNum( str.c_str(), vwPos, col ) {}
+	~XObjDmgNum() { Destroy(); }
 	//
-	GET_SET_ACCESSOR( XCOLOR, Col );
+	GET_SET_ACCESSOR_CONST( XCOLOR, Col );
+//	GET_ACCESSOR_CONST( std::shared_ptr<XCompObjBounce>, spCompBounce );
 	//
 	void Release() {}
 	void FrameMove( float dt );
 	void Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ );
 private:
 	void InitEffect();
+	void SetBounce( float power, float dAngZ, float gravity );
+	inline void SetBounce( const XE::VEC2& vrPower, const XE::VEC2& vrdAngZ, float gravity = 1.f ) {
+		SetBounce( xRandomF( vrPower ), xRandomF( vrdAngZ ), gravity );
+	}
 }; // class XObjDamageNumber
 
+/**
+ @brief 
+*/
 class XObjYellSkill : public XEBaseWorldObj
 {
 public:
@@ -558,7 +475,7 @@ public:
 								const UnitPtr& spOwner,
 								const XE::VEC3& vwPos, 
 								XCOLOR col );
-	virtual ~XObjYellSkill() { Destroy(); }
+	~XObjYellSkill() { Destroy(); }
 	//
 	GET_SET_ACCESSOR( XCOLOR, Col );
 	//
@@ -585,7 +502,7 @@ class XObjFlame : public XEBaseWorldObj
 	void Destroy();
 public:
 	XObjFlame( const UnitPtr& spAttacker, const XE::VEC3& vwPos, float damage, float radius, float secLife, BIT bitCampTarget, LPCTSTR szSpr, ID idAct );
-	virtual ~XObjFlame() { Destroy(); }
+	~XObjFlame() { Destroy(); }
 	//
 	GET_ACCESSOR( CTimer&, timerDOT );
 	//
@@ -609,21 +526,22 @@ class XObjRes : public XEBaseWorldObj {
 	XVector<XGAME::xRES_NUM> m_aryLoots;
 	XGAME::xtResource m_resType = XGAME::xRES_NONE;
 	int m_numRes = 0;
-	XCompObjFont m_compFont;
-	XCompObjBounce m_compBounce;
+	std::shared_ptr<XCompObjFont> m_spCompFont;
+	std::shared_ptr<XCompObjMove> m_spCompMove;
 public:
 	XObjRes( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, const XVector<XGAME::xRES_NUM>& aryLoots );
 	XObjRes( const XE::VEC3& vwPos, XGAME::xtResource resType, int num );
 	~XObjRes();
 	//
+	void SetBounce( float power, float dAngZ, float gravity = 1.f );
+	inline void SetBounce( const XE::VEC2& vrPower, const XE::VEC2& vrdAngZ, float gravity = 1.f ) {
+		SetBounce( xRandomF( vrPower ), xRandomF( vrdAngZ ), gravity );
+	}
 	void Release() {}
 	void FrameMove( float dt ) override;
 	void Draw( const XE::VEC2& vPos, float scale, float alpha ) override;
 };
-// class XObjRes : public XEBaseWorldObj 	
-// {
-// 	int m_State = 0;		// 0:튀어오름 1:바닥에 떨어져있음 2:사라지는중
-// 	XE::VEC3 m_vwDelta;
+// class XObjRes : public XEBaseWorldObj {
 // 	XSurface* m_psfcShadow = nullptr;
 // 	CTimer m_timerAlpha;
 // 	XVector<XGAME::xRES_NUM> m_aryLoots;
@@ -651,7 +569,7 @@ class XObjResNum : public XEBaseWorldObj
 {
 public:
 	XObjResNum( const XE::VEC3& vwPos, XGAME::xtResource resType, int num );
-	virtual ~XObjResNum() { Destroy(); }
+	~XObjResNum() { Destroy(); }
 	// get/setter
 	// public member
 private:
@@ -659,7 +577,7 @@ private:
 	int m_State = 0;		// 0:튀어오름 1:바닥에 떨어져있음 2:사라지는중
 	XE::VEC3 m_vwDelta;
 	CTimer m_timerAlpha;
-	XCompObjFont m_compFont;
+	std::shared_ptr<XCompObjFont> m_spCompFont;
 private:
 	// private method
 	void Init() {}

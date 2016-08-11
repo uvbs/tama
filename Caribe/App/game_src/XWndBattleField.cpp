@@ -188,13 +188,13 @@ void XWndBattleField::OnLButtonUp( float lx, float ly )
 	if( !m_spSelectSquad.expired() ) {
 		if( !m_spTempSelectEnemy.expired() ) {
 			if( m_spTempSelectEnemy.lock()->IsLive() ) {
-				CONSOLE( "공격: %d => %d", m_spSelectSquad.lock()->GetUnit(), m_spTempSelectEnemy.lock()->GetUnit() );
+//				CONSOLE( "공격: %d => %d", m_spSelectSquad.lock()->GetUnit(), m_spTempSelectEnemy.lock()->GetUnit() );
 				m_spSelectSquad.lock()->DoAttackSquad( m_spTempSelectEnemy.lock() );
 			}
 		} else {
 			if( m_vTouch.IsMinus() == FALSE )	{// 터치가 취소되었을수도 있으므로
 				XE::VEC3 vwPick = GetPosWindowToWorld( XE::VEC2( lx, ly ) );
-				CONSOLE( "이동: %d,%d", (int)vwPick.x, (int)vwPick.y );
+//				CONSOLE( "이동: %d,%d", (int)vwPick.x, (int)vwPick.y );
 				m_spSelectSquad.lock()->DoMoveSquad( vwPick );
 			}
 		}

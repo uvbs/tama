@@ -524,6 +524,9 @@
     <ClCompile Include="..\..\..\game_src\XTemp.cpp">
       <Filter>source\main</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XComp.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
@@ -1117,6 +1120,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XTemp.h">
       <Filter>source\main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XComp.h">
+      <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

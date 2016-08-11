@@ -644,8 +644,13 @@ void XSquadObj::ProcessHardcode( float dt )
 			float damage = GetAttackMeleeDamage();
 			XBREAK( abil == 0 );
 			damage *= abil;
+			auto spUnitAtk = GetspHeroUnit();	// 공격자 유닛을 넘겨줘야해서 영웅을 넘겨줌
+			if( spUnitAtk == nullptr || (spUnitAtk && spUnitAtk->IsDead()) ) {
+				spUnitAtk = GetspLiveMember();		
+			}
 			XARRAYLINEARN_LOOP_AUTO( ary, spSquad ) {
-				spSquad->DoDamage( damage, false );
+//				spSquad->DoDamage( damage, false );
+				spSquad->DoDamage( spUnitAtk, damage, xBHT_BY_SKILL );
 			} END_LOOP;
 		}
 	}
@@ -990,12 +995,12 @@ int XSquadObj::GetListMember( XVector<XBaseUnit*> *pAry )
 /**
  @brief 살아있는 유닛한명을 리턴해준다.
 */
-XBaseUnit* XSquadObj::GetLiveMember()
+XSPUnit XSquadObj::GetspLiveMember()
 {
 	LIVE_UNIT_LOOP( spUnit )	{
-		return spUnit.get();
+		return spUnit;
 	} END_LOOP;
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -1230,20 +1235,17 @@ float XSquadObj::GetDistAttack()
 /**
  @brief 부대원 전체에게 절대치의 데미지를 준다.
 */
-void XSquadObj::DoDamage( float damage, BOOL bCritical )
+void XSquadObj::DoDamage( XSPUnit spUnitAtker, float damage, BIT bitHitAdd )
 {
 	LIVE_UNIT_LOOP( spUnit ) {
-		BIT bitHit = XGAME::xBHT_HIT;
-		if( bCritical )
-			bitHit |= XGAME::xBHT_CRITICAL;
+		BIT bitHit = XGAME::xBHT_HIT | bitHitAdd;
 		if( damage == 0 )
 			bitHit &= ~XGAME::xBHT_HIT;
-//		spUnit->DoDamage( NULL, damage, -1, XSKILL::xDMG_NONE, bitHit, XGAME::xDA_NONE );
-		auto spMsg = std::make_shared<xnUnit::XMsgDmg>( nullptr
+		auto spMsg = std::make_shared<xnUnit::XMsgDmg>( spUnitAtker
 																								, spUnit
 																								, damage
 																								, -1.f
-																								, xDMG_NONE
+																								, xDMG_MAGIC
 																								, bitHit
 																								, xDA_NONE );
 		spUnit->PushMsg( spMsg );
@@ -1357,22 +1359,32 @@ float XSquadObj::GetAvgSpeedUnits()
 void XSquadObj::HardcodingBreakthrough( float& speedMultiply, XArrayLinearN<XSPSquad,64>& aryNear )
 {
 	XBREAK( m_pBreakThrough == nullptr );
-	auto pEffect = m_pBreakThrough->GetEffectByIdx( 0 );
-	XBREAK( pEffect == nullptr );
+	auto pEffect1 = m_pBreakThrough->GetEffectByIdx( 0 );
+	XBREAK( pEffect1 == nullptr );
 	XBREAK( m_lvBreakThrough == 0 );
 	// 이속 보정.	
-	float abil = pEffect->invokeAbilityMin[ m_lvBreakThrough ];
-	speedMultiply = abil;
+	speedMultiply = pEffect1->invokeAbilityMin[ m_lvBreakThrough ];
 	// 인접부대에게 데미지
 	if( m_timerBreakThrough.IsOff() )
 		m_timerBreakThrough.Set( 1.f );
-	if( m_timerBreakThrough.IsOver() )
-	{
+	if( m_timerBreakThrough.IsOver() ) {
 		m_timerBreakThrough.Reset();
+		float damage = GetAttackMeleeDamage();
+		auto pEffect2 = m_pBreakThrough->GetEffectByIdx( 1 );
+		if( pEffect2 ) {
+			float abil = pEffect2->GetAbilityMin( m_lvBreakThrough );
+			damage *= abil;
+		} else {
+			damage *= 0.5f;
+		}
+		auto spUnitAtk = GetspHeroUnit();	// 공격자 유닛을 넘겨줘야해서 영웅을 넘겨줌
+		if( spUnitAtk == nullptr || ( spUnitAtk && spUnitAtk->IsDead() ) ) {
+			spUnitAtk = GetspLiveMember();
+		}
 		// 매초당 인접한 적부대에게 데미지를 입힌다.
-		XARRAYLINEARN_LOOP_AUTO( aryNear, spSquad )
-		{
-			spSquad->DoDamageByPercent( 0.05f, false );
+		XARRAYLINEARN_LOOP_AUTO( aryNear, spSquad ) {
+//			spSquad->DoDamageByPercent( 0.05f, false );
+			spSquad->DoDamage( spUnitAtk, damage, xBHT_BY_SKILL );
 		} END_LOOP;
 	}
 }

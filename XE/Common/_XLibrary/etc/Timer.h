@@ -94,7 +94,7 @@ public:
 		Init();
 		Set( sec );
 	}
-	virtual ~CTimer() {}
+	~CTimer() {}
 
 	GET_SET_ACCESSOR( BOOL, bOverSlerp );
 	DWORD GetTime( void ) const { 

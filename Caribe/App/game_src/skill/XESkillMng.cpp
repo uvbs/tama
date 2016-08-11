@@ -210,6 +210,7 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 		}
 		if( pSkillDat )
 		{
+			XBREAK( pSkillDat->GetTargetEff().IsHave() && pSkillDat->GetTargetEff().m_Loop == xAL_LOOP );
 			if( pSkillDat->m_strShootObj.empty() == false && pSkillDat->m_idShootObj == 0 )
 				pSkillDat->m_idShootObj = 1;
 			// 파라메터 보정
@@ -385,6 +386,38 @@ BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr,
 	{
 		pSkillDat->m_ShootTargetEff.m_idAct = (int)pAttr->IntValue();
 	} else
+	if( XSAME( cAttrName, 20 ) )	// 시전대상이펙트
+	{	
+		pSkillDat->m_CastTargetEff.m_strSpr = U82SZ( cParam );
+	} else
+	if( XSAME( cAttrName, 21 ) )	// 시전대상이펙트id
+	{	
+		pSkillDat->m_CastTargetEff.m_idAct = (int)pAttr->IntValue();
+	} else
+	if( XSAME( cAttrName, 261 ) )	// 시전대상이펙트반복
+	{
+		pSkillDat->m_CastTargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
+	} else
+	if( XSAME( cAttrName, 156 ) )	// 시전대상이펙트생성지점
+	{
+		pSkillDat->m_CastTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
+	} else
+	if( XSAME( cAttrName, 30 ) )	// 발동대상이펙트
+	{	
+		pSkillDat->m_invokeTargetEff.m_strSpr = U82SZ( cParam );
+	} else
+	if( XSAME( cAttrName, 31 )  )	// 발동대상이펙트id
+	{	
+		pSkillDat->m_invokeTargetEff.m_idAct = (int)pAttr->IntValue();
+	} else
+	if( XSAME( cAttrName, 157 ) )	// 발동대상이펙트생성지점
+	{
+		pSkillDat->m_invokeTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
+	} else
+	if( XSAME( cAttrName, 262 ) )	// 발동대상이펙트반복
+	{
+		pSkillDat->m_invokeTargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
+	} else
 	if( XSAME( cAttrName, 36 ) )	// 발사체
 	{	
 		pSkillDat->m_strShootObj = U82SZ( cParam );
@@ -452,42 +485,22 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	{
 		pEffect->castTargetRange = (xtTargetRangeType) ParsingParam( cParam );
 	} else
-// 	if( XSAME( cAttrName, 19 ) )	// 시전시간
+// 	if( XSAME( cAttrName, 20 ) )	// 시전대상이펙트
 // 	{	
-// 		pEffect->castTime = (float)pAttr->DoubleValue();
+// 		pEffect->m_CastTargetEff.m_strSpr = U82SZ( cParam );
 // 	} else
-// 	if( XSAME( cAttrName, 135 ) )	// 시전자이펙트
+// 	if( XSAME( cAttrName, 21 ) )	// 시전대상이펙트id
 // 	{	
-// 		pEffect->m_CasterEff.m_strSpr = U82SZ( cParam );
+// 		pEffect->m_CastTargetEff.m_idAct = (int)pAttr->IntValue();
 // 	} else
-// 	if( XSAME( cAttrName, 137 ) )	// 시전자이펙트생성지점
+// 	if( XSAME( cAttrName, 261 ) )	// 시전대상이펙트반복
 // 	{
-// 		pEffect->m_CasterEff.m_Point = (xtPoint) ParsingParam( cParam );
+// 		pEffect->m_CastTargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
 // 	} else
-// // 	if( XSAME( cAttrName, 155 ) )	// 시전자이펙트반복
-// // 	{
-// // 		pEffect->casterEffectPlayMode = (xtAniLoop) ParsingParam( cParam );
-// // 	} else
-// 	if( XSAME( cAttrName, 136 ) )	// 시전자이펙트id
-// 	{	
-// 		pEffect->m_CasterEff.m_idAct = (int)pAttr->IntValue();
-// 	} else
-	if( XSAME( cAttrName, 20 ) )	// 시전대상이펙트
-	{	
-		pEffect->m_CastTargetEff.m_strSpr = U82SZ( cParam );
-	} else
-	if( XSAME( cAttrName, 21 ) )	// 시전대상이펙트id
-	{	
-		pEffect->m_CastTargetEff.m_idAct = (int)pAttr->IntValue();
-	} else
-// 	if( XSAME( cAttrName, 97 ) )	// 시전대상이펙트반복
+// 	if( XSAME( cAttrName, 156 ) )	// 시전대상이펙트생성지점
 // 	{
-// 		pEffect->castTargetEffectPlayMode = (xtAniLoop)ParsingParam( cParam );
+// 		pEffect->m_CastTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
 // 	} else
-	if( XSAME( cAttrName, 156 ) )	// 시전대상이펙트생성지점
-	{
-		pEffect->m_CastTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
-	} else
 	if( XSAME( cAttrName, 60 ) || XSAME( cAttrName, 127 ) )	// /시전범위 시전길이
 	{	
 		pEffect->castSize.w = (float)pAttr->DoubleValue();
@@ -645,24 +658,6 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	{	
 		pEffect->invokeNumApply = pAttr->IntValue();
 	} else
-	if( XSAME( cAttrName, 30 ) /*|| XSAME( cAttrName, 162 )*/  )	// 발동대상이펙트
-	{	
-		if( pEffect->m_invokeTargetEff.m_strSpr.empty() == false )
-			XLOGXN("%s: 중복입력. 기존값:%s", U82SZ(cAttrName), pEffect->m_invokeTargetEff.m_strSpr.c_str() );
-		pEffect->m_invokeTargetEff.m_strSpr = U82SZ( cParam );
-	} else
-	if( XSAME( cAttrName, 31 ) /*|| XSAME( cAttrName, 163 )*/ )	// 발동대상이펙트id
-	{	
-		pEffect->m_invokeTargetEff.m_idAct = (int)pAttr->IntValue();
-	} else
-	if( XSAME( cAttrName, 157 ) )	// 발동대상이펙트생성지점
-	{
-		pEffect->m_invokeTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
-	} else
-// 	if( XSAME( cAttrName, 98 ) )	// 발동이펙트반복
-// 	{
-// 		pEffect->invokeEffectPlayMode = (xtAniLoop)ParsingParam( cParam );
-// 	} else
 	if( XSAME( cAttrName, 162 )  )	// 발동자이펙트
 	{	
 		if( pEffect->m_invokerEff.m_strSpr.empty() == false )
@@ -824,6 +819,7 @@ void XESkillMng::AddConstant( void )
 	CONSTANT->Add( XSKTEXT( 223 ), xIVT_ATTACKED_TARGET_SURROUND );
 	CONSTANT->Add( XSKTEXT( 224 ), xIVT_ATTACKED_TARGET_PARTY );
 	CONSTANT->Add( XSKTEXT( 225 ), xIVT_CURR_TARGET );
+	CONSTANT->Add( XSKTEXT( 260 ), xIVT_CURR_TARGET_PARTY );
 //	CONSTANT->Add( XSKTEXT( 236 ), xIVT_ALL );	// 모두(위에 50번("모두")의 0xffffffff과 중복되어서 안넣음.
 //	CONSTANT->Add( XSKTEXT( 230 ), xIVT_CONDITION );		// 조건발동
 	

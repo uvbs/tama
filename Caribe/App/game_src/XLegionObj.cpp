@@ -543,7 +543,7 @@ void XLegionObj::KillAllUnit()
 {
 #ifdef _CHEAT
 	for( auto& spSquad : m_listSquad ) {
-		spSquad->DoDamage( 1000000.f, FALSE );
+		spSquad->DoDamage( nullptr, 1000000.f );
 	}
 #endif // _CHEAT
 }

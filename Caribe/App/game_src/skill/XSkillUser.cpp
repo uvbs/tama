@@ -272,15 +272,24 @@ xtError XSkillUser::OnShootSkill( XSkillObj *pUseSkill
  @brief 기준타겟에 스킬을 시전한다.
  이함수는 슈팅타겟이펙트 사용시 단독으로도 호출될수 있다.
 */
-void XSkillUser::CastSkillToBaseTarget( XSkillDat *pSkillDat
+void XSkillUser::CastSkillToBaseTarget( XSkillDat *pDat
 																			, int level
 																			, XSkillReceiver *pBaseTarget
 																			, const XE::VEC2& vPos
 																			, ID idCallerSkill)
 {
+	// (기준)타겟이펙트
+	if( pDat->GetTargetEff().IsHave() ) {
+		const float secPlay = pDat->GetDuration();	// once
+		pBaseTarget->CreateSfx( pDat, pDat->GetTargetEff(), secPlay, vPos );
+	}
+	if( pDat->m_CastTargetEff.IsHave() ) {
+		const float secPlay = pDat->GetDuration();	// once
+		pCastingTarget->CreateSfx( pDat, pEffect->m_CastTargetEff, secPlay );
+	}
 	// 스킬이 가진 효과들 기준타겟에게 사용한다.
-	for( auto pEffect : pSkillDat->GetlistEffects() )	{
-		xtError err = UseEffect( pSkillDat, pEffect, level, pBaseTarget, vPos, idCallerSkill );
+	for( auto pEffect : pDat->GetlistEffects() )	{
+		xtError err = UseEffect( pDat, pEffect, level, pBaseTarget, vPos, idCallerSkill );
 		if( err != xOK )
 			return;
 	}
@@ -382,8 +391,7 @@ int XSkillUser::GetCastingTargetList( XVector<XSkillReceiver*> *pAryOutCastingTa
 													pEffect->castfiltFriendship );
 		int numApply = pEffect->invokeNumApply;	// 0이면 제한없음.
 		// 기준타겟포함이면 기준타겟은 우선으로 리스트에 들어가고 기준타겟제외로 검색한다.
-		if( castTarget == xCST_BASE_TARGET_RADIUS )
-		{
+		if( castTarget == xCST_BASE_TARGET_RADIUS ) {
 			pAryOutCastingTarget->Add( pBaseTarget );
 			if( numApply > 1 )
 				--numApply;
@@ -405,6 +413,10 @@ int XSkillUser::GetCastingTargetList( XVector<XSkillReceiver*> *pAryOutCastingTa
 												bitSideSearchFilter,
 												numApply,
 												FALSE );
+		// 기준타겟을 제외하고 numApply에 따라 타겟들을 뽑은 후 "반경"이면 기준타겟을 추가시킨다.
+// 		if( castTarget == xCST_BASE_TARGET_RADIUS ) {
+// 			pAryOutCastingTarget->Add( pBaseTarget );
+// 		}
 	} break;
 	case xCST_BASE_TARGET_PARTY:	// 기준타겟파티
 		// 기준타겟으로부터 그룹내 오브젝트들을 의뢰한다.
@@ -435,19 +447,19 @@ xtError XSkillUser::CastEffToCastTarget( XSkillDat *pDat,
 	XBREAK( pDat == nullptr );
 	XBREAK( pEffect == nullptr );
 	// 기준타겟에게 생성되는 이펙트(루핑없음)
-	if( pBaseTarget == pCastingTarget && pDat->GetTargetEff().IsHave() ) {
-		float secPlay = 0;	// once
-		// 이펙트반복으로 되어있으면 지속시간동안 플레이되도록 값을 넣어줌.
-		if( pDat->GetTargetEff().m_Loop == xAL_LOOP ) {
-			secPlay = pEffect->GetDuration( level );
-		}
-		pBaseTarget->CreateSfx( pDat, pDat->GetTargetEff(), secPlay, vPos );
-	}
+// 	if( pBaseTarget == pCastingTarget && pDat->GetTargetEff().IsHave() ) {
+// 		float secPlay = 0;	// once
+// 		// 이펙트반복으로 되어있으면 지속시간동안 플레이되도록 값을 넣어줌.
+// 		if( pDat->GetTargetEff().m_Loop == xAL_LOOP ) {
+// 			secPlay = pEffect->GetDuration( level );
+// 		}
+// 		pBaseTarget->CreateSfx( pDat, pDat->GetTargetEff(), secPlay, vPos );
+// 	}
 	// 시전대상들에게 모두 이펙트를 붙인다.
-	if( pEffect->m_CastTargetEff.IsHave() ) {
-		float secPlay = 0;
-		pCastingTarget->CreateSfx( pDat, pEffect->m_CastTargetEff, secPlay );
-	}
+// 	if( pEffect->m_CastTargetEff.IsHave() ) {
+// 		float secPlay = ;
+// 		pCastingTarget->CreateSfx( pDat, pEffect->m_CastTargetEff, secPlay );
+// 	}
 	if( pEffect->IsDuration() ) {
 		if( pCastingTarget ) {
 			// 지속시간이 있는 버프형 효과를 타겟에게 시전한다.
@@ -682,9 +694,10 @@ int XSkillUser::GetInvokeTarget( XVector<XSkillReceiver*> *_plistOutInvokeTarget
 	} break;
  	case xIVT_RANDOM_PARTY: {
 		xtGroup typeGroup;
-		if( filtIvkFriendship == xfALLY )
+		if( filtIvkFriendship & xfALLY )
 			typeGroup = xGT_RANDOM_PARTY_FRIENDLY;
 		else
+		if( filtIvkFriendship & xfHOSTILE )
 			typeGroup = xGT_RANDOM_PARTY_ENEMY;
 		auto pRecv = GetThisRecv();
  		pRecv->GetGroupList( &aryTempInvokes,
@@ -695,9 +708,10 @@ int XSkillUser::GetInvokeTarget( XVector<XSkillReceiver*> *_plistOutInvokeTarget
 	// 모두
 	case xIVT_ALL: {
 		xtGroup typeGroup;
-		if( filtIvkFriendship == xfALLY )
+		if( filtIvkFriendship & xfALLY )
 			typeGroup = xGT_FRIENDLY_ALL;
 		else
+		if( filtIvkFriendship & xfHOSTILE )
 			typeGroup = xGT_ENEMY_ALL;
 		auto pRecv = GetThisRecv();
 		pRecv->GetGroupList( &aryTempInvokes,

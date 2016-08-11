@@ -254,9 +254,9 @@ int XUnitHero::DoUseSkill( void )
 		DoSkillMotion();
 // 	}
 #ifdef _DEBUG
-	XSKILL::XSkillDat *pDat = m_pHero->GetSkillDatActive();
-	if( pDat )
-		CONSOLE("DoUseSkill:%s", pDat->GetstrIdentifier().c_str() );
+// 	XSKILL::XSkillDat *pDat = m_pHero->GetSkillDatActive();
+// 	if( pDat )
+// 		CONSOLE("DoUseSkill:%s", pDat->GetstrIdentifier().c_str() );
 #endif
 	return 1;
 }

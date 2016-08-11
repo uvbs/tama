@@ -462,6 +462,10 @@ XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
 	XASSERT( !IsInvalidGrade(sqParam.grade) );
 	auto pSquad = new XSquadron( pPropHero, sqParam.lvHero, sqParam.unit, sqParam.lvSquad );
 	auto pHero = pSquad->GetpHero();
+	if( sqParam.lvSkill > 0 ) {
+		pHero->SetlvActive( sqParam.lvSkill );
+		pHero->SetlvPassive( sqParam.lvSkill );
+	}
 	pHero->SetGrade( sqParam.grade );
 	pSquad->SetmulAtk( sqParam.mulAtk );
 	pSquad->SetmulHp( sqParam.mulHp );

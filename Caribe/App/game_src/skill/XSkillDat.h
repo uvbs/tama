@@ -38,6 +38,8 @@ private:
 	xEffSfx m_TargetEff;					// 타겟이펙트, 기준타겟에 생성되는 이펙트
 	xEffSfx m_ShootEff;				///< 슈팅이펙트
 	xEffSfx m_ShootTargetEff;			///< 슈팅타겟이펙트
+	xEffSfx m_CastTargetEff;			// 시전대상이펙트, 시전대상에 하나씩 이펙트가 생긴다.(효과가 여러개 있을때 효과마다 이펙트가 생길필요는 없을거 같아 이쪽으로 옮김)
+	xEffSfx m_invokeTargetEff;		// 발동대상이펙트, 발동대상에 하나씩 이펙트가 생긴다.(효과가 여러개 있을때 효과마다 이펙트가 생길필요는 없을거 같아 이쪽으로 옮김)
 	_tstring m_strShootObj;				// 발사체
 	ID m_idShootObj = 1;			// 발사체id
 	float m_shootObjSpeed = 0.6f;		// 발사체속도
@@ -89,6 +91,8 @@ public:
 	GET_SET_ACCESSOR_CONST( ID, idCastMotion );
 	GET_ACCESSOR_CONST( const xEffSfx&, CasterEff );
 	GET_ACCESSOR_CONST( const xEffSfx&, TargetEff );
+	GET_ACCESSOR_CONST( const xEffSfx&, CastTargetEff );
+	GET_ACCESSOR_CONST( const xEffSfx&, invokeTargetEff );
 	GET_ACCESSOR_CONST( xtBaseTarget, baseTarget );
 	GET_ACCESSOR_CONST( xtFriendshipFilt, bitBaseTarget );
 	GET_ACCESSOR_CONST( xtBaseTargetCond, condBaseTarget );
@@ -170,6 +174,7 @@ public:
 	}
 	void Serialize( XArchive& ar ) const;
 	void DeSerialize( XArchive& ar, int );
+	float GetDuration( int lv );
 private:
 	bool ReplaceParam( const EFFECT *pEffect, int idxParam, LPCTSTR szToken, _tstring *pOut );
 	// virtual

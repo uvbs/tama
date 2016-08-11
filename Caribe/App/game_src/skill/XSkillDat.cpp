@@ -267,7 +267,7 @@ void EFFECT::Serialize( XArchive& ar ) const {
 	ar << (char)invokeNumApply;
 
 //	ar << m_CasterEff;
-	ar << m_CastTargetEff;
+//	ar << m_CastTargetEff;
 	ar << castSize;
 	ar << arySecDuration;
 	ar << m_PersistEff;
@@ -294,7 +294,7 @@ void EFFECT::Serialize( XArchive& ar ) const {
 	ar << _invokeSize;
 	ar << aryInvokeSize;
 	ar << secInvokeDOT;
-	ar << m_invokeTargetEff;
+//	ar << m_invokeTargetEff;
 	ar << m_invokerEff;
 	ar << idInvokeSound;
 	ar << strCreateObj;
@@ -327,7 +327,7 @@ void EFFECT::DeSerialize( XArchive& ar, int ) {
 	ar >> c0;		invokeNumApply = c0;
 
 //	ar >> m_CasterEff;
-	ar >> m_CastTargetEff;
+//	ar >> m_CastTargetEff;
 	ar >> castSize;
 	ar >> arySecDuration;
 	ar >> m_PersistEff;
@@ -354,7 +354,7 @@ void EFFECT::DeSerialize( XArchive& ar, int ) {
 	ar >> _invokeSize;
 	ar >> aryInvokeSize;
 	ar >> secInvokeDOT;
-	ar >> m_invokeTargetEff;
+//	ar >> m_invokeTargetEff;
 	ar >> idInvokeSound;
 	ar >> strCreateObj;
 	ar >> idCreateObj;
@@ -394,6 +394,8 @@ void XSkillDat::Serialize( XArchive& ar ) const
 	ar << m_TargetEff;
 	ar << m_ShootEff;
 	ar << m_ShootTargetEff;
+	ar << m_CastTargetEff;
+	ar << m_invokeTargetEff;
 	ar << m_strShootObj;
 	ar << m_idShootObj;
 	ar << m_shootObjSpeed;
@@ -426,6 +428,8 @@ void XSkillDat::DeSerialize( XArchive& ar, int ver )
 	ar >> m_TargetEff;
 	ar >> m_ShootEff;
 	ar >> m_ShootTargetEff;
+	ar >> m_CastTargetEff;
+	ar >> m_invokeTargetEff;
 	ar >> m_strShootObj;
 	ar >> m_idShootObj;
 	ar >> m_shootObjSpeed;
@@ -454,6 +458,19 @@ bool XSkillDat::IsBuffFinite() const
 		}
 	}
 	return false;
+}
+
+/**
+ @brief 이펙트중에서 지속시간이 있는것의 시간을 얻는다.
+*/
+float XSkillDat::GetDuration( int lv )
+{
+	for( auto pEff : m_listEffects ) {
+		float sec = pEff->GetDuration( lv );
+		if( sec > 0 )
+			return sec;
+	}
+	return 0;
 }
 
 // 자신이나 자신의 부대에게만 쓰는 버프인가.

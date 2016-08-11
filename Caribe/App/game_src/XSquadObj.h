@@ -93,10 +93,10 @@ public:
 	//
 	void Release();
 	int GetNumLives();
-	int GetNumLists() {
+	inline int GetNumLists() {
 		return m_listUnit.size();
 	}
-	XSPSquad GetThis() {
+	inline XSPSquad GetThis() {
 		return shared_from_this();
 
 	}
@@ -105,13 +105,13 @@ public:
 	GET_ACCESSOR_CONST( ID, snSquadObj );
 	GET_SET_ACCESSOR_CONST( int, lvBreakThrough );
 	GET_ACCESSOR_CONST( const XE::VEC3&, vwTarget );
-	BOOL IsMove() const {
+	bool IsMove() const {
 		return m_bMove == TRUE;
 	}
-	BOOL IsStop() const {
+	bool IsStop() const {
 		return m_bMove == FALSE;
 	}
-	ID getid() const {
+	inline ID getid() const {
 		return m_snSquadObj;
 	}
 	inline XGAME::xtUnit GetUnit() const {
@@ -120,13 +120,13 @@ public:
 
 	GET_ACCESSOR_CONST( int, cntLive );
 	//GET_ACCESSOR( const XE::VEC3&, vwPos );
-	const XE::VEC3& GetvwPos() const {
+	inline const XE::VEC3& GetvwPos() const {
 		return m_vwPos;
 	}
 	GET_SHARED_ACCESSOR( XSPLegionObj, spLegionObj );
 	GET_ACCESSOR_CONST( XHero*, pHero );
 	GET_ACCESSOR_CONST( float, Radius );
-	GET_SET_ACCESSOR( BOOL, bNearOther );
+	GET_SET_ACCESSOR_CONST( BOOL, bNearOther );
 	GET_SHARED_ACCESSOR( const XSPUnit, spHeroUnit );
 	GET_ACCESSOR_CONST( const XSquadron*, pSquadron );
 	GET_ACCESSOR_CONST( const XList4<XSPUnitW>&, listUnit );
@@ -158,16 +158,16 @@ public:
 	 @brief this와 비교해서 pDst는 적인가
 	*/
 	const XECompCamp& GetCamp() const;
-	BOOL IsEnemy( XSquadObj *pDst ) const {
+	inline bool IsEnemy( XSquadObj *pDst ) const {
 		return GetCamp().IsEnemy( pDst->GetCamp() );
 	}
-	bool IsPlayer() const {
+	inline bool IsPlayer() const {
 		return GetCamp().GetbitCamp() == XGAME::xSIDE_PLAYER;
 	}
-	XGAME::xtSide GetSide() const {
+	inline XGAME::xtSide GetSide() const {
 		return (XGAME::xtSide)GetCamp().GetbitCamp();
 	}
-	XGAME::xtSide GetSideRival() const {
+	inline XGAME::xtSide GetSideRival() const {
 		const auto side = (XGAME::xtSide)GetCamp().GetbitCamp();
 		return (IsPlayer())? XGAME::xSIDE_OTHER : XGAME::xSIDE_PLAYER;
 	}
@@ -178,12 +178,12 @@ public:
 	BOOL CreateSquadsDebug( XWndBattleField *pWndWorld, XECompCamp& camp );
 #endif // _DEBUG
 	XSPUnit AddUnit( XSPUnit spUnit );
-	int AddCntLive( int add ) {
+	inline int AddCntLive( int add ) {
 		m_cntLive += add;
 		XBREAK( m_cntLive < 0 );
 		return m_cntLive;
 	}
-	BOOL IsLive() const {
+	inline bool IsLive() const {
 		return m_cntLive > 0;
 	}
 	void FrameMove( float dt );
@@ -202,15 +202,15 @@ public:
 		return m_pProp->typeAtk == XGAME::xAT_TANKER;
 	}
 	///< 근접전(맞붙어 싸우는) 부대인가.
-	inline bool IsMelee() {
+	inline bool IsMelee() const {
 		return m_pProp->typeAtk == XGAME::xAT_TANKER || 
 				m_pProp->typeAtk == XGAME::xAT_SPEED;
 	}
 	// 일단은 유닛프로퍼티의 값으로 이동하고, 나중엔 부대도 XAdjParam을 상속받아 부대단위로 버프를 받아야 한다.
-	float GetSpeedMoveForPixel() const {
+	inline float GetSpeedMoveForPixel() const {
 		return m_pProp->movSpeedPerSec / XFPS;
 	}
-	void AddPos( const XE::VEC3& vwDelta ) {
+	inline void AddPos( const XE::VEC3& vwDelta ) {
 		m_vwPos += vwDelta;
 	}
 	XSPSquad FindAttackSquad();
@@ -221,12 +221,12 @@ public:
 	XE::VEC2 GetDistHero( XPropUnit::xPROP *pProp );
 	void CreateHero( XWndBattleField *pWndWorld, XPropUnit::xPROP *pProp, const XECompCamp& camp );
 	void CreateUnit( XWndBattleField *pWndWorld,
-					XPropUnit::xPROP *pProp,
-					int numUnit,
-					const XECompCamp& camp );
+									 XPropUnit::xPROP *pProp,
+									 int numUnit,
+									 const XECompCamp& camp );
 	int GetListMember( XVector<XSKILL::XSkillReceiver*> *pAry );
 	int GetListMember( XVector<XBaseUnit*> *pAry );
-	XBaseUnit* GetLiveMember();
+	XSPUnit GetspLiveMember();
 	BOOL IsNear( XSquadObj *pTarget );
 private:
 	XSPUnit GetNewTargetInTargetSquad( BOOL bIncludeHero );
@@ -241,7 +241,7 @@ public:
 	void DoAttackSquad( const XSPSquad& spTarget );
 	void DoMoveSquad( const XE::VEC3& vwDst );
 	float GetDistAttack();
-	void DoDamage( float damage, BOOL bCritical );
+	void DoDamage( XSPUnit spUnitAtker, float damage, BIT bitHitAdd = 0 );
 	void DoDamageByPercent( float ratio, BOOL bCritical );
 	void CreateAndAddUnit( XPropUnit::xPROP *pProp
 											, XWndBattleField *pWndWorld

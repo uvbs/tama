@@ -633,6 +633,7 @@
     <ClInclude Include="..\..\..\game_src\XCampObj.h" />
     <ClInclude Include="..\..\..\game_src\XCampObjHero.h" />
     <ClInclude Include="..\..\..\game_src\XCampObjHero2.h" />
+    <ClInclude Include="..\..\..\game_src\XComp.h" />
     <ClInclude Include="..\..\..\game_src\XConnector.h" />
     <ClInclude Include="..\..\..\game_src\XDefNetwork.h" />
     <ClInclude Include="..\..\..\game_src\XEBaseFSM.h" />
@@ -842,6 +843,7 @@
     <ClCompile Include="..\..\..\game_src\XCampObj.cpp" />
     <ClCompile Include="..\..\..\game_src\XCampObjHero.cpp" />
     <ClCompile Include="..\..\..\game_src\XCampObjHero2.cpp" />
+    <ClCompile Include="..\..\..\game_src\XComp.cpp" />
     <ClCompile Include="..\..\..\game_src\XConnector.cpp" />
     <ClCompile Include="..\..\..\game_src\XEBaseFSM.cpp" />
     <ClCompile Include="..\..\..\game_src\XEObjMngWithType.cpp" />

@@ -9,6 +9,7 @@
 #include "Sprite/SprObj.h"
 #include "XSkillMng.h"
 #include "XMsgUnit.h"
+#include "XComp.h"
 
 
 
@@ -27,57 +28,6 @@ using namespace XSKILL;
 template<> XPool<XObjArrow>* XMemPool<XObjArrow>::s_pPool = NULL;
 #endif
 
-
-////////////////////////////////////////////////////////////////
-XCompObjFont::XCompObjFont()
-{
-	Init();
-}
-
-void XCompObjFont::Destroy()
-{
-	SAFE_RELEASE2( FONTMNG, m_pfdFont );
-}
-
-bool XCompObjFont::Load( LPCTSTR szFont, float sizeFont )
-{
-	XBREAK( m_pfdFont != nullptr );
-	m_pfdFont = FONTMNG->Load( szFont, sizeFont );
-	return m_pfdFont != nullptr;
-}
-
-void XCompObjFont::Draw( const XE::VEC2& vPos, float scale )
-{
-	m_pfdFont->DrawStringWithStyle( vPos, m_strText, m_Style, m_Col );
-}
-//////////////////////////////////////////////////////////////////////////
-XCompObjBounce::XCompObjBounce( const float power, const float dAngZ )
-{
-	auto vDZ = XE::GetAngleVector( dAngZ, power );
-	auto vXY = XE::GetAngleVector( xRandomF( 360.f ), vDZ.x );
-	m_vwDeltaNext.x = vXY.x;
-	m_vwDeltaNext.y = vXY.y;
-	m_vwDeltaNext.z = vDZ.y;
-}
-int XCompObjBounce::FrameMove( float dt )
-{
-	bool bUpdated = false;			// 상태가 변함.
-	if( m_State == 0 ) {
-		m_vwPos += m_vwDeltaNext * dt;
-		m_vwDeltaNext.z += m_Gravity * dt;
-		if( m_vwPos.z >= 0 ) {
-			m_vwDeltaNext.z *= -0.2f;		// 바운스 되어서 벡터 방향 바뀜
-			m_vwPos.z = -m_vwPos.z;		// 바닥을 뚫고 지나온만큼을 역으로 되돌린다.
-			if( m_vwDeltaNext.z > -1.f * dt ) {		// 바운스힘이 일정 이하면 끝냄
-				m_vwDeltaNext.Set( 0 );
-				m_vwPos.z = 0;
-				m_State = 1;
-				bUpdated = true;
-			}
-		}
-	}
-	return (bUpdated)? 1 : 0;		// 상태변화가 있었으면 1을 리턴
-}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -130,10 +80,8 @@ void XObjBullet::FrameMove( float dt )
 	SetvwPos( vwPos );
 	float dAng = XE::CalcAngle( vPrev, vCurr );
 	GetpSprObj()->SetRotateZ( dAng );
-	if( timeLerp >= 1.0f )
-	{
-		if( m_sprArrive.empty() == false )
-		{
+	if( timeLerp >= 1.0f )	{
+		if( m_sprArrive.empty() == false )		{
 			XObjLoop *pSfx = new XObjLoop( vDst, m_sprArrive.c_str(), m_idActArrive );
 			XBattleField::sGet()->AddObj( WorldObjPtr(pSfx) );
 			// 도착시 sfx가 지정되어있으면 타겟에게 생성하도록 한다.
@@ -141,12 +89,21 @@ void XObjBullet::FrameMove( float dt )
 				m_spTarget->IsLive() )
 				m_spTarget->CreateHitSfx( m_spOwner.get(), FALSE );
 		}
-		SetDestroy( 1 );
+		XBREAK( IsDestroy() );
 		OnArriveBullet( 0 );
+		SetDestroy( 1 );
 	}
 
 	//
 	XEBaseWorldObj::FrameMove( dt );
+}
+
+int XObjBullet::AddInvokeSkill( const _tstring& strInvokeSkill ) 
+{
+	if( !m_aryInvokeSkill.IsExist( strInvokeSkill ) ) {
+		m_aryInvokeSkill.Add( strInvokeSkill );
+	}
+	return m_aryInvokeSkill.size();
 }
 
 /**
@@ -163,26 +120,24 @@ XE::VEC3 XObjBullet::OnInterpolation( const XE::VEC3& vSrc, const XE::VEC3& vDst
 void XObjBullet::OnArriveBullet( DWORD dwParam )
 {
 	// 발사체에 발동스킬이 있으면 발동시킨다.
-	XARRAYLINEARN_LOOP_AUTO( m_aryInvokeSkill, &strInvokeSkill )
-	{
+	for( auto& strInvokeSkill : m_aryInvokeSkill ) {
 #ifdef _XSINGLE
 		XLOGXN( "스킬발동: %s", strInvokeSkill.c_str() );
 #endif // _XSINGLE
-		if( m_spTarget != nullptr )
-		{
+		if( m_spTarget ) {
 			// 발동스킬을 액티브로 실행시킨다.
-			XSKILL::XSkillUser::xUseSkill infoUseSkill
-				= m_spOwner->UseSkillByIdentifier( strInvokeSkill.c_str(),
-													0,
-													m_spTarget.get(), nullptr );
+			auto infoUseSkill = m_spOwner->UseSkillByIdentifier( strInvokeSkill.c_str(),
+																													 0,
+																													 m_spTarget.get(), nullptr );
 			XASSERT( infoUseSkill.errCode == XSKILL::xOK );
 			ID idCaller = 0;
 			auto pSkillDat = SKILL_MNG->FindByIdentifier( strInvokeSkill );
-			if( pSkillDat )
+			if( pSkillDat ) {
 				idCaller = pSkillDat->GetidSkill();
+			}
 			m_spOwner->OnShootSkill( infoUseSkill, idCaller );
 		}
-	} END_LOOP;
+	}
 	// 어태커가 지정되어있을경우 도착 델리게이트를 날려준다.
 	if( GetpDelegate() )
 		GetpDelegate()->OnArriveBullet( this,
@@ -217,7 +172,7 @@ XObjArrow::XObjArrow( XEWndWorld *pWndWorld,
 	m_vOffset.z = -((float)( random((int)( size.h )) ));
 	m_vOffset.x = (size.w / 2.f) - (float)random((int)( size.w ));
 	// 맞는타겟이 대형일경우만 화살타격이펙을 뿌려준다.
-	if( spTarget != nullptr && spTarget->IsBig() )
+	if( spTarget != nullptr /*&& spTarget->IsBig()*/ )
 		SetArriveSfx( _T("eff_hit02.spr"), 1 );
 
 }
@@ -512,8 +467,9 @@ void XObjLoop::Destroy() {}
 
 void XObjLoop::SetBounce( float power, float dAngZ, float gravity )
 {
-	m_spCompBounce = std::make_shared<XCompObjBounce>( power, dAngZ );
-	m_spCompBounce->SetGravity( gravity );
+	auto spCompBounce = std::make_shared<XCompObjMoveBounce>( power, dAngZ );
+	spCompBounce->SetGravity( gravity );
+	m_spCompMove = spCompBounce;
 }
 
 void XObjLoop::FrameMove( float dt )
@@ -525,10 +481,10 @@ void XObjLoop::FrameMove( float dt )
 				SetDestroy( 1 );
 		}
 	}
-	if( m_spCompBounce ) {
-		m_spCompBounce->SetvwPos( GetvwPos() );
-		m_spCompBounce->FrameMove( dt );
-		SetvwPos( m_spCompBounce->GetvwPos() );
+	if( m_spCompMove ) {
+		m_spCompMove->SetvwPos( GetvwPos() );
+		m_spCompMove->FrameMove( dt );
+		SetvwPos( m_spCompMove->GetvwPos() );
 	}
 	if( m_State == 0 ) {
 		if( m_secLife > 0.f ) {
@@ -560,12 +516,12 @@ void XObjLoop::FrameMove( float dt )
 /**
  @brief sfx 애니메이션에 타점이 있다면 호출된다.
 */
-void XObjLoop::OnEventSprObj( XSprObj *pSprObj, 
-							XKeyEvent *pKey, 
-							float lx, float ly, 
-							ID idEvent, 
-							float fAngle, 
-							float fOverSec )
+void XObjLoop::OnEventSprObj( XSprObj *pSprObj,
+															XKeyEvent *pKey,
+															float lx, float ly,
+															ID idEvent,
+															float fAngle,
+															float fOverSec )
 {
 	XSkillSfx::CallCallbackFunc();
 // 	if( !m_Callback.funcCallback.empty() )
@@ -574,9 +530,9 @@ void XObjLoop::OnEventSprObj( XSprObj *pSprObj,
 
 ////////////////////////////////////////////////////////////////
 XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp, const XE::VEC3& vwPos, float sec )
-	: XEBaseWorldObj( XWndBattleField::sGet(), 
-						XGAME::xOT_SKILL_EFFECT, vwPos,
-						_T("eff_ghost_diesmoke.spr"), 1)
+	: XEBaseWorldObj( XWndBattleField::sGet(),
+										XGAME::xOT_SKILL_EFFECT, vwPos,
+										_T( "eff_ghost_diesmoke.spr" ), 1 )
 	, XSkillReceiver( 1, XGAME::xMAX_PARAM, 0 )
 {
 	Init();
@@ -590,8 +546,7 @@ void XSkillSfxReceiver::Destroy()
 
 void XSkillSfxReceiver::FrameMove( float dt )
 {
-	if( m_timerLife.IsOver() )
-	{
+	if( m_timerLife.IsOver() )	{
 		SetDestroy(1);
 		return;
 	}
@@ -600,13 +555,13 @@ void XSkillSfxReceiver::FrameMove( float dt )
 
 ////////////////////////////////////////////////////////////////
 XSkillShootObj::XSkillShootObj( XEWndWorld *pWndWorld,
-								const UnitPtr& spOwner,
-								const UnitPtr& spTarget,
-								const XE::VEC3& vwSrc,
-								const XE::VEC3& vwDst,
-								float damage,
-								LPCTSTR szSpr, ID idAct,
-								float factorSpeed ) 
+																const UnitPtr& spOwner,
+																const UnitPtr& spTarget,
+																const XE::VEC3& vwSrc,
+																const XE::VEC3& vwDst,
+																float damage,
+																LPCTSTR szSpr, ID idAct,
+																float factorSpeed )
 : XObjArrow( pWndWorld, spOwner, spTarget, vwSrc, 
 			vwDst, damage, false, szSpr, idAct, 24.f ) 
 {
@@ -643,7 +598,6 @@ XObjDmgNum::XObjDmgNum( float num
 											, const XE::VEC3& vwPos
 											, XCOLOR col )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos )
-	, m_compBounce( XE::VEC2(10, 15), XE::VEC2(225, 315) )
 {
 	Init();
 	m_Number = (int)num;
@@ -674,20 +628,26 @@ XObjDmgNum::XObjDmgNum( float num
 		else
 			m_strNumber = XE::Format(_T("%d"), (int)num );
 	}
+	if( typeHit == xHT_HIT ) {
+		SetBounce( XE::VEC2( 10, 15 ), XE::VEC2( 225, 315 ) );
+	} else {
+		m_spCompMove = std::make_shared<XCompObjMoveNormal>( XE::VEC3( 0, 0, -4.f) );
+	}
 	InitEffect();
 }
 
 XObjDmgNum::XObjDmgNum( LPCTSTR szStr
 											, const XE::VEC3& vwPos, XCOLOR col )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos )
-	, m_compBounce( XE::VEC2( 10, 15 ), XE::VEC2( 225, 315 ) )
 {
 	Init();
 	m_strNumber = szStr;
 	m_Number = 0;
 	m_Col = col;
 	m_typeHit = xHT_CUSTOM;
-	m_compBounce.SetGravity( 1.f );
+//	m_compBounce.SetGravity( 1.f );
+	//SetBounce( XE::VEC2( 10, 15 ), XE::VEC2( 225, 315 ) );
+	m_spCompMove = std::make_shared<XCompObjMoveNormal>( XE::VEC3( 0, 0, -4.f) );
 	InitEffect();
 }
 
@@ -703,10 +663,16 @@ void XObjDmgNum::InitEffect()
 		strFont = FONT_NANUM_BOLD;
 	XBREAK( m_pfdNumber != nullptr );
 	m_pfdNumber = FONTMNG->Load( strFont.c_str(), size );
-	m_timerLife.Set(0.1f);
 	m_State = 0;
 	if( m_typeHit != xHT_HIT )	// 숫자가 아닌 글자형태면 속도 더빠르게
 		m_vDelta.z *= 2.f;
+}
+
+void XObjDmgNum::SetBounce( float power, float dAngZ, float gravity )
+{
+	auto spCompBounce = std::make_shared<XCompObjMoveBounce>( power, dAngZ );
+	spCompBounce->SetGravity( gravity );
+	m_spCompMove = spCompBounce;
 }
 
 void XObjDmgNum::Destroy()
@@ -716,74 +682,25 @@ void XObjDmgNum::Destroy()
 
 void XObjDmgNum::FrameMove( float dt )
 {
-	m_compBounce.SetvwPos( GetvwPos() );
-	if( m_compBounce.FrameMove( dt ) == 1 ) {
-		if( m_compBounce.GetState() == 1 ) {
-			m_timerLife.Set( 1.f );
-		}
+	XBREAK( m_spCompMove == nullptr );
+	m_spCompMove->SetvwPos( GetvwPos() );
+	if( m_spCompMove->FrameMove( dt ) == 1 ) {
+// 		if( m_spCompMove->IsDisappear() ) {
+// 			m_timerLife.Set( 1.f );
+// 		}
 	}
-	SetvwPos( m_compBounce.GetvwPos() );
-	if( m_compBounce.GetState() == 1 ) {
-		float alpha = 1.0f - m_timerLife.GetSlerp();
+	SetvwPos( m_spCompMove->GetvwPos() );
+	if( m_spCompMove->IsDisappear() ) {
+//		float alpha = 1.0f - m_timerLife.GetSlerp();
+		float alpha = 1.0f - m_spCompMove->GetLerpTime();
 		SetAlpha( alpha );
-		if( m_timerLife.IsOver() ) {
+//		if( m_timerLife.IsOver() ) {
+		if( m_spCompMove->GettimerState().IsOver() ) {
 			SetDestroy( 1 );
 		}
 	}
-// 	AddPos( m_vDelta * dt );
-// 	if( m_State == 0 ) {
-// 		// 떠오르기
-// 		if( m_timerLife.IsOver() ) {
-// 			// 1.5초간 대기.
-// 			m_State = 1;
-// 			m_timerLife.Set(1.0f);
-// 			m_vDelta.Set(0,0,-0.5f);	// 서서히 올라간다.
-// 		}
-// 	} else 
-// 	if( m_State == 1 ) {
-// 		// 대기
-// 		if( m_timerLife.IsOver() ) {
-// 			// x초간 빠르게 떠오르며 사라진다.
-// 			m_State = 2;
-// 			m_timerLife.Set(2.0f);
-// 			m_vDelta.z = -2.f;
-// 		}
-// 	} else {
-// 		float alpha = 1.0f - m_timerLife.GetSlerp();
-// 		SetAlpha( alpha );
-// 		if( m_timerLife.IsOver() )
-// 			SetDestroy(1);
-// 	}
 	XEBaseWorldObj::FrameMove( dt );
 }
-// void XObjDmgNum::FrameMove( float dt )
-// {
-// 	AddPos( m_vDelta * dt );
-// 	if( m_State == 0 ) {
-// 		// 떠오르기
-// 		if( m_timerLife.IsOver() ) {
-// 			// 1.5초간 대기.
-// 			m_State = 1;
-// 			m_timerLife.Set(1.0f);
-// 			m_vDelta.Set(0,0,-0.5f);	// 서서히 올라간다.
-// 		}
-// 	} else 
-// 	if( m_State == 1 ) {
-// 		// 대기
-// 		if( m_timerLife.IsOver() ) {
-// 			// x초간 빠르게 떠오르며 사라진다.
-// 			m_State = 2;
-// 			m_timerLife.Set(2.0f);
-// 			m_vDelta.z = -2.f;
-// 		}
-// 	} else {
-// 		float alpha = 1.0f - m_timerLife.GetSlerp();
-// 		SetAlpha( alpha );
-// 		if( m_timerLife.IsOver() )
-// 			SetDestroy(1);
-// 	}
-// 	XEBaseWorldObj::FrameMove( dt );
-// }
 
 void XObjDmgNum::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ )
 {
@@ -908,13 +825,13 @@ void XObjYellSkill::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alp
  @param secLife 객체 지속시간
  @param bitCampTarget 데미지를 줄 진영
 */
-XObjFlame::XObjFlame( const UnitPtr& spAttacker, 
-						const XE::VEC3& vwPos, 
-						float damage, 
-						float radius, 
-						float secLife, 
-						BIT bitCampTarget, 
-						LPCTSTR szSpr, ID idAct )
+XObjFlame::XObjFlame( const UnitPtr& spAttacker,
+											const XE::VEC3& vwPos,
+											float damage,
+											float radius,
+											float secLife,
+											BIT bitCampTarget,
+											LPCTSTR szSpr, ID idAct )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_DAMAGE, vwPos, szSpr, idAct )
 {
 	Init();
@@ -972,11 +889,13 @@ void XObjFlame::FrameMove( float dt )
 XObjRes::XObjRes( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct
 									, const XVector<XGAME::xRES_NUM>& aryLoots )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos, szSpr, idAct )
-	, m_compBounce( 20.f, XE::VEC2( 270.f, 290.f ) )
+//	, m_spCompMove( 20.f, XE::VEC2( 270.f, 290.f ) )
 {
 	m_psfcShadow = IMAGE_MNG->Load( TRUE, PATH_IMG( "shadow.png" ) );
 	m_aryLoots = aryLoots;
-	m_compFont.Load( FONT_RESNUM, 18.f );
+	m_spCompFont = std::make_shared<XCompObjFont>();
+	m_spCompFont->Load( FONT_RESNUM, 18.f );
+	SetBounce( 20.f, xRandomF(XE::VEC2( 270.f, 290.f )) );
 }
 
 XObjRes::XObjRes( const XE::VEC3& vwPos, XGAME::xtResource resType, int num )
@@ -984,7 +903,8 @@ XObjRes::XObjRes( const XE::VEC3& vwPos, XGAME::xtResource resType, int num )
 {
 	m_resType = resType;
 	m_numRes = num;
-	m_compFont.SetstrText( XE::NtS(num) );
+	XBREAK( m_spCompFont == nullptr );
+	m_spCompFont->SetstrText( XE::NtS(num) );
 	if( GetpSprObj() )
 		GetpSprObj()->SetAction( (ID)(resType + 1) );
 }
@@ -994,17 +914,23 @@ XObjRes::~XObjRes()
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcShadow );
 }
 
+void XObjRes::SetBounce( float power, float dAngZ, float gravity )
+{
+	auto spCompBounce = std::make_shared<XCompObjMoveBounce>( power, dAngZ );
+	spCompBounce->SetGravity( gravity );
+	m_spCompMove = spCompBounce;
+}
 //
 void XObjRes::FrameMove( float dt )
 {
-	m_compBounce.SetvwPos( GetvwPos() );
-	if( m_compBounce.FrameMove( dt ) ) {
-		if( m_compBounce.GetState() == 1 )	// 바닥에 떨어져서 멈춤
+	m_spCompMove->SetvwPos( GetvwPos() );
+	if( m_spCompMove->FrameMove( dt ) ) {
+		if( m_spCompMove->IsDisappear() )	// 바닥에 떨어져서 멈춤
 			m_timerAlpha.Set( 5.f );		// 5초후엔 자동으로 먹어짐
 	}
-	SetvwPos( m_compBounce.GetvwPos() );
+	SetvwPos( m_spCompMove->GetvwPos() );
 	//
-	if( m_compBounce.GetState() == 1 ) {
+	if( m_spCompMove->IsDisappear() ) {
 		// 대기상태( 유닛이 닿으면 2로 바뀐다 )
 		// 동시에 먹은리소스아이콘과 +숫자로 얼마를 먹었는지 표시
 		// 리소스 종류가 여러개면 차례대로 올라온다.
@@ -1037,10 +963,10 @@ void XObjRes::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 	const auto _alpha = GetAlpha() * alpha;
 //	XCOLOR colText = XCOLOR_RGBA( 0, 255, 0, (BYTE)(255*_alpha) );
 	XCOLOR colText = XCOLOR_RGBA( 255, 255, 255, (BYTE)(255*_alpha) );
-	m_compFont.SetCol( colText );
+	m_spCompFont->SetCol( colText );
 //	const _tstring strText = XE::NtS( m_numRes );
 	XE::VEC2 vDrawLT = vPos + (XE::VEC2(-20,-30) * scale);
-	m_compFont.Draw( vDrawLT, scale );
+	m_spCompFont->Draw( vDrawLT, scale );
 
 }
 
@@ -1050,8 +976,9 @@ XObjResNum::XObjResNum( const XE::VEC3& vwPos, XGAME::xtResource resType, int nu
 
 {
 	Init();
-	m_compFont.Load( FONT_RESNUM, 18.f );
-	m_compFont.SetstrText( XE::NtS( num ) );
+	m_spCompFont = std::make_shared<XCompObjFont>();
+	m_spCompFont->Load( FONT_RESNUM, 18.f );
+	m_spCompFont->SetstrText( XE::NtS( num ) );
 	m_State = 2;
 	m_timerAlpha.Set( 1.5f );
 }
@@ -1091,8 +1018,8 @@ void XObjResNum::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha 
 	// 자원 개수를 표시
 	const auto _alpha = GetAlpha() * alpha;
 	XCOLOR colText = XCOLOR_RGBA( 0, 255, 0, (BYTE)( 255 * _alpha ) );
-	m_compFont.SetCol( colText );
+	m_spCompFont->SetCol( colText );
 	XE::VEC2 vDrawLT = vPos + ( XE::VEC2( -20, -30 ) * scale );
-	m_compFont.Draw( vDrawLT, scale );
+	m_spCompFont->Draw( vDrawLT, scale );
 
 }

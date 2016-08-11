@@ -102,7 +102,8 @@ XE_NAMESPACE_START( XSKILL )
 						xIVT_ATTACKED_TARGET_RADIUS,	///< 피격자반경
 						xIVT_ATTACKED_TARGET_SURROUND,	///< 피격자주변
 						xIVT_ATTACKED_TARGET_PARTY,	///< 피격자파티
-						xIVT_CURR_TARGET,			///< 현재타겟(공격타겟)
+						xIVT_CURR_TARGET,			///< 현재공격타겟(공격타겟)
+						xIVT_CURR_TARGET_PARTY,		///< 현재공격타겟파티
 						xIVT_ALL = 0xffffffff,				///< 모두(아군,적 포함. 발동대상우호로 필터링)
 						xIVT_RANDOM_PARTY = 99,			///< 랜덤파티
 	};

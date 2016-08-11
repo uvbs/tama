@@ -124,68 +124,68 @@
     </abil>
   </archer>
   <paladin>
-    <abil id="79" skill="quick_troops" icon="paladin_02.png" id_name="60097" id_desc="60098" tier="1" max_point="5" posx="245" posy="315">
+    <abil id="79" skill="quick_troops" id_name="60097" id_desc="60098" tier="1" max_point="5" posx="245" posy="315">
       <parent node="0" />
       <child node="86" />
     </abil>
-    <abil id="80" skill="morale" icon="paladin_01.png" id_name="60091" id_desc="60092" tier="1" max_point="5" posx="140" posy="315">
+    <abil id="80" skill="morale" id_name="60091" id_desc="60092" tier="1" max_point="5" posx="140" posy="315">
       <parent node="0" />
       <child node="82" />
     </abil>
-    <abil id="81" skill="cutting_lance" icon="paladin_03.png" id_name="60099" id_desc="60100" tier="1" max_point="5" posx="350" posy="315">
+    <abil id="81" skill="cutting_lance" id_name="60099" id_desc="60100" tier="1" max_point="5" posx="350" posy="315">
       <parent node="0" />
       <child node="90" />
     </abil>
-    <abil id="82" skill="divine_protection" icon="paladin_04.png" id_name="60093" id_desc="60094" tier="2" max_point="5" posx="140" posy="252">
+    <abil id="82" skill="divine_protection" id_name="60093" id_desc="60094" tier="2" max_point="5" posx="140" posy="252">
       <parent node="80" />
       <child node="83" />
     </abil>
-    <abil id="83" skill="blessing" icon="paladin_07.png" id_name="60095" id_desc="60096" tier="3" max_point="5" posx="140" posy="189">
+    <abil id="83" skill="blessing" id_name="60095" id_desc="60096" tier="3" max_point="5" posx="140" posy="189">
       <parent node="82" />
       <child node="84" />
     </abil>
-    <abil id="84" skill="courage" icon="paladin_10.png" id_name="60109" id_desc="60110" tier="4" max_point="5" posx="140" posy="133">
+    <abil id="84" skill="courage" id_name="60109" id_desc="60110" tier="4" max_point="5" posx="140" posy="133">
       <parent node="83" />
       <child node="85" />
     </abil>
-    <abil id="85" skill="ordination_treatment" icon="paladin_13.png" id_name="60115" id_desc="60116" tier="5" max_point="5" posx="140" posy="77">
+    <abil id="85" skill="ordination_treatment" id_name="60115" id_desc="60116" tier="5" max_point="5" posx="140" posy="77">
       <parent node="84" />
     </abil>
-    <abil id="86" skill="capture" icon="paladin_05.png" id_name="60101" id_desc="60102" tier="2" max_point="5" posx="245" posy="259">
+    <abil id="86" skill="capture" id_name="60101" id_desc="60102" tier="2" max_point="5" posx="245" posy="259">
       <parent node="79" />
       <child node="87" />
       <child node="91" />
     </abil>
-    <abil id="87" skill="breakthrough" icon="paladin_08.png" id_name="60105" id_desc="60106" tier="3" max_point="5" posx="245" posy="196">
+    <abil id="87" skill="breakthrough" id_name="60105" id_desc="60106" tier="3" max_point="5" posx="245" posy="196">
       <parent node="86" />
       <parent node="90" />
       <child node="88" />
     </abil>
-    <abil id="88" skill="fire_lance" icon="paladin_11.png" id_name="60111" id_desc="60112" tier="4" max_point="5" posx="245" posy="140">
+    <abil id="88" skill="fire_lance" id_name="60111" id_desc="60112" tier="4" max_point="5" posx="245" posy="140">
       <parent node="87" />
       <child node="89" />
       <child node="93" />
     </abil>
-    <abil id="89" skill="wind_lance" icon="paladin_14.png" id_name="60117" id_desc="60118" tier="5" max_point="5" posx="245" posy="77">
+    <abil id="89" skill="wind_lance" id_name="60117" id_desc="60118" tier="5" max_point="5" posx="245" posy="77">
       <parent node="88" />
       <parent node="92" />
     </abil>
-    <abil id="90" skill="deadly_firstattack" icon="paladin_06.png" id_name="60103" id_desc="60104" tier="2" max_point="5" posx="350" posy="259">
+    <abil id="90" skill="deadly_firstattack" id_name="60103" id_desc="60104" tier="2" max_point="5" posx="350" posy="259">
       <parent node="81" />
       <child node="91" />
       <child node="87" />
     </abil>
-    <abil id="91" skill="flame_knight" icon="paladin_09.png" id_name="60107" id_desc="60108" tier="3" max_point="5" posx="350" posy="196">
+    <abil id="91" skill="flame_knight" id_name="60107" id_desc="60108" tier="3" max_point="5" posx="350" posy="196">
       <parent node="90" />
       <parent node="86" />
       <child node="92" />
     </abil>
-    <abil id="92" skill="horse_stomp" icon="paladin_12.png" id_name="60113" id_desc="60114" tier="4" max_point="5" posx="350" posy="140">
+    <abil id="92" skill="horse_stomp" id_name="60113" id_desc="60114" tier="4" max_point="5" posx="350" posy="140">
       <parent node="91" />
       <child node="93" />
       <child node="89" />
     </abil>
-    <abil id="93" skill="sacred_flame" icon="paladin_15.png" id_name="60119" id_desc="60120" tier="5" max_point="5" posx="350" posy="77">
+    <abil id="93" skill="sacred_flame" id_name="60119" id_desc="60120" tier="5" max_point="5" posx="350" posy="77">
       <parent node="92" />
       <parent node="88" />
     </abil>

@@ -721,35 +721,41 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		vDrawName = DrawName( vPos, scaleFactor, scale, vDrawHp );
 	}
 	if( /*IsHero() &&*/ IsLive() ) {
-//		vDrawName = DrawName( vPos, scaleFactor, scale, vDrawHp );
 		// 버프 디버프 아이콘 표시
 		{
 			int idx = 1;
 			for( auto pBuffObj : GetlistSkillRecvObj() ) {
 				// 이미 로딩한건지 검사.
-				auto pSkillDat = pBuffObj->GetpDat();
-				// 액티브 스킬만 표시한다(특성의 액티브발동효과는 idName이 없다)
-//				if( pSkillDat->IsActive() && pSkillDat->GetidName() ) {
-//			if( pSkillDat->IsActive() && !pSkillDat->GetstrIcon().empty() ) {
-//				if( pSkillDat->IsActive() ) {
+				auto pDat = pBuffObj->GetpDat();
 //				bool bDrawBuff = IsDrawBuff( pSkillDat );
 				// 버프중에서도 지속시간이 유한한 버프만 출력.
-				if( pSkillDat->IsBuffFinite() /*|| bDrawBuff*/ ) {
-					auto strIcon = pSkillDat->GetstrIcon();
+				bool bDraw = true;
+				// 유한한 지속시간이 없으면 안그림
+				if( !pDat->IsBuffFinite()	)
+					bDraw = false;
+				// 패시브 카테고리는 모두 안그림
+				if( pDat->IsPassiveCategory() )
+					bDraw = false;
+				// 특성일때는 발동스킬이 아니면 안그림
+				const bool bInvoke = pDat->IsTag( "invoke" );
+				if( pDat->IsAbilityCategory() && !bInvoke )  
+					bDraw = false;
+				if( bDraw ) {
+					auto strIcon = pDat->GetstrIcon();
 					if( strIcon.empty() ) {
 						strIcon = pBuffObj->GetstrIconByCaller();
 					}
 					XSurface *psfc = nullptr;
 					// 같은 종류가 두개걸렸을때는 하나만 표시한다.
 					for( auto& icon : m_aryBuffIcon ) {
-						if( icon.m_idSkill == pSkillDat->GetidSkill() ) {
+						if( icon.m_idSkill == pDat->GetidSkill() ) {
 							psfc = icon.m_psfcIcon;
 							break;
 						}
 					}
 					if( psfc == nullptr && !strIcon.empty() ) {
 						xIconBuff icon;
-						icon.m_idSkill = pSkillDat->GetidSkill();
+						icon.m_idSkill = pDat->GetidSkill();
 						icon.m_psfcIcon = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, strIcon ) );
 						psfc = icon.m_psfcIcon;
 						XBREAK( psfc == nullptr );
@@ -759,7 +765,8 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 						const auto bitCaster = pBuffObj->GetbitCampCaster();
 						if( m_Camp.IsEnemy( bitCaster ) )
 							psfc->SetColor( XCOLOR_RGBA(200,0,0,255) );
-						const float scaleBuff = (GetUnitSize() == xSIZE_SMALL)? 0.25f : 0.5f;
+						const float scaleBuff 
+							= (GetUnitSize() == xSIZE_SMALL && IsUnit() )? 0.25f : 0.5f;
 						const float scaleIcon = scaleBuff * scale;
 						const XE::VEC2 sizeIcon = psfc->GetSize() * scaleIcon;
 						XE::VEC2 vDrawBuffIcon = vPos;
@@ -767,7 +774,7 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 						vDrawBuffIcon.y = vDrawName.y - ( ( 2.f * scale ) + sizeIcon.h );
 						psfc->SetScale( scaleIcon );
 						psfc->Draw( vDrawBuffIcon );
-						if( pSkillDat->GetstrIdentifier() == _T( "invoke_protect" ) ) {
+						if( pDat->GetstrIdentifier() == _T( "invoke_protect" ) ) {
 							PUT_STRINGF_SMALL( vDrawBuffIcon + XE::VEC2(1,1), XCOLOR_WHITE, _T("%d"), m_cntShell );
 						}
 					}
@@ -875,8 +882,11 @@ void XBaseUnit::DrawDebugStr( XE::VEC2* pvLT, XCOLOR col, float sizeFont, const 
 
 bool XBaseUnit::IsDrawBuff( const XSkillDat* pDat )
 {
-	if( pDat->GetstrIdentifier() == _T("invoke_protect") )
+	// 특성이어도 발동스킬들은 버프를 표시한다.
+	if( pDat->IsTag( "invoke" ) )
 		return true;
+// 	if( pDat->GetstrIdentifier() == _T("invoke_protect") )
+// 		return true;
 	return false;
 }
 /**
@@ -1050,11 +1060,14 @@ XObjArrow* XBaseUnit::ShootArrow( XSPUnit& spTarget,
 	bool bFrozenArrow = false;
 	// 냉기폭발화살이 발동되었는지 확인.
 	XARRAYLINEARN_LOOP_AUTO( m_aryInvokeSkillByAttack, &eff ) {
-		if( eff.pDat->GetstrIdentifier() == _T( "chill_blast_arrow" ) )
+		if( eff.pDat->GetstrIdentifier() == _T( "chill_blast_arrow" ) ) {
 			bFrozenArrow = true;
+			break;
+		}
 	} END_LOOP;
-	if( bFrozenArrow )
-		strSpr = _T( "arrow2.spr" );
+	if( bFrozenArrow ) {
+		strSpr = _T( "arrow2.spr" );		// 냉기화살
+	}
 	// 메인 화살
 	auto pArrow = new XObjArrow( GetpWndWorld(),
 																GetThisUnit(),
@@ -1112,7 +1125,7 @@ XObjArrow* XBaseUnit::ShootArrow( XSPUnit& spTarget,
 			}
 		}
 	}
-	if( IsHero() && IsRange() ) {
+	if( IsRange() ) {
 		// 조준사격버프가 있을때
 		pBuff = FindBuffSkill(_T("aim_shoot"));
 		if( pBuff ) {
@@ -1155,17 +1168,11 @@ void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 	const bool bMiss = (bitAttrHit & xBHT_HIT) == 0;
 	const bool bPoison = (bitAttrHit & xBHT_POISON) != 0;
 	const auto damageOrig = damage;
-//	XSPWorldObj spAtkObj =  pAtkObj->GetThisConst();
-// 	XBaseUnit* pUnitAttacker = ( pAtkObj && pAtkObj->GetType() == xOT_UNIT )
-// 																			? SafeCast<const XBaseUnit*>( pAtkObj ) 
-// 																			: nullptr;
 	XSPUnit spUnitAtker = (spAtkObj)
 														? std::static_pointer_cast<XBaseUnit>( spAtkObj )
 														: nullptr;
 	// pUnitAtker는 const로 하고 공격자의 메시지큐객체만 mutable로 해서 메시지를 푸쉬할수 있게 한다.
-//	auto spMsgQAtker = std::static_pointer_cast<XMsgQ>( pUnitAttacker->GetspMsgQ() );
 	auto pUnitAttacker = spUnitAtker.get();
-//	auto spMsgQAtker = pUnitAttacker->GetspMsgQ();
 	if( IsDead() ) {
 		// 피격자가 죽었을때라도 스킬타입은 데미지를 표시함.
 		// 스킬(특성)타입 데미지일때 예외처리
@@ -1189,14 +1196,9 @@ void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 	} else {
 		ADD_LOG( m_strLog, "Damage:방어:%s 피해량:", GetstrcIds().c_str() );
 	}
-	// 공격자에게 "타격시"이벤트를 발생시킨다.
-// 	if( pUnitAttacker && !bBySkill ) {	// DoDamage()재귀호출이 일어날수 있으니 스킬에 의한 이벤트는 발생하지 않는다.
-// 		pUnitAttacker->OnAttackToDefender( this, damage, bCritical, ratioPenetration, typeDamage );
-// 	}
 	if( IsDead() )
 		return;
 // 	// 공격받은 데미지 누적(받는데미지는 방어자의 능력으로 보정되기전 순수 데미지를 누적한다.)
-// 	GetpStatObj()->AddDamageAttacked( GetHero()->GetsnHero(), damage );
 	// 맞는측에서 데미지 받는양보정값이 있으면 데미지를 보정시킴
 	ADD_LOG( m_strLog, "피해보정전:%.1f, 크리:%d, 피해타입:%d, ", damage, xboolToByte(bCritical), (int)typeDamage );
 	damage = GetAdjDamage( damage, bCritical, typeDamage, attrDamage );
@@ -1275,10 +1277,8 @@ void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 			const ID snHero = pUnitAttacker->GetsnHero();
 			float d = ( m_HP < damage ) ? m_HP : damage;
 			// 공격한 데미지 누적. 공격데미지는 실제 입힌 데미지만 누적시킨다.
-//			auto pStatObj = const_cast<XStatistic*>( pUnitAttacker->GetpStatObj() );
 			auto pStatObj = pUnitAttacker->GetpStatObj();
 			pStatObj->AddDamageDeal( snHero, damage );
-//			pUnitAttacker->AddDamageDeal( d );
 			// 크리티컬로 입힌 데미지 누적
 			if( bCritical )
 				pStatObj->AddDamageDealByCritical( snHero, d );
@@ -1322,15 +1322,10 @@ void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 			if( XAPP->m_bDebugUnitImmortal && !IsHero() )
 				if( IsDead() )
 					m_HP = 1;
-			// 타격이나 피격옵션이 켜져있으면 출력.
-// 			if( XAPP->m_bDebugViewAttackedDamage || XAPP->m_bDebugViewDamage ) {		
-// 				bNumberEffect = true;
-//			}
 		}
 #endif
 		xnUnit::xDmg dmg( spAtkObj
 										, GetThisUnit(), damage, ratioPenetration, typeDamage, bitAttrHit, attrDamage, bCritical );
-//		OnDamage( pUnitAttacker, damage, bCritical, typeDamage, bitAttrHit );
 		OnDamage( dmg );
 	}
 	if( bBySkill ) {	// 스킬타입 데미지일때
@@ -1349,7 +1344,7 @@ void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 	}
 #endif // _CHEAT
 	// 크리거나 회피거나 즉사의경우는 무조건 메시지 표시
-	if( bNumberEffect || bCritical || bEvade || bVorpal || bImmune) {
+	if( bNumberEffect || bCritical || bEvade || bVorpal || bImmune || bMiss) {
 		BIT bitHit = bitAttrHit;
 		if( bCritical )
 			bitHit |= xBHT_CRITICAL;
@@ -1384,7 +1379,7 @@ void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 */
 void XBaseUnit::CreateDmgNum( float damage, BIT bitAttrHit )
 {
-	xtHit typeHit = xHT_HIT;
+	xtHit typeHit = (bitAttrHit & xBHT_HIT)? xHT_HIT : xHT_MISS;
 	if( bitAttrHit & xBHT_CRITICAL )
 		typeHit = xHT_CRITICAL;
 	else if( bitAttrHit & xBHT_EVADE )
@@ -2184,13 +2179,6 @@ XObjLoop* XBaseUnit::CreateSfxObj( XSKILL::xtPoint createPoint,
 
 
 
-
-	모든 유닛들 초반 특성들 한번씩 다 테스트해보고
-	구글버전으로 빌드.
-	버프 아이콘 변경
-
-
-
 	XBREAK( pSfx == NULL );
 	pSfx->SetDir( GetDir() );
 	if( XE::IsSame(szSpr, _T("sfx_frozen.spr")) ) {
@@ -2555,8 +2543,8 @@ XSkillReceiver* XBaseUnit::GetBaseTargetByCondition( XSkillDat *pSkillDat,
 															XGAME::xSIDE_OTHER,
 															bHighest );
 		if( spSquad != nullptr ) {
-			XBaseUnit *pUnit = spSquad->GetLiveMember();
-			return pUnit;
+			auto spUnit = spSquad->GetspLiveMember();
+			return spUnit.get();
 		}
 	} else
 	// 기준타겟리더
@@ -2577,7 +2565,7 @@ XSkillReceiver* XBaseUnit::GetBaseTargetByCondition( XSkillDat *pSkillDat,
 														xMETER_TO_PIXEL(999.f),
 														true );
 		if( spSquad != nullptr ) {
-			return spSquad->GetLiveMember();
+			return spSquad->GetspLiveMember().get();
 		}
 	}
 	return nullptr;
@@ -2731,12 +2719,21 @@ float XBaseUnit::GetEvadeRatio( XSKILL::xtDamage typeDamage, const XBaseUnit* pA
 }
 
 /**
+ @brief 적중율 
+*/
+float XBaseUnit::GetHitRate( XSPUnit spTarget )
+{
+	const float ratio = CalcAdjParam( 1.f, xADJ_HIT_RATE );
+	return ratio;
+}
+/**
  @brief 적중검사. 디폴트는 100%임
 */
 bool XBaseUnit::IsHit( XSPUnit spTarget )
 {
-	auto pAdj = GetAdjParam( xADJ_HIT_RATE );
-	float ratio = CalcAdjParam( 1.f, xADJ_HIT_RATE );
+//	auto pAdj = GetAdjParam( xADJ_HIT_RATE );
+//	float ratio = CalcAdjParam( 1.f, xADJ_HIT_RATE );
+	const float ratio = GetHitRate( spTarget );
 	if( ratio < 1.f )	{
 		if( XE::IsTakeChance( ratio ) )
 			return true;
@@ -2792,8 +2789,10 @@ float XBaseUnit::hardcode_OnToDamage( XSPUnit& spTarget, float damage, XGAME::xt
 		if( pBuff ) {
 			auto pEffect = pBuff->GetEffectIndex( 0 );
 			if( pEffect ) {
-				damage = GetAttackRangeDamage( m_spTarget.lock() )
-					* pEffect->invokeAbilityMin[ pBuff->GetLevel() ];
+				// 현재 damage는 근접데미지이므로 원거리 데미지로 교체하고 증폭시킴
+				damage = GetAttackRangeDamage( m_spTarget.lock() );
+				const auto abilMin = pEffect->GetAbilityMin( pBuff->GetLevel() );
+				damage *= abilMin;
 			}
 		}
 	}
@@ -3220,18 +3219,13 @@ float XBaseUnit::GetAttackMeleePower()
 	addRatio += GetAdjParam( XGAME::xADJ_ATTACK_MELEE_TYPE )->GetValPercent();
 	return CalcAdjParam( power, XGAME::xADJ_ATTACK, addRatio );
 }
+
 /**
- @brief 실제 타겟에게 가해지는 데미지를 얻는다
+ @brief 스킬보정치를 제외한 기본데미지
 */
-float XBaseUnit::GetAttackMeleeDamage( XSPUnit spTarget )
+float XBaseUnit::GetBaseAtkMeleeDmg()
 {
 	float damage = GetAttackMeleePower();
-	float addRatio = GetAddRatioDamage( spTarget );
-	// 추가로 더해질 피해율을 누적시켜둔다.
-	const auto oldDmg = damage;
-	damage = CalcAdjParam( damage, XGAME::xADJ_DAMAGE, addRatio );
-	ADD_LOG( m_strLog, "기본피해량:%.1f, 추가피해:+%.1f(%.1f%%)=%.1f, ", oldDmg, damage-oldDmg, addRatio * 100.f, damage );
-
 	auto gradeLegion = GetspLegionObj()->GetspLegion()->GetgradeLegion();
 	// 기본hp에 추가값이 있으면 곱한다. 엘리트나 레이드군단이라던가 보석광산으로 인해 곱해지는값이 변할수 있다.
 	float rateAtk = GetspLegionObj()->GetspLegion()->GetRateAtk();
@@ -3245,9 +3239,39 @@ float XBaseUnit::GetAttackMeleeDamage( XSPUnit spTarget )
 	const float rateAtkSq = GetpSquadObj()->GetpSquadron()->GetmulAtk();
 	XBREAK( rateAtkSq == 0 );
 	damage *= rateAtk * rateAtkSq;
+	return damage;
+}
+/**
+ @brief 실제 타겟에게 가해지는 데미지를 얻는다
+*/
+float XBaseUnit::GetAttackMeleeDamage( XSPUnit spTarget )
+{
+//	float damage = GetAttackMeleePower();
+	float damage = GetBaseAtkMeleeDmg();
+	// 스킬 보정치 추가
+	float addRatio = GetAddRatioDamage( spTarget );
+	// 추가로 더해질 피해율을 누적시켜둔다.
+	const auto oldDmg = damage;
+	damage = CalcAdjParam( damage, XGAME::xADJ_DAMAGE, addRatio );
+	ADD_LOG( m_strLog, "기본피해량:%.1f, 추가피해:+%.1f(%.1f%%)=%.1f, ", oldDmg, damage-oldDmg, addRatio * 100.f, damage );
+
+// 	auto gradeLegion = GetspLegionObj()->GetspLegion()->GetgradeLegion();
+// 	// 기본hp에 추가값이 있으면 곱한다. 엘리트나 레이드군단이라던가 보석광산으로 인해 곱해지는값이 변할수 있다.
+// 	float rateAtk = GetspLegionObj()->GetspLegion()->GetRateAtk();
+// 	if( gradeLegion != XGAME::xGL_NORMAL && rateAtk == 1.f ) {
+// 		// 정예나 레이드인데 배수가 지정되지 않으면 디폴트 배수를 사용함.
+// 		if( gradeLegion == XGAME::xGL_ELITE )
+// 			rateAtk = RATE_ATK_DEFAULT_ELITE;
+// 		else if( gradeLegion == XGAME::xGL_RAID )
+// 			rateAtk = RATE_ATK_DEFAULT_RAID;
+// 	}
+// 	const float rateAtkSq = GetpSquadObj()->GetpSquadron()->GetmulAtk();
+// 	XBREAK( rateAtkSq == 0 );
+// 	damage *= rateAtk * rateAtkSq;
 
 	return damage;
 }
+
 /**
  @brief 원거리공격력을 얻는다. 데미지와는 다르다.
 */
@@ -3275,16 +3299,13 @@ float XBaseUnit::GetAttackRangePower()
 	addRatio += GetAdjParam( XGAME::xADJ_ATTACK_RANGE_TYPE )->GetValPercent();
 	return CalcAdjParam( power, XGAME::xADJ_ATTACK, addRatio );
 }
+
 /**
- @brief 실제 가해지는 원거리 데미지를 얻는다.
+ @brief 스킬보정치를 제외한 기본데미지
 */
-float XBaseUnit::GetAttackRangeDamage( XSPUnit spTarget )
+float XBaseUnit::GetBaseAtkRangeDmg()
 {
 	float damage = GetAttackRangePower();
-	float addRatio = GetAddRatioDamage( spTarget );
-	const auto oldDmg = damage;
-	damage = CalcAdjParam( damage, XGAME::xADJ_DAMAGE, addRatio );
-	ADD_LOG( m_strLog, "기본피해량:%.1f, 추가피해:+%.1f(%.1f%%)=%.1f, ", oldDmg, damage - oldDmg, addRatio * 100.f, damage );
 	auto gradeLegion = GetspLegionObj()->GetspLegion()->GetgradeLegion();
 	// 기본hp에 추가값이 있으면 곱한다. 엘리트나 레이드군단이라던가 보석광산으로 인해 곱해지는값이 변할수 있다.
 	float rateAtk = GetspLegionObj()->GetspLegion()->GetRateAtk();
@@ -3299,6 +3320,34 @@ float XBaseUnit::GetAttackRangeDamage( XSPUnit spTarget )
 	const float rateAtkSq = pSq->GetmulAtk();
 	XBREAK( rateAtkSq == 0 );
 	damage *= rateAtk * rateAtkSq;
+	return damage;
+}
+/**
+ @brief 실제 가해지는 원거리 데미지를 얻는다.
+*/
+float XBaseUnit::GetAttackRangeDamage( XSPUnit spTarget )
+{
+//	float damage = GetAttackRangePower();
+	float damage = GetBaseAtkRangeDmg();
+	// 스킬보정치 추가
+	float addRatio = GetAddRatioDamage( spTarget );
+	const auto oldDmg = damage;
+	damage = CalcAdjParam( damage, XGAME::xADJ_DAMAGE, addRatio );
+	ADD_LOG( m_strLog, "기본피해량:%.1f, 추가피해:+%.1f(%.1f%%)=%.1f, ", oldDmg, damage - oldDmg, addRatio * 100.f, damage );
+// 	auto gradeLegion = GetspLegionObj()->GetspLegion()->GetgradeLegion();
+// 	// 기본hp에 추가값이 있으면 곱한다. 엘리트나 레이드군단이라던가 보석광산으로 인해 곱해지는값이 변할수 있다.
+// 	float rateAtk = GetspLegionObj()->GetspLegion()->GetRateAtk();
+// 	if( gradeLegion != XGAME::xGL_NORMAL && rateAtk == 1.f ) {
+// 		// 정예나 레이드인데 배수가 지정되지 않으면 디폴트 배수를 사용함.
+// 		if( gradeLegion == XGAME::xGL_ELITE )
+// 			rateAtk = RATE_ATK_DEFAULT_ELITE;
+// 		else if( gradeLegion == XGAME::xGL_RAID )
+// 			rateAtk = RATE_ATK_DEFAULT_RAID;
+// 	}
+// 	auto pSq = GetpSquadObj()->GetpSquadron();
+// 	const float rateAtkSq = pSq->GetmulAtk();
+// 	XBREAK( rateAtkSq == 0 );
+// 	damage *= rateAtk * rateAtkSq;
 	return damage;
 }
 
