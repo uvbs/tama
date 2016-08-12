@@ -13,9 +13,6 @@ XE_NAMESPACE_START( XSKILL )
 struct EFFECT	{
 	ID m_snEffect = 0;
 	// 시전
-
-	castTarget(시전대상)도 효과별로 있을필요가 없다. 그런데 시전범위는 효과별로 따로 쓸일이 있을까?
-
 //	xtCastTarget		castTarget;			// 시전대상-자신,타겟,지역,반경내,부채꼴,일직선,주변,파티,유닛전체,장군
 	xtTargetRangeType	castTargetRange;	// 시전범위
 	xtTargetCond		castTargetCond;		// 시전조건

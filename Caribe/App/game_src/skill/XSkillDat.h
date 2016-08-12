@@ -31,7 +31,8 @@ private:
 	xEffSfx m_CasterEff;		// 시전자 이펙트
 	xtJuncture m_castJuncture = xJC_NONE;			// 시전시점
 	xtWhenUse m_whenUse = xWC_NONE;	// 시전시점(스킬버튼(혹은AI)버튼을 눌렀을때 언제 UseSkill을 하는지에 대한. 0이면 버튼눌러사용하는스킬(=액티브)이 아니다.
-	xtBaseTarget m_baseTarget;	///< 기준타겟
+	xtBaseTarget m_baseTarget = xBST_SELF;	///< 기준타겟
+//	xtCastTarget m_castTarget = xCST_NONE;		///< 시전대상-자신,타겟,지역,반경내,부채꼴,일직선,주변,파티,유닛전체,장군
 	xtFriendshipFilt m_bitBaseTarget;	///< 기준타겟우호
 	xtBaseTargetCond m_condBaseTarget;	///< 기준타겟조건
 	float m_rangeBaseTargetCond;		///< 기준타겟조건범위
@@ -52,7 +53,7 @@ private:
 		m_idDesc = 0;
 		m_fCoolTime = 0;
 		m_idCastMotion = ACT_SKILL1;
-		m_baseTarget = xBST_SELF;
+//		m_baseTarget = xBST_SELF;
 		m_bitBaseTarget = xfNONESHIP;
 		m_condBaseTarget = xBTC_NONE;
 		m_rangeBaseTargetCond = 0;
@@ -94,6 +95,7 @@ public:
 	GET_ACCESSOR_CONST( const xEffSfx&, CastTargetEff );
 	GET_ACCESSOR_CONST( const xEffSfx&, invokeTargetEff );
 	GET_ACCESSOR_CONST( xtBaseTarget, baseTarget );
+//	GET_ACCESSOR_CONST( xtCastTarget, castTarget );
 	GET_ACCESSOR_CONST( xtFriendshipFilt, bitBaseTarget );
 	GET_ACCESSOR_CONST( xtBaseTargetCond, condBaseTarget );
 	GET_ACCESSOR_CONST( const xEffSfx&, ShootEff );
