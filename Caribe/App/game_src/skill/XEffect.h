@@ -13,12 +13,12 @@ XE_NAMESPACE_START( XSKILL )
 struct EFFECT	{
 	ID m_snEffect = 0;
 	// 시전
-//	xtCastTarget		castTarget;			// 시전대상-자신,타겟,지역,반경내,부채꼴,일직선,주변,파티,유닛전체,장군
+	xtCastTarget		castTarget;			// 시전대상-자신,타겟,지역,반경내,부채꼴,일직선,주변,파티,유닛전체,장군
 	xtTargetRangeType	castTargetRange;	// 시전범위
 	xtTargetCond		castTargetCond;		// 시전조건
 	xtFriendshipFilt	castfiltFriendship;		// 시전대상우호-모두,아군,적군,중립군
 	xtPlayerTypeFilt	castfiltPlayerType;	// 시전대상플레이어-인간/AI
-// 	xEffSfx m_CastTargetEff;						// 시전대상이펙트, 시전대상에 하나씩 이펙트가 생긴다.
+ 	xEffSfx m_CastTargetEff;						// 시전대상이펙트, 시전대상에 하나씩 이펙트가 생긴다.
 	XE::VEC2			castSize;				// 시전범위(반지름)/시전길이/시전폭
 	XArrayLinearN<float, XGAME::MAX_SKILL_LEVEL> arySecDuration;	// (시전)지속시간
 	xEffSfx m_PersistEff;					// 지속이펙트
@@ -51,7 +51,7 @@ struct EFFECT	{
 	float				secInvokeDOT;			// 발동주기(DOT뎀)
 	int					invokeNumApply;		// 적용대상수, 시전/발동효과가 적용될 개체수(0은 제한없음)
 	xEffSfx m_invokerEff;					// 발동자이펙트
-// 	xEffSfx m_invokeTargetEff;		// 발동대상이펙트
+ 	xEffSfx m_invokeTargetEff;		// 발동대상이펙트
 	ID					idInvokeSound;			// 발동사운드
 	//
 	BOOL				bDuplicate;			// 중복가능, 같은 버프/디버프가 두개이상 걸릴수 있는가. 물론 자기가 두개거는건 무조건 안되고 여러사람이 한타겟에 같은 스킬을 쓸때의 가능여부다

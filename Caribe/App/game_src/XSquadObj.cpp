@@ -73,19 +73,19 @@ XSquadObj::XSquadObj( XSPLegionObj spLegionObj,
 		auto pNode = XPropTech::sGet()->GetpNodeBySkill( XGAME::xUNIT_PALADIN, _T( "breakthrough" ) );
 		m_lvBreakThrough = pHero->GetLevelAbil( XGAME::xUNIT_PALADIN, pNode->idNode );
 		if( m_lvBreakThrough > 0 ) {
-			m_pBreakThrough = SKILL_MNG->FindByIdentifier(_T("breakthrough"));
+			m_pBreakThrough = SKILL_MNG->FindByIds(_T("breakthrough"));
 			XBREAK( m_pBreakThrough == nullptr );
 		}
 		pNode = XPropTech::sGet()->GetpNodeBySkill( XGAME::xUNIT_PALADIN, _T( "flame_knight" ) );
 		m_lvFlameKnight = pHero->GetLevelAbil( XGAME::xUNIT_PALADIN, pNode->idNode );
 		if( m_lvFlameKnight >= 0 ) {
-			m_pFlameKnight = SKILL_MNG->FindByIdentifier(_T("flame_knight"));
+			m_pFlameKnight = SKILL_MNG->FindByIds(_T("flame_knight"));
 			XBREAK( m_pFlameKnight == nullptr );
 		}
 		pNode = XPropTech::sGet()->GetpNodeBySkill( XGAME::xUNIT_PALADIN, _T( "courage" ) );
 		m_lvCourage = pHero->GetLevelAbil( XGAME::xUNIT_PALADIN, pNode->idNode );
 		if( m_lvCourage >= 0 ) {
-			m_pCourage = SKILL_MNG->FindByIdentifier(_T("courage"));
+			m_pCourage = SKILL_MNG->FindByIds(_T("courage"));
 			XBREAK( m_pCourage == nullptr );
 		}
 	}
@@ -683,7 +683,7 @@ void XSquadObj::ProcessHardcode( float dt )
 				// 					auto pAbil = GetAccount()->GetAbilNode( XGAME::xUNIT_PALADIN, pNode->idNode );
 				if( point > 0 )
 				{
-					auto pSkillDat = SKILL_MNG->FindByIdentifier( szAbil );
+					auto pSkillDat = SKILL_MNG->FindByIds( szAbil );
 					if( XASSERT( pSkillDat ) )
 					{
 						auto pEffect = pSkillDat->GetEffectByIdx( 0 );
@@ -739,7 +739,7 @@ int XSquadObj::GetLevelByAbil( XGAME::xtUnit unit, ID idAbil )
 float XSquadObj::GetInvokeRatioAbil( LPCTSTR sid, XGAME::xtUnit unit )
 {
 	// 이함수가 꼭 필요한가.
-	auto pSkillDat = SKILL_MNG->FindByIdentifier( sid );
+	auto pSkillDat = SKILL_MNG->FindByIds( sid );
 	if( pSkillDat == nullptr )
 		return 0;
 	int level = 0;

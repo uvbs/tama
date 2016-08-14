@@ -478,9 +478,11 @@ int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
 			costSum += spUnit->GetSizeCost();		// 배열에 들어간 유닛들의 토탈코스트
 		} // in radius
 	} // for
-	// 목표코스트를 다 못채웠으면 랜덤으로 뽑아낼필요 없음.
-	if( costSum <= numCost )
+	// 목표코스트를 다 채우지 못했거나 딱맞게 채웠을때는 전체 리스트에서 랜덤으로 뽑을필요가 없으므로 그냥 검색된 리스트를 모두 리턴한다.
+	if( costSum <= numCost ) {
+		*pOutAry = aryIn;
 		return pOutAry->Size();
+	}
 	int currCost = numCost;
 // 	XVector<XSPUnit> ary = *pOutAry;
 // 	pOutAry->Clear();

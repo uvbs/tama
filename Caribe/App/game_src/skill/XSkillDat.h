@@ -39,9 +39,10 @@ private:
 	xEffSfx m_TargetEff;					// 타겟이펙트, 기준타겟에 생성되는 이펙트
 	xEffSfx m_ShootEff;				///< 슈팅이펙트
 	xEffSfx m_ShootTargetEff;			///< 슈팅타겟이펙트
-	xEffSfx m_CastTargetEff;			// 시전대상이펙트, 시전대상에 하나씩 이펙트가 생긴다.(효과가 여러개 있을때 효과마다 이펙트가 생길필요는 없을거 같아 이쪽으로 옮김)
-	xEffSfx m_invokeTargetEff;		// 발동대상이펙트, 발동대상에 하나씩 이펙트가 생긴다.(효과가 여러개 있을때 효과마다 이펙트가 생길필요는 없을거 같아 이쪽으로 옮김)
+//	xEffSfx m_CastTargetEff;			// 시전대상이펙트, 시전대상에 하나씩 이펙트가 생긴다.(효과가 여러개 있을때 효과마다 이펙트가 생길필요는 없을거 같아 이쪽으로 옮김)
+//	xEffSfx m_invokeTargetEff;		// 발동대상이펙트, 발동대상에 하나씩 이펙트가 생긴다.(효과가 여러개 있을때 효과마다 이펙트가 생길필요는 없을거 같아 이쪽으로 옮김)
 	_tstring m_strShootObj;				// 발사체
+	xtMoving m_MoveType = xMT_STRAIGHT;
 	ID m_idShootObj = 1;			// 발사체id
 	float m_shootObjSpeed = 0.6f;		// 발사체속도
 	int m_Debug = 0;
@@ -61,27 +62,33 @@ private:
 		// EFFECT구조체 초기화시킬때 memset으로 밀지말것. 스크립트클래스들어갈 가능성 있음
 	}
 	void Destroy ();
-	BOOL ReplaceAbility( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut );
-	BOOL ReplaceDuration( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut );
-	BOOL ReplaceInvokeRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut );
-	bool ReplaceInvokeApplyRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut );
-	BOOL ReplaceRadius( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut );
+	BOOL ReplaceAbility( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut ) const;
+	BOOL ReplaceDuration( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut ) const;
+	BOOL ReplaceInvokeRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut ) const;
+	bool ReplaceInvokeApplyRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut ) const;
+	BOOL ReplaceRadius( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut ) const;
 	void ReplaceToken( int idxEffect
 									, const EFFECT* pEffect
 									, int lvSkill
-									, _tstring* pOut );
+									, _tstring* pOut ) const;
 	void ReplaceTokenEach( int idParam
 											, const _tstring& strToken
 											, const EFFECT* pEffect
 											, int lvSkill
-											, _tstring* pOut );
+											, _tstring* pOut ) const;
 	SET_ACCESSOR( XSKILL::xCastMethod, CastMethod );
 public:
 	XSkillDat(void) { Init(); }
 	virtual ~XSkillDat(void) { Destroy(); }
 	// get/set
 	GET_SET_ACCESSOR_CONST( const _tstring&, strIdentifier );
+	inline const _tstring& GetIds() const {
+		return m_strIdentifier;
+	}
 	GET_SET_ACCESSOR_CONST( ID, idSkill );
+	inline ID getid() const {
+		return m_idSkill;
+	}
 	GET_SET_ACCESSOR_CONST(ID, idName );
 	GET_SET_ACCESSOR_CONST(ID, idDesc );
 	GET_SET_ACCESSOR_CONST( float, fCoolTime );
@@ -92,8 +99,8 @@ public:
 	GET_SET_ACCESSOR_CONST( ID, idCastMotion );
 	GET_ACCESSOR_CONST( const xEffSfx&, CasterEff );
 	GET_ACCESSOR_CONST( const xEffSfx&, TargetEff );
-	GET_ACCESSOR_CONST( const xEffSfx&, CastTargetEff );
-	GET_ACCESSOR_CONST( const xEffSfx&, invokeTargetEff );
+//	GET_ACCESSOR_CONST( const xEffSfx&, CastTargetEff );
+//	GET_ACCESSOR_CONST( const xEffSfx&, invokeTargetEff );
 	GET_ACCESSOR_CONST( xtBaseTarget, baseTarget );
 //	GET_ACCESSOR_CONST( xtCastTarget, castTarget );
 	GET_ACCESSOR_CONST( xtFriendshipFilt, bitBaseTarget );
@@ -105,6 +112,7 @@ public:
 	GET_ACCESSOR_CONST( ID, idShootObj );
 	GET_ACCESSOR_CONST( float, shootObjSpeed );
 	GET_ACCESSOR_CONST( xtWhenUse, whenUse );
+	GET_ACCESSOR_CONST( xtMoving, MoveType );
 	inline bool IsShootingType() const {
 		return !m_strShootObj.empty();
 	}
@@ -154,8 +162,8 @@ public:
 		XBREAK( m_listEffects.size() == 0 );
 		return *(m_listEffects.GetpByIndexConst( idx ));
 	}
-	void GetSkillDesc( _tstring *pOut, int level );
-	inline void GetstrDesc( _tstring *pOut, int level ) {
+	void GetSkillDesc( _tstring *pOut, int level ) const;
+	inline void GetstrDesc( _tstring *pOut, int level ) const {
 		GetSkillDesc( pOut, level );
 	}
 	inline LPCTSTR GetstrName() const {
@@ -178,7 +186,7 @@ public:
 	void DeSerialize( XArchive& ar, int );
 	float GetDuration( int lv );
 private:
-	bool ReplaceParam( const EFFECT *pEffect, int idxParam, LPCTSTR szToken, _tstring *pOut );
+	bool ReplaceParam( const EFFECT *pEffect, int idxParam, LPCTSTR szToken, _tstring *pOut ) const;
 	// virtual
 friend class XESkillMng;
 };

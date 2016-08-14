@@ -24,7 +24,7 @@ void XSkillDat::Destroy()
 /**
  @brief #능력치# 부분을 abilityMin값으로 변경해서 스트링을 만든다
 */
-void XSkillDat::GetSkillDesc( _tstring *pOut, int level )
+void XSkillDat::GetSkillDesc( _tstring *pOut, int level ) const
 {
 	if( pOut->empty() )
 		*pOut = XTEXT( m_idDesc );
@@ -35,7 +35,7 @@ void XSkillDat::GetSkillDesc( _tstring *pOut, int level )
 		BOOL bReplacedProb = FALSE;
 		BOOL bReplacedRadius = FALSE;
 		if( !pEffect->strInvokeSkill.empty() ) {
-			auto pDat = XESkillMng::sGet()->FindByIdentifier( pEffect->strInvokeSkill );
+			auto pDat = XESkillMng::sGet()->FindByIds( pEffect->strInvokeSkill );
 			if( pDat )
 				pDat->GetSkillDesc( pOut, level );
 		}
@@ -49,7 +49,7 @@ void XSkillDat::GetSkillDesc( _tstring *pOut, int level )
 void XSkillDat::ReplaceToken( int idxEffect
 														, const EFFECT* pEffect
 														, int lvSkill
-														, _tstring* pOut )
+														, _tstring* pOut ) const
 {
 	XVector<_tstring> aryToken;
 	if( idxEffect == 0 ) {
@@ -85,7 +85,7 @@ void XSkillDat::ReplaceTokenEach( int idParam
 																, const _tstring& strToken
 																, const EFFECT* pEffect
 																, int lvSkill
-																, _tstring* pOut )
+																, _tstring* pOut ) const
 {
 	switch( idParam ) {
 	case 1:
@@ -115,7 +115,7 @@ void XSkillDat::ReplaceTokenEach( int idParam
 
 
 
-BOOL XSkillDat::ReplaceAbility( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut )
+BOOL XSkillDat::ReplaceAbility( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut ) const
 {
 	_tstring::size_type idxStart = pOut->find( szToken );	// #ability#의 시작인덱스
 	if( pEffect->invokeAbilityMin.size() == 0 )
@@ -158,7 +158,7 @@ BOOL XSkillDat::ReplaceAbility( const EFFECT *pEffect, LPCTSTR szToken, int leve
 	return TRUE;
 }
 
-BOOL XSkillDat::ReplaceDuration( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut )
+BOOL XSkillDat::ReplaceDuration( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut ) const
 {
 	_tstring::size_type idxStart = pOut->find( szToken );	// #ability#의 시작인덱스
 	if( pEffect->arySecDuration.size() == 0 )
@@ -178,7 +178,7 @@ BOOL XSkillDat::ReplaceDuration( const EFFECT *pEffect, LPCTSTR szToken, int lev
 	return TRUE;
 }
 
-BOOL XSkillDat::ReplaceInvokeRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut )
+BOOL XSkillDat::ReplaceInvokeRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut ) const
 {
 	_tstring::size_type idxStart = pOut->find( szToken );	// #ability#의 시작인덱스
 	if( pEffect->aryInvokeRatio.size() == 0 )
@@ -197,7 +197,7 @@ BOOL XSkillDat::ReplaceInvokeRatio( const EFFECT *pEffect, LPCTSTR szToken, int 
 	return TRUE;
 }
 
-bool XSkillDat::ReplaceInvokeApplyRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut )
+bool XSkillDat::ReplaceInvokeApplyRatio( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut ) const
 {
 	_tstring::size_type idxStart = pOut->find( szToken );	// #XXXXX#의 시작인덱스
 	if( pEffect->m_aryInvokeApplyRatio.size() == 0 )
@@ -216,7 +216,7 @@ bool XSkillDat::ReplaceInvokeApplyRatio( const EFFECT *pEffect, LPCTSTR szToken,
 	return true;
 }
 
-BOOL XSkillDat::ReplaceRadius( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut )
+BOOL XSkillDat::ReplaceRadius( const EFFECT *pEffect, LPCTSTR szToken, int level, _tstring *pOut ) const
 {
 	_tstring::size_type idxStart = pOut->find( szToken );	// #ability#의 시작인덱스
 	float radius = pEffect->GetInvokeSize( level );
@@ -237,7 +237,7 @@ BOOL XSkillDat::ReplaceRadius( const EFFECT *pEffect, LPCTSTR szToken, int level
 	return TRUE;
 }
 
-bool XSkillDat::ReplaceParam( const EFFECT *pEffect, int idxParam, LPCTSTR szToken, _tstring *pOut )
+bool XSkillDat::ReplaceParam( const EFFECT *pEffect, int idxParam, LPCTSTR szToken, _tstring *pOut ) const
 {
 	XBREAK( idxParam < 0 || idxParam >= XNUM_ARRAY(pEffect->dwParam) );
 	_tstring::size_type idxStart = pOut->find( szToken );	// #XXXXX#의 시작인덱스
@@ -266,8 +266,7 @@ void EFFECT::Serialize( XArchive& ar ) const {
 	ar << (char)numOverlap;
 	ar << (char)invokeNumApply;
 
-//	ar << m_CasterEff;
-//	ar << m_CastTargetEff;
+	ar << m_CastTargetEff;
 	ar << castSize;
 	ar << arySecDuration;
 	ar << m_PersistEff;
@@ -294,7 +293,7 @@ void EFFECT::Serialize( XArchive& ar ) const {
 	ar << _invokeSize;
 	ar << aryInvokeSize;
 	ar << secInvokeDOT;
-//	ar << m_invokeTargetEff;
+	ar << m_invokeTargetEff;
 	ar << m_invokerEff;
 	ar << idInvokeSound;
 	ar << strCreateObj;
@@ -326,8 +325,7 @@ void EFFECT::DeSerialize( XArchive& ar, int ) {
 	ar >> c0;		numOverlap = c0;
 	ar >> c0;		invokeNumApply = c0;
 
-//	ar >> m_CasterEff;
-//	ar >> m_CastTargetEff;
+	ar >> m_CastTargetEff;
 	ar >> castSize;
 	ar >> arySecDuration;
 	ar >> m_PersistEff;
@@ -354,7 +352,7 @@ void EFFECT::DeSerialize( XArchive& ar, int ) {
 	ar >> _invokeSize;
 	ar >> aryInvokeSize;
 	ar >> secInvokeDOT;
-//	ar >> m_invokeTargetEff;
+	ar >> m_invokeTargetEff;
 	ar >> idInvokeSound;
 	ar >> strCreateObj;
 	ar >> idCreateObj;
@@ -394,8 +392,8 @@ void XSkillDat::Serialize( XArchive& ar ) const
 	ar << m_TargetEff;
 	ar << m_ShootEff;
 	ar << m_ShootTargetEff;
-	ar << m_CastTargetEff;
-	ar << m_invokeTargetEff;
+//	ar << m_CastTargetEff;
+//	ar << m_invokeTargetEff;
 	ar << m_strShootObj;
 	ar << m_idShootObj;
 	ar << m_shootObjSpeed;
@@ -428,8 +426,8 @@ void XSkillDat::DeSerialize( XArchive& ar, int ver )
 	ar >> m_TargetEff;
 	ar >> m_ShootEff;
 	ar >> m_ShootTargetEff;
-	ar >> m_CastTargetEff;
-	ar >> m_invokeTargetEff;
+// 	ar >> m_CastTargetEff;
+// 	ar >> m_invokeTargetEff;
 	ar >> m_strShootObj;
 	ar >> m_idShootObj;
 	ar >> m_shootObjSpeed;

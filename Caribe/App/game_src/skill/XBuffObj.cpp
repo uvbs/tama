@@ -171,10 +171,12 @@ void XBuffObj::OnAttackToDefender( XSkillReceiver *pDefender,
 
 /**
  @brief 발동시점 범용 이벤트 처리기
+ @return 효과가 하나라도 적용되었다면 true를 리턴한다.
 */
-void XBuffObj::OnEventJunctureCommon( ID idEvent, DWORD dwParam, const XSkillReceiver *pRecvParam )
+bool XBuffObj::OnEventJunctureCommon( ID idEvent, DWORD dwParam, const XSkillReceiver *pRecvParam )
 {
-	LIST_LOOP( m_listEffectObjs, EFFECT_OBJ*, itor, pEffObj ) {
+	bool bApplied = false;
+	for( auto pEffObj : m_listEffectObjs ) {
 		EFFECT *pEffect = &pEffObj->m_effect;
 		if( pEffect->invokeJuncture == idEvent ) {
 			bool bApply = true;
@@ -184,18 +186,22 @@ void XBuffObj::OnEventJunctureCommon( ID idEvent, DWORD dwParam, const XSkillRec
 					if( m_numApply == 0 )
 						bApply = true;			// 최초한번만 적용.
 				}
-// 				if( dwParam > pEffect->dwParam[0] ) {
-// 					bApply = false;
-// 				} else {
-// 					XTRACE("temp");
-// 				}
 			} else
-			if( idEvent == xJC_DEAD )
+			if( idEvent == xJC_DEAD ) {
 				m_pOwner->SetpAttacker( const_cast<XSkillReceiver*>( pRecvParam ) );
-			if( bApply )
-				ApplyInvokeEffect( pEffect, m_Level, m_pOwner, nullptr, TRUE );
+			}
+			if( bApply ) {
+				if( ApplyInvokeEffect( pEffect,
+																m_Level,
+																m_pOwner,
+																nullptr,
+																TRUE ) ) {
+					bApplied = true;
+				}
+			}
 		}
-	} END_LOOP;
+	}
+	return bApplied;
 }
 
 /**
@@ -223,19 +229,19 @@ void XBuffObj::OnEventInvokeFromSkill( XSkillDat *pFromSkill,
 /**
  @brief 평타공격이 시작되기전에 호출된다.
 */
-void XBuffObj::OnEventBeforeAttack( XSKILL::xtJuncture event )
-
-{
-	LIST_LOOP( m_listEffectObjs, EFFECT_OBJ*, itor, pEffObj ) {
-		EFFECT *pEffect = &pEffObj->m_effect;
-		if( pEffect->invokeJuncture == event ) {
-			bool bSuccess = XSKILL::DoDiceInvokeRatio( pEffect, m_Level );
-			if( bSuccess && pEffect->invokeJuncture == XSKILL::xJC_RANGE_ATTACK_START )
-				if( m_pDelegate )
-					m_pDelegate->DelegateResultEventBeforeAttack( this, pEffect );
-		}
-	} END_LOOP;
-}
+// void XBuffObj::OnEventBeforeAttack( XSKILL::xtJuncture event )
+// {
+// 	LIST_LOOP( m_listEffectObjs, EFFECT_OBJ*, itor, pEffObj ) {
+// 		EFFECT *pEffect = &pEffObj->m_effect;
+// 		if( pEffect->invokeJuncture == event ) {
+// 			??
+// 			bool bSuccess = XSKILL::DoDiceInvokeRatio( pEffect, m_Level );
+// 			if( bSuccess && pEffect->invokeJuncture == xJC_RANGE_ATTACK_START )
+// 				if( m_pDelegate )
+// 					m_pDelegate->DelegateResultEventBeforeAttack( this, pEffect );
+// 		}
+// 	} END_LOOP;
+// }
 
 
 /**
@@ -255,7 +261,7 @@ int XBuffObj::ProcessApplyEffect( XSkillReceiver *pInvokeTarget,
 /**
  @brief 효과발동 동작의 일원화를 위한 최종 추상화 함수
 */
-void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
+bool XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 																	int level,
 																	XSkillReceiver *pCastingTarget,
 																	const char *cScript,
@@ -263,51 +269,56 @@ void XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 																	XVector<XSkillReceiver*> *pOutAryIvkTarget,
 																	BOOL bGetListMode )
 {
+	bool bApplied = false;
 	// 발동확률이 있으면 확률검사. 발동대상 개별적으로 확률적용을 하려면 발동적용확률을 사용해야한다.
 	const bool bProb = DoDiceInvokeRatio( pEffect, level );
-	if( bProb ) {
-		if( pEffect->m_invokerEff.IsHave() ) {
-			const float secPlay = 0.f;		// 1play. 발동자이펙트는 반복플레이가 없음.
-			m_pCaster->CreateSfx( m_pDat,
-														pEffect->m_invokerEff.m_strSpr,
-														pEffect->m_invokerEff.m_idAct,
-														pEffect->m_invokerEff.m_Point,
-														secPlay, XE::VEC2() );
+	if( !bProb )
+		return false;
+	if( pEffect->m_invokerEff.IsHave() ) {
+		const float secPlay = 0.f;		// 1play. 발동자이펙트는 반복플레이가 없음.
+		m_pCaster->CreateSfx( m_pDat,
+													pEffect->m_invokerEff.m_strSpr,
+													pEffect->m_invokerEff.m_idAct,
+													pEffect->m_invokerEff.m_Point,
+													secPlay, XE::VEC2() );
+	}
+	auto pCaster = GetpCaster();
+	// 발동대상들을 뽑음.
+	// 이부분 XSkillUser와 통합시킬수 있지 않을까?
+	XVector<XSkillReceiver*> aryIvkTarget;
+	int num = pCaster->GetInvokeTarget( &aryIvkTarget, m_pDat,
+																			level,
+																			pEffect->invokeTarget,
+																			pEffect,
+																			pCastingTarget,
+																			m_vCastPos );
+	if( aryIvkTarget.size() > 0 ) {
+		if( bGetListMode ) {
+			// 리스트를 받기만 하는 모드.
+			XBREAK( pOutAryIvkTarget == nullptr );
+			if( pOutAryIvkTarget )
+				*pOutAryIvkTarget = aryIvkTarget;
+			// 리스트모드로 호출됐으면 리스트만 받고 리턴
+			return false;
 		}
-		auto pCaster = GetpCaster();
-		// 발동대상들을 뽑음.
-		XVector<XSkillReceiver*> aryIvkTarget;
-		int num = pCaster->GetInvokeTarget( &aryIvkTarget, m_pDat,
-																				level,
-																				pEffect->invokeTarget,
-																				pEffect,
-																				pCastingTarget,
-																				m_vCastPos );
-		if( aryIvkTarget.size() > 0 ) {
-			if( bGetListMode ) {
-				// 리스트를 받기만 하는 모드.
-				XBREAK( pOutAryIvkTarget == nullptr );
-				if( pOutAryIvkTarget )
-					*pOutAryIvkTarget = aryIvkTarget;
-				// 리스트모드로 호출됐으면 리스트만 받고 리턴
-				return;
+		// 발동대상들에게 실제 스킬효과를 적용 
+		for( auto pInvokeTarget : aryIvkTarget ) {
+			const XE::VEC2 vZero;
+			if( pCaster->ApplyInvokeEffToIvkTarget( pInvokeTarget,
+																							m_pDat,
+																							pEffect,
+																							m_pOwner,		// invoker
+																							bCreateSfx != 0,
+																							m_Level,
+																							vZero,
+																							this ) ) {
+				bApplied = true;		// 한번이라도 적용이 되면 true
 			}
-			// 발동대상들에게 실제 스킬효과를 적용 
-			for( auto pInvokeTarget : aryIvkTarget ) {
-				const XE::VEC2 vZero;
-				pCaster->ApplyInvokeEffectToInvokeTarget( pInvokeTarget,
-																									m_pDat,
-																									pEffect,
-																									m_pOwner,		// invoker
-																									bCreateSfx != 0,
-																									m_Level,
-																									vZero,
-																									this );
-			}
-			++m_numApply;
-			// 발동대상들에게 실제 스킬효과를 적용 & 이벤트 스크립트 실행(루프안에서 pInvokeTarget->ApplyInvokeEffect()로 변경)
-		} // ary.size > 0 
-	} // bProb
+		}
+		++m_numApply;
+		// 발동대상들에게 실제 스킬효과를 적용 & 이벤트 스크립트 실행(루프안에서 pInvokeTarget->ApplyInvokeEffect()로 변경)
+	} // aryIvkTarget.size > 0 
+	return bApplied;
 }
 
 

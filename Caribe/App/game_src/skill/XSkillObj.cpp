@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#if 0
 #include "XSkillObj.h"
 //#include "xSkill.h"
 #include "SkillDef.h"
@@ -56,3 +57,4 @@ BOOL XSkillObj::IsSameCastMethod( xCastMethod castMethod ) const
 	return m_pDat->IsSameCastMethod( castMethod );
 }
 XE_NAMESPACE_END
+#endif // 0

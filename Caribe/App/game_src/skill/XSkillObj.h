@@ -4,6 +4,7 @@
 #include "etc/Timer.h"
 #include <list>
 
+#if 0
 XE_NAMESPACE_START( XSKILL )
 
 class XSkillDat;
@@ -51,3 +52,4 @@ public:
 XE_NAMESPACE_END
 
 
+#endif // 0

@@ -52,7 +52,7 @@ public:
 	virtual BOOL IsApplyBuff( XBuffObj *pBuff, XSkillReceiver *pCastingTarget, XSkillReceiver *pInvokeTarget ) { return TRUE;}
 	// secLife==0.f는 1번플레이
 	virtual ID OnCreateInvokeSFX( XBuffObj *pSkillRecvObj, EFFECT *pEffect, XSkillUser *pCaster, const XE::VEC2 *pvPos, LPCTSTR szSFX, ID idAct, xtPoint pointEffect, float secLife=0.f ) { return 0;}
-	virtual ID OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
+	virtual ID OnCreateSkillSfx( const XSKILL::XSkillDat *pSkillDat,
 																 XSKILL::xtPoint createPoint,
 																 LPCTSTR szSpr,
 																 ID idAct,
@@ -148,8 +148,8 @@ public:
 							float ratioPenetration, 
 							XSKILL::xtDamage typeDamage );
 	void OnSkillEventKillEnemy( ID idDead );
-	void OnEventJunctureCommon( ID idEvent, DWORD dwParam = 0, const XSkillReceiver *pRecvParam = nullptr );
-	void OnEventBeforeAttack( XSKILL::xtJuncture junc );
+	bool OnEventJunctureCommon( ID idEvent, DWORD dwParam = 0, const XSkillReceiver *pRecvParam = nullptr );
+//	void OnEventBeforeAttack( XSKILL::xtJuncture junc );
 	void OnEventInvokeFromSkill( XSkillDat *pFromSkill, const EFFECT *pFromEffect, XSkillUser *pCaster, XSkillReceiver *pBaseTarget );
 	virtual BOOL IsInvokeAddTarget( ID idAddTarget ) const { return FALSE; }
 	// this에게 pEffect가 발동이 될수 있는지 검사

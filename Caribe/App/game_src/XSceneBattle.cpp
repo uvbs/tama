@@ -816,8 +816,8 @@ void XSceneBattle::GetSquadInfoToAry( XSPSquad spSquad, XBaseUnit* pUnit, XVecto
 	pOut->Add( str );
 	auto spTargetUnit = pUnit->GetspTarget();
 	auto secAtk = pUnit->GetSpeedAttack( pUnit->GetspTarget() );
-	auto dmgMelee = pUnit->GetAttackMeleeDamage( spTargetUnit );
-	auto dmgRange = pUnit->GetAttackRangeDamage( spTargetUnit );
+	auto dmgMelee = pUnit->GetAttackMeleeDamage( spTargetUnit, true );
+	auto dmgRange = pUnit->GetAttackRangeDamage( spTargetUnit, true );
 	float dmgMeleeAdd = dmgMelee - pUnit->GetBaseAtkMeleeDmg();		// 버프보정으로 늘어난 데미지량
 	float dmgRangeAdd = dmgRange - pUnit->GetBaseAtkRangeDmg();
 	_tstring 

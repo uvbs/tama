@@ -18,8 +18,12 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 #define LCONSOLE( EXP, F, ... ) \
-			(((EXP)) ? (__xLogfTag( "skill", XLOGTYPE_LOG, _T("%s:")##_T(F), pSkillDat->GetstrIdentifier().c_str(), ##__VA_ARGS__), 1) : 0)
+			(((EXP)) ? (__xLogfTag( "skill", \
+															XLOGTYPE_LOG, \
+															XSTR(_T("%s:"),_T(F)), \
+															pSkillDat->GetstrIdentifier().c_str(), ##__VA_ARGS__), 1) : 0)
 
+//_T( "%s:" )##_T( F ), \
 
 XE_NAMESPACE_START( XSKILL )
 
@@ -168,9 +172,6 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 				} else
 					if( cFolderName[0] != '_' )		// 스킬이름이 _로 시작되면 읽지 않는다.
 					{
-						if( XE::IsSame( cFolderName, "chill_blast_arrow" ) ) {
-							int a = 0;
-						}
 						// 그외 폴더는 일단 스킬로 인식한다.
 						XSkillDat* pNewSkillDat = NULL;
 						pNewSkillDat = LoadSkill( pElemChild,
@@ -184,9 +185,6 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 		} while (( pElemChild = pElemChild->NextSiblingElement() ));
 	}
 	if( pSkillDat )	{
-		if( pSkillDat->GetstrIdentifier() == _T("chill_blast_arrow") )		{
-			int a = 0;
-		}
 		// "효과"블럭이 추가된게 있었으면 디폴트용으로 생성되었던 이펙트 블럭은 필요없으므로 지운다.
 		if( pSkillDat->GetNumEffect() > 0 ) {
 			SAFE_DELETE( pEffect );
@@ -274,11 +272,11 @@ XSkillDat* XESkillMng::CreateSkillDat( void )
 }
 
 // 변수이름 cAttrName을 분석해서 pSkillDat에 넣는다.
-BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr, 
-							const char *cAttrName,
-							const char *cParam,
-							XSkillDat* pSkillDat,
-							EFFECT *pEffect )
+BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr,
+															const char *cAttrName,
+															const char *cParam,
+															XSkillDat* pSkillDat,
+															EFFECT *pEffect )
 {
 	const std::string strAttrName = (cAttrName)? cAttrName : "";
 	if( XSAME( cAttrName, 4 ) )		// 이름
@@ -386,38 +384,38 @@ BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr,
 	{
 		pSkillDat->m_ShootTargetEff.m_idAct = (int)pAttr->IntValue();
 	} else
-	if( XSAME( cAttrName, 20 ) )	// 시전대상이펙트
-	{	
-		pSkillDat->m_CastTargetEff.m_strSpr = U82SZ( cParam );
-	} else
-	if( XSAME( cAttrName, 21 ) )	// 시전대상이펙트id
-	{	
-		pSkillDat->m_CastTargetEff.m_idAct = (int)pAttr->IntValue();
-	} else
-	if( XSAME( cAttrName, 261 ) )	// 시전대상이펙트반복
-	{
-		pSkillDat->m_CastTargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
-	} else
-	if( XSAME( cAttrName, 156 ) )	// 시전대상이펙트생성지점
-	{
-		pSkillDat->m_CastTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
-	} else
-	if( XSAME( cAttrName, 30 ) )	// 발동대상이펙트
-	{	
-		pSkillDat->m_invokeTargetEff.m_strSpr = U82SZ( cParam );
-	} else
-	if( XSAME( cAttrName, 31 )  )	// 발동대상이펙트id
-	{	
-		pSkillDat->m_invokeTargetEff.m_idAct = (int)pAttr->IntValue();
-	} else
-	if( XSAME( cAttrName, 157 ) )	// 발동대상이펙트생성지점
-	{
-		pSkillDat->m_invokeTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
-	} else
-	if( XSAME( cAttrName, 262 ) )	// 발동대상이펙트반복
-	{
-		pSkillDat->m_invokeTargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
-	} else
+// 	if( XSAME( cAttrName, 20 ) )	// 시전대상이펙트
+// 	{	
+// 		pSkillDat->m_CastTargetEff.m_strSpr = U82SZ( cParam );
+// 	} else
+// 	if( XSAME( cAttrName, 21 ) )	// 시전대상이펙트id
+// 	{	
+// 		pSkillDat->m_CastTargetEff.m_idAct = (int)pAttr->IntValue();
+// 	} else
+// 	if( XSAME( cAttrName, 261 ) )	// 시전대상이펙트반복
+// 	{
+// 		pSkillDat->m_CastTargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
+// 	} else
+// 	if( XSAME( cAttrName, 156 ) )	// 시전대상이펙트생성지점
+// 	{
+// 		pSkillDat->m_CastTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
+// 	} else
+// 	if( XSAME( cAttrName, 30 ) )	// 발동대상이펙트
+// 	{	
+// 		pSkillDat->m_invokeTargetEff.m_strSpr = U82SZ( cParam );
+// 	} else
+// 	if( XSAME( cAttrName, 31 )  )	// 발동대상이펙트id
+// 	{	
+// 		pSkillDat->m_invokeTargetEff.m_idAct = (int)pAttr->IntValue();
+// 	} else
+// 	if( XSAME( cAttrName, 157 ) )	// 발동대상이펙트생성지점
+// 	{
+// 		pSkillDat->m_invokeTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
+// 	} else
+// 	if( XSAME( cAttrName, 262 ) )	// 발동대상이펙트반복
+// 	{
+// 		pSkillDat->m_invokeTargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
+// 	} else
 	if( XSAME( cAttrName, 36 ) )	// 발사체
 	{	
 		pSkillDat->m_strShootObj = U82SZ( cParam );
@@ -429,6 +427,9 @@ BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr,
 	if( XSAME( cAttrName, 38 ) )	// 발사체속도
 	{	
 		pSkillDat->m_shootObjSpeed = (float)pAttr->DoubleValue();
+	} else
+	if( XSAME( cAttrName, 264 ) ) {	// 발사체이동
+		pSkillDat->m_MoveType = (xtMoving)ParsingParam( cParam );
 	} else
 	if( XE::IsSame(cAttrName, "debug") ) {
 		int a = pAttr->IntValue();
@@ -446,7 +447,9 @@ BOOL XESkillMng::ParsingAttr( TiXmlAttribute *pAttr,
 	return TRUE;
 }
 
-
+/**
+ @brief 
+*/
 BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 								const char *cAttrName,
 								const char *cParam,
@@ -458,16 +461,6 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 #endif
 	if( XSAME( cAttrName, 2 ) ) {	// 시전대상
 		pEffect->castTarget = (xtCastTarget) ParsingParam( cParam );
-		//
-// 		if( pEffect->castTarget == xCST_OTHER || 
-// 			pEffect->castTarget == xCST_TARGET_GROUND )
-// 				pSkillDat->SetUseType( xUST_TARGETTING );
-// 		else
-// 		if( pEffect->castTarget == xCST_GROUND ||
-// 			pEffect->castTarget == xCST_GROUND_RADIUS_OBJ )
-// 				pSkillDat->SetUseType( xUST_GROUND );
-// 		else
-// 			pSkillDat->SetUseType( xUST_IMMEDIATELY );	// 즉시사용
 	} else
 	if( XSAME( cAttrName, 15 ) )	// 시전대상 우호
 	{
@@ -485,22 +478,22 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	{
 		pEffect->castTargetRange = (xtTargetRangeType) ParsingParam( cParam );
 	} else
-// 	if( XSAME( cAttrName, 20 ) )	// 시전대상이펙트
-// 	{	
-// 		pEffect->m_CastTargetEff.m_strSpr = U82SZ( cParam );
-// 	} else
-// 	if( XSAME( cAttrName, 21 ) )	// 시전대상이펙트id
-// 	{	
-// 		pEffect->m_CastTargetEff.m_idAct = (int)pAttr->IntValue();
-// 	} else
-// 	if( XSAME( cAttrName, 261 ) )	// 시전대상이펙트반복
-// 	{
-// 		pEffect->m_CastTargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
-// 	} else
-// 	if( XSAME( cAttrName, 156 ) )	// 시전대상이펙트생성지점
-// 	{
-// 		pEffect->m_CastTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
-// 	} else
+	if( XSAME( cAttrName, 20 ) )	// 시전대상이펙트
+	{	
+		pEffect->m_CastTargetEff.m_strSpr = U82SZ( cParam );
+	} else
+	if( XSAME( cAttrName, 21 ) )	// 시전대상이펙트id
+	{	
+		pEffect->m_CastTargetEff.m_idAct = (int)pAttr->IntValue();
+	} else
+	if( XSAME( cAttrName, 261 ) )	// 시전대상이펙트반복
+	{
+		pEffect->m_CastTargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
+	} else
+	if( XSAME( cAttrName, 156 ) )	// 시전대상이펙트생성지점
+	{
+		pEffect->m_CastTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
+	} else
 	if( XSAME( cAttrName, 60 ) || XSAME( cAttrName, 127 ) )	// /시전범위 시전길이
 	{	
 		pEffect->castSize.w = (float)pAttr->DoubleValue();
@@ -580,6 +573,22 @@ BOOL XESkillMng::ParsingEffect( TiXmlAttribute *pAttr,
 	if( XSAME( cAttrName, 7 ) || XSAME( cAttrName, 161 ) )	// 발동파라메터/효과인덱스.
 	{	
 		pEffect->invokeParameter = (int)ParsingParam( cParam );
+	} else
+	if( XSAME( cAttrName, 30 ) )	// 발동대상이펙트
+	{	
+		pEffect->m_invokeTargetEff.m_strSpr = U82SZ( cParam );
+	} else
+	if( XSAME( cAttrName, 31 )  )	// 발동대상이펙트id
+	{	
+		pEffect->m_invokeTargetEff.m_idAct = (int)pAttr->IntValue();
+	} else
+	if( XSAME( cAttrName, 157 ) )	// 발동대상이펙트생성지점
+	{
+		pEffect->m_invokeTargetEff.m_Point = (xtPoint) ParsingParam( cParam );
+	} else
+	if( XSAME( cAttrName, 262 ) )	// 발동대상이펙트반복
+	{
+		pEffect->m_invokeTargetEff.m_Loop = (xtAniLoop)ParsingParam( cParam );
 	} else
 	if( XSAME( cAttrName, 228) )	// 증폭파라메터
 	{
@@ -834,7 +843,7 @@ void XESkillMng::AddConstant( void )
 	CONSTANT->Add( XSKTEXT(185), xTR_ONE );
 	CONSTANT->Add( XSKTEXT(186), xTR_CIRCLE );
 	CONSTANT->Add( XSKTEXT(62), xTR_LINE );
-	CONSTANT->Add( XSKTEXT(63), xTR_LINE );
+//	CONSTANT->Add( XSKTEXT(63), xTR_LINE );
 	CONSTANT->Add( XSKTEXT(145), xTR_FAN );
 	CONSTANT->Add( XSKTEXT(187), xTR_RECT );
 	CONSTANT->Add( XSKTEXT(188), xTR_GROUP );
@@ -857,6 +866,7 @@ void XESkillMng::AddConstant( void )
 	CONSTANT->Add( XSKTEXT(168), xJC_CLOSE_ATTACK );
 	CONSTANT->Add( XSKTEXT(234), xJC_RANGE_ATTACK_START );	// 원거리공격시
 	CONSTANT->Add( XSKTEXT(169), xJC_RANGE_ATTACK_ARRIVE );		// 원거리타격시
+	CONSTANT->Add( XSKTEXT(263), xJC_RANGE_ATK_NORMAL_REPLACEMENT );	// 원거리평타대체
 	CONSTANT->Add( XSKTEXT(170), xJC_LAST );
 	CONSTANT->Add( XSKTEXT(231), xJC_ARRIVE_TARGET );
 	CONSTANT->Add( XSKTEXT( 238 ), xJC_HP_UNDER );		// 체력이하
@@ -890,6 +900,9 @@ void XESkillMng::AddConstant( void )
 	CONSTANT->Add( XSKTEXT( 250 ), xWC_EVENT_IMMEDIATELY ); // 즉시
 	CONSTANT->Add( XSKTEXT( 251 ), xWC_BASE_TARGET_NEAR ); // 기준타겟근접
 	CONSTANT->Add( XSKTEXT( 252 ), xWC_ATTACK_TARGET_NEAR ); // 공격타겟근접
+	//
+	CONSTANT->Add( XSKTEXT( 265 ), xMT_STRAIGHT ); // 직선
+	CONSTANT->Add( XSKTEXT( 266 ), xMT_ARC ); // 포물선
 
 
 	// 사용자 정의로 추가할 상수 파라메터값
@@ -1010,7 +1023,7 @@ XSkillDat* XESkillMng::FindByRandomPassive( void )
 	return ary.GetFromRandom();
 }
 
-XSkillDat* XESkillMng::FindByIdentifier( LPCTSTR szIdentifier )
+XSkillDat* XESkillMng::FindByIds( LPCTSTR szIdentifier ) const
 {
 	if( XE::IsEmpty(szIdentifier) )
 		return nullptr;

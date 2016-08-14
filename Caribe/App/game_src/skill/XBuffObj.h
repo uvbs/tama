@@ -138,17 +138,17 @@ public:
 							XSKILL::xtDamage typeDamage );
 	void OnSkillEventKillEnemy( XSkillReceiver *pOwner, ID idDead );
 	void OnCastedEffect( XSkillReceiver *pOwner, EFFECT_OBJ *pEffObj );
-	void OnEventJunctureCommon( ID idEvent, DWORD dwParam = 0, const XSkillReceiver *pRecvParam = nullptr );
-	void OnEventBeforeAttack( XSKILL::xtJuncture event );
+	bool OnEventJunctureCommon( ID idEvent, DWORD dwParam = 0, const XSkillReceiver *pRecvParam = nullptr );
+//	void OnEventBeforeAttack( XSKILL::xtJuncture event );
 	void OnEventInvokeFromSkill( XSkillDat *pFromSkill, const EFFECT *pFromEffect, XSkillUser *pCaster, XSkillReceiver *pBaseTarget );
 	// 효과발동 동작의 일원화를 위한 최종 추상화 함수
-	void ApplyInvokeEffect( EFFECT *pEffect, 
-							int level, 
-							XSkillReceiver *pOwner, 
-							const char *cScript, 
-							BOOL bCreateSfx,
-							XVector<XSkillReceiver*> *pOutAryIvkTarget = nullptr, 
-							BOOL bGetListMode=FALSE );
+	bool ApplyInvokeEffect( EFFECT *pEffect,
+													int level,
+													XSkillReceiver *pOwner,
+													const char *cScript,
+													BOOL bCreateSfx,
+													XVector<XSkillReceiver*> *pOutAryIvkTarget = nullptr,
+													BOOL bGetListMode = FALSE );
 	void AddImmunity( ID idObj ) {
 		m_listImmunity.Add( idObj );
 	}

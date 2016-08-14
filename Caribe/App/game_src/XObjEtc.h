@@ -42,8 +42,8 @@ protected:
 	XE::VEC3 m_vSrc;
 	CTimer m_timerLife;
 	float m_secLife;			// 날아가는 시간
-	UnitPtr m_spOwner;
-	UnitPtr m_spTarget;
+	XSPUnit m_spOwner;
+	XSPUnit m_spTarget;
 	float m_Damage;			///< 발사체가 도달해서 타겟에게 전해줄 데미지
 	float m_meterRadius = 0.f;			///< damage가 범위공격이라면 그 범위. 0은 단일공격
 	float m_ratioDamageSplash = 0.f;	///< 광역데미지의 데미지율(m_Damage에 따른)
@@ -55,36 +55,36 @@ protected:
 	XE::VEC3 m_vOffset;		///< 타겟위치에 약간씩 변화를 주고싶을때 오프셋을 준다.
 	_tstring m_strIdentifier;		///< OnArriveBullet등에서 사용하는 총알 고유 식별자.
 //	XArrayLinearN<_tstring,4> m_aryInvokeSkill;		///< 발사체가 목표에 도달한 후 발동될 발동스킬. 발동스킬을 여러개가 한꺼번에 붙을수 있으므로 복수로 했다.
-	XVector<_tstring> m_aryInvokeSkill;
+	XVector<_tstring> m_aryInvokeSkill;		//더이상 이방식으로 궁수특성을 구현하지 않음. 일반적인 발동에 사용하기 위해 남겨둠.
 	bool m_bCritical = false;
 	//
-	GET_ACCESSOR( CTimer&, timerLife );
-	GET_ACCESSOR( UnitPtr&, spOwner );
-	GET_ACCESSOR( const XE::VEC3&, vSrc );
-	GET_ACCESSOR( float, Damage );
+	GET_ACCESSOR_CONST( const CTimer&, timerLife );
+	GET_ACCESSOR( XSPUnit&, spOwner );
+	GET_ACCESSOR_CONST( const XE::VEC3&, vSrc );
+	GET_ACCESSOR_CONST( float, Damage );
 public:
 	XObjBullet( ID idBullet,
-				const UnitPtr& spOwner,
-				const UnitPtr spTarget,
-				const XE::VEC3& vwSrc,
-				const XE::VEC3& vwDst,
-				float damage,
-				bool bCritical,
-				LPCTSTR szSpr, ID idAct,
-				float secFly=0.3f );
+							const XSPUnit& spOwner,
+							const XSPUnit spTarget,
+							const XE::VEC3& vwSrc,
+							const XE::VEC3& vwDst,
+							float damage,
+							bool bCritical,
+							LPCTSTR szSpr, ID idAct,
+							float secFly = 0.3f );
 	virtual ~XObjBullet() { Destroy(); }
 	//
 	virtual void Release() {
 		m_spOwner.reset();
 		m_spTarget.reset();
 	}
-	GET_ACCESSOR( ID, idBullet );
+	GET_ACCESSOR_CONST( ID, idBullet );
 	GET_SET_ACCESSOR( XDelegateObjBullet*, pDelegate );
-	GET_SET_ACCESSOR( const _tstring&, strIdentifier );
-	GET_ACCESSOR( const XE::VEC3&, vDst );
-	GET_SET_ACCESSOR( const XE::VEC3&, vOffset );
-	GET_SET_ACCESSOR( float, meterRadius );
-	GET_SET_ACCESSOR( float, ratioDamageSplash );
+	GET_SET_ACCESSOR_CONST( const _tstring&, strIdentifier );
+	GET_ACCESSOR_CONST( const XE::VEC3&, vDst );
+	GET_SET_ACCESSOR_CONST( const XE::VEC3&, vOffset );
+	GET_SET_ACCESSOR_CONST( float, meterRadius );
+	GET_SET_ACCESSOR_CONST( float, ratioDamageSplash );
 /*
 	void SetArriveSfx( ID idObj ) {
 		m_idArriveSfx = idObj;
@@ -98,7 +98,7 @@ public:
 	void SetSecFly( float secFly ) {
 		m_timerLife.Set( secFly );
 	}
-	float GetSecFly() {
+	float GetSecFly() const {
 		return m_timerLife.GetWaitSec();
 	}
 	/**
@@ -126,14 +126,13 @@ public:
 	virtual ~XDelegateObjBullet() { Destroy(); }
 	//
 	virtual void OnArriveBullet( XObjBullet *pBullet,
-								UnitPtr spAttacker,
-								UnitPtr spTarget,
-								const XE::VEC3& vwDst,
-								float damage,
-								bool bCritical,
-								LPCTSTR sprArrive, ID idActArrive,
-								DWORD dwParam = 0 ) {}
-	//								ID idArriveSfx ) {}
+															 XSPUnit spAttacker,
+															 XSPUnit spTarget,
+															 const XE::VEC3& vwDst,
+															 float damage,
+															 bool bCritical,
+															 LPCTSTR sprArrive, ID idActArrive,
+															 DWORD dwParam = 0 ) {}
 
 };
 
@@ -149,6 +148,7 @@ class XObjArrow : public XObjBullet
 #endif
 {
 	BOOL m_bArrive;
+	XSKILL::xtMoving m_MoveType = XSKILL::xMT_ARC;
 	struct xCALLBACK {
 		XBaseUnit *pOwner;
 		std::function<void(XBaseUnit*, XObjArrow*)> funcCallback;
@@ -164,16 +164,17 @@ class XObjArrow : public XObjBullet
 	void Destroy();
 public:
 	XObjArrow( XEWndWorld *pWndWorld,
-				const UnitPtr& spOwner,
-				const UnitPtr& spTarget,
-				const XE::VEC3& vwSrc,
-				const XE::VEC3& vwDst,
-				float damage,
-				bool bCritical,
-				LPCTSTR szSpr, ID idAct,
-				float factorSpeed = 8.f );	// 숫자가 높을수록 빨라짐
+						 const XSPUnit& spOwner,
+						 const XSPUnit& spTarget,
+						 const XE::VEC3& vwSrc,
+						 const XE::VEC3& vwDst,
+						 float damage,
+						 bool bCritical,
+						 LPCTSTR szSpr, ID idAct,
+						 float factorSpeed = 8.f );	// 숫자가 높을수록 빨라짐
 	virtual ~XObjArrow() { Destroy(); }
 	///< 
+	GET_SET_ACCESSOR_CONST( XSKILL::xtMoving, MoveType );
 	virtual void FrameMove( float dt );
 	virtual void Draw( const XE::VEC2& vPos, float scale = 1.f, float alpha=1.f );
 	XE::VEC3 OnInterpolation( const XE::VEC3& vSrc, const XE::VEC3& vDst, float lerpTime ) override;
@@ -184,7 +185,6 @@ public:
 		m_Callback.funcCallback = std::bind( func, std::placeholders::_1, std::placeholders::_2, damage );
 	}
 	virtual void CallCallbackFunc() {
-//		if( !m_Callback.funcCallback.empty() )
 		if( m_Callback.funcCallback )
 			m_Callback.funcCallback( m_Callback.pOwner, this );
 	}
@@ -192,7 +192,7 @@ public:
 
 
 /****************************************************************
-* @brief 
+* @brief 멀티샷같은 스킬 발사체 객체
 * @author xuzhu
 * @date	2014/11/25 12:47
 *****************************************************************/
@@ -211,25 +211,25 @@ class XSkillShootObj : public XObjArrow
 	void Destroy();
 public:
 	XSkillShootObj( XEWndWorld *pWndWorld,
-				const UnitPtr& spOwner,
-				const UnitPtr& spTarget,
-				const XE::VEC3& vwSrc,
-				const XE::VEC3& vwDst,
-				float damage,
-				LPCTSTR szSpr, ID idAct,
-				float factorSpeed = 8.f );
+									const XSPUnit& spOwner,
+									const XSPUnit& spTarget,
+									const XE::VEC3& vwSrc,
+									const XE::VEC3& vwDst,
+									float damage,
+									LPCTSTR szSpr, ID idAct,
+									float factorSpeed = 8.f );
 	virtual ~XSkillShootObj() { Destroy(); }
 	//
 	template<typename F, typename T1, typename T2, typename T3/*, typename T4, typename T5*/>
 	void RegisterCallback( XBaseUnit* pOwner, F func, T1 p1, T2 p2, T3 p3/*, T4 p4, T5 p5*/ ) {
 		m_Callback.pOwner = pOwner;
-		m_Callback.funcCallback = std::bind( func, 
-											std::placeholders::_1, 
-											std::placeholders::_2, 
-											p1, p2, p3/*, p4, p5*/ );
+		m_Callback.funcCallback = std::bind( func,
+																				 std::placeholders::_1,
+																				 std::placeholders::_2,
+																				 p1, p2, p3/*, p4, p5*/ );
 	}
 	virtual void CallCallbackFunc();
-	XE::VEC3 OnInterpolation( const XE::VEC3& vSrc, const XE::VEC3& vDst, float lerpTime ) override;
+//	XE::VEC3 OnInterpolation( const XE::VEC3& vSrc, const XE::VEC3& vDst, float lerpTime ) override;
 }; // class XSkillShootObj
 /**
  @brief 바위
@@ -249,8 +249,8 @@ class XObjRock : public XObjBullet
 	void Destroy();
 public:
 	XObjRock( XEWndWorld *pWndWorld,
-		const UnitPtr& spOwner,
-		const UnitPtr spTarget,
+		const XSPUnit& spOwner,
+		const XSPUnit spTarget,
 		const XE::VEC3& vwSrc,
 		const XE::VEC3& vwDst,
 		float damage,
@@ -309,7 +309,7 @@ class XObjLoop : public XEBaseWorldObj, public XSKILL::XSkillSfx
 	CTimer m_timerLife;
 	float m_secLife;
 	XE::xtHorizDir m_Dir;
-	UnitPtr m_spRefUnit;		// 따라다녀야할 오브젝트가 있다면
+	XSPUnit m_spRefUnit;		// 따라다녀야할 오브젝트가 있다면
 	BOOL m_bTraceRefObj;		///< 레퍼런스 객체를 따라다녀야 한다면 TRUE
 	XE::VEC3 m_vAdjust;			///< this의 위치 보정치
 	int m_State = 0;
@@ -323,8 +323,8 @@ class XObjLoop : public XEBaseWorldObj, public XSKILL::XSkillSfx
 public:
 	XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife=0.f );
 	XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife=0.f );
-	XObjLoop( int typeObj, const UnitPtr& spTrace, LPCTSTR szSpr, ID idAct, float secLife = 0.f );
-	XObjLoop( int typeObj, const UnitPtr& spRefObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife = 0.f );
+	XObjLoop( int typeObj, const XSPUnit& spTrace, LPCTSTR szSpr, ID idAct, float secLife = 0.f );
+	XObjLoop( int typeObj, const XSPUnit& spRefObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife = 0.f );
 	virtual ~XObjLoop() { Destroy(); }
 	///< 
 	SET_ACCESSOR( XE::xtHorizDir, Dir );
@@ -461,7 +461,7 @@ private:
 	_tstring m_strText;
 	XE::VEC3 m_vDelta;
 //	XBaseFontDat *m_pFontDat = nullptr;
-	UnitPtr m_spOwner;
+	XSPUnit m_spOwner;
 	XBaseFontObj *m_pFontObj = nullptr;
 	CTimer m_timerLife;
 	int m_State = 0;
@@ -472,7 +472,7 @@ private:
 	void Destroy();
 public:
 	XObjYellSkill( LPCTSTR szText, 
-								const UnitPtr& spOwner,
+								const XSPUnit& spOwner,
 								const XE::VEC3& vwPos, 
 								XCOLOR col );
 	~XObjYellSkill() { Destroy(); }
@@ -497,11 +497,11 @@ class XObjFlame : public XEBaseWorldObj
 	CTimer m_timerLife;			// 지속시간
 	BIT m_bitCamp = 0;				// 데미지를 줄 대상의 진영
 	float m_Damage = 0;			// 데미지
-	UnitPtr m_spAttacker;		// 공격자.
+	XSPUnit m_spAttacker;		// 공격자.
 	void Init() {}
 	void Destroy();
 public:
-	XObjFlame( const UnitPtr& spAttacker, const XE::VEC3& vwPos, float damage, float radius, float secLife, BIT bitCampTarget, LPCTSTR szSpr, ID idAct );
+	XObjFlame( const XSPUnit& spAttacker, const XE::VEC3& vwPos, float damage, float radius, float secLife, BIT bitCampTarget, LPCTSTR szSpr, ID idAct );
 	~XObjFlame() { Destroy(); }
 	//
 	GET_ACCESSOR( CTimer&, timerDOT );

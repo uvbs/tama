@@ -82,12 +82,12 @@ void XObjBullet::FrameMove( float dt )
 	GetpSprObj()->SetRotateZ( dAng );
 	if( timeLerp >= 1.0f )	{
 		if( m_sprArrive.empty() == false )		{
-			XObjLoop *pSfx = new XObjLoop( vDst, m_sprArrive.c_str(), m_idActArrive );
-			XBattleField::sGet()->AddObj( WorldObjPtr(pSfx) );
+			auto pSfx = new XObjLoop( vDst, m_sprArrive.c_str(), m_idActArrive );
+			XBattleField::sGet()->AddObj( XSPWorldObj(pSfx) );
 			// 도착시 sfx가 지정되어있으면 타겟에게 생성하도록 한다.
-			if( m_spTarget != nullptr &&
-				m_spTarget->IsLive() )
-				m_spTarget->CreateHitSfx( m_spOwner.get(), FALSE );
+// 			if( m_spTarget != nullptr &&
+// 				m_spTarget->IsLive() )
+// 				m_spTarget->CreateHitSfx( m_spOwner.get(), FALSE );
 		}
 		XBREAK( IsDestroy() );
 		OnArriveBullet( 0 );
@@ -126,12 +126,12 @@ void XObjBullet::OnArriveBullet( DWORD dwParam )
 #endif // _XSINGLE
 		if( m_spTarget ) {
 			// 발동스킬을 액티브로 실행시킨다.
-			auto infoUseSkill = m_spOwner->UseSkillByIdentifier( strInvokeSkill.c_str(),
-																													 0,
-																													 m_spTarget.get(), nullptr );
+			auto infoUseSkill = m_spOwner->UseSkillByIds( strInvokeSkill.c_str(),
+																										0,
+																										m_spTarget.get(), nullptr );
 			XASSERT( infoUseSkill.errCode == XSKILL::xOK );
 			ID idCaller = 0;
-			auto pSkillDat = SKILL_MNG->FindByIdentifier( strInvokeSkill );
+			auto pSkillDat = SKILL_MNG->FindByIds( strInvokeSkill );
 			if( pSkillDat ) {
 				idCaller = pSkillDat->GetidSkill();
 			}
@@ -139,26 +139,27 @@ void XObjBullet::OnArriveBullet( DWORD dwParam )
 		}
 	}
 	// 어태커가 지정되어있을경우 도착 델리게이트를 날려준다.
-	if( GetpDelegate() )
+	if( GetpDelegate() ) {
 		GetpDelegate()->OnArriveBullet( this,
-								m_spOwner,
-								m_spTarget,
-								m_vDst,
-								m_Damage,
-								m_bCritical,
-								m_sprArrive.c_str(), m_idActArrive,
-								dwParam );
+																		m_spOwner,
+																		m_spTarget,
+																		m_vDst,
+																		m_Damage,
+																		m_bCritical,
+																		m_sprArrive.c_str(), m_idActArrive,
+																		dwParam );
+	}
 }
 ////////////////////////////////////////////////////////////////
-XObjArrow::XObjArrow( XEWndWorld *pWndWorld, 
-						const UnitPtr& spOwner,
-						const UnitPtr& spTarget,
-						const XE::VEC3& vwSrc,
-						const XE::VEC3& vwDst,
-						float damage,
-						bool bCritical,
-						LPCTSTR szSpr, ID idAct,
-						float factorSpeed )
+XObjArrow::XObjArrow( XEWndWorld *pWndWorld,
+											const UnitPtr& spOwner,
+											const UnitPtr& spTarget,
+											const XE::VEC3& vwSrc,
+											const XE::VEC3& vwDst,
+											float damage,
+											bool bCritical,
+											LPCTSTR szSpr, ID idAct,
+											float factorSpeed )
 	: XObjBullet( 1, spOwner, spTarget, vwSrc, vwDst, damage, bCritical, szSpr, idAct )
 {
 	Init();
@@ -181,31 +182,36 @@ void XObjArrow::Destroy()
 {
 }
 
-XE::VEC3 XObjArrow::OnInterpolation( const XE::VEC3& vSrc, 
-									const XE::VEC3& vDst, 
-									float lerpTime )
+XE::VEC3 XObjArrow::OnInterpolation( const XE::VEC3& vSrc,
+																		 const XE::VEC3& vDst,
+																		 float lerpTime )
 {
-	XE::VEC3 vDir = vDst - vSrc;
-	XE::VEC2 v2Src( -vDir.x, -vDir.y );	// XY평면의 목표쪽벡터
-	XE::VEC2 v2Cross = v2Src.Cross();					// v2Src의 수평직각벡터
-	XE::VEC3 vHoriz = v2Cross;
-	vHoriz.z = 0;
-	XE::VEC3 vCross = vDir.Cross( vHoriz );
-	vCross.Normalize();
-	// 거리에따라 휘어지능 정도가 다르게 함.
-	float multiply = ((vDir.Lengthsq() + random(50 * 50)) / (450.f * 450.f)) * 500.f;
-	vCross *= multiply;		// 직각벡터를 길게 만든다.
-	XE::VEC3 vCurr;
-	Vec3CatmullRom( vCurr, vSrc+vCross, vSrc, vDst, vDst+vCross, lerpTime );
-	return vCurr;
+	if( m_MoveType == xMT_STRAIGHT ) {
+		// 직선
+		XE::VEC3 vCurr = vSrc + (vDst - vSrc) * lerpTime;
+		return vCurr;
+	} else {
+		// 포물선
+		XE::VEC3 vDir = vDst - vSrc;
+		XE::VEC2 v2Src( -vDir.x, -vDir.y );	// XY평면의 목표쪽벡터
+		XE::VEC2 v2Cross = v2Src.Cross();					// v2Src의 수평직각벡터
+		XE::VEC3 vHoriz = v2Cross;
+		vHoriz.z = 0;
+		XE::VEC3 vCross = vDir.Cross( vHoriz );
+		vCross.Normalize();
+		// 거리에따라 휘어지능 정도가 다르게 함.
+		float multiply = ((vDir.Lengthsq() + random( 50 * 50 )) / (450.f * 450.f)) * 500.f;
+		vCross *= multiply;		// 직각벡터를 길게 만든다.
+		XE::VEC3 vCurr;
+		Vec3CatmullRom( vCurr, vSrc + vCross, vSrc, vDst, vDst + vCross, lerpTime );
+		return vCurr;
+	}
 }
 
 void XObjArrow::OnArriveBullet( DWORD dwParam )
 {
 	CallCallbackFunc();
-
-	if( random(5) == 0 )
-	{
+	if( random(5) == 0 ) {
 		XE::VEC3 vwDst = GetvDst();
 		vwDst.x += 24 - random( 48 );
 		vwDst.y += 24 - random( 48 );
@@ -563,7 +569,7 @@ XSkillShootObj::XSkillShootObj( XEWndWorld *pWndWorld,
 																LPCTSTR szSpr, ID idAct,
 																float factorSpeed )
 : XObjArrow( pWndWorld, spOwner, spTarget, vwSrc, 
-			vwDst, damage, false, szSpr, idAct, 24.f ) 
+			vwDst, damage, false, szSpr, idAct, factorSpeed ) 
 {
 	Init();
 
@@ -574,17 +580,18 @@ void XSkillShootObj::Destroy()
 
 void XSkillShootObj::CallCallbackFunc( void ) 
 {
-//	if( !m_Callback.funcCallback.empty() )
 	if( m_Callback.funcCallback )
 		m_Callback.funcCallback( m_Callback.pOwner, this );
 }
 
-XE::VEC3 XSkillShootObj::OnInterpolation( const XE::VEC3& vSrc, 
-										const XE::VEC3& vDst, float lerpTime )
-{
-	XE::VEC3 vCurr = vSrc + (vDst - vSrc) * lerpTime;
-	return vCurr;
-}
+// XE::VEC3 XSkillShootObj::OnInterpolation( const XE::VEC3& vSrc,
+// 																					const XE::VEC3& vDst, 
+// 																					float lerpTime )
+// {
+// 
+// 	XE::VEC3 vCurr = vSrc + (vDst - vSrc) * lerpTime;
+// 	return vCurr;
+// }
 
 ////////////////////////////////////////////////////////////////
 _tstring XObjDmgNum::s_strFont = _T("damage.ttf");

@@ -193,7 +193,7 @@ void XSceneReady::Update()
 	if( pLeader ) {
 		auto strPassive = pLeader->GetpProp()->strPassive;
 		if( !strPassive.empty() ) {
-			auto pSkillDat = SKILL_MNG->FindByIdentifier( strPassive );
+			auto pSkillDat = SKILL_MNG->FindByIds( strPassive );
 			if( pSkillDat ) {
 				int nSkillLv = pLeader->GetlvPassive();
 				_tstring strDesc;

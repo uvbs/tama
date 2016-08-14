@@ -108,9 +108,9 @@ public:
 	XSkillDat* Add( XSkillDat *pSkillDat );
 	XSkillDat* FindByID( ID idDat );
 	XSkillDat* FindByName( ID idName );
-	XSkillDat* FindByIdentifier( LPCTSTR szIdentifier );
-	inline XSkillDat* FindByIdentifier( const _tstring& strIdentifier ) {
-		return FindByIdentifier( strIdentifier.c_str() );
+	XSkillDat* FindByIds( LPCTSTR ids ) const;
+	inline const XSkillDat* FindByIds( const _tstring& ids ) const {
+		return FindByIds( ids.c_str() );
 	}
 	XSkillDat* FindByRandomActive( void );
 	XSkillDat* FindByRandomPassive( void ) ;

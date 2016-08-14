@@ -102,7 +102,7 @@ XE_NAMESPACE_START( XSKILL )
 						xIVT_ATTACKED_TARGET_RADIUS,	///< 피격자반경
 						xIVT_ATTACKED_TARGET_SURROUND,	///< 피격자주변
 						xIVT_ATTACKED_TARGET_PARTY,	///< 피격자파티
-						xIVT_CURR_TARGET,			///< 현재공격타겟(공격타겟)
+						xIVT_CURR_TARGET,			///< 현재공격타겟(공격타겟)(시전자의)
 						xIVT_CURR_TARGET_PARTY,		///< 현재공격타겟파티
 						xIVT_ALL = 0xffffffff,				///< 모두(아군,적 포함. 발동대상우호로 필터링)
 						xIVT_RANDOM_PARTY = 99,			///< 랜덤파티
@@ -164,8 +164,9 @@ XE_NAMESPACE_START( XSKILL )
 		xJC_HIT_POINT,	///< 슈팅타겟이펙트타점
 		xJC_ATTACK,		///< 모든공격시
 		xJC_CLOSE_ATTACK,	///< 근접공격시
-		xJC_RANGE_ATTACK_START,	// 원거리공격시작시
+		xJC_RANGE_ATTACK_START,	// 원거리공격시작시(평타에 발동. 평타화살 발사와 관계없이 별도로 효과가 발동된다.)
 		xJC_RANGE_ATTACK_ARRIVE,	// 원거리타격시
+		xJC_RANGE_ATK_NORMAL_REPLACEMENT,	// 원거리평타대체(평타에 발동되는건 같으나 효과발동에 성공하면 평타는 나가지 않는다.)
 		xJC_ALL_HIT,	// 모든피격시
 		xJC_CLOSE_HIT,	// 근접피격시
 		xJC_RANGE_HIT,	// 원거리피격시
@@ -308,6 +309,13 @@ struct xEffSfx {
 	inline bool IsHave() const {
 		return !m_strSpr.empty();
 	}
+};
+
+// 발사체이동
+enum xtMoving {
+	xMT_NONE,
+	xMT_STRAIGHT,		// 직선
+	xMT_ARC,				// 포물선
 };
 
 XE_NAMESPACE_END

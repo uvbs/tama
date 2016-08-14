@@ -558,7 +558,7 @@ void XFSMNormalAttack::DoAttackMotion( void )
 				if( bMelee ) {
 					m_pUnit->GetpSprObj()->SetAction( ACT_ATTACK2, xRPT_1PLAY );
 					m_pUnit->SettypeCurrMeleeType( XGAME::xMT_MELEE );
-					m_pUnit->OnAfterAttackMotion( XSKILL::xJC_CLOSE_ATTACK );
+// 					m_pUnit->OnAfterAttackMotion( XSKILL::xJC_CLOSE_ATTACK );		"근접공격시" 이벤트는 타점에 불리는게 맞아서 옮김
 				} else {
 					m_pUnit->SettypeCurrMeleeType( XGAME::xMT_RANGE );
 					// 현재 부대가 원거리 공격중이면 원거리모션으로 플레이
@@ -569,14 +569,14 @@ void XFSMNormalAttack::DoAttackMotion( void )
 							m_pUnit->GetpSprObj()->SetAction( ACT_ATTACK3, xRPT_1PLAY );
 					}	else
 						m_pUnit->GetpSprObj()->SetAction( ACT_ATTACK1, xRPT_1PLAY );
-					m_pUnit->OnAfterAttackMotion( XSKILL::xJC_RANGE_ATTACK_START );
+					//m_pUnit->OnAfterAttackMotion( XSKILL::xJC_RANGE_ATTACK_START );	// 타점에서 호출하게 하는게 맞는듯.
 				}
 			// if( m_pUnit->GetTypeAtk() == XGAME::xAT_RANGE )
 			} else {
 				ID ary[ 3 ] = {ACT_ATTACK1, ACT_ATTACK2};
 				m_pUnit->GetpSprObj()->SetAction( ary[ random( 2 ) ], xRPT_1PLAY );
 				m_pUnit->SettypeCurrMeleeType( XGAME::xMT_MELEE );
-				m_pUnit->OnAfterAttackMotion( XSKILL::xJC_CLOSE_ATTACK );
+// 				m_pUnit->OnAfterAttackMotion( XSKILL::xJC_CLOSE_ATTACK );		"근접공격시" 이벤트는 타점에 불리는게 맞아서 옮김
 			}
 			m_pUnit->StartAttackDelay( m_pUnit->GetspTarget() );
 		} // if( nExec )

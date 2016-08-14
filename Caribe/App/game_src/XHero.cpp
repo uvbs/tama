@@ -419,7 +419,7 @@ void XHero::AssignSkillPtr( void )
  	if( m_Grade >= XGAME::xGD_RARE ) {
 		if( GetpProp()->strPassive.empty() == false ) {
 			if( m_pPassive == nullptr ) {
-				m_pPassive = SKILL_MNG->FindByIdentifier( GetpProp()->strPassive.c_str() );
+				m_pPassive = SKILL_MNG->FindByIds( GetpProp()->strPassive.c_str() );
 				m_keySkillMng = SKILL_MNG->GetidKey();
 			}
 		}
@@ -428,7 +428,7 @@ void XHero::AssignSkillPtr( void )
 	// 액티브스킬은 1성부터 활성화됨.
 		if( GetpProp()->strActive.empty() == false ) {
 			if( m_pActive == nullptr ) {
-				m_pActive = SKILL_MNG->FindByIdentifier( GetpProp()->strActive.c_str() );
+				m_pActive = SKILL_MNG->FindByIds( GetpProp()->strActive.c_str() );
 				m_keySkillMng = SKILL_MNG->GetidKey();
 			}
 		}
@@ -881,7 +881,7 @@ float XHero::GetAdjByTech(XGAME::xtUnit unt, XGAME::xtParameter adjParam, float 
 				auto pProp = XPropTech::sGet()->GetpNode(unit, idNode);
 				if (XBREAK(pProp == nullptr))
 					return 0;
-				auto pSkillDat = SKILL_MNG->FindByIdentifier(pProp->strSkill);
+				auto pSkillDat = SKILL_MNG->FindByIds(pProp->strSkill);
 				if (XBREAK(pSkillDat == nullptr))
 					return 0;
 				for (auto pEffect : pSkillDat->GetlistEffects()) {
