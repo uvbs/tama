@@ -852,19 +852,19 @@ namespace XGAME {
 	///< tier: 1~3
 	inline XGAME::xtUnit GetRandomTankerUnit( int tier ) {
 		XGAME::xtUnit unit[3] = { XGAME::xUNIT_SPEARMAN, XGAME::xUNIT_MINOTAUR, XGAME::xUNIT_GOLEM };
-		return unit[ random(tier) ];
+		return unit[xRandom(tier) ];
 	}
 
 	///< tier: 1~3
 	inline XGAME::xtUnit GetRandomRangeUnit( int tier ) {
 		XGAME::xtUnit unit[ 3 ] = {XGAME::xUNIT_ARCHER, XGAME::xUNIT_CYCLOPS, XGAME::xUNIT_TREANT};
-		return unit[ random(tier) ];
+		return unit[xRandom(tier) ];
 	}
 
 	///< tier: 1~3
 	inline XGAME::xtUnit GetRandomSpeedUnit( int tier ) {
 		XGAME::xtUnit unit[ 3 ] = {XGAME::xUNIT_PALADIN, XGAME::xUNIT_LYCAN, XGAME::xUNIT_FALLEN_ANGEL};
-		return unit[ random( tier ) ];
+		return unit[xRandom( tier ) ];
 	}
 
 	/// tier: 1~3

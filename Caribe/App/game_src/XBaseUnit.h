@@ -27,6 +27,8 @@ namespace xnUnit {
 	class XMsgBase;
 	class XMsgDmg;
 	class XMsgDmgFeedback;
+	class XMsgAddAdjParam;
+	class XMsgSetState;
 	struct xDmg;
 }
 
@@ -517,6 +519,8 @@ public:
 															int level, 
 															_tstring* pstrOut ) override;
 //	void OnAddSkillRecvObj( XSKILL::XBuffObj *pSkillRecvObj, XSKILL::EFFECT *pEffect ) override;		// 이대상에게 버프스킬이 추가된 직후 호출된다.
+	void AddAdjParamMsg( int adjParam, XSKILL::xtValType valType, float adj ) override;
+	void SetStateMsg( int idxState, bool bFlag ) override;
 	// SKILL
 	//////////////////////////////////////////////////////////////////////////
 	void cbOnArriveBullet( XObjArrow *pArrow, float damage );
@@ -610,7 +614,7 @@ public:
 	}
 	XSPUnit GetNearUnit( float meter, BIT bitCamp, bool bFindOutRange );
 	XSPWorldObj AddObj( XEBaseWorldObj *pNewObj );
-	bool IsCritical( XSPUnit spTarget );
+	bool IsCritical( XSPUnit spTarget, float addCriticalRate = 0.f );
 	bool IsEvade( XSKILL::xtDamage typeDamage, const XBaseUnit *pAttacker ) const;
 	float GetHitRate( XSPUnit spTarget );
 	bool IsHit( XSPUnit spTarget );
@@ -705,5 +709,7 @@ private:
 friend class XFSMIdle;
 friend class xnUnit::XMsgDmg;
 friend class xnUnit::XMsgDmgFeedback;
+friend class xnUnit::XMsgAddAdjParam;
+friend class xnUnit::XMsgSetState;
 };
 

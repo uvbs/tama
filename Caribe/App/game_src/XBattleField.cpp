@@ -85,19 +85,29 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 		auto spUnit = spwUnit.lock();
 		if( XASSERT( spUnit ) ) {
 			spUnit->FlipMsgQ();
+			spUnit->XAdjParam::Swap();
 		}
 	}
 	if( GetpObjMng() )	{
-		GetpObjMng()->FrameMoveDelegate( this, 4, dt );
+		//GetpObjMng()->FrameMoveDelegate( this, 4, dt );
+// 		for( auto spObj : GetpObjMng()->GetlistObj() ) {
+// 			OnDelegateFrameMoveEachObj( dt, 4, spObj );		// 사용안하고 있어서 삭제
+// 		}
 		// 캐릭터상태와 보정치를 클리어한다.
-		GetpObjMng()->FrameMoveDelegate( this, 1, dt );
+//		GetpObjMng()->FrameMoveDelegate( this, 1, dt );
+		for( auto spObj : GetpObjMng()->GetlistObj() )
+			OnDelegateFrameMoveEachObj( dt, 1, spObj );
 		// XSkillUser::FrameMove()를 일괄 실행한다.
-		GetpObjMng()->FrameMoveDelegate( this, 2, dt );
+//		GetpObjMng()->FrameMoveDelegate( this, 2, dt );
+		for( auto spObj : GetpObjMng()->GetlistObj() )
+			OnDelegateFrameMoveEachObj( dt, 2, spObj );
 		// XSkillReceiver::FrameMove()를 일괄 실행한다.
-		GetpObjMng()->FrameMoveDelegate( this, 3, dt );
+//		GetpObjMng()->FrameMoveDelegate( this, 3, dt );
+		for( auto spObj : GetpObjMng()->GetlistObj() )
+			OnDelegateFrameMoveEachObj( dt, 3, spObj );
 	}
-	GetLegionObj(0)->FrameMove( dt );
-	GetLegionObj(1)->FrameMove( dt );
+// 	GetLegionObj(0)->FrameMove( dt );
+// 	GetLegionObj(1)->FrameMove( dt );
 	//
 	auto ret = XEWorld::Process( pWndWorld, dt );
 	// 모든 프로세스가 끝난 후 유니트들은 각자 쌓인 메시지큐들을 처리한다.
@@ -108,15 +118,18 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 			spUnit->ProcessMsgQ();
 		}
 	}
+	// XSquadObj::FrameMove쪽에서 유닛들의 Adj값이나 상태등을 참조하는게 있어서 유닛::FrameMove뒤로 옮김.
+	GetLegionObj( 0 )->FrameMove( dt );
+	GetLegionObj( 1 )->FrameMove( dt );
 	return ret;
 }
 
-void XBattleField::OnDelegateFrameMoveEachObj( float dt, 
-											ID idEvent, 
-											WorldObjPtr spObj ) 
+void XBattleField::OnDelegateFrameMoveEachObj( float dt,
+																							 ID idEvent,
+																							 WorldObjPtr spObj )
 {
 	if( XGAME::xOT_UNIT == spObj->GetClassType() ) {
-		XBaseUnit *pUnit = SafeCast<XBaseUnit*, XEBaseWorldObj*>( spObj.get() );
+		XBaseUnit *pUnit = SafeCast<XBaseUnit*>( spObj.get() );
 		XBREAK( pUnit == nullptr );
 		if( pUnit ) {
 			switch( idEvent ) {
@@ -130,9 +143,11 @@ void XBattleField::OnDelegateFrameMoveEachObj( float dt,
 			case 3:
 				pUnit->XSkillReceiver::FrameMove( dt );
 				break;
-			case 4:
-				pUnit->ClearDebugAdjParam();
-
+			default:
+				XBREAK(1);
+				break;
+// 			case 4:
+// 				pUnit->ClearDebugAdjParam();
 			}
 		}
 	}
@@ -147,9 +162,11 @@ void XBattleField::OnDelegateFrameMoveEachObj( float dt,
 			case 3:
 				pUnit->XSkillReceiver::FrameMove( dt );
 				break;
-			case 4:
-				pUnit->ClearDebugAdjParam();
-
+			default:
+				XBREAK(1);
+				break;
+// 			case 4:
+// 				pUnit->ClearDebugAdjParam();
 			}
 		}
 	}

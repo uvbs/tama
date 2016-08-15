@@ -135,6 +135,7 @@ void XUnitCyclops::sShootLaser( UnitPtr spShooter,
 				spUnit->PushMsg( pMsg );
 			}
 		}
+/*
 		auto pBuff = spShooter->FindBuffSkill(_T("flame_fit"));
 		if( pBuff )	{
 			auto pEffect = pBuff->GetEffectIndex(0);
@@ -147,17 +148,20 @@ void XUnitCyclops::sShootLaser( UnitPtr spShooter,
 				float sec = pEffect->secDurationInvoke;
 	//  			sec = 99999.f;
 				XBREAK( sec == 0 );
+				const auto& strSfx = pBuff->GetpDat()->GetTargetEff().m_strSpr;
+				const ID idAct = pBuff->GetpDat()->GetTargetEff().m_idAct;
 				auto pFlame = new XObjFlame( spShooter,
-											spTarget->GetvwPos(),
-											dmg,
-											xMETER_TO_PIXEL(radius),
-											sec,
-											XECompCamp::sGetOtherSideFilter(spShooter->GetCamp().GetbitCamp()),
-											_T("eff_flame.spr"), 2 );
+																		 spTarget->GetvwPos(),
+																		 dmg,
+																		 xMETER_TO_PIXEL( radius ),
+																		 sec,
+																		 XECompCamp::sGetOtherSideFilter( spShooter->GetCamp().GetbitCamp() ),
+																		 strSfx.c_str(), idAct );
 				spShooter->AddObj( pFlame );
 			}
 		}
-	}
+*/
+	} // for numBeam
 
 }
 

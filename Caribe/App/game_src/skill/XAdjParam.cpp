@@ -11,24 +11,47 @@ static char THIS_FILE[] = __FILE__;
 
 XE_NAMESPACE_START( XSKILL )
 
-void XAdjParam::AddAdjParam( int adjParam, 
-															xtValType valType, 
-															float adj )
+/**
+ @brief 모든 adjParam값을 초기치로 초기화한다
+*/
+void XAdjParam::ClearAdjParam()
 {
-	XBREAK( adjParam == 0 );
-	XBREAK( adjParam >= m_adjParam.GetMax() );		// 버퍼 오버플로우
-	// 값 타입에 따라 따로 보정치를 누적시켜준다
-	switch( valType )
-	{
-	case xPERCENT:		m_adjParam[ adjParam ].valPercent += adj;		break;
-	case xVAL:			m_adjParam[ adjParam ].valImm += adj;		break;
-	case xFIXED_VAL:	m_adjParam[ adjParam ].valFixedImm = adj;		break;		// 고정치는 누적시키지 않는다. 그리고 adj값을 꺼낼때 최우선순위로 적용된다
+	// 현재버퍼를 클리어
+	for( auto& adj : m_pBackAry->m_adjParam )
+		adj.Init();
+	for( auto& state : m_pBackAry->m_States )
+		state.bActive = false;
+}
+
+/**
+ @brief // 모든 adjParam값을 초기치로 초기화한다
+*/
+// void XAdjParam::ClearDebugAdjParam() 
+// {		
+// 	int max = m_adjParam.Size();
+// 	for( int i = 0; i < max; ++i )
+// 		m_adjParam[i].ClearDebug();
+// }
+
+void XAdjParam::AddAdjParam( int idxAdjParam,
+														 xtValType valType,
+														 float adj )
+{
+	XBREAK( idxAdjParam == 0 );
+	XBREAK( idxAdjParam >= m_pBackAry->m_adjParam.Size() );		// 버퍼 오버플로우
+																								// 값 타입에 따라 따로 보정치를 누적시켜준다
+	auto& adjParam = m_pBackAry->m_adjParam[ idxAdjParam ];
+	switch( valType ) {
+	case xPERCENT:		adjParam.valPercent += adj;		break;
+	case xVAL:				adjParam.valImm += adj;				break;
+	case xFIXED_VAL:	adjParam.valFixedImm = adj;		break;		// 고정치는 누적시키지 않는다. 그리고 adj값을 꺼낼때 최우선순위로 적용된다
 	}
 }
+
 // 오리지널값 val에 보정치를 연산해서 되돌려줌
 float XAdjParam::CalcAdjParam( float val, int adjParam, float addAdjRatio, float addAdjVal ) const
 {
-	const auto pAdjParam = &m_adjParam[ adjParam ];
+	const auto pAdjParam = &(m_pCurrAry->m_adjParam[ adjParam ]);
 	float v = val;
 	if( pAdjParam->valFixedImm >= 0 )		// 고정값이 디폴트가 아니면 고정치값만 적용한다
 		return pAdjParam->valFixedImm;
@@ -44,7 +67,7 @@ float XAdjParam::CalcAdjParam( float val, int adjParam, float addAdjRatio, float
 */
 float XAdjParam::GetAdjValue( float val, int adjParam )
 {
-	XSKILL::ADJ_PARAM *pAdjParam = &m_adjParam[ adjParam ];
+	const auto pAdjParam = &(m_pCurrAry->m_adjParam[ adjParam ]);
 	float v = 0;
 	if( pAdjParam->valFixedImm >= 0 )		// 고정값이 디폴트가 아니면 고정치값만 적용한다
 		return pAdjParam->valFixedImm;
@@ -59,7 +82,7 @@ float XAdjParam::GetAdjValue( float val, int adjParam )
 */
 float XAdjParam::GetAdjValue( int adjParam )
 {
-	XSKILL::ADJ_PARAM *pAdjParam = &m_adjParam[ adjParam ];
+	const auto pAdjParam = &(m_pCurrAry->m_adjParam[ adjParam ]);
 	if( pAdjParam->valFixedImm >= 0 )		// 고정값이 디폴트가 아니면 고정치값만 적용한다
 		return pAdjParam->valFixedImm;
 	if( pAdjParam->valPercent )
@@ -72,7 +95,7 @@ float XAdjParam::GetAdjValue( int adjParam )
 */
 _tstring XAdjParam::GetstrAdjParam( int adjParam ) const
 {
-	const auto pAdjParam = &m_adjParam[ adjParam ];
+	const auto pAdjParam = &(m_pCurrAry->m_adjParam[ adjParam ]);
 	if( pAdjParam->valFixedImm >= 0 )		// 고정값이 디폴트가 아니면 고정치값만 적용한다
 		return XFORMAT("%+d", (int)pAdjParam->valFixedImm );
 	if( pAdjParam->valPercent )

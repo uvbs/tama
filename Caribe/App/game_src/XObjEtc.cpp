@@ -151,6 +151,12 @@ void XObjBullet::OnArriveBullet( DWORD dwParam )
 	}
 }
 ////////////////////////////////////////////////////////////////
+/*
+DPS = 초당이동하는거리
+DPS = 거리 / 총시간
+총시간(x) = 거리 / DPS
+초당이동픽셀 = pixelPerFrame(프레임당이동픽셀) * 60;
+*/
 XObjArrow::XObjArrow( XEWndWorld *pWndWorld,
 											const UnitPtr& spOwner,
 											const UnitPtr& spTarget,
@@ -159,14 +165,14 @@ XObjArrow::XObjArrow( XEWndWorld *pWndWorld,
 											float damage,
 											bool bCritical,
 											LPCTSTR szSpr, ID idAct,
-											float factorSpeed )
+											float pixelPerFrame )	// 프레임당 이동픽셀
 	: XObjBullet( 1, spOwner, spTarget, vwSrc, vwDst, damage, bCritical, szSpr, idAct )
 {
 	Init();
 	XE::VEC3 vDist = vwDst - vwSrc;
 	vDist.z = 0;
- 	float distsq = vDist.Length();
- 	float secFly = distsq / ((factorSpeed * XFPS));
+ 	const float distsq = vDist.Length();
+ 	float secFly = distsq / ((pixelPerFrame * XFPS));
 	SetSecFly( secFly );
 	XE::VEC3 size = spTarget->GetSize() * 0.8f;		// BB가 보통, 실제 이미지보다 살짝 크므로 자연스럽게 보이기 위해 0.8을 곱함.
 	size *= XWndBattleField::sGet()->GetscaleCamera();
@@ -307,15 +313,15 @@ void XObjRock::OnArriveBullet( DWORD _dwParam )
 		else
 			vwDst = GetvwPos() + XE::VEC3( v2Dst.x, v2Dst.y ) * 0.75f;
 		vwDst.z = 0;
-		auto pRock = new XObjRock( GetpWndWorld(), 
-									GetspOwner(),
-									UnitPtr(),
-									GetvwPos(),
-									vwDst,
-									m_AddDamage,
-									false, 
-									GetpSprObj()->GetSprFilename(), 
-									GetpSprObj()->GetActionID() );
+		auto pRock = new XObjRock( GetpWndWorld(),
+															 GetspOwner(),
+															 UnitPtr(),
+															 GetvwPos(),
+															 vwDst,
+															 m_AddDamage,
+															 false,
+															 GetpSprObj()->GetSprFilename(),
+															 GetpSprObj()->GetActionID() );
 		++m_cntElastic;
 		pRock->SetpDelegate( GetpDelegate() );	
 		pRock->SetfactorSpline( 3.f );

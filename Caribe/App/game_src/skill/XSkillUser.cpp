@@ -19,6 +19,13 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+발동대상이 좌표형태일때
+  발동효과나 발동스킬이 지속시간을 가지면 
+		리시버 객체를 생성해서 그것을 발동대상으로 버프를 건다.
+	발동효과가 지속시간이 없을때는
+		좌표를 기준으로 발동대상들을 뽑아서 적용한다.
+	
+
 XE_NAMESPACE_START( XSKILL )
 
 
@@ -370,6 +377,7 @@ int XSkillUser::GetCastingTargetList( XVector<XSkillReceiver*> *pAryOutCastingTa
 		OnSkillAmplifyUser( pSkillDat, nullptr, pEffect, xEA_CAST_RADIUS, &sizeAddMultiply, &sizeAdd );
 		castSize += sizeAdd;
 		castSize = castSize + castSize * sizeAddMultiply;
+		numApply += (int)(pEffect->invokeNumApply * sizeAddMultiply);
 		XE::VEC2 vPosExtern;	// 외부에서 넘어온 원의중심좌표(현재는 사용하지 않음)
 		GetListObjsRadius( pAryOutCastingTarget,
 											 pSkillDat,
@@ -624,9 +632,16 @@ int XSkillUser::GetInvokeTarget( XVector<XSkillReceiver*> *_plistOutInvokeTarget
 		break;
 	case xIVT_CURR_TARGET: {
 		// 현재 공격대상을 얻는다.
-		XSkillReceiver *pCurrTarget = GetCurrTarget();  // virtual
+		auto pCurrTarget = GetCurrTarget();  // virtual
 		if( pCurrTarget && IsInvokeAble( pDat, pCurrTarget, pEffect ) )
 			aryTempInvokes.push_back( pCurrTarget );
+	} break;
+	// 현재타겟좌표
+	case xIVT_CURR_TARGET_POS: {
+		auto pCurrTarget = GetCurrTarget();  // virtual
+		if( pCurrTarget ) {
+
+		}
 	} break;
 	// 타격자
 	case xIVT_ATTACKER: {
@@ -677,17 +692,19 @@ int XSkillUser::GetInvokeTarget( XVector<XSkillReceiver*> *_plistOutInvokeTarget
 /**
  @brief Invoke대상에게 pEffect효과를 적용시킨다.
  @param pInvoker pEffect효과를 발동시킨측. pCaster와는 다르다.
+ @param vIvkPos 발동대상이 좌표인경우 0이아닌값이 들어온다. 이때 pInvokeTarget은 null이된다.
  @return 효과적용에 성공하면 true를 리턴한다.
 */
 bool XSkillUser::ApplyInvokeEffToIvkTarget( XSkillReceiver* pInvokeTarget,
-																									XSkillDat *pDat,
-																									const EFFECT *pEffect,
-																									XSkillReceiver *pInvoker,
-																									bool bCreateSfx,
-																									int level,
-																									const XE::VEC2& vPos,
-																									XBuffObj *pBuffObj )
+																						const XE::VEC3& vIvkPos,	// 발동대상이 좌표형태인경우.
+																						XSkillDat *pDat,
+																						const EFFECT *pEffect,
+																						XSkillReceiver *pInvoker,
+																						bool bCreateSfx,
+																						int level,
+																						XBuffObj *pBuffObj )
 {
+	XBREAK( !vIvkPos.IsZero() && pInvokeTarget != nullptr );	// 좌표에 값이 있으면 타겟은 널이어야 한다.,
 	// 발동적용확률이 있다면 확률검사를 통과해야 한다.(XBuffObj에 이것이 있을때는 GetInvokeTarget을 하기전에 수행되었는데 지금은 발동타겟 개별적으로 확률검사를 하도록 바뀜. 이게 맞는거 같아서)
 	bool bOk = XSKILL::DoDiceInvokeApplyRatio( pEffect, level );
 	if( !bOk )
@@ -698,24 +715,40 @@ bool XSkillUser::ApplyInvokeEffToIvkTarget( XSkillReceiver* pInvokeTarget,
 		bOrCond = true;
 	} else
 	// 발동조건 블럭검사.
-	if( IsInvokeTargetCondition( pDat, pEffect, pInvokeTarget ) ) {
+	if( pInvokeTarget && IsInvokeTargetCondition( pDat, pEffect, pInvokeTarget ) ) {
 		bOrCond = true;
 	}
 	if( !bOrCond )
 		return false;
-	// 발동타겟에게 실제 효과적용
-	int retApplied = pInvokeTarget->ApplyInvokeEffect( pDat, this
-																										, pInvoker, pBuffObj
-																										, pEffect, level );
-	// 발동대상이펙트가 있다면 생성해준다.
-	if( bCreateSfx && pEffect->m_invokeTargetEff.IsHave() ) {
-		const float secPlay = 0.f;		// 1play. 발동이펙트는 반복플레이가 없음.
-		pInvokeTarget->CreateSfx( pDat, pEffect->m_invokeTargetEff, secPlay, vPos );
-	}
 	if( pEffect->idInvokeSound ) {
 		OnSkillPlaySound( pEffect->idInvokeSound );
 	}
-	return retApplied != 0;
+	// 발동타겟에게 실제 효과적용
+	if( pInvokeTarget ) {
+		int retApplied = pInvokeTarget->ApplyInvokeEffect( pDat, this
+																											 , pInvoker, pBuffObj
+																											 , pEffect, level );
+		// 발동대상이펙트가 있다면 생성해준다.
+		if( bCreateSfx && pEffect->m_invokeTargetEff.IsHave() ) {
+			const float secPlay = 0.f;		// 1play. 발동이펙트는 반복플레이가 없음.
+			pInvokeTarget->CreateSfx( pDat, pEffect->m_invokeTargetEff, secPlay, vPos );
+		}
+		return retApplied != 0;
+	} else
+	if( vIvkPos.IsNotZero() ) {
+		// 발동타겟이 좌표형태
+		// 발동타겟이 좌표이면 바닥에 놓는 버프객체를 뜻한다.
+	
+
+
+		// 발동대상이펙트가 있다면 생성해준다.
+		if( bCreateSfx && pEffect->m_invokeTargetEff.IsHave() ) {
+			const float secPlay = 0.f;		// 1play. 발동이펙트는 반복플레이가 없음.
+			CreateSfx( pDat, pEffect->m_invokeTargetEff, secPlay, vIvkPos );
+		}
+		return true;
+	}
+	return false;
 } // ApplyInvokeEffectToInvokeTarget
 
 /**

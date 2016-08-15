@@ -146,37 +146,25 @@ void XEObjMng::FrameMoveDelegate( XDelegateObjMng *pDelegate,
 								ID idEvent, 
 								float dt )
 {
-// 	std::list<XSPWorldObj>::iterator itor;
 	// 최종 반환되며 실제 삭제된다.
 	for( auto itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
 		pDelegate->OnDelegateFrameMoveEachObj( dt, idEvent, (*itor) );
-// 	LISTREF_LOOP( m_listObj, XSPWorldObj, itor )
-// 	{
-// 		pDelegate->OnDelegateFrameMoveEachObj( dt, idEvent, (*itor) );
-// 	} END_LOOP;
 }
 
 void XEObjMng::Draw( XEWndWorld *pWndWorld )
 {
 	XPROF_OBJ_AUTO();
-	if( pWndWorld )
-	{
+	if( pWndWorld )	{
 		XPROF_OBJ("select");
 		// 화면에 보이는 만큼 추려냄
 		m_aryVisible.Clear();
-		std::list<XSPWorldObj>::iterator itor;
-		{
-		// 최종 반환되며 실제 삭제된다.
-		for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
-//		LISTREF_LOOP( m_listObj, XSPWorldObj, itor )
-		{
+		for( auto spObj : m_listObj ) {
 			XPROF_OBJ( "select-sel" );
-			XEBaseWorldObj *pObj = itor->get();
+ 			XEBaseWorldObj *pObj = spObj.get();
 			XE::xRECT rectBB = pObj->GetBoundBoxWindow();
 			if( pWndWorld->IsOutBoundary( rectBB ) == FALSE )
 				m_aryVisible.Add( pObj );
 
-		}// END_LOOP;
 		}
 		// y좌표 소트함
 // 		if( m_timerSort.IsOff() )
@@ -189,7 +177,6 @@ void XEObjMng::Draw( XEWndWorld *pWndWorld )
 		{
 			XPROF_OBJ( "select-sort" );
 			std::sort( m_aryVisible.begin(), m_aryVisible.end(), compY );
-//			m_aryVisible.sort( compY );
 		}
 	}
 	
@@ -219,7 +206,7 @@ void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*
 				pObj->Draw( vsPos, scale );
 			}
 		} else {
-			XE::VEC2 vs = pObj->GetvwPos().ToVec2();
+			const XE::VEC2 vs = pObj->GetvwPos().ToVec2();
 			pObj->Draw( vs );
 		}
 	};

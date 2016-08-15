@@ -17,11 +17,11 @@ using namespace XSKILL;
 
 XE_NAMESPACE_START( xnUnit )
 //
-void XMsgQ::Process()
+void XMsgQ::Process( XBaseUnit* pOwner )
 {
 	while( !m_qMsg1.empty() ) {
 		auto& spMsg = m_qMsg1.GetFirst();
-		spMsg->Process();
+		spMsg->Process( pOwner );
 		m_qMsg1.pop_front();
 	}
 }
@@ -43,7 +43,7 @@ void XMsgQ::Process()
 // 	m_spTarget.reset();
 // }
 
-void XMsgDmg::Process()
+void XMsgDmg::Process( XBaseUnit* pOwner )
 {
 	auto pAtkObj = m_spAtkObj.lock().get();		// 치트로 데미지를 줄수 있으므로 공격자가 널일수있음.
 	XBREAK( m_spTarget.expired() );
@@ -60,6 +60,12 @@ void XMsgDmg::Process()
 	// 공격자에게 "타격시"이벤트를 발생시킨다.
 	if( spUnitAtker && !bBySkill ) {		// 일단 스킬데미지는 "타격시"이벤트를 발생시키지 않도록.
 		spUnitAtker->OnAttackToDefender( m_spTarget.lock().get(), std::abs(m_Dmg), bCritical, m_ratioPenet, m_typeDmg );
+// 		spUnitAtker->OnEventJunctureCommon( xJC_ATTACK );
+// 		if( m_typeDmg == xDMG_MELEE )
+// 			spUnitAtker->OnEventJunctureCommon( xJC_CLOSE_ATTACK );	// 근접공격시
+// 		else
+// 		if( m_typeDmg == xDMG_RANGE )
+// 			spUnitAtker->OnEventJunctureCommon( xJC_RANGE_ATTACK_ARRIVE );	// 원거리타격시
 	}
 
 	m_spTarget.lock()->DoDamage( m_spAtkObj.lock()
@@ -77,7 +83,7 @@ XMsgDmgFeedback::XMsgDmgFeedback( const xDmg& dmgInfo )
 	m_dmgInfo = dmgInfo;
 }
 
-void XMsgDmgFeedback::Process()
+void XMsgDmgFeedback::Process( XBaseUnit* pOwner )
 {
 	// 현재는 공격자가 유닛타입일때만 지원함.
 	auto spAtker = m_dmgInfo.m_spUnitAtker.lock();
@@ -93,7 +99,7 @@ XMsgKillTarget::XMsgKillTarget( const xDmg& dmgInfo )
 	m_dmgInfo = dmgInfo;
 }
 
-void XMsgKillTarget::Process()
+void XMsgKillTarget::Process( XBaseUnit* pOwner )
 {
 	// 현재는 공격자가 유닛타입일때만 지원함.
 	auto spAtker = m_dmgInfo.m_spUnitAtker.lock();
@@ -103,6 +109,36 @@ void XMsgKillTarget::Process()
 	}
 }
 //
+//////////////////////////////////////////////////////////////////////////
+XMsgAddAdjParam::XMsgAddAdjParam( int adjParam, xtValType valType, float adj )
+	: XMsgBase( xUM_ADD_ADJPARAM )
+	, m_AdjParam( (xtParameter)adjParam )
+	, m_valType( valType )
+	, m_valAdj( adj )
+{
+}
+
+void XMsgAddAdjParam::Process( XBaseUnit* pOwner )
+{
+	// pOwner에게 보정파라메터 적용
+	pOwner->AddAdjParam( m_AdjParam, m_valType, m_valAdj );
+}
+
+//////////////////////////////////////////////////////////////////////////
+XMsgSetState::XMsgSetState( XGAME::xtState idxState, bool bFlag )
+	: XMsgBase( xUM_SET_STATE )
+	, m_idxState( idxState )
+	, m_bFlag( bFlag )
+{
+}
+
+void XMsgSetState::Process( XBaseUnit* pOwner )
+{
+	// pOwner에게 보정파라메터 적용
+	pOwner->SetState( m_idxState, m_bFlag );
+}
+
+
 XE_NAMESPACE_END; // xnUnit
 
 

@@ -52,8 +52,7 @@ XFSMChase* XFSMBase::DoChase( const UnitPtr& spTarget, XFSMBase::xtFSM fsmNext )
 		// 추적중엔 타겟방향으로 보게 한다.
 		m_pUnit->DoDirToTarget( spTarget->GetvwPos() );
 		spTarget->AddCntTargeting( 1 );
-		XFSMChase *pfsm
-			= static_cast<XFSMChase*>( ChangeFSM( XFSMBase::xFSM_CHASE ) );
+		auto pfsm = static_cast<XFSMChase*>( ChangeFSM( XFSMBase::xFSM_CHASE ) );
 		pfsm->SetidNextFSM( fsmNext );
 		return pfsm;
 	} else

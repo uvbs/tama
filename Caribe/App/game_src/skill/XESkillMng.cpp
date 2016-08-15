@@ -996,7 +996,7 @@ XSkillDat* XESkillMng::FindByName( ID idName )
 XSkillDat* XESkillMng::FindByRandomActive( void ) 
 {
 	int size = m_listSkillDat.size();
-	int select = random(size);
+	int select = xRandom(size);
 	int i = 0;
 	XArrayLinearN<XSkillDat*, 1024> ary;
 	for( auto pSkillDat : m_listSkillDat )

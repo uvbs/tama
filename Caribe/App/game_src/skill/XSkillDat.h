@@ -44,7 +44,7 @@ private:
 	_tstring m_strShootObj;				// 발사체
 	xtMoving m_MoveType = xMT_STRAIGHT;
 	ID m_idShootObj = 1;			// 발사체id
-	float m_shootObjSpeed = 0.6f;		// 발사체속도
+	float m_shootObjSpeed = 0;		// 발사체속도(프레임당이동픽셀)
 	int m_Debug = 0;
 	XVector<std::string> m_aryTag;
 	void Init() {
@@ -110,7 +110,11 @@ public:
 	GET_ACCESSOR_CONST( float, rangeBaseTargetCond );
 	GET_ACCESSOR_CONST( const _tstring&, strShootObj );
 	GET_ACCESSOR_CONST( ID, idShootObj );
-	GET_ACCESSOR_CONST( float, shootObjSpeed );
+//	GET_ACCESSOR_CONST( float, shootObjSpeed );
+	// 프레임당 이동픽셀
+	inline float GetMovePixelPerFrame() const {
+		return m_shootObjSpeed;
+	}
 	GET_ACCESSOR_CONST( xtWhenUse, whenUse );
 	GET_ACCESSOR_CONST( xtMoving, MoveType );
 	inline bool IsShootingType() const {

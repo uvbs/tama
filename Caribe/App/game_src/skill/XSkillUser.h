@@ -281,7 +281,14 @@ public:
 // 														, XBuffObj *pBuffObj
 // 														, XLuaSkill *pLua );
 //	void ApplyInvokeEffectWithAry2( const XVector<XSkillReceiver*>& aryIvkTarget, XSkillDat *pDat, const EFFECT *pEffect, XSkillReceiver *pInvoker, bool bCreateSfx, int level, const XE::VEC2& vPos, XBuffObj *pBuffObj );
-	bool ApplyInvokeEffToIvkTarget( XSkillReceiver* pInvokeTarget, XSkillDat *pDat, const EFFECT *pEffect, XSkillReceiver *pInvoker, bool bCreateSfx, int level, const XE::VEC2& vPos, XBuffObj *pBuffObj );
+	bool ApplyInvokeEffToIvkTarget( XSkillReceiver* pInvokeTarget, 
+																	const XE::VEC3& vIvkPos,
+																	XSkillDat *pDat,
+																	const EFFECT *pEffect, 
+																	XSkillReceiver *pInvoker, 
+																	bool bCreateSfx, 
+																	int level, 
+																	XBuffObj *pBuffObj );
 private:
 	// 캐스팅대상에 효과를 시전한다.
 	xtError CastEffToCastTarget( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pBaseTarget, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos, ID idCallerSkill );

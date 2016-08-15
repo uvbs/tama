@@ -101,7 +101,7 @@ int XSkillReceiver::ApplyEffectAdjParam( XSkillDat *pSkillDat,
 	if( pBuffObj && pBuffObj->IsFirstProcess() ) {
 		OnApplyEffectAdjParam( pCaster, pSkillDat, pEffect, ability );
 	}
-	AddAdjParam( pEffect->invokeParameter
+	AddAdjParamMsg( pEffect->invokeParameter
 						, pEffect->valtypeInvokeAbility
 						, ability );
 	//
@@ -142,7 +142,7 @@ int XSkillReceiver::ApplyInvokeEffect( XSkillDat *pSkillDat,
 			// 상태이상을 저항하면 효과를 적용하지 않는다.
 			return 0;	
 		}
-		SetState( pEffect->invokeState, TRUE );
+		SetStateMsg( pEffect->invokeState, true );
 		if( pBuffObj && pBuffObj->IsFirstProcess() ) {
 			OnFirstApplyState( pCaster, 
 												pInvoker, 
@@ -183,7 +183,7 @@ int XSkillReceiver::ApplyInvokeEffect( XSkillDat *pSkillDat,
 	if( pEffect->invokeParameter < 0 ) {
 		return ApplyEffectNotAdjParam( pSkillDat, pCaster, pEffect, level );
 	} else 
-	if( pEffect->invokeParameter < 0 ) {
+	if( pEffect->invokeParameter > 0 ) {
 		return ApplyEffectAdjParam( pSkillDat, pCaster, pEffect, level, pBuffObj );
 	}
 	return bApplied;
@@ -195,7 +195,7 @@ int XSkillReceiver::ApplyInvokeEffect( XSkillDat *pSkillDat,
 int XSkillReceiver::FrameMove( float dt )
 {
 #ifdef _DEBUG
-	XBREAK( IsClearAdjParam() == FALSE );
+// 	XBREAK( IsClearAdjParam() == FALSE );
 #endif
 	m_pAttacker = nullptr;		// 이것은 휘발성으로 매 프레임 초기화 된다.
 	//

@@ -39,5 +39,7 @@ namespace xnUnit {
 		xUM_DMG,
 		xUM_DMG_FEEDBACK,
 		xUM_KILL_TARGET,
+		xUM_ADD_ADJPARAM,
+		xUM_SET_STATE,
 	};
 }

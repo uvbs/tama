@@ -360,15 +360,17 @@ class XSkillSfxReceiver : public XEBaseWorldObj, public XSKILL::XSkillReceiver
 	void Destroy();
 public:
 	XSkillSfxReceiver( BIT bitCamp, const XE::VEC3& vwPos, float sec );
-	virtual ~XSkillSfxReceiver() { Destroy(); }
-	virtual ID GetId() {
+	~XSkillSfxReceiver() { Destroy(); }
+	ID GetId() override {
 		return GetsnObj();
 	}
-	virtual void Release() {}
-	virtual int OnApplyEffectNotAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) { return 0; }
-	virtual const XECompCamp& GetCamp() const override {		///< this의 진영을 리턴
+	void Release() override {}
+	int OnApplyEffectNotAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) override { return 0; }
+	const XECompCamp& GetCamp() const override {		///< this의 진영을 리턴
 		return m_Camp;
 	}
+	void AddAdjParamMsg( int adjParam, XSKILL::xtValType valType, float adj ) override { XBREAK(1); }
+
 	void FrameMove( float dt ) override;
 }; // class XSkillSfxReceiver
 

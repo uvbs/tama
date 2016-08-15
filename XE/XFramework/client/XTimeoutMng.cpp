@@ -203,10 +203,9 @@ BOOL XTimeoutMng::Find( ID idPacket )
 
 XTimeoutMng::xREQUEST* XTimeoutMng::FindByKey( ID idKey )
 {
-	LIST_LOOP( m_listTimeout, xREQUEST, itor, req )
-	{
+	LIST_LOOP( m_listTimeout, xREQUEST, itor, req )	{
 		if( req.idPacket == idKey )
-			return &(*itor);
+			return &req;
 	} END_LOOP;
 	return NULL;
 }
@@ -215,8 +214,7 @@ BOOL XTimeoutMng::IsRequesting( void )
 {
 	if( m_listTimeout.size() == 0 )
 		return FALSE;
-	LIST_LOOP( m_listTimeout, xREQUEST, itor, req )
-	{
+	LIST_LOOP( m_listTimeout, xREQUEST, itor, req )	{
 		// 블로킹 되는 타임아웃 객체가 하나라도 있으면 "응답중"으로 리턴
 		if( req.bBlocking )
 			return TRUE;
@@ -229,10 +227,8 @@ BOOL XTimeoutMng::IsRequesting( void )
 */
 XTimeoutMng::xREQUEST* XTimeoutMng::GetRequesting()
 {
-	for( auto& req : m_listTimeout )
-	{
-		if( req.bBlocking )
-		{
+	for( auto& req : m_listTimeout )	{
+		if( req.bBlocking )		{
 			return &req;
 		}
 	}

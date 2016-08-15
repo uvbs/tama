@@ -10,6 +10,7 @@
 #include "skill/SkillDef.h"
 #include "XBaseUnitH.h"
 
+class XBaseUnit;
 XE_NAMESPACE_START( xnUnit )
 
 class XMsgBase;
@@ -29,7 +30,7 @@ public:
 	void AddMsg( XSPMsg spMsg ) {
 		m_qMsg1.push_back( spMsg );
 	}
-	void Process();
+	void Process( XBaseUnit* pOwner );
 //	void Release();
 private:
 	// private member
@@ -61,7 +62,7 @@ public:
 		return m_snMsg;
 	}
 	// public member
-	virtual void Process() = 0;
+	virtual void Process( XBaseUnit* pOwner ) = 0;
 //	virtual void Release() = 0;
 private:
 	// private member
@@ -100,7 +101,7 @@ public:
 	virtual ~XMsgDmg() { Destroy(); }
 	// get/setter
 	// public member
-	void Process() override;
+	void Process( XBaseUnit* pOwner ) override;
 private:
 	// private member
 	XSPWorldObjW m_spAtkObj;
@@ -128,7 +129,7 @@ public:
 	~XMsgDmgFeedback() { Destroy(); }
 	// get/setter
 	// public member
-	void Process() override;
+	void Process( XBaseUnit* pOwner ) override;
 private:
 	// private member
 	xDmg m_dmgInfo;
@@ -139,7 +140,7 @@ private:
 }; // class XMsgDmgFeedback
 
 /****************************************************************
-* @brief 
+* @brief 공격자에게 보내는 "타겟을 사살함"메시지
 * @author xuzhu
 * @date	2016/07/22 14:57
 *****************************************************************/
@@ -150,7 +151,7 @@ public:
 	~XMsgKillTarget() { Destroy(); }
 	// get/setter
 	// public member
-	void Process() override;
+	void Process( XBaseUnit* pOwner ) override;
 private:
 	// private member
 	xDmg m_dmgInfo;
@@ -159,5 +160,52 @@ private:
 	void Init() {}
 	void Destroy() {}
 }; // class XMsgKillTarget
+
+/****************************************************************
+* @brief 타겟에게 보정값을 보냄
+* @author xuzhu
+* @date	2016/07/22 14:57
+*****************************************************************/
+class XMsgAddAdjParam : public XMsgBase
+{
+public:
+	XMsgAddAdjParam( int adjParam, XSKILL::xtValType valType, float adj );
+	~XMsgAddAdjParam() { Destroy(); }
+	// get/setter
+	// public member
+	void Process( XBaseUnit* pOwner ) override;
+private:
+	// private member
+	XGAME::xtParameter m_AdjParam = XGAME::xADJ_NONE;
+	XSKILL::xtValType m_valType = XSKILL::xNONE_VALTYPE;
+	float m_valAdj = 0;
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+}; // class XMsgAddAdjParam
+
+/****************************************************************
+* @brief 타겟의 상태를 on/off한다.
+* @author xuzhu
+* @date	2016/07/22 14:57
+*****************************************************************/
+class XMsgSetState : public XMsgBase
+{
+public:
+	XMsgSetState( XGAME::xtState idxState, bool bFlag );
+	~XMsgSetState() { Destroy(); }
+	// get/setter
+	// public member
+	void Process( XBaseUnit* pOwner ) override;
+private:
+	// private member
+	XGAME::xtState m_idxState;
+	bool m_bFlag;
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+}; // class XMsgSetState
 
 XE_NAMESPACE_END // xnUnit

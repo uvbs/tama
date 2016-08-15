@@ -628,7 +628,7 @@ void XSquadObj::FrameMove( float dt )
 	}
 	// 하드코딩 프로세스
 	ProcessHardcode( dt );
-}
+} // FrameMove
 
 void XSquadObj::ProcessHardcode( float dt )
 {
@@ -661,31 +661,22 @@ void XSquadObj::ProcessHardcode( float dt )
 		XBattleField::sGet()->GetNearSquad( this, &ary, m_Radius / 2.f );
 		auto pEffect = m_pCourage->GetEffectByIdx( 0 );
 		float abil = pEffect->invokeAbilityMin[ m_lvCourage ];
-		if( ary.size() > 0 )
-		{
+		if( ary.size() > 0 )	{
 			XBREAK( pEffect->invokeAbilityMin[ m_lvCourage ] == 0 );
 			auto& spSquad = ary[ 0 ];
-			spSquad->AddAdjParam( ( XGAME::xtParameter )pEffect->invokeParameter,
-				pEffect->valtypeInvokeAbility,
-				pEffect->invokeAbilityMin[ m_lvCourage ] );
+			spSquad->AddAdjParam( (xtParameter)pEffect->invokeParameter,
+														pEffect->valtypeInvokeAbility,
+														pEffect->invokeAbilityMin[m_lvCourage] );
 			if( m_timerHeal.IsOff() )
 				m_timerHeal.Set( 1.f );
-			if( m_timerHeal.IsOver() )
-			{
+			if( m_timerHeal.IsOver() )	{
 				m_timerHeal.Reset();
 				// 안수치료 특성이 있는지 확인
 				LPCTSTR szAbil = _T( "ordination_treatment" );
 				int point = GetLevelByAbil( XGAME::xUNIT_PALADIN, szAbil );
-				// 				auto pNode = XPropTech::sGet()->GetpNodeBySkill( XGAME::xUNIT_PALADIN, 
-				// 															_T("ordination_treatment"));
-				// 				if( XASSERT(pNode) )
-				// 				{
-				// 					auto pAbil = GetAccount()->GetAbilNode( XGAME::xUNIT_PALADIN, pNode->idNode );
-				if( point > 0 )
-				{
+				if( point > 0 )	{
 					auto pSkillDat = SKILL_MNG->FindByIds( szAbil );
-					if( XASSERT( pSkillDat ) )
-					{
+					if( XASSERT( pSkillDat ) ) {
 						auto pEffect = pSkillDat->GetEffectByIdx( 0 );
 						XBREAK( pEffect == nullptr );
 						float adjVal = pEffect->invokeAbilityMin[ point ];
@@ -1265,7 +1256,6 @@ void XSquadObj::DoDamageByPercent( float ratio, BOOL bCritical )
 			bitHit |= XGAME::xBHT_CRITICAL;
 		if( damage == 0 )
 			bitHit &= ~XGAME::xBHT_HIT;
-//		spUnit->DoDamage( NULL, damage, -1, XSKILL::xDMG_NONE, bitHit, XGAME::xDA_NONE );
 		auto pMsg = std::make_shared<xnUnit::XMsgDmg>( nullptr
 																								, spUnit
 																								, damage
@@ -1279,16 +1269,14 @@ void XSquadObj::DoDamageByPercent( float ratio, BOOL bCritical )
 
 void XSquadObj::AddAdjParam( XGAME::xtParameter adjParam, XSKILL::xtValType valType, float adj )
 {
-	LIVE_UNIT_LOOP( spUnit )
-	{
-		spUnit->AddAdjParam( adjParam, valType, adj );
+	LIVE_UNIT_LOOP( spUnit ) {
+		spUnit->AddAdjParamMsg( adjParam, valType, adj );
 	} END_LOOP;
 }
 
 void XSquadObj::DoHeal( float addHp )
 {
-	LIVE_UNIT_LOOP( spUnit )
-	{
+	LIVE_UNIT_LOOP( spUnit ) {
 		spUnit->DoHeal( addHp );
 	} END_LOOP;
 }

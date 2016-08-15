@@ -284,6 +284,7 @@ bool XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 	}
 	auto pCaster = GetpCaster();
 	// 발동대상들을 뽑음.
+	XE::VEC3 vwIvkPos;			// 발동대상이 좌표형태인 경우.
 	// 이부분 XSkillUser와 통합시킬수 있지 않을까?
 	XVector<XSkillReceiver*> aryIvkTarget;
 	int num = pCaster->GetInvokeTarget( &aryIvkTarget, m_pDat,
@@ -317,7 +318,11 @@ bool XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 		}
 		++m_numApply;
 		// 발동대상들에게 실제 스킬효과를 적용 & 이벤트 스크립트 실행(루프안에서 pInvokeTarget->ApplyInvokeEffect()로 변경)
-	} // aryIvkTarget.size > 0 
+	} else // aryIvkTarget.size > 0 
+	if( !vwIvkPos.IsZero() ) {
+		// 발동대상이 좌표형태
+
+	}
 	return bApplied;
 }
 

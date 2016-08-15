@@ -89,42 +89,44 @@ XE_NAMESPACE_START( XSKILL )
 	///< 적
 
 	// 발동대상
-	enum xtInvokeTarget { xIVT_NONE,
-						// 앞번호는 시전대상의 enum과 값을 맞출것. 같은 한글식별자를 쓰기 위함.
-						xIVT_CAST_TARGET,	///< 시전대상
-						xIVT_CAST_TARGET_RADIUS,	///< 시전대상반경(시전대상자를 포함)
-						xIVT_CAST_TARGET_SURROUND,	///< 시전대상주변(시전대상자를 포함하지 않음)
-						xIVT_CAST_TARGET_PARTY,	///< 시전대상파티
-						xIVT_CAST_TARGET_POS,	///< 시전대상좌표
-						xIVT_CAST_POS_RADIUS,	///< 시전좌표반경
-						xIVT_ATTACKER,			///< 타격자
-						xIVT_ATTACKED_TARGET,	///< 피격자
-						xIVT_ATTACKED_TARGET_RADIUS,	///< 피격자반경
-						xIVT_ATTACKED_TARGET_SURROUND,	///< 피격자주변
-						xIVT_ATTACKED_TARGET_PARTY,	///< 피격자파티
-						xIVT_CURR_TARGET,			///< 현재공격타겟(공격타겟)(시전자의)
-						xIVT_CURR_TARGET_PARTY,		///< 현재공격타겟파티
-						xIVT_ALL = 0xffffffff,				///< 모두(아군,적 포함. 발동대상우호로 필터링)
-						xIVT_RANDOM_PARTY = 99,			///< 랜덤파티
+	enum xtInvokeTarget {
+		xIVT_NONE,
+		// 앞번호는 시전대상의 enum과 값을 맞출것. 같은 한글식별자를 쓰기 위함.
+		xIVT_CAST_TARGET,	///< 시전대상
+		xIVT_CAST_TARGET_RADIUS,	///< 시전대상반경(시전대상자를 포함)
+		xIVT_CAST_TARGET_SURROUND,	///< 시전대상주변(시전대상자를 포함하지 않음)
+		xIVT_CAST_TARGET_PARTY,	///< 시전대상파티
+		xIVT_CAST_TARGET_POS,	///< 시전대상좌표
+		xIVT_CAST_POS_RADIUS,	///< 시전좌표반경
+		xIVT_ATTACKER,			///< 타격자
+		xIVT_ATTACKED_TARGET,	///< 피격자
+		xIVT_ATTACKED_TARGET_RADIUS,	///< 피격자반경
+		xIVT_ATTACKED_TARGET_SURROUND,	///< 피격자주변
+		xIVT_ATTACKED_TARGET_PARTY,	///< 피격자파티
+		xIVT_CURR_TARGET,			///< 현재공격타겟(공격타겟)(시전자의)
+		xIVT_CURR_TARGET_PARTY,		///< 현재공격타겟파티
+		xIVT_CURR_TARGET_POS,		///< 현재타겟좌표
+		xIVT_ALL = 0xffffffff,				///< 모두(아군,적 포함. 발동대상우호로 필터링)
+		xIVT_RANDOM_PARTY = 99,			///< 랜덤파티
 	};
-	
 	enum xtUseType {
-					xUST_NONE,
-					xUST_TARGETTING,	// 타겟지정, 타겟을 직접 지정
-					xUST_GROUND,	// 바닥지정, 바닥을 직접 지정
-					xUST_IMMEDIATELY,	// 즉시사용(스킬버튼 누르면 바로사용)
+		xUST_NONE,
+		xUST_TARGETTING,	// 타겟지정, 타겟을 직접 지정
+		xUST_GROUND,	// 바닥지정, 바닥을 직접 지정
+		xUST_IMMEDIATELY,	// 즉시사용(스킬버튼 누르면 바로사용)
 	};
 	/**
 	 @brief 우호 필터
 	 우리편이냐 적편이냐 중립이냐만 판단함.
 	*/
-	enum xtFriendshipFilt { xfNONESHIP=0, 
-							xfALL_FRIENDSHIP=0xffffffff,	//모두,전체
-							xfALLY=0x01,				// 아군,우군
-							xfHOSTILE=0x02,				// 적군,적
-							xfNEUTRALITY=0x04			// 중립,중립군
-	};	
-	
+	enum xtFriendshipFilt {
+		xfNONESHIP = 0,
+		xfALL_FRIENDSHIP = 0xffffffff,	//모두,전체
+		xfALLY = 0x01,				// 아군,우군
+		xfHOSTILE = 0x02,				// 적군,적
+		xfNEUTRALITY = 0x04			// 중립,중립군
+	};
+
 /*
 	// 어느진영인가. 
 	이제 진영은 XECompCamp를 사용자 정의해서 쓰도록 바뀜.
@@ -143,19 +145,20 @@ XE_NAMESPACE_START( XSKILL )
 	};
 	enum xtPlayerType { xNONE_PLAYER_TYPE=0, xHUMAN, xAI };	// 플레이어가 인간인가 AI인가
 	///< 발동대상조건. 발동대상에게 효과를 적용할 조건
-	enum xtCondition { xNONE_COND,	// 없음
-						xDIE,		// 사망, (발동대상이 사망상태여야한다)
-						xLIVE,		// 생존, (발동대상이 생존상태여야한다)
-						xATTACK,	// 공격시(사용되지 않음)	
-						xATTACK_TARGET_JOB,	///< 공격대상직업/직업
-						xATTACK_TARGET_SIZE,	///< 공격대상크기/크기
-						xATTACK_TARGET_TRIBE,	///< 공격대상종족/종족
-						xTARGET_ARM,			///< 병과
-						xTARGET_RANK,			///< 계급
+	enum xtCondition {
+		xNONE_COND,	// 없음
+		xDIE,		// 사망, (발동대상이 사망상태여야한다)
+		xLIVE,		// 생존, (발동대상이 생존상태여야한다)
+		xATTACK,	// 공격시(사용되지 않음)	
+		xATTACK_TARGET_JOB,	///< 공격대상직업/직업
+		xATTACK_TARGET_SIZE,	///< 공격대상크기/크기
+		xATTACK_TARGET_TRIBE,	///< 공격대상종족/종족
+		xTARGET_ARM,			///< 병과
+		xTARGET_RANK,			///< 계급
 
-						xCOND_HARD_CODE=99,	///< 하드코딩
-						xCOND_ALWAYS=0,		///< 항상
-	};	
+		xCOND_HARD_CODE = 99,	///< 하드코딩
+		xCOND_ALWAYS = 0,		///< 항상
+	};
 	// 발동시점
 	enum xtJuncture : int { 
 		xJC_NONE,

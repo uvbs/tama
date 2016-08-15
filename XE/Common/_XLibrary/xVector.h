@@ -618,19 +618,22 @@ namespace XE
 		
 		//		friend VEC3 operator * ( float, const VEC3& );
 		
-		BOOL operator == ( const VEC3& rhs ) const {
+		bool operator == ( const VEC3& rhs ) const {
 			return (x == rhs.x && y == rhs.y && z == rhs.z );
 		}
-		BOOL operator != ( const VEC3& rhs ) const {
+		inline bool operator != ( const VEC3& rhs ) const {
 			return (x != rhs.x || y != rhs.y || z != rhs.z );
 		}
-		BOOL IsZero() const {
+		inline bool IsZero() const {
 			return (x == 0 && y == 0 && z == 0 );
 		}
-		BOOL IsMinus() const {
+		inline bool IsNotZero() const {
+			return !IsZero();
+		}
+		inline bool IsMinus() const {
 			return (x == -1.f && y == -1.f && z == -1.f );
 		}
-		BOOL IsHave() const {
+		inline bool IsHave() const {
 			return (x > 0 && y > 0 && z > 0);
 		}
 		float Length() const {

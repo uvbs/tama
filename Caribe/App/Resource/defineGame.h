@@ -211,7 +211,8 @@ namespace XGAME
 	// 발동파라메터(주의: ADJ가 없는 파라메터는 보정치가 아니다)
 	// 이것도 예제템플릿만 제공해주고 사용자정의로 쓰는것이 나을듯.
 	enum xtParameter {
-		xNONE_PARAM,
+		xNONE_PARAM = 0,
+		xADJ_NONE = 0,
 		xADJ_ATTACK,					// 공격력보정
 		xADJ_ATTACK_MELEE_TYPE,			// 근접공격력보정
 		xADJ_ATTACK_RANGE_TYPE,			// 원거리공격력보정

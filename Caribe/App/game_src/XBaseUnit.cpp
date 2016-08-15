@@ -432,18 +432,10 @@ void XBaseUnit::FrameMove( float dt )
 */
 void XBaseUnit::FrameMoveAI( float dt )
 {
-#ifdef _DEBUG
-	// 브레이크포인트용 코드
-	static auto _state = XGAME::xST_FROZEN;
-	if( IsState(_state) ) {
-		int a = 0;
-	}
-#endif // _DEBUG
 	if( IsLive() ) {
 		// 살았을때만 돌아가는 동작.
 		FrameMoveLive( dt );
-	}
-	else {
+	}	else {
 		// 죽었을때만 돌아가는 동작
 	}
 	bool bFSMFrameMove = true;
@@ -672,10 +664,14 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		if( IsState( XGAME::xST_INVISIBLE ) )
 			alpha = 0.5f;	// 현재 투명도에서 다시 1/2한다.
 		float range = 2.f * scaleFactor;
-		const float xAdjShake = ( m_cntDmgShake > 0 )? xRandomF( -range, range ) : 0;
-		float col = (m_cntDmgShake > 0 )? (255.f * (1.0f - (m_cntDmgShake / c_maxDmgShake))) : 255.f;
-		GetpSprObj()->SetColor( XCOLOR_RGBA(255, (int)col, (int)col, 255) );
-		XEBaseWorldObj::Draw( vPos + (XE::VEC2(xAdjShake, 0) * scale), scale, alpha );
+		if( m_cntDmgShake > 0 ) {
+			const float xAdjShake = (m_cntDmgShake > 0) ? xRandomF( -range, range ) : 0;
+			float col = (m_cntDmgShake > 0) ? (255.f * (1.0f - (m_cntDmgShake / c_maxDmgShake))) : 255.f;
+			GetpSprObj()->SetColor( XCOLOR_RGBA( 255, (int)col, (int)col, 255 ) );
+			XEBaseWorldObj::Draw( vPos + (XE::VEC2( xAdjShake, 0 ) * scale), scale, alpha );
+		} else {
+			XEBaseWorldObj::Draw( vPos, scale, alpha );
+		}
 	}
 	// 이부분도 느림 피격이펙이 안나오고 있을때도 draw하는지 검사
 //#ifndef _XUZHU_HOME
@@ -1925,7 +1921,7 @@ XSkillUser* XBaseUnit::GetCaster( ID snObj )
  @brief 비보정 파라메터 효과가 적용될때 호출된다. 파라메터가 xHP같은것이 대표적인 예.
 */
 int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
-																			, XSkillDat* pSkillDat
+																			, XSkillDat* pDat
 																			, const EFFECT *pEffect
 																			, float abilMin )
 {
@@ -1939,13 +1935,20 @@ int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
 			if( abilMin <= 0 ) {		// 스킬데미지가 0이라도 데미지표시함(왜?)
 				if( IsLive() ) {
 					XBREAK( pAttacker == nullptr );
-					BOOL bCritical = pAttacker->IsCritical( XSPUnit() );
+					float addCriticalRate = 0.f;
+					if( pDat->GetstrIdentifier() == _T( "throw_spear_shoot" ) ) {
+						auto pBuffObj = pAttacker->FindBuffSkill( _T( "gungnir" ) );
+						if( pBuffObj ) {
+							addCriticalRate = pBuffObj->GetAbilMinbyLevel();
+						}
+					}
+					auto bCritical = pAttacker->IsCritical( m_spTarget.lock(), addCriticalRate );
 					if( bCritical )
 						abilMin *= pAttacker->GetCriticalPower();
 					float ratioPenet = 0.f;
 					xtDamage typeDamage = xDMG_NONE;
 					// 발사체있는건 원거리속성, 없는건 근거리속성으로 했음.
-					if( pSkillDat->IsShootingType() )
+					if( pDat->IsShootingType() )
 						typeDamage = xDMG_RANGE;
 					else
 						typeDamage = xDMG_MELEE;
@@ -2090,12 +2093,6 @@ XSkillSfx* XBaseUnit::OnCreateSkillSfxShootTarget( XSkillDat *pSkillDat,
 	return pSfx;
 }
 
-
-궁수 다른 특성들도 발사체 방식으로 교체
-
-
-
-
 /**
  @brief 이펙트객체생성 일반화 함수
  @param wAdjZ 만약 createPoint가 TARGET_TOP일경우 필요하다면 추가보정치를 준다.
@@ -2110,7 +2107,7 @@ XObjLoop* XBaseUnit::CreateSfxObj( xtPoint createPoint,
 																		const XE::VEC2& vPos/* = XE::VEC2()*/ )
 {
 	auto spUnit = GetThisUnit();
-	CONSOLE_TAG( "skill", "CreateSfxObj: %s, %d, sec=%.1f", szSpr, idAct, secPlay );
+//	CONSOLE_TAG( "skill", "CreateSfxObj: %s, %d, sec=%.1f", szSpr, idAct, secPlay );
 	XObjLoop *pSfx = NULL;
 	if( !vPos.IsZero() ) {
 		pSfx = new XObjLoop( XGAME::xOT_SFX, XE::VEC3(vPos.x, 0, vPos.y),
@@ -2211,20 +2208,20 @@ XSkillReceiver* XBaseUnit::CreateSfxReceiver( EFFECT *pEffect, float sec )
 }
 
 /**
- @brief
+ @brief 타겟(pBaseTarget)에게 스킬효과를 시전
 */
 void XBaseUnit::cbOnArriveSkillObj( XSkillShootObj *pArrow,
 																		XSkillDat *pSkillDat,
 																		int level,
 																		XSkillReceiver *pBaseTarget )
 {
-	if( pSkillDat->GetstrIdentifier() == _T("throw_spear_shoot" ))	{
-		XBuffObj *pBuffObj = FindBuffSkill( _T("gungnir") );
-		if( pBuffObj )		{
-			// 궁니르버프가 있을때 창으로 대상을 맞춤.
-			pBuffObj->OnEventJunctureCommon( xCOND_HARD_CODE );
-		}
-	}
+// 	if( pSkillDat->GetstrIdentifier() == _T("throw_spear_shoot" ))	{
+// 		XBuffObj *pBuffObj = FindBuffSkill( _T("gungnir") );
+// 		if( pBuffObj )		{
+// 			// 궁니르버프가 있을때 창으로 대상을 맞춤.
+// //			pBuffObj->OnEventJunctureCommon( xCOND_HARD_CODE );
+// 		}
+// 	}
 	XSkillUser::CastSkillToBaseTarget( pSkillDat, level, pBaseTarget, XE::VEC2(0), pSkillDat->GetidSkill() );
 }
 
@@ -2244,9 +2241,14 @@ XBaseUnit::CreateAndAddToWorldShootObj( XSkillDat *pDat,
 // 	if( vwSrc.IsZero() )
 // 		vwSrc = GetvCenterWorld();
 	auto pTargetUnit = dynamic_cast<XBaseUnit*>( pBaseTarget );
-	float speed = 24.f;
-	if( pDat->GetMoveType() == xMT_ARC )
-		speed = 11.f;
+	// 프레임당 이동픽셀
+	float pixelPerFrame = pDat->GetMovePixelPerFrame(); // 24.f;
+	if( pixelPerFrame == 0 ) {
+		if( pDat->GetMoveType() == xMT_ARC )
+			pixelPerFrame = 11.f;
+		else
+			pixelPerFrame = 22.f;
+	}
 	auto pArrow = new XSkillShootObj( GetpWndWorld(),
 																		GetThisUnit(),
 																		pTargetUnit->GetThisUnit(),
@@ -2255,7 +2257,7 @@ XBaseUnit::CreateAndAddToWorldShootObj( XSkillDat *pDat,
 																		0,
 																		pDat->GetstrShootObj().c_str(),
 																		pDat->GetidShootObj(),
-																		speed );
+																		pixelPerFrame );
 	pArrow->SetMoveType( pDat->GetMoveType() );
 	pArrow->RegisterCallback( this, &XBaseUnit::cbOnArriveSkillObj,
 														pDat,
@@ -2638,18 +2640,24 @@ XSkillReceiver* XBaseUnit::GetCurrTarget()
 
 /**
  @brief 현재 크리티컬율을 바탕으로 랜덤돌려서 크리티컬인지 리턴받는다.
+ @param addCriticalRate 추가 치명타율.
 */
-bool XBaseUnit::IsCritical( XSPUnit spTarget )
+bool XBaseUnit::IsCritical( XSPUnit spTarget, float addCriticalRate )
 {
-	float ratioCritical = GetCriticalRatio();
-	if( spTarget != nullptr )	{
-		ratioCritical = spTarget->CalcAdjParam( ratioCritical, XGAME::xADJ_CRITICAL_RATE_RECV );
+	float rateCri = GetCriticalRatio();
+	rateCri += addCriticalRate;
+	if( rateCri > 1.f )
+		rateCri = 1.f;
+	if( rateCri < 0 )
+		rateCri = 0;
+	if( spTarget )	{
+		rateCri = spTarget->CalcAdjParam( rateCri, XGAME::xADJ_CRITICAL_RATE_RECV );
 		auto pBuff = FindBuffSkill( _T( "nearing_fire" ) );
 		if( pBuff && m_typeCurrMeleeType == XGAME::xMT_RANGE ) {
 			XE::VEC2 vDist = spTarget->GetvwPos().ToVec2() - GetvwPos().ToVec2();
 			float distSkill = xMETER_TO_PIXEL((float)pBuff->GetInvokeSizeByLevel());
 			if( vDist.Lengthsq() < distSkill * distSkill )
-				ratioCritical += pBuff->GetInvokeRatioByLevel();
+				rateCri += pBuff->GetInvokeRatioByLevel();
 		}
 		if( GetUnitType() == xUNIT_FALLEN_ANGEL ) {
 			// 계략 특성
@@ -2661,15 +2669,15 @@ bool XBaseUnit::IsCritical( XSPUnit spTarget )
 																													, spTarget->GetpSquadObj()
 																													, GetUnitType() );
 				if( spSquadWith != nullptr )
-					ratioCritical += pBuff->GetAbilMinbyLevel();
+					rateCri += pBuff->GetAbilMinbyLevel();
 			}
 		}
 	}
-	int prob = (int)(ratioCritical * 1000);
-	int dice = random( 1000 );
+	int prob = (int)(rateCri * 1000);
+	int dice = xRandom( 1000 );
 	if( dice < prob )
-		return TRUE;
-	return FALSE;
+		return true;
+	return false;
 }
 
 /**
@@ -2679,7 +2687,7 @@ bool XBaseUnit::IsEvade( xtDamage typeDamage, const XBaseUnit* pAttacker ) const
 {
 	float ratio = GetEvadeRatio( typeDamage, pAttacker );
 	int prob = (int)( ratio * 1000 );
-	int dice = random( 1000 );
+	int dice = xRandom( 1000 );
 	if( dice < prob )
 		return true;
 	return false;
@@ -2767,7 +2775,8 @@ float XBaseUnit::hardcode_OnToDamage( XSPUnit& spTarget, float damage, XGAME::xt
 		}
 	}
 	if( spTarget != nullptr ) {
-		if( spTarget->IsState( XGAME::xST_FROZEN ) ) {
+		if( spTarget->IsState( XGAME::xST_FROZEN )
+				|| spTarget->IsState( XGAME::xST_ICE ) ) {
 			// 타겟이 빙결상태고 공격자가 파쇄화살 특성이 있으면
 			XBuffObj *pBuff = FindBuffSkill( _T("crushing_arrow") );
 			if( pBuff ) {
@@ -2976,12 +2985,8 @@ void XBaseUnit::OnSkillAmplifyUser( XSkillDat *pDat,
 				auto pEffect = pBuff->GetEffectIndex( 0 );
 				if( pOutAdd && pEffect )				{
 					float abilityAdd = pEffect->invokeAbilityMin[ level ];
-					// 원래능력치가 음수였으면 증폭능력치도 음수로 바꾼다.
-// 					if( *pOutAdd < 0 && abilityAdd > 0 )
-// 						abilityAdd = -abilityAdd;
-// 					if( *pOutAdd > 0 && abilityAdd < 0 )
-// 						abilityAdd = -abilityAdd;
-					*pOutAdd = abilityAdd;
+					// 증가되는 비율만 담음.
+					*pOutRatio = abilityAdd;
 				}
 			}
 		} else
@@ -3021,9 +3026,9 @@ void XBaseUnit::OnAdjustEffectAbility( XSkillDat *pSkillDat,
 				*pOutMin = GetAttackRangeDamage( m_spTarget.lock() ) * ( *pOutMin );
 			else
 				*pOutMin = GetAttackMeleeDamage( m_spTarget.lock() ) * ( *pOutMin );
-		}
-		else
+		} else {
 			*pOutMin = GetMaxHp() * ( *pOutMin );
+		}
 	} else
 	if( invokeParam == XGAME::xADJ_ATTACK ) {
 		// 공격력보정시에 this가 "열손실" 특성이 있으면.
@@ -3507,15 +3512,24 @@ bool XBaseUnit::OnInvokeSkill( XSkillDat *pDat,
 															_tstring* pstrOut )
 
 {
+// 	for( 버프 ) {
+// 		if( pEff->발동대체 && pEff->발동대체 == pDat->GetIds() ) {
+// 			auto bOk = XSKILL::DoDiceInvokeRatio( pEff, 버프->GetLevel() );
+// 			if( bOk )
+// 				return pEff->발동스킬;
+// 		}
+// 	}
 	if( pDat->GetstrIdentifier() == _T("chill_blast_arrow") )	{
 		// 냉기폭발 화살의 스킬이 발동될때 대신 빙결화살이 발사되도록 한다.흡혈
-		if( FindBuffSkill( _T("freeze_arrow") ) ) {
-			*pstrOut = _T("invoke_freeze_arrow");
+		auto pBuff = FindBuffSkill( _T( "freeze_arrow" ) );
+		if( pBuff  ) {
+			auto prob = pBuff->GetInvokeRatioByLevel();
+			auto pEff = pBuff->GetEffectIndex( 0 );
+			auto bOk = XSKILL::DoDiceInvokeRatio( pEff, level );
+			if( bOk ) {
+				*pstrOut = pEff->strInvokeSkill.c_str(); // _T( "invoke_freeze_arrow" );
+			}
 		}
-	} else
-	// 골렘의 용암파편 특성
-	if( *pstrOut == _T("invoke_lava_fragments"))	{
-		return true;
 	}
 	return true;
 }
@@ -3710,11 +3724,23 @@ void XBaseUnit::PushMsg( XSPMsg spMsg )
 */
 void XBaseUnit::ProcessMsgQ()
 {
-	m_spMsgQ1->Process();
+	m_spMsgQ1->Process( this );
 }
 
 XE::VEC3 XBaseUnit::GetSize() const 
 {
 	XE::VEC2 vSize = m_bbLocal.GetSize();
 	return XE::VEC3( vSize.w, 0.f, vSize.h );
+}
+
+void XBaseUnit::AddAdjParamMsg( int adjParam, xtValType valType, float adj )
+{
+	auto spMsg = std::make_shared<XMsgAddAdjParam>( adjParam, valType, adj );
+	PushMsg( spMsg );
+}
+
+void XBaseUnit::SetStateMsg( int idxState, bool bFlag )
+{
+	auto spMsg = std::make_shared<XMsgSetState>( (xtState)idxState, bFlag );
+	PushMsg( spMsg );
 }
