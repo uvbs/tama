@@ -176,7 +176,8 @@ int XUnitHero::DoSkillMotion( void )
 	XBREAK( IsDead() );
 	///< 
 	int level = GetSkillLevel( pDat );
-	m_infoUseSkill = UseSkill( pDat, level, GetspTarget().get(), nullptr );
+	const XE::VEC2 vZero;
+	m_infoUseSkill = UseSkill( pDat, level, GetspTarget().get(), vZero );
 	// 현재 동작 FSM설계에 문제가 있어서 이동중에 스킬을 사용하지 못한다.
 	// 일단 스킬 모션과 관계없이 모션이 시작하면 바로 스킬을 쓰도록 바꿔두고 나중에 고친다.
 	if( m_infoUseSkill.errCode == xOK ) {

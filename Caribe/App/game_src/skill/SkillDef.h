@@ -44,13 +44,13 @@ XE_NAMESPACE_START( XSKILL )
 	};
 	// 시전대상 종류
 	enum xtCastTarget {
-						xCST_NONE,
-						// 앞번호는 발동대상의 enum과 값을 맞출것. 같은 한글식별자를 쓰기 위함.
-						xCST_BASE_TARGET,	///< 기준타겟
-						xCST_BASE_TARGET_RADIUS, ///< 기준타겟반경
-						xCST_BASE_TARGET_SURROUND, ///< 기준타겟주변
-						xCST_BASE_TARGET_PARTY,	///< 기준타겟파티
-						xCST_BASE_TARGET_POS,	///< 기준타겟좌표
+		xCST_NONE,
+		// 앞번호는 발동대상의 enum과 값을 맞출것. 같은 한글식별자를 쓰기 위함.
+		xCST_BASE_TARGET,	///< 기준타겟
+		xCST_BASE_TARGET_RADIUS, ///< 기준타겟반경
+		xCST_BASE_TARGET_SURROUND, ///< 기준타겟주변
+		xCST_BASE_TARGET_PARTY,	///< 기준타겟파티
+		xCST_BASE_TARGET_POS,	///< 기준타겟좌표
 	};
 	///< 타겟방법(트리거가 발동되는 순간 타겟을 지정하는 방법)
 	enum xtTargetMethod {

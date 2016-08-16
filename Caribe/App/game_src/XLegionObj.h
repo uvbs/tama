@@ -88,13 +88,13 @@ public:
 					float radius );
 	SquadPtr GetSquadBySN( ID snSquad );
 	void KillAllUnit();
-	SquadPtr FindNearSquadLeastHp( XSquadObj *pFinder, 
-									float pixelRadius, 
-									BIT bitCampFind,
-									BOOL bHighest );
-	SquadPtr FindSquadRandom( XSquadObj *pFinder, 
-							float pixelRadius, 
-							bool bIncludeFinder );
+	SquadPtr FindNearSquadLeastHp( XSquadObj *pFinder,
+																 float pixelRadius,
+																 BIT bitCampFind,
+																 BOOL bHighest );
+	SquadPtr FindSquadRandom( XSquadObj *pFinder,
+														float pixelRadius,
+														bool bIncludeFinder );
 	void OnStartBattle();
 	void OnAfterStartBattle();
 	int GetAllUnit( XVector<XSKILL::XSkillReceiver*> *pOutAry );

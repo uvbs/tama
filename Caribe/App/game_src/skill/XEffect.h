@@ -131,6 +131,9 @@ struct EFFECT	{
 		}
 		return arySecDuration[ 0 ];
 	}
+	bool IsDot() const {
+		return IsDuration() && secInvokeDOT > 0;
+	}
 	float GetAbilityMin( int level ) const {
 		if( invokeAbilityMin.size() == 0 )
 			return 0;

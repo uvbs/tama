@@ -24,7 +24,7 @@ public:
 //		XSkillObj *pUseSkill;	///< UseSkill()로 사용된 스킬객체. OnCastSkill()에서 다시 사용된다.
 		XSkillDat* pDat = nullptr;
 		int level = 0;			///< UseSkill()로 건네준 스킬레벨
-		XSkillReceiver *pBaseTarget = 0;	///< 기준타겟
+		XSkillReceiver *pBaseTarget = nullptr;	///< 기준타겟
 		XE::VEC2 vTarget;				///< 기준좌표
 		xtError errCode = xERR_OK;
 	};
@@ -78,17 +78,17 @@ public:
 	XSkillDat* CreateAddUseSkillByIds( LPCTSTR szIdentifier );
 	void DestroyAllSkill();
 
-	xUseSkill UseSkillByID( XSkillDat **ppOutUseSkill, int level, ID idSkillDat, XSkillReceiver *pTarget, XE::VEC2 *pvPos );
-	xUseSkill UseSkillByIds( LPCTSTR szIdentifier, int level, XSkillReceiver *pTarget, XE::VEC2 *pvPos, XSkillDat **ppOutUseSkill=nullptr );
-	inline xUseSkill UseSkillByIds( const _tstring& ids, int level, XSkillReceiver *pTarget, XE::VEC2 *pvPos, XSkillDat **ppOutUseSkill = nullptr ) {
-		return UseSkillByIds( ids.c_str(), level, pTarget, pvPos, ppOutUseSkill );
+	xUseSkill UseSkillByID( XSkillDat **ppOutUseSkill, int level, ID idSkillDat, XSkillReceiver *pTarget, const XE::VEC2& vBaseTarget );
+	xUseSkill UseSkillByIds( LPCTSTR szIdentifier, int level, XSkillReceiver *pTarget, const XE::VEC2& vPos, XSkillDat **ppOutUseSkill=nullptr );
+	inline xUseSkill UseSkillByIds( const _tstring& ids, int level, XSkillReceiver *pTarget, const XE::VEC2& vPos, XSkillDat **ppOutUseSkill = nullptr ) {
+		return UseSkillByIds( ids.c_str(), level, pTarget, vPos, ppOutUseSkill );
 	}
 	xUseSkill UseSkill( XSkillDat *pUseSkill,
 											int level,
 											XSkillReceiver *pCurrTarget,
-											XE::VEC2 *pvPos );
+											const XE::VEC2& vPos );
 	// 첫번째 보유스킬을 사용한다
-	xUseSkill UseSkill( XSkillReceiver *pTarget, XE::VEC2 *pvPos );
+	xUseSkill UseSkill( XSkillReceiver *pTarget, const XE::VEC2& vPos );
 	xtError OnShootSkill( XSkillDat *pUseSkill, XSkillReceiver *pBaseTarget, int level, const XE::VEC2& vTarget, ID idCallerSkill);
 	xtError OnShootSkill( const xUseSkill& infoUseSkill, ID idCallerSkill ) {
 		return OnShootSkill( infoUseSkill.pDat,
@@ -100,8 +100,21 @@ public:
 	int FrameMove( float dt );
 	// virtual
 	virtual XLuaSkill* CreateScript(); 		// XLua 객체를 생성하고 전역변수와 API들을 등록하여 돌려준다
-	virtual int GetCastingTargetList( XVector<XSkillReceiver*> *pAryOutCastingTarget, xtCastTarget castTarget, XSkillDat *pSkillDat, const EFFECT *pEffect, XSkillReceiver *pOutBaseTarget, XE::VEC2 *pvOutPos = nullptr );		// 시전대상얻기
-	virtual int GetInvokeTarget( XVector<XSkillReceiver*> *plistOutInvokeTarget, XSkillDat *pBuff, int level, xtInvokeTarget invokeTarget, const EFFECT *pEffect, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos );		// 스킬발동대상얻기
+	int GetCastingTargetList( XVector<XSkillReceiver*> *pAryOutCastingTarget, 
+														xtCastTarget castTarget,
+														XSkillDat *pSkillDat,
+														const EFFECT *pEffect,
+														int level,
+														XSkillReceiver *pOutBaseTarget,
+														const XE::VEC2& vBaseTarget );		// 시전대상얻기
+	int GetInvokeTarget( XVector<XSkillReceiver*> *plistOutInvokeTarget, 
+											 XE::VEC2* pOutIvkTarget,		// 발동대상이 좌표형일경우 좌표가 담긴다.
+											 XSkillDat *pBuff, 
+											 int level, 
+											 xtInvokeTarget invokeTarget, 
+											 const EFFECT *pEffect, 
+											 XSkillReceiver *pCastingTarget, 
+											 const XE::VEC2& vPos );		// 스킬발동대상얻기
 	virtual void OnCoolTimeOver( XSkillDat *pUseSkill ) {}	// 쿨타임시간이 끝나면 호출된다
 	// XSkillObj에 아직은 버추얼이 많지 않아서 pure로 하지 않았는데 필요해지면 pure로 다시 보내야 한다
 //	virtual XSkillDat* CreateSkillUseObj( XSkillDat *pSkillDat );
@@ -128,15 +141,17 @@ public:
 	 @param numApply 최대 선택해야할 오브젝트수. 0이면 제한이 없다.
 	 @param bIncludeCenter 기준타겟을 포함하여 선택할것인지 아닌지.
 	*/
-	virtual int GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget, 
-									const XSkillDat* pSkillDat,
-									const EFFECT *pEffect,
-									XSkillReceiver *pBaseTarget, 
-									const XE::VEC2& vBasePos,
-									float meter, 
-									BIT bitSideFilter, 
-									int numApply, 
-									BOOL bIncludeCenter ) { return 0; }
+	virtual int GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget,
+																 const XSkillDat* pSkillDat,
+																 const EFFECT *pEffect,
+																 XSkillReceiver *pBaseTarget,
+																 const XE::VEC2& vBasePos,
+																 float meter,
+																 BIT bitSideFilter,
+																 int numApply,
+																 BOOL bIncludeCenter ) {
+		return 0;
+	}
 	// 스킬 사용이 성공했음. mp등의 깎는 처리를 할것.
 	virtual void OnSuccessUseSkill( XSkillDat *pUseSkill ) {}
 	// 발사체가 목표에 도착하면 호출된다.
@@ -191,25 +206,13 @@ public:
 	// copy해서 쓰기 좋으라고 일부러 XSKILL을 다 붙임
 	// 발사체오브젝트를 생성하고 월드에 추가시킨다. 효과, 시전대상, 시전자, 좌표
 	virtual XSKILL::XSkillUser* CreateAndAddToWorldShootObj( XSKILL::XSkillDat *pSkillDat,
-// 												XSKILL::EFFECT *pEffect, 
-												int level,
-												XSKILL::XSkillReceiver *pBaseTarget,
-// 												XSKILL::XSkillReceiver *pCastingTarget, 
-												XSKILL::XSkillUser *pCaster, 
-												const XE::VEC2& vPos ) = 0;		
-//	virtual XE::VEC2 GetCurrentPosForSkill() = 0;
+																													 int level,
+																													 XSKILL::XSkillReceiver *pBaseTarget,
+																													 XSKILL::XSkillUser *pCaster,
+																													 const XE::VEC2& vPos ) = 0;
 	virtual void CustomInvokeFilter( XVector<XSkillReceiver*> *pOutAryIvkTarget,
-							XVector<XSkillReceiver*>& arySrc,
-							const EFFECT *pEffect ) {}
-	/**
-	 @brief 효과의 발동조건
-	*/
-// 	virtual BOOL IsInvokeCustomCondition( XSkillDat *pSkillDat, EFFECT *pEffect ) { 
-// 		if( pEffect->invokeTargetCondition == 0 )	// 0은 항상으로 침.
-// 			return TRUE;
-// 		return FALSE;
-// 	}
-//	void InvokePassiveSkill();
+																	 XVector<XSkillReceiver*>& arySrc,
+																	 const EFFECT *pEffect ) {}
 	virtual void OnSkillPlaySound( ID idSound ) {}
 	///< 하위클래스는 cond에 맞는 타겟을 찾아 돌려줘야 한다. this는 시전자가 된다.
 	virtual XSKILL::XSkillReceiver* GetTargetObject( XSKILL::EFFECT *pEffect, XSKILL::xtTargetCond cond ) = 0;
@@ -218,23 +221,23 @@ public:
 	virtual int GetSkillLevel( XSkillDat* pSkillObj ) { return 0; }
 	virtual XSKILL::XSkillReceiver* GetSkillBaseTarget( XSkillDat *pDat ) { return nullptr; }
 	virtual XE::VEC2 GetSkillBaseTargetPos( XSkillDat *pDat ) { return XE::VEC2(0); }
-	virtual XSkillReceiver* CreateSfxReceiver( XSKILL::EFFECT *pEffect, float sec ) { return nullptr; }
-	void CastSkillToBaseTarget( XSkillDat *pSkillDat, 
-								int level, 
-								XSkillReceiver *pBaseTarget, 
-								const XE::VEC2& vPos
-								, ID idCallerSkill );
+	virtual XSkillReceiver* CreateSfxReceiver( const XE::VEC2& vPos, const XSKILL::EFFECT *pEffect, float sec ) { return nullptr; }
+	void CastSkillToBaseTarget( XSkillDat *pSkillDat,
+															int level,
+															XSkillReceiver *pBaseTarget,
+															const XE::VEC2& vPos
+															, ID idCallerSkill );
 	/**
 	 @brief 하위클래스에게 기준타겟조건에 맞는 기준타겟을 찾아달라고 의뢰
 	*/
 	virtual XSkillReceiver* GetBaseTargetByCondition( XSKILL::XSkillDat *pSkillDat,
-													XSKILL::xtBaseTargetCond cond,
-													float meter,
-													int level,
-													XSKILL::XSkillReceiver *pCurrTarget,
-													const XE::VEC2& vPos ) { 
-		XBREAK(1);
-		return nullptr; 
+																										XSKILL::xtBaseTargetCond cond,
+																										float meter,
+																										int level,
+																										XSKILL::XSkillReceiver *pCurrTarget,
+																										const XE::VEC2& vPos ) {
+		XBREAK( 1 );
+		return nullptr;
 	}
 	virtual XSKILL::XSkillReceiver* GetCurrTarget() { XBREAK(1); return nullptr; }
 	/**
@@ -243,11 +246,11 @@ public:
 	 20이 더 추가되고 싶다면 20을 리턴하면 된다.
 	 pIvkTarget은 사용되지 않는다. 
 	*/
-	virtual void OnSkillAmplifyUser( XSkillDat *pDat, 
-									XSKILL::XSkillReceiver *pIvkTarget, 
-									const XSKILL::EFFECT *pEffect, 
-									XSKILL::xtEffectAttr attrParam, 
-									float *pOutRatio, float *pOutAdd ) { 
+	virtual void OnSkillAmplifyUser( XSkillDat *pDat,
+																	 XSKILL::XSkillReceiver *pIvkTarget,
+																	 const XSKILL::EFFECT *pEffect,
+																	 XSKILL::xtEffectAttr attrParam,
+																	 float *pOutRatio, float *pOutAdd ) {
 		if( pOutRatio )
 			*pOutRatio = 0.f;
 		if( pOutAdd )
@@ -255,35 +258,27 @@ public:
 	}
 	/// 좌표에 생성되어야 하는 지속효과의 경우 발생되는 이벤트. pBaseTarget은 null일수 있다. 시전자는 this가 된다
 	virtual void OnCastEffectToPos( XSKILL::XSkillDat *pSkillDat,
-									XSKILL::EFFECT *pEffect,
-									int level,
-									float sec,
-									float radiusMeter,
-									BIT bitSideInvokeTarget,	// 발동되어야 하는 발동대상우호
-									XSKILL::XSkillReceiver *pBaseTarget,
-									const XE::VEC2& vPos ) {}
+																	XSKILL::EFFECT *pEffect,
+																	int level,
+																	float sec,
+																	float radiusMeter,
+																	BIT bitSideInvokeTarget,	// 발동되어야 하는 발동대상우호
+																	XSKILL::XSkillReceiver *pBaseTarget,
+																	const XE::VEC2& vPos ) {}
 	/// GetInvokeTarget()에서 발동범위를 결정하기전에 호출되어진다.
 	virtual float OnInvokeTargetSize( XSKILL::XSkillDat *pSkillDat,
-									const XSKILL::EFFECT *pEffect,
-									int level, 
-									XSKILL::XSkillReceiver *pCastingTarget,
-									float size ) { return size; }
-	bool IsInvokeTargetCondition( XSkillDat *pDat
+																		const XSKILL::EFFECT *pEffect,
+																		int level,
+																		XSKILL::XSkillReceiver *pCastingTarget,
+																		float size ) {
+		return size;
+	}
+	bool IsInvokeTargetCondition( const XSkillDat *pDat
 															, const EFFECT *pEffect
 															, XSkillReceiver *pInvokeTarget );
-// 	void ApplyInvokeEffectWithAry( const XVector<XSkillReceiver*>& aryInvokers
-// 														, XSkillDat *pDat
-// 														, const EFFECT *pEffect
-// 														, XSkillReceiver *pInvoker
-// 														, bool bCreateSfx
-// 														, int level
-// 														, const XE::VEC2& vPos
-// 														, XBuffObj *pBuffObj
-// 														, XLuaSkill *pLua );
-//	void ApplyInvokeEffectWithAry2( const XVector<XSkillReceiver*>& aryIvkTarget, XSkillDat *pDat, const EFFECT *pEffect, XSkillReceiver *pInvoker, bool bCreateSfx, int level, const XE::VEC2& vPos, XBuffObj *pBuffObj );
 	bool ApplyInvokeEffToIvkTarget( XSkillReceiver* pInvokeTarget, 
-																	const XE::VEC3& vIvkPos,
-																	XSkillDat *pDat,
+																	const XE::VEC2& vIvkPos,
+																	const XSkillDat *pDat,
 																	const EFFECT *pEffect, 
 																	XSkillReceiver *pInvoker, 
 																	bool bCreateSfx, 

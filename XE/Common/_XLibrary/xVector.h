@@ -366,16 +366,19 @@ namespace XE
 		
 		//		friend VEC2 operator * ( float, const VEC2& );
 		
-		BOOL operator == ( const VEC2& rhs ) const {
+		inline bool operator == ( const VEC2& rhs ) const {
 			return (x == rhs.x && y == rhs.y );
 		}
-		BOOL operator != ( const VEC2& rhs ) const {
+		inline bool operator != ( const VEC2& rhs ) const {
 			return (x != rhs.x || y != rhs.y );
 		}
-		BOOL IsZero() const {
+		inline bool IsZero() const {
 			return (x == 0 && y == 0);
 		}
-		BOOL IsMinus() const {
+		inline bool IsNotZero() const {
+			return !IsZero();
+		}
+		inline bool IsMinus() const {
 			return (x == -1.f && y == -1.f );
 		}
 		bool IsValid() const {

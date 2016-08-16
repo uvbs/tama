@@ -126,9 +126,10 @@ void XObjBullet::OnArriveBullet( DWORD dwParam )
 #endif // _XSINGLE
 		if( m_spTarget ) {
 			// 발동스킬을 액티브로 실행시킨다.
+			const XE::VEC2 vZero;
 			auto infoUseSkill = m_spOwner->UseSkillByIds( strInvokeSkill.c_str(),
 																										0,
-																										m_spTarget.get(), nullptr );
+																										m_spTarget.get(), vZero );
 			XASSERT( infoUseSkill.errCode == XSKILL::xOK );
 			ID idCaller = 0;
 			auto pSkillDat = SKILL_MNG->FindByIds( strInvokeSkill );
@@ -541,10 +542,14 @@ void XObjLoop::OnEventSprObj( XSprObj *pSprObj,
 }
 
 ////////////////////////////////////////////////////////////////
-XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp, const XE::VEC3& vwPos, float sec )
+XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp, 
+																			const XE::VEC3& vwPos, 
+																			const _tstring& strSpr, 
+																			ID idAct, 
+																			float sec )
 	: XEBaseWorldObj( XWndBattleField::sGet(),
 										XGAME::xOT_SKILL_EFFECT, vwPos,
-										_T( "eff_ghost_diesmoke.spr" ), 1 )
+										strSpr.c_str(), idAct )
 	, XSkillReceiver( 1, XGAME::xMAX_PARAM, 0 )
 {
 	Init();

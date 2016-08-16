@@ -443,16 +443,16 @@ public:
 	virtual XSKILL::XSkillReceiver* GetTarget( ID snObj ) override;
 	virtual XSKILL::XSkillUser* GetCaster( ID snObj ) override;
 	virtual void DelegateResultEventBeforeAttack( XSKILL::XBuffObj *pBuffObj, XSKILL::EFFECT *pEffect ) override;
-	BOOL IsInvokeTargetCondition( XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, XSKILL::xtCondition condition, DWORD condVal ) override;
+	BOOL IsInvokeTargetCondition( const XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, XSKILL::xtCondition condition, DWORD condVal ) override;
 	virtual const XECompCamp& GetCamp() const override {		///< this의 진영을 리턴
 		return m_Camp;
 	}
 	virtual BIT GetCampUser() const override { 
 		return m_Camp;
 	}		
-// 	virtual XE::VEC2 GetCurrentPosForSkill() {
-// 		return GetvwPos().ToVec2();
-// 	}
+	XE::VEC2 GetvPosFromSkill() const override {
+		return GetvwPos().GetXY();
+	}
 	/// 이게임에선 루아를 사용하지 않으므로 비워둠.
 	void RegisterInhValUse( XLua *pLua, const char *szVal ) override { }
 	XSKILL::XSkillReceiver* GetThisRecv() override {
@@ -478,7 +478,7 @@ public:
 												 BIT bitSideFilter,
 												 int numApply,
 												 BOOL bIncludeCenter ) override;
-	ID GetId() override { return GetsnObj(); }
+	ID GetId() const override { return GetsnObj(); }
 	ID OnCreateSkillSfx( const XSKILL::XSkillDat *pSkillDat,
 											 XSKILL::xtPoint createPoint,
 											 LPCTSTR szSpr,
@@ -500,7 +500,7 @@ public:
 										XSKILL::xtGroup typeGroup ) override;
 	XSKILL::XSkillReceiver* GetTargetObject( XSKILL::EFFECT *pEffect, XSKILL::xtTargetCond cond ) override;
 	XSKILL::XSkillReceiver* GetSkillBaseTarget( XSKILL::XSkillDat *pDat ) override;
-	XSkillReceiver* CreateSfxReceiver( XSKILL::EFFECT *pEffect, float sec ) override;
+	XSkillReceiver* CreateSfxReceiver( const XE::VEC2& vPos, const XSKILL::EFFECT *pEffect, float sec ) override;
 	BOOL IsInvokeAddTarget( ID idAddTarget ) const override;
 	virtual BOOL OnApplyState( XSKILL::XSkillUser *pCaster, XSKILL::XSkillReceiver* pInvoker, const XSKILL::EFFECT *pEffect, int idxState, BOOL flagState ) override;
 	virtual BOOL OnFirstApplyState( XSKILL::XSkillUser *pCaster, XSKILL::XSkillReceiver* pInvoker, const XSKILL::EFFECT *pEffect, int idxState, BOOL flagState, int level ) override;
@@ -513,11 +513,11 @@ public:
 	virtual int GetSkillLevel( XSKILL::XSkillDat* pDat ) override;
 	virtual XSkillReceiver* GetCurrTarget() override;
 	virtual bool OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster, XSKILL::XBuffObj *pBuffObj, XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int level ) override;
-	virtual bool OnInvokeSkill( XSKILL::XSkillDat *pDat,
-															const XSKILL::EFFECT *pEffect,
-															XSKILL::XSkillReceiver* pTarget,
-															int level, 
-															_tstring* pstrOut ) override;
+	bool OnInvokeSkill( const XSKILL::XSkillDat *pDat,
+											const XSKILL::EFFECT *pEffect,
+											XSKILL::XSkillReceiver* pTarget,
+											int level,
+											_tstring* pstrOut ) override;
 //	void OnAddSkillRecvObj( XSKILL::XBuffObj *pSkillRecvObj, XSKILL::EFFECT *pEffect ) override;		// 이대상에게 버프스킬이 추가된 직후 호출된다.
 	void AddAdjParamMsg( int adjParam, XSKILL::xtValType valType, float adj ) override;
 	void SetStateMsg( int idxState, bool bFlag ) override;

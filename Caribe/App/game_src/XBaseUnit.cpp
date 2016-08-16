@@ -1992,9 +1992,9 @@ int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
 /**
  @brief 기준타겟(혹은 기준좌표)을 중심으로 반경내 조건에 맞는 오브젝트를 요청한다.
  @param pBaseTarget 기준타겟. null일수도 있다.
- @param pvBasePos 기준좌표. null일수도있다. 그러나 기준타겟과 기준좌표가 모두 null로 넘어오진 않는다.
+ @param pvBasePos 기준좌표. 0일수도있다. 그러나 기준타겟과 기준좌표가 모두 null로 넘어오진 않는다.
  @param bitSideFilter 선택해야할 우호 조건
- @param numApply 최대 선택해야할 오브젝트수. 0이면 제한이 없다.
+ @param numCost 최대 선택가능한 cost. 0이면 제한이 없다.
  @param bIncludeCenter 기준타겟을 포함하여 선택할것인지 아닌지.
 */
 int XBaseUnit::GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget,
@@ -2004,9 +2004,12 @@ int XBaseUnit::GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget
 																	const XE::VEC2& vBasePos,
 																	float meter,
 																	BIT bitSideFilter,
-																	int numApply,
+																	int numCost,
 																	BOOL bIncludeCenter )
 {
+	XBREAK( pBaseTarget == nullptr && vBasePos.IsZero() );
+	// 좌표가 넘어왔을땐 타겟이 널이어야 함.
+	XBREAK( vBasePos.IsNotZero() && pBaseTarget != nullptr );
 	XVector<XSPUnit> ary;
 	XE::VEC2 vCenter;
 	XEBaseWorldObj *pTarget = nullptr;
@@ -2034,20 +2037,27 @@ int XBaseUnit::GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget
 		bitFlag |= xTF_DIFF_SQUAD;
 	}
 	for( auto pRecver : (*plistOutInvokeTarget) ) {
-		auto pUnit = static_cast<XBaseUnit*>( pRecver );
-		auto spUnit = (pUnit)? pUnit->GetThisUnit() : nullptr;
-		if( spUnit ) {
-			ary.Add( spUnit );
+		auto pObj = dynamic_cast<XEBaseWorldObj*>( pRecver );
+		if( pObj && pObj->GetType() == xOT_UNIT ) {
+			auto spUnit = std::static_pointer_cast<XBaseUnit>( pObj->GetThis() );
+			if( spUnit ) {
+				ary.Add( spUnit );
+			}
 		}
+//		auto pUnit = static_cast<XBaseUnit*>( pRecver );
+// 		auto spUnit = (pUnit)? pUnit->GetThisUnit() : nullptr;
+// 		if( spUnit ) {
+// 			ary.Add( spUnit );
+// 		}
 	}
 	XEObjMngWithType::sGet()->GetListUnitRadius2( &ary,
-												pTarget,
-												vCenter,
-												xMETER_TO_PIXEL(meter),
-												bitSideFilter,
-												numApply,
-												bIncludeCenter != FALSE,
-												bitFlag );
+																								pTarget,
+																								vCenter,
+																								xMETER_TO_PIXEL( meter ),
+																								bitSideFilter,
+																								numCost,
+																								bIncludeCenter != FALSE,
+																								bitFlag );
 	plistOutInvokeTarget->clear();
 	for( auto spUnit : ary )	{
 		auto pRecv = static_cast<XSkillReceiver*>( spUnit.get() );
@@ -2107,7 +2117,9 @@ XObjLoop* XBaseUnit::CreateSfxObj( xtPoint createPoint,
 																		const XE::VEC2& vPos/* = XE::VEC2()*/ )
 {
 	auto spUnit = GetThisUnit();
-//	CONSOLE_TAG( "skill", "CreateSfxObj: %s, %d, sec=%.1f", szSpr, idAct, secPlay );
+#ifdef _DEBUG
+	XTRACE( "CreateSfxObj: %s, %d, sec=%.1f", szSpr, idAct, secPlay );
+#endif // _DEBUG
 	XObjLoop *pSfx = NULL;
 	if( !vPos.IsZero() ) {
 		pSfx = new XObjLoop( XGAME::xOT_SFX, XE::VEC3(vPos.x, 0, vPos.y),
@@ -2186,23 +2198,16 @@ XObjLoop* XBaseUnit::CreateSfxObj( xtPoint createPoint,
 }
 
 /**
- @brief
+ @brief this가 시전자
 */
-XSkillReceiver* XBaseUnit::CreateSfxReceiver( EFFECT *pEffect, float sec )
+XSkillReceiver* XBaseUnit::CreateSfxReceiver( const XE::VEC2& vPos, const EFFECT *pEffect, float sec )
 {
-	BIT bitSide = 0;
-	if( pEffect->invokefiltFriendship == xfHOSTILE ) {
-		if( IsPlayer() )
-			bitSide = XGAME::xSIDE_PLAYER;	// 적에게 써야 하는 이펙트면 sfx이펙트의 편은 우리편으로 해야함.
-		else
-			bitSide = XGAME::xSIDE_OTHER;
-	} else {
-		if( IsPlayer() )
-			bitSide = XGAME::xSIDE_OTHER;
-		else
-			bitSide = XGAME::xSIDE_PLAYER;
-	}
-	auto pReceiver = new XSkillSfxReceiver( bitSide, GetvwPos(), sec );
+	// sfx가 아군을 힐링하건 적을 죽이건 관계없이 sfx의 진영은 시전자의 진영과 같다.
+	const BIT bitSide = GetCamp().GetbitCamp();
+	XE::VEC3 vwPos( vPos.x, vPos.y, 0 );
+	const auto& eff = pEffect->m_PersistEff;
+// 	auto pReceiver = new XSkillSfxReceiver( bitSide, vwPos, eff.m_strSpr, eff.m_idAct, sec );
+	auto pReceiver = new XSkillSfxReceiver( bitSide, vwPos, sec );
 	AddObj( pReceiver );
 	return pReceiver;
 }
@@ -2569,10 +2574,10 @@ XSkillReceiver* XBaseUnit::GetBaseTargetByCondition( XSkillDat *pSkillDat,
 /**
  @brief 효과발동전 발동대상의 조건
 */
-BOOL XBaseUnit::IsInvokeTargetCondition( XSkillDat *pSkillDat,
-										const EFFECT *pEffect,
-										xtCondition condition,
-										DWORD condVal )
+BOOL XBaseUnit::IsInvokeTargetCondition( const XSkillDat *pSkillDat,
+																				 const EFFECT *pEffect,
+																				 xtCondition condition,
+																				 DWORD condVal )
 {
 	if( pSkillDat->GetstrIdentifier() == _T("surprise_attack") )
 	{
@@ -3505,12 +3510,11 @@ void XBaseUnit::StartAttackDelay( XSPUnit spTarget, float secMin )
 /**
  @brief 스킬시스템에 발동스킬이 실행되기전에 호출된다. 다른 발동스킬을 원한다면 이곳에 하드코딩
 */
-bool XBaseUnit::OnInvokeSkill( XSkillDat *pDat,
-															const EFFECT *pEffect,
-															XSkillReceiver* pTarget,
-															int level,
-															_tstring* pstrOut )
-
+bool XBaseUnit::OnInvokeSkill( const XSkillDat *pDat,
+															 const EFFECT *pEffect,
+															 XSkillReceiver* pTarget,
+															 int level,
+															 _tstring* pstrOut )
 {
 // 	for( 버프 ) {
 // 		if( pEff->발동대체 && pEff->발동대체 == pDat->GetIds() ) {
@@ -3594,10 +3598,10 @@ float XBaseUnit::GetVampiricRatio()
  @brief GetInvokeTarget()에서 발동범위를 결정하기전에 호출되어진다.
 */
 float XBaseUnit::OnInvokeTargetSize( XSkillDat *pSkillDat,
-									const EFFECT *pEffect,
-									int level,
-									XSkillReceiver *pCastingTarget,
-									float size )
+																		 const EFFECT *pEffect,
+																		 int level,
+																		 XSkillReceiver *pCastingTarget,
+																		 float size )
 {
 	if( GetUnitType() == xUNIT_TREANT ) {
 		const auto idsSkill = pSkillDat->GetstrIdentifier();
@@ -3612,13 +3616,6 @@ float XBaseUnit::OnInvokeTargetSize( XSkillDat *pSkillDat,
 			}
 		}
 	}
-// 	if( pSkillDat->GetstrIdentifier() == _T( "view_blocked" ) ) {
-// 		auto pBuff = FindBuffSkill( _T( "cordyceps" ) );
-// 		if( pBuff ) {
-// 			// 시야차단 특성이 발동될때 "무성한나무"특성이 있다면 반경 증가
-// 			return pBuff->GetInvokeSizeByLevel();
-// 		}
-// 	}
 	return size;
 }
 

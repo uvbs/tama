@@ -44,7 +44,7 @@ class XBuffObj //: public XMemPool<XBuffObj>
 	XSkillUser *m_pCaster;		// 시전자
 	BIT m_bitCampCaster = 0;		// 시전자 진영(땜빵)
 	XSkillReceiver *m_pOwner;		// 
-	XE::VEC2 m_vCastPos;				// 지역시전으로 했을때 그 중심좌표
+//	XE::VEC2 m_vCastPos;				// 지역시전으로 했을때 그 중심좌표
 	std::list<EFFECT_OBJ*> m_listEffectObjs;		// 스킬효과 오브젝트
 	BOOL m_bDestroy;			// this를 삭제하라
 	XLuaSkill *m_pluaScript;			// 스킬당 1개의 루아스크립트 객체

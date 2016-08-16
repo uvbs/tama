@@ -219,15 +219,6 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 				}
 				LCONSOLE( !pEffect->IsDuration() && pEffect->invokeJuncture == xJC_PERSIST
 						 , "%s", _T("지속시간이 없는스킬인데 지속발동으로 지정되어 있음.") );
-//				XBREAK( !pEffect->IsDuration() && pEffect->invokeJuncture == xJC_PERSIST );
-// 				if( pEffect->invokeJuncture == xJC_FIRST ) {
-// // 					if( pSkillDat->IsPassiveType() )
-// // 						pEffect->invokeJuncture = xJC_PERSIST;
-// // 					else
-// 					if( pEffect->IsDuration() )
-// 						// 지속시간 타입이 발동시점 "최초"로 되어있으면 지속형으로 바꾼다.
-// 						pEffect->invokeJuncture = xJC_PERSIST;		
-// 				}
 				// 발동시점스킬이 지정되어 있다면 발동시점은 무조건 스킬발동시가 된다.
 				if( pEffect->strInvokeTimeSkill.empty() == false ) {
 					pEffect->invokeJuncture = xJC_INVOKE_SKILL;	// 이걸하지않으면 지속형 스킬이 되어버림.
@@ -249,9 +240,16 @@ XSkillDat* XESkillMng::LoadSkill( TiXmlElement *pRoot,
 					if( pEffect->IsHaveInvokeSize() == false )
 						XALERT("스킬\"%s\":발동범위가 지정되지 않음", pSkillDat->GetstrIdentifier().c_str() );
 				}
-				
+				// 지속시간스킬이면서 발동스킬이 있는건 에러(매프레임 스킬을 발동시키게 됨)
+				XBREAK( pEffect->IsDuration() 
+								&& pEffect->secInvokeDOT == 0 
+								&& pEffect->invokeJuncture == xJC_PERSIST
+								&& !pEffect->strInvokeSkill.empty() );
+				XBREAK( pEffect->castTarget == xCST_BASE_TARGET_POS			// 시전대상이 좌표형
+								&& pEffect->IsDuration()												// 지속시간형
+								&& pEffect->m_PersistEff.IsEmpty() );						// 일때 지속효과 spr이 없으면 안됨.(투명 객체됨)
 				AdjustEffectParam( pSkillDat, pEffect );	// virtual
-			}
+			} // for effect
 		}
 	} else {
 		SAFE_DELETE( pEffect );
@@ -829,6 +827,7 @@ void XESkillMng::AddConstant( void )
 	CONSTANT->Add( XSKTEXT( 224 ), xIVT_ATTACKED_TARGET_PARTY );
 	CONSTANT->Add( XSKTEXT( 225 ), xIVT_CURR_TARGET );
 	CONSTANT->Add( XSKTEXT( 260 ), xIVT_CURR_TARGET_PARTY );
+	CONSTANT->Add( XSKTEXT( 267 ), xIVT_CURR_TARGET_POS );
 //	CONSTANT->Add( XSKTEXT( 236 ), xIVT_ALL );	// 모두(위에 50번("모두")의 0xffffffff과 중복되어서 안넣음.
 //	CONSTANT->Add( XSKTEXT( 230 ), xIVT_CONDITION );		// 조건발동
 	

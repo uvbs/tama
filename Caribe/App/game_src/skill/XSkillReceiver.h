@@ -13,6 +13,7 @@ class XBuffObj;
 struct EFFECT_OBJ;
 class XSkillSfx;
 class XSkillDat;
+class XSkillUser;
 // 스킬의 효과를 받을 수 있는 베이스오브젝트
 class XSkillReceiver : public XAdjParam 
 {
@@ -37,7 +38,7 @@ public:
 	bool FindBuff( XBuffObj *pSkillRecvObj ) const;
 	int FrameMove( float dt );
 	// virtual
-	virtual ID GetId( void ) = 0;
+	virtual ID GetId( void ) const = 0;
 	int	ApplyEffectNotAdjParam( XSkillDat *pSkillDat, XSkillUser* pCaster, const EFFECT *pEffect, int level );	// 비보정파라메터에 대한 효과적용
 	int	ApplyEffectAdjParam( XSkillDat *pSkillDat, XSkillUser *pCaster, const EFFECT *pEffect, int level, XBuffObj *pBuffObj );		// 보정파라메터에 대한 효과적용
 	virtual BOOL IsInvoking( XBuffObj *pSkillRecvObj ) { return FindBuff( pSkillRecvObj ); }
@@ -79,13 +80,13 @@ public:
 		return OnCreateSkillSfxShootTarget( pSkillDat, pBaseTarget, level, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
 	}
 
-	ID CreateSfx( XSkillDat *pSkillDat,
-									const _tstring& strEffect,
-									ID idAct,
-									xtPoint pointSfx,
-									float secPlay,
-									const XE::VEC2& vPos = XE::VEC2( 0 ) );
-	ID CreateSfx( XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos = XE::VEC2() );
+	ID CreateSfx( const XSkillDat *pSkillDat,
+								const _tstring& strEffect,
+								ID idAct,
+								xtPoint pointSfx,
+								float secPlay,
+								const XE::VEC2& vPos = XE::VEC2( 0 ) );
+	ID CreateSfx( const XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos = XE::VEC2() );
 	virtual void OnDestroySFX( XBuffObj *pSkillRecvObj, ID idSFX ) {}
 	virtual void OnPlaySoundRecv( ID id ) { XLOG("경고: 가상함수가 구현되지 않았음"); }
 	/**
@@ -153,14 +154,14 @@ public:
 	void OnEventInvokeFromSkill( XSkillDat *pFromSkill, const EFFECT *pFromEffect, XSkillUser *pCaster, XSkillReceiver *pBaseTarget );
 	virtual BOOL IsInvokeAddTarget( ID idAddTarget ) const { return FALSE; }
 	// this에게 pEffect가 발동이 될수 있는지 검사
-	virtual BOOL IsInvokeTargetCondition( XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, XSKILL::xtCondition condition, DWORD condVal ) { return TRUE; }
+	virtual BOOL IsInvokeTargetCondition( const XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, XSKILL::xtCondition condition, DWORD condVal ) { return TRUE; }
 	virtual bool OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster, XSKILL::XBuffObj *pBuffObj, XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int level ) { return true; }
 	virtual void OnEventFirstApplyEffect( XSKILL::XSkillDat *pDat, XSKILL::XSkillUser* pCaster, XSKILL::EFFECT *pEffect, int level ) {}
 	/**
 	 @brief 발동스킬이 발동되기전에 호출된다. false가 리턴되면 발동스킬을 발동시키지 않는다.
 	 strOut에 다른 스킬의 식별자를 넣어돌려주면 그 스킬이 대신 발동된다.
 	*/
-	virtual bool OnInvokeSkill( XSKILL::XSkillDat *pDat,
+	virtual bool OnInvokeSkill( const XSKILL::XSkillDat *pDat,
 															const XSKILL::EFFECT *pEffect,
 															XSKILL::XSkillReceiver* pTarget,
 															int level,
@@ -173,6 +174,10 @@ public:
 										XSKILL::xtInvokeTarget invokeTarget ) {
 		return invokeTarget;
 	}
+	virtual XE::VEC2 GetvPosFromSkill() const = 0 ;
+private:
+	bool DoInvokeSkill( XSkillReceiver* pIvkTarget, const XE::VEC2& vIvkPos, const XSkillDat* pDat, const EFFECT* pEffect, int level, XSkillUser* pCaster, ID idCallerBuff );
+friend class XSkillUser;
 };
 
 XE_NAMESPACE_END

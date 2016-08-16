@@ -159,6 +159,7 @@ void XBattleField::OnDelegateFrameMoveEachObj( float dt,
 			case 1:
 				pUnit->ClearAdjParam();
 				break;
+			case 2: break;
 			case 3:
 				pUnit->XSkillReceiver::FrameMove( dt );
 				break;

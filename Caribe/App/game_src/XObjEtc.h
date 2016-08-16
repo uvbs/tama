@@ -359,9 +359,15 @@ class XSkillSfxReceiver : public XEBaseWorldObj, public XSKILL::XSkillReceiver
 	void Init() {}
 	void Destroy();
 public:
-	XSkillSfxReceiver( BIT bitCamp, const XE::VEC3& vwPos, float sec );
+	XSkillSfxReceiver( BIT bitCamp,
+										 const XE::VEC3& vwPos,
+										 const _tstring& strSpr,
+										 ID idAct,
+										 float sec );
+	XSkillSfxReceiver( BIT bitCamp, const XE::VEC3& vwPos, float sec )
+		: XSkillSfxReceiver( bitCamp, vwPos, _tstring(), 0, sec ) {}
 	~XSkillSfxReceiver() { Destroy(); }
-	ID GetId() override {
+	ID GetId() const override {
 		return GetsnObj();
 	}
 	void Release() override {}
@@ -370,8 +376,11 @@ public:
 		return m_Camp;
 	}
 	void AddAdjParamMsg( int adjParam, XSKILL::xtValType valType, float adj ) override { XBREAK(1); }
-
 	void FrameMove( float dt ) override;
+private:
+	XE::VEC2 GetvPosFromSkill() const override {
+		return GetvwPos().GetXY();
+	}
 }; // class XSkillSfxReceiver
 
 
