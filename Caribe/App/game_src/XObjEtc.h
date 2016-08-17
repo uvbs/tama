@@ -309,7 +309,8 @@ class XObjLoop : public XEBaseWorldObj, public XSKILL::XSkillSfx
 	CTimer m_timerLife;
 	float m_secLife;
 	XE::xtHorizDir m_Dir;
-	XSPUnit m_spRefUnit;		// 따라다녀야할 오브젝트가 있다면
+	XSPWorldObjConst m_spTraceObj;		// 따라다녀야할 오브젝트가 있다면
+	XSPUnitConst m_spTraceUnit2;			// m_spTraceObj가 유닛이라면.
 	BOOL m_bTraceRefObj;		///< 레퍼런스 객체를 따라다녀야 한다면 TRUE
 	XE::VEC3 m_vAdjust;			///< this의 위치 보정치
 	int m_State = 0;
@@ -323,8 +324,8 @@ class XObjLoop : public XEBaseWorldObj, public XSKILL::XSkillSfx
 public:
 	XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife=0.f );
 	XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife=0.f );
-	XObjLoop( int typeObj, const XSPUnit& spTrace, LPCTSTR szSpr, ID idAct, float secLife = 0.f );
-	XObjLoop( int typeObj, const XSPUnit& spRefObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife = 0.f );
+	XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, float secLife = 0.f );
+	XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife = 0.f );
 	virtual ~XObjLoop() { Destroy(); }
 	///< 
 	SET_ACCESSOR( XE::xtHorizDir, Dir );
@@ -339,10 +340,11 @@ public:
 	}
 	//
 	void Release() {
-		m_spRefUnit.reset();
+		m_spTraceObj.reset();
 	}
 	void FrameMove( float dt );
 	void OnEventSprObj( XSprObj *pSprObj, XKeyEvent *pKey, float lx, float ly, ID idEvent, float fAngle, float fOverSec ) override;
+	void Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ ) override;
 	//
 };
 
@@ -415,10 +417,10 @@ namespace XGAME {
 	};
 };
 class XObjDmgNum : public XEBaseWorldObj
-
 {
 public:
 	static _tstring s_strFont;
+	static int s_numObj;
 private:
 	int m_Number;
 	_tstring m_strNumber;
@@ -435,6 +437,7 @@ private:
 		m_Number = 0;
 		m_pfdNumber = nullptr;
 		m_State = 0;
+		++s_numObj;
 	}
 	void Destroy();
 public:
@@ -446,7 +449,7 @@ public:
 	XObjDmgNum( const _tstring& str
 							, const XE::VEC3& vwPos, XCOLOR col = 0 )
 							: XObjDmgNum( str.c_str(), vwPos, col ) {}
-	~XObjDmgNum() { Destroy(); }
+	~XObjDmgNum() { Destroy(); --s_numObj; }
 	//
 	GET_SET_ACCESSOR_CONST( XCOLOR, Col );
 //	GET_ACCESSOR_CONST( std::shared_ptr<XCompObjBounce>, spCompBounce );

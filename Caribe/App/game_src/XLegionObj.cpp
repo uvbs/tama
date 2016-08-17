@@ -344,7 +344,7 @@ UnitPtr XLegionObj::FindNearUnit( const XE::VEC3& vwSrc, float meterRadius ) con
 			//
 			for( auto spwUnit : spSquadObj->GetlistUnit() ) {
 				auto spUnit = spwUnit.lock();
-				if( spUnit->IsLive() ) {
+				if( spUnit && spUnit->IsLive() ) {
 					auto distSq = spUnit->GetDistSqBetweenPos( vwSrc );
 					const auto pixelRadius = xMETER_TO_PIXEL( meterRadius );
 					if( distSq < pixelRadius * pixelRadius ) {

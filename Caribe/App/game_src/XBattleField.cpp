@@ -185,22 +185,22 @@ void XBattleField::Draw( XEWndWorld *pWndWorld )
 // 	m_aryLegion[1]->Draw( pWndWorld );
 }
 
-XSKILL::XSkillReceiver* XBattleField::GetTarget( ID snObj )
-{
-	auto spObj = GetpObjMng()->Find( snObj );
-	if( spObj )	{
-		return SafeCast<XSKILL::XSkillReceiver*>( spObj.get() );
-	}
-	return nullptr;
-}
-XSKILL::XSkillUser* XBattleField::GetCaster( ID snObj )
-{
-	auto spObj = GetpObjMng()->Find( snObj );
-	if( spObj )	{
-		return SafeCast<XSKILL::XSkillUser*>( spObj.get() );
-	}
-	return nullptr;
-}
+// XSKILL::XSkillReceiver* XBattleField::GetTarget( ID snObj )
+// {
+// 	auto spObj = GetpObjMng()->Find( snObj );
+// 	if( spObj )	{
+// 		return dynamic_cast<XSKILL::XSkillReceiver*>( spObj.get() );
+// 	}
+// 	return nullptr;
+// }
+// XSKILL::XSkillUser* XBattleField::GetCaster( ID snObj )
+// {
+// 	auto spObj = GetpObjMng()->Find( snObj );
+// 	if( spObj )	{
+// 		return dynamic_cast<XSKILL::XSkillUser*>( spObj.get() );
+// 	}
+// 	return nullptr;
+// }
 
 XSPUnit XBattleField::GetHeroUnit( ID idProp )
 {
@@ -419,3 +419,14 @@ void XBattleField::SetLootRes( const XVector<XGAME::xRES_NUM>& aryLoots )
 {
 	m_aryLoots = aryLoots;
 }
+
+void XBattleField::OnDestroyObj( XEBaseWorldObj *pObj )
+{
+	if( pObj->GetType() == xOT_UNIT ) {
+		auto pUnit = SafeCast<XBaseUnit*>( pObj );
+		if( pUnit ) {
+			pUnit->GetspSquadObj()->DelUnit( pUnit->GetsnObj() );
+		}
+	}
+}
+

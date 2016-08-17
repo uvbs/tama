@@ -183,7 +183,7 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 	// 전투타입을 지정한다.
 	XBattleField::sGet()->SettypeBattle( s_BattleStart.m_typeBattle );
 
-	XObjDmgNum::s_strFont = FONT_BADABOOM;
+//	XObjDmgNum::s_strFont = FONT_BADABOOM;
 	SetbUpdate( true );
 }
 

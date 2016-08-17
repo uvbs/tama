@@ -46,11 +46,11 @@ public:
 	virtual void Draw( XEWndWorld *pWndWorld );
 	//////////////////////////////////////////////////////////////////////////
 	// SKILL
-	XSKILL::XSkillReceiver* GetTarget( ID snObj );
+// 	XSKILL::XSkillReceiver* GetTarget( ID snObj );
 	/**
 	 @brief snObj오브젝트의 포인터를 구해준다. 그 오브젝트는 XSkillUser를 상속받은 객체여야 한다.
 	*/
-	virtual XSKILL::XSkillUser* GetCaster( ID snObj );
+// 	virtual XSKILL::XSkillUser* GetCaster( ID snObj );
 	// SKILL
 	//////////////////////////////////////////////////////////////////////////
 	XSPSquad FindNearSquadEnemy( XSquadObj *pFinder );
@@ -80,6 +80,8 @@ public:
 	XSPWorldObj AddpObj( XEBaseWorldObj *pNewObj );
 	void SetLootRes( const XVector<XGAME::xRES_NUM>& aryLoots );
 	void Clear();
+private:
+	void OnDestroyObj( XEBaseWorldObj *pObj ) override;
 };
 
 

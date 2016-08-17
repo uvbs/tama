@@ -278,6 +278,7 @@ public:
 	float GetDistBetweenSquad( XSPSquad spOther );
 	bool IsInAttackRadius( XSPSquad spOther );
 	bool IsResourceSquad() const;
+	void DelUnit( ID snObj );
 	
 private:
 	void SetCmdRequest( xtCmd cmd, const XE::VEC3& vDst ) {

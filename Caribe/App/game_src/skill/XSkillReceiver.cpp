@@ -410,38 +410,38 @@ void XSkillReceiver::OnSkillEventKillEnemy( ID idDead )
  @brief this에게 붙는 이펙트를 만드는 공통 함수.
  @param secPlay 0:once 0>:해당시간동안 루핑 -1:무한루핑
 */
-ID XSkillReceiver::CreateSfx( const XSkillDat *pSkillDat,
-															const _tstring& strEffect,
-															ID idAct,
-															xtPoint pointSfx,
-															float secPlay,
-															const XE::VEC2& vPos )
-{
-	if( strEffect.empty() )
-		return 0;
-	const float secLife = 0.f;
-	// 이펙트생성지점이 정해져있지 않으면 디폴트로 타겟 아래쪽에
-	if( pointSfx == xPT_NONE )
-		pointSfx = xPT_TARGET_BOTTOM;
-	if( idAct == 0 )
-		idAct = 1;
-	return OnCreateSkillSfx( pSkillDat,
-													 pointSfx,
-													 strEffect.c_str(),
-													 idAct,
-													 secPlay, vPos );
-}
+// ID XSkillReceiver::CreateSfx( const XSkillDat *pSkillDat,
+// 															const _tstring& strEffect,
+// 															ID idAct,
+// 															xtPoint pointSfx,
+// 															float secPlay,
+// 															const XE::VEC2& vPos )
+// {
+// 	if( strEffect.empty() )
+// 		return 0;
+// 	const float secLife = 0.f;
+// 	// 이펙트생성지점이 정해져있지 않으면 디폴트로 타겟 아래쪽에
+// 	if( pointSfx == xPT_NONE )
+// 		pointSfx = xPT_TARGET_BOTTOM;
+// 	if( idAct == 0 )
+// 		idAct = 1;
+// 	return OnCreateSkillSfx( pSkillDat,
+// 													 pointSfx,
+// 													 strEffect.c_str(),
+// 													 idAct,
+// 													 secPlay, vPos );
+// }
 
 /**
  @brief this에게 붙는 이펙트를 만드는 공통 함수.
  @param secPlay 0:once 0>:해당시간동안 루핑 -1:무한루핑
 */
-ID XSkillReceiver::CreateSfx( const XSkillDat *pSkillDat
-															, const xEffSfx& effSfx
-															, float secPlay
-															, const XE::VEC2& vPos )
-{
-	return CreateSfx( pSkillDat, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
-}
+// ID XSkillReceiver::CreateSfx( const XSkillDat *pSkillDat
+// 															, const xEffSfx& effSfx
+// 															, float secPlay
+// 															, const XE::VEC2& vPos )
+// {
+// 	return CreateSfx( pSkillDat, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
+// }
 
 XE_NAMESPACE_END

@@ -342,7 +342,7 @@ bool XUnitHero::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
 	return XBaseUnit::OnEventApplyInvokeEffect( pCaster, pBuffObj, pSkillDat, pEffect, level );
 }
 XSKILL::xtInvokeTarget 
-XUnitHero::OnGetInvokeTarget( XSKILL::XSkillDat *pDat, 
+XUnitHero::OnGetInvokeTarget( const XSKILL::XSkillDat *pDat, 
 															const XSKILL::EFFECT *pEffect,
 															XSKILL::xtInvokeTarget invokeTarget )
 {

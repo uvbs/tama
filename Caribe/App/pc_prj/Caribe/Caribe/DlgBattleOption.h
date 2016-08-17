@@ -22,6 +22,8 @@ public:
 	BOOL m_bCheckEnemyUnit = FALSE;
 	BOOL m_bCheckFlushImg = FALSE;
 	BOOL m_bCheckFlushSpr = FALSE;
+	BOOL m_bNoDraw[16];
+	CString m_strFontDmg;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 

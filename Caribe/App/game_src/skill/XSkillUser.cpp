@@ -64,7 +64,8 @@ void XSkillUser::OnCreate()
  @param secPlay 0:once 0>:해당시간동안 루핑 -1:무한루핑
  @param vPos 값이 있다면 좌표를 기준으로 생성하고 없다면 this를 기준으로 생성한다.
 */
-ID XSkillUser::CreateSfx( const XSkillDat *pSkillDat,
+ID XSkillUser::CreateSfx( XSkillReceiver* pTarget,
+													const XSkillDat *pSkillDat,
 													const _tstring& strEffect,
 													ID idAct,
 													xtPoint pointSfx,
@@ -73,13 +74,14 @@ ID XSkillUser::CreateSfx( const XSkillDat *pSkillDat,
 {
 	if( strEffect.empty() )
 		return 0;
-	float secLife = 0.f;
+	const float secLife = 0.f;
 	// 이펙트생성지점이 정해져있지 않으면 디폴트로 타겟 아래쪽에
 	if( pointSfx == xPT_NONE )
 		pointSfx = xPT_TARGET_BOTTOM;
 	if( idAct == 0 )
 		idAct = 1;
-	return OnCreateSkillSfx( pSkillDat,
+	return OnCreateSkillSfx( pTarget,
+													 pSkillDat,
 													 pointSfx,
 													 strEffect.c_str(),
 													 idAct,
@@ -91,9 +93,9 @@ ID XSkillUser::CreateSfx( const XSkillDat *pSkillDat,
  @brief sfx를 생성한다.
  @param vPos 값이 있다면 좌표를 기준으로 생성하고 없다면 this를 기준으로 생성한다.
 */
-ID XSkillUser::CreateSfx( const XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos )
+ID XSkillUser::CreateSfx( XSkillReceiver* pTarget, const XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos )
 {
-	return CreateSfx( pSkillDat, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
+	return CreateSfx( pTarget, pSkillDat, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
 }
 
 
@@ -121,7 +123,7 @@ XSkillUser::xUseSkill XSkillUser::UseSkill( XSkillDat* pDat,
 	if( !pDat->GetCasterEff().m_strSpr.empty() ) {
 		const float secPlay = 0.f;	// play once
 		const XE::VEC2 vZero;
-		CreateSfx( pDat, pDat->GetCasterEff(), secPlay, vZero );
+		CreateSfx( GetThisRecv(), pDat, pDat->GetCasterEff(), secPlay, vZero );
 	}
 	infoUseSkill.pDat = pDat;
 	infoUseSkill.level = level;
@@ -214,7 +216,7 @@ xtError XSkillUser::OnShootSkill( XSkillDat *pDat
 	if( !pDat->GetShootEff().m_strSpr.empty() ) {
 		float secPlay = 0;	// once
 		const XE::VEC2 vZero;
-		CreateSfx( pDat, pDat->GetShootEff(), secPlay, vZero );
+		CreateSfx( GetThisRecv(), pDat, pDat->GetShootEff(), secPlay, vZero );
 	}
 	// 슈팅타겟이펙트(슈팅시점에 타겟에게 발생한다. 보통 타점을 포함하고 있다)-메테오
 	if( !pDat->GetShootTargetEff().m_strSpr.empty() ) {
@@ -225,7 +227,8 @@ xtError XSkillUser::OnShootSkill( XSkillDat *pDat
 																									level,
 																									pDat->GetShootTargetEff(),
 																									secPlay, vBaseTarget );
-		pSfx->RegisterCallback( this, pDat, level, pBaseTarget, vBaseTarget );
+		if( pSfx )
+			pSfx->RegisterCallback( this, pDat, level, pBaseTarget, vBaseTarget );
 		// 슈팅타겟이펙트는 여기서 sfx만 생성하고 리턴한다음 sfx의 타점에서 CastSkillToBaseTarget이 호출된다.
 		return xOK;
 	}
@@ -259,7 +262,7 @@ void XSkillUser::CastSkillToBaseTarget( XSkillDat *pDat
 	if( pDat->GetTargetEff().IsHave() ) {
 //		const float secPlay = pDat->GetDuration( );	// once
 		const float secPlay = 0;
-		pBaseTarget->CreateSfx( pDat, pDat->GetTargetEff(), secPlay, vBaseTarget );
+		CreateSfx( pBaseTarget, pDat, pDat->GetTargetEff(), secPlay, vBaseTarget );
 	}
 	// 스킬이 가진 효과들 기준타겟에게 사용한다.
 	for( auto pEffect : pDat->GetlistEffects() )	{
@@ -274,7 +277,7 @@ void XSkillUser::CastSkillToBaseTarget( XSkillDat *pDat
  pEffect의 효과를 기준타겟(pBaseTarget)을 기준으로 시전대상을 선정하여 시전한다.
  현재 _vPos는 사용하지 않는다
 */
-xtError XSkillUser::UseEffect( XSkillDat *pDat,
+xtError XSkillUser::UseEffect( const XSkillDat *pDat,
 															 EFFECT *pEffect,
 															 int level,
 															 XSkillReceiver *pBaseTarget,
@@ -287,7 +290,9 @@ xtError XSkillUser::UseEffect( XSkillDat *pDat,
 	// 기준타겟이나 기준좌표로 시전대상을 얻는다.
 	XBREAK( pBaseTarget == nullptr && vBaseTarget.IsZero() );
 	//
+	XE::VEC2 vCastTarget;
 	GetCastingTargetList( &aryCastTargets,
+												&vCastTarget,
 												pEffect->castTarget,
 												pDat,
 												pEffect,
@@ -295,26 +300,33 @@ xtError XSkillUser::UseEffect( XSkillDat *pDat,
 												pBaseTarget,
 												vBaseTarget );
 	//
-	if( aryCastTargets.empty() && vBaseTarget.IsZero() ) {
+	if( vCastTarget.IsZero() && aryCastTargets.empty() ) {
 		return xERR_NOT_FOUND_CASTING_TARGET;		// 시전대상을 찾지 못함
 	}
-	// 캐스팅 대상들에게 효과를 시전한다.
-	for( auto pCastingTarget : aryCastTargets ) {
-		// 즉시시전 or 버프방식
+	if( aryCastTargets.size() ) {
+		// 캐스팅 대상들에게 효과를 시전한다.
+		for( auto pCastingTarget : aryCastTargets ) {
+			// 즉시시전 or 버프방식
+			const XE::VEC2 vZero;
+			CastEffToCastTarget( pDat,
+													 pEffect,
+													 level,
+//												 pBaseTarget,
+													 pCastingTarget,
+													 vZero,
+													 idCallerSkill );
+		}
+	} else 
+	if( vCastTarget.IsNotZero() ) {
+		// 시전대상이 좌표형
 		CastEffToCastTarget( pDat,
 												 pEffect,
 												 level,
-												 pBaseTarget,
-												 pCastingTarget,
-												 vBaseTarget,
+												 nullptr,
+												 vCastTarget,
 												 idCallerSkill );
-	}
-	// "사용"스크립트 실행
-	if( pEffect->scriptUse.empty() == false )	{// 스크립이 있을때만
-		auto pLua = CreateScript();	// virtual
-		pLua->RegisterScript( this, nullptr );
-		pLua->TargetDoScript( GetThisRecv(), pEffect->scriptUse.c_str() );
-		SAFE_DELETE( pLua );
+	} else {
+		XBREAK(1);
 	}
 	return xOK;
 }
@@ -324,8 +336,9 @@ xtError XSkillUser::UseEffect( XSkillDat *pDat,
  @brief pBaseTarget(혹은 vBaseTarget)을 기준으로 얻어지는 모든 시전대상을 얻는다.
 */
 int XSkillUser::GetCastingTargetList( XVector<XSkillReceiver*> *pOutAry,			// 시전대상얻기 결과가 담겨짐
+																			XE::VEC2* pOutCastTarget,		// 시전대상이 좌표형태가 될때.
 																			xtCastTarget castTarget,	// 시전대상타입
-																			XSkillDat *pDat,				// 스킬사용 오브젝트
+																			const XSkillDat *pDat,				// 스킬사용 오브젝트
 																			const EFFECT *pEff,					// 효과
 																			int level,
 																			XSkillReceiver *pBaseTarget,
@@ -400,9 +413,13 @@ int XSkillUser::GetCastingTargetList( XVector<XSkillReceiver*> *pOutAry,			// �
 		if( XASSERT(vPos.IsNotZero()) ) {
 			// 좌표가 있고 시전대상이 기준타겟(좌표)이고 지속효과라면 바닥에 뿌리는 스킬이므로 리시버 객체를 만들어 그것을 시전대상으로 해야함.
 			const float sec = pEff->GetDuration( level );
-			XBREAK( sec <= 0 );
-			auto pSfx = CreateSfxReceiver( vPos, pEff, sec );
-			pOutAry->Add( pSfx );
+			if( sec > 0 ) {
+				// 시전대상(좌표)에 지속시간형이면 리시버 객체가 필요함.
+				auto pSfx = CreateSfxReceiver( vPos, pEff, sec );
+				pOutAry->Add( pSfx );
+			} else {
+				*pOutCastTarget = vPos;		// 지속형이 아니면 시전대상은 좌표형이 된다.(파이어볼 폭발같은..)
+			}
 		}
 
 	} break;
@@ -418,12 +435,12 @@ int XSkillUser::GetCastingTargetList( XVector<XSkillReceiver*> *pOutAry,			// �
  @param pBaseTarget 기준타겟
  @param pCastingTarget 시전대상들
 */
-xtError XSkillUser::CastEffToCastTarget( XSkillDat *pDat,
+xtError XSkillUser::CastEffToCastTarget( const XSkillDat *pDat,
 																				 EFFECT *pEffect,
 																				 int level,
-																				 XSkillReceiver *pBaseTarget,
+//																				 XSkillReceiver *pBaseTarget,
 																				 XSkillReceiver *pCastingTarget,
-																				 const XE::VEC2& vPos,
+																				 const XE::VEC2& vCastTarget,
 																				 ID idCallerSkill )
 {
 	XBREAK( pDat == nullptr );
@@ -431,16 +448,17 @@ xtError XSkillUser::CastEffToCastTarget( XSkillDat *pDat,
 	// 시전대상들에게 모두 이펙트를 붙인다.
 	if( pEffect->m_CastTargetEff.IsHave() ) {
 		float secPlay = pEffect->GetDuration( level );
-		pCastingTarget->CreateSfx( pDat, pEffect->m_CastTargetEff, secPlay );
+		XBREAK( pCastingTarget == nullptr );	// 시전대상이 널인경우도 있을까?
+		CreateSfx( pCastingTarget, pDat, pEffect->m_CastTargetEff, secPlay, vCastTarget );
 	}
 	if( pEffect->IsDuration() ) {
 		if( pCastingTarget ) {
 			// 지속시간이 있는 버프형 효과를 타겟에게 시전한다.
-			CastEffToCastTargetByBuff( pDat, pEffect, level, pCastingTarget, vPos, idCallerSkill );
+			CastEffToCastTargetByBuff( pDat, pEffect, level, pCastingTarget, idCallerSkill );
 		}
 	} else {	// 즉시발동형(지속시간 0)
 		// 시전대상에게 즉시 효과가 발동된다.
-		CastEffToCastTargetByDirect( pDat, pEffect, level, pCastingTarget, vPos );
+		CastEffToCastTargetByDirect( pDat, pEffect, level, pCastingTarget, vCastTarget );
 	}
 	if( pEffect->idCastSound ) {
 		OnSkillPlaySound( pEffect->idCastSound );
@@ -451,11 +469,11 @@ xtError XSkillUser::CastEffToCastTarget( XSkillDat *pDat,
 /**
  @brief 버프타입의 효과를 시전대상에게 시전한다.
 */
-xtError XSkillUser::CastEffToCastTargetByBuff( XSkillDat *pDat,
+xtError XSkillUser::CastEffToCastTargetByBuff( const XSkillDat *pDat,
 																							 EFFECT *pEffect,
 																							 int level,
 																							 XSkillReceiver *pCastingTarget,
-																							 const XE::VEC2& vPos,
+//																							 const XE::VEC2& vPos,
 																							 ID idCallerSkill )
 {
 	XASSERT( pCastingTarget );
@@ -483,7 +501,7 @@ xtError XSkillUser::CastEffToCastTargetByBuff( XSkillDat *pDat,
 																	 pCastingTarget,
 																	 pDat,
 																	 level,
-																	 vPos,
+//																	 vPos,
 																	 idCallerSkill );
 		XASSERT( pBuffObj );
 		// 시전대상의 버프리스트에 추가
@@ -494,9 +512,8 @@ xtError XSkillUser::CastEffToCastTargetByBuff( XSkillDat *pDat,
 		if( pEffect->m_PersistEff.IsHave() ) {
 //			const float secPlay = pEffect->GetDuration( level );	// 지속이펙트는 무조건 루핑.
 			const float secPlay = pEffect->GetDuration(level);		// 무한으로 돌리고 버프객체측에서 효과가 종료될때 삭제시킨다.
-#pragma message("시전대상은 유닛이 아닐수도 있기땜에 sfx생성은 user측에서 해야할듯.")
-			시전대상은 유닛이 아닐수도 있기땜에 sfx생성은 user측에서 해야할듯
-			ID idSfx = pCastingTarget->CreateSfx( pDat, pEffect->m_PersistEff, secPlay );
+			const XE::VEC2 vZero;
+			ID idSfx = CreateSfx( pCastingTarget, pDat, pEffect->m_PersistEff, secPlay, vZero );
 			if( idSfx ) {
 				pBuffObj->SetidSfx( idSfx );
 			}
@@ -530,7 +547,7 @@ xtError XSkillUser::CastEffToCastTargetByBuff( XSkillDat *pDat,
 /**
  @brief 즉시시전형태(비버프형)의 효과를 시전대상에게 시전한다.
 */
-xtError XSkillUser::CastEffToCastTargetByDirect( XSkillDat *pDat,
+xtError XSkillUser::CastEffToCastTargetByDirect( const XSkillDat *pDat,
 																								 const EFFECT *pEffect,
 																								 int level,
 																								 XSkillReceiver *pCastingTarget,
@@ -584,7 +601,7 @@ xtError XSkillUser::CastEffToCastTargetByDirect( XSkillDat *pDat,
 */
 int XSkillUser::GetInvokeTarget( XVector<XSkillReceiver*> *_plistOutInvokeTarget,		// 결과를 이곳에 받습니다
 																 XE::VEC2* pOutIvkTarget,		// 발동대상이 좌표형일경우 좌표가 담긴다.
-																 XSkillDat *pDat,
+																 const XSkillDat *pDat,
 																 int level,
 																 xtInvokeTarget typeIvkTarget,	// 발동대상
 																 const EFFECT *pEffect,				// 효과.		
@@ -770,7 +787,7 @@ bool XSkillUser::ApplyInvokeEffToIvkTarget( XSkillReceiver* pIvkTarget, // null�
 		if( bCreateSfx && pEffect->m_invokeTargetEff.IsHave() ) {
 			const float secPlay = 0.f;		// 1play. 발동이펙트는 반복플레이가 없음.
 			const XE::VEC2 vZero;
-			pIvkTarget->CreateSfx( pDat, pEffect->m_invokeTargetEff, secPlay, vZero );
+			CreateSfx( pIvkTarget, pDat, pEffect->m_invokeTargetEff, secPlay, vZero );
 		}
 		return retApplied != 0;
 	} else
@@ -786,7 +803,7 @@ bool XSkillUser::ApplyInvokeEffToIvkTarget( XSkillReceiver* pIvkTarget, // null�
 		// 발동대상이펙트가 있다면 생성해준다.
 		if( bCreateSfx && pEffect->m_invokeTargetEff.IsHave() ) {
 			const float secPlay = 0.f;		// 1play. 발동이펙트는 반복플레이가 없음.
-			CreateSfx( pDat, pEffect->m_invokeTargetEff, secPlay, vIvkPos );
+			CreateSfx( pIvkTarget, pDat, pEffect->m_invokeTargetEff, secPlay, vIvkPos );
 		}
 		return true;
 	}
@@ -977,7 +994,7 @@ BIT XSkillUser::GetFilterSideInvoke( XSkillUser *pCaster,
 }
 
 // this가 pCstTarget에게 발동이 가능한지 검사
-BOOL XSkillUser::IsInvokeAble( XSkillDat *pDat, const XSkillReceiver *pCstTarget, const EFFECT *pEffect )
+BOOL XSkillUser::IsInvokeAble( const XSkillDat *pDat, const XSkillReceiver *pCstTarget, const EFFECT *pEffect )
 {
 	xtFriendshipFilt invokefiltFriendship = pEffect->invokefiltFriendship;
 	// 발동대상우호가 지정되지 않았으면 시전대상우호를 가져다 쓴다.
@@ -1106,9 +1123,9 @@ XSkillDat* XSkillUser::CreateAddUseSkillByIds( LPCTSTR szIdentifier )
 */
 XBuffObj* XSkillUser::CreateSkillBuffObj( XSkillUser *pCaster,
 																					XSkillReceiver *pCastingTarget,
-																					XSkillDat *pDat,
+																					const XSkillDat *pDat,
 																					int level,
-																					const XE::VEC2& vPos,
+//																					const XE::VEC2& vPos,
 																					ID idCallerSkill )
 {
 	return new XBuffObj( GetpDelegate(),
@@ -1116,7 +1133,7 @@ XBuffObj* XSkillUser::CreateSkillBuffObj( XSkillUser *pCaster,
 											 pCastingTarget,
 											 pDat,
 											 level,
-											 vPos,
+//											 vPos,
 											 idCallerSkill );
 }
 

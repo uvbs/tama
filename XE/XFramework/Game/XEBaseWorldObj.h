@@ -92,7 +92,7 @@ public:
 		m_vwPos.z += add;
 		return m_vwPos.z;
 	}
-	BOOL IsDestroy() const {
+	bool IsDestroy() const {
 		return (m_Destroy == 1 );
 	}
 	/**

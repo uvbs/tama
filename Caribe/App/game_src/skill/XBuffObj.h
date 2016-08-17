@@ -74,13 +74,13 @@ protected:
 	GET_ACCESSOR( EFFECT_OBJ_LIST&, listEffectObjs );
 public:
 	XBuffObj( XDelegateSkill *pDelegate );
-	XBuffObj( XDelegateSkill *pDelegate, 
-				XSkillUser *pCaster, 
-				XSkillReceiver *pOwner, 
-				XSkillDat *pSkillDat, 
-				int level,
-				const XE::VEC2& vPos,
-				ID idCallerSkill );
+	XBuffObj( XDelegateSkill *pDelegate,
+						XSkillUser *pCaster,
+						XSkillReceiver *pOwner,
+						const XSkillDat *pSkillDat,
+						int level,
+//					const XE::VEC2& vPos,
+						ID idCallerSkill );
 	virtual ~XBuffObj() { Destroy(); }
 	// get/set/is
 	GET_ACCESSOR( XDelegateSkill*, pDelegate );

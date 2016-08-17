@@ -125,8 +125,14 @@ void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 			OnDestroyObj( pObj );		// virtual
 			if( pWndWorld->GetpWorld() )
 				pWndWorld->GetpWorld()->OnDestroyObj( pObj );
-			XSPWorldObj *p = &( *itor );
+//			XSPWorldObj *p = &( *itor );
 //			m_aryDestroy.Add( (*itor) );
+			{
+				auto itorMap = m_mapObj.find( pObj->GetsnObj() );
+				if( XASSERT(itorMap != m_mapObj.end()) ) {
+					m_mapObj.erase( itorMap );
+				}
+			}
 			m_listObj.erase( itor++ );
 		}
 		else

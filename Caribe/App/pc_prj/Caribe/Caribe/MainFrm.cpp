@@ -1,6 +1,5 @@
 ﻿// MainFrm.cpp : CMainFrame 클래스의 구현
 //
-
 #include "stdafx.h"
 #include "Caribe.h"
 #include "MainFrm.h"
@@ -38,6 +37,10 @@
 #include "XOption.h"
 #include "_Wnd2/XWnd.h"
 #include "Sprite/SprMng.h"
+#ifdef _XSINGLE
+#include "XObjEtc.h"
+
+#endif // _XSINGLE
 
 // #ifdef _DEBUG
 // #define new DEBUG_NEW
@@ -2546,6 +2549,16 @@ void CMainFrame::OnBattleOption()
 		dlg.m_bCheckFlushImg = TRUE;
 	if( XAPP->m_dwFilter & xBIT_FLUSH_SPR )
 		dlg.m_bCheckFlushSpr = TRUE;
+	{
+		// 0x00010000 부터 0x80000000까지 16비트의 각 비트를 dlg에 셋
+		DWORD bit = xBIT_NO_DRAW_DMG_NUM;
+		for( int i = 0; i < 16; ++i ) {
+			if( XAPP->m_dwFilter & bit )
+				dlg.m_bNoDraw[i] = TRUE;
+			bit <<= 1;
+		}
+	}
+	dlg.m_strFontDmg = XObjDmgNum::s_strFont.c_str();
 	//
 	if( dlg.DoModal() ) {
 		if( dlg.m_bCheckPlayerHero )	XAPP->m_dwFilter |= xBIT_PLAYER_HERO;
@@ -2562,6 +2575,15 @@ void CMainFrame::OnBattleOption()
 		else												XAPP->m_dwFilter &= ~xBIT_FLUSH_IMG;
 		if( dlg.m_bCheckFlushSpr )	XAPP->m_dwFilter |= xBIT_FLUSH_SPR;
 		else												XAPP->m_dwFilter &= ~xBIT_FLUSH_SPR;
+		DWORD bit = xBIT_NO_DRAW_DMG_NUM;
+		for( int i = 0; i < 16; ++i ) {
+			if( dlg.m_bNoDraw[i] )
+				XAPP->m_dwFilter |= bit;
+			else
+				XAPP->m_dwFilter &= ~bit;
+			bit <<= 1;
+		}
+		XObjDmgNum::s_strFont = (LPCTSTR)dlg.m_strFontDmg;
 		XAPP->XClientMain::SaveCheat();
 	}
 }

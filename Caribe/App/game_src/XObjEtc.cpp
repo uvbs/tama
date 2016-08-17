@@ -10,7 +10,9 @@
 #include "XSkillMng.h"
 #include "XMsgUnit.h"
 #include "XComp.h"
-
+#if defined(_CHEAT) && defined(WIN32)
+#include "client/XAppMain.h"
+#endif
 
 
 #ifdef WIN32
@@ -426,8 +428,6 @@ XObjLoop::XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLif
 	if( secLife == 0.f )
 		GetpSprObj()->SetAction( idAct, xRPT_1PLAY );
 	XBREAK( GetpSprObj() == nullptr );
-//	SetScaleObj(0.5f);
-//	SetScaleObj(1.5f);
 }
 
 XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
@@ -439,40 +439,38 @@ XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct,
 	if( secLife == 0.f )
 		GetpSprObj()->SetAction( idAct, xRPT_1PLAY );
 	XBREAK( GetpSprObj() == nullptr );
-	//	SetScaleObj(0.5f);
-	//	SetScaleObj(1.5f);
 }
 
-XObjLoop::XObjLoop( int typeObj, const UnitPtr& spTrace, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
+XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
 	: XEBaseWorldObj( XWndBattleField::sGet(), typeObj, spTrace->GetvwPos(), szSpr, idAct )
 {
 	Init();
 	m_timerLife.Set( secLife );
 	m_secLife = secLife;
-	m_spRefUnit = spTrace;
+	m_spTraceObj = spTrace;
+	if( spTrace->GetType() == xOT_UNIT )
+		m_spTraceUnit2 = std::static_pointer_cast<const XBaseUnit>( spTrace );
 	m_bTraceRefObj = TRUE;
 	if( secLife == 0.f )
 		GetpSprObj()->SetAction( idAct, xRPT_1PLAY );
 	XBREAK( GetpSprObj() == nullptr );
-	//	SetScaleObj(0.5f);
-	//	SetScaleObj(1.5f);
 }
 
 /**
  @brief 이펙트 생성은 vwPos에 생성되나 spTrace를 참조해야 하는 버전
 */
-XObjLoop::XObjLoop( int typeObj, const UnitPtr& spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
+XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
 	: XEBaseWorldObj( XWndBattleField::sGet(), typeObj, vwPos, szSpr, idAct )
 {
 	Init();
 	m_timerLife.Set( secLife );
 	m_secLife = secLife;
-	m_spRefUnit = spTrace;
+	m_spTraceObj = spTrace;
+	if( spTrace->GetType() == xOT_UNIT )
+		m_spTraceUnit2 = std::static_pointer_cast<const XBaseUnit>( spTrace );
 	if( secLife == 0.f )
 		GetpSprObj()->SetAction( idAct, xRPT_1PLAY );
 	XBREAK( GetpSprObj() == nullptr );
-	//	SetScaleObj(0.5f);
-	//	SetScaleObj(1.5f);
 }
 
 
@@ -487,10 +485,10 @@ void XObjLoop::SetBounce( float power, float dAngZ, float gravity )
 
 void XObjLoop::FrameMove( float dt )
 {
-	if( m_spRefUnit != nullptr ) {
+	if( m_spTraceObj ) {
 		if( m_bTraceRefObj ) {
-			SetvwPos( m_spRefUnit->GetvwPos() + m_vAdjust );
-			if( m_spRefUnit->IsDead() )
+			SetvwPos( m_spTraceObj->GetvwPos() + m_vAdjust );
+			if( m_spTraceUnit2 && m_spTraceUnit2->IsDead() )
 				SetDestroy( 1 );
 		}
 	}
@@ -537,10 +535,15 @@ void XObjLoop::OnEventSprObj( XSprObj *pSprObj,
 															float fOverSec )
 {
 	XSkillSfx::CallCallbackFunc();
-// 	if( !m_Callback.funcCallback.empty() )
-// 		m_Callback.funcCallback( m_Callback.pOwner, this );
 }
 
+void XObjLoop::Draw( const XE::VEC2& vPos, float scale, float alpha )
+{
+#if defined(_CHEAT) && defined(WIN32)
+	if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_SKILL_SFX) )
+#endif // defined(_CHEAT) && defined(WIN32)
+		XEBaseWorldObj::Draw( vPos, scale, alpha );
+}
 ////////////////////////////////////////////////////////////////
 XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp, 
 																			const XE::VEC3& vwPos, 
@@ -606,6 +609,7 @@ void XSkillShootObj::CallCallbackFunc( void )
 
 ////////////////////////////////////////////////////////////////
 _tstring XObjDmgNum::s_strFont = _T("damage.ttf");
+int XObjDmgNum::s_numObj = 0;
 /**
  @brief 
  @param paramHit typeHit가 xHT_STATE(상태이상)일경우 어떤상태이상인지 파라메터가 붙는다.
@@ -675,7 +679,8 @@ void XObjDmgNum::InitEffect()
 	float size = 18.f;
 	_tstring strFont;
 	if( XE::IsAsciiStr(m_strNumber.c_str()) ) {
-		strFont = _T("damage.ttf");
+//		strFont = _T("damage.ttf");
+		strFont = s_strFont;
 		size = 20.f;
 	} else
 		strFont = FONT_NANUM_BOLD;
@@ -703,19 +708,18 @@ void XObjDmgNum::FrameMove( float dt )
 	XBREAK( m_spCompMove == nullptr );
 	m_spCompMove->SetvwPos( GetvwPos() );
 	if( m_spCompMove->FrameMove( dt ) == 1 ) {
-// 		if( m_spCompMove->IsDisappear() ) {
-// 			m_timerLife.Set( 1.f );
-// 		}
 	}
 	SetvwPos( m_spCompMove->GetvwPos() );
 	if( m_spCompMove->IsDisappear() ) {
-//		float alpha = 1.0f - m_timerLife.GetSlerp();
 		float alpha = 1.0f - m_spCompMove->GetLerpTime();
 		SetAlpha( alpha );
-//		if( m_timerLife.IsOver() ) {
+		XBREAK( m_spCompMove->GettimerState().IsOff() );
 		if( m_spCompMove->GettimerState().IsOver() ) {
 			SetDestroy( 1 );
 		}
+	} else
+	if( m_spCompMove->IsDestroy() ) {
+		SetDestroy( 1 );
 	}
 	XEBaseWorldObj::FrameMove( dt );
 }
@@ -734,7 +738,10 @@ void XObjDmgNum::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/
 		const BYTE b = XCOLOR_RGB_B( col );
 		col = XCOLOR_RGBA(r,g,b,a);
 	}
-	m_pfdNumber->DrawStringStyle( vPos.x, vPos.y, col, xFONT::xSTYLE_STROKE, m_strNumber.c_str() );
+#if defined(_CHEAT) && defined(WIN32)
+	if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_DMG_NUM) )
+#endif // defined(_CHEAT) && defined(WIN32)
+		m_pfdNumber->DrawStringStyle( vPos.x, vPos.y, col, xFONT::xSTYLE_STROKE, m_strNumber.c_str() );
 //#endif 
 }
 

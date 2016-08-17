@@ -303,7 +303,7 @@ public:
 	XSPLegionObj GetspLegionObj();
 	XSPLegionObjConst GetspLegionObjConst() const;
 	BOOL RequestNewMission();
-	inline BOOL IsDead() {
+	inline BOOL IsDead() const {
 		return !IsLive();
 	}
 	inline void AddDelta( const XE::VEC3& vDelta ) {
@@ -417,31 +417,31 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	// SKILL
-	float OnInvokeTargetSize( XSKILL::XSkillDat *pSkillDat,
-							const XSKILL::EFFECT *pEffect,
-							int level,
-							XSKILL::XSkillReceiver *pCastingTarget,
-							float size ) override;
+	float OnInvokeTargetSize( const XSKILL::XSkillDat *pSkillDat,
+														const XSKILL::EFFECT *pEffect,
+														int level,
+														XSKILL::XSkillReceiver *pCastingTarget,
+														float size ) override;
 	int	OnClearSkill( XSKILL::XBuffObj* pBuffObj, XSKILL::XSkillDat *pSkillDat, XSKILL::EFFECT_OBJ *pEffObj ) override;		// 버프효과가 끝나면 호출됨
 	void OnCastEffectToPos( XSKILL::XSkillDat *pSkillDat,
-							XSKILL::EFFECT *pEffect,
-							int level,
-							float sec,
-							float radiusMeter,
-							BIT bitSideInvokeTarget,	// 발동되어야 하는 발동대상우호
-							XSKILL::XSkillReceiver *pBaseTarget,
-							const XE::VEC2& vPos ) override;
-	BOOL IsLive() override {
+													XSKILL::EFFECT *pEffect,
+													int level,
+													float sec,
+													float radiusMeter,
+													BIT bitSideInvokeTarget,	// 발동되어야 하는 발동대상우호
+													XSKILL::XSkillReceiver *pBaseTarget,
+													const XE::VEC2& vPos ) override;
+	bool IsLive() const override {
 		if( IsDestroy() )
-			return FALSE;
+			return false;
 		if( m_HP <= 0 )
-			return FALSE;
-		return TRUE;
+			return false;
+		return true;
 	}
 	virtual void OnAdjustEffectAbility( XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int invokeParam, float *pOutMin ) override;
-	virtual void OnSkillAmplifyUser( XSKILL::XSkillDat *pDat, XSKILL::XSkillReceiver *pIvkTarget, const XSKILL::EFFECT *pEffect, XSKILL::xtEffectAttr attrParam, float *pOutRatio, float *pOutAdd ) override;
-	virtual XSKILL::XSkillReceiver* GetTarget( ID snObj ) override;
-	virtual XSKILL::XSkillUser* GetCaster( ID snObj ) override;
+	virtual void OnSkillAmplifyUser( const XSKILL::XSkillDat *pDat, XSKILL::XSkillReceiver *pIvkTarget, const XSKILL::EFFECT *pEffect, XSKILL::xtEffectAttr attrParam, float *pOutRatio, float *pOutAdd ) override;
+// 	virtual XSKILL::XSkillReceiver* GetTarget( ID snObj ) override;
+// 	virtual XSKILL::XSkillUser* GetCaster( ID snObj ) override;
 	virtual void DelegateResultEventBeforeAttack( XSKILL::XBuffObj *pBuffObj, XSKILL::EFFECT *pEffect ) override;
 	BOOL IsInvokeTargetCondition( const XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, XSKILL::xtCondition condition, DWORD condVal ) override;
 	virtual const XECompCamp& GetCamp() const override {		///< this의 진영을 리턴
@@ -484,6 +484,15 @@ public:
 											 LPCTSTR szSpr,
 											 ID idAct,
 											 float secPlay,
+											 const XE::VEC2& vPos ) override {
+		return OnCreateSkillSfx( this, pSkillDat, createPoint, szSpr, idAct, secPlay, vPos );
+	}
+	ID OnCreateSkillSfx( XSkillReceiver* pTarget,
+											 const XSKILL::XSkillDat *pSkillDat,
+											 XSKILL::xtPoint createPoint,
+											 LPCTSTR szSpr,
+											 ID idAct,
+											 float secPlay,
 											 const XE::VEC2& vPos ) override;
 	XSKILL::XSkillSfx* OnCreateSkillSfxShootTarget( XSKILL::XSkillDat *pSkillDat,
 																									XSKILL::XSkillReceiver *pBaseTarget,
@@ -495,7 +504,7 @@ public:
 																									const XE::VEC2& vPos ) override;
 	void OnDestroySFX( XSKILL::XBuffObj *pSkillRecvObj, ID idSFX ) override;
 	int GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList,
-										XSKILL::XSkillDat *pSkillDat,
+										const XSKILL::XSkillDat *pSkillDat,
 										const XSKILL::EFFECT *pEffect,
 										XSKILL::xtGroup typeGroup ) override;
 	XSKILL::XSkillReceiver* GetTargetObject( XSKILL::EFFECT *pEffect, XSKILL::xtTargetCond cond ) override;
@@ -599,13 +608,22 @@ public:
 	virtual int OnBeforeAttackMotion() { return 0; }
 	/// 공격모션이 시작되고난 직후 호출된다.
 //	virtual void OnAfterAttackMotion( XSKILL::xtJuncture junc );
-	XObjLoop* CreateSfxObj( XSKILL::xtPoint createPoint,
+	static XObjLoop* sCreateSfxObj( XSPWorldObjConst spObj,
+																	XSKILL::xtPoint createPoint,
+																	LPCTSTR szSpr,
+																	ID idAct,
+																	float secPlay,
+																	BOOL bScale = FALSE,
+																	float wAdjZ = 0.f,
+																	const XE::VEC2& vPos = XE::VEC2() );
+	XObjLoop* CreateSfxObj( XSkillReceiver* pTarget,
+													XSKILL::xtPoint createPoint,
 													LPCTSTR szSpr,
 													ID idAct,
 													float secPlay,
 													BOOL bScale = FALSE,
 													float wAdjZ = 0.f,
-													const XE::VEC2& vPos = XE::VEC2() );
+													const XE::VEC2& vPos = XE::VEC2() ) const;
 	float GetScaleFactor() const;
 	XFSMStun* ChangeFSMStun( float secStun ) {
 		XFSMStun *pFsm = static_cast<XFSMStun*>( ChangeFSM( XFSMBase::xFSM_STUN ) );
@@ -698,7 +716,7 @@ public:
 		std::swap( m_spMsgQ1, m_spMsgQ2 );
 	}
 protected:
-	void CreateDmgNum( float damage, BIT bitAttrHit );
+	void CreateDmgNum( float damage, BIT bitAttrHit, XGAME::xtHit hitType = XGAME::xHT_NONE, int idxState = 0, const _tstring& strMsg = _T(""), XCOLOR col = XCOLOR_WHITE );
 	void OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) override;
 	void DrawDebugStr( XE::VEC2* pvLT, XCOLOR col, float sizeFont, const _tstring& strDebug );
 	bool IsCheatFiltered();

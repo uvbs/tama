@@ -89,7 +89,7 @@ public:
 																	const XSKILL::EFFECT *pEffect,
 																	int level ) override;
 	XSKILL::xtInvokeTarget
-	OnGetInvokeTarget( XSKILL::XSkillDat *pDat,
+	OnGetInvokeTarget( const XSKILL::XSkillDat *pDat,
 										const XSKILL::EFFECT *pEffect,
 										XSKILL::xtInvokeTarget invokeTarget ) override;
 	void OnArriveTarget( UnitPtr spUnit, const XE::VEC3& vwDst ) override;

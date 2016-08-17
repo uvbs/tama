@@ -313,9 +313,10 @@ const XPropHero::xPROP* XBaseUnit::GetpPropHero()
 
 void XBaseUnit::CreateHitSfx( const XBaseUnit *pAttacker, BOOL bCritical, BOOL bAbsolute )
 {
-// #ifdef _XUZHU_HOME
-// 	return;
-// #endif
+#if defined(_CHEAT) && defined(WIN32)
+	if( XAPP->m_dwFilter & xBIT_NO_CREATE_HIT_SFX )
+		return;
+#endif // defined(_CHEAT) && defined(WIN32)
 	bAbsolute = TRUE;
 	if( pAttacker == NULL )
 		return;
@@ -681,7 +682,10 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		v += m_vHitOffset * scale;
 		// 맞는측의 크기에 비례해서 타격이펙트도 커진다.
 		m_psoHit->SetScale( scaleFactor * scaleProp * scale /* * 0.5f*/ );
-		m_psoHit->Draw( v );
+#if defined(_CHEAT) && defined(WIN32)
+		if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_HIT_SFX) )
+#endif // defined(_CHEAT) && defined(WIN32)
+			m_psoHit->Draw( v );
 	}
 //#endif
 	XE::VEC2 vDrawHp = vPos;
@@ -767,7 +771,10 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 						vDrawBuffIcon.x -= ( sizeIcon.w * idx ) * 0.5f;
 						vDrawBuffIcon.y = vDrawName.y - ( ( 2.f * scale ) + sizeIcon.h );
 						psfc->SetScale( scaleIcon );
-						psfc->Draw( vDrawBuffIcon );
+#if defined(_CHEAT) && defined(WIN32)
+						if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_BUFF_ICON) )
+#endif // defined(_CHEAT) && defined(WIN32)
+							psfc->Draw( vDrawBuffIcon );
 						if( pDat->GetstrIdentifier() == _T( "invoke_protect" ) ) {
 							PUT_STRINGF_SMALL( vDrawBuffIcon + XE::VEC2(1,1), XCOLOR_WHITE, _T("%d"), m_cntShell );
 						}
@@ -1384,26 +1391,42 @@ void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 /**
  @brief 데미지숫자 이펙트를 생성한다.
 */
-void XBaseUnit::CreateDmgNum( float damage, BIT bitAttrHit )
+void XBaseUnit::CreateDmgNum( float damage, BIT bitAttrHit, xtHit hitType, int idxState, const _tstring& strMsg, XCOLOR col )
 {
-	xtHit typeHit = (bitAttrHit & xBHT_HIT)? xHT_HIT : xHT_MISS;
-	if( bitAttrHit & xBHT_CRITICAL )
-		typeHit = xHT_CRITICAL;
-	else if( bitAttrHit & xBHT_EVADE )
-		typeHit = xHT_EVADE;
-	else if( bitAttrHit & xBHT_VORPAL )
-		typeHit = xHT_VORPAL;
-	else if( bitAttrHit & xBHT_IMMUNE )
-		typeHit = xHT_IMMUNE;
-	XCOLOR col = XCOLOR_RED;
-	if( bitAttrHit & xBHT_POISON ) {
-		col = XCOLOR_RGB(2,94,0);
+#if defined(_CHEAT) && defined(WIN32)
+	if( XAPP->m_dwFilter & xBIT_NO_CREATE_DMG_NUM )
+		return;
+#endif // defined(_CHEAT) && defined(WIN32)
+	if( XObjDmgNum::s_numObj >= 50 )
+		return;
+	if( strMsg.empty() ) {
+		if( idxState == 0 ) {
+			xtHit typeHit = ( bitAttrHit & xBHT_HIT ) ? xHT_HIT : xHT_MISS;
+			if( bitAttrHit & xBHT_CRITICAL )
+				typeHit = xHT_CRITICAL;
+			else if( bitAttrHit & xBHT_EVADE )
+				typeHit = xHT_EVADE;
+			else if( bitAttrHit & xBHT_VORPAL )
+				typeHit = xHT_VORPAL;
+			else if( bitAttrHit & xBHT_IMMUNE )
+				typeHit = xHT_IMMUNE;
+			XCOLOR col = XCOLOR_RED;
+			if( bitAttrHit & xBHT_POISON ) {
+				col = XCOLOR_RGB( 2, 94, 0 );
+			} else {
+				if( IsPlayer() )
+					col = XCOLOR_WHITE;
+			}
+			auto pDmg = new XObjDmgNum( damage, typeHit, 0, GetvwTop(), col );
+			AddObj( pDmg );
+		} else {
+			auto pDmg = new XObjDmgNum( damage, hitType, idxState, GetvwTop(), col );
+			AddObj( pDmg );
+		}
 	} else {
-		if( IsPlayer() )
-			col = XCOLOR_WHITE;
+		auto pDmg = new XObjDmgNum( strMsg, GetvwTop(), col );
+		AddObj( pDmg );
 	}
-	auto pDmg = new XObjDmgNum( damage, typeHit, 0, GetvwTop(), col );
-	AddObj( pDmg );
 }
 
 void XBaseUnit::DoDie( XSPUnit spAtker )
@@ -1908,14 +1931,14 @@ XDelegateSkill* XBaseUnit::GetpDelegate()
 	return this;
 }
 
-XSkillReceiver* XBaseUnit::GetTarget( ID snObj )
-{
-	return XBattleField::sGet()->GetTarget( snObj );
-}
-XSkillUser* XBaseUnit::GetCaster( ID snObj )
-{
-	return XBattleField::sGet()->GetCaster( snObj );
-}
+// XSkillReceiver* XBaseUnit::GetTarget( ID snObj )
+// {
+// 	return XBattleField::sGet()->GetTarget( snObj );
+// }
+// XSkillUser* XBaseUnit::GetCaster( ID snObj )
+// {
+// 	return XBattleField::sGet()->GetCaster( snObj );
+// }
 
 /**
  @brief 비보정 파라메터 효과가 적용될때 호출된다. 파라메터가 xHP같은것이 대표적인 예.
@@ -2072,14 +2095,15 @@ int XBaseUnit::GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget
  @brief 새 스킬시스템에서 공통으로 사용할 이펙트 생성 함수.
  @param pvPos null이 아니면 이 좌표에 생성시켜야 한다.
 */
-ID XBaseUnit::OnCreateSkillSfx( const XSkillDat *pSkillDat,
+ID XBaseUnit::OnCreateSkillSfx( XSkillReceiver* pTarget,
+																const XSkillDat *pSkillDat,
 																xtPoint createPoint,
 																LPCTSTR szSpr,
 																ID idAct,
 																float secPlay,
 																const XE::VEC2& vPos )
 {
-	auto pSfx = CreateSfxObj( createPoint, szSpr, idAct, secPlay, TRUE, 25.f, vPos );
+	auto pSfx = CreateSfxObj( pTarget, createPoint, szSpr, idAct, secPlay, TRUE, 25.f, vPos );
 	if( pSfx ) {
 		if( pSkillDat->GetstrIdentifier() == _T( "lava_fragments" ) ) {
 			const float gravity = 0.1f;
@@ -2099,7 +2123,7 @@ XSkillSfx* XBaseUnit::OnCreateSkillSfxShootTarget( XSkillDat *pSkillDat,
 																									 float secPlay,
 																									 const XE::VEC2& vPos )
 {
-	auto pSfx = CreateSfxObj( createPoint, strSpr.c_str(), idAct, secPlay, FALSE, 25.f, vPos );
+	auto pSfx = CreateSfxObj( pBaseTarget, createPoint, strSpr.c_str(), idAct, secPlay, FALSE, 25.f, vPos );
 	return pSfx;
 }
 
@@ -2108,7 +2132,8 @@ XSkillSfx* XBaseUnit::OnCreateSkillSfxShootTarget( XSkillDat *pSkillDat,
  @param wAdjZ 만약 createPoint가 TARGET_TOP일경우 필요하다면 추가보정치를 준다.
  @param bScale this객체의 크기에 비례해서 sfx의 크기도 변해야 한다면 TRUE
 */
-XObjLoop* XBaseUnit::CreateSfxObj( xtPoint createPoint,
+XObjLoop* XBaseUnit::sCreateSfxObj( XSPWorldObjConst spObj,
+																		xtPoint createPoint,
 																		LPCTSTR szSpr,
 																		ID idAct,
 																		float secPlay,
@@ -2116,7 +2141,14 @@ XObjLoop* XBaseUnit::CreateSfxObj( xtPoint createPoint,
 																		float wAdjZ/* = 0.f*/,
 																		const XE::VEC2& vPos/* = XE::VEC2()*/ )
 {
-	auto spUnit = GetThisUnit();
+#if defined(_CHEAT) && defined(WIN32)
+	if( XAPP->m_dwFilter & xBIT_NO_CREATE_SKILL_SFX )
+		return nullptr;
+#endif // defined(_CHEAT) && defined(WIN32)
+	auto pObj = spObj.get();
+//	auto spUnit = GetThisUnit();
+	auto pUnit = (pObj && pObj->GetType() == xOT_UNIT)? static_cast<const XBaseUnit*>( pObj ) : nullptr;
+//	XSPUnitConst spUnit = (pUnit)? pUnit->GetThisUnit() : nullptr;
 #ifdef _DEBUG
 	XTRACE( "CreateSfxObj: %s, %d, sec=%.1f", szSpr, idAct, secPlay );
 #endif // _DEBUG
@@ -2126,77 +2158,95 @@ XObjLoop* XBaseUnit::CreateSfxObj( xtPoint createPoint,
 												szSpr, idAct, secPlay );
 	} else {
 		if( createPoint == xPT_TARGET_CENTER ) {
-			// this를 따라다니지 않음.
-			pSfx = new XObjLoop( XGAME::xOT_SFX, spUnit, GetvCenterWorld(),
+			// pTarget를 따라다니지 않음.
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvCenterWorld(),
 													szSpr, idAct, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_BOTTOM ) {
-			// this를 따라다니지 않음.
-			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, spUnit, GetvwPos(),
+			// pTarget를 따라다니지 않음.
+			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, spObj, pObj->GetvwPos(),
 													szSpr, idAct, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_POS ) {
 			if( secPlay > 0.f )
-				// this를 따라다님
-				pSfx = new XObjLoop( XGAME::xOT_SFX, spUnit
+				// pTarget를 따라다님
+				pSfx = new XObjLoop( XGAME::xOT_SFX, spObj
 													, szSpr, idAct, secPlay );
 			else
-				pSfx = new XObjLoop( XGAME::xOT_SFX, GetvwPos(),
+				pSfx = new XObjLoop( XGAME::xOT_SFX, pObj->GetvwPos(),
 														szSpr, idAct, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_TRACE_CENTER ) {
 			// 타겟의 중심을 따라다님
-			pSfx = new XObjLoop( XGAME::xOT_SFX, spUnit,
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
 													szSpr, idAct, secPlay );
-			pSfx->SetvAdjust( 0.f, 0.f, -GetSize().h * 0.5f );
+			pSfx->SetvAdjust( 0.f, 0.f, -pObj->GetSize().h * 0.5f );
 		} else
 		if( createPoint == xPT_TARGET_TRACE_POS ) {
 			// 타겟의 좌표를 따라다님
-			pSfx = new XObjLoop( XGAME::xOT_SFX, spUnit,
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
 													szSpr, idAct, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_TRACE_BOTTOM ) {
-			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, spUnit,
+			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, spObj,
 													szSpr, idAct, secPlay );
 		} else
 		if( createPoint == xPT_ACTION_EVENT ) {
 //			TransformByObj( &m_vlActionEvent );
-			auto vwActionPos = GetvwPos() + m_vlActionEvent;
-			pSfx = new XObjLoop( XGAME::xOT_SFX, spUnit, vwActionPos,
-													szSpr, idAct, secPlay );
+			if( pUnit ) {
+				auto vwActionPos = pObj->GetvwPos() + pUnit->GetvlActionEvent();
+				pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, vwActionPos,
+														szSpr, idAct, secPlay );
+			}
 		} else
 		if( createPoint == xPT_TARGET_TOP ) {
-			pSfx = new XObjLoop( XGAME::xOT_SFX, spUnit, GetvwTop( wAdjZ ),
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvwTop( wAdjZ ),
 													szSpr, idAct, secPlay );
 		} else 
 		if( createPoint == xPT_TARGET_TRACE_TOP ) {
 			// 타겟의 좌표를 따라다님
-			pSfx = new XObjLoop( XGAME::xOT_SFX, spUnit,
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
 													szSpr, idAct, secPlay );
-			pSfx->SetvAdjust( 0.f, 0.f, -GetSize().h );
+			pSfx->SetvAdjust( 0.f, 0.f, -pObj->GetSize().h );
 		} else {
-			pSfx = new XObjLoop( XGAME::xOT_SFX, spUnit, GetvCenterWorld(),
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvCenterWorld(),
 													szSpr, idAct, secPlay );
 		}
 	}
 
-
-
-	XBREAK( pSfx == NULL );
-	pSfx->SetDir( GetDir() );
-	if( XE::IsSame(szSpr, _T("sfx_frozen.spr")) ) {
-		pSfx->SetAlpha( 0.5f );
+	XBREAK( pSfx == nullptr );
+	if( pUnit ) {
+		pSfx->SetDir( pUnit->GetDir() );
+		if( bScale ) {
+			float scaleFactor = pUnit->GetScaleFactor();
+			if( pUnit->IsHero() )
+				scaleFactor = 1.f;
+			pSfx->SetScaleObj( scaleFactor );
+		}
 	}
-	if( bScale ) {
-		float scaleFactor = GetScaleFactor();
-		if( IsHero() )
-			scaleFactor = 1.f;
-		pSfx->SetScaleObj( scaleFactor );
-	}
+// 	if( XE::IsSame(szSpr, _T("sfx_frozen.spr")) ) {
+// 		pSfx->SetAlpha( 0.5f );
+// 	}
 	XBattleField::sGet()->AddObj( XSPWorldObj( pSfx ) );
 	return pSfx;
 }
 
+/**
+ @brief pTarget에 sfx를 생성한다.
+*/
+XObjLoop* XBaseUnit::CreateSfxObj( XSkillReceiver* pTarget,
+																	 xtPoint createPoint,
+																	 LPCTSTR szSpr,
+																	 ID idAct,
+																	 float secPlay,
+																	 BOOL bScale /*= FALSE*/,
+																	 float wAdjZ/* = 0.f*/,
+																	 const XE::VEC2& vPos/* = XE::VEC2()*/ ) const
+{
+	auto pObj = dynamic_cast<XEBaseWorldObj*>( pTarget );
+	auto spObj = pObj->GetThisConst();
+	return sCreateSfxObj( spObj, createPoint, szSpr, idAct, secPlay, bScale, wAdjZ, vPos );
+}
 /**
  @brief this가 시전자
 */
@@ -2280,9 +2330,9 @@ void XBaseUnit::OnDestroySFX( XBuffObj *pSkillRecvObj, ID idSFX )
 }
 
 int XBaseUnit::GetGroupList( XVector<XSkillReceiver*> *pAryOutGroupList,
-							XSkillDat *pSkillDat,
-							const EFFECT *pEffect,
-							xtGroup typeGroup )
+														 const XSkillDat *pSkillDat,
+														 const EFFECT *pEffect,
+														 xtGroup typeGroup )
 {
 	if( typeGroup == xGT_ME )	{
 		GetpSquadObj()->GetListMember( pAryOutGroupList );
@@ -2407,12 +2457,13 @@ BOOL XBaseUnit::OnFirstApplyState( XSkillUser *pCaster,
 									BOOL flagState,
 									int level )
 {
-//	CONSOLE("상태발동:%s", XGAME::GetStrState( (XGAME::xtState)idxState ));
+#ifdef _DEBUG
+	XTRACE("상태발동:%s", XGAME::GetStrState( (XGAME::xtState)idxState ));
+#endif // _DEBUG
 	// 상태발동 텍스트
-//#ifndef _XUZHU_HOME
-	auto pDmg = new XObjDmgNum( 0, xHT_STATE, idxState, GetvwTop() );
-	AddObj( pDmg );
-//#endif
+// 	auto pDmg = new XObjDmgNum( 0, xHT_STATE, idxState, GetvwTop() );
+// 	AddObj( pDmg );
+	CreateDmgNum( 0, 0, xHT_STATE, idxState );
 	switch( idxState )
 	{
 	case XGAME::xST_STUN:
@@ -2420,7 +2471,7 @@ BOOL XBaseUnit::OnFirstApplyState( XSkillUser *pCaster,
 		// 기절 이펙트
 		float secDuration = pEffect->GetDuration( level );
 		XBREAK( secDuration == 0 );
-		CreateSfxObj( xPT_TARGET_TOP, _T( "sfx_star.spr" ), 1, secDuration, TRUE, 24.f );
+		CreateSfxObj( this, xPT_TARGET_TOP, _T( "sfx_star.spr" ), 1, secDuration, TRUE, 24.f );
 		ChangeFSMStun( secDuration );
 	} break;
 	case XGAME::xST_TAUNT: {
@@ -2975,11 +3026,11 @@ void XBaseUnit::DelegateResultEventBeforeAttack( XBuffObj *pBuffObj, EFFECT *pEf
 /**
  @brief SkillUser에서 어떤 효과값을 적용하기전에 스킬에 따라 그 값을 증폭시킴.
 */
-void XBaseUnit::OnSkillAmplifyUser( XSkillDat *pDat,
-									XSkillReceiver *pIvkTarget,
-									const EFFECT *pEffect,
-									xtEffectAttr attrParam,
-									float *pOutRatio, float *pOutAdd )
+void XBaseUnit::OnSkillAmplifyUser( const XSkillDat *pDat,
+																		XSkillReceiver *pIvkTarget,
+																		const EFFECT *pEffect,
+																		xtEffectAttr attrParam,
+																		float *pOutRatio, float *pOutAdd )
 {
 	if( pDat->GetstrIdentifier() == _T("chill_explosion") ||
 		pDat->GetstrIdentifier() == _T("invoke_freeze_arrow"))	{
@@ -3549,15 +3600,13 @@ void XBaseUnit::DoHeal( float addHp )
 	// 힐 받은양 누적
 	GetpStatObj()->AddHeal( GetpHero()->GetsnHero(), addHp );
 	AddHp( addHp );
-//	if( this->IsPlayer() )
 	{
-		XObjDmgNum *pDmg = new XObjDmgNum( addHp,
-														xHT_HIT, 0,
-// 														FALSE,
-// 														false,
-														GetvwTop() );
-		pDmg->SetCol( XCOLOR_GREEN );
-		AddObj( pDmg );
+		CreateDmgNum( addHp, xBHT_HIT, xHT_NONE, 0, _T(""), XCOLOR_GREEN );
+// 		XObjDmgNum *pDmg = new XObjDmgNum( addHp,
+// 																			 xHT_HIT, 0,
+// 																			 GetvwTop() );
+// 		pDmg->SetCol( XCOLOR_GREEN );
+// 		AddObj( pDmg );
 	}
 }
 
@@ -3597,7 +3646,7 @@ float XBaseUnit::GetVampiricRatio()
 /**
  @brief GetInvokeTarget()에서 발동범위를 결정하기전에 호출되어진다.
 */
-float XBaseUnit::OnInvokeTargetSize( XSkillDat *pSkillDat,
+float XBaseUnit::OnInvokeTargetSize( const XSkillDat *pSkillDat,
 																		 const EFFECT *pEffect,
 																		 int level,
 																		 XSkillReceiver *pCastingTarget,
@@ -3693,10 +3742,9 @@ void XBaseUnit::OnApplyEffectAdjParam( XSkillUser *pCaster
 	if( IsHero() && !strParam.empty() ) {
 		// 일단은 영웅만 텍스트 표시되게
 		const XCOLOR col = ( IsPlayer() )? XCOLOR_GREEN : XCOLOR_RED;
-//#ifndef _XUZHU_HOME
-		auto pDmg = new XObjDmgNum( strParam, GetvwTop(), col );
-		AddObj( pDmg );
-//#endif
+		CreateDmgNum( 0, 0, xHT_NONE, 0, strParam, col );
+// 		auto pDmg = new XObjDmgNum( strParam, GetvwTop(), col );
+// 		AddObj( pDmg );
 	}
 }
 

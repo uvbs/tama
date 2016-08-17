@@ -38,11 +38,11 @@ public:
 	bool FindBuff( XBuffObj *pSkillRecvObj ) const;
 	int FrameMove( float dt );
 	// virtual
-	virtual ID GetId( void ) const = 0;
+	virtual ID GetId() const = 0;
 	int	ApplyEffectNotAdjParam( XSkillDat *pSkillDat, XSkillUser* pCaster, const EFFECT *pEffect, int level );	// 비보정파라메터에 대한 효과적용
 	int	ApplyEffectAdjParam( XSkillDat *pSkillDat, XSkillUser *pCaster, const EFFECT *pEffect, int level, XBuffObj *pBuffObj );		// 보정파라메터에 대한 효과적용
 	virtual BOOL IsInvoking( XBuffObj *pSkillRecvObj ) { return FindBuff( pSkillRecvObj ); }
-	virtual LPCTSTR	GetObjName( void ) { return _T("이름없음"); }
+	virtual LPCTSTR	GetObjName() { return _T("이름없음"); }
 	virtual int	AddSkillRecvObj( XBuffObj *pSkillRecvObj );		// 버프리스트추가
 //	virtual void DestroySkillRecvObj( XBuffObj *pSkillRecvObj ) { SAFE_DELETE( pSkillRecvObj ); }		// 버프리스트삭제
 	virtual int	OnClearSkill( XBuffObj* pBuffObj, XSkillDat *pSkillDat, EFFECT_OBJ *pEffObj ) { return 1; }		// 버프효과가 끝나면 호출됨
@@ -80,13 +80,13 @@ public:
 		return OnCreateSkillSfxShootTarget( pSkillDat, pBaseTarget, level, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
 	}
 
-	ID CreateSfx( const XSkillDat *pSkillDat,
-								const _tstring& strEffect,
-								ID idAct,
-								xtPoint pointSfx,
-								float secPlay,
-								const XE::VEC2& vPos = XE::VEC2( 0 ) );
-	ID CreateSfx( const XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos = XE::VEC2() );
+// 	ID CreateSfx( const XSkillDat *pSkillDat,
+// 								const _tstring& strEffect,
+// 								ID idAct,
+// 								xtPoint pointSfx,
+// 								float secPlay,
+// 								const XE::VEC2& vPos = XE::VEC2( 0 ) );
+// 	ID CreateSfx( const XSkillDat *pSkillDat, const xEffSfx& effSfx, float secPlay, const XE::VEC2& vPos = XE::VEC2() );
 	virtual void OnDestroySFX( XBuffObj *pSkillRecvObj, ID idSFX ) {}
 	virtual void OnPlaySoundRecv( ID id ) { XLOG("경고: 가상함수가 구현되지 않았음"); }
 	/**
@@ -129,15 +129,15 @@ public:
 	}
 	// pure virtual
 	// szVal변수를(보통 invokeObj같은) 상속된 하위클래스형으로 루아변수로 등록한다. 말하자면 XSkillReceiver타입의 invokeObj가 아니고 XUnit타입의 invokeObj로 등록해야한다. 이런 코드 사용-> pLua->RegisterVar( szVal, this ); 	
-	virtual const XECompCamp& GetCamp( void ) const = 0;		///< this의 진영을 리턴
-	virtual int GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList, 
-							XSKILL::XSkillDat *pSkillDat, 
-							const XSKILL::EFFECT *pEffect,
-							xtGroup typeGroup = xGT_ME ) { 
-		XBREAKF(1, "아직 구현되지 않았습니다.");
-		return 0; 
+	virtual const XECompCamp& GetCamp() const = 0;		///< this의 진영을 리턴
+	virtual int GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList,
+														const XSKILL::XSkillDat *pSkillDat,
+														const XSKILL::EFFECT *pEffect,
+														xtGroup typeGroup = xGT_ME ) {
+		XBREAKF( 1, "아직 구현되지 않았습니다." );
+		return 0;
 	}
-//	virtual ID GetReceiverID( void ) = 0;
+//	virtual ID GetReceiverID() = 0;
 	// handler
 	// 누군가에게 맞으면 이 이벤트를 호출해준다.
 	void OnHitFromAttacker( const XSkillReceiver *pAttacker, xtDamage typeDamage );
@@ -166,10 +166,10 @@ public:
 															XSKILL::XSkillReceiver* pTarget,
 															int level,
 															_tstring* pstrOut ) { return true; }
-	virtual BOOL IsLive( void ) { return TRUE; }
+	virtual bool IsLive() const { return true; }
 	// GetInvokeTarget전 invokeTarget을 한번더 가공한다.
 	virtual XSKILL::xtInvokeTarget 
-	OnGetInvokeTarget( XSKILL::XSkillDat *pDat, 
+	OnGetInvokeTarget( const XSKILL::XSkillDat *pDat, 
 										const XSKILL::EFFECT *pEffect,
 										XSKILL::xtInvokeTarget invokeTarget ) {
 		return invokeTarget;

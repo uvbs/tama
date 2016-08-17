@@ -76,8 +76,8 @@ public:
 	void OnSkillEvent( XSKILL::xtJuncture event );
 	SquadPtr FindNearSquad( XSquadObj *pFinder );
 	SquadPtr FindNearSquad( XSquadObj *pFinder, bool( *pFunc )( SquadPtr& ) );
-	UnitPtr FindNearUnit( const XE::VEC3& vwSrc, float meterRadius ) const;
-//	UnitPtr FindAttackTargetInSquad( XSquadObj *pFinder, const SquadPtr& spAt, SquadPtr *pOutSquad );
+	XSPUnit FindNearUnit( const XE::VEC3& vwSrc, float meterRadius ) const;
+//	XSPUnit FindAttackTargetInSquad( XSquadObj *pFinder, const SquadPtr& spAt, SquadPtr *pOutSquad );
 	void FrameMove( float dt );
 	void Draw( XEWndWorld *pWndWorld );
 	void OnDieSuqad( XSPSquad spSquad );
@@ -99,7 +99,7 @@ public:
 	void OnAfterStartBattle();
 	int GetAllUnit( XVector<XSKILL::XSkillReceiver*> *pOutAry );
 	int GetAllUnit( XVector<XBaseUnit*> *pOutAry );
-	UnitPtr GetHeroUnit( ID idHero );
+	XSPUnit GetHeroUnit( ID idHero );
 	void DoFullHp();
 	SquadPtr FindSquadTakeTargetAndClosed( XSquadObj *pFinder, XSquadObj *pTarget, XGAME::xtUnit unitFilter = XGAME::xUNIT_NONE );
 	float GetSumHpAllSquad();

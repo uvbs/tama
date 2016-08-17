@@ -86,8 +86,10 @@ int XCompObjMoveBounce::FrameMove( float dt )
 
 //////////////////////////////////////////////////////////////////////////
 XCompObjMoveNormal::XCompObjMoveNormal( const XE::VEC3& vwDelta )
-	: m_timerLife( 0.1f )
+//	: m_timerLife( 0.1f )
 {
+	GettimerState().Set( 0.1f );
+	SetvwDelta( vwDelta );
 }
 int XCompObjMoveNormal::FrameMove( float dt )
 {
@@ -95,27 +97,26 @@ int XCompObjMoveNormal::FrameMove( float dt )
 	AddvwPos( GetvwDelta() * dt );
 	if( GetState() == 0 ) {
 		// 떠오르기
-		if( m_timerLife.IsOver() ) {
+		if( GettimerState().IsOver() ) {
 			// 1.5초간 대기.
 			SetState( 1 );
-			m_timerLife.Set(1.0f);
-			//SetvwDelta( XE::VEC3(0,0,-0.5f));	// 서서히 올라간다.
+			GettimerState().Set(1.0f);
 			SetvwDelta( XE::VEC3(0,0,-0.5f) );	// 서서히 올라간다.
 			bUpdated = true;
 		}
 	} else 
 	if( GetState() == 1 ) {
 		// 대기
-		if( m_timerLife.IsOver() ) {
+		if( GettimerState().IsOver() ) {
 			// x초간 빠르게 떠오르며 사라진다.
 			SetState( xST_DISAPPEAR );
-			m_timerLife.Set(2.0f);
+			GettimerState().Set(2.0f);
 			SetvwDelta( XE::VEC3(0, 0, -2.f) );
 			bUpdated = true;
 		}
 	} else 
 	if( GetState() == xST_DISAPPEAR ) {
-		if( m_timerLife.IsOver() ) {
+		if( GettimerState().IsOver() ) {
 			SetState( xST_DESTROYED );
 			SetvwDelta( XE::VEC3(0, 0, 0) );
 			bUpdated = true;

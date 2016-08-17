@@ -33,7 +33,7 @@ using namespace XSKILL;
 
 #define LIVE_UNIT_LOOP( SPUNIT ) {		\
 	for( auto& spwUnit : m_listUnit ) { \
-		if( !spwUnit.lock()->IsLive() ) \
+		if( spwUnit.expired() || (!spwUnit.expired() && !spwUnit.lock()->IsLive()) ) \
 			continue; \
 		auto SPUNIT = spwUnit.lock();
 	
@@ -314,7 +314,8 @@ void XSquadObj::SetAI( BOOL bFlag )
 	}
 //  		SOUNDMNG->StopAllSound();
 	for( auto& spUnit : m_listUnit ) {
-		spUnit.lock()->SetAI( bFlag );
+		if( !spUnit.expired() )
+			spUnit.lock()->SetAI( bFlag );
 	}
 	if( bFlag )
 		// this와 가장가까운 적부대를 찾는다.
@@ -349,7 +350,7 @@ void XSquadObj::OnSkillEvent( XSKILL::xtJuncture event )
 {
 	for( auto& spwUnit : m_listUnit ) {
 		auto spUnit = spwUnit.lock();
-		if( !spUnit->IsLive() ) {
+		if( spUnit && !spUnit->IsLive() ) {
 			continue;
 		}
 		spUnit->OnEventBySkillUser( event );
@@ -956,7 +957,7 @@ void XSquadObj::OnDieMember( XBaseUnit *pUnit )
 		if( m_cntLive == 0 ) {
 			m_spLegionObj.lock()->OnDieSuqad( GetThis() );
 			for( auto& spUnit : m_listUnit ) {
-				XBREAK( spUnit.lock()->IsLive() );
+				XBREAK( !spUnit.expired() && spUnit.lock()->IsLive() );
 			}
 		}
 	}
@@ -1300,10 +1301,8 @@ void XSquadObj::DoHealByPercent( float ratio )
 float XSquadObj::GetTotalHp()
 {
 	float sum = 0;
-	LIVE_UNIT_LOOP( spUnit )
-	{
-		if( spUnit->IsLive() )
-			sum += spUnit->GetHp();
+	LIVE_UNIT_LOOP( spUnit ) {
+		sum += spUnit->GetHp();
 	} END_LOOP;
 	return sum;
 }
@@ -1315,8 +1314,7 @@ float XSquadObj::GetTotalHpRate()
 {
 	float sum = 0;
 	LIVE_UNIT_LOOP( spUnit ) {
-		if( spUnit->IsLive() )
-			sum += spUnit->GetHp();
+		sum += spUnit->GetHp();
 	} END_LOOP;
 	return sum / GetMaxHpAllMember();
 }
@@ -1329,8 +1327,7 @@ float XSquadObj::GetAvgSpeedUnits()
 {
 	float sum = 0;
 	int numLive = 0;
-	LIVE_UNIT_LOOP( spUnit )
-	{
+	LIVE_UNIT_LOOP( spUnit )	{
 		sum += spUnit->GetSpeedMoveForPixel();
 		++numLive;
 	} END_LOOP;
@@ -1454,8 +1451,8 @@ float XSquadObj::GetMaxHpAllMember() const
 	int numLive = 0;
 	bool bHeroLive = false;
 	for( auto& spwUnit : m_listUnit ) { 
-		auto spUnit = spwUnit.lock();
-		if( spUnit->IsLive() ) {
+		if( !spwUnit.expired() && spwUnit.lock()->IsLive() ) {
+			auto spUnit = spwUnit.lock();
 			sum += spUnit->GetMaxHp();
 			++numLive;
 			if( spUnit->IsHero() )
@@ -1598,4 +1595,9 @@ ID XSquadObj::GetsnHero() const
 	if( !m_pHero )
 		return 0;
 	return m_pHero->GetsnHero();
+}
+
+void XSquadObj::DelUnit( ID snObj )  
+{
+	m_listUnit.DelwpByID( snObj );
 }

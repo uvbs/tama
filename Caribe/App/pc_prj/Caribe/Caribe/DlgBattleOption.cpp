@@ -15,7 +15,7 @@ CDlgBattleOption::CDlgBattleOption(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CDlgBattleOption::IDD, pParent)
 	, m_bHeroInfoToConsole( FALSE )
 {
-
+	XCLEAR_ARRAY( m_bNoDraw );
 }
 
 CDlgBattleOption::~CDlgBattleOption()
@@ -34,6 +34,15 @@ void CDlgBattleOption::DoDataExchange(CDataExchange* pDX)
 	DDX_Check( pDX, IDC_CHECK_HERO_INFO_TO_CONSOLE, m_bHeroInfoToConsole );
 	DDX_Check( pDX, IDC_CHECK_FLUSH_IMG, m_bCheckFlushImg );
 	DDX_Check( pDX, IDC_CHECK_FLUSH_SPR, m_bCheckFlushSpr );
+	DDX_Check( pDX, IDC_CHECK_NO_DRAW_DMG_NUM, m_bNoDraw[0] );
+	DDX_Check( pDX, IDC_CHECK_NO_DRAW_HIT_SFX, m_bNoDraw[1] );
+	DDX_Check( pDX, IDC_CHECK_NO_DRAW_SKILL_SFX, m_bNoDraw[2] );
+	DDX_Check( pDX, IDC_CHECK_NO_DRAW_BUFF_ICON, m_bNoDraw[3] );
+	DDX_Check( pDX, IDC_CHECK_NO_CREATE_DMG_NUM2, m_bNoDraw[8] );
+	DDX_Check( pDX, IDC_CHECK_NO_CREATE_HIT_SFX2, m_bNoDraw[9] );
+	DDX_Check( pDX, IDC_CHECK_NO_CREATE_SKILL_SFX2, m_bNoDraw[10] );
+	DDX_Check( pDX, IDC_CHECK_NO_CREATE_BUFF_ICON2, m_bNoDraw[11] );
+	DDX_Text( pDX, IDC_EDIT_FONT_DMG, m_strFontDmg );
 }
 
 

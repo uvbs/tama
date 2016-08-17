@@ -27,9 +27,9 @@ XBuffObj::XBuffObj( XDelegateSkill *pDelegate )
 XBuffObj::XBuffObj( XDelegateSkill *pDelegate,
 										XSkillUser *pCaster,
 										XSkillReceiver *pOwner,
-										XSkillDat *pSkillDat,
+										const XSkillDat *pDat,
 										int level,
-										const XE::VEC2& vPos,
+//										const XE::VEC2& vPos,
 										ID idCallerSkill )
 	: m_idCallerSkill( idCallerSkill )
 {
@@ -40,7 +40,7 @@ XBuffObj::XBuffObj( XDelegateSkill *pDelegate,
 	//m_idCaster = pCaster->get
 	m_bitCampCaster = pCaster->GetCampUser();
 	m_pOwner = pOwner;
-	m_pDat = pSkillDat;
+	m_pDat = const_cast<XSkillDat*>( pDat );
 //	m_vCastPos = vPos;
 	m_Level = level;
 	m_pDatCaller = XESkillMng::sGet()->FindByID( idCallerSkill );
@@ -308,7 +308,8 @@ bool XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 		return false;
 	if( pEffect->m_invokerEff.IsHave() ) {
 		const float secPlay = 0.f;		// 1play. 발동자이펙트는 반복플레이가 없음.
-		m_pCaster->CreateSfx( m_pDat,
+		m_pCaster->CreateSfx( m_pCaster->GetThisRecv(),
+													m_pDat,
 													pEffect->m_invokerEff.m_strSpr,
 													pEffect->m_invokerEff.m_idAct,
 													pEffect->m_invokerEff.m_Point,
@@ -374,11 +375,12 @@ bool XBuffObj::ApplyInvokeEffect( EFFECT *pEffect,
 void XBuffObj::CreateInvokeSfx( EFFECT *pEffect, XSkillReceiver *pInvokeTarget )
 {
 	float secPlay = 0;
-	pInvokeTarget->CreateSfx( m_pDat,
-														pEffect->m_invokeTargetEff.m_strSpr,
-														pEffect->m_invokeTargetEff.m_idAct,
-														pEffect->m_invokeTargetEff.m_Point,
-														secPlay );
+	m_pCaster->CreateSfx( pInvokeTarget,
+												m_pDat,
+												pEffect->m_invokeTargetEff.m_strSpr,
+												pEffect->m_invokeTargetEff.m_idAct,
+												pEffect->m_invokeTargetEff.m_Point,
+												secPlay );
 }
 
 // 시전대상에게 시전후 최초 발동대상들에게 발동되는 전용 발동함수. DOT초기화를 포함.

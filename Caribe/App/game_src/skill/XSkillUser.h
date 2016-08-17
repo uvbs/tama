@@ -39,7 +39,7 @@ private:
 	}
 	void Destroy();
 	// 효과처리부는 외부에서 부를일이 없으니까 숨겼음
-	xtError UseEffect( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pTarget, const XE::VEC2& vPos, ID idCallerSkill );
+	xtError UseEffect( const XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pTarget, const XE::VEC2& vPos, ID idCallerSkill );
 public:
 	XSkillUser( XESkillMng *pSkillMng ) { 
 		Init(); 
@@ -101,15 +101,16 @@ public:
 	// virtual
 	virtual XLuaSkill* CreateScript(); 		// XLua 객체를 생성하고 전역변수와 API들을 등록하여 돌려준다
 	int GetCastingTargetList( XVector<XSkillReceiver*> *pAryOutCastingTarget, 
+														XE::VEC2* pOutCastTarget,		// 시전대상이 좌표형태가 될때.
 														xtCastTarget castTarget,
-														XSkillDat *pSkillDat,
+														const XSkillDat *pSkillDat,
 														const EFFECT *pEffect,
 														int level,
 														XSkillReceiver *pOutBaseTarget,
 														const XE::VEC2& vBaseTarget );		// 시전대상얻기
 	int GetInvokeTarget( XVector<XSkillReceiver*> *plistOutInvokeTarget, 
 											 XE::VEC2* pOutIvkTarget,		// 발동대상이 좌표형일경우 좌표가 담긴다.
-											 XSkillDat *pBuff, 
+											 const XSkillDat *pBuff, 
 											 int level, 
 											 xtInvokeTarget invokeTarget, 
 											 const EFFECT *pEffect, 
@@ -120,7 +121,7 @@ public:
 //	virtual XSkillDat* CreateSkillUseObj( XSkillDat *pSkillDat );
 	BIT GetFilterSideCast( XSkillReceiver *pCastingTarget, xtCastTarget targetType, XSkillReceiver *pBaseTarget, xtFriendshipFilt friendshipFilter );	// 시전대상에 타겟타입으로 effectFilter로 시전/발동 될때 검색해야할 대상의 프렌드쉽 플래그
 	BIT GetFilterSideInvoke( XSkillUser *pCaster/*, XSkillReceiver *pInvoker*/, XSkillReceiver *pCastingTarget, xtInvokeTarget targetType, xtFriendshipFilt friendshipFilter );
-	virtual BOOL IsInvokeAble( XSkillDat *pDat, const XSkillReceiver *pCstTarget, const EFFECT *pEffect );
+	BOOL IsInvokeAble( const XSkillDat *pDat, const XSkillReceiver *pCstTarget, const EFFECT *pEffect );
 	virtual void RegisterInhValUse( XLua *pLua, const char *szVal ) = 0; ///< szVal변수를(보통 casterObj) 상속된 하위클래스형으로 루아변수로 등록한다 말하자면 XSkillReceiver타입의 invokeObj가 아니고 XUnit타입의 invokeObj로 등록해야한다. 이런 코드 사용-> pLua->RegisterVar( szVal, this ); 	
 	virtual BIT GetCampUser() const { return 0; }		// this의 진영을 리턴. 지형속성같은건 진영이 없기때문에 pure virtual 로 하지 않았다
 	virtual void OnPlaySoundUse( ID id ) { XLOG("경고: PlaySound가 구현되지 않았음"); }
@@ -160,7 +161,8 @@ public:
 									EFFECT *pEffect,
 									XSkillReceiver *pCastingTarget,
 									const XE::VEC2& vPos ) {}
-	virtual ID OnCreateSkillSfx( const XSKILL::XSkillDat *pSkillDat,
+	virtual ID OnCreateSkillSfx( XSkillReceiver* pTarget,
+															 const XSKILL::XSkillDat *pSkillDat,
 															 XSKILL::xtPoint createPoint,
 															 LPCTSTR szSpr,
 															 ID idAct,
@@ -171,13 +173,15 @@ public:
 	/**
 	 @brief pEffect는 null이 올수 있음.
 	*/
-	ID CreateSfx( const XSkillDat *pSkillDat,
+	ID CreateSfx( XSkillReceiver* pTarget,
+								const XSkillDat *pSkillDat,
 								const _tstring& strEffect,
 								ID idAct,
 								xtPoint pointSfx,
 								float secPlay,
 								const XE::VEC2& vPos = XE::VEC2( 0 ) );
-	ID CreateSfx( const XSkillDat *pSkillDat, 
+	ID CreateSfx( XSkillReceiver* pTarget,
+								const XSkillDat *pSkillDat, 
 								const xEffSfx& effSfx, 
 								float secPlay, 
 								const XE::VEC2& vPos );
@@ -197,12 +201,12 @@ private:
 	virtual XSKILL::XDelegateSkill* GetpDelegate() = 0;
 public:
 	// copy해서 쓰기 좋으라고 일부러 XSKILL을 다 붙임
-	virtual XSKILL::XBuffObj* CreateSkillBuffObj( XSKILL::XSkillUser *pCaster, 
-										XSKILL::XSkillReceiver *pCastingTarget, 
-										XSKILL::XSkillDat *pSkillDat,
-										int level,
-										const XE::VEC2& vPos,
-										ID idCallerSkill );
+	XSKILL::XBuffObj* CreateSkillBuffObj( XSKILL::XSkillUser *pCaster,
+																				XSKILL::XSkillReceiver *pCastingTarget,
+																				const XSKILL::XSkillDat *pSkillDat,
+																				int level,
+//																								const XE::VEC2& vPos,
+																				ID idCallerSkill );
 	// copy해서 쓰기 좋으라고 일부러 XSKILL을 다 붙임
 	// 발사체오브젝트를 생성하고 월드에 추가시킨다. 효과, 시전대상, 시전자, 좌표
 	virtual XSKILL::XSkillUser* CreateAndAddToWorldShootObj( XSKILL::XSkillDat *pSkillDat,
@@ -246,7 +250,7 @@ public:
 	 20이 더 추가되고 싶다면 20을 리턴하면 된다.
 	 pIvkTarget은 사용되지 않는다. 
 	*/
-	virtual void OnSkillAmplifyUser( XSkillDat *pDat,
+	virtual void OnSkillAmplifyUser( const XSkillDat *pDat,
 																	 XSKILL::XSkillReceiver *pIvkTarget,
 																	 const XSKILL::EFFECT *pEffect,
 																	 XSKILL::xtEffectAttr attrParam,
@@ -266,7 +270,7 @@ public:
 																	XSKILL::XSkillReceiver *pBaseTarget,
 																	const XE::VEC2& vPos ) {}
 	/// GetInvokeTarget()에서 발동범위를 결정하기전에 호출되어진다.
-	virtual float OnInvokeTargetSize( XSKILL::XSkillDat *pSkillDat,
+	virtual float OnInvokeTargetSize( const XSKILL::XSkillDat *pSkillDat,
 																		const XSKILL::EFFECT *pEffect,
 																		int level,
 																		XSKILL::XSkillReceiver *pCastingTarget,
@@ -286,9 +290,9 @@ public:
 																	XBuffObj *pBuffObj );
 private:
 	// 캐스팅대상에 효과를 시전한다.
-	xtError CastEffToCastTarget( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pBaseTarget, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos, ID idCallerSkill );
-	xtError CastEffToCastTargetByBuff( XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos, ID idCallerSkill );
-	xtError CastEffToCastTargetByDirect( XSkillDat *pSkillDat, const EFFECT *pEffect, int level, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos );
+	xtError CastEffToCastTarget( const XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pCastingTarget, const XE::VEC2& vCastTarget, ID idCallerSkill );
+	xtError CastEffToCastTargetByBuff( const XSkillDat *pSkillDat, EFFECT *pEffect, int level, XSkillReceiver *pCastingTarget/*, const XE::VEC2& vPos*/, ID idCallerSkill );
+	xtError CastEffToCastTargetByDirect( const XSkillDat *pSkillDat, const EFFECT *pEffect, int level, XSkillReceiver *pCastingTarget, const XE::VEC2& vPos );
 }; // XSkillUser
 
 /****************************************************************
