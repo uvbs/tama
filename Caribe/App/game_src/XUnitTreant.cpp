@@ -33,8 +33,8 @@ void XUnitTreant::Destroy()
 {
 }
 
-void XUnitTreant::sShootRock( UnitPtr spShooter,
-															UnitPtr& spTarget,
+void XUnitTreant::sShootRock( XSPUnit spShooter,
+															XSPUnit& spTarget,
 															const XE::VEC3& vwSrc,
 															const XE::VEC3& vwDst,
 															float damage,
@@ -85,10 +85,10 @@ void XUnitTreant::sShootRock( UnitPtr spShooter,
 		}
 	}
 	pRock->SetpDelegate( spShooter.get() );
-	spShooter->GetpWndWorld()->AddObj( WorldObjPtr( pRock ) );
+	spShooter->GetpWndWorld()->AddObj( XSPWorldObj( pRock ) );
 }
 
-void XUnitTreant::ShootRangeAttack( UnitPtr& spTarget,
+void XUnitTreant::ShootRangeAttack( XSPUnit& spTarget,
 									const XE::VEC3& vwSrc,
 									const XE::VEC3& vwDst,
 									float damage,
@@ -101,8 +101,8 @@ void XUnitTreant::ShootRangeAttack( UnitPtr& spTarget,
 
 // 2/3/4/5/6
 void XUnitTreant::OnArriveBullet( XObjBullet *pBullet,
-								UnitPtr spAttacker,
-								UnitPtr spTarget,
+								XSPUnit spAttacker,
+								XSPUnit spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,

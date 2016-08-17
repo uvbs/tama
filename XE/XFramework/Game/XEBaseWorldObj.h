@@ -12,9 +12,13 @@ class XEBaseWorldObj : public XDelegateSprObj,
 					public std::enable_shared_from_this<XEBaseWorldObj>
 {
 	static DWORD s_idSerial;
+	static int s_numObj;		// 메모리 릭 추적용
 public:	
 	static DWORD sGenerateID() {
 		return s_idSerial++;
+	}
+	static int sGetnumObj() {
+		return s_numObj;
 	}
 	enum {
 		xFG_NONE = 0,
@@ -43,6 +47,7 @@ private:
 		m_dwFlag = 0;
 		m_vScale.Set(1.f);
 		m_Alpha = 1.f;
+		++s_numObj;
 	}
 	void Destroy();
 	SET_ACCESSOR( ID, snObj );
@@ -62,9 +67,9 @@ public:
 		m_vwPos = vPos;
 		m_pWndWorld = pWndWorld;
 	}
-	virtual ~XEBaseWorldObj() { Destroy(); }
+	virtual ~XEBaseWorldObj() { Destroy(); --s_numObj; }
 	//
-	WorldObjPtr GetThis() {
+	XSPWorldObj GetThis() {
 		return shared_from_this();
 	}
 	XSPWorldObjConst GetThisConst() const {

@@ -250,8 +250,8 @@ void XUnitHero::OnHitEventSkill( const XE::VEC3& vwSrc )
 
 
 void XUnitHero::OnArriveBullet( XObjBullet *pBullet,
-								UnitPtr spAttacker,
-								UnitPtr spTarget,
+								XSPUnit spAttacker,
+								XSPUnit spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,
@@ -285,7 +285,7 @@ void XUnitHero::OnEventHit( const xSpr::xEvent& event )
 // 		XBaseUnit::OnEventSprObj( pSprObj, pKey, lx, ly, idEvent, fAngle, fOverSec );
 	}
 }
-void XUnitHero::ShootRangeAttack( UnitPtr& spTarget,
+void XUnitHero::ShootRangeAttack( XSPUnit& spTarget,
 								const XE::VEC3& vwSrc,
 								const XE::VEC3& vwDst,
 								float damage,
@@ -364,7 +364,7 @@ XUnitHero::OnGetInvokeTarget( const XSKILL::XSkillDat *pDat,
 /**
  @brief 목표에게 향하다가 목표(객체나 좌표)에 도달함.
 */
-void XUnitHero::OnArriveTarget( UnitPtr spUnit, const XE::VEC3& vwDst )
+void XUnitHero::OnArriveTarget( XSPUnit spUnit, const XE::VEC3& vwDst )
 {
 }
 

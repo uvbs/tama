@@ -62,7 +62,7 @@ XEWorld* XWndBattleField::OnCreateWorld( const XE::VEC2& vwSize )
 
 ID XWndBattleField::GetidSelectSquad( void ) 
 {
-	return ( !m_spSelectSquad.expired() ) ? m_spSelectSquad.lock()->GetsnSquadObj() : 0;
+	return ( m_spSelectSquad ) ? m_spSelectSquad->GetsnSquadObj() : 0;
 }
 
 /**
@@ -71,16 +71,16 @@ ID XWndBattleField::GetidSelectSquad( void )
 int XWndBattleField::Process( float dt )
 {
 	// 선택하고 있던 부대가 전멸하면 선택꺼줌
-	if( !m_spSelectSquad.expired() && m_spSelectSquad.lock()->IsLive() == FALSE )
+	if( m_spSelectSquad && m_spSelectSquad->IsLive() == FALSE )
 		m_spSelectSquad.reset();
 	// 임시선택중이던 부대가 죽으면 선택취소
-	if( !m_spTempSelect.expired() && m_spTempSelect.lock()->IsLive() == FALSE )
+	if( m_spTempSelect && m_spTempSelect->IsLive() == FALSE )
 	{
 		m_spTempSelect.reset();
 		m_vTouch.Set(-1.f);
 	}
 	// 
-	if( !m_spTempSelectEnemy.expired() && m_spTempSelectEnemy.lock()->IsLive() == FALSE )
+	if( m_spTempSelectEnemy && m_spTempSelectEnemy->IsLive() == FALSE )
 		m_spTempSelectEnemy.reset();
 
 	return XEWndWorldImage::Process( dt );
@@ -111,11 +111,11 @@ void XWndBattleField::OnLButtonDown( float lx, float ly )
 
 	// 부대 픽킹검사를 한다.
 	// 걸린 유닛이 있으면 해당 부대를 임시선택한다.
-	if( m_spSelectSquad.expired() ) {
+	if( m_spSelectSquad == nullptr ) {
 		m_spTempSelect = PickingSquad( lx, ly, XGAME::xSIDE_PLAYER );
 #ifdef WIN32
 		if( XAPP->m_bDebugMode ) {
-			if( m_spTempSelect.expired() )
+			if( m_spTempSelect == nullptr )
 				m_spTempSelect = PickingSquad( lx, ly, XGAME::xSIDE_OTHER );
 		}
 #endif
@@ -124,33 +124,32 @@ void XWndBattleField::OnLButtonDown( float lx, float ly )
 #ifdef WIN32
 		if( XAPP->m_bDebugMode && XAPP->m_bCtrl ) {
 			// 강제 공격(선택되어있는 부대의 상대진영부대를 우선으로 강제공격한다.
-			sideRival = m_spSelectSquad.lock()->GetSideRival();
+			sideRival = m_spSelectSquad->GetSideRival();
 		}
 #endif // WIN32
 		const auto sideRivalOfRival = (sideRival == xSIDE_PLAYER)? xSIDE_OTHER : xSIDE_PLAYER;
 		// 이미 아군이 선택되어 있는상태라면 아군적군이 동시에 있을때 적을 우선으로 찍음.
 		m_spTempSelectEnemy = PickingSquad( lx, ly, sideRival );
-		if( m_spTempSelectEnemy.expired() )
+		if( m_spTempSelectEnemy == nullptr )
 			m_spTempSelect = PickingSquad( lx, ly, sideRivalOfRival );
 	}
 	// 만약 새로 픽킹한 부대가 이전에 선택했던 부대라면 선택을 꺼줌
-	if( (!m_spTempSelect.expired() && !m_spSelectSquad.expired()) &&
-		(m_spTempSelect.lock()->GetsnSquadObj() == m_spSelectSquad.lock()->GetsnSquadObj()) )
-	{
+	if( (m_spTempSelect && m_spSelectSquad) &&
+		(m_spTempSelect->GetsnSquadObj() == m_spSelectSquad->GetsnSquadObj()) )	{
 			m_spSelectSquad.reset();
 			m_spTempSelect.reset();
 	}
 	// 현재 아군부대가 선택되어있는 상태에서
-// 	if( !m_spSelectSquad.expired() )
+// 	if( m_spSelectSquad )
 // 	{
 // 		// 적진영이 픽킹되었는지 검사
 // 		m_spTempSelectEnemy = PickingSquad( lx, ly, XGAME::xSIDE_OTHER );
 // 	}
 
 	// 적진이 픽킹되지 않았으나 현재 선택된아군 부대가 있으면 해당 위치로 이동명령을 내린다.
-	if( !m_spTempSelect.expired() || 
-		!m_spTempSelectEnemy.expired() || 
-		!m_spSelectSquad.expired() )
+	if( m_spTempSelect || 
+		m_spTempSelectEnemy || 
+		m_spSelectSquad )
 		m_vTouch.Set( lx, ly );
 
 	// 픽킹한 터치좌표를 받아둔다.
@@ -178,28 +177,28 @@ void XWndBattleField::OnLButtonUp( float lx, float ly )
 {
 	// 임시선택한 유닛을 확정선택한다.
 	// 임시선택한 유닛이 여전히 있으면
-	if( !m_spTempSelect.expired() )	{
+	if( m_spTempSelect )	{
 		m_spSelectSquad = m_spTempSelect;
 		m_spTempSelect.reset();
 		XBREAK( SCENE_BATTLE == NULL );
-		SCENE_BATTLE->OnSelectSquad( m_spSelectSquad.lock() );
+		SCENE_BATTLE->OnSelectSquad( m_spSelectSquad );
 	} else
 	// 선택된부대가 있을때 적임시선택이 있으면 공격
-	if( !m_spSelectSquad.expired() ) {
-		if( !m_spTempSelectEnemy.expired() ) {
-			if( m_spTempSelectEnemy.lock()->IsLive() ) {
-//				CONSOLE( "공격: %d => %d", m_spSelectSquad.lock()->GetUnit(), m_spTempSelectEnemy.lock()->GetUnit() );
-				m_spSelectSquad.lock()->DoAttackSquad( m_spTempSelectEnemy.lock() );
+	if( m_spSelectSquad ) {
+		if( m_spTempSelectEnemy ) {
+			if( m_spTempSelectEnemy->IsLive() ) {
+//				CONSOLE( "공격: %d => %d", m_spSelectSquad->GetUnit(), m_spTempSelectEnemy->GetUnit() );
+				m_spSelectSquad->DoAttackSquad( m_spTempSelectEnemy );
 			}
 		} else {
 			if( m_vTouch.IsMinus() == FALSE )	{// 터치가 취소되었을수도 있으므로
 				XE::VEC3 vwPick = GetPosWindowToWorld( XE::VEC2( lx, ly ) );
 //				CONSOLE( "이동: %d,%d", (int)vwPick.x, (int)vwPick.y );
-				m_spSelectSquad.lock()->DoMoveSquad( vwPick );
+				m_spSelectSquad->DoMoveSquad( vwPick );
 			}
 		}
 		if( SCENE_BATTLE )
-			SCENE_BATTLE->OnControlSquad( m_spSelectSquad.lock()->GetpHero() );
+			SCENE_BATTLE->OnControlSquad( m_spSelectSquad->GetpHero() );
 		m_spTempSelectEnemy.reset();	// 다썼으니 해제
 	}
 	m_vTouch.Set(-1.f);
@@ -218,10 +217,10 @@ XSPSquad XWndBattleField::PickingSquad( float lx, float ly, BIT bitCamp )
 	XE::VEC2 vTouch(lx, ly);
 	XE::VEC3 vwPick = GetPosWindowToWorld( vTouch );
 	ID snExcludeSquad = 0;
-	if( !m_spSelectSquad.expired() )
-		snExcludeSquad = m_spSelectSquad.lock()->GetsnSquadObj();
+	if( m_spSelectSquad )
+		snExcludeSquad = m_spSelectSquad->GetsnSquadObj();
 	BOOL bPickExclude = FALSE;	// 제외부대도 픽킹될수 있는 자리인가.
-	UnitPtr unitPick = XEObjMngWithType::sGet()->GetPickUnit( this, 
+	XSPUnit unitPick = XEObjMngWithType::sGet()->GetPickUnit( this, 
 															vTouch, 
 															bitCamp, 
 															snExcludeSquad, 
@@ -232,7 +231,7 @@ XSPSquad XWndBattleField::PickingSquad( float lx, float ly, BIT bitCamp )
 		spSquad = XBattleField::sGet()->GetPickSquad( vwPick, bitCamp );
 		if( spSquad == nullptr )	// 이걸로도 못찾았는데
 			if( bPickExclude )		// 이전선택된 부대는 픽킹되었다면
-				return m_spSelectSquad.lock();	// 이전선택된 부대를 돌려준다.
+				return m_spSelectSquad;	// 이전선택된 부대를 돌려준다.
 	} else	{
 		// 유닛이 걸렸으면 그 유닛의 부대를 선택한다.
 		spSquad = unitPick->GetspSquadObj();
@@ -245,8 +244,8 @@ XSPSquad XWndBattleField::PickingSquad( float lx, float ly, BIT bitCamp )
 */
 BOOL XWndBattleField::IsSelectedSquad( XSquadObj *pSquadObj )
 {
-	if( !m_spSelectSquad.expired() )	{
-		if( m_spSelectSquad.lock()->GetsnSquadObj() == pSquadObj->GetsnSquadObj() )
+	if( m_spSelectSquad )	{
+		if( m_spSelectSquad->GetsnSquadObj() == pSquadObj->GetsnSquadObj() )
 			return TRUE;
 	}
 	return FALSE;

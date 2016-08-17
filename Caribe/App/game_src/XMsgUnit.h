@@ -27,14 +27,14 @@ public:
 	virtual ~XMsgQ() { Destroy(); }
 	// get/setter
 	// public member
-	void AddMsg( XSPMsg spMsg ) {
+	void AddMsg( XSPMsgBase spMsg ) {
 		m_qMsg1.push_back( spMsg );
 	}
 	void Process( XBaseUnit* pOwner );
-//	void Release();
+	void Release();
 private:
 	// private member
-	XList4<XSPMsg> m_qMsg1, m_qMsg2;			// 객체간 전달용 메시지 큐(flip용으로 두개)
+	XList4<XSPMsgBase> m_qMsg1, m_qMsg2;			// 객체간 전달용 메시지 큐(flip용으로 두개)
 private:
 	// private method
 	void Init() {}
@@ -63,15 +63,19 @@ public:
 	}
 	// public member
 	virtual void Process( XBaseUnit* pOwner ) = 0;
-//	virtual void Release() = 0;
+	virtual void Release() = 0;
+	static int sGetnumObj() {
+		return s_numObj;
+	}
 private:
+	static int s_numObj;
 	// private member
 	xtMsg m_Type = xUM_NONE;
 	ID m_snMsg = 0;
 private:
 	// private method
-	void Init() {}
-	void Destroy() {}
+	void Init() { ++s_numObj; }
+	void Destroy() { --s_numObj; }
 }; // class XMsgBase
 /****************************************************************
 * @brief 객체에 데미지를 가할때 타겟측에 push하는 메시지
@@ -104,8 +108,8 @@ public:
 	void Process( XBaseUnit* pOwner ) override;
 private:
 	// private member
-	XSPWorldObjW m_spAtkObj;
-	XSPUnitW m_spTarget;
+	XSPWorldObj m_spAtkObj;
+	XSPUnit m_spTarget;
 	float m_Dmg = 0;
 	float m_ratioPenet = 0.f;
 	XSKILL::xtDamage m_typeDmg = XSKILL::xDMG_NONE;
@@ -115,6 +119,10 @@ private:
 	// private method
 	void Init() {}
 	void Destroy() {}
+	void Release() override {
+		m_spAtkObj.reset();
+		m_spTarget.reset();
+	}
 }; // class XMsgDmg
 //
 /****************************************************************
@@ -137,6 +145,9 @@ private:
 	// private method
 	void Init() {}
 	void Destroy() {}
+	void Release() override {	
+		m_dmgInfo.Release();
+	}
 }; // class XMsgDmgFeedback
 
 /****************************************************************
@@ -159,6 +170,9 @@ private:
 	// private method
 	void Init() {}
 	void Destroy() {}
+	void Release() override {
+		m_dmgInfo.Release();
+	}
 }; // class XMsgKillTarget
 
 /****************************************************************
@@ -183,6 +197,7 @@ private:
 	// private method
 	void Init() {}
 	void Destroy() {}
+	void Release() override {	}
 }; // class XMsgAddAdjParam
 
 /****************************************************************
@@ -206,6 +221,7 @@ private:
 	// private method
 	void Init() {}
 	void Destroy() {}
+	void Release() override {	}
 }; // class XMsgSetState
 
 XE_NAMESPACE_END // xnUnit

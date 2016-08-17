@@ -16,6 +16,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 DWORD XEBaseWorldObj::s_idSerial = 1;
+int XEBaseWorldObj::s_numObj = 0;		// 메모리 릭 추적용
 
 XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, 
 								int type,

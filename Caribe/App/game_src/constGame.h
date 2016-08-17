@@ -21,11 +21,11 @@ class XPostInfo;
 namespace xnUnit {
 	class XMsgBase;
 }
-typedef std::shared_ptr<xnUnit::XMsgBase> XSPMsg;
+typedef std::shared_ptr<xnUnit::XMsgBase> XSPMsgBase;
 
-typedef std::shared_ptr<XBaseUnit> UnitPtr;
+typedef std::shared_ptr<XBaseUnit> XSPUnit;
 typedef std::weak_ptr<XBaseUnit> XSPUnitW;
-typedef std::shared_ptr<XSquadObj> SquadPtr;
+typedef std::shared_ptr<XSquadObj> XSPSquad;
 typedef std::weak_ptr<XSquadObj> XSPSquadW;
 typedef std::shared_ptr<XLegion> LegionPtr;
 typedef std::shared_ptr<XLegionObj> XSPLegionObj;
@@ -46,8 +46,8 @@ typedef std::shared_ptr<XPostInfo> XSPPostInfo;
 typedef std::shared_ptr<const XPostInfo> XSPPostInfoConst;
 
 #define XSPLegion LegionPtr
-#define XSPSquad SquadPtr
-#define XSPUnit UnitPtr
+// #define XSPSquad SquadPtr
+// #define XSPUnit UnitPtr
 #define XSPHero HeroPtr
 #define XSPItem ItemPtr
 #define XSPSpot SpotPtr

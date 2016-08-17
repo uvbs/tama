@@ -28,7 +28,7 @@ public:
 								float multipleAbility );
 	virtual ~XUnitArcher() { Destroy(); }
 	//
-	void ShootRangeAttack( UnitPtr& spTarget,
+	void ShootRangeAttack( XSPUnit& spTarget,
 							const XE::VEC3& vwSrc,
 							const XE::VEC3& vwDst,
 							float damage,

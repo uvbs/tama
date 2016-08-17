@@ -62,8 +62,8 @@ public:
 	int OnBeforeAttackMotion();
 	void OnHitEventSkill( const XE::VEC3& vwSrc );
 	void OnArriveBullet( XObjBullet *pBullet,
-											 UnitPtr spAttacker,
-											 UnitPtr spTarget,
+											 XSPUnit spAttacker,
+											 XSPUnit spTarget,
 											 const XE::VEC3& vwDst,
 											 float damage,
 											 bool bCritical,
@@ -75,7 +75,7 @@ public:
 		return m_timerCool.IsOn() && m_timerCool.IsOver() == FALSE;
 	}
 	void OnEventHit( const xSpr::xEvent& event ) override;
-	void ShootRangeAttack( UnitPtr& spTarget,
+	void ShootRangeAttack( XSPUnit& spTarget,
 												const XE::VEC3& vwSrc,
 												const XE::VEC3& vwDst,
 												float damage,
@@ -92,7 +92,7 @@ public:
 	OnGetInvokeTarget( const XSKILL::XSkillDat *pDat,
 										const XSKILL::EFFECT *pEffect,
 										XSKILL::xtInvokeTarget invokeTarget ) override;
-	void OnArriveTarget( UnitPtr spUnit, const XE::VEC3& vwDst ) override;
+	void OnArriveTarget( XSPUnit spUnit, const XE::VEC3& vwDst ) override;
 	void OnAISet( bool bSet ) override;
 	XE::VEC2 DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp ) override;
 	_tstring GetstrIds() override;

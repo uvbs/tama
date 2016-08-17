@@ -147,6 +147,7 @@ XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
 	, XSkillReceiver( 32, XGAME::xMAX_PARAM, XGAME::xST_MAX )
 	, XSkillUser( SKILL_MNG )
 	, m_vLocalFromSquad(vPos - spSquadObj->GetvwPos())
+	, m_aryAttacked(8)
 {
 	Init();
 	m_idProp = idProp;
@@ -294,11 +295,14 @@ void XBaseUnit::CreateFSMObj()
 */
 void XBaseUnit::Release()
 {
-// 	m_spTarget.reset();
-// 	m_aryAttacked.Clear();
-// 	m_spMsgQ1->Release();		// 이것은 여기있는게 원본이므로 reset을 하지 않음.
-// 	m_spMsgQ2->Release();
+ 	m_spTarget.reset();
+ 	m_aryAttacked.clear();
+ 	m_spMsgQ1->Release();		// 이것은 여기있는게 원본이므로 reset을 하지 않음.
+ 	m_spMsgQ2->Release();
+// 	m_spMsgQ1.reset();
+// 	m_spMsgQ2.reset();
 	XEControllerFSM::Release();
+
 }
 
 ID XBaseUnit::GetsnHero() const
@@ -549,7 +553,7 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 
 	scaleDraw *= scaleFactor;
 	// 정식선택되었을때 인디케이터
-	const SquadPtr& spSelect = XWndBattleField::sGet()->GetspSelectSquad();
+	const XSPSquad& spSelect = XWndBattleField::sGet()->GetspSelectSquad();
 	BOOL bDrawSelect = FALSE;
 	if( spSelect != nullptr
 		&& spSelect->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj()
@@ -564,7 +568,7 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 		bDrawSelect = TRUE;
 	}
 	// 임시선택되었을때 인디케이터
-	const SquadPtr& spTemp = XWndBattleField::sGet()->GetspTempSelect();
+	const XSPSquad& spTemp = XWndBattleField::sGet()->GetspTempSelect();
 	if( spTemp != nullptr
 		&& spTemp->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj()
 		&& IsLive() ) {
@@ -577,7 +581,7 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 		m_psoSelect->Draw( vPos );
 		bDrawSelect = TRUE;
 	}
-	const SquadPtr& spSelectEnemy = XWndBattleField::sGet()->GetspTempSelectEnemy();
+	const XSPSquad& spSelectEnemy = XWndBattleField::sGet()->GetspTempSelectEnemy();
 	if( spSelectEnemy != nullptr
 		&& spSelectEnemy->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj()
 		&& IsLive() )	{
@@ -798,7 +802,7 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		if( XAPP->m_bDebugViewTarget && GetidTarget() != 0 && IsCheatFiltered() ) {
 			strDebug += XE::Format( _T( "target=%d\n" ), GetidTarget() );
 			strDebug += XE::Format( _T( "vwbind=%d,%d\n" ), (int)m_vwBind.x, (int)m_vwBind.y );
-			if( m_spTarget.lock() && IsBindTarget() ) {
+			if( m_spTarget && IsBindTarget() ) {
 				float scale = 1.f;
 				XE::VEC3 vDst = m_vwBind;
 				XE::VEC2 vsDst = XWndBattleField::sGet()->GetPosWorldToWindow( vDst, &scale );
@@ -828,8 +832,8 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 				if( IsState( i ) ) {
 					strDebug += GetStrState( ( XGAME::xtState )i );
 					if( ( XGAME::xtState )i == XGAME::xST_TAUNT ) {
-						if( m_spTarget.lock() )
-							strDebug += XFORMAT( "(%s)", XGAME::GetStrUnit( m_spTarget.lock()->GetSquadUnit() ) );
+						if( m_spTarget )
+							strDebug += XFORMAT( "(%s)", XGAME::GetStrUnit( m_spTarget->GetSquadUnit() ) );
 					}
 					strDebug += _T( "/" );
 				}
@@ -897,7 +901,7 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 {
 	if( IsDead() )
 		return;
-	auto spTarget = m_spTarget.lock();
+	auto spTarget = m_spTarget;
 	/*
 	상태와 동작은 반드시 일치해야한다.  공격모션중인데 IDLE상태라거나 이러면 안된다.
 	아래와 같은 상황은 공격모션이 시작되었을때 IDLE상태로 강제 전환 시켜버려서 생기는 문제다.
@@ -1015,15 +1019,15 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 */
 XSPUnit XBaseUnit::GetSacrificeGolemInAttacker()
 {
-	XARRAYN_LOOP_AUTO( m_aryAttacked, &spAttacker )	{
-		if( spAttacker.lock() && spAttacker.lock()->GetUnitType() == xUNIT_GOLEM )		{
-			auto pBuff = spAttacker.lock()->FindBuffSkill(_T("sacrifice"));
+	for( auto spAttacker : m_aryAttacked )	{
+		if( spAttacker && spAttacker->GetUnitType() == xUNIT_GOLEM )		{
+			auto pBuff = spAttacker->FindBuffSkill(_T("sacrifice"));
 			if( pBuff )			{
 				// 희생특성을 가진 골렘이 있다.
-				return spAttacker.lock();
+				return spAttacker;
 			}
 		}
-	} END_LOOP;
+	}
 	return nullptr;
 }
 
@@ -1455,14 +1459,14 @@ void XBaseUnit::OnDamage( const xnUnit::xDmg& dmgInfo )
 {
 	// 반사데미지 형태는 '피격시' 이벤트를 발생시키지 않는다.
 	if( !(dmgInfo.m_bitAttrHit & xBHT_THORNS_DAMAGE) ) {
-		XSkillReceiver::OnHitFromAttacker( (dmgInfo.m_spUnitAtker.lock())? dmgInfo.m_spUnitAtker.lock().get() : nullptr
+		XSkillReceiver::OnHitFromAttacker( (dmgInfo.m_spUnitAtker)? dmgInfo.m_spUnitAtker.get() : nullptr
 																			, dmgInfo.m_typeDmg );
 	}
 	GetpFSM()->OnDamage();
 	// 공격자에게 데미지 피드백메시지
-	if( dmgInfo.m_spUnitAtker.lock() ) {
+	if( dmgInfo.m_spUnitAtker ) {
 		auto spMsg = std::make_shared<XMsgDmgFeedback>( dmgInfo );
-		dmgInfo.m_spUnitAtker.lock()->PushMsg( spMsg );
+		dmgInfo.m_spUnitAtker->PushMsg( spMsg );
 //		// 공격자가 흡혈중이면 공격자에게 hp를 채운다.
 // 		float ratioVampiric = pAttacker->GetVampiricRatio();
 // 		if( ratioVampiric > 0 ) {
@@ -1507,7 +1511,7 @@ void XBaseUnit::OnDamage( const xnUnit::xDmg& dmgInfo )
 void XBaseUnit::OnDamagedToTarget( const xDmg& dmg )
 {
 	// this는 공격자여야 한다.
-	XASSERT( GetsnObj() == dmg.m_spAtkObj.lock()->GetsnObj() );
+	XASSERT( GetsnObj() == dmg.m_spAtkObj->GetsnObj() );
 	// this(공격자)가 흡혈속성이 있었으면 그만큼 힐을 한다.
 	const float ratioVampiric = GetVampiricRatio();
 	if( ratioVampiric > 0 ) {
@@ -1519,10 +1523,10 @@ void XBaseUnit::OnDamagedToTarget( const xDmg& dmg )
 
 bool XBaseUnit::OnDie( const xDmg& dmg )
 {
-	if( dmg.m_spUnitAtker.lock() )	{
+	if( dmg.m_spUnitAtker )	{
 		// 타겟(this)을 "사살"했음을 메시지로 날림
 		auto spMsg = std::make_shared<XMsgKillTarget>( dmg );
-		dmg.m_spUnitAtker.lock()->GetspMsgQ()->AddMsg( spMsg );
+		dmg.m_spUnitAtker->GetspMsgQ()->AddMsg( spMsg );
 //		pAttacker->OnEventJunctureCommon( xJC_KILL_ENEMY, 0, this );
 		OnEventJunctureCommon( xJC_DEAD, 0, dmg.GetpUnit() );
 	}
@@ -1680,11 +1684,11 @@ XFSMChase* XBaseUnit::DoChaseAndAttack( const XSPUnit& spTarget )
 
 void XBaseUnit::DoChaseAndAttackCurrent()
 {
-	if( m_spTarget.lock() == nullptr ||
-		(m_spTarget.lock() != nullptr && m_spTarget.lock()->IsDead()))
+	if( m_spTarget == nullptr ||
+		(m_spTarget != nullptr && m_spTarget->IsDead()))
 		RequestNewMission();
 	else
-		DoChaseAndAttack( m_spTarget.lock() );
+		DoChaseAndAttack( m_spTarget );
 }
 
 void XBaseUnit::DoChase( const XE::VEC3& vwDst )
@@ -1791,8 +1795,8 @@ XE::VEC2 XBaseUnit::GetAttackedPos( const XSPUnit& unitAttacker )
 		if( ++cnt >= 9 )	// 무한루프 방지용
 			break;
 		// 해당 위치에 공격자가 아직 살아있으면 다른 위치를 찾음.
-	} while( m_aryAttacked[ idx ].lock() != nullptr &&
-			m_aryAttacked[ idx ].lock()->IsLive() == TRUE );
+	} while( m_aryAttacked[ idx ] != nullptr &&
+			m_aryAttacked[ idx ]->IsLive() == TRUE );
 	float radiusAttacker = 0;
 	if( unitAttacker->IsRange() )
 		radiusAttacker = XGAME::DIST_MELEE_ATTACK;	// 근접전때는 사거리 고정
@@ -1965,7 +1969,7 @@ int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
 							addCriticalRate = pBuffObj->GetAbilMinbyLevel();
 						}
 					}
-					auto bCritical = pAttacker->IsCritical( m_spTarget.lock(), addCriticalRate );
+					auto bCritical = pAttacker->IsCritical( m_spTarget, addCriticalRate );
 					if( bCritical )
 						abilMin *= pAttacker->GetCriticalPower();
 					float ratioPenet = 0.f;
@@ -2338,8 +2342,8 @@ int XBaseUnit::GetGroupList( XVector<XSkillReceiver*> *pAryOutGroupList,
 		GetpSquadObj()->GetListMember( pAryOutGroupList );
 	} else
 	if( typeGroup == xGT_TARGET_PARTY )	{
-		if( m_spTarget.lock() != nullptr )
-			m_spTarget.lock()->GetpSquadObj()->GetListMember( pAryOutGroupList );
+		if( m_spTarget != nullptr )
+			m_spTarget->GetpSquadObj()->GetListMember( pAryOutGroupList );
 	} else
 	if( typeGroup == xGT_RANDOM_PARTY_FRIENDLY )	{
 		auto spLegionObj = GetspLegionObj();
@@ -2632,13 +2636,13 @@ BOOL XBaseUnit::IsInvokeTargetCondition( const XSkillDat *pSkillDat,
 {
 	if( pSkillDat->GetstrIdentifier() == _T("surprise_attack") )
 	{
-		if( m_spTarget.lock() == nullptr )
+		if( m_spTarget == nullptr )
 			return FALSE;
-		if( m_spTarget.lock()->GetspTarget() == nullptr )
+		if( m_spTarget->GetspTarget() == nullptr )
 			return FALSE;
 		// 내가 잡고있는 타겟의 공격타겟부대가 우리 부대면 발동안함.
-		XBREAK( m_spTarget.lock()->GetspTarget()->GetpSquadObj() == nullptr );
-		if( m_spTarget.lock()->GetspTarget()->GetpSquadObj()->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj() )
+		XBREAK( m_spTarget->GetspTarget()->GetpSquadObj() == nullptr );
+		if( m_spTarget->GetspTarget()->GetpSquadObj()->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj() )
 			return FALSE;
 	} else
 	if( condition == xATTACK_TARGET_JOB )
@@ -2680,7 +2684,7 @@ BOOL XBaseUnit::IsInvokeTargetCondition( const XSkillDat *pSkillDat,
 */
 XSkillReceiver* XBaseUnit::GetCurrTarget()
 {
-	if( m_spTarget.lock() == nullptr ) {
+	if( m_spTarget == nullptr ) {
 		auto spTarget = XBattleField::sGet()->FindNearSquadEnemy( m_pSquadObj );
 		if( spTarget != nullptr )		{
 			auto spUnitTarget = spTarget->FindAttackTarget( TRUE );
@@ -2688,7 +2692,7 @@ XSkillReceiver* XBaseUnit::GetCurrTarget()
 		}
 	}
 
-	return m_spTarget.lock().get();
+	return m_spTarget.get();
 }
 
 // SKILL
@@ -2843,13 +2847,13 @@ float XBaseUnit::hardcode_OnToDamage( XSPUnit& spTarget, float damage, XGAME::xt
 		}
 	}
 	// 백병전 하드코딩
-	if( IsRange() && m_spTarget.lock() && typeMelee == XGAME::xMT_MELEE ) {
+	if( IsRange() && m_spTarget && typeMelee == XGAME::xMT_MELEE ) {
 		auto pBuff = FindBuffSkill( _T("close_combat") );
 		if( pBuff ) {
 			auto pEffect = pBuff->GetEffectIndex( 0 );
 			if( pEffect ) {
 				// 현재 damage는 근접데미지이므로 원거리 데미지로 교체하고 증폭시킴
-				damage = GetAttackRangeDamage( m_spTarget.lock() );
+				damage = GetAttackRangeDamage( m_spTarget );
 				const auto abilMin = pEffect->GetAbilityMin( pBuff->GetLevel() );
 				damage *= abilMin;
 			}
@@ -3079,9 +3083,9 @@ void XBaseUnit::OnAdjustEffectAbility( XSkillDat *pSkillDat,
 			// 데미지를 공격력의 * n% 형태로 만든다.
 			ADD_LOG( m_strLog, "bySkill:\n");
 			if( IsRange() )
-				*pOutMin = GetAttackRangeDamage( m_spTarget.lock() ) * ( *pOutMin );
+				*pOutMin = GetAttackRangeDamage( m_spTarget ) * ( *pOutMin );
 			else
-				*pOutMin = GetAttackMeleeDamage( m_spTarget.lock() ) * ( *pOutMin );
+				*pOutMin = GetAttackMeleeDamage( m_spTarget ) * ( *pOutMin );
 		} else {
 			*pOutMin = GetMaxHp() * ( *pOutMin );
 		}
@@ -3089,8 +3093,8 @@ void XBaseUnit::OnAdjustEffectAbility( XSkillDat *pSkillDat,
 	if( invokeParam == XGAME::xADJ_ATTACK ) {
 		// 공격력보정시에 this가 "열손실" 특성이 있으면.
 		if( pSkillDat->GetstrIdentifier() == _T( "heat_loss" ) ) {
-			if( !m_spTarget.expired() ) {
-				XE::VEC2 vDist = m_spTarget.lock()->GetvwPos().ToVec2() - GetvwPos().ToVec2();
+			if( m_spTarget ) {
+				XE::VEC2 vDist = m_spTarget->GetvwPos().ToVec2() - GetvwPos().ToVec2();
 				float radiusPixel = GetAttackRadiusByPixel();	// 사거리
 				float rate = vDist.Length() / (radiusPixel * 0.5f);
 				if( rate > 1.f )
@@ -3759,7 +3763,7 @@ int XBaseUnit::GetSizeCost()
 /**
  @brief front 메시지큐에 메시지를 추가한다.
 */
-void XBaseUnit::PushMsg( XSPMsg spMsg )
+void XBaseUnit::PushMsg( XSPMsgBase spMsg )
 {
 	m_spMsgQ1->AddMsg( spMsg );
 }

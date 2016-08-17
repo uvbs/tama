@@ -41,6 +41,7 @@
 #include "Sprite/SprMng.h"
 #endif // _XSINGLE
 #include "XSoundMng.h"
+#include "XMsgUnit.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -207,6 +208,9 @@ void XSceneBattle::Destroy()
 	SAFE_DELETE( XUnitCommon::s_pPool );
 #endif // _XMEM_POOL
 	XAPP->m_fAccel = (float)1.f;
+	XBREAK( XLegionObj::sGetnumObj() );
+	XBREAK( XSquadObj::sGetnumObj() );
+	XBREAK( XEBaseWorldObj::sGetnumObj() );
 }
 
 void XSceneBattle::Create( void )
@@ -1080,16 +1084,21 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 			GAME->LoadPropLegion();
 //			XPropLegion::sGet()->Save( _T( "test.xml" ) );
 		}
-		// objmng의 모든 객체를 삭제
-		XBattleField::sGet()->Clear();
+		// objmng의 모든 객체를 해제
+		XBattleField::sGet()->GetpObjMng()->Release();
 		// 군단객체 삭제
 		for( auto& camp : m_aryCamp ) {
-//			camp.m_spLegionObj->Release();
+			camp.m_spLegionObj->Release();
 			camp.m_spLegionObj.reset();
 			if( bRecreate ) {
 				camp.m_spLegion.reset();
 			}
 		}
+		XEBaseScene::Release();
+		XBREAK( XLegionObj::sGetnumObj() );
+		XBREAK( XSquadObj::sGetnumObj() );
+		XBREAK( xnUnit::XMsgBase::sGetnumObj() );
+		XBREAK( XEBaseWorldObj::sGetnumObj() );
 		if( bRecreate ) {
 			// XLegion과 XHero들을 모두 파괴한다.
 			XAccount::sDestroyPlayer();

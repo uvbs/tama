@@ -34,8 +34,8 @@ template<> XPool<XObjArrow>* XMemPool<XObjArrow>::s_pPool = NULL;
 
 //////////////////////////////////////////////////////////////////////////
 XObjBullet::XObjBullet( ID idBullet, 
-						const UnitPtr& spOwner, 
-						const UnitPtr spTarget,
+						const XSPUnit& spOwner, 
+						const XSPUnit spTarget,
 						const XE::VEC3& vwSrc,
 						const XE::VEC3& vwDst,
 						float damage,
@@ -161,8 +161,8 @@ DPS = 거리 / 총시간
 초당이동픽셀 = pixelPerFrame(프레임당이동픽셀) * 60;
 */
 XObjArrow::XObjArrow( XEWndWorld *pWndWorld,
-											const UnitPtr& spOwner,
-											const UnitPtr& spTarget,
+											const XSPUnit& spOwner,
+											const XSPUnit& spTarget,
 											const XE::VEC3& vwSrc,
 											const XE::VEC3& vwDst,
 											float damage,
@@ -225,7 +225,7 @@ void XObjArrow::OnArriveBullet( DWORD dwParam )
 		vwDst.x += 24 - random( 48 );
 		vwDst.y += 24 - random( 48 );
 		XObjLoop *pStuck = new XObjLoop( vwDst, _T("arrow_stuck.spr"), 1 );
-		XBattleField::sGet()->AddObj( WorldObjPtr(pStuck) );
+		XBattleField::sGet()->AddObj( XSPWorldObj(pStuck) );
 	}
 	XObjBullet::OnArriveBullet( dwParam );
 }
@@ -242,8 +242,8 @@ void XObjArrow::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 
 ////////////////////////////////////////////////////////////////
 XObjRock::XObjRock( XEWndWorld *pWndWorld,
-					const UnitPtr& spOwner,
-					const UnitPtr spTarget,
+					const XSPUnit& spOwner,
+					const XSPUnit spTarget,
 					const XE::VEC3& vwSrc,
 					const XE::VEC3& vwDst,
 					float damage,
@@ -318,7 +318,7 @@ void XObjRock::OnArriveBullet( DWORD _dwParam )
 		vwDst.z = 0;
 		auto pRock = new XObjRock( GetpWndWorld(),
 															 GetspOwner(),
-															 UnitPtr(),
+															 XSPUnit(),
 															 GetvwPos(),
 															 vwDst,
 															 m_AddDamage,
@@ -330,7 +330,7 @@ void XObjRock::OnArriveBullet( DWORD _dwParam )
 		pRock->SetfactorSpline( 3.f );
 		pRock->SetElastic( m_AddDamage / 2.f, m_maxElastic - 1, m_cntElastic );
 		pRock->SetSplash( GetmeterRadius(), GetratioDamageSplash() );
-		GetpWndWorld()->AddObj( WorldObjPtr(pRock) );
+		GetpWndWorld()->AddObj( XSPWorldObj(pRock) );
 	}
 }
 
@@ -390,7 +390,7 @@ void XObjLaser::FrameMove( float dt )
 		XObjLoop *pEff = new XObjLoop( vDst, _T( "eff_flame.spr" ), 2, 0.f );
 		if( m_vwStart.x < m_vwEnd.x )
 			pEff->SetRotateY( 180.f );
-		GetpWndWorld()->AddObj( WorldObjPtr( pEff ) );
+		GetpWndWorld()->AddObj( XSPWorldObj( pEff ) );
 		m_timerLaser.Reset();
 	}
 	m_vwEnd += m_vDelta * dt;
@@ -575,8 +575,8 @@ void XSkillSfxReceiver::FrameMove( float dt )
 
 ////////////////////////////////////////////////////////////////
 XSkillShootObj::XSkillShootObj( XEWndWorld *pWndWorld,
-																const UnitPtr& spOwner,
-																const UnitPtr& spTarget,
+																const XSPUnit& spOwner,
+																const XSPUnit& spTarget,
 																const XE::VEC3& vwSrc,
 																const XE::VEC3& vwDst,
 																float damage,
@@ -747,7 +747,7 @@ void XObjDmgNum::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/
 
 //////////////////////////////////////////////////////////////////////////
 XObjYellSkill::XObjYellSkill( LPCTSTR szText, 
-															const UnitPtr& spOwner,
+															const XSPUnit& spOwner,
 															const XE::VEC3& vwPos, 
 															XCOLOR col )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos )
@@ -850,7 +850,7 @@ void XObjYellSkill::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alp
  @param secLife 객체 지속시간
  @param bitCampTarget 데미지를 줄 진영
 */
-XObjFlame::XObjFlame( const UnitPtr& spAttacker,
+XObjFlame::XObjFlame( const XSPUnit& spAttacker,
 											const XE::VEC3& vwPos,
 											float damage,
 											float radius,

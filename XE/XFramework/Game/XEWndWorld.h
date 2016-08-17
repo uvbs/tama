@@ -47,7 +47,7 @@ public:
 		SetvwCamera( XScroll::GetvCenter() );
 	}
 	//
-	ID AddObj( const WorldObjPtr& spObj ) {
+	ID AddObj( const XSPWorldObj& spObj ) {
 		return m_pWorld->AddObj( spObj );
 	}
 	void DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat *pFontDat ) override;

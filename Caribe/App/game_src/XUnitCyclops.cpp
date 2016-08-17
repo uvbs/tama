@@ -32,7 +32,7 @@ XUnitCyclops::XUnitCyclops( XSPSquad spSquadObj,
 /**
  @brief 
 */
-void XUnitCyclops::ShootRangeAttack( UnitPtr& _spTarget,
+void XUnitCyclops::ShootRangeAttack( XSPUnit& _spTarget,
 									const XE::VEC3& vwSrc,
 									const XE::VEC3& _vwDst,
 									float damage,
@@ -43,8 +43,8 @@ void XUnitCyclops::ShootRangeAttack( UnitPtr& _spTarget,
 	sShootLaser( GetThisUnit(), _spTarget, vwSrc, _vwDst, damage, bCritical, strSpr );
 }
 
-void XUnitCyclops::sShootLaser( UnitPtr spShooter,
-																			UnitPtr& _spTarget,
+void XUnitCyclops::sShootLaser( XSPUnit spShooter,
+																			XSPUnit& _spTarget,
 																			const XE::VEC3& vwSrc,
 																			const XE::VEC3& _vwDst,
 																			float damage,
@@ -77,7 +77,7 @@ void XUnitCyclops::sShootLaser( UnitPtr spShooter,
 	if( bDual )
 		numBeam = 2;
 
-	UnitPtr spTarget = _spTarget;
+	XSPUnit spTarget = _spTarget;
 	for( int i = 0; i < numBeam; ++i )	{
 		if( i == 1 )	{
 			// 현재상대하고 있는 타겟부대에서 새 타겟을 요청함.
@@ -94,7 +94,7 @@ void XUnitCyclops::sShootLaser( UnitPtr spShooter,
 																vwDst );
 		if( lvInferno > 0 )
 			pLaser->SetScaleObj( 1.f, 1.f * lvInferno );
-		spShooter->GetpWndWorld()->AddObj( WorldObjPtr( pLaser ) );
+		spShooter->GetpWndWorld()->AddObj( XSPWorldObj( pLaser ) );
 		// 범위공격 대상 선정
 		XVector<XSPUnit> ary;
 		BIT bitSide = ~(spShooter->GetCamp());

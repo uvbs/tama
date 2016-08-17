@@ -36,10 +36,10 @@ XEObjMng::XEObjMng( int maxObj )
 void XEObjMng::Destroy()
 {
 	// 모든 객체의 레퍼런스 카운트가 1인상태여야지 실제 이곳에서 객체가 파괴된다.
-	for( auto spObj : m_listObj ) {
-		const auto cnt = spObj.use_count();
-		XBREAK( cnt != 1 );
-	}
+// 	for( auto spObj : m_listObj ) {
+// 		const auto cnt = spObj.use_count();
+// 		XBREAK( cnt != 1 );
+// 	}
 }
 
 void XEObjMng::Release()
@@ -48,7 +48,8 @@ void XEObjMng::Release()
 		spObj->Release();
 	}
 	m_aryVisible.clear();
-//	m_listObj.clear();
+	m_listObj.clear();
+	m_mapObj.clear();
 }
 
 /**

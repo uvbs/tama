@@ -54,14 +54,8 @@ public:
 	static BOOL sGetMoveDstDelta( const XE::VEC3& vwCurr, const XE::VEC3& vwDst, float speedMove, XE::VEC3 *pOutDelta );
 	static bool s_bNotUseActiveByEnemy;		// 적영웅 스킬사용금지
 #ifdef WIN32
-//	_tstring m_strLog;			// 전투로그
 #endif // _XSINGLE
 protected:
-// 	struct xInvokeEffect {
-// 		XSKILL::XSkillDat *pDat = nullptr;
-// 		XSKILL::EFFECT *pEffect = nullptr;
-// 	};
-//	XArrayLinearN<xInvokeEffect,4> m_aryInvokeSkillByAttack;		// 평타공격시 발동확률이 있는 스킬이 있을경우 확률에 걸리면 이곳에 정보가 쌓인다
 private:
 	static const float c_maxDmgShake;
 	enum { 
@@ -91,11 +85,11 @@ private:
 	XE::VEC2 m_vlHitSfx;	///< 타격시 이펙트가 발생될 로컬기준좌표
 	XE::xtHorizDir m_Dir;		///< 바라보고 있는 방향
 	XSquadObj* m_pSquadObj;		///< 이 유닛이 속해있는 분대객체(weak)
-	XSPUnitW m_spTarget;		///< 추적목표 객체
+	XSPUnit m_spTarget;		///< 추적목표 객체
 	XE::VEC3 m_vwTarget;		///< spTarget이 null일때 좌표만으로 이동할 목표
 	const XE::VEC3 m_vLocalFromSquad;	///< 분대내에서의 로컬좌표
 	int m_idxAttackedAngle;			///< 근접공격자가 this를 타겟잡을때마다 겹치지 않고 둘러쌀수 있도록 적당한 위치를 내보내준다. 그것을 위해 필요한 인덱스
-	XArrayN<XSPUnitW,8> m_aryAttacked;	///< this를 둘러싸고 공격하고 있는 공격자들.
+	XVector<XSPUnit> m_aryAttacked;	///< this를 둘러싸고 공격하고 있는 공격자들.
 	XE::VEC2 m_vwBind;				///< 전투를 위해 이동할 좌표가 확정됨.
 	XE::VEC3 m_vlActionEvent;		///< 액션이벤트때 타점좌표를 저장해둔다.(유닛로컬좌표)
 	CTimer m_timerDamage;			///< 데미지 입으면 타이머가 작동한다.
@@ -160,17 +154,8 @@ public:
 	GET_ACCESSOR_CONST( ID, idProp );
 	GET_ACCESSOR_CONST( float, cntDmgShake );
 	GET_ACCESSOR_CONST( const XE::VEC3&, vDelta );
- 	GET_SHARED_ACCESSOR( XSPUnit, spTarget );
+ 	GET_ACCESSOR( XSPUnit, spTarget );
  	SET_ACCESSOR( const XSPUnit, spTarget );
-// 	inline XSPUnit GetspTarget() const {
-// 		return m_spTarget.lock();
-// 	}
-// 	inline void SetspTarget( XSPUnit spUnit ) {
-// 		m_spTarget = spUnit;
-// 	}
-// 	inline void SetspTarget( XSPUnitW spUnit ) {
-// 		m_spTarget = spUnit;
-// 	}
 	GET_ACCESSOR_CONST( const XE::VEC2&, vsPos );
 	GET_ACCESSOR( XPropUnit::xPROP*, pPropUnit );
 	GET_SET_ACCESSOR_CONST( const std::string&, strcIds );
@@ -227,14 +212,14 @@ public:
 	 @brief 현재 타겟의 아이디를 돌려준다.
 	*/
 	inline ID GetidTarget() {
-		if( m_spTarget.lock() )
-			return m_spTarget.lock()->GetsnObj();
+		if( m_spTarget )
+			return m_spTarget->GetsnObj();
 		return 0;
 	}
 	/// 타겟이 살아있는지 검사
 	inline BOOL IsTargetLive() {
-		if( m_spTarget.lock() )
-			return m_spTarget.lock()->IsLive();
+		if( m_spTarget )
+			return m_spTarget->IsLive();
 		return FALSE;
 	}
 	inline BOOL IsBindTarget() {
@@ -544,7 +529,7 @@ public:
 	virtual void Draw( const XE::VEC2& vPos, float scale, float alpha=1.f ) override;
 	virtual XE::VEC2 DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp ) { return vPos; }
 	void DrawShadow( const XE::VEC2& vPos, float scale );
-	virtual void Release();
+	virtual void Release() override;
 	void OnEventCreateSfx( XSprObj *pSprObj, XBaseKey *pKey, float lx, float ly, float scale, LPCTSTR szSpr, ID idAct, xRPT_TYPE typeLoop, float secLifeTime, BOOL bTraceParent, float fAngle, float fOverSec );
 //	virtual void OnEventSprObj( XSprObj *pSprObj, XKeyEvent *pKey, float lx, float ly, ID idEvent, float fAngle, float fOverSec ) override;
 	virtual void OnEventHit( const xSpr::xEvent& event ) override;
@@ -710,7 +695,7 @@ public:
 	std::shared_ptr<xnUnit::XMsgQ> GetspMsgQ() const {
 		return std::static_pointer_cast<xnUnit::XMsgQ>( m_spMsgQ1 );
 	}
-	void PushMsg( XSPMsg spMsg );
+	void PushMsg( XSPMsgBase spMsg );
 	void ProcessMsgQ();
 	void FlipMsgQ() {
 		std::swap( m_spMsgQ1, m_spMsgQ2 );

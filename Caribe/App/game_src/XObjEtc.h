@@ -339,8 +339,9 @@ public:
 		SetBounce( xRandomF( vrPower ), xRandomF( vrdAngZ ), gravity );
 	}
 	//
-	void Release() {
+	void Release() override {
 		m_spTraceObj.reset();
+		m_spTraceUnit2.reset();
 	}
 	void FrameMove( float dt );
 	void OnEventSprObj( XSprObj *pSprObj, XKeyEvent *pKey, float lx, float ly, ID idEvent, float fAngle, float fOverSec ) override;

@@ -81,7 +81,6 @@ public:
 	void SetLootRes( const XVector<XGAME::xRES_NUM>& aryLoots );
 	void Clear();
 private:
-	void OnDestroyObj( XEBaseWorldObj *pObj ) override;
 };
 
 

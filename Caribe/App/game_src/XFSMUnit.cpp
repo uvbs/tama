@@ -43,7 +43,7 @@ BOOL XFSMBase::IsTargetRight( const XE::VEC3& vwDst )
  @spTarget 추적해야할 대상
  @param fsmNext 사거리까지 도달한 후 해야할 fsm을 지정한다.
 */
-XFSMChase* XFSMBase::DoChase( const UnitPtr& spTarget, XFSMBase::xtFSM fsmNext )
+XFSMChase* XFSMBase::DoChase( const XSPUnit& spTarget, XFSMBase::xtFSM fsmNext )
 {
 	XBREAK( spTarget != nullptr && spTarget->GetpSquadObj() == NULL );
 	m_pUnit->SetspTarget( spTarget );
@@ -193,7 +193,7 @@ void XFSMChase::Uninit( void )
 	m_bDash = FALSE;
 }
 
-// void XFSMChase::Init( UnitPtr& spUnit )
+// void XFSMChase::Init( XSPUnit& spUnit )
 // {
 // //	m_spTarget = spUnit;
 // }
@@ -361,7 +361,7 @@ int XFSMChase::ProcessTraceBind( float dt )
 //			CONSOLE( "chase move arrive: idNextFSM=%s", XFSMBase::sGetStrFSM( GetidNextFSM() ) );
 			// 공격모션이 "공격금지"상태등으로 실행이 안될수도 있으니 일단 대기모션으로 전환.
 			m_pUnit->GetpSprObj()->SetAction( ACT_IDLE1 );
-			m_pUnit->OnArriveTarget( UnitPtr(), m_vwDstTarget );
+			m_pUnit->OnArriveTarget( XSPUnit(), m_vwDstTarget );
 			if( GetidNextFSM() ) {
 				XEBaseFSM *pBaseFSM = ChangeFSM( GetidNextFSM() );
 				if( pBaseFSM->GetidFSM() == XFSMBase::xFSM_NORMAL_ATTACK ) {
@@ -480,7 +480,7 @@ void XFSMNormalAttack::Destroy()
 
 void XFSMNormalAttack::Release()
 {
-//	m_spLastTargetSquad.reset();
+	m_spLastTargetSquad.reset();
 }
 
 void XFSMNormalAttack::Init( void )
@@ -495,7 +495,7 @@ void XFSMNormalAttack::Init( void )
 	//	XBREAK( m_pUnit->GetspTargetSquad() == nullptr );
 }
 
-void XFSMNormalAttack::Init( UnitPtr& spUnit )
+void XFSMNormalAttack::Init( XSPUnit& spUnit )
 {
 	XBREAK( spUnit == nullptr );
 	//	m_spTarget = spUnit;
@@ -581,8 +581,8 @@ void XFSMNormalAttack::DoAttackMotion( void )
 		} // if( nExec )
 //		m_timerAttack.Set( m_pUnit->GetSpeedAttack() );
 		// 마지막으로 공격한 타겟부대
-		if( !m_spLastTargetSquad.expired() &&
-			m_spLastTargetSquad.lock()->GetsnSquadObj() != m_pUnit->GetpSquadObj()->GetspTarget()->GetsnSquadObj() )
+		if( m_spLastTargetSquad &&
+			m_spLastTargetSquad->GetsnSquadObj() != m_pUnit->GetpSquadObj()->GetspTarget()->GetsnSquadObj() )
 			m_pUnit->SetcntAttack( 0 );
 
 		m_spLastTargetSquad = m_pUnit->GetpSquadObj()->GetspTarget();
@@ -652,7 +652,7 @@ int XFSMNormalAttack::FrameMove( float dt )
 			if( random(2) == 0 )
 			{
 				// 50%의 확률로 자기편 타겟으로 바꾼다.
-				UnitPtr unitFriend = m_pUnit->GetNearUnit( 10.f, 
+				XSPUnit unitFriend = m_pUnit->GetNearUnit( 10.f, 
 											m_pUnit->GetCamp().GetbitCamp(), true );
 				m_pUnit->DoChaseAndAttack( unitFriend );
 				return 1;

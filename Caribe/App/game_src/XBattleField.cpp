@@ -81,8 +81,7 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 {
 	XPROF_OBJ_AUTO();
 	auto& listUnit = XEObjMngWithType::sGet()->GetlistUnitsMutable();
-	for( auto spwUnit : listUnit ) {
-		auto spUnit = spwUnit.lock();
+	for( auto spUnit : listUnit ) {
 		if( XASSERT( spUnit ) ) {
 			spUnit->FlipMsgQ();
 			spUnit->XAdjParam::Swap();
@@ -112,8 +111,7 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 	auto ret = XEWorld::Process( pWndWorld, dt );
 	// 모든 프로세스가 끝난 후 유니트들은 각자 쌓인 메시지큐들을 처리한다.
 	// 만약 위 프로세스에서 A가 B를 타격했다면 B가 피격받은 모습을 즉시 draw해야할거 같아서 process() 아래에 넣음.
-	for( auto spwUnit : listUnit ) {
-		auto spUnit = spwUnit.lock();
+	for( auto spUnit : listUnit ) {
 		if( XASSERT(spUnit) ) {
 			spUnit->ProcessMsgQ();
 		}
@@ -126,7 +124,7 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 
 void XBattleField::OnDelegateFrameMoveEachObj( float dt,
 																							 ID idEvent,
-																							 WorldObjPtr spObj )
+																							 XSPWorldObj spObj )
 {
 	if( XGAME::xOT_UNIT == spObj->GetClassType() ) {
 		XBaseUnit *pUnit = SafeCast<XBaseUnit*>( spObj.get() );
@@ -408,9 +406,9 @@ void XBattleField::DrawLegionBar( const XE::VEC2& vPos, int idxLegion )
 // 	}
 }
 
-WorldObjPtr XBattleField::AddpObj( XEBaseWorldObj *pNewObj )	
+XSPWorldObj XBattleField::AddpObj( XEBaseWorldObj *pNewObj )	
 {
-	auto spObj = WorldObjPtr( pNewObj );
+	auto spObj = XSPWorldObj( pNewObj );
 	XEWorld::AddObj( spObj );
 	return spObj;
 }
@@ -418,15 +416,5 @@ WorldObjPtr XBattleField::AddpObj( XEBaseWorldObj *pNewObj )
 void XBattleField::SetLootRes( const XVector<XGAME::xRES_NUM>& aryLoots ) 
 {
 	m_aryLoots = aryLoots;
-}
-
-void XBattleField::OnDestroyObj( XEBaseWorldObj *pObj )
-{
-	if( pObj->GetType() == xOT_UNIT ) {
-		auto pUnit = SafeCast<XBaseUnit*>( pObj );
-		if( pUnit ) {
-			pUnit->GetspSquadObj()->DelUnit( pUnit->GetsnObj() );
-		}
-	}
 }
 

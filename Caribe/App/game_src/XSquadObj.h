@@ -22,9 +22,12 @@ class XEWndWorld;
 //#include "XBaseUnit.h"
 
 class XSquadObj : public std::enable_shared_from_this <XSquadObj>
-
 {
+	static int s_numObj;		// 메모리 릭 추적용
 public:
+	static int sGetnumObj() {
+		return s_numObj;
+	}
 	static void sCalcBattlePos( const XSPUnit& unit1, const XSPUnit& unit2 );
 	enum xtCmd {
 		xCMD_NONE,
@@ -43,22 +46,22 @@ private:
 	ID m_snSquadObj;
 	XSquadron *m_pSquadron;
 	XHero *m_pHero;
-	XList4<XSPUnitW> m_listUnit;
+	XList4<XSPUnit> m_listUnit;			// 오브젝트매니저에서 유닛이 삭제되어도 스쿼드에는 보관하기로 함. 자기 분대원객체를 끝까지 알 필요가 있을거 같아서.
 	XE::VEC3 m_vwPos;		// 분대의 중앙 지점
 	BOOL m_bMove;			// 부대 이동모드
 	bool m_bInoreCounterAttack = false;			// 반격무시상태
-	XSPSquadW m_spTarget;	///< 이동시 목표부대
+	XSPSquad m_spTarget;	///< 이동시 목표부대
 	XE::VEC3 m_vwTarget;	///< 이동시 목표좌표(spTarget이 null일경우)
 	XPropUnit::xPROP *m_pProp;	///< 유닛 프로퍼티
-	XSPLegionObjW m_spLegionObj;	///< this가 속해있는 군단객체
+	XSPLegionObj m_spLegionObj;	///< this가 속해있는 군단객체
 	int m_cntLive;				///< 살아있는 유닛의 수. m_listUnit의 수와는 별개다. list는 시체를 포함.
 	BOOL m_bNearOther;			///< 현재 다른 적부대와 붙어있다.
 	BOOL m_bMeleeMode;			///< 근접전모드인가?(원거리부대 전용)
 //	BOOL m_bRequestMoveModeChange;	///< 외부에서 이동모드로 바꿔주길 요청이 들어옴
 	xtCmd m_cmdRequest = xCMD_NONE;			///< 객체 외부에서 부대의 동작을 바꾸기위해 명령이 들어온다.
-	XSPSquadW m_spTargetForCmd;		///< 명령용 파라메터
+	XSPSquad m_spTargetForCmd;		///< 명령용 파라메터
 	XE::VEC3 m_vDstForCmd;			///< 명령용 좌표파라메터.
-	XSPUnitW m_spHeroUnit;		///< 영웅 유닛의 포인터
+	XSPUnit m_spHeroUnit;		///< 영웅 유닛의 포인터
 	BOOL m_bManualMoving;			///< 현재수동 지정으로 움직이고 있는가
 	int m_lvBreakThrough = 0;		///< 팔라딘-돌파 특성의 레벨. 없으면 0
 	int m_lvFlameKnight = 0;		///< 팔라딘-화염의기사 특성의 레벨
@@ -68,10 +71,10 @@ private:
 	XSKILL::XSkillDat *m_pCourage = nullptr;		// 용기
 	CTimer m_timerBreakThrough;
 	CTimer m_timerHeal;		// 안수치료 타이머
-	XSPSquadW m_spBleedingTarget;	///< 출혈걸린 적 타겟
+	XSPSquad m_spBleedingTarget;	///< 출혈걸린 적 타겟
 	ID m_idStreamByRun = 0;
 	XVector<XGAME::xRES_NUM> m_aryLoots;
-	XList4<XSPSquadW> m_listAttackMe;			// this부대를 공격중인 모든 적부대
+	XList4<XSPSquad> m_listAttackMe;			// this부대를 공격중인 모든 적부대
 	void Init() {
 		m_snSquadObj = XE::GenerateID();
 		m_pSquadron = nullptr;
@@ -84,12 +87,13 @@ private:
 		m_bMeleeMode = FALSE;
 //		m_bRequestMoveModeChange = FALSE;
 		m_bManualMoving = FALSE;
+		++s_numObj;
 	}
 	void Destroy();
 public:
 	XSquadObj( XSPLegionObj spLegion, const XSquadron *pSquad, const XE::VEC3& vwPos );
 	XSquadObj( XSPLegionObj spLegion, XHero *pHero, const XE::VEC3& vwPos );
-	virtual ~XSquadObj() { Destroy(); }
+	virtual ~XSquadObj() { Destroy(); --s_numObj; }
 	//
 	void Release();
 	int GetNumLives();
@@ -101,7 +105,7 @@ public:
 
 	}
 	GET_ACCESSOR_CONST( BOOL, bMeleeMode );
-	GET_SHARED_ACCESSOR( XSPSquad, spTarget );
+	GET_ACCESSOR( XSPSquad, spTarget );
 	GET_ACCESSOR_CONST( ID, snSquadObj );
 	GET_SET_ACCESSOR_CONST( int, lvBreakThrough );
 	GET_ACCESSOR_CONST( const XE::VEC3&, vwTarget );
@@ -123,35 +127,38 @@ public:
 	inline const XE::VEC3& GetvwPos() const {
 		return m_vwPos;
 	}
-	GET_SHARED_ACCESSOR( XSPLegionObj, spLegionObj );
+	GET_ACCESSOR( XSPLegionObj, spLegionObj );
+	XSPLegionObjConst GetspLegionObjConst() const {
+		return m_spLegionObj;
+	}
 	GET_ACCESSOR_CONST( XHero*, pHero );
 	GET_ACCESSOR_CONST( float, Radius );
 	GET_SET_ACCESSOR_CONST( BOOL, bNearOther );
-	GET_SHARED_ACCESSOR( const XSPUnit, spHeroUnit );
+	GET_ACCESSOR( const XSPUnit, spHeroUnit );
 	GET_ACCESSOR_CONST( const XSquadron*, pSquadron );
-	GET_ACCESSOR_CONST( const XList4<XSPUnitW>&, listUnit );
+	GET_ACCESSOR_CONST( const XList4<XSPUnit>&, listUnit );
 	GET_SET_ACCESSOR_CONST( const XVector<XGAME::xRES_NUM>&, aryLoots );
-	GET_ACCESSOR_CONST( const XList4<XSPSquadW>&, listAttackMe );
+	GET_ACCESSOR_CONST( const XList4<XSPSquad>&, listAttackMe );
 	inline void AddAttackMe( XSPSquad spAttacker ) {
 		if( !FindAttackMe( spAttacker ) )
 			m_listAttackMe.push_back( spAttacker );
 	}
 	inline void DelAttackMe( XSPSquad spAttacker ) {
-		m_listAttackMe.DelwpByID( spAttacker->getid() );
+		m_listAttackMe.DelByID( spAttacker->getid() );
 	}
 	inline bool FindAttackMe( XSPSquad spAttacker ) {
-		return !m_listAttackMe.FindwpByID( spAttacker->getid() ).expired();
+		return m_listAttackMe.FindByID( spAttacker->getid() ) != nullptr;
 	}
 	inline int GetNumAttackMeByMelee() const {
 		int num = 0;
 		for( auto spSquad : m_listAttackMe ) {
-			if( spSquad.lock()->IsLive() && spSquad.lock()->IsMelee() )
+			if( spSquad->IsLive() && spSquad->IsMelee() )
 				++num;
 		}
 		return num;
 	}
 	inline XSPUnit GetspLeaderUnit() {
-		return m_spHeroUnit.lock();
+		return m_spHeroUnit;
 	}
 	ID GetsnHero() const;
 	/**
@@ -185,6 +192,9 @@ public:
 	}
 	inline bool IsLive() const {
 		return m_cntLive > 0;
+	}
+	inline bool IsDead() const {
+		return !IsLive();
 	}
 	void FrameMove( float dt );
 private:
@@ -232,7 +242,7 @@ private:
 	XSPUnit GetNewTargetInTargetSquad( BOOL bIncludeHero );
 public:
 	bool IsHaveTargetSquad() const {
-		return !m_spTarget.expired();
+		return m_spTarget != nullptr;
 	}
 	void DoAllUnitsChase( XSPSquad spTarget );
 	XSPUnit GetAttackTargetForUnit( const XSPUnit& unit );
@@ -278,7 +288,6 @@ public:
 	float GetDistBetweenSquad( XSPSquad spOther );
 	bool IsInAttackRadius( XSPSquad spOther );
 	bool IsResourceSquad() const;
-	void DelUnit( ID snObj );
 	
 private:
 	void SetCmdRequest( xtCmd cmd, const XE::VEC3& vDst ) {

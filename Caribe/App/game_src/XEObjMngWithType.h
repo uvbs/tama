@@ -25,16 +25,16 @@ public:
 	}
 private:
 	static XEObjMngWithType* s_pInstance;
-	XList4<XSPUnitW> m_listUnits;
-	XList4<XSPWorldObjW> m_listEtc;
+	XList4<XSPUnit> m_listUnits;
+	XList4<XSPWorldObj> m_listEtc;
 	void Init() {}
 	void Destroy();
 public:
 	XEObjMngWithType( int maxObj, int maxType );
 	virtual ~XEObjMngWithType() { Destroy(); }
 	//
-	GET_ACCESSOR_CONST( const XList4<XSPUnitW>&, listUnits );
-	XList4<XSPUnitW>& GetlistUnitsMutable() {
+	GET_ACCESSOR_CONST( const XList4<XSPUnit>&, listUnits );
+	XList4<XSPUnit>& GetlistUnitsMutable() {
 		return m_listUnits;
 	}
 	//
