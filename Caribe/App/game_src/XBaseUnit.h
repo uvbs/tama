@@ -118,7 +118,7 @@ private:
 	CTimer m_timerDisappear;
 	// 객체간 전달용 메시지 큐(flip용으로 두개)
 	std::shared_ptr<xnUnit::XMsgQ> m_spMsgQ1;			// 현재 front msgq
-	std::shared_ptr<xnUnit::XMsgQ> m_spMsgQ2;			// back msgq
+//	std::shared_ptr<xnUnit::XMsgQ> m_spMsgQ2;			// back msgq
 public:
 //	CTimer m_timerSlow;			// 테스트용
 private:
@@ -689,17 +689,11 @@ public:
 	}
 	// 유닛의 크기비용
 	virtual int GetSizeCost();
-// 	std::shared_ptr<const xnUnit::XMsgQ> GetspMsgQ() const {
-//		return m_spMsgQ1;
-// 	}
-	std::shared_ptr<xnUnit::XMsgQ> GetspMsgQ() const {
-		return std::static_pointer_cast<xnUnit::XMsgQ>( m_spMsgQ1 );
-	}
 	void PushMsg( XSPMsgBase spMsg );
 	void ProcessMsgQ();
-	void FlipMsgQ() {
-		std::swap( m_spMsgQ1, m_spMsgQ2 );
-	}
+// 	void FlipMsgQ() {
+// 		std::swap( m_spMsgQ1, m_spMsgQ2 );
+// 	}
 protected:
 	void CreateDmgNum( float damage, BIT bitAttrHit, XGAME::xtHit hitType = XGAME::xHT_NONE, int idxState = 0, const _tstring& strMsg = _T(""), XCOLOR col = XCOLOR_WHITE );
 	void OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) override;

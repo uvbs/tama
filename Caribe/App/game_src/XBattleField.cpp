@@ -62,18 +62,6 @@ void XBattleField::DestroyAllObj( void )
 // 	m_aryLegion.Clear();
 	XEWorld::DestroyAllObj();
 }
-
-// BOOL XBattleField::CreateLegionObj( LegionPtr& spLegion
-// 																, BIT bitSide, BOOL bDestroyLegion )
-// {
-// 	auto spLegionObj = XSPLegionObj( new XLegionObj( /*pAcc, */spLegion, bitSide, bDestroyLegion ) );
-// 	m_aryLegion.Add( spLegionObj );
-// 	if( m_aryLegion.size() == 2 )
-// 		m_spLegionEnemy = spLegion;		// 싱글모드에서 군단객체 돌려쓰기 위해서는 파괴가 되지 말아야 해서 참조카운터증가용으로 받아둠.
-// 	return TRUE;
-// }
-// 
-
 /**
  
 */
@@ -83,31 +71,22 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 	auto& listUnit = XEObjMngWithType::sGet()->GetlistUnitsMutable();
 	for( auto spUnit : listUnit ) {
 		if( XASSERT( spUnit ) ) {
-			spUnit->FlipMsgQ();
+//			spUnit->FlipMsgQ();
 			spUnit->XAdjParam::Swap();
 		}
 	}
 	if( GetpObjMng() )	{
-		//GetpObjMng()->FrameMoveDelegate( this, 4, dt );
-// 		for( auto spObj : GetpObjMng()->GetlistObj() ) {
-// 			OnDelegateFrameMoveEachObj( dt, 4, spObj );		// 사용안하고 있어서 삭제
-// 		}
 		// 캐릭터상태와 보정치를 클리어한다.
-//		GetpObjMng()->FrameMoveDelegate( this, 1, dt );
 		for( auto spObj : GetpObjMng()->GetlistObj() )
 			OnDelegateFrameMoveEachObj( dt, 1, spObj );
 		// XSkillUser::FrameMove()를 일괄 실행한다.
-//		GetpObjMng()->FrameMoveDelegate( this, 2, dt );
 		for( auto spObj : GetpObjMng()->GetlistObj() )
 			OnDelegateFrameMoveEachObj( dt, 2, spObj );
 		// XSkillReceiver::FrameMove()를 일괄 실행한다.
-//		GetpObjMng()->FrameMoveDelegate( this, 3, dt );
 		for( auto spObj : GetpObjMng()->GetlistObj() )
 			OnDelegateFrameMoveEachObj( dt, 3, spObj );
 	}
-// 	GetLegionObj(0)->FrameMove( dt );
-// 	GetLegionObj(1)->FrameMove( dt );
-	//
+	// objmng process
 	auto ret = XEWorld::Process( pWndWorld, dt );
 	// 모든 프로세스가 끝난 후 유니트들은 각자 쌓인 메시지큐들을 처리한다.
 	// 만약 위 프로세스에서 A가 B를 타격했다면 B가 피격받은 모습을 즉시 draw해야할거 같아서 process() 아래에 넣음.

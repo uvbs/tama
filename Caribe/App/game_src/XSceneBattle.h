@@ -33,7 +33,7 @@ struct xsCamp	{
 	XSurface* m_psfcProfile = nullptr;
 #ifdef _XSINGLE
 	std::string m_idsLegion;		// XPropLegion의 군단ids
-	void ReCreateLegion( XWndBattleField* pWndWorld );
+// 	void ReCreateLegion( XWndBattleField* pWndWorld );
 	void CreateLegion( const std::string& idsLegion, xtSide bitSide );
 #endif // _XSINGLE
 	void CreateLegionObj();
@@ -191,6 +191,7 @@ private:
 	int OnClickPlay( XWnd* pWnd, DWORD p1, DWORD p2 );
 	XSPSquad GetspSquadObj( ID snSquad );
 	int OnTouchHeroFace( XWnd* pWnd, DWORD snSquad, DWORD );
+	void CheckLeak();
 	static void sSetBattleParamForSingle();
 	void CreateCamps();
 	void Release() override;

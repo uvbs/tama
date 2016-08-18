@@ -28,6 +28,9 @@ public:
 	static int sGetnumObj() {
 		return s_numObj;
 	}
+	static void sClearnumObj() {
+		s_numObj = 0;
+	}
 	static void sCalcBattlePos( const XSPUnit& unit1, const XSPUnit& unit2 );
 	enum xtCmd {
 		xCMD_NONE,

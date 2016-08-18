@@ -2,6 +2,8 @@
 #include <memory>
 #include "sprite/XDelegateSprObj.h"
 #include "sprite/Sprdef.h"
+#include "etc/Types.h"
+#include "etc/Global.h"
 
 class XEWndWorld;
 class XArchive;
@@ -19,6 +21,9 @@ public:
 	}
 	static int sGetnumObj() {
 		return s_numObj;
+	}
+	static void sClearnumObj() {
+		s_numObj = 0;
 	}
 	enum {
 		xFG_NONE = 0,
@@ -155,7 +160,7 @@ public:
 		return (m_dwFlag & xFG_ERROR);
 	}
 */
-	virtual int GetClassType() const { return m_Type; }
+	int GetClassType() const { return m_Type; }
 	//
 	virtual int Serialize( XArchive& ar );
 	virtual int DeSerialize( XArchive& ar );

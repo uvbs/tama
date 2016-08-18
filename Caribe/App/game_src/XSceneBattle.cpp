@@ -77,19 +77,20 @@ void xsCamp::CreateLegion( const std::string& idsLegion, XGAME::xtSide bitSide )
 		m_spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, 50, false );
 	}
 }
-void xsCamp::ReCreateLegion( XWndBattleField* pWndWorld) 
-{
-	CreateLegion( m_idsLegion, m_bitSide );
-	CreateLegionObj();
-	CreateSquadObj( pWndWorld, m_bitOption );
-}
+// void xsCamp::ReCreateLegion( XWndBattleField* pWndWorld) 
+// {
+// 	CreateLegion( m_idsLegion, m_bitSide );
+// 	CreateLegionObj();
+// 	CreateSquadObj( pWndWorld, m_bitOption );
+// }
 #endif // _XSINGLE
-
+// 
 void xsCamp::CreateLegionObj()
 {
 	XBREAK( m_spLegion == nullptr );
 	XBREAK( m_bitSide == 0 );
-	m_spLegionObj = XSPLegionObj( new XLegionObj( m_spLegion, m_bitSide ) );
+//	m_spLegionObj = XSPLegionObj( new XLegionObj( m_spLegion, m_bitSide ) );
+	m_spLegionObj = std::make_shared<XLegionObj>( m_spLegion, m_bitSide );
 }
 
 /**
@@ -208,9 +209,7 @@ void XSceneBattle::Destroy()
 	SAFE_DELETE( XUnitCommon::s_pPool );
 #endif // _XMEM_POOL
 	XAPP->m_fAccel = (float)1.f;
-	XBREAK( XLegionObj::sGetnumObj() );
-	XBREAK( XSquadObj::sGetnumObj() );
-	XBREAK( XEBaseWorldObj::sGetnumObj() );
+	CheckLeak();
 }
 
 void XSceneBattle::Create( void )
@@ -1095,10 +1094,11 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 			}
 		}
 		XEBaseScene::Release();
-		XBREAK( XLegionObj::sGetnumObj() );
-		XBREAK( XSquadObj::sGetnumObj() );
-		XBREAK( xnUnit::XMsgBase::sGetnumObj() );
-		XBREAK( XEBaseWorldObj::sGetnumObj() );
+		CheckLeak();
+		XLegionObj::sClearnumObj();
+		XSquadObj::sClearnumObj();
+		xnUnit::XMsgBase::sClearnumObj();
+		XEBaseWorldObj::sClearnumObj();
 		if( bRecreate ) {
 			// XLegion과 XHero들을 모두 파괴한다.
 			XAccount::sDestroyPlayer();
@@ -1556,4 +1556,14 @@ int XSceneBattle::OnTouchHeroFace( XWnd* pWnd, DWORD snSquad, DWORD )
 		}
 	}
 	return 1;
+}
+
+void XSceneBattle::CheckLeak()
+{
+	XBREAK( XLegionObj::sGetnumObj() );
+	XBREAK( XSquadObj::sGetnumObj() );
+	xnUnit::XMsgQ::sCheckLeak();
+	XBREAK( xnUnit::XMsgBase::sGetnumObj() );
+	XBattleField::sGet()->GetpObjMng()->_CheckLeak();
+	XBREAK( XEBaseWorldObj::sGetnumObj() );
 }

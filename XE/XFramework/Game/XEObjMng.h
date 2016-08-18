@@ -1,11 +1,13 @@
 ﻿#pragma once
 #include "XEBaseWorldObj.h"
+#include "XFramework/XFType.h"
 #include "XList.h"
+#include <map>
 
-#if 1
-#endif
+//#define _XLEAK_DETECT		// 전투씬 메모리 릭 감지
 
 class XEWndWorld;
+class XEBaseWorldObj;
 
 ////////////////////////////////////////////////////////////////
 class XDelegateObjMng
@@ -23,6 +25,9 @@ class XEObjMng
 {
 	XList4<XSPWorldObj> m_listObj;
 	std::map<ID, XSPWorldObj> m_mapObj;
+#ifdef _XLEAK_DETECT
+	XList4<XSPWorldObj> m_listAll;			// memory leak 디버깅용
+#endif // _DEBUG
 	CTimer m_timerSort;
 	DWORD m_Attr;		// 오브젝트 매니저 각종 속성들( XF::OBJMNG_시리즈 )
 	BOOL m_bAdded;	// 이번프레임에 오브젝트가 추가되었으면 TRUE
@@ -46,15 +51,18 @@ public:
 		return m_aryVisible.size();
 	}
 	//
-	XSPWorldObj FindNearObjByFunc( XEBaseWorldObj *pSrcObj, const XE::VEC3& vwPos, float radius, BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ) );
-	XSPWorldObj FindNearObjByMore( XEBaseWorldObj *pSrcObj,
-											const XE::VEC3& vwPos,
-											float radius,
-											BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ),
-											BOOL( *pfuncCompare )( XEBaseWorldObj*, XEBaseWorldObj*, XEBaseWorldObj* ) );
+// 	XSPWorldObj FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
+// 																 const XE::VEC3& vwPos, 
+// 																 float radius, 
+// 																 BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ) );
+// 	XSPWorldObj FindNearObjByMore( XEBaseWorldObj *pSrcObj,
+// 											const XE::VEC3& vwPos,
+// 											float radius,
+// 											BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ),
+// 											BOOL( *pfuncCompare )( XEBaseWorldObj*, XEBaseWorldObj*, XEBaseWorldObj* ) );
 	//
 	virtual ID Add( const XSPWorldObj& spObj );
-	virtual void Add( ID snObj, const XSPWorldObj& spObj );
+//	virtual void Add( ID snObj, const XSPWorldObj& spObj );
 //	virtual void Del( XEBaseWorldObj *pObj );
 	virtual XSPWorldObj Find( ID snObj );
 	void DestroyObjWithSN( ID snObj );
@@ -70,5 +78,6 @@ public:
 	*/
 	virtual void OnDestroyObj( XEBaseWorldObj *pObj ) {}
 	virtual void DestroyAllObj( void );
+	void _CheckLeak();
 private:
 };

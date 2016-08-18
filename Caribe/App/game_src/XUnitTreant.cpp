@@ -173,22 +173,24 @@ void XUnitTreant::DoDamageToTarget( XSPUnit spTarget
 																	, bool bCritical
 																	, XGAME::xtDamageAttr typeDmgAttr )
 {
-	if( XASSERT( spTarget ) ) {
-		float ratioPenet = GetPenetrationRatio();
-		BIT bitHit = XGAME::xBHT_HIT;
-		if( bCritical )
-			bitHit |= XGAME::xBHT_CRITICAL;
-		if( damage == 0 )
-			bitHit &= ~XGAME::xBHT_HIT;
-//		spTarget->DoDamage( this, damage, ratioPenet, typeDmg, bitHit, typeDmgAttr );
-		auto pMsg = std::make_shared<xnUnit::XMsgDmg>( GetThis()
-																								, spTarget
-																								, damage
-																								, ratioPenet
-																								, typeDmg
-																								, bitHit
-																								, typeDmgAttr );
-		spTarget->PushMsg( pMsg );
+	if( !spTarget->IsDestroy() ) {
+		if( XASSERT( spTarget ) ) {
+			float ratioPenet = GetPenetrationRatio();
+			BIT bitHit = XGAME::xBHT_HIT;
+			if( bCritical )
+				bitHit |= XGAME::xBHT_CRITICAL;
+			if( damage == 0 )
+				bitHit &= ~XGAME::xBHT_HIT;
+			//		spTarget->DoDamage( this, damage, ratioPenet, typeDmg, bitHit, typeDmgAttr );
+			auto pMsg = std::make_shared<xnUnit::XMsgDmg>( GetThis()
+																										 , spTarget
+																										 , damage
+																										 , ratioPenet
+																										 , typeDmg
+																										 , bitHit
+																										 , typeDmgAttr );
+			spTarget->PushMsg( pMsg );
+		}
 	}
 }
 

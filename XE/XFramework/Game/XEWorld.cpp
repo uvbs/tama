@@ -56,12 +56,12 @@ ID XEWorld::AddObj( const XSPWorldObj& spObj )
 	return spObj->GetsnObj();
 }
 
-ID XEWorld::AddObj( int type, const XSPWorldObj& spObj )
-{
-	XBREAK( m_pObjMng == NULL );
-	m_pObjMng->Add( type, spObj );
-	return spObj->GetsnObj();
-}
+// ID XEWorld::AddObj( int type, const XSPWorldObj& spObj )
+// {
+// 	XBREAK( m_pObjMng == NULL );
+// 	m_pObjMng->Add( type, spObj );
+// 	return spObj->GetsnObj();
+// }
 
 int XEWorld::Process( XEWndWorld *pWndWorld, float dt )
 {

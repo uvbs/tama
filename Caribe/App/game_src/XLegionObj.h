@@ -28,6 +28,9 @@ public:
 	static int sGetnumObj() {
 		return s_numObj;
 	}
+	static void sClearnumObj() {
+		s_numObj = 0;
+	}
 private:
 	static int s_numObj;		// 메모리 릭 추적용
 	XSPLegionObj GetThis() {

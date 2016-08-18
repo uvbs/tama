@@ -151,18 +151,13 @@ XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
 {
 	Init();
 	m_idProp = idProp;
-
-
-
-
-
 	XEBaseWorldObj::SetType( XGAME::xOT_UNIT );
 	auto pHero = spSquadObj->GetpHero();
 	m_pHero = pHero;
 
 	m_pSquadObj = spSquadObj.get();
 	m_spMsgQ1 = std::make_shared<XMsgQ>();
-	m_spMsgQ2 = std::make_shared<XMsgQ>();
+//	m_spMsgQ2 = std::make_shared<XMsgQ>();
 //	auto pHero = GetpHero();
 	XBREAK( pHero == nullptr );
 	m_pPropUnit = PROP_UNIT->GetpProp( pHero->GetUnit() );
@@ -199,17 +194,32 @@ XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
 
 void XBaseUnit::Destroy()
 {
-	//
 	SAFE_RELEASE2(IMAGE_MNG, m_psfcShadow);
 	SAFE_DELETE( m_psoHit );
 	SAFE_DELETE( m_psoSelect );
-//  	SAFE_RELEASE2( FONTMNG, m_pfdName );
-// 	SAFE_DELETE( m_pfoName );
 	for( auto& icon : m_aryBuffIcon ) {
 		SAFE_RELEASE2( IMAGE_MNG, icon.m_psfcIcon );
 	}
+	const int size = m_spMsgQ1->GetSize();
+	m_spMsgQ1->Release();
 }
-
+/**
+@brief this가 참조하고 있는 shared_ptr만 참조를 해제시킨다.
+m_spMsg의 경우 참조가 아니라 여기있는것이 원본이므로 Relese만 호출함.
+*/
+void XBaseUnit::Release()
+{
+	m_spTarget.reset();
+	m_aryAttacked.clear();
+	m_spMsgQ1->Release();		// 이것은 여기있는게 원본이므로 reset을 하지 않음.
+// 	m_spMsgQ2->Release();
+// 	m_spMsgQ1.reset();
+// 	m_spMsgQ2.reset();
+	XEControllerFSM::Release();
+}
+/**
+ @brief 
+*/
 void XBaseUnit::OnCreate()
 {
 	SetScaleObj( GetPropScale() );
@@ -287,22 +297,6 @@ void XBaseUnit::CreateFSMObj()
 	XEControllerFSM::RegisterFSM( pFSM );
 	pFSM = new XFSMStun( this );
 	XEControllerFSM::RegisterFSM( pFSM );
-}
-
-/**
- @brief this가 참조하고 있는 shared_ptr만 참조를 해제시킨다.
- m_spMsg의 경우 참조가 아니라 여기있는것이 원본이므로 Relese만 호출함.
-*/
-void XBaseUnit::Release()
-{
- 	m_spTarget.reset();
- 	m_aryAttacked.clear();
- 	m_spMsgQ1->Release();		// 이것은 여기있는게 원본이므로 reset을 하지 않음.
- 	m_spMsgQ2->Release();
-// 	m_spMsgQ1.reset();
-// 	m_spMsgQ2.reset();
-	XEControllerFSM::Release();
-
 }
 
 ID XBaseUnit::GetsnHero() const
@@ -973,14 +967,16 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 			if( bCritical )
 				bitAttrHit |= xBHT_CRITICAL;
 			//
-			auto pMsg = std::make_shared<xnUnit::XMsgDmg>( GetThisUnit()
-																									, spTarget
-																									, damageFinal
-																									, ratioPenet
-																									, xDMG_MELEE
-																									, bitAttrHit
-																									, xDA_NONE );
-			spTarget->PushMsg( pMsg );
+			if( !spTarget->IsDestroy() ) {
+				auto pMsg = std::make_shared<xnUnit::XMsgDmg>( GetThisUnit()
+																											 , spTarget
+																											 , damageFinal
+																											 , ratioPenet
+																											 , xDMG_MELEE
+																											 , bitAttrHit
+																											 , xDA_NONE );
+				spTarget->PushMsg( pMsg );
+			}
 		} else {
 			// xMT_RANGE
 			if( spTarget ) {
@@ -1036,15 +1032,15 @@ void XBaseUnit::cbOnArriveBullet( XObjArrow *pArrow, float damage )
 }
 
 void XBaseUnit::OnArriveBullet( XObjBullet *pBullet,
-								XSPUnit spAttacker,
-								XSPUnit spTarget,
-								const XE::VEC3& vwDst,
-								float damage,
-								bool bCritical,
-								LPCTSTR sprArrive, ID idActArrive,
-								DWORD dwParam )
+																XSPUnit spAttacker,
+																XSPUnit spTarget,
+																const XE::VEC3& vwDst,
+																float damage,
+																bool bCritical,
+																LPCTSTR sprArrive, ID idActArrive,
+																DWORD dwParam )
 {
-	if( spTarget && spTarget->IsLive() ) {
+	if( spTarget && !spTarget->IsDestroy() && spTarget->IsLive() ) {
 		const float ratioPenet = GetPenetrationRatio();
 		if( damage ) {	// 스킬 발사체의 경우 damage가 0인채로 오므로 들어가지 않게 함. 스킬발사체의 데미지는 스킬시스템에서 줌.
 			BIT bitAttrHit = xBHT_HIT;
@@ -1428,8 +1424,8 @@ void XBaseUnit::CreateDmgNum( float damage, BIT bitAttrHit, xtHit hitType, int i
 			AddObj( pDmg );
 		}
 	} else {
-		auto pDmg = new XObjDmgNum( strMsg, GetvwTop(), col );
-		AddObj( pDmg );
+// 		auto pDmg = new XObjDmgNum( strMsg, GetvwTop(), col );
+// 		AddObj( pDmg );
 	}
 }
 
@@ -1464,7 +1460,7 @@ void XBaseUnit::OnDamage( const xnUnit::xDmg& dmgInfo )
 	}
 	GetpFSM()->OnDamage();
 	// 공격자에게 데미지 피드백메시지
-	if( dmgInfo.m_spUnitAtker ) {
+	if( dmgInfo.m_spUnitAtker && !dmgInfo.m_spUnitAtker->IsDestroy() ) {
 		auto spMsg = std::make_shared<XMsgDmgFeedback>( dmgInfo );
 		dmgInfo.m_spUnitAtker->PushMsg( spMsg );
 //		// 공격자가 흡혈중이면 공격자에게 hp를 채운다.
@@ -1523,18 +1519,17 @@ void XBaseUnit::OnDamagedToTarget( const xDmg& dmg )
 
 bool XBaseUnit::OnDie( const xDmg& dmg )
 {
-	if( dmg.m_spUnitAtker )	{
+	if( dmg.m_spUnitAtker && !dmg.m_spUnitAtker->IsDestroy() )	{
 		// 타겟(this)을 "사살"했음을 메시지로 날림
 		auto spMsg = std::make_shared<XMsgKillTarget>( dmg );
-		dmg.m_spUnitAtker->GetspMsgQ()->AddMsg( spMsg );
+		dmg.m_spUnitAtker->PushMsg( spMsg );
 //		pAttacker->OnEventJunctureCommon( xJC_KILL_ENEMY, 0, this );
 		OnEventJunctureCommon( xJC_DEAD, 0, dmg.GetpUnit() );
 	}
 	// 불사의 피
 	if( GetUnitType() == xUNIT_LYCAN )	{
 		auto pBuff = FindBuffSkill(_T("immortal_blood"));
-		if( pBuff )
-		{
+		if( pBuff ) {
 			// 죽었을때 불사의피를 가지고 있었다면 일정시간동안 죽지 않는다.
 			m_HP = 1;
 			// invoke_불사의피를 발동시키고 다시 발동되지 않도록 불사의피는 삭제한다.
@@ -1543,8 +1538,7 @@ bool XBaseUnit::OnDie( const xDmg& dmg )
 		}
 	}
 	// 적 유닛을 죽일때마다 용맹포인트 획득
-	if( !IsPlayer() )
-	{
+	if( !IsPlayer() ) {
 		int addBrave = XGC->m_aryAddBravePoint[ GetUnitSize() ];
 //		SCENE_BATTLE->AddBrave( addBrave );
 	}
@@ -3765,6 +3759,8 @@ int XBaseUnit::GetSizeCost()
 */
 void XBaseUnit::PushMsg( XSPMsgBase spMsg )
 {
+	if( IsDestroy() )
+		return;
 	m_spMsgQ1->AddMsg( spMsg );
 }
 
@@ -3784,12 +3780,16 @@ XE::VEC3 XBaseUnit::GetSize() const
 
 void XBaseUnit::AddAdjParamMsg( int adjParam, xtValType valType, float adj )
 {
+	if( IsDestroy() )
+		return;
 	auto spMsg = std::make_shared<XMsgAddAdjParam>( adjParam, valType, adj );
 	PushMsg( spMsg );
 }
 
 void XBaseUnit::SetStateMsg( int idxState, bool bFlag )
 {
+	if( IsDestroy() )
+		return;
 	auto spMsg = std::make_shared<XMsgSetState>( (xtState)idxState, bFlag );
 	PushMsg( spMsg );
 }

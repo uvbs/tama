@@ -23,22 +23,35 @@ class XMsgBase;
 class XMsgQ
 {
 public:
+#ifdef _XLEAK_DETECT
+	static XList4<XSPMsgBase> s_qMsgAll;			// memory leak 감지용
+	static void sDelMsg( ID snMsg );
+#endif // _DEBUG
+	static void sCheckLeak();
+public:
 	XMsgQ() { Init(); }
 	virtual ~XMsgQ() { Destroy(); }
 	// get/setter
-	// public member
-	void AddMsg( XSPMsgBase spMsg ) {
-		m_qMsg1.push_back( spMsg );
+	inline int GetSize() const {
+		return m_qMsg1.size();
 	}
+	// public member
 	void Process( XBaseUnit* pOwner );
 	void Release();
 private:
 	// private member
-	XList4<XSPMsgBase> m_qMsg1, m_qMsg2;			// 객체간 전달용 메시지 큐(flip용으로 두개)
+	XList4<XSPMsgBase> m_qMsg1;//, m_qMsg2;			// 객체간 전달용 메시지 큐(flip용으로 두개)
 private:
 	// private method
 	void Init() {}
 	void Destroy() {}
+	void AddMsg( XSPMsgBase spMsg ) {
+		m_qMsg1.push_back( spMsg );
+#ifdef _XLEAK_DETECT
+		s_qMsgAll.push_back( spMsg );
+#endif // _XLEAK_DETECT
+	}
+friend class XBaseUnit;
 }; // class XMsgQ
 
 /****************************************************************
@@ -66,6 +79,9 @@ public:
 	virtual void Release() = 0;
 	static int sGetnumObj() {
 		return s_numObj;
+	}
+	static void sClearnumObj() {
+		s_numObj = 0;
 	}
 private:
 	static int s_numObj;

@@ -26,7 +26,7 @@ public:
 	virtual void DestroyAllObj( void );
 	//
 	ID AddObj( const XSPWorldObj& spObj );
-	ID AddObj( int type, const XSPWorldObj& spObj );
+// 	ID AddObj( int type, const XSPWorldObj& spObj );
 	virtual XEObjMng* CreateObjMng( int maxObj );
 	virtual int Process( XEWndWorld *pWndWorld, float dt );
 	virtual void Draw( XEWndWorld *pWndWorld );

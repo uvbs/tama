@@ -888,6 +888,8 @@ void XObjFlame::FrameMove( float dt )
 													false,
 													XSKILL::xTL_LIVE );
 		for( auto spUnit : ary ) {
+			if( spUnit->IsDestroy() )
+				continue;
 			if( XASSERT( spUnit ) ) {
 				BIT bitHit = xBHT_HIT | xBHT_BY_SKILL;
 				if( m_Damage == 0 )

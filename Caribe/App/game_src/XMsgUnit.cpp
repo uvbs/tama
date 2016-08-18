@@ -21,10 +21,7 @@ void XMsgQ::Release()
 {
 	for( auto spMsg : m_qMsg1 )
 		spMsg->Release();
-	for( auto spMsg : m_qMsg2 )
-		spMsg->Release();
 	m_qMsg1.clear();
-	m_qMsg2.clear();
 }
 
 void XMsgQ::Process( XBaseUnit* pOwner )
@@ -33,8 +30,36 @@ void XMsgQ::Process( XBaseUnit* pOwner )
 		auto& spMsg = m_qMsg1.GetFirst();
 		spMsg->Process( pOwner );
 		spMsg->Release();
+#ifdef _XLEAK_DETECT
+		sDelMsg( spMsg->getid() );
+#endif // _XLEAK_DETECT
 		m_qMsg1.pop_front();
 	}
+}
+
+#ifdef _XLEAK_DETECT
+XList4<XSPMsgBase> XMsgQ::s_qMsgAll;			// memory leak 감지용
+
+void XMsgQ::sDelMsg( ID snMsg )
+{
+	s_qMsgAll.DelByID( snMsg );
+}
+#endif // _XLEAK_DETECT
+void XMsgQ::sCheckLeak()
+{
+#ifdef _XLEAK_DETECT
+	for( auto itor = s_qMsgAll.begin(); itor != s_qMsgAll.end(); ) {
+		auto& spMsg = (*itor);
+		const auto cnt = spMsg.use_count();
+		if( cnt == 1 ) {
+			s_qMsgAll.erase( itor++ );
+		} else {
+			++itor;
+		}
+	}
+	XBREAK( !s_qMsgAll.empty() );
+	s_qMsgAll.clear();
+#endif // _XLEAK_DETECT
 }
 
 //////////////////////////////////////////////////////////////////////////
