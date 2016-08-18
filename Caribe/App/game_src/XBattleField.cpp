@@ -62,18 +62,6 @@ void XBattleField::DestroyAllObj( void )
 // 	m_aryLegion.Clear();
 	XEWorld::DestroyAllObj();
 }
-
-// BOOL XBattleField::CreateLegionObj( LegionPtr& spLegion
-// 																, BIT bitSide, BOOL bDestroyLegion )
-// {
-// 	auto spLegionObj = XSPLegionObj( new XLegionObj( /*pAcc, */spLegion, bitSide, bDestroyLegion ) );
-// 	m_aryLegion.Add( spLegionObj );
-// 	if( m_aryLegion.size() == 2 )
-// 		m_spLegionEnemy = spLegion;		// 싱글모드에서 군단객체 돌려쓰기 위해서는 파괴가 되지 말아야 해서 참조카운터증가용으로 받아둠.
-// 	return TRUE;
-// }
-// 
-
 /**
  
 */
@@ -81,42 +69,44 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 {
 	XPROF_OBJ_AUTO();
 	auto& listUnit = XEObjMngWithType::sGet()->GetlistUnitsMutable();
-	for( auto spwUnit : listUnit ) {
-		auto spUnit = spwUnit.lock();
+	for( auto spUnit : listUnit ) {
 		if( XASSERT( spUnit ) ) {
-			spUnit->FlipMsgQ();
+//			spUnit->FlipMsgQ();
+			spUnit->XAdjParam::Swap();
 		}
 	}
 	if( GetpObjMng() )	{
-		GetpObjMng()->FrameMoveDelegate( this, 4, dt );
 		// 캐릭터상태와 보정치를 클리어한다.
-		GetpObjMng()->FrameMoveDelegate( this, 1, dt );
+		for( auto spObj : GetpObjMng()->GetlistObj() )
+			OnDelegateFrameMoveEachObj( dt, 1, spObj );
 		// XSkillUser::FrameMove()를 일괄 실행한다.
-		GetpObjMng()->FrameMoveDelegate( this, 2, dt );
+		for( auto spObj : GetpObjMng()->GetlistObj() )
+			OnDelegateFrameMoveEachObj( dt, 2, spObj );
 		// XSkillReceiver::FrameMove()를 일괄 실행한다.
-		GetpObjMng()->FrameMoveDelegate( this, 3, dt );
+		for( auto spObj : GetpObjMng()->GetlistObj() )
+			OnDelegateFrameMoveEachObj( dt, 3, spObj );
 	}
-	GetLegionObj(0)->FrameMove( dt );
-	GetLegionObj(1)->FrameMove( dt );
-	//
+	// objmng process
 	auto ret = XEWorld::Process( pWndWorld, dt );
 	// 모든 프로세스가 끝난 후 유니트들은 각자 쌓인 메시지큐들을 처리한다.
 	// 만약 위 프로세스에서 A가 B를 타격했다면 B가 피격받은 모습을 즉시 draw해야할거 같아서 process() 아래에 넣음.
-	for( auto spwUnit : listUnit ) {
-		auto spUnit = spwUnit.lock();
+	for( auto spUnit : listUnit ) {
 		if( XASSERT(spUnit) ) {
 			spUnit->ProcessMsgQ();
 		}
 	}
+	// XSquadObj::FrameMove쪽에서 유닛들의 Adj값이나 상태등을 참조하는게 있어서 유닛::FrameMove뒤로 옮김.
+	GetLegionObj( 0 )->FrameMove( dt );
+	GetLegionObj( 1 )->FrameMove( dt );
 	return ret;
 }
 
-void XBattleField::OnDelegateFrameMoveEachObj( float dt, 
-											ID idEvent, 
-											WorldObjPtr spObj ) 
+void XBattleField::OnDelegateFrameMoveEachObj( float dt,
+																							 ID idEvent,
+																							 XSPWorldObj spObj )
 {
 	if( XGAME::xOT_UNIT == spObj->GetClassType() ) {
-		XBaseUnit *pUnit = SafeCast<XBaseUnit*, XEBaseWorldObj*>( spObj.get() );
+		XBaseUnit *pUnit = SafeCast<XBaseUnit*>( spObj.get() );
 		XBREAK( pUnit == nullptr );
 		if( pUnit ) {
 			switch( idEvent ) {
@@ -130,9 +120,11 @@ void XBattleField::OnDelegateFrameMoveEachObj( float dt,
 			case 3:
 				pUnit->XSkillReceiver::FrameMove( dt );
 				break;
-			case 4:
-				pUnit->ClearDebugAdjParam();
-
+			default:
+				XBREAK(1);
+				break;
+// 			case 4:
+// 				pUnit->ClearDebugAdjParam();
 			}
 		}
 	}
@@ -144,12 +136,15 @@ void XBattleField::OnDelegateFrameMoveEachObj( float dt,
 			case 1:
 				pUnit->ClearAdjParam();
 				break;
+			case 2: break;
 			case 3:
 				pUnit->XSkillReceiver::FrameMove( dt );
 				break;
-			case 4:
-				pUnit->ClearDebugAdjParam();
-
+			default:
+				XBREAK(1);
+				break;
+// 			case 4:
+// 				pUnit->ClearDebugAdjParam();
 			}
 		}
 	}
@@ -167,22 +162,22 @@ void XBattleField::Draw( XEWndWorld *pWndWorld )
 // 	m_aryLegion[1]->Draw( pWndWorld );
 }
 
-XSKILL::XSkillReceiver* XBattleField::GetTarget( ID snObj )
-{
-	auto spObj = GetpObjMng()->Find( snObj );
-	if( spObj )	{
-		return SafeCast<XSKILL::XSkillReceiver*>( spObj.get() );
-	}
-	return nullptr;
-}
-XSKILL::XSkillUser* XBattleField::GetCaster( ID snObj )
-{
-	auto spObj = GetpObjMng()->Find( snObj );
-	if( spObj )	{
-		return SafeCast<XSKILL::XSkillUser*>( spObj.get() );
-	}
-	return nullptr;
-}
+// XSKILL::XSkillReceiver* XBattleField::GetTarget( ID snObj )
+// {
+// 	auto spObj = GetpObjMng()->Find( snObj );
+// 	if( spObj )	{
+// 		return dynamic_cast<XSKILL::XSkillReceiver*>( spObj.get() );
+// 	}
+// 	return nullptr;
+// }
+// XSKILL::XSkillUser* XBattleField::GetCaster( ID snObj )
+// {
+// 	auto spObj = GetpObjMng()->Find( snObj );
+// 	if( spObj )	{
+// 		return dynamic_cast<XSKILL::XSkillUser*>( spObj.get() );
+// 	}
+// 	return nullptr;
+// }
 
 XSPUnit XBattleField::GetHeroUnit( ID idProp )
 {
@@ -390,9 +385,9 @@ void XBattleField::DrawLegionBar( const XE::VEC2& vPos, int idxLegion )
 // 	}
 }
 
-WorldObjPtr XBattleField::AddpObj( XEBaseWorldObj *pNewObj )	
+XSPWorldObj XBattleField::AddpObj( XEBaseWorldObj *pNewObj )	
 {
-	auto spObj = WorldObjPtr( pNewObj );
+	auto spObj = XSPWorldObj( pNewObj );
 	XEWorld::AddObj( spObj );
 	return spObj;
 }
@@ -401,3 +396,4 @@ void XBattleField::SetLootRes( const XVector<XGAME::xRES_NUM>& aryLoots )
 {
 	m_aryLoots = aryLoots;
 }
+

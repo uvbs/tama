@@ -10,7 +10,9 @@
 #include "XSkillMng.h"
 #include "XMsgUnit.h"
 #include "XComp.h"
-
+#if defined(_CHEAT) && defined(WIN32)
+#include "client/XAppMain.h"
+#endif
 
 
 #ifdef WIN32
@@ -32,8 +34,8 @@ template<> XPool<XObjArrow>* XMemPool<XObjArrow>::s_pPool = NULL;
 
 //////////////////////////////////////////////////////////////////////////
 XObjBullet::XObjBullet( ID idBullet, 
-						const UnitPtr& spOwner, 
-						const UnitPtr spTarget,
+						const XSPUnit& spOwner, 
+						const XSPUnit spTarget,
 						const XE::VEC3& vwSrc,
 						const XE::VEC3& vwDst,
 						float damage,
@@ -82,12 +84,12 @@ void XObjBullet::FrameMove( float dt )
 	GetpSprObj()->SetRotateZ( dAng );
 	if( timeLerp >= 1.0f )	{
 		if( m_sprArrive.empty() == false )		{
-			XObjLoop *pSfx = new XObjLoop( vDst, m_sprArrive.c_str(), m_idActArrive );
-			XBattleField::sGet()->AddObj( WorldObjPtr(pSfx) );
+			auto pSfx = new XObjLoop( vDst, m_sprArrive.c_str(), m_idActArrive );
+			XBattleField::sGet()->AddObj( XSPWorldObj(pSfx) );
 			// 도착시 sfx가 지정되어있으면 타겟에게 생성하도록 한다.
-			if( m_spTarget != nullptr &&
-				m_spTarget->IsLive() )
-				m_spTarget->CreateHitSfx( m_spOwner.get(), FALSE );
+// 			if( m_spTarget != nullptr &&
+// 				m_spTarget->IsLive() )
+// 				m_spTarget->CreateHitSfx( m_spOwner.get(), FALSE );
 		}
 		XBREAK( IsDestroy() );
 		OnArriveBullet( 0 );
@@ -126,12 +128,13 @@ void XObjBullet::OnArriveBullet( DWORD dwParam )
 #endif // _XSINGLE
 		if( m_spTarget ) {
 			// 발동스킬을 액티브로 실행시킨다.
-			auto infoUseSkill = m_spOwner->UseSkillByIdentifier( strInvokeSkill.c_str(),
-																													 0,
-																													 m_spTarget.get(), nullptr );
+			const XE::VEC2 vZero;
+			auto infoUseSkill = m_spOwner->UseSkillByIds( strInvokeSkill.c_str(),
+																										0,
+																										m_spTarget.get(), vZero );
 			XASSERT( infoUseSkill.errCode == XSKILL::xOK );
 			ID idCaller = 0;
-			auto pSkillDat = SKILL_MNG->FindByIdentifier( strInvokeSkill );
+			auto pSkillDat = SKILL_MNG->FindByIds( strInvokeSkill );
 			if( pSkillDat ) {
 				idCaller = pSkillDat->GetidSkill();
 			}
@@ -139,33 +142,40 @@ void XObjBullet::OnArriveBullet( DWORD dwParam )
 		}
 	}
 	// 어태커가 지정되어있을경우 도착 델리게이트를 날려준다.
-	if( GetpDelegate() )
+	if( GetpDelegate() ) {
 		GetpDelegate()->OnArriveBullet( this,
-								m_spOwner,
-								m_spTarget,
-								m_vDst,
-								m_Damage,
-								m_bCritical,
-								m_sprArrive.c_str(), m_idActArrive,
-								dwParam );
+																		m_spOwner,
+																		m_spTarget,
+																		m_vDst,
+																		m_Damage,
+																		m_bCritical,
+																		m_sprArrive.c_str(), m_idActArrive,
+																		dwParam );
+	}
 }
 ////////////////////////////////////////////////////////////////
-XObjArrow::XObjArrow( XEWndWorld *pWndWorld, 
-						const UnitPtr& spOwner,
-						const UnitPtr& spTarget,
-						const XE::VEC3& vwSrc,
-						const XE::VEC3& vwDst,
-						float damage,
-						bool bCritical,
-						LPCTSTR szSpr, ID idAct,
-						float factorSpeed )
+/*
+DPS = 초당이동하는거리
+DPS = 거리 / 총시간
+총시간(x) = 거리 / DPS
+초당이동픽셀 = pixelPerFrame(프레임당이동픽셀) * 60;
+*/
+XObjArrow::XObjArrow( XEWndWorld *pWndWorld,
+											const XSPUnit& spOwner,
+											const XSPUnit& spTarget,
+											const XE::VEC3& vwSrc,
+											const XE::VEC3& vwDst,
+											float damage,
+											bool bCritical,
+											LPCTSTR szSpr, ID idAct,
+											float pixelPerFrame )	// 프레임당 이동픽셀
 	: XObjBullet( 1, spOwner, spTarget, vwSrc, vwDst, damage, bCritical, szSpr, idAct )
 {
 	Init();
 	XE::VEC3 vDist = vwDst - vwSrc;
 	vDist.z = 0;
- 	float distsq = vDist.Length();
- 	float secFly = distsq / ((factorSpeed * XFPS));
+ 	const float distsq = vDist.Length();
+ 	float secFly = distsq / ((pixelPerFrame * XFPS));
 	SetSecFly( secFly );
 	XE::VEC3 size = spTarget->GetSize() * 0.8f;		// BB가 보통, 실제 이미지보다 살짝 크므로 자연스럽게 보이기 위해 0.8을 곱함.
 	size *= XWndBattleField::sGet()->GetscaleCamera();
@@ -181,36 +191,41 @@ void XObjArrow::Destroy()
 {
 }
 
-XE::VEC3 XObjArrow::OnInterpolation( const XE::VEC3& vSrc, 
-									const XE::VEC3& vDst, 
-									float lerpTime )
+XE::VEC3 XObjArrow::OnInterpolation( const XE::VEC3& vSrc,
+																		 const XE::VEC3& vDst,
+																		 float lerpTime )
 {
-	XE::VEC3 vDir = vDst - vSrc;
-	XE::VEC2 v2Src( -vDir.x, -vDir.y );	// XY평면의 목표쪽벡터
-	XE::VEC2 v2Cross = v2Src.Cross();					// v2Src의 수평직각벡터
-	XE::VEC3 vHoriz = v2Cross;
-	vHoriz.z = 0;
-	XE::VEC3 vCross = vDir.Cross( vHoriz );
-	vCross.Normalize();
-	// 거리에따라 휘어지능 정도가 다르게 함.
-	float multiply = ((vDir.Lengthsq() + random(50 * 50)) / (450.f * 450.f)) * 500.f;
-	vCross *= multiply;		// 직각벡터를 길게 만든다.
-	XE::VEC3 vCurr;
-	Vec3CatmullRom( vCurr, vSrc+vCross, vSrc, vDst, vDst+vCross, lerpTime );
-	return vCurr;
+	if( m_MoveType == xMT_STRAIGHT ) {
+		// 직선
+		XE::VEC3 vCurr = vSrc + (vDst - vSrc) * lerpTime;
+		return vCurr;
+	} else {
+		// 포물선
+		XE::VEC3 vDir = vDst - vSrc;
+		XE::VEC2 v2Src( -vDir.x, -vDir.y );	// XY평면의 목표쪽벡터
+		XE::VEC2 v2Cross = v2Src.Cross();					// v2Src의 수평직각벡터
+		XE::VEC3 vHoriz = v2Cross;
+		vHoriz.z = 0;
+		XE::VEC3 vCross = vDir.Cross( vHoriz );
+		vCross.Normalize();
+		// 거리에따라 휘어지능 정도가 다르게 함.
+		float multiply = ((vDir.Lengthsq() + random( 50 * 50 )) / (450.f * 450.f)) * 500.f;
+		vCross *= multiply;		// 직각벡터를 길게 만든다.
+		XE::VEC3 vCurr;
+		Vec3CatmullRom( vCurr, vSrc + vCross, vSrc, vDst, vDst + vCross, lerpTime );
+		return vCurr;
+	}
 }
 
 void XObjArrow::OnArriveBullet( DWORD dwParam )
 {
 	CallCallbackFunc();
-
-	if( random(5) == 0 )
-	{
+	if( random(5) == 0 ) {
 		XE::VEC3 vwDst = GetvDst();
 		vwDst.x += 24 - random( 48 );
 		vwDst.y += 24 - random( 48 );
 		XObjLoop *pStuck = new XObjLoop( vwDst, _T("arrow_stuck.spr"), 1 );
-		XBattleField::sGet()->AddObj( WorldObjPtr(pStuck) );
+		XBattleField::sGet()->AddObj( XSPWorldObj(pStuck) );
 	}
 	XObjBullet::OnArriveBullet( dwParam );
 }
@@ -227,8 +242,8 @@ void XObjArrow::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 
 ////////////////////////////////////////////////////////////////
 XObjRock::XObjRock( XEWndWorld *pWndWorld,
-					const UnitPtr& spOwner,
-					const UnitPtr spTarget,
+					const XSPUnit& spOwner,
+					const XSPUnit spTarget,
 					const XE::VEC3& vwSrc,
 					const XE::VEC3& vwDst,
 					float damage,
@@ -301,21 +316,21 @@ void XObjRock::OnArriveBullet( DWORD _dwParam )
 		else
 			vwDst = GetvwPos() + XE::VEC3( v2Dst.x, v2Dst.y ) * 0.75f;
 		vwDst.z = 0;
-		auto pRock = new XObjRock( GetpWndWorld(), 
-									GetspOwner(),
-									UnitPtr(),
-									GetvwPos(),
-									vwDst,
-									m_AddDamage,
-									false, 
-									GetpSprObj()->GetSprFilename(), 
-									GetpSprObj()->GetActionID() );
+		auto pRock = new XObjRock( GetpWndWorld(),
+															 GetspOwner(),
+															 XSPUnit(),
+															 GetvwPos(),
+															 vwDst,
+															 m_AddDamage,
+															 false,
+															 GetpSprObj()->GetSprFilename(),
+															 GetpSprObj()->GetActionID() );
 		++m_cntElastic;
 		pRock->SetpDelegate( GetpDelegate() );	
 		pRock->SetfactorSpline( 3.f );
 		pRock->SetElastic( m_AddDamage / 2.f, m_maxElastic - 1, m_cntElastic );
 		pRock->SetSplash( GetmeterRadius(), GetratioDamageSplash() );
-		GetpWndWorld()->AddObj( WorldObjPtr(pRock) );
+		GetpWndWorld()->AddObj( XSPWorldObj(pRock) );
 	}
 }
 
@@ -375,7 +390,7 @@ void XObjLaser::FrameMove( float dt )
 		XObjLoop *pEff = new XObjLoop( vDst, _T( "eff_flame.spr" ), 2, 0.f );
 		if( m_vwStart.x < m_vwEnd.x )
 			pEff->SetRotateY( 180.f );
-		GetpWndWorld()->AddObj( WorldObjPtr( pEff ) );
+		GetpWndWorld()->AddObj( XSPWorldObj( pEff ) );
 		m_timerLaser.Reset();
 	}
 	m_vwEnd += m_vDelta * dt;
@@ -413,8 +428,6 @@ XObjLoop::XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLif
 	if( secLife == 0.f )
 		GetpSprObj()->SetAction( idAct, xRPT_1PLAY );
 	XBREAK( GetpSprObj() == nullptr );
-//	SetScaleObj(0.5f);
-//	SetScaleObj(1.5f);
 }
 
 XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
@@ -426,40 +439,38 @@ XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct,
 	if( secLife == 0.f )
 		GetpSprObj()->SetAction( idAct, xRPT_1PLAY );
 	XBREAK( GetpSprObj() == nullptr );
-	//	SetScaleObj(0.5f);
-	//	SetScaleObj(1.5f);
 }
 
-XObjLoop::XObjLoop( int typeObj, const UnitPtr& spTrace, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
+XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
 	: XEBaseWorldObj( XWndBattleField::sGet(), typeObj, spTrace->GetvwPos(), szSpr, idAct )
 {
 	Init();
 	m_timerLife.Set( secLife );
 	m_secLife = secLife;
-	m_spRefUnit = spTrace;
+	m_spTraceObj = spTrace;
+	if( spTrace->GetType() == xOT_UNIT )
+		m_spTraceUnit2 = std::static_pointer_cast<const XBaseUnit>( spTrace );
 	m_bTraceRefObj = TRUE;
 	if( secLife == 0.f )
 		GetpSprObj()->SetAction( idAct, xRPT_1PLAY );
 	XBREAK( GetpSprObj() == nullptr );
-	//	SetScaleObj(0.5f);
-	//	SetScaleObj(1.5f);
 }
 
 /**
  @brief 이펙트 생성은 vwPos에 생성되나 spTrace를 참조해야 하는 버전
 */
-XObjLoop::XObjLoop( int typeObj, const UnitPtr& spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
+XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
 	: XEBaseWorldObj( XWndBattleField::sGet(), typeObj, vwPos, szSpr, idAct )
 {
 	Init();
 	m_timerLife.Set( secLife );
 	m_secLife = secLife;
-	m_spRefUnit = spTrace;
+	m_spTraceObj = spTrace;
+	if( spTrace->GetType() == xOT_UNIT )
+		m_spTraceUnit2 = std::static_pointer_cast<const XBaseUnit>( spTrace );
 	if( secLife == 0.f )
 		GetpSprObj()->SetAction( idAct, xRPT_1PLAY );
 	XBREAK( GetpSprObj() == nullptr );
-	//	SetScaleObj(0.5f);
-	//	SetScaleObj(1.5f);
 }
 
 
@@ -474,10 +485,10 @@ void XObjLoop::SetBounce( float power, float dAngZ, float gravity )
 
 void XObjLoop::FrameMove( float dt )
 {
-	if( m_spRefUnit != nullptr ) {
+	if( m_spTraceObj ) {
 		if( m_bTraceRefObj ) {
-			SetvwPos( m_spRefUnit->GetvwPos() + m_vAdjust );
-			if( m_spRefUnit->IsDead() )
+			SetvwPos( m_spTraceObj->GetvwPos() + m_vAdjust );
+			if( m_spTraceUnit2 && m_spTraceUnit2->IsDead() )
 				SetDestroy( 1 );
 		}
 	}
@@ -524,15 +535,24 @@ void XObjLoop::OnEventSprObj( XSprObj *pSprObj,
 															float fOverSec )
 {
 	XSkillSfx::CallCallbackFunc();
-// 	if( !m_Callback.funcCallback.empty() )
-// 		m_Callback.funcCallback( m_Callback.pOwner, this );
 }
 
+void XObjLoop::Draw( const XE::VEC2& vPos, float scale, float alpha )
+{
+#if defined(_CHEAT) && defined(WIN32)
+	if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_SKILL_SFX) )
+#endif // defined(_CHEAT) && defined(WIN32)
+		XEBaseWorldObj::Draw( vPos, scale, alpha );
+}
 ////////////////////////////////////////////////////////////////
-XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp, const XE::VEC3& vwPos, float sec )
+XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp, 
+																			const XE::VEC3& vwPos, 
+																			const _tstring& strSpr, 
+																			ID idAct, 
+																			float sec )
 	: XEBaseWorldObj( XWndBattleField::sGet(),
 										XGAME::xOT_SKILL_EFFECT, vwPos,
-										_T( "eff_ghost_diesmoke.spr" ), 1 )
+										strSpr.c_str(), idAct )
 	, XSkillReceiver( 1, XGAME::xMAX_PARAM, 0 )
 {
 	Init();
@@ -555,15 +575,15 @@ void XSkillSfxReceiver::FrameMove( float dt )
 
 ////////////////////////////////////////////////////////////////
 XSkillShootObj::XSkillShootObj( XEWndWorld *pWndWorld,
-																const UnitPtr& spOwner,
-																const UnitPtr& spTarget,
+																const XSPUnit& spOwner,
+																const XSPUnit& spTarget,
 																const XE::VEC3& vwSrc,
 																const XE::VEC3& vwDst,
 																float damage,
 																LPCTSTR szSpr, ID idAct,
 																float factorSpeed )
 : XObjArrow( pWndWorld, spOwner, spTarget, vwSrc, 
-			vwDst, damage, false, szSpr, idAct, 24.f ) 
+			vwDst, damage, false, szSpr, idAct, factorSpeed ) 
 {
 	Init();
 
@@ -574,20 +594,22 @@ void XSkillShootObj::Destroy()
 
 void XSkillShootObj::CallCallbackFunc( void ) 
 {
-//	if( !m_Callback.funcCallback.empty() )
 	if( m_Callback.funcCallback )
 		m_Callback.funcCallback( m_Callback.pOwner, this );
 }
 
-XE::VEC3 XSkillShootObj::OnInterpolation( const XE::VEC3& vSrc, 
-										const XE::VEC3& vDst, float lerpTime )
-{
-	XE::VEC3 vCurr = vSrc + (vDst - vSrc) * lerpTime;
-	return vCurr;
-}
+// XE::VEC3 XSkillShootObj::OnInterpolation( const XE::VEC3& vSrc,
+// 																					const XE::VEC3& vDst, 
+// 																					float lerpTime )
+// {
+// 
+// 	XE::VEC3 vCurr = vSrc + (vDst - vSrc) * lerpTime;
+// 	return vCurr;
+// }
 
 ////////////////////////////////////////////////////////////////
 _tstring XObjDmgNum::s_strFont = _T("damage.ttf");
+int XObjDmgNum::s_numObj = 0;
 /**
  @brief 
  @param paramHit typeHit가 xHT_STATE(상태이상)일경우 어떤상태이상인지 파라메터가 붙는다.
@@ -657,7 +679,8 @@ void XObjDmgNum::InitEffect()
 	float size = 18.f;
 	_tstring strFont;
 	if( XE::IsAsciiStr(m_strNumber.c_str()) ) {
-		strFont = _T("damage.ttf");
+//		strFont = _T("damage.ttf");
+		strFont = s_strFont;
 		size = 20.f;
 	} else
 		strFont = FONT_NANUM_BOLD;
@@ -685,19 +708,18 @@ void XObjDmgNum::FrameMove( float dt )
 	XBREAK( m_spCompMove == nullptr );
 	m_spCompMove->SetvwPos( GetvwPos() );
 	if( m_spCompMove->FrameMove( dt ) == 1 ) {
-// 		if( m_spCompMove->IsDisappear() ) {
-// 			m_timerLife.Set( 1.f );
-// 		}
 	}
 	SetvwPos( m_spCompMove->GetvwPos() );
 	if( m_spCompMove->IsDisappear() ) {
-//		float alpha = 1.0f - m_timerLife.GetSlerp();
 		float alpha = 1.0f - m_spCompMove->GetLerpTime();
 		SetAlpha( alpha );
-//		if( m_timerLife.IsOver() ) {
+		XBREAK( m_spCompMove->GettimerState().IsOff() );
 		if( m_spCompMove->GettimerState().IsOver() ) {
 			SetDestroy( 1 );
 		}
+	} else
+	if( m_spCompMove->IsDestroy() ) {
+		SetDestroy( 1 );
 	}
 	XEBaseWorldObj::FrameMove( dt );
 }
@@ -716,13 +738,16 @@ void XObjDmgNum::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/
 		const BYTE b = XCOLOR_RGB_B( col );
 		col = XCOLOR_RGBA(r,g,b,a);
 	}
-	m_pfdNumber->DrawStringStyle( vPos.x, vPos.y, col, xFONT::xSTYLE_STROKE, m_strNumber.c_str() );
+#if defined(_CHEAT) && defined(WIN32)
+	if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_DMG_NUM) )
+#endif // defined(_CHEAT) && defined(WIN32)
+		m_pfdNumber->DrawStringStyle( vPos.x, vPos.y, col, xFONT::xSTYLE_STROKE, m_strNumber.c_str() );
 //#endif 
 }
 
 //////////////////////////////////////////////////////////////////////////
 XObjYellSkill::XObjYellSkill( LPCTSTR szText, 
-															const UnitPtr& spOwner,
+															const XSPUnit& spOwner,
 															const XE::VEC3& vwPos, 
 															XCOLOR col )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos )
@@ -825,7 +850,7 @@ void XObjYellSkill::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alp
  @param secLife 객체 지속시간
  @param bitCampTarget 데미지를 줄 진영
 */
-XObjFlame::XObjFlame( const UnitPtr& spAttacker,
+XObjFlame::XObjFlame( const XSPUnit& spAttacker,
 											const XE::VEC3& vwPos,
 											float damage,
 											float radius,
@@ -863,6 +888,8 @@ void XObjFlame::FrameMove( float dt )
 													false,
 													XSKILL::xTL_LIVE );
 		for( auto spUnit : ary ) {
+			if( spUnit->IsDestroy() )
+				continue;
 			if( XASSERT( spUnit ) ) {
 				BIT bitHit = xBHT_HIT | xBHT_BY_SKILL;
 				if( m_Damage == 0 )

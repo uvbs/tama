@@ -41,6 +41,7 @@
 #include "Sprite/SprMng.h"
 #endif // _XSINGLE
 #include "XSoundMng.h"
+#include "XMsgUnit.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -76,19 +77,20 @@ void xsCamp::CreateLegion( const std::string& idsLegion, XGAME::xtSide bitSide )
 		m_spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, 50, false );
 	}
 }
-void xsCamp::ReCreateLegion( XWndBattleField* pWndWorld) 
-{
-	CreateLegion( m_idsLegion, m_bitSide );
-	CreateLegionObj();
-	CreateSquadObj( pWndWorld, m_bitOption );
-}
+// void xsCamp::ReCreateLegion( XWndBattleField* pWndWorld) 
+// {
+// 	CreateLegion( m_idsLegion, m_bitSide );
+// 	CreateLegionObj();
+// 	CreateSquadObj( pWndWorld, m_bitOption );
+// }
 #endif // _XSINGLE
-
+// 
 void xsCamp::CreateLegionObj()
 {
 	XBREAK( m_spLegion == nullptr );
 	XBREAK( m_bitSide == 0 );
-	m_spLegionObj = XSPLegionObj( new XLegionObj( m_spLegion, m_bitSide ) );
+//	m_spLegionObj = XSPLegionObj( new XLegionObj( m_spLegion, m_bitSide ) );
+	m_spLegionObj = std::make_shared<XLegionObj>( m_spLegion, m_bitSide );
 }
 
 /**
@@ -183,7 +185,7 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 	// 전투타입을 지정한다.
 	XBattleField::sGet()->SettypeBattle( s_BattleStart.m_typeBattle );
 
-	XObjDmgNum::s_strFont = FONT_BADABOOM;
+//	XObjDmgNum::s_strFont = FONT_BADABOOM;
 	SetbUpdate( true );
 }
 
@@ -207,6 +209,7 @@ void XSceneBattle::Destroy()
 	SAFE_DELETE( XUnitCommon::s_pPool );
 #endif // _XMEM_POOL
 	XAPP->m_fAccel = (float)1.f;
+	CheckLeak();
 }
 
 void XSceneBattle::Create( void )
@@ -816,8 +819,8 @@ void XSceneBattle::GetSquadInfoToAry( XSPSquad spSquad, XBaseUnit* pUnit, XVecto
 	pOut->Add( str );
 	auto spTargetUnit = pUnit->GetspTarget();
 	auto secAtk = pUnit->GetSpeedAttack( pUnit->GetspTarget() );
-	auto dmgMelee = pUnit->GetAttackMeleeDamage( spTargetUnit );
-	auto dmgRange = pUnit->GetAttackRangeDamage( spTargetUnit );
+	auto dmgMelee = pUnit->GetAttackMeleeDamage( spTargetUnit, true );
+	auto dmgRange = pUnit->GetAttackRangeDamage( spTargetUnit, true );
 	float dmgMeleeAdd = dmgMelee - pUnit->GetBaseAtkMeleeDmg();		// 버프보정으로 늘어난 데미지량
 	float dmgRangeAdd = dmgRange - pUnit->GetBaseAtkRangeDmg();
 	_tstring 
@@ -1080,16 +1083,22 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 			GAME->LoadPropLegion();
 //			XPropLegion::sGet()->Save( _T( "test.xml" ) );
 		}
-		// objmng의 모든 객체를 삭제
-		XBattleField::sGet()->Clear();
+		// objmng의 모든 객체를 해제
+		XBattleField::sGet()->GetpObjMng()->Release();
 		// 군단객체 삭제
 		for( auto& camp : m_aryCamp ) {
-//			camp.m_spLegionObj->Release();
+			camp.m_spLegionObj->Release();
 			camp.m_spLegionObj.reset();
 			if( bRecreate ) {
 				camp.m_spLegion.reset();
 			}
 		}
+		XEBaseScene::Release();
+		CheckLeak();
+		XLegionObj::sClearnumObj();
+		XSquadObj::sClearnumObj();
+		xnUnit::XMsgBase::sClearnumObj();
+		XEBaseWorldObj::sClearnumObj();
 		if( bRecreate ) {
 			// XLegion과 XHero들을 모두 파괴한다.
 			XAccount::sDestroyPlayer();
@@ -1547,4 +1556,14 @@ int XSceneBattle::OnTouchHeroFace( XWnd* pWnd, DWORD snSquad, DWORD )
 		}
 	}
 	return 1;
+}
+
+void XSceneBattle::CheckLeak()
+{
+	XBREAK( XLegionObj::sGetnumObj() );
+	XBREAK( XSquadObj::sGetnumObj() );
+	xnUnit::XMsgQ::sCheckLeak();
+	XBREAK( xnUnit::XMsgBase::sGetnumObj() );
+	XBattleField::sGet()->GetpObjMng()->_CheckLeak();
+	XBREAK( XEBaseWorldObj::sGetnumObj() );
 }

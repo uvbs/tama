@@ -1293,7 +1293,7 @@ void XSceneUnitOrg::UpdateSkillInfo(void)
 			strcpy_s(cSuffix, "active");
 		auto pImgIcon = SafeCast<XWndImage*>( Findf( "img.icon.%s", cSuffix ) );
 		const auto& sidSkill = pPropHero->GetsidSkill( typeSkill );
-		const auto pSkillDat = SKILL_MNG->FindByIdentifier( sidSkill );
+		const auto pSkillDat = SKILL_MNG->FindByIds( sidSkill );
 		// 스킬을 일단 가지고 있으면 들어감.
 		if( pSkillDat ) {
 // 			xSET_SHOWF(this, FALSE, "butt.skillup.complte.%s", cSuffix);	 // 즉시완료 버튼 기본적으로 감춤.

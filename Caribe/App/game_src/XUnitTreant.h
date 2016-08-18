@@ -26,7 +26,7 @@ public:
 								float multipleAbility );
 	virtual ~XUnitTreant() { Destroy(); }
 	//
-	void ShootRangeAttack( UnitPtr& spTarget,
+	void ShootRangeAttack( XSPUnit& spTarget,
 							const XE::VEC3& vwSrc,
 							const XE::VEC3& vwDst,
 							float damage,
@@ -34,15 +34,15 @@ public:
 							const std::string& strType,
 							const _tstring& strSpr ) override;
 	void OnArriveBullet( XObjBullet *pBullet,
-								UnitPtr spAttacker,
-								UnitPtr spTarget,
+								XSPUnit spAttacker,
+								XSPUnit spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,
 								LPCTSTR sprArrive, ID idActArrive,
 								DWORD dwParam ) override;
 	void DoDamageToTarget( XSPUnit spTarget, float damage, XSKILL::xtDamage typeDmg, bool bCritical, XGAME::xtDamageAttr typeDmgAttr );
-	static void sShootRock( UnitPtr spShooter, UnitPtr& spTarget, const XE::VEC3& vwSrc, const XE::VEC3& vwDst, float damage, bool bCritical, const _tstring& _strSpr = _T( "" ) );
+	static void sShootRock( XSPUnit spShooter, XSPUnit& spTarget, const XE::VEC3& vwSrc, const XE::VEC3& vwDst, float damage, bool bCritical, const _tstring& _strSpr = _T( "" ) );
 	void FrameMove( float dt ) override;
 private:
 	CTimer m_timerSec;

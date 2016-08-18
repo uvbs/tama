@@ -15,9 +15,9 @@ namespace xnUnit {
 	class XMsgDmg;
 	class XMsgDmgFeedback;
 	struct xDmg {
-		XSPWorldObjW m_spAtkObj;
-		XSPUnitW m_spUnitAtker;
-		XSPUnitW m_spTarget;
+		XSPWorldObj m_spAtkObj;
+		XSPUnit m_spUnitAtker;
+		XSPUnit m_spTarget;
 		float m_Damage = 0.f;
 		float m_ratioPanet = 0.f;
 		XSKILL::xtDamage m_typeDmg = XSKILL::xDMG_NONE;
@@ -29,7 +29,12 @@ namespace xnUnit {
 		xDmg( XSPUnit spAtker, XSPUnit spTarget, float damage, float ratioPenet, XSKILL::xtDamage typeDamage, const BIT bitAttrHit, XGAME::xtDamageAttr attrDamage, bool bCritical ) 
 			: xDmg( std::static_pointer_cast<XEBaseWorldObj>( spAtker ), spTarget, damage, ratioPenet, typeDamage, bitAttrHit, attrDamage, bCritical ) {}
 		inline XBaseUnit* GetpUnit() const {
-			return ( m_spUnitAtker.lock() ) ? m_spUnitAtker.lock().get(): nullptr;
+			return ( m_spUnitAtker ) ? m_spUnitAtker.get(): nullptr;
+		}
+		void Release() {
+			m_spAtkObj.reset();
+			m_spUnitAtker.reset();
+			m_spTarget.reset();
 		}
 	};
 
@@ -39,5 +44,7 @@ namespace xnUnit {
 		xUM_DMG,
 		xUM_DMG_FEEDBACK,
 		xUM_KILL_TARGET,
+		xUM_ADD_ADJPARAM,
+		xUM_SET_STATE,
 	};
 }

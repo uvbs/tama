@@ -16,6 +16,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 DWORD XEBaseWorldObj::s_idSerial = 1;
+int XEBaseWorldObj::s_numObj = 0;		// 메모리 릭 추적용
 
 XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, 
 								int type,
@@ -34,7 +35,8 @@ XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, int type, LPCTSTR szSpr, 
 	Init();
 	m_Type = type;
 	m_pWndWorld = pWndWorld;
-	LoadSpr( szSpr, idAct );
+	if( XE::IsHave(szSpr) )
+		LoadSpr( szSpr, idAct );
 }
 
 XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szSpr, ID idAct ) 
@@ -43,7 +45,8 @@ XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3&
 	m_Type = type;
 	m_vwPos = vPos;
 	m_pWndWorld = pWndWorld;
-	LoadSpr( szSpr, idAct );;
+	if( XE::IsHave( szSpr ) )
+		LoadSpr( szSpr, idAct );;
 }
 
 void XEBaseWorldObj::Destroy() 

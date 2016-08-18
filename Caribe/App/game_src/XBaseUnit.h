@@ -27,6 +27,8 @@ namespace xnUnit {
 	class XMsgBase;
 	class XMsgDmg;
 	class XMsgDmgFeedback;
+	class XMsgAddAdjParam;
+	class XMsgSetState;
 	struct xDmg;
 }
 
@@ -52,14 +54,8 @@ public:
 	static BOOL sGetMoveDstDelta( const XE::VEC3& vwCurr, const XE::VEC3& vwDst, float speedMove, XE::VEC3 *pOutDelta );
 	static bool s_bNotUseActiveByEnemy;		// 적영웅 스킬사용금지
 #ifdef WIN32
-//	_tstring m_strLog;			// 전투로그
 #endif // _XSINGLE
 protected:
-	struct xInvokeEffect {
-		XSKILL::XSkillDat *pDat = nullptr;
-		XSKILL::EFFECT *pEffect = nullptr;
-	};
-	XArrayLinearN<xInvokeEffect,4> m_aryInvokeSkillByAttack;		// 평타공격시 발동확률이 있는 스킬이 있을경우 확률에 걸리면 이곳에 정보가 쌓인다
 private:
 	static const float c_maxDmgShake;
 	enum { 
@@ -89,11 +85,11 @@ private:
 	XE::VEC2 m_vlHitSfx;	///< 타격시 이펙트가 발생될 로컬기준좌표
 	XE::xtHorizDir m_Dir;		///< 바라보고 있는 방향
 	XSquadObj* m_pSquadObj;		///< 이 유닛이 속해있는 분대객체(weak)
-	XSPUnitW m_spTarget;		///< 추적목표 객체
+	XSPUnit m_spTarget;		///< 추적목표 객체
 	XE::VEC3 m_vwTarget;		///< spTarget이 null일때 좌표만으로 이동할 목표
 	const XE::VEC3 m_vLocalFromSquad;	///< 분대내에서의 로컬좌표
 	int m_idxAttackedAngle;			///< 근접공격자가 this를 타겟잡을때마다 겹치지 않고 둘러쌀수 있도록 적당한 위치를 내보내준다. 그것을 위해 필요한 인덱스
-	XArrayN<XSPUnitW,8> m_aryAttacked;	///< this를 둘러싸고 공격하고 있는 공격자들.
+	XVector<XSPUnit> m_aryAttacked;	///< this를 둘러싸고 공격하고 있는 공격자들.
 	XE::VEC2 m_vwBind;				///< 전투를 위해 이동할 좌표가 확정됨.
 	XE::VEC3 m_vlActionEvent;		///< 액션이벤트때 타점좌표를 저장해둔다.(유닛로컬좌표)
 	CTimer m_timerDamage;			///< 데미지 입으면 타이머가 작동한다.
@@ -122,7 +118,7 @@ private:
 	CTimer m_timerDisappear;
 	// 객체간 전달용 메시지 큐(flip용으로 두개)
 	std::shared_ptr<xnUnit::XMsgQ> m_spMsgQ1;			// 현재 front msgq
-	std::shared_ptr<xnUnit::XMsgQ> m_spMsgQ2;			// back msgq
+//	std::shared_ptr<xnUnit::XMsgQ> m_spMsgQ2;			// back msgq
 public:
 //	CTimer m_timerSlow;			// 테스트용
 private:
@@ -158,17 +154,8 @@ public:
 	GET_ACCESSOR_CONST( ID, idProp );
 	GET_ACCESSOR_CONST( float, cntDmgShake );
 	GET_ACCESSOR_CONST( const XE::VEC3&, vDelta );
- 	GET_SHARED_ACCESSOR( XSPUnit, spTarget );
+ 	GET_ACCESSOR( XSPUnit, spTarget );
  	SET_ACCESSOR( const XSPUnit, spTarget );
-// 	inline XSPUnit GetspTarget() const {
-// 		return m_spTarget.lock();
-// 	}
-// 	inline void SetspTarget( XSPUnit spUnit ) {
-// 		m_spTarget = spUnit;
-// 	}
-// 	inline void SetspTarget( XSPUnitW spUnit ) {
-// 		m_spTarget = spUnit;
-// 	}
 	GET_ACCESSOR_CONST( const XE::VEC2&, vsPos );
 	GET_ACCESSOR( XPropUnit::xPROP*, pPropUnit );
 	GET_SET_ACCESSOR_CONST( const std::string&, strcIds );
@@ -177,9 +164,9 @@ public:
 		return m_pHero;
 	}
  	GET_ACCESSOR_CONST( float, multipleAbility );
-	GET_SET_ACCESSOR( XGAME::xtMelee, typeCurrMeleeType );
+	GET_SET_ACCESSOR_CONST( XGAME::xtMelee, typeCurrMeleeType );
 	GET_ACCESSOR_CONST( int, cntTargeting );
-	GET_SET_ACCESSOR( XE::xtHorizDir, Dir );
+	GET_SET_ACCESSOR_CONST( XE::xtHorizDir, Dir );
 	GET_ACCESSOR_CONST( XSquadObj*, pSquadObj );	///< this가 속한 부대를 리턴한다.
 	XSPSquad GetspSquadObj() const;
 	GET_ACCESSOR_CONST( const XE::VEC3&, vwTarget );
@@ -218,18 +205,21 @@ public:
 	inline XSPUnit GetThisUnit() {
 		return std::static_pointer_cast<XBaseUnit>( GetThis() );
 	}
+	inline XSPUnitConst GetThisUnitConst() const {
+		return std::static_pointer_cast<const XBaseUnit>(GetThisConst());
+	}
 	/**
 	 @brief 현재 타겟의 아이디를 돌려준다.
 	*/
 	inline ID GetidTarget() {
-		if( m_spTarget.lock() )
-			return m_spTarget.lock()->GetsnObj();
+		if( m_spTarget )
+			return m_spTarget->GetsnObj();
 		return 0;
 	}
 	/// 타겟이 살아있는지 검사
 	inline BOOL IsTargetLive() {
-		if( m_spTarget.lock() )
-			return m_spTarget.lock()->IsLive();
+		if( m_spTarget )
+			return m_spTarget->IsLive();
 		return FALSE;
 	}
 	inline BOOL IsBindTarget() {
@@ -298,7 +288,7 @@ public:
 	XSPLegionObj GetspLegionObj();
 	XSPLegionObjConst GetspLegionObjConst() const;
 	BOOL RequestNewMission();
-	inline BOOL IsDead() {
+	inline BOOL IsDead() const {
 		return !IsLive();
 	}
 	inline void AddDelta( const XE::VEC3& vDelta ) {
@@ -376,8 +366,8 @@ public:
 	float GetBaseAtkRangeDmg();
 	float GetAttackMeleePower();
 	float GetAttackRangePower();
-	float GetAttackMeleeDamage( XSPUnit spTarget );
-	float GetAttackRangeDamage( XSPUnit spTarget );
+	float GetAttackMeleeDamage( XSPUnit spTarget, bool bForDraw = false );
+	float GetAttackRangeDamage( XSPUnit spTarget, bool bForDraw = false );
 	float GetAddRateByStat( XGAME::xtStat statType, XSPUnit spTarget );
 	float GetDefensePower();
 	inline XGAME::xtSize GetUnitSize() const {
@@ -412,42 +402,42 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	// SKILL
-	float OnInvokeTargetSize( XSKILL::XSkillDat *pSkillDat,
-							const XSKILL::EFFECT *pEffect,
-							int level,
-							XSKILL::XSkillReceiver *pCastingTarget,
-							float size ) override;
+	float OnInvokeTargetSize( const XSKILL::XSkillDat *pSkillDat,
+														const XSKILL::EFFECT *pEffect,
+														int level,
+														XSKILL::XSkillReceiver *pCastingTarget,
+														float size ) override;
 	int	OnClearSkill( XSKILL::XBuffObj* pBuffObj, XSKILL::XSkillDat *pSkillDat, XSKILL::EFFECT_OBJ *pEffObj ) override;		// 버프효과가 끝나면 호출됨
 	void OnCastEffectToPos( XSKILL::XSkillDat *pSkillDat,
-							XSKILL::EFFECT *pEffect,
-							int level,
-							float sec,
-							float radiusMeter,
-							BIT bitSideInvokeTarget,	// 발동되어야 하는 발동대상우호
-							XSKILL::XSkillReceiver *pBaseTarget,
-							const XE::VEC2& vPos ) override;
-	BOOL IsLive() override {
+													XSKILL::EFFECT *pEffect,
+													int level,
+													float sec,
+													float radiusMeter,
+													BIT bitSideInvokeTarget,	// 발동되어야 하는 발동대상우호
+													XSKILL::XSkillReceiver *pBaseTarget,
+													const XE::VEC2& vPos ) override;
+	bool IsLive() const override {
 		if( IsDestroy() )
-			return FALSE;
+			return false;
 		if( m_HP <= 0 )
-			return FALSE;
-		return TRUE;
+			return false;
+		return true;
 	}
 	virtual void OnAdjustEffectAbility( XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int invokeParam, float *pOutMin ) override;
-	virtual void OnSkillAmplifyUser( XSKILL::XSkillDat *pDat, XSKILL::XSkillReceiver *pIvkTarget, const XSKILL::EFFECT *pEffect, XSKILL::xtEffectAttr attrParam, float *pOutRatio, float *pOutAdd ) override;
-	virtual XSKILL::XSkillReceiver* GetTarget( ID snObj ) override;
-	virtual XSKILL::XSkillUser* GetCaster( ID snObj ) override;
+	virtual void OnSkillAmplifyUser( const XSKILL::XSkillDat *pDat, XSKILL::XSkillReceiver *pIvkTarget, const XSKILL::EFFECT *pEffect, XSKILL::xtEffectAttr attrParam, float *pOutRatio, float *pOutAdd ) override;
+// 	virtual XSKILL::XSkillReceiver* GetTarget( ID snObj ) override;
+// 	virtual XSKILL::XSkillUser* GetCaster( ID snObj ) override;
 	virtual void DelegateResultEventBeforeAttack( XSKILL::XBuffObj *pBuffObj, XSKILL::EFFECT *pEffect ) override;
-	BOOL IsInvokeTargetCondition( XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, XSKILL::xtCondition condition, DWORD condVal ) override;
+	BOOL IsInvokeTargetCondition( const XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, XSKILL::xtCondition condition, DWORD condVal ) override;
 	virtual const XECompCamp& GetCamp() const override {		///< this의 진영을 리턴
 		return m_Camp;
 	}
 	virtual BIT GetCampUser() const override { 
 		return m_Camp;
 	}		
-// 	virtual XE::VEC2 GetCurrentPosForSkill() {
-// 		return GetvwPos().ToVec2();
-// 	}
+	XE::VEC2 GetvPosFromSkill() const override {
+		return GetvwPos().GetXY();
+	}
 	/// 이게임에선 루아를 사용하지 않으므로 비워둠.
 	void RegisterInhValUse( XLua *pLua, const char *szVal ) override { }
 	XSKILL::XSkillReceiver* GetThisRecv() override {
@@ -455,7 +445,7 @@ public:
 	}
 	virtual XSKILL::XDelegateSkill* GetpDelegate() override;
 	// 발사체오브젝트를 생성하고 월드에 추가시킨다. 효과, 시전대상, 시전자, 좌표
-	XSKILL::XSkillUser* CreateAndAddToWorldShootObj( XSKILL::XSkillDat *pSkillDat,
+	virtual XSKILL::XSkillUser* CreateAndAddToWorldShootObj( XSKILL::XSkillDat *pSkillDat,
 																									 int level,
 																									 XSKILL::XSkillReceiver *pBaseTarget,
 																									 XSKILL::XSkillUser *pCaster,
@@ -473,8 +463,17 @@ public:
 												 BIT bitSideFilter,
 												 int numApply,
 												 BOOL bIncludeCenter ) override;
-	ID GetId() override { return GetsnObj(); }
-	ID OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDatw,
+	ID GetId() const override { return GetsnObj(); }
+	ID OnCreateSkillSfx( const XSKILL::XSkillDat *pSkillDat,
+											 XSKILL::xtPoint createPoint,
+											 LPCTSTR szSpr,
+											 ID idAct,
+											 float secPlay,
+											 const XE::VEC2& vPos ) override {
+		return OnCreateSkillSfx( this, pSkillDat, createPoint, szSpr, idAct, secPlay, vPos );
+	}
+	ID OnCreateSkillSfx( XSkillReceiver* pTarget,
+											 const XSKILL::XSkillDat *pSkillDat,
 											 XSKILL::xtPoint createPoint,
 											 LPCTSTR szSpr,
 											 ID idAct,
@@ -490,30 +489,32 @@ public:
 																									const XE::VEC2& vPos ) override;
 	void OnDestroySFX( XSKILL::XBuffObj *pSkillRecvObj, ID idSFX ) override;
 	int GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList,
-										XSKILL::XSkillDat *pSkillDat,
+										const XSKILL::XSkillDat *pSkillDat,
 										const XSKILL::EFFECT *pEffect,
 										XSKILL::xtGroup typeGroup ) override;
 	XSKILL::XSkillReceiver* GetTargetObject( XSKILL::EFFECT *pEffect, XSKILL::xtTargetCond cond ) override;
 	XSKILL::XSkillReceiver* GetSkillBaseTarget( XSKILL::XSkillDat *pDat ) override;
-	XSkillReceiver* CreateSfxReceiver( XSKILL::EFFECT *pEffect, float sec ) override;
+	XSkillReceiver* CreateSfxReceiver( const XE::VEC2& vPos, const XSKILL::EFFECT *pEffect, float sec ) override;
 	BOOL IsInvokeAddTarget( ID idAddTarget ) const override;
 	virtual BOOL OnApplyState( XSKILL::XSkillUser *pCaster, XSKILL::XSkillReceiver* pInvoker, const XSKILL::EFFECT *pEffect, int idxState, BOOL flagState ) override;
 	virtual BOOL OnFirstApplyState( XSKILL::XSkillUser *pCaster, XSKILL::XSkillReceiver* pInvoker, const XSKILL::EFFECT *pEffect, int idxState, BOOL flagState, int level ) override;
-	virtual XSKILL::XSkillReceiver* GetBaseTargetByCondition( XSKILL::XSkillDat *pSkillDat,
-																														XSKILL::xtBaseTargetCond cond,
-																														float meter,
-																														int level,
-																														XSKILL::XSkillReceiver *pCurrTarget,
-																														const XE::VEC2& vPos ) override;
-	virtual int GetSkillLevel( XSKILL::XSkillObj* pSkillObj ) override;
+	XSKILL::XSkillReceiver* GetBaseTargetByCondition( XSKILL::XSkillDat *pSkillDat,
+																										XSKILL::xtBaseTargetCond cond,
+																										float meter,
+																										int level,
+																										XSKILL::XSkillReceiver *pCurrTarget,
+																										const XE::VEC2& vPos ) override;
+	virtual int GetSkillLevel( XSKILL::XSkillDat* pDat ) override;
 	virtual XSkillReceiver* GetCurrTarget() override;
 	virtual bool OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster, XSKILL::XBuffObj *pBuffObj, XSKILL::XSkillDat *pSkillDat, const XSKILL::EFFECT *pEffect, int level ) override;
-	virtual bool OnInvokeSkill( XSKILL::XSkillDat *pDat,
-															const XSKILL::EFFECT *pEffect,
-															XSKILL::XSkillReceiver* pTarget,
-															int level, 
-															_tstring* pstrOut ) override;
+	bool OnInvokeSkill( const XSKILL::XSkillDat *pDat,
+											const XSKILL::EFFECT *pEffect,
+											XSKILL::XSkillReceiver* pTarget,
+											int level,
+											_tstring* pstrOut ) override;
 //	void OnAddSkillRecvObj( XSKILL::XBuffObj *pSkillRecvObj, XSKILL::EFFECT *pEffect ) override;		// 이대상에게 버프스킬이 추가된 직후 호출된다.
+	void AddAdjParamMsg( int adjParam, XSKILL::xtValType valType, float adj ) override;
+	void SetStateMsg( int idxState, bool bFlag ) override;
 	// SKILL
 	//////////////////////////////////////////////////////////////////////////
 	void cbOnArriveBullet( XObjArrow *pArrow, float damage );
@@ -528,7 +529,7 @@ public:
 	virtual void Draw( const XE::VEC2& vPos, float scale, float alpha=1.f ) override;
 	virtual XE::VEC2 DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp ) { return vPos; }
 	void DrawShadow( const XE::VEC2& vPos, float scale );
-	virtual void Release();
+	virtual void Release() override;
 	void OnEventCreateSfx( XSprObj *pSprObj, XBaseKey *pKey, float lx, float ly, float scale, LPCTSTR szSpr, ID idAct, xRPT_TYPE typeLoop, float secLifeTime, BOOL bTraceParent, float fAngle, float fOverSec );
 //	virtual void OnEventSprObj( XSprObj *pSprObj, XKeyEvent *pKey, float lx, float ly, ID idEvent, float fAngle, float fOverSec ) override;
 	virtual void OnEventHit( const xSpr::xEvent& event ) override;
@@ -540,8 +541,8 @@ public:
 			return TRUE;
 		return FALSE;
 	}
-	void TransformByObj( XE::VEC2 *pOutLocal );
-	void TransformByObj( XE::VEC3 *pOutLocal );
+	void TransformByObj( XE::VEC2 *pOutLocal ) const;
+	void TransformByObj( XE::VEC3 *pOutLocal ) const;
 	/// 추가로 디버깅용 스트링을 만들게 있다면 이핸들러를 이용한다.
 	virtual void OnDebugStr( _tstring& str ) {}
 	virtual void OnHitEventSkill( const XE::VEC3& vwSrc ) {}
@@ -591,15 +592,24 @@ public:
 	// 공격모션을 정하기전 호출된다.
 	virtual int OnBeforeAttackMotion() { return 0; }
 	/// 공격모션이 시작되고난 직후 호출된다.
-	virtual void OnAfterAttackMotion( XSKILL::xtJuncture junc );
-	XObjLoop* CreateSfxObj( XSKILL::xtPoint createPoint,
-									LPCTSTR szSpr,
-									ID idAct,
-									float secPlay,
-									BOOL bScale = FALSE,
-									float wAdjZ = 0.f,
-									const XE::VEC2& vPos = XE::VEC2(0) );
-	float GetScaleFactor();
+//	virtual void OnAfterAttackMotion( XSKILL::xtJuncture junc );
+	static XObjLoop* sCreateSfxObj( XSPWorldObjConst spObj,
+																	XSKILL::xtPoint createPoint,
+																	LPCTSTR szSpr,
+																	ID idAct,
+																	float secPlay,
+																	BOOL bScale = FALSE,
+																	float wAdjZ = 0.f,
+																	const XE::VEC2& vPos = XE::VEC2() );
+	XObjLoop* CreateSfxObj( XSkillReceiver* pTarget,
+													XSKILL::xtPoint createPoint,
+													LPCTSTR szSpr,
+													ID idAct,
+													float secPlay,
+													BOOL bScale = FALSE,
+													float wAdjZ = 0.f,
+													const XE::VEC2& vPos = XE::VEC2() ) const;
+	float GetScaleFactor() const;
 	XFSMStun* ChangeFSMStun( float secStun ) {
 		XFSMStun *pFsm = static_cast<XFSMStun*>( ChangeFSM( XFSMBase::xFSM_STUN ) );
 		pFsm->Init( secStun );
@@ -607,7 +617,7 @@ public:
 	}
 	XSPUnit GetNearUnit( float meter, BIT bitCamp, bool bFindOutRange );
 	XSPWorldObj AddObj( XEBaseWorldObj *pNewObj );
-	bool IsCritical( XSPUnit spTarget );
+	bool IsCritical( XSPUnit spTarget, float addCriticalRate = 0.f );
 	bool IsEvade( XSKILL::xtDamage typeDamage, const XBaseUnit *pAttacker ) const;
 	float GetHitRate( XSPUnit spTarget );
 	bool IsHit( XSPUnit spTarget );
@@ -679,19 +689,13 @@ public:
 	}
 	// 유닛의 크기비용
 	virtual int GetSizeCost();
-// 	std::shared_ptr<const xnUnit::XMsgQ> GetspMsgQ() const {
-//		return m_spMsgQ1;
-// 	}
-	std::shared_ptr<xnUnit::XMsgQ> GetspMsgQ() const {
-		return std::static_pointer_cast<xnUnit::XMsgQ>( m_spMsgQ1 );
-	}
-	void PushMsg( XSPMsg spMsg );
+	void PushMsg( XSPMsgBase spMsg );
 	void ProcessMsgQ();
-	void FlipMsgQ() {
-		std::swap( m_spMsgQ1, m_spMsgQ2 );
-	}
+// 	void FlipMsgQ() {
+// 		std::swap( m_spMsgQ1, m_spMsgQ2 );
+// 	}
 protected:
-	void CreateDmgNum( float damage, BIT bitAttrHit );
+	void CreateDmgNum( float damage, BIT bitAttrHit, XGAME::xtHit hitType = XGAME::xHT_NONE, int idxState = 0, const _tstring& strMsg = _T(""), XCOLOR col = XCOLOR_WHITE );
 	void OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, const XSKILL::EFFECT *pEffect, float abilMin ) override;
 	void DrawDebugStr( XE::VEC2* pvLT, XCOLOR col, float sizeFont, const _tstring& strDebug );
 	bool IsCheatFiltered();
@@ -702,5 +706,7 @@ private:
 friend class XFSMIdle;
 friend class xnUnit::XMsgDmg;
 friend class xnUnit::XMsgDmgFeedback;
+friend class xnUnit::XMsgAddAdjParam;
+friend class xnUnit::XMsgSetState;
 };
 

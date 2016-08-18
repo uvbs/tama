@@ -52,7 +52,7 @@ xDmg::xDmg( XSPWorldObj spAtkObj
 					, XSPUnit spTarget
 					, float damage
 					, float ratioPenet
-					, XSKILL::xtDamage typeDamage
+					, xtDamage typeDamage
 					, const BIT bitAttrHit
 					, XGAME::xtDamageAttr attrDamage
 					, bool bCritical )
@@ -144,24 +144,20 @@ XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
 											const XE::VEC3& vPos,
 											float multipleAbility )
 	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_UNIT, vPos )
-	, XSKILL::XSkillReceiver( 32, XGAME::xMAX_PARAM, XGAME::xST_MAX )
-	, XSKILL::XSkillUser( SKILL_MNG )
+	, XSkillReceiver( 32, XGAME::xMAX_PARAM, XGAME::xST_MAX )
+	, XSkillUser( SKILL_MNG )
 	, m_vLocalFromSquad(vPos - spSquadObj->GetvwPos())
+	, m_aryAttacked(8)
 {
 	Init();
 	m_idProp = idProp;
-
-
-
-
-
 	XEBaseWorldObj::SetType( XGAME::xOT_UNIT );
 	auto pHero = spSquadObj->GetpHero();
 	m_pHero = pHero;
 
 	m_pSquadObj = spSquadObj.get();
 	m_spMsgQ1 = std::make_shared<XMsgQ>();
-	m_spMsgQ2 = std::make_shared<XMsgQ>();
+//	m_spMsgQ2 = std::make_shared<XMsgQ>();
 //	auto pHero = GetpHero();
 	XBREAK( pHero == nullptr );
 	m_pPropUnit = PROP_UNIT->GetpProp( pHero->GetUnit() );
@@ -190,7 +186,7 @@ XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
 				auto pNode = XPropTech::sGet()->GetpNode( spSquadObj->GetUnit(), idAbil );
 				XBREAK( pNode == nullptr );
 				XBREAK( pNode->strSkill.empty() );
-				CreateAddUseSkillByIdentifier( pNode->strSkill.c_str() );
+				CreateAddUseSkillByIds( pNode->strSkill.c_str() );
 			}
 		}
 	}
@@ -198,17 +194,32 @@ XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
 
 void XBaseUnit::Destroy()
 {
-	//
 	SAFE_RELEASE2(IMAGE_MNG, m_psfcShadow);
 	SAFE_DELETE( m_psoHit );
 	SAFE_DELETE( m_psoSelect );
-//  	SAFE_RELEASE2( FONTMNG, m_pfdName );
-// 	SAFE_DELETE( m_pfoName );
 	for( auto& icon : m_aryBuffIcon ) {
 		SAFE_RELEASE2( IMAGE_MNG, icon.m_psfcIcon );
 	}
+	const int size = m_spMsgQ1->GetSize();
+	m_spMsgQ1->Release();
 }
-
+/**
+@brief this가 참조하고 있는 shared_ptr만 참조를 해제시킨다.
+m_spMsg의 경우 참조가 아니라 여기있는것이 원본이므로 Relese만 호출함.
+*/
+void XBaseUnit::Release()
+{
+	m_spTarget.reset();
+	m_aryAttacked.clear();
+	m_spMsgQ1->Release();		// 이것은 여기있는게 원본이므로 reset을 하지 않음.
+// 	m_spMsgQ2->Release();
+// 	m_spMsgQ1.reset();
+// 	m_spMsgQ2.reset();
+	XEControllerFSM::Release();
+}
+/**
+ @brief 
+*/
 void XBaseUnit::OnCreate()
 {
 	SetScaleObj( GetPropScale() );
@@ -288,19 +299,6 @@ void XBaseUnit::CreateFSMObj()
 	XEControllerFSM::RegisterFSM( pFSM );
 }
 
-/**
- @brief this가 참조하고 있는 shared_ptr만 참조를 해제시킨다.
- m_spMsg의 경우 참조가 아니라 여기있는것이 원본이므로 Relese만 호출함.
-*/
-void XBaseUnit::Release()
-{
-// 	m_spTarget.reset();
-// 	m_aryAttacked.Clear();
-// 	m_spMsgQ1->Release();		// 이것은 여기있는게 원본이므로 reset을 하지 않음.
-// 	m_spMsgQ2->Release();
-	XEControllerFSM::Release();
-}
-
 ID XBaseUnit::GetsnHero() const
 {
 	return m_pHero->GetsnHero();
@@ -313,9 +311,10 @@ const XPropHero::xPROP* XBaseUnit::GetpPropHero()
 
 void XBaseUnit::CreateHitSfx( const XBaseUnit *pAttacker, BOOL bCritical, BOOL bAbsolute )
 {
-// #ifdef _XUZHU_HOME
-// 	return;
-// #endif
+#if defined(_CHEAT) && defined(WIN32)
+	if( XAPP->m_dwFilter & xBIT_NO_CREATE_HIT_SFX )
+		return;
+#endif // defined(_CHEAT) && defined(WIN32)
 	bAbsolute = TRUE;
 	if( pAttacker == NULL )
 		return;
@@ -351,9 +350,9 @@ void XBaseUnit::CreateHitSfx( const XBaseUnit *pAttacker, BOOL bCritical, BOOL b
 /**
  @brief 객체를 월드에 추가
 */
-WorldObjPtr XBaseUnit::AddObj( XEBaseWorldObj *pNewObj )
+XSPWorldObj XBaseUnit::AddObj( XEBaseWorldObj *pNewObj )
 {
-	WorldObjPtr spObj = WorldObjPtr(pNewObj);
+	XSPWorldObj spObj = XSPWorldObj(pNewObj);
 	GetpWndWorld()->AddObj( spObj );
 	return spObj;
 }
@@ -393,7 +392,7 @@ void XBaseUnit::FrameMove( float dt )
 			auto pObj = new XObjLoop( GetvwPos(), _T( "obj_grave.spr" ), idAct, 60.f );
 			const auto scaleFactor = GetScaleFactor();
 			pObj->SetScaleObj( scaleFactor );
-			GetpWndWorld()->AddObj( WorldObjPtr( pObj ) );
+			GetpWndWorld()->AddObj( XSPWorldObj( pObj ) );
 			//
 			SetDestroy( 1 );
 		} else {
@@ -432,18 +431,10 @@ void XBaseUnit::FrameMove( float dt )
 */
 void XBaseUnit::FrameMoveAI( float dt )
 {
-#ifdef _DEBUG
-	// 브레이크포인트용 코드
-	static auto _state = XGAME::xST_FROZEN;
-	if( IsState(_state) ) {
-		int a = 0;
-	}
-#endif // _DEBUG
 	if( IsLive() ) {
 		// 살았을때만 돌아가는 동작.
 		FrameMoveLive( dt );
-	}
-	else {
+	}	else {
 		// 죽었을때만 돌아가는 동작
 	}
 	bool bFSMFrameMove = true;
@@ -532,21 +523,19 @@ void XBaseUnit::OnBeforeFrameMove()
 // 	m_bInvokeHitter = false;
 }
 
-void XBaseUnit::TransformByObj( XE::VEC2 *pOutLocal )
+void XBaseUnit::TransformByObj( XE::VEC2 *pOutLocal ) const
 {
 	XE::VEC2 vScale( GetScaleObj().x, GetScaleObj().z );
 	*pOutLocal *= vScale;
-	if( m_Dir == XE::HDIR_RIGHT )
-	{
+	if( m_Dir == XE::HDIR_RIGHT )	{
 		pOutLocal->x = -pOutLocal->x;
 	}
 }
 
-void XBaseUnit::TransformByObj( XE::VEC3 *pOutLocal )
+void XBaseUnit::TransformByObj( XE::VEC3 *pOutLocal ) const
 {
 	*pOutLocal *= GetScaleObj();
-	if( m_Dir == XE::HDIR_RIGHT )
-	{
+	if( m_Dir == XE::HDIR_RIGHT )	{
 		pOutLocal->x = -pOutLocal->x;
 	}
 }
@@ -558,7 +547,7 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 
 	scaleDraw *= scaleFactor;
 	// 정식선택되었을때 인디케이터
-	const SquadPtr& spSelect = XWndBattleField::sGet()->GetspSelectSquad();
+	const XSPSquad& spSelect = XWndBattleField::sGet()->GetspSelectSquad();
 	BOOL bDrawSelect = FALSE;
 	if( spSelect != nullptr
 		&& spSelect->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj()
@@ -573,7 +562,7 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 		bDrawSelect = TRUE;
 	}
 	// 임시선택되었을때 인디케이터
-	const SquadPtr& spTemp = XWndBattleField::sGet()->GetspTempSelect();
+	const XSPSquad& spTemp = XWndBattleField::sGet()->GetspTempSelect();
 	if( spTemp != nullptr
 		&& spTemp->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj()
 		&& IsLive() ) {
@@ -586,7 +575,7 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 		m_psoSelect->Draw( vPos );
 		bDrawSelect = TRUE;
 	}
-	const SquadPtr& spSelectEnemy = XWndBattleField::sGet()->GetspTempSelectEnemy();
+	const XSPSquad& spSelectEnemy = XWndBattleField::sGet()->GetspTempSelectEnemy();
 	if( spSelectEnemy != nullptr
 		&& spSelectEnemy->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj()
 		&& IsLive() )	{
@@ -617,7 +606,7 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 /**
  @brief 유닛사이즈에 따른 스케일 상수값을 얻는다. 주로 sfx등의 크기조절에 사용한다.
 */
-float XBaseUnit::GetScaleFactor()
+float XBaseUnit::GetScaleFactor() const
 {
 	float scaleFactor = 1.f;
 	if( IsHero() ) {
@@ -674,10 +663,14 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		if( IsState( XGAME::xST_INVISIBLE ) )
 			alpha = 0.5f;	// 현재 투명도에서 다시 1/2한다.
 		float range = 2.f * scaleFactor;
-		const float xAdjShake = ( m_cntDmgShake > 0 )? xRandomF( -range, range ) : 0;
-		float col = (m_cntDmgShake > 0 )? (255.f * (1.0f - (m_cntDmgShake / c_maxDmgShake))) : 255.f;
-		GetpSprObj()->SetColor( XCOLOR_RGBA(255, (int)col, (int)col, 255) );
-		XEBaseWorldObj::Draw( vPos + (XE::VEC2(xAdjShake, 0) * scale), scale, alpha );
+		if( m_cntDmgShake > 0 ) {
+			const float xAdjShake = (m_cntDmgShake > 0) ? xRandomF( -range, range ) : 0;
+			float col = (m_cntDmgShake > 0) ? (255.f * (1.0f - (m_cntDmgShake / c_maxDmgShake))) : 255.f;
+			GetpSprObj()->SetColor( XCOLOR_RGBA( 255, (int)col, (int)col, 255 ) );
+			XEBaseWorldObj::Draw( vPos + (XE::VEC2( xAdjShake, 0 ) * scale), scale, alpha );
+		} else {
+			XEBaseWorldObj::Draw( vPos, scale, alpha );
+		}
 	}
 	// 이부분도 느림 피격이펙이 안나오고 있을때도 draw하는지 검사
 //#ifndef _XUZHU_HOME
@@ -687,7 +680,10 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		v += m_vHitOffset * scale;
 		// 맞는측의 크기에 비례해서 타격이펙트도 커진다.
 		m_psoHit->SetScale( scaleFactor * scaleProp * scale /* * 0.5f*/ );
-		m_psoHit->Draw( v );
+#if defined(_CHEAT) && defined(WIN32)
+		if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_HIT_SFX) )
+#endif // defined(_CHEAT) && defined(WIN32)
+			m_psoHit->Draw( v );
 	}
 //#endif
 	XE::VEC2 vDrawHp = vPos;
@@ -773,7 +769,10 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 						vDrawBuffIcon.x -= ( sizeIcon.w * idx ) * 0.5f;
 						vDrawBuffIcon.y = vDrawName.y - ( ( 2.f * scale ) + sizeIcon.h );
 						psfc->SetScale( scaleIcon );
-						psfc->Draw( vDrawBuffIcon );
+#if defined(_CHEAT) && defined(WIN32)
+						if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_BUFF_ICON) )
+#endif // defined(_CHEAT) && defined(WIN32)
+							psfc->Draw( vDrawBuffIcon );
 						if( pDat->GetstrIdentifier() == _T( "invoke_protect" ) ) {
 							PUT_STRINGF_SMALL( vDrawBuffIcon + XE::VEC2(1,1), XCOLOR_WHITE, _T("%d"), m_cntShell );
 						}
@@ -797,7 +796,7 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		if( XAPP->m_bDebugViewTarget && GetidTarget() != 0 && IsCheatFiltered() ) {
 			strDebug += XE::Format( _T( "target=%d\n" ), GetidTarget() );
 			strDebug += XE::Format( _T( "vwbind=%d,%d\n" ), (int)m_vwBind.x, (int)m_vwBind.y );
-			if( m_spTarget.lock() && IsBindTarget() ) {
+			if( m_spTarget && IsBindTarget() ) {
 				float scale = 1.f;
 				XE::VEC3 vDst = m_vwBind;
 				XE::VEC2 vsDst = XWndBattleField::sGet()->GetPosWorldToWindow( vDst, &scale );
@@ -827,8 +826,8 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 				if( IsState( i ) ) {
 					strDebug += GetStrState( ( XGAME::xtState )i );
 					if( ( XGAME::xtState )i == XGAME::xST_TAUNT ) {
-						if( m_spTarget.lock() )
-							strDebug += XFORMAT( "(%s)", XGAME::GetStrUnit( m_spTarget.lock()->GetSquadUnit() ) );
+						if( m_spTarget )
+							strDebug += XFORMAT( "(%s)", XGAME::GetStrUnit( m_spTarget->GetSquadUnit() ) );
 					}
 					strDebug += _T( "/" );
 				}
@@ -896,7 +895,7 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 {
 	if( IsDead() )
 		return;
-	auto spTarget = m_spTarget.lock();
+	auto spTarget = m_spTarget;
 	/*
 	상태와 동작은 반드시 일치해야한다.  공격모션중인데 IDLE상태라거나 이러면 안된다.
 	아래와 같은 상황은 공격모션이 시작되었을때 IDLE상태로 강제 전환 시켜버려서 생기는 문제다.
@@ -925,10 +924,11 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 		//
 		ADD_LOG( m_strLog, "공격:%s, 방어:%s ", GetstrcIds().c_str()
 																					, spTarget->GetstrcIds().c_str() );
-		if( m_typeCurrMeleeType == XGAME::xMT_MELEE )	// 근접유닛의 근접공격 혹은 원거리유닛의 근접공격
+		if( m_typeCurrMeleeType == XGAME::xMT_MELEE )	{// 근접유닛의 근접공격 혹은 원거리유닛의 근접공격
 			damage = GetAttackMeleeDamage( spTarget );
-		else
+		} else {
 			damage = GetAttackRangeDamage( spTarget );
+		}
 		damage = hardcode_OnToDamage( spTarget, damage, m_typeCurrMeleeType );
 		bool bCritical = IsCritical( spTarget );
 		if( bCritical )
@@ -956,6 +956,8 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 					}
 				}
 			}
+			// "근접공격시" 이벤트. 
+			XSkillReceiver::OnEventJunctureCommon( XSKILL::xJC_CLOSE_ATTACK );	// 모션시작할때에서 이쪽으로 옮겨옴.
 			BIT bitAttrHit = xBHT_HIT;
 			// 빗나가면 데미지를 0으로 준다.
 			if( bHit == false ) {
@@ -965,14 +967,16 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 			if( bCritical )
 				bitAttrHit |= xBHT_CRITICAL;
 			//
-			auto pMsg = std::make_shared<xnUnit::XMsgDmg>( GetThisUnit()
-																									, spTarget
-																									, damageFinal
-																									, ratioPenet
-																									, xDMG_MELEE
-																									, bitAttrHit
-																									, xDA_NONE );
-			spTarget->PushMsg( pMsg );
+			if( !spTarget->IsDestroy() ) {
+				auto pMsg = std::make_shared<xnUnit::XMsgDmg>( GetThisUnit()
+																											 , spTarget
+																											 , damageFinal
+																											 , ratioPenet
+																											 , xDMG_MELEE
+																											 , bitAttrHit
+																											 , xDA_NONE );
+				spTarget->PushMsg( pMsg );
+			}
 		} else {
 			// xMT_RANGE
 			if( spTarget ) {
@@ -984,14 +988,24 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 					}
 				}
 			}
+			// 목표타겟의 중심부좌표가 디폴트
 			auto vwDst = spTarget->GetvCenterWorld();
 			// virtual처리로 공격케이스별로 프로세스를 달리한다.
 			// 빗나가면 데미지를 0으로 준다.
 			if( bHit == false )
 				damageFinal = 0;
-			ShootRangeAttack( spTarget, vwSrc, vwDst, damageFinal, bCritical, event.m_aryStrParam[0], event.m_strSpr );
+			// virtual
+			XSkillReceiver::OnEventJunctureCommon( xJC_RANGE_ATTACK_START );	// 원거리공격 타점에 호출
+			bool bShoot = true;
+			bool bApplied = XSkillReceiver::OnEventJunctureCommon( xJC_RANGE_ATK_NORMAL_REPLACEMENT );	// 원거리평타대체.
+			if( bApplied ) {
+				bShoot = false;		// 이 이벤트는 평타를 대신해서 발생한다. 그러므로 발동이 되면 일반화살을 못쏘도록 함.
+			}
+			if( bShoot ) {
+				ShootRangeAttack( spTarget, vwSrc, vwDst, damageFinal, bCritical, event.m_aryStrParam[0], event.m_strSpr );
+			}
 			// 발사체에 실어보낼 발동스킬 목록을 클리어.
-			m_aryInvokeSkillByAttack.Clear();
+//			m_aryInvokeSkillByAttack.Clear();
 		}
 	}
 }
@@ -1001,15 +1015,15 @@ void XBaseUnit::OnEventHit( const xSpr::xEvent& event )
 */
 XSPUnit XBaseUnit::GetSacrificeGolemInAttacker()
 {
-	XARRAYN_LOOP_AUTO( m_aryAttacked, &spAttacker )	{
-		if( spAttacker.lock() && spAttacker.lock()->GetUnitType() == xUNIT_GOLEM )		{
-			auto pBuff = spAttacker.lock()->FindBuffSkill(_T("sacrifice"));
+	for( auto spAttacker : m_aryAttacked )	{
+		if( spAttacker && spAttacker->GetUnitType() == xUNIT_GOLEM )		{
+			auto pBuff = spAttacker->FindBuffSkill(_T("sacrifice"));
 			if( pBuff )			{
 				// 희생특성을 가진 골렘이 있다.
-				return spAttacker.lock();
+				return spAttacker;
 			}
 		}
-	} END_LOOP;
+	}
 	return nullptr;
 }
 
@@ -1018,15 +1032,15 @@ void XBaseUnit::cbOnArriveBullet( XObjArrow *pArrow, float damage )
 }
 
 void XBaseUnit::OnArriveBullet( XObjBullet *pBullet,
-								XSPUnit spAttacker,
-								XSPUnit spTarget,
-								const XE::VEC3& vwDst,
-								float damage,
-								bool bCritical,
-								LPCTSTR sprArrive, ID idActArrive,
-								DWORD dwParam )
+																XSPUnit spAttacker,
+																XSPUnit spTarget,
+																const XE::VEC3& vwDst,
+																float damage,
+																bool bCritical,
+																LPCTSTR sprArrive, ID idActArrive,
+																DWORD dwParam )
 {
-	if( spTarget && spTarget->IsLive() ) {
+	if( spTarget && !spTarget->IsDestroy() && spTarget->IsLive() ) {
 		const float ratioPenet = GetPenetrationRatio();
 		if( damage ) {	// 스킬 발사체의 경우 damage가 0인채로 오므로 들어가지 않게 함. 스킬발사체의 데미지는 스킬시스템에서 줌.
 			BIT bitAttrHit = xBHT_HIT;
@@ -1042,7 +1056,7 @@ void XBaseUnit::OnArriveBullet( XObjBullet *pBullet,
 																									, bitAttrHit
 																									, xDA_NONE );
 			spTarget->PushMsg( pMsg );
-//			spTarget->DoDamage( spAttacker.get(), damage, ratioPenet, XSKILL::xDMG_RANGE, bitAttrHit, xDA_NONE );
+//			spTarget->DoDamage( spAttacker.get(), damage, ratioPenet, xDMG_RANGE, bitAttrHit, xDA_NONE );
 		}
 	}
 }
@@ -1051,23 +1065,24 @@ void XBaseUnit::OnArriveBullet( XObjBullet *pBullet,
  @brief 화살쏘기 전용(영웅+궁수)
 */
 XObjArrow* XBaseUnit::ShootArrow( XSPUnit& spTarget,
-								const XE::VEC3& vwSrc,
-								const XE::VEC3& vwDst,
-								float damage,
-								bool bCritical )
+																	const XE::VEC3& vwSrc,
+																	const XE::VEC3& vwDst,
+																	float damage,
+																	bool bCritical )
 {
 	_tstring strSpr = _T("arrow.spr");
-	bool bFrozenArrow = false;
-	// 냉기폭발화살이 발동되었는지 확인.
-	XARRAYLINEARN_LOOP_AUTO( m_aryInvokeSkillByAttack, &eff ) {
-		if( eff.pDat->GetstrIdentifier() == _T( "chill_blast_arrow" ) ) {
-			bFrozenArrow = true;
-			break;
-		}
-	} END_LOOP;
-	if( bFrozenArrow ) {
-		strSpr = _T( "arrow2.spr" );		// 냉기화살
-	}
+// 	bool bFrozenArrow = false;
+// 	삭제
+// 	// 냉기폭발화살이 발동되었는지 확인.
+// 	XARRAYLINEARN_LOOP_AUTO( m_aryInvokeSkillByAttack, &eff ) {
+// 		if( eff.pDat->GetstrIdentifier() == _T( "chill_blast_arrow" ) ) {
+// 			bFrozenArrow = true;
+// 			break;
+// 		}
+// 	} END_LOOP;
+// 	if( bFrozenArrow ) {
+// 		strSpr = _T( "arrow2.spr" );		// 냉기화살
+// 	}
 	// 메인 화살
 	auto pArrow = new XObjArrow( GetpWndWorld(),
 																GetThisUnit(),
@@ -1077,30 +1092,29 @@ XObjArrow* XBaseUnit::ShootArrow( XSPUnit& spTarget,
 																damage,
 																bCritical,
 																strSpr.c_str(), 1, 11.f );
-//										strSpr.c_str(), 1, 15.f );
 	if( XASSERT( pArrow ) ) {
-			XARRAYLINEARN_LOOP_AUTO( m_aryInvokeSkillByAttack, &eff ) {
-				_tstring strInvokeSkill;
-				if( bFrozenArrow ) {
-					// 빙결화살 특성이 있으면 빙결화살의 발동스킬을 화살에 넣음.
-					auto pBuff = FindBuffSkill( _T("freeze_arrow") );
-					if( pBuff )
-						strInvokeSkill = pBuff->GetEffectIndex( 0 )->strInvokeSkill;
-					else
-						strInvokeSkill = eff.pEffect->strInvokeSkill;
-					pArrow->AddInvokeSkill( strInvokeSkill );
-				}
-				{
-					auto pBuff = FindBuffSkill( _T( "instant_death_arrow" ) );
-					if( pBuff )
-						strInvokeSkill = pBuff->GetEffectIndex( 0 )->strInvokeSkill;
-					else
-						strInvokeSkill = eff.pEffect->strInvokeSkill;
-					pArrow->AddInvokeSkill( strInvokeSkill );
-				}
-			} END_LOOP;
+// 			XARRAYLINEARN_LOOP_AUTO( m_aryInvokeSkillByAttack, &eff ) {
+// 				_tstring strInvokeSkill;
+// 				if( bFrozenArrow ) {
+// 					// 빙결화살 특성이 있으면 빙결화살의 발동스킬을 화살에 넣음.
+// 					auto pBuff = FindBuffSkill( _T("freeze_arrow") );
+// 					if( pBuff )
+// 						strInvokeSkill = pBuff->GetEffectIndex( 0 )->strInvokeSkill;
+// 					else
+// 						strInvokeSkill = eff.pEffect->strInvokeSkill;
+// 					pArrow->AddInvokeSkill( strInvokeSkill );
+// 				}
+// 				{
+// 					auto pBuff = FindBuffSkill( _T( "instant_death_arrow" ) );
+// 					if( pBuff )
+// 						strInvokeSkill = pBuff->GetEffectIndex( 0 )->strInvokeSkill;
+// 					else
+// 						strInvokeSkill = eff.pEffect->strInvokeSkill;
+// 					pArrow->AddInvokeSkill( strInvokeSkill );
+// 				}
+// 			} END_LOOP;
 		pArrow->SetpDelegate( this );
-		GetpWndWorld()->AddObj( WorldObjPtr( pArrow ) );
+		GetpWndWorld()->AddObj( XSPWorldObj( pArrow ) );
 	}
 	// 추가화살
 	// 애기살 특성이 있는가.
@@ -1121,7 +1135,7 @@ XObjArrow* XBaseUnit::ShootArrow( XSPUnit& spTarget,
 																			_T("arrow.spr"), 2, 11.f );
 			if( XASSERT( pSubArrow ) ) {
 				pSubArrow->SetpDelegate( this );
-				GetpWndWorld()->AddObj( WorldObjPtr( pSubArrow ) );
+				GetpWndWorld()->AddObj( XSPWorldObj( pSubArrow ) );
 			}
 		}
 	}
@@ -1143,7 +1157,7 @@ XObjArrow* XBaseUnit::ShootArrow( XSPUnit& spTarget,
 // 																				_T("arrow.spr"), 2, 13.f );
 				if( XASSERT( pSubArrow ) ) {
 					pSubArrow->SetpDelegate( this );
-					GetpWndWorld()->AddObj( WorldObjPtr( pSubArrow ) );
+					GetpWndWorld()->AddObj( XSPWorldObj( pSubArrow ) );
 				}
 			}
 		}
@@ -1159,7 +1173,7 @@ XObjArrow* XBaseUnit::ShootArrow( XSPUnit& spTarget,
 void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 													float damage,
 													float ratioPenetration,
-													XSKILL::xtDamage typeDamage,
+													xtDamage typeDamage,
 													const BIT bitAttrHit,
 													XGAME::xtDamageAttr attrDamage )
 {
@@ -1377,26 +1391,42 @@ void XBaseUnit::DoDamage( XSPWorldObj spAtkObj,
 /**
  @brief 데미지숫자 이펙트를 생성한다.
 */
-void XBaseUnit::CreateDmgNum( float damage, BIT bitAttrHit )
+void XBaseUnit::CreateDmgNum( float damage, BIT bitAttrHit, xtHit hitType, int idxState, const _tstring& strMsg, XCOLOR col )
 {
-	xtHit typeHit = (bitAttrHit & xBHT_HIT)? xHT_HIT : xHT_MISS;
-	if( bitAttrHit & xBHT_CRITICAL )
-		typeHit = xHT_CRITICAL;
-	else if( bitAttrHit & xBHT_EVADE )
-		typeHit = xHT_EVADE;
-	else if( bitAttrHit & xBHT_VORPAL )
-		typeHit = xHT_VORPAL;
-	else if( bitAttrHit & xBHT_IMMUNE )
-		typeHit = xHT_IMMUNE;
-	XCOLOR col = XCOLOR_RED;
-	if( bitAttrHit & xBHT_POISON ) {
-		col = XCOLOR_RGB(2,94,0);
+#if defined(_CHEAT) && defined(WIN32)
+	if( XAPP->m_dwFilter & xBIT_NO_CREATE_DMG_NUM )
+		return;
+#endif // defined(_CHEAT) && defined(WIN32)
+	if( XObjDmgNum::s_numObj >= 50 )
+		return;
+	if( strMsg.empty() ) {
+		if( idxState == 0 ) {
+			xtHit typeHit = ( bitAttrHit & xBHT_HIT ) ? xHT_HIT : xHT_MISS;
+			if( bitAttrHit & xBHT_CRITICAL )
+				typeHit = xHT_CRITICAL;
+			else if( bitAttrHit & xBHT_EVADE )
+				typeHit = xHT_EVADE;
+			else if( bitAttrHit & xBHT_VORPAL )
+				typeHit = xHT_VORPAL;
+			else if( bitAttrHit & xBHT_IMMUNE )
+				typeHit = xHT_IMMUNE;
+			XCOLOR col = XCOLOR_RED;
+			if( bitAttrHit & xBHT_POISON ) {
+				col = XCOLOR_RGB( 2, 94, 0 );
+			} else {
+				if( IsPlayer() )
+					col = XCOLOR_WHITE;
+			}
+			auto pDmg = new XObjDmgNum( damage, typeHit, 0, GetvwTop(), col );
+			AddObj( pDmg );
+		} else {
+			auto pDmg = new XObjDmgNum( damage, hitType, idxState, GetvwTop(), col );
+			AddObj( pDmg );
+		}
 	} else {
-		if( IsPlayer() )
-			col = XCOLOR_WHITE;
+// 		auto pDmg = new XObjDmgNum( strMsg, GetvwTop(), col );
+// 		AddObj( pDmg );
 	}
-	auto pDmg = new XObjDmgNum( damage, typeHit, 0, GetvwTop(), col );
-	AddObj( pDmg );
 }
 
 void XBaseUnit::DoDie( XSPUnit spAtker )
@@ -1419,20 +1449,20 @@ void XBaseUnit::DoDie( XSPUnit spAtker )
 // void XBaseUnit::OnDamage( const XBaseUnit *pAttacker
 // 												, float damage
 // 												, BOOL bCritical
-// 												, XSKILL::xtDamage typeDamage
+// 												, xtDamage typeDamage
 // 												, const BIT bitAttrHit )
 void XBaseUnit::OnDamage( const xnUnit::xDmg& dmgInfo )
 {
 	// 반사데미지 형태는 '피격시' 이벤트를 발생시키지 않는다.
 	if( !(dmgInfo.m_bitAttrHit & xBHT_THORNS_DAMAGE) ) {
-		XSkillReceiver::OnHitFromAttacker( (dmgInfo.m_spUnitAtker.lock())? dmgInfo.m_spUnitAtker.lock().get() : nullptr
+		XSkillReceiver::OnHitFromAttacker( (dmgInfo.m_spUnitAtker)? dmgInfo.m_spUnitAtker.get() : nullptr
 																			, dmgInfo.m_typeDmg );
 	}
 	GetpFSM()->OnDamage();
 	// 공격자에게 데미지 피드백메시지
-	if( dmgInfo.m_spUnitAtker.lock() ) {
+	if( dmgInfo.m_spUnitAtker && !dmgInfo.m_spUnitAtker->IsDestroy() ) {
 		auto spMsg = std::make_shared<XMsgDmgFeedback>( dmgInfo );
-		dmgInfo.m_spUnitAtker.lock()->PushMsg( spMsg );
+		dmgInfo.m_spUnitAtker->PushMsg( spMsg );
 //		// 공격자가 흡혈중이면 공격자에게 hp를 채운다.
 // 		float ratioVampiric = pAttacker->GetVampiricRatio();
 // 		if( ratioVampiric > 0 ) {
@@ -1477,7 +1507,7 @@ void XBaseUnit::OnDamage( const xnUnit::xDmg& dmgInfo )
 void XBaseUnit::OnDamagedToTarget( const xDmg& dmg )
 {
 	// this는 공격자여야 한다.
-	XASSERT( GetsnObj() == dmg.m_spAtkObj.lock()->GetsnObj() );
+	XASSERT( GetsnObj() == dmg.m_spAtkObj->GetsnObj() );
 	// this(공격자)가 흡혈속성이 있었으면 그만큼 힐을 한다.
 	const float ratioVampiric = GetVampiricRatio();
 	if( ratioVampiric > 0 ) {
@@ -1489,18 +1519,17 @@ void XBaseUnit::OnDamagedToTarget( const xDmg& dmg )
 
 bool XBaseUnit::OnDie( const xDmg& dmg )
 {
-	if( dmg.m_spUnitAtker.lock() )	{
+	if( dmg.m_spUnitAtker && !dmg.m_spUnitAtker->IsDestroy() )	{
 		// 타겟(this)을 "사살"했음을 메시지로 날림
 		auto spMsg = std::make_shared<XMsgKillTarget>( dmg );
-		dmg.m_spUnitAtker.lock()->GetspMsgQ()->AddMsg( spMsg );
+		dmg.m_spUnitAtker->PushMsg( spMsg );
 //		pAttacker->OnEventJunctureCommon( xJC_KILL_ENEMY, 0, this );
 		OnEventJunctureCommon( xJC_DEAD, 0, dmg.GetpUnit() );
 	}
 	// 불사의 피
 	if( GetUnitType() == xUNIT_LYCAN )	{
 		auto pBuff = FindBuffSkill(_T("immortal_blood"));
-		if( pBuff )
-		{
+		if( pBuff ) {
 			// 죽었을때 불사의피를 가지고 있었다면 일정시간동안 죽지 않는다.
 			m_HP = 1;
 			// invoke_불사의피를 발동시키고 다시 발동되지 않도록 불사의피는 삭제한다.
@@ -1509,8 +1538,7 @@ bool XBaseUnit::OnDie( const xDmg& dmg )
 		}
 	}
 	// 적 유닛을 죽일때마다 용맹포인트 획득
-	if( !IsPlayer() )
-	{
+	if( !IsPlayer() ) {
 		int addBrave = XGC->m_aryAddBravePoint[ GetUnitSize() ];
 //		SCENE_BATTLE->AddBrave( addBrave );
 	}
@@ -1521,7 +1549,7 @@ bool XBaseUnit::OnDie( const xDmg& dmg )
  @brief this가 defender를 타격했을때 이벤트
  @param damage는 방어자의 방어보정값이 적용되기 전 순수공격자의 데미지다.
 */
-void XBaseUnit::OnAttackToDefender( XBaseUnit *pDefender, float damage, BOOL bCritical, float ratioPenetration, XSKILL::xtDamage typeDamage )
+void XBaseUnit::OnAttackToDefender( XBaseUnit *pDefender, float damage, BOOL bCritical, float ratioPenetration, xtDamage typeDamage )
 {
 	XSkillReceiver::OnAttackToDefender( pDefender, damage, bCritical, ratioPenetration, typeDamage );
 }
@@ -1650,11 +1678,11 @@ XFSMChase* XBaseUnit::DoChaseAndAttack( const XSPUnit& spTarget )
 
 void XBaseUnit::DoChaseAndAttackCurrent()
 {
-	if( m_spTarget.lock() == nullptr ||
-		(m_spTarget.lock() != nullptr && m_spTarget.lock()->IsDead()))
+	if( m_spTarget == nullptr ||
+		(m_spTarget != nullptr && m_spTarget->IsDead()))
 		RequestNewMission();
 	else
-		DoChaseAndAttack( m_spTarget.lock() );
+		DoChaseAndAttack( m_spTarget );
 }
 
 void XBaseUnit::DoChase( const XE::VEC3& vwDst )
@@ -1761,8 +1789,8 @@ XE::VEC2 XBaseUnit::GetAttackedPos( const XSPUnit& unitAttacker )
 		if( ++cnt >= 9 )	// 무한루프 방지용
 			break;
 		// 해당 위치에 공격자가 아직 살아있으면 다른 위치를 찾음.
-	} while( m_aryAttacked[ idx ].lock() != nullptr &&
-			m_aryAttacked[ idx ].lock()->IsLive() == TRUE );
+	} while( m_aryAttacked[ idx ] != nullptr &&
+			m_aryAttacked[ idx ]->IsLive() == TRUE );
 	float radiusAttacker = 0;
 	if( unitAttacker->IsRange() )
 		radiusAttacker = XGAME::DIST_MELEE_ATTACK;	// 근접전때는 사거리 고정
@@ -1863,7 +1891,7 @@ void XBaseUnit::OnEventCreateSfx( XSprObj *pSprObj,
 	XObjLoop *pEff = new XObjLoop( vwPos, szSpr, idAct, secLife );
 	pEff->SetDir( m_Dir );
 	pEff->SetScaleObj( scale );
-	GetpWndWorld()->AddObj( WorldObjPtr(pEff) );
+	GetpWndWorld()->AddObj( XSPWorldObj(pEff) );
 }
 
 /**
@@ -1895,26 +1923,26 @@ XSPUnit XBaseUnit::GetNearUnit( float meter, BIT bitCamp, bool bFindOutRange )
 
 //////////////////////////////////////////////////////////////////////////
 // SKILL
-XSKILL::XDelegateSkill* XBaseUnit::GetpDelegate()
+XDelegateSkill* XBaseUnit::GetpDelegate()
 {
 //	return SafeCast<XBattleField*, XEWorld*>( GetpWndWorld()->GetpWorld() );
 	return this;
 }
 
-XSKILL::XSkillReceiver* XBaseUnit::GetTarget( ID snObj )
-{
-	return XBattleField::sGet()->GetTarget( snObj );
-}
-XSKILL::XSkillUser* XBaseUnit::GetCaster( ID snObj )
-{
-	return XBattleField::sGet()->GetCaster( snObj );
-}
+// XSkillReceiver* XBaseUnit::GetTarget( ID snObj )
+// {
+// 	return XBattleField::sGet()->GetTarget( snObj );
+// }
+// XSkillUser* XBaseUnit::GetCaster( ID snObj )
+// {
+// 	return XBattleField::sGet()->GetCaster( snObj );
+// }
 
 /**
  @brief 비보정 파라메터 효과가 적용될때 호출된다. 파라메터가 xHP같은것이 대표적인 예.
 */
 int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
-																			, XSKILL::XSkillDat* pSkillDat
+																			, XSkillDat* pDat
 																			, const EFFECT *pEffect
 																			, float abilMin )
 {
@@ -1928,16 +1956,23 @@ int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
 			if( abilMin <= 0 ) {		// 스킬데미지가 0이라도 데미지표시함(왜?)
 				if( IsLive() ) {
 					XBREAK( pAttacker == nullptr );
-					BOOL bCritical = pAttacker->IsCritical( XSPUnit() );
+					float addCriticalRate = 0.f;
+					if( pDat->GetstrIdentifier() == _T( "throw_spear_shoot" ) ) {
+						auto pBuffObj = pAttacker->FindBuffSkill( _T( "gungnir" ) );
+						if( pBuffObj ) {
+							addCriticalRate = pBuffObj->GetAbilMinbyLevel();
+						}
+					}
+					auto bCritical = pAttacker->IsCritical( m_spTarget, addCriticalRate );
 					if( bCritical )
 						abilMin *= pAttacker->GetCriticalPower();
 					float ratioPenet = 0.f;
-					XSKILL::xtDamage typeDamage = XSKILL::xDMG_NONE;
+					xtDamage typeDamage = xDMG_NONE;
 					// 발사체있는건 원거리속성, 없는건 근거리속성으로 했음.
-					if( pSkillDat->IsShootingType() )
-						typeDamage = XSKILL::xDMG_RANGE;
+					if( pDat->IsShootingType() )
+						typeDamage = xDMG_RANGE;
 					else
-						typeDamage = XSKILL::xDMG_MELEE;
+						typeDamage = xDMG_MELEE;
 					BIT bitAttr = xBHT_HIT | xBHT_BY_SKILL;
 					if( pEffect->invokeState == XGAME::xST_POISON )
 						bitAttr |= xBHT_POISON;
@@ -1949,7 +1984,6 @@ int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
 						bitAttr |= xBHT_THORNS_DAMAGE;		// 반사형 데미지
 					// 상대가 죽은상태라도 데미지UI는 뜰것.
 					// 스킬로 맞은 데미지는 데미지숫자를 표시
-//					DoDamage( pAttacker, -abilMin, -1, typeDamage, bitAttr, xDA_NONE );
 					auto pMsg = std::make_shared<xnUnit::XMsgDmg>( pAttacker->GetThis()
 																											, GetThisUnit()
 																											, -abilMin
@@ -1959,28 +1993,6 @@ int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
 																											, xDA_NONE );
 					PushMsg( pMsg );
 				}
-				// 상대가 죽은상태라도 데미지UI는 뜰것.
-				// 스킬로 맞은 데미지는 데미지숫자를 표시
-// 				if( abilMin <= 0 ) {
-// 					bool bDraw = true;
-// 					auto pUnit = dynamic_cast<XBaseUnit*>( pCaster );
-// 					// 시전자가 소형병사일 경우 스킬(특성)으로 인한 데미지ui는 표시하지 않는다.
-// 					if( pUnit && !pUnit->IsHero() &&
-// 						pUnit->GetUnitSize() == XGAME::xSIZE_SMALL )
-// 						bDraw = false;		// 소형이
-// 					if( bDraw ) {
-// //							BOOL bCritical = FALSE;
-// 						xtHit typeHit = xHT_HIT;
-// 						XCOLOR col = XCOLOR_RED;
-// 						if( pEffect->invokeState == XGAME::xST_POISON )
-// 							col = XCOLOR_RGB(2,94,0);
-// 						auto pDmg = new XObjDamageNumber( -abilMin,
-// 															typeHit, 0,
-// 															GetvwTop(),
-// 															col );
-// 						AddObj( pDmg );
-// 					}
-// 				}
 			} else
 			if( abilMin > 0 ) {
 				if( IsLive() ) {
@@ -2001,21 +2013,24 @@ int XBaseUnit::OnApplyEffectNotAdjParam( XSkillUser *pCaster
 /**
  @brief 기준타겟(혹은 기준좌표)을 중심으로 반경내 조건에 맞는 오브젝트를 요청한다.
  @param pBaseTarget 기준타겟. null일수도 있다.
- @param pvBasePos 기준좌표. null일수도있다. 그러나 기준타겟과 기준좌표가 모두 null로 넘어오진 않는다.
+ @param pvBasePos 기준좌표. 0일수도있다. 그러나 기준타겟과 기준좌표가 모두 null로 넘어오진 않는다.
  @param bitSideFilter 선택해야할 우호 조건
- @param numApply 최대 선택해야할 오브젝트수. 0이면 제한이 없다.
+ @param numCost 최대 선택가능한 cost. 0이면 제한이 없다.
  @param bIncludeCenter 기준타겟을 포함하여 선택할것인지 아닌지.
 */
 int XBaseUnit::GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget,
 																	const XSkillDat* pSkillDat,
-																	const XSKILL::EFFECT *pEffect,
-																	XSKILL::XSkillReceiver *pBaseTarget,
+																	const EFFECT *pEffect,
+																	XSkillReceiver *pBaseTarget,
 																	const XE::VEC2& vBasePos,
 																	float meter,
 																	BIT bitSideFilter,
-																	int numApply,
+																	int numCost,
 																	BOOL bIncludeCenter )
 {
+	XBREAK( pBaseTarget == nullptr && vBasePos.IsZero() );
+	// 좌표가 넘어왔을땐 타겟이 널이어야 함.
+	XBREAK( vBasePos.IsNotZero() && pBaseTarget != nullptr );
 	XVector<XSPUnit> ary;
 	XE::VEC2 vCenter;
 	XEBaseWorldObj *pTarget = nullptr;
@@ -2029,34 +2044,41 @@ int XBaseUnit::GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget
 	}
 	BIT bitFlag = 0;
 	// 산자만 검색
-	if( pEffect->liveTarget == XSKILL::xTL_LIVE )
-		bitFlag |= XSKILL::xTF_LIVE;
+	if( pEffect->liveTarget == xTL_LIVE )
+		bitFlag |= xTF_LIVE;
 	else
 	// 죽은자만 검색
-	if( pEffect->liveTarget == XSKILL::xTL_DEAD )
+	if( pEffect->liveTarget == xTL_DEAD )
 		bitFlag |= xTF_DEAD;
 	else
-	if( pEffect->liveTarget == XSKILL::xTL_ALL )
+	if( pEffect->liveTarget == xTL_ALL )
 		bitFlag |= xTF_ALL;
 	if( pSkillDat->GetstrIdentifier() == _T( "greater_taunt" ) ) {
 		// 타겟을 선별할때 각각 다른 부대의 타겟을 얻도록 함.
 		bitFlag |= xTF_DIFF_SQUAD;
 	}
 	for( auto pRecver : (*plistOutInvokeTarget) ) {
-		auto pUnit = static_cast<XBaseUnit*>( pRecver );
-		auto spUnit = (pUnit)? pUnit->GetThisUnit() : nullptr;
-		if( spUnit ) {
-			ary.Add( spUnit );
+		auto pObj = dynamic_cast<XEBaseWorldObj*>( pRecver );
+		if( pObj && pObj->GetType() == xOT_UNIT ) {
+			auto spUnit = std::static_pointer_cast<XBaseUnit>( pObj->GetThis() );
+			if( spUnit ) {
+				ary.Add( spUnit );
+			}
 		}
+//		auto pUnit = static_cast<XBaseUnit*>( pRecver );
+// 		auto spUnit = (pUnit)? pUnit->GetThisUnit() : nullptr;
+// 		if( spUnit ) {
+// 			ary.Add( spUnit );
+// 		}
 	}
 	XEObjMngWithType::sGet()->GetListUnitRadius2( &ary,
-												pTarget,
-												vCenter,
-												xMETER_TO_PIXEL(meter),
-												bitSideFilter,
-												numApply,
-												bIncludeCenter != FALSE,
-												bitFlag );
+																								pTarget,
+																								vCenter,
+																								xMETER_TO_PIXEL( meter ),
+																								bitSideFilter,
+																								numCost,
+																								bIncludeCenter != FALSE,
+																								bitFlag );
 	plistOutInvokeTarget->clear();
 	for( auto spUnit : ary )	{
 		auto pRecv = static_cast<XSkillReceiver*>( spUnit.get() );
@@ -2071,14 +2093,15 @@ int XBaseUnit::GetListObjsRadius( XVector<XSkillReceiver*> *plistOutInvokeTarget
  @brief 새 스킬시스템에서 공통으로 사용할 이펙트 생성 함수.
  @param pvPos null이 아니면 이 좌표에 생성시켜야 한다.
 */
-ID XBaseUnit::OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
-																XSKILL::xtPoint createPoint,
+ID XBaseUnit::OnCreateSkillSfx( XSkillReceiver* pTarget,
+																const XSkillDat *pSkillDat,
+																xtPoint createPoint,
 																LPCTSTR szSpr,
 																ID idAct,
 																float secPlay,
 																const XE::VEC2& vPos )
 {
-	auto pSfx = CreateSfxObj( createPoint, szSpr, idAct, secPlay, TRUE, 25.f, vPos );
+	auto pSfx = CreateSfxObj( pTarget, createPoint, szSpr, idAct, secPlay, TRUE, 25.f, vPos );
 	if( pSfx ) {
 		if( pSkillDat->GetstrIdentifier() == _T( "lava_fragments" ) ) {
 			const float gravity = 0.1f;
@@ -2089,17 +2112,16 @@ ID XBaseUnit::OnCreateSkillSfx( XSKILL::XSkillDat *pSkillDat,
 	return 0;
 }
 
-XSkillSfx* XBaseUnit::OnCreateSkillSfxShootTarget(
-																				XSkillDat *pSkillDat,
-																				XSkillReceiver *pBaseTarget,
-																				int level,
-																				const _tstring& strSpr,
-																				ID idAct,
-																				xtPoint createPoint,
-																				float secPlay,
-																				const XE::VEC2& vPos)
+XSkillSfx* XBaseUnit::OnCreateSkillSfxShootTarget( XSkillDat *pSkillDat,
+																									 XSkillReceiver *pBaseTarget,
+																									 int level,
+																									 const _tstring& strSpr,
+																									 ID idAct,
+																									 xtPoint createPoint,
+																									 float secPlay,
+																									 const XE::VEC2& vPos )
 {
-	auto pSfx = CreateSfxObj( createPoint, strSpr.c_str(), idAct, secPlay, FALSE, 25.f, vPos );
+	auto pSfx = CreateSfxObj( pBaseTarget, createPoint, strSpr.c_str(), idAct, secPlay, FALSE, 25.f, vPos );
 	return pSfx;
 }
 
@@ -2108,166 +2130,196 @@ XSkillSfx* XBaseUnit::OnCreateSkillSfxShootTarget(
  @param wAdjZ 만약 createPoint가 TARGET_TOP일경우 필요하다면 추가보정치를 준다.
  @param bScale this객체의 크기에 비례해서 sfx의 크기도 변해야 한다면 TRUE
 */
-XObjLoop* XBaseUnit::CreateSfxObj( XSKILL::xtPoint createPoint,
+XObjLoop* XBaseUnit::sCreateSfxObj( XSPWorldObjConst spObj,
+																		xtPoint createPoint,
 																		LPCTSTR szSpr,
 																		ID idAct,
 																		float secPlay,
 																		BOOL bScale /*= FALSE*/,
 																		float wAdjZ/* = 0.f*/,
-																		const XE::VEC2& vPos/* = XE::VEC2(0)*/ )
+																		const XE::VEC2& vPos/* = XE::VEC2()*/ )
 {
-
+#if defined(_CHEAT) && defined(WIN32)
+	if( XAPP->m_dwFilter & xBIT_NO_CREATE_SKILL_SFX )
+		return nullptr;
+#endif // defined(_CHEAT) && defined(WIN32)
+	auto pObj = spObj.get();
+//	auto spUnit = GetThisUnit();
+	auto pUnit = (pObj && pObj->GetType() == xOT_UNIT)? static_cast<const XBaseUnit*>( pObj ) : nullptr;
+//	XSPUnitConst spUnit = (pUnit)? pUnit->GetThisUnit() : nullptr;
+#ifdef _DEBUG
+	XTRACE( "CreateSfxObj: %s, %d, sec=%.1f", szSpr, idAct, secPlay );
+#endif // _DEBUG
 	XObjLoop *pSfx = NULL;
-	if( vPos.IsZero() == FALSE ) {
+	if( !vPos.IsZero() ) {
 		pSfx = new XObjLoop( XGAME::xOT_SFX, XE::VEC3(vPos.x, 0, vPos.y),
 												szSpr, idAct, secPlay );
 	} else {
-		if( createPoint == XSKILL::xPT_TARGET_CENTER ) {
-			// this를 따라다니지 않음.
-			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(), GetvCenterWorld(),
+		if( createPoint == xPT_TARGET_CENTER ) {
+			// pTarget를 따라다니지 않음.
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvCenterWorld(),
 													szSpr, idAct, secPlay );
 		} else
-		if( createPoint == XSKILL::xPT_TARGET_BOTTOM ) {
-			// this를 따라다니지 않음.
-			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, GetThisUnit(), GetvwPos(),
+		if( createPoint == xPT_TARGET_BOTTOM ) {
+			// pTarget를 따라다니지 않음.
+			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, spObj, pObj->GetvwPos(),
 													szSpr, idAct, secPlay );
 		} else
-		if( createPoint == XSKILL::xPT_TARGET_POS ) {
+		if( createPoint == xPT_TARGET_POS ) {
 			if( secPlay > 0.f )
-				// this를 따라다님
-				pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit()
+				// pTarget를 따라다님
+				pSfx = new XObjLoop( XGAME::xOT_SFX, spObj
 													, szSpr, idAct, secPlay );
 			else
-				pSfx = new XObjLoop( XGAME::xOT_SFX, GetvwPos(),
+				pSfx = new XObjLoop( XGAME::xOT_SFX, pObj->GetvwPos(),
 														szSpr, idAct, secPlay );
 		} else
-		if( createPoint == XSKILL::xPT_TARGET_TRACE_CENTER ) {
+		if( createPoint == xPT_TARGET_TRACE_CENTER ) {
 			// 타겟의 중심을 따라다님
-			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(),
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
 													szSpr, idAct, secPlay );
-			pSfx->SetvAdjust( 0.f, 0.f, -GetSize().h * 0.5f );
+			pSfx->SetvAdjust( 0.f, 0.f, -pObj->GetSize().h * 0.5f );
 		} else
-		if( createPoint == XSKILL::xPT_TARGET_TRACE_POS ) {
+		if( createPoint == xPT_TARGET_TRACE_POS ) {
 			// 타겟의 좌표를 따라다님
-			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(),
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
 													szSpr, idAct, secPlay );
 		} else
-		if( createPoint == XSKILL::xPT_TARGET_TRACE_BOTTOM ) {
-			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, GetThisUnit(),
+		if( createPoint == xPT_TARGET_TRACE_BOTTOM ) {
+			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, spObj,
 													szSpr, idAct, secPlay );
 		} else
-		if( createPoint == XSKILL::xPT_ACTION_EVENT ) {
-			TransformByObj( &m_vlActionEvent );
-			auto vwActionPos = GetvwPos() + m_vlActionEvent;
-			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(), vwActionPos,
-													szSpr, idAct, secPlay );
+		if( createPoint == xPT_ACTION_EVENT ) {
+//			TransformByObj( &m_vlActionEvent );
+			if( pUnit ) {
+				auto vwActionPos = pObj->GetvwPos() + pUnit->GetvlActionEvent();
+				pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, vwActionPos,
+														szSpr, idAct, secPlay );
+			}
 		} else
-		if( createPoint == XSKILL::xPT_TARGET_TOP ) {
-			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(), GetvwTop( wAdjZ ),
+		if( createPoint == xPT_TARGET_TOP ) {
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvwTop( wAdjZ ),
 													szSpr, idAct, secPlay );
 		} else 
-		if( createPoint == XSKILL::xPT_TARGET_TRACE_TOP ) {
+		if( createPoint == xPT_TARGET_TRACE_TOP ) {
 			// 타겟의 좌표를 따라다님
-			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(), 
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
 													szSpr, idAct, secPlay );
-			pSfx->SetvAdjust( 0.f, 0.f, -GetSize().h );
+			pSfx->SetvAdjust( 0.f, 0.f, -pObj->GetSize().h );
 		} else {
-			pSfx = new XObjLoop( XGAME::xOT_SFX, GetThisUnit(), GetvCenterWorld(),
+			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvCenterWorld(),
 													szSpr, idAct, secPlay );
 		}
 	}
 
-
-
-	XBREAK( pSfx == NULL );
-	pSfx->SetDir( GetDir() );
-	if( XE::IsSame(szSpr, _T("sfx_frozen.spr")) ) {
-		pSfx->SetAlpha( 0.5f );
+	XBREAK( pSfx == nullptr );
+	if( pUnit ) {
+		pSfx->SetDir( pUnit->GetDir() );
+		if( bScale ) {
+			float scaleFactor = pUnit->GetScaleFactor();
+			if( pUnit->IsHero() )
+				scaleFactor = 1.f;
+			pSfx->SetScaleObj( scaleFactor );
+		}
 	}
-	if( bScale ) {
-		float scaleFactor = GetScaleFactor();
-		if( IsHero() )
-			scaleFactor = 1.f;
-		pSfx->SetScaleObj( scaleFactor );
-	}
-	XBattleField::sGet()->AddObj( WorldObjPtr( pSfx ) );
+// 	if( XE::IsSame(szSpr, _T("sfx_frozen.spr")) ) {
+// 		pSfx->SetAlpha( 0.5f );
+// 	}
+	XBattleField::sGet()->AddObj( XSPWorldObj( pSfx ) );
 	return pSfx;
 }
 
 /**
- @brief
+ @brief pTarget에 sfx를 생성한다.
 */
-XSkillReceiver* XBaseUnit::CreateSfxReceiver( EFFECT *pEffect, float sec )
+XObjLoop* XBaseUnit::CreateSfxObj( XSkillReceiver* pTarget,
+																	 xtPoint createPoint,
+																	 LPCTSTR szSpr,
+																	 ID idAct,
+																	 float secPlay,
+																	 BOOL bScale /*= FALSE*/,
+																	 float wAdjZ/* = 0.f*/,
+																	 const XE::VEC2& vPos/* = XE::VEC2()*/ ) const
 {
-	BIT bitSide = 0;
-	if( pEffect->invokefiltFriendship == xfHOSTILE ) {
-		if( IsPlayer() )
-			bitSide = XGAME::xSIDE_PLAYER;	// 적에게 써야 하는 이펙트면 sfx이펙트의 편은 우리편으로 해야함.
-		else
-			bitSide = XGAME::xSIDE_OTHER;
-	} else {
-		if( IsPlayer() )
-			bitSide = XGAME::xSIDE_OTHER;
-		else
-			bitSide = XGAME::xSIDE_PLAYER;
-	}
-	auto pReceiver = new XSkillSfxReceiver( bitSide, GetvwPos(), sec );
+	auto pObj = dynamic_cast<XEBaseWorldObj*>( pTarget );
+	auto spObj = pObj->GetThisConst();
+	return sCreateSfxObj( spObj, createPoint, szSpr, idAct, secPlay, bScale, wAdjZ, vPos );
+}
+/**
+ @brief this가 시전자
+*/
+XSkillReceiver* XBaseUnit::CreateSfxReceiver( const XE::VEC2& vPos, const EFFECT *pEffect, float sec )
+{
+	// sfx가 아군을 힐링하건 적을 죽이건 관계없이 sfx의 진영은 시전자의 진영과 같다.
+	const BIT bitSide = GetCamp().GetbitCamp();
+	XE::VEC3 vwPos( vPos.x, vPos.y, 0 );
+	const auto& eff = pEffect->m_PersistEff;
+// 	auto pReceiver = new XSkillSfxReceiver( bitSide, vwPos, eff.m_strSpr, eff.m_idAct, sec );
+	auto pReceiver = new XSkillSfxReceiver( bitSide, vwPos, sec );
 	AddObj( pReceiver );
 	return pReceiver;
 }
 
 /**
- @brief
+ @brief 타겟(pBaseTarget)에게 스킬효과를 시전
 */
 void XBaseUnit::cbOnArriveSkillObj( XSkillShootObj *pArrow,
-									XSKILL::XSkillDat *pSkillDat,
-									int level,
-									XSKILL::XSkillReceiver *pBaseTarget )
+																		XSkillDat *pSkillDat,
+																		int level,
+																		XSkillReceiver *pBaseTarget )
 {
-	if( pSkillDat->GetstrIdentifier() == _T("throw_spear_shoot" ))	{
-		XBuffObj *pBuffObj = FindBuffSkill( _T("gungnir") );
-		if( pBuffObj )		{
-			// 궁니르버프가 있을때 창으로 대상을 맞춤.
-			pBuffObj->OnEventJunctureCommon( XSKILL::xCOND_HARD_CODE );
-		}
-	}
+// 	if( pSkillDat->GetstrIdentifier() == _T("throw_spear_shoot" ))	{
+// 		XBuffObj *pBuffObj = FindBuffSkill( _T("gungnir") );
+// 		if( pBuffObj )		{
+// 			// 궁니르버프가 있을때 창으로 대상을 맞춤.
+// //			pBuffObj->OnEventJunctureCommon( xCOND_HARD_CODE );
+// 		}
+// 	}
 	XSkillUser::CastSkillToBaseTarget( pSkillDat, level, pBaseTarget, XE::VEC2(0), pSkillDat->GetidSkill() );
 }
 
 /**
- @brief
+ @brief ex)멀티샷
 */
-XSKILL::XSkillUser* XBaseUnit::CreateAndAddToWorldShootObj(
-										XSKILL::XSkillDat *pSkillDat,
-// 										XSKILL::EFFECT *pEffect,
-										int level,
-										XSKILL::XSkillReceiver *pBaseTarget,
-// 										XSKILL::XSkillReceiver *pCastingTarget,
-										XSKILL::XSkillUser *pCaster,
-										const XE::VEC2& vPos )
+XSkillUser* 
+XBaseUnit::CreateAndAddToWorldShootObj( XSkillDat *pDat,
+																				int level,
+																				XSkillReceiver *pBaseTarget,
+																				XSkillUser *pCaster,
+																				const XE::VEC2& vPos )
 {
+	// 타점좌표를 this객체의 크기와 방향에 맞게 변형시킨다.
 	TransformByObj( &m_vlActionEvent );
 	XE::VEC3 vwSrc = GetvwPos() + m_vlActionEvent;
-	if( vwSrc.IsZero() )
-		vwSrc = GetvCenterWorld();
-	XBaseUnit *pTargetUnit = dynamic_cast<XBaseUnit*>( pBaseTarget );
+// 	if( vwSrc.IsZero() )
+// 		vwSrc = GetvCenterWorld();
+	auto pTargetUnit = dynamic_cast<XBaseUnit*>( pBaseTarget );
+	// 프레임당 이동픽셀
+	float pixelPerFrame = pDat->GetMovePixelPerFrame(); // 24.f;
+	if( pixelPerFrame == 0 ) {
+		if( pDat->GetMoveType() == xMT_ARC )
+			pixelPerFrame = 11.f;
+		else
+			pixelPerFrame = 22.f;
+	}
 	auto pArrow = new XSkillShootObj( GetpWndWorld(),
-									GetThisUnit(),
-									pTargetUnit->GetThisUnit(),
-									vwSrc,
-									pTargetUnit->GetvwPos(),
-									0,
-									pSkillDat->GetstrShootObj().c_str(),
-									pSkillDat->GetidShootObj() );
-	pArrow->RegisterCallback( this, &XBaseUnit::cbOnArriveSkillObj, pSkillDat,
-// 																	pEffect,
-																	level,
-																	pBaseTarget );
-// 																	pCastingTarget );
+																		GetThisUnit(),
+																		pTargetUnit->GetThisUnit(),
+																		vwSrc,
+																		pTargetUnit->GetvwPos(),
+																		0,
+																		pDat->GetstrShootObj().c_str(),
+																		pDat->GetidShootObj(),
+																		pixelPerFrame );
+	pArrow->SetMoveType( pDat->GetMoveType() );
+	pArrow->RegisterCallback( this, &XBaseUnit::cbOnArriveSkillObj,
+														pDat,
+														level,
+														pBaseTarget );
 	// 타격 sfx를 지정한다.
 	pArrow->SetpDelegate( this );
-	pArrow->SetstrIdentifier( _tstring(_T("skill.shoot.obj")) );
-	GetpWndWorld()->AddObj( WorldObjPtr( pArrow ) );
+	pArrow->SetstrIdentifier( _tstring( _T( "skill.shoot.obj" ) ) );
+	GetpWndWorld()->AddObj( XSPWorldObj( pArrow ) );
 	return this;
 }
 
@@ -2275,17 +2327,17 @@ void XBaseUnit::OnDestroySFX( XBuffObj *pSkillRecvObj, ID idSFX )
 {
 }
 
-int XBaseUnit::GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList,
-							XSKILL::XSkillDat *pSkillDat,
-							const XSKILL::EFFECT *pEffect,
-							xtGroup typeGroup )
+int XBaseUnit::GetGroupList( XVector<XSkillReceiver*> *pAryOutGroupList,
+														 const XSkillDat *pSkillDat,
+														 const EFFECT *pEffect,
+														 xtGroup typeGroup )
 {
 	if( typeGroup == xGT_ME )	{
 		GetpSquadObj()->GetListMember( pAryOutGroupList );
 	} else
 	if( typeGroup == xGT_TARGET_PARTY )	{
-		if( m_spTarget.lock() != nullptr )
-			m_spTarget.lock()->GetpSquadObj()->GetListMember( pAryOutGroupList );
+		if( m_spTarget != nullptr )
+			m_spTarget->GetpSquadObj()->GetListMember( pAryOutGroupList );
 	} else
 	if( typeGroup == xGT_RANDOM_PARTY_FRIENDLY )	{
 		auto spLegionObj = GetspLegionObj();
@@ -2312,15 +2364,13 @@ int XBaseUnit::GetGroupList( XVector<XSKILL::XSkillReceiver*> *pAryOutGroupList,
 }
 
 /**
- @brief 특성 pSkillObj의 레벨을 돌려준다.
+ @brief 특성 pDat의 레벨을 돌려준다.
 */
-int XBaseUnit::GetSkillLevel( XSKILL::XSkillObj* pSkillObj )
+int XBaseUnit::GetSkillLevel( XSkillDat* pDat )
 {
-// 	if( IsPlayer() == false )
-// 		return 0;
-	if( pSkillObj->IsAbilityCategory() )	{
+	if( pDat->IsAbilityCategory() )	{
 		const auto unit = GetSquadUnit();
-		auto pNode = XPropTech::sGet()->GetpNodeBySkill( unit, pSkillObj->GetStrIdentifier() );
+		auto pNode = XPropTech::sGet()->GetpNodeBySkill( unit, pDat->GetIds() );
 		XBREAK( pNode == nullptr );
 		auto pHero = GetpHero();
 		XBREAK( pHero == nullptr );
@@ -2330,9 +2380,9 @@ int XBaseUnit::GetSkillLevel( XSKILL::XSkillObj* pSkillObj )
 	} else {
 		auto pHero = GetpHero();
 		if( XASSERT(pHero) ) {
-			if( pSkillObj->IsPassiveCategory() )
+			if( pDat->IsPassiveCategory() )
 				return pHero->GetlvPassive();
-			else if( pSkillObj->IsActiveCategory() )
+			else if( pDat->IsActiveCategory() )
 				return pHero->GetlvActive();
 		}
 	}
@@ -2343,7 +2393,7 @@ int XBaseUnit::GetSkillLevel( XSKILL::XSkillObj* pSkillObj )
 /**
  @brief pDat스킬을 사용할 적절한 타겟을 선정해서 돌려줘야한다.
 */
-XSKILL::XSkillReceiver* XBaseUnit::GetSkillBaseTarget( XSkillDat *pDat )
+XSkillReceiver* XBaseUnit::GetSkillBaseTarget( XSkillDat *pDat )
 {
 	if( pDat->GetbaseTarget() == xBST_CURR_TARGET ) {
 		float meter = 999.f;
@@ -2405,12 +2455,13 @@ BOOL XBaseUnit::OnFirstApplyState( XSkillUser *pCaster,
 									BOOL flagState,
 									int level )
 {
-//	CONSOLE("상태발동:%s", XGAME::GetStrState( (XGAME::xtState)idxState ));
+#ifdef _DEBUG
+	XTRACE("상태발동:%s", XGAME::GetStrState( (XGAME::xtState)idxState ));
+#endif // _DEBUG
 	// 상태발동 텍스트
-//#ifndef _XUZHU_HOME
-	auto pDmg = new XObjDmgNum( 0, xHT_STATE, idxState, GetvwTop() );
-	AddObj( pDmg );
-//#endif
+// 	auto pDmg = new XObjDmgNum( 0, xHT_STATE, idxState, GetvwTop() );
+// 	AddObj( pDmg );
+	CreateDmgNum( 0, 0, xHT_STATE, idxState );
 	switch( idxState )
 	{
 	case XGAME::xST_STUN:
@@ -2418,7 +2469,7 @@ BOOL XBaseUnit::OnFirstApplyState( XSkillUser *pCaster,
 		// 기절 이펙트
 		float secDuration = pEffect->GetDuration( level );
 		XBREAK( secDuration == 0 );
-		CreateSfxObj( XSKILL::xPT_TARGET_TOP, _T( "sfx_star.spr" ), 1, secDuration, TRUE, 24.f );
+		CreateSfxObj( this, xPT_TARGET_TOP, _T( "sfx_star.spr" ), 1, secDuration, TRUE, 24.f );
 		ChangeFSMStun( secDuration );
 	} break;
 	case XGAME::xST_TAUNT: {
@@ -2478,13 +2529,13 @@ int	XBaseUnit::OnClearSkill( XBuffObj* pBuffObj, XSkillDat *pSkillDat, EFFECT_OB
 /**
  @brief
 */
-XSKILL::XSkillReceiver* XBaseUnit::GetTargetObject( XSKILL::EFFECT *pEffect,
-													XSKILL::xtTargetCond cond )
+XSkillReceiver* XBaseUnit::GetTargetObject( EFFECT *pEffect,
+													xtTargetCond cond )
 {
 	XBaseUnit *pFind = NULL;;
-	if( cond == XSKILL::xTC_NEAREST )	{
-		if( pEffect->castfiltFriendship & XSKILL::xfHOSTILE )		{
-			WorldObjPtr spObj;
+	if( cond == xTC_NEAREST )	{
+		if( pEffect->castfiltFriendship & xfHOSTILE )		{
+			XSPWorldObj spObj;
 			spObj = XEObjMngWithType::sGet()->FindNearUnitByFunc( this,
 																GetvwPos(),
 																0,
@@ -2493,7 +2544,7 @@ XSKILL::XSkillReceiver* XBaseUnit::GetTargetObject( XSKILL::EFFECT *pEffect,
 			if( spObj != nullptr )
 				pFind = static_cast<XBaseUnit*>( spObj.get() );
 		} else
-		if( pEffect->castfiltFriendship & XSKILL::xfALLY )		{
+		if( pEffect->castfiltFriendship & xfALLY )		{
 			// 아군중에서 검색
 		} else		{
 			XBREAK(1);		// 아직 이런조건은 쓰지 않음.
@@ -2521,11 +2572,11 @@ BOOL CompLeastHp( XBaseUnit *pSrc, XBaseUnit *pUnit1, XBaseUnit *pUnit2 )
  @brief 조건에 맞는 기준타겟을 찾아서 돌려줘야 한다.
 */
 XSkillReceiver* XBaseUnit::GetBaseTargetByCondition( XSkillDat *pSkillDat,
-												xtBaseTargetCond cond,
-												float meter,
-												int level,
-												XSkillReceiver *pCurrTarget,
-												const XE::VEC2& vPos )
+																										 xtBaseTargetCond cond,
+																										 float meter,
+																										 int level,
+																										 XSkillReceiver *pCurrTarget,
+																										 const XE::VEC2& vPos )
 {
 	XSPLegionObj spLegionObj;
 	if( pSkillDat->GetbitBaseTarget() == xfALLY )
@@ -2537,12 +2588,11 @@ XSkillReceiver* XBaseUnit::GetBaseTargetByCondition( XSkillDat *pSkillDat,
 		BOOL bHighest = FALSE;
 		if( cond == xBTC_HIGHEST_HP_PARTY )
 			bHighest = TRUE;
-		auto spSquad = spLegionObj->FindNearSquadLeastHp(
-															GetpSquadObj(),
-															xMETER_TO_PIXEL(meter),
-															XGAME::xSIDE_OTHER,
-															bHighest );
-		if( spSquad != nullptr ) {
+		auto spSquad = spLegionObj->FindNearSquadLeastHp( GetpSquadObj(),
+																											xMETER_TO_PIXEL( meter ),
+																											XGAME::xSIDE_OTHER,
+																											bHighest );
+		if( spSquad ) {
 			auto spUnit = spSquad->GetspLiveMember();
 			return spUnit.get();
 		}
@@ -2573,20 +2623,20 @@ XSkillReceiver* XBaseUnit::GetBaseTargetByCondition( XSkillDat *pSkillDat,
 /**
  @brief 효과발동전 발동대상의 조건
 */
-BOOL XBaseUnit::IsInvokeTargetCondition( XSKILL::XSkillDat *pSkillDat,
-										const XSKILL::EFFECT *pEffect,
-										XSKILL::xtCondition condition,
-										DWORD condVal )
+BOOL XBaseUnit::IsInvokeTargetCondition( const XSkillDat *pSkillDat,
+																				 const EFFECT *pEffect,
+																				 xtCondition condition,
+																				 DWORD condVal )
 {
 	if( pSkillDat->GetstrIdentifier() == _T("surprise_attack") )
 	{
-		if( m_spTarget.lock() == nullptr )
+		if( m_spTarget == nullptr )
 			return FALSE;
-		if( m_spTarget.lock()->GetspTarget() == nullptr )
+		if( m_spTarget->GetspTarget() == nullptr )
 			return FALSE;
 		// 내가 잡고있는 타겟의 공격타겟부대가 우리 부대면 발동안함.
-		XBREAK( m_spTarget.lock()->GetspTarget()->GetpSquadObj() == nullptr );
-		if( m_spTarget.lock()->GetspTarget()->GetpSquadObj()->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj() )
+		XBREAK( m_spTarget->GetspTarget()->GetpSquadObj() == nullptr );
+		if( m_spTarget->GetspTarget()->GetpSquadObj()->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj() )
 			return FALSE;
 	} else
 	if( condition == xATTACK_TARGET_JOB )
@@ -2628,7 +2678,7 @@ BOOL XBaseUnit::IsInvokeTargetCondition( XSKILL::XSkillDat *pSkillDat,
 */
 XSkillReceiver* XBaseUnit::GetCurrTarget()
 {
-	if( m_spTarget.lock() == nullptr ) {
+	if( m_spTarget == nullptr ) {
 		auto spTarget = XBattleField::sGet()->FindNearSquadEnemy( m_pSquadObj );
 		if( spTarget != nullptr )		{
 			auto spUnitTarget = spTarget->FindAttackTarget( TRUE );
@@ -2636,7 +2686,7 @@ XSkillReceiver* XBaseUnit::GetCurrTarget()
 		}
 	}
 
-	return m_spTarget.lock().get();
+	return m_spTarget.get();
 }
 
 // SKILL
@@ -2644,18 +2694,24 @@ XSkillReceiver* XBaseUnit::GetCurrTarget()
 
 /**
  @brief 현재 크리티컬율을 바탕으로 랜덤돌려서 크리티컬인지 리턴받는다.
+ @param addCriticalRate 추가 치명타율.
 */
-bool XBaseUnit::IsCritical( XSPUnit spTarget )
+bool XBaseUnit::IsCritical( XSPUnit spTarget, float addCriticalRate )
 {
-	float ratioCritical = GetCriticalRatio();
-	if( spTarget != nullptr )	{
-		ratioCritical = spTarget->CalcAdjParam( ratioCritical, XGAME::xADJ_CRITICAL_RATE_RECV );
+	float rateCri = GetCriticalRatio();
+	rateCri += addCriticalRate;
+	if( rateCri > 1.f )
+		rateCri = 1.f;
+	if( rateCri < 0 )
+		rateCri = 0;
+	if( spTarget )	{
+		rateCri = spTarget->CalcAdjParam( rateCri, XGAME::xADJ_CRITICAL_RATE_RECV );
 		auto pBuff = FindBuffSkill( _T( "nearing_fire" ) );
 		if( pBuff && m_typeCurrMeleeType == XGAME::xMT_RANGE ) {
 			XE::VEC2 vDist = spTarget->GetvwPos().ToVec2() - GetvwPos().ToVec2();
 			float distSkill = xMETER_TO_PIXEL((float)pBuff->GetInvokeSizeByLevel());
 			if( vDist.Lengthsq() < distSkill * distSkill )
-				ratioCritical += pBuff->GetInvokeRatioByLevel();
+				rateCri += pBuff->GetInvokeRatioByLevel();
 		}
 		if( GetUnitType() == xUNIT_FALLEN_ANGEL ) {
 			// 계략 특성
@@ -2667,36 +2723,36 @@ bool XBaseUnit::IsCritical( XSPUnit spTarget )
 																													, spTarget->GetpSquadObj()
 																													, GetUnitType() );
 				if( spSquadWith != nullptr )
-					ratioCritical += pBuff->GetAbilMinbyLevel();
+					rateCri += pBuff->GetAbilMinbyLevel();
 			}
 		}
 	}
-	int prob = (int)(ratioCritical * 1000);
-	int dice = random( 1000 );
-	if( dice < prob )
-		return TRUE;
-	return FALSE;
-}
-
-/**
- @brief 현재 회피율을 바탕으로 랜덤돌려서 회피했는지 리턴받는다.
-*/
-bool XBaseUnit::IsEvade( XSKILL::xtDamage typeDamage, const XBaseUnit* pAttacker ) const
-{
-	float ratio = GetEvadeRatio( typeDamage, pAttacker );
-	int prob = (int)( ratio * 1000 );
-	int dice = random( 1000 );
+	int prob = (int)(rateCri * 1000);
+	int dice = xRandom( 1000 );
 	if( dice < prob )
 		return true;
 	return false;
 }
 
-float XBaseUnit::GetEvadeRatio( XSKILL::xtDamage typeDamage, const XBaseUnit* pAttacker ) const
+/**
+ @brief 현재 회피율을 바탕으로 랜덤돌려서 회피했는지 리턴받는다.
+*/
+bool XBaseUnit::IsEvade( xtDamage typeDamage, const XBaseUnit* pAttacker ) const
+{
+	float ratio = GetEvadeRatio( typeDamage, pAttacker );
+	int prob = (int)( ratio * 1000 );
+	int dice = xRandom( 1000 );
+	if( dice < prob )
+		return true;
+	return false;
+}
+
+float XBaseUnit::GetEvadeRatio( xtDamage typeDamage, const XBaseUnit* pAttacker ) const
 {
 	float ratio = 0.f;
-	if( typeDamage == XSKILL::xDMG_MELEE )
+	if( typeDamage == xDMG_MELEE )
 		ratio = CalcAdjParam( ratio, XGAME::xADJ_EVADE_RATE_MELEE );
-	else if( typeDamage == XSKILL::xDMG_RANGE )
+	else if( typeDamage == xDMG_RANGE )
 		ratio = CalcAdjParam( ratio, XGAME::xADJ_EVADE_RATE_RANGE );
 	if( pAttacker )
 	{
@@ -2751,7 +2807,7 @@ float XBaseUnit::hardcode_OnToDamage( XSPUnit& spTarget, float damage, XGAME::xt
 	// 종족 추가데미지
 	{
 		float tempRatio = 0;
-		const XSKILL::ADJ_PARAM *pAdjParam = GetAdjParam( XGAME::xADJ_ADD_DAMAGE_TRIBE );
+		const ADJ_PARAM *pAdjParam = GetAdjParam( XGAME::xADJ_ADD_DAMAGE_TRIBE );
 		tempRatio = CalcAdjParam( tempRatio, XGAME::xADJ_ADD_DAMAGE_TRIBE );
 		if( tempRatio > 0.f &&
 			(pAdjParam->dwParam[ 0 ] == spTarget->GetTribe() ||
@@ -2763,7 +2819,7 @@ float XBaseUnit::hardcode_OnToDamage( XSPUnit& spTarget, float damage, XGAME::xt
 	// 직업 추가데미지
 	{
 		float tempRatio = 0;
-		const XSKILL::ADJ_PARAM *pAdjParam = GetAdjParam( XGAME::xADJ_ADD_DAMAGE_CLASS );
+		const ADJ_PARAM *pAdjParam = GetAdjParam( XGAME::xADJ_ADD_DAMAGE_CLASS );
 		tempRatio = CalcAdjParam( tempRatio, XGAME::xADJ_ADD_DAMAGE_CLASS );
 		if( tempRatio > 0.f &&
 			(pAdjParam->dwParam[ 0 ] == spTarget->GetSquadUnit() ||
@@ -2773,7 +2829,8 @@ float XBaseUnit::hardcode_OnToDamage( XSPUnit& spTarget, float damage, XGAME::xt
 		}
 	}
 	if( spTarget != nullptr ) {
-		if( spTarget->IsState( XGAME::xST_FROZEN ) ) {
+		if( spTarget->IsState( XGAME::xST_FROZEN )
+				|| spTarget->IsState( XGAME::xST_ICE ) ) {
 			// 타겟이 빙결상태고 공격자가 파쇄화살 특성이 있으면
 			XBuffObj *pBuff = FindBuffSkill( _T("crushing_arrow") );
 			if( pBuff ) {
@@ -2784,13 +2841,13 @@ float XBaseUnit::hardcode_OnToDamage( XSPUnit& spTarget, float damage, XGAME::xt
 		}
 	}
 	// 백병전 하드코딩
-	if( IsRange() && m_spTarget.lock() && typeMelee == XGAME::xMT_MELEE ) {
+	if( IsRange() && m_spTarget && typeMelee == XGAME::xMT_MELEE ) {
 		auto pBuff = FindBuffSkill( _T("close_combat") );
 		if( pBuff ) {
 			auto pEffect = pBuff->GetEffectIndex( 0 );
 			if( pEffect ) {
 				// 현재 damage는 근접데미지이므로 원거리 데미지로 교체하고 증폭시킴
-				damage = GetAttackRangeDamage( m_spTarget.lock() );
+				damage = GetAttackRangeDamage( m_spTarget );
 				const auto abilMin = pEffect->GetAbilityMin( pBuff->GetLevel() );
 				damage *= abilMin;
 			}
@@ -2809,33 +2866,33 @@ XGAME::xtUnit XBaseUnit::GetSquadUnit() const
 	return m_pSquadObj->GetUnit();
 }
 
-float XBaseUnit::GetAdjDamage( float damage, BOOL bCritical, XSKILL::xtDamage typeDamage, XGAME::xtDamageAttr attrDamage )
+float XBaseUnit::GetAdjDamage( float damage, BOOL bCritical, xtDamage typeDamage, XGAME::xtDamageAttr attrDamage )
 {
 	if( bCritical == FALSE ) {
 		switch( typeDamage ) {
-		case XSKILL::xDMG_MELEE:
+		case xDMG_MELEE:
 			damage = CalcAdjParam( damage, XGAME::xADJ_MELEE_DAMAGE_RECV );
 			break;
-		case XSKILL::xDMG_RANGE:
+		case xDMG_RANGE:
 			damage = CalcAdjParam( damage, XGAME::xADJ_RANGE_DAMAGE_RECV );
 			break;
-		case XSKILL::xDMG_MAGIC:
+		case xDMG_MAGIC:
 			damage = CalcAdjParam( damage, XGAME::xADJ_MAG_DAMAGE_RECV );
 			break;
-		case XSKILL::xDMG_NONE:
+		case xDMG_NONE:
 		default:
 			break;
 		}
 	} else {
 		// 치명타
 		switch( typeDamage ) {
-		case XSKILL::xDMG_MELEE:
+		case xDMG_MELEE:
 			damage = CalcAdjParam( damage, XGAME::xADJ_MELEE_CRITICAL_RECV );
 			break;
-		case XSKILL::xDMG_RANGE:
+		case xDMG_RANGE:
 			damage = CalcAdjParam( damage, XGAME::xADJ_RANGE_CRITICAL_RECV );
 			break;
-		case XSKILL::xDMG_NONE:
+		case xDMG_NONE:
 		default:
 			break;
 		}
@@ -2851,7 +2908,7 @@ float XBaseUnit::GetAdjDamage( float damage, BOOL bCritical, XSKILL::xtDamage ty
 void XBaseUnit::OnStartBattle()
 {
 	// 전투시작 이벤트
-	XSkillReceiver::OnEventJunctureCommon( XSKILL::xJC_START_BATTLE );
+	XSkillReceiver::OnEventJunctureCommon( xJC_START_BATTLE );
 }
 
 void XBaseUnit::OnAfterStartBattle()
@@ -2861,10 +2918,10 @@ void XBaseUnit::OnAfterStartBattle()
 /**
  @brief 발동타겟에게 효과들이 걸리기 직전에 발생한다.
 */
-bool XBaseUnit::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
-																					XSKILL::XBuffObj *pBuffObj,
-																					XSKILL::XSkillDat *pSkillDat,
-																					const XSKILL::EFFECT *pEffect,
+bool XBaseUnit::OnEventApplyInvokeEffect( XSkillUser* pCaster,
+																					XBuffObj *pBuffObj,
+																					XSkillDat *pSkillDat,
+																					const EFFECT *pEffect,
 																					int level )
 {
 	const auto& idsSkill = pSkillDat->GetstrIdentifier();
@@ -2926,19 +2983,19 @@ bool XBaseUnit::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
  @brief 공격모션이 정해지고 난 직후 호출된다.
  공격타입에 따라 근접이나 원거리시점이 파라메터로 넘어온다.
 */
-void XBaseUnit::OnAfterAttackMotion( XSKILL::xtJuncture junc )
-{
-	XSkillReceiver::OnEventBeforeAttack( junc );
-}
+// void XBaseUnit::OnAfterAttackMotion( xtJuncture junc )
+// {
+// //	XSkillReceiver::OnEventBeforeAttack( junc );
+// }
 
 /**
  @brief XSkillReceiver::OnEventBeforeAttack의 결과로 날아온다.
 */
-void XBaseUnit::DelegateResultEventBeforeAttack( XSKILL::XBuffObj *pBuffObj, XSKILL::EFFECT *pEffect )
+void XBaseUnit::DelegateResultEventBeforeAttack( XBuffObj *pBuffObj, EFFECT *pEffect )
 {
-	xInvokeEffect eff;
-	eff.pDat = pBuffObj->GetpDatMutable();
-	eff.pEffect = pEffect;
+// 	xInvokeEffect eff;
+// 	eff.pDat = pBuffObj->GetpDatMutable();
+// 	eff.pEffect = pEffect;
 	// 특성발동 외치기
 //	if( IsPlayer() && IsHero() )
 	if( IsHero() ) {
@@ -2950,8 +3007,8 @@ void XBaseUnit::DelegateResultEventBeforeAttack( XSKILL::XBuffObj *pBuffObj, XSK
 		auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
 		AddObj( pObjText );
 	}
-
-	m_aryInvokeSkillByAttack.Add( eff );
+	// 이거 이제 필요없음.
+// 	m_aryInvokeSkillByAttack.Add( eff );
 }
 
 /**
@@ -2967,31 +3024,27 @@ void XBaseUnit::DelegateResultEventBeforeAttack( XSKILL::XBuffObj *pBuffObj, XSK
 /**
  @brief SkillUser에서 어떤 효과값을 적용하기전에 스킬에 따라 그 값을 증폭시킴.
 */
-void XBaseUnit::OnSkillAmplifyUser( XSKILL::XSkillDat *pDat,
-									XSkillReceiver *pIvkTarget,
-									const EFFECT *pEffect,
-									XSKILL::xtEffectAttr attrParam,
-									float *pOutRatio, float *pOutAdd )
+void XBaseUnit::OnSkillAmplifyUser( const XSkillDat *pDat,
+																		XSkillReceiver *pIvkTarget,
+																		const EFFECT *pEffect,
+																		xtEffectAttr attrParam,
+																		float *pOutRatio, float *pOutAdd )
 {
 	if( pDat->GetstrIdentifier() == _T("chill_explosion") ||
-		pDat->GetstrIdentifier() == _T("nvoke_freeze_arrow"))	{
-		if( attrParam == XSKILL::xEA_CAST_RADIUS )		{
+		pDat->GetstrIdentifier() == _T("invoke_freeze_arrow"))	{
+		if( attrParam == xEA_CAST_RADIUS )		{
 			XBuffObj *pBuff = FindBuffSkill( _T( "chill_spread" ) );
 			if( pBuff )			{
 				int level = pBuff->GetLevel();
 				auto pEffect = pBuff->GetEffectIndex( 0 );
 				if( pOutAdd && pEffect )				{
 					float abilityAdd = pEffect->invokeAbilityMin[ level ];
-					// 원래능력치가 음수였으면 증폭능력치도 음수로 바꾼다.
-// 					if( *pOutAdd < 0 && abilityAdd > 0 )
-// 						abilityAdd = -abilityAdd;
-// 					if( *pOutAdd > 0 && abilityAdd < 0 )
-// 						abilityAdd = -abilityAdd;
-					*pOutAdd = abilityAdd;
+					// 증가되는 비율만 담음.
+					*pOutRatio = abilityAdd;
 				}
 			}
 		} else
-		if( attrParam == XSKILL::xEA_ABILITY )		{
+		if( attrParam == xEA_ABILITY )		{
 			XBuffObj *pBuff = FindBuffSkill( _T( "chill_up" ) );
 			if( pBuff )			{
 				int level = pBuff->GetLevel();
@@ -3022,19 +3075,20 @@ void XBaseUnit::OnAdjustEffectAbility( XSkillDat *pSkillDat,
 		// 데미지 스킬류의 경우 공격력 * Abilitymin형태로 데미지를 만든다.
 		if( ( *pOutMin ) < 0 ) {
 			// 데미지를 공격력의 * n% 형태로 만든다.
+			ADD_LOG( m_strLog, "bySkill:\n");
 			if( IsRange() )
-				*pOutMin = GetAttackRangeDamage( XSPUnit() ) * ( *pOutMin );
+				*pOutMin = GetAttackRangeDamage( m_spTarget ) * ( *pOutMin );
 			else
-				*pOutMin = GetAttackMeleeDamage( XSPUnit() ) * ( *pOutMin );
-		}
-		else
+				*pOutMin = GetAttackMeleeDamage( m_spTarget ) * ( *pOutMin );
+		} else {
 			*pOutMin = GetMaxHp() * ( *pOutMin );
+		}
 	} else
 	if( invokeParam == XGAME::xADJ_ATTACK ) {
 		// 공격력보정시에 this가 "열손실" 특성이 있으면.
 		if( pSkillDat->GetstrIdentifier() == _T( "heat_loss" ) ) {
-			if( !m_spTarget.expired() ) {
-				XE::VEC2 vDist = m_spTarget.lock()->GetvwPos().ToVec2() - GetvwPos().ToVec2();
+			if( m_spTarget ) {
+				XE::VEC2 vDist = m_spTarget->GetvwPos().ToVec2() - GetvwPos().ToVec2();
 				float radiusPixel = GetAttackRadiusByPixel();	// 사거리
 				float rate = vDist.Length() / (radiusPixel * 0.5f);
 				if( rate > 1.f )
@@ -3244,30 +3298,18 @@ float XBaseUnit::GetBaseAtkMeleeDmg()
 /**
  @brief 실제 타겟에게 가해지는 데미지를 얻는다
 */
-float XBaseUnit::GetAttackMeleeDamage( XSPUnit spTarget )
+float XBaseUnit::GetAttackMeleeDamage( XSPUnit spTarget, bool bForDraw )
 {
-//	float damage = GetAttackMeleePower();
 	float damage = GetBaseAtkMeleeDmg();
 	// 스킬 보정치 추가
 	float addRatio = GetAddRatioDamage( spTarget );
 	// 추가로 더해질 피해율을 누적시켜둔다.
 	const auto oldDmg = damage;
 	damage = CalcAdjParam( damage, XGAME::xADJ_DAMAGE, addRatio );
-	ADD_LOG( m_strLog, "기본피해량:%.1f, 추가피해:+%.1f(%.1f%%)=%.1f, ", oldDmg, damage-oldDmg, addRatio * 100.f, damage );
-
-// 	auto gradeLegion = GetspLegionObj()->GetspLegion()->GetgradeLegion();
-// 	// 기본hp에 추가값이 있으면 곱한다. 엘리트나 레이드군단이라던가 보석광산으로 인해 곱해지는값이 변할수 있다.
-// 	float rateAtk = GetspLegionObj()->GetspLegion()->GetRateAtk();
-// 	if( gradeLegion != XGAME::xGL_NORMAL && rateAtk == 1.f ) {
-// 		// 정예나 레이드인데 배수가 지정되지 않으면 디폴트 배수를 사용함.
-// 		if( gradeLegion == XGAME::xGL_ELITE )
-// 			rateAtk = RATE_ATK_DEFAULT_ELITE;
-// 		else if( gradeLegion == XGAME::xGL_RAID )
-// 			rateAtk = RATE_ATK_DEFAULT_RAID;
-// 	}
-// 	const float rateAtkSq = GetpSquadObj()->GetpSquadron()->GetmulAtk();
-// 	XBREAK( rateAtkSq == 0 );
-// 	damage *= rateAtk * rateAtkSq;
+#ifdef _XSINGLE
+	if( !bForDraw )
+ 		ADD_LOG( m_strLog, "melee:기본피해량:%.1f, 추가피해:+%.1f(%.1f%%)=%.1f, ", oldDmg, damage-oldDmg, addRatio * 100.f, damage );
+#endif // _XSINGLE
 
 	return damage;
 }
@@ -3325,7 +3367,7 @@ float XBaseUnit::GetBaseAtkRangeDmg()
 /**
  @brief 실제 가해지는 원거리 데미지를 얻는다.
 */
-float XBaseUnit::GetAttackRangeDamage( XSPUnit spTarget )
+float XBaseUnit::GetAttackRangeDamage( XSPUnit spTarget, bool bForDraw )
 {
 //	float damage = GetAttackRangePower();
 	float damage = GetBaseAtkRangeDmg();
@@ -3333,21 +3375,10 @@ float XBaseUnit::GetAttackRangeDamage( XSPUnit spTarget )
 	float addRatio = GetAddRatioDamage( spTarget );
 	const auto oldDmg = damage;
 	damage = CalcAdjParam( damage, XGAME::xADJ_DAMAGE, addRatio );
-	ADD_LOG( m_strLog, "기본피해량:%.1f, 추가피해:+%.1f(%.1f%%)=%.1f, ", oldDmg, damage - oldDmg, addRatio * 100.f, damage );
-// 	auto gradeLegion = GetspLegionObj()->GetspLegion()->GetgradeLegion();
-// 	// 기본hp에 추가값이 있으면 곱한다. 엘리트나 레이드군단이라던가 보석광산으로 인해 곱해지는값이 변할수 있다.
-// 	float rateAtk = GetspLegionObj()->GetspLegion()->GetRateAtk();
-// 	if( gradeLegion != XGAME::xGL_NORMAL && rateAtk == 1.f ) {
-// 		// 정예나 레이드인데 배수가 지정되지 않으면 디폴트 배수를 사용함.
-// 		if( gradeLegion == XGAME::xGL_ELITE )
-// 			rateAtk = RATE_ATK_DEFAULT_ELITE;
-// 		else if( gradeLegion == XGAME::xGL_RAID )
-// 			rateAtk = RATE_ATK_DEFAULT_RAID;
-// 	}
-// 	auto pSq = GetpSquadObj()->GetpSquadron();
-// 	const float rateAtkSq = pSq->GetmulAtk();
-// 	XBREAK( rateAtkSq == 0 );
-// 	damage *= rateAtk * rateAtkSq;
+#ifdef _XSINGLE
+	if( !bForDraw )
+		ADD_LOG( m_strLog, "range:기본피해량:%.1f, 추가피해:+%.1f(%.1f%%)=%.1f, \n", oldDmg, damage - oldDmg, addRatio * 100.f, damage );
+#endif
 	return damage;
 }
 
@@ -3528,30 +3559,30 @@ void XBaseUnit::StartAttackDelay( XSPUnit spTarget, float secMin )
 /**
  @brief 스킬시스템에 발동스킬이 실행되기전에 호출된다. 다른 발동스킬을 원한다면 이곳에 하드코딩
 */
-bool XBaseUnit::OnInvokeSkill( XSKILL::XSkillDat *pDat,
-															const XSKILL::EFFECT *pEffect,
-															XSKILL::XSkillReceiver* pTarget,
-															int level,
-															_tstring* pstrOut )
-
+bool XBaseUnit::OnInvokeSkill( const XSkillDat *pDat,
+															 const EFFECT *pEffect,
+															 XSkillReceiver* pTarget,
+															 int level,
+															 _tstring* pstrOut )
 {
+// 	for( 버프 ) {
+// 		if( pEff->발동대체 && pEff->발동대체 == pDat->GetIds() ) {
+// 			auto bOk = XSKILL::DoDiceInvokeRatio( pEff, 버프->GetLevel() );
+// 			if( bOk )
+// 				return pEff->발동스킬;
+// 		}
+// 	}
 	if( pDat->GetstrIdentifier() == _T("chill_blast_arrow") )	{
 		// 냉기폭발 화살의 스킬이 발동될때 대신 빙결화살이 발사되도록 한다.흡혈
-		*pstrOut = _T("invoke_freeze_arrow");
-	} else
-	// 골렘의 용암파편 특성
-	if( *pstrOut == _T("invoke_lava_fragments"))	{
-		return true;
-// 		if( m_timerInvokeHitter.IsOff() )		{		이렇게 하면 쏜즈가 무슨소용인가.
-// 			m_timerInvokeHitter.Set( 1.f );
-// 			return true;
-// 		}
-// 		// 쏜즈가 발동되고 1초는 지나야 다음 쏜즈가 발동된다.
-// 		if( m_timerInvokeHitter.IsOver() )		{
-// 			m_timerInvokeHitter.Reset();
-// 			return true;
-// 		}
-// 		return false;
+		auto pBuff = FindBuffSkill( _T( "freeze_arrow" ) );
+		if( pBuff  ) {
+			auto prob = pBuff->GetInvokeRatioByLevel();
+			auto pEff = pBuff->GetEffectIndex( 0 );
+			auto bOk = XSKILL::DoDiceInvokeRatio( pEff, level );
+			if( bOk ) {
+				*pstrOut = pEff->strInvokeSkill.c_str(); // _T( "invoke_freeze_arrow" );
+			}
+		}
 	}
 	return true;
 }
@@ -3567,15 +3598,13 @@ void XBaseUnit::DoHeal( float addHp )
 	// 힐 받은양 누적
 	GetpStatObj()->AddHeal( GetpHero()->GetsnHero(), addHp );
 	AddHp( addHp );
-//	if( this->IsPlayer() )
 	{
-		XObjDmgNum *pDmg = new XObjDmgNum( addHp,
-														xHT_HIT, 0,
-// 														FALSE,
-// 														false,
-														GetvwTop() );
-		pDmg->SetCol( XCOLOR_GREEN );
-		AddObj( pDmg );
+		CreateDmgNum( addHp, xBHT_HIT, xHT_NONE, 0, _T(""), XCOLOR_GREEN );
+// 		XObjDmgNum *pDmg = new XObjDmgNum( addHp,
+// 																			 xHT_HIT, 0,
+// 																			 GetvwTop() );
+// 		pDmg->SetCol( XCOLOR_GREEN );
+// 		AddObj( pDmg );
 	}
 }
 
@@ -3583,13 +3612,13 @@ void XBaseUnit::DoHeal( float addHp )
  @brief 좌표에 생성되어야 하는 지속효과객체를 생성한다.
  시전자는 this
 */
-void XBaseUnit::OnCastEffectToPos( XSKILL::XSkillDat *pSkillDat,
-									XSKILL::EFFECT *pEffect,
+void XBaseUnit::OnCastEffectToPos( XSkillDat *pSkillDat,
+									EFFECT *pEffect,
 									int level,
 									float sec,
 									float radiusMeter,
 									BIT bitSideInvokeTarget,	// 발동되어야 하는 발동대상우호
-									XSKILL::XSkillReceiver *pBaseTarget,
+									XSkillReceiver *pBaseTarget,
 									const XE::VEC2& vPos )
 {
 	float dmg = 1.f;
@@ -3615,11 +3644,11 @@ float XBaseUnit::GetVampiricRatio()
 /**
  @brief GetInvokeTarget()에서 발동범위를 결정하기전에 호출되어진다.
 */
-float XBaseUnit::OnInvokeTargetSize( XSKILL::XSkillDat *pSkillDat,
-									const XSKILL::EFFECT *pEffect,
-									int level,
-									XSKILL::XSkillReceiver *pCastingTarget,
-									float size )
+float XBaseUnit::OnInvokeTargetSize( const XSkillDat *pSkillDat,
+																		 const EFFECT *pEffect,
+																		 int level,
+																		 XSkillReceiver *pCastingTarget,
+																		 float size )
 {
 	if( GetUnitType() == xUNIT_TREANT ) {
 		const auto idsSkill = pSkillDat->GetstrIdentifier();
@@ -3634,13 +3663,6 @@ float XBaseUnit::OnInvokeTargetSize( XSKILL::XSkillDat *pSkillDat,
 			}
 		}
 	}
-// 	if( pSkillDat->GetstrIdentifier() == _T( "view_blocked" ) ) {
-// 		auto pBuff = FindBuffSkill( _T( "cordyceps" ) );
-// 		if( pBuff ) {
-// 			// 시야차단 특성이 발동될때 "무성한나무"특성이 있다면 반경 증가
-// 			return pBuff->GetInvokeSizeByLevel();
-// 		}
-// 	}
 	return size;
 }
 
@@ -3678,9 +3700,9 @@ XSPUnit XBaseUnit::GetspLeader()
 	return GetpSquadObj()->GetspLeaderUnit();
 }
 
-void XBaseUnit::OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster
-																		, XSKILL::XSkillDat* pSkillDat
-																		, const XSKILL::EFFECT *pEffect
+void XBaseUnit::OnApplyEffectAdjParam( XSkillUser *pCaster
+																		, XSkillDat* pSkillDat
+																		, const EFFECT *pEffect
 																		, float abilMin )
 {
 	// adjParam이 적용될때 거기에 맞는 텍스트(xxx상승/하락)를 띄워준다.
@@ -3718,10 +3740,9 @@ void XBaseUnit::OnApplyEffectAdjParam( XSKILL::XSkillUser *pCaster
 	if( IsHero() && !strParam.empty() ) {
 		// 일단은 영웅만 텍스트 표시되게
 		const XCOLOR col = ( IsPlayer() )? XCOLOR_GREEN : XCOLOR_RED;
-//#ifndef _XUZHU_HOME
-		auto pDmg = new XObjDmgNum( strParam, GetvwTop(), col );
-		AddObj( pDmg );
-//#endif
+		CreateDmgNum( 0, 0, xHT_NONE, 0, strParam, col );
+// 		auto pDmg = new XObjDmgNum( strParam, GetvwTop(), col );
+// 		AddObj( pDmg );
 	}
 }
 
@@ -3736,8 +3757,10 @@ int XBaseUnit::GetSizeCost()
 /**
  @brief front 메시지큐에 메시지를 추가한다.
 */
-void XBaseUnit::PushMsg( XSPMsg spMsg )
+void XBaseUnit::PushMsg( XSPMsgBase spMsg )
 {
+	if( IsDestroy() )
+		return;
 	m_spMsgQ1->AddMsg( spMsg );
 }
 
@@ -3746,11 +3769,27 @@ void XBaseUnit::PushMsg( XSPMsg spMsg )
 */
 void XBaseUnit::ProcessMsgQ()
 {
-	m_spMsgQ1->Process();
+	m_spMsgQ1->Process( this );
 }
 
 XE::VEC3 XBaseUnit::GetSize() const 
 {
 	XE::VEC2 vSize = m_bbLocal.GetSize();
 	return XE::VEC3( vSize.w, 0.f, vSize.h );
+}
+
+void XBaseUnit::AddAdjParamMsg( int adjParam, xtValType valType, float adj )
+{
+	if( IsDestroy() )
+		return;
+	auto spMsg = std::make_shared<XMsgAddAdjParam>( adjParam, valType, adj );
+	PushMsg( spMsg );
+}
+
+void XBaseUnit::SetStateMsg( int idxState, bool bFlag )
+{
+	if( IsDestroy() )
+		return;
+	auto spMsg = std::make_shared<XMsgSetState>( (xtState)idxState, bFlag );
+	PushMsg( spMsg );
 }

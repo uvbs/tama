@@ -19,11 +19,10 @@ class XUnitHero : public XBaseUnit
 {
 	XHero *m_pHero;
 	XPropHero::xPROP *m_pProp;
-// 	XPropUnit::xPROP *m_pPropUnit;		// 현재 인솔중인 유닛의 프로퍼티
 	CTimer m_timerCool;			// 스킬 쿨타임
 	BOOL m_bUseSkill;			// 스킬사용이 예약되었음
-	XSKILL::XSkillObj *m_pSkillActive;
-	XSKILL::XSkillObj *m_pSkillPassive;
+	XSKILL::XSkillDat* m_pSkillActive;
+	XSKILL::XSkillDat* m_pSkillPassive;
 	XSKILL::XSkillUser::xUseSkill m_infoUseSkill;
 	bool m_bYell = false;
 	XBaseFontDat *m_pfdName = nullptr;	// 이름 표시용 폰트.
@@ -31,7 +30,6 @@ class XUnitHero : public XBaseUnit
 	void Init() {
 		m_pHero = NULL;
 		m_pProp = nullptr;
-// 		m_pPropUnit = nullptr;
 		m_bUseSkill = FALSE;
 		m_pSkillPassive = nullptr;
 		m_pSkillActive = nullptr;
@@ -40,11 +38,11 @@ class XUnitHero : public XBaseUnit
 public:
 	XUnitHero( XSPSquad spSquadObj, XHero *pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vPos, float multipleAbility );
 	virtual ~XUnitHero() { Destroy(); }
-	virtual void OnCreate( void );
+	virtual void OnCreate();
 	///< 
 	GET_ACCESSOR( CTimer&, timerCool );
 	/// 공격사거리(픽셀)
-	LPCTSTR GetszSpr( void ) override {
+	LPCTSTR GetszSpr() override {
 		return m_pProp->strSpr.c_str();
 	}
 	XE::VEC3 GetHSL() override { 
@@ -55,35 +53,29 @@ public:
 		hsl.m_vHSL = m_pProp->vHSL;
 		return hsl;
 	}
-	float GetPropScale( void ) override {
+	float GetPropScale() override {
 		return m_pProp->scale;
 	}
 	void FrameMove( float dt ) override; 
 	void OnDebugStr( _tstring& str );
-	int OnEndNormalAttackMotion( void );
-	int OnBeforeAttackMotion( void );
+	int OnEndNormalAttackMotion();
+	int OnBeforeAttackMotion();
 	void OnHitEventSkill( const XE::VEC3& vwSrc );
-// 	int OnApplyEffectNotAdjParam( XSKILL::XSkillUser *pCaster, XSKILL::XSkillDat* pSkillDat, XSKILL::EFFECT *pEffect, int level ) override;
 	void OnArriveBullet( XObjBullet *pBullet,
-								UnitPtr spAttacker,
-								UnitPtr spTarget,
-								const XE::VEC3& vwDst,
-								float damage,
-								bool bCritical,
-								LPCTSTR sprArrive, ID idActArrive,
-								DWORD dwParam ) override;
-// 	virtual BOOL IsHero( void ) {
-// 		return TRUE;
-// 	}
-	int DoUseSkill( void );
-	int DoSkillMotion( void );
-	BOOL IsSkillCool( void ) {
+											 XSPUnit spAttacker,
+											 XSPUnit spTarget,
+											 const XE::VEC3& vwDst,
+											 float damage,
+											 bool bCritical,
+											 LPCTSTR sprArrive, ID idActArrive,
+											 DWORD dwParam ) override;
+	int DoUseSkill();
+	int DoSkillMotion();
+	BOOL IsSkillCool() const {
 		return m_timerCool.IsOn() && m_timerCool.IsOver() == FALSE;
 	}
-	virtual int GetSkillLevel( XSKILL::XSkillObj* pSkillObj );
-//	void OnEventSprObj( XSprObj *pSprObj, XKeyEvent *pKey, float lx, float ly, ID idEvent, float fAngle, float fOverSec ) override;
 	void OnEventHit( const xSpr::xEvent& event ) override;
-	void ShootRangeAttack( UnitPtr& spTarget,
+	void ShootRangeAttack( XSPUnit& spTarget,
 												const XE::VEC3& vwSrc,
 												const XE::VEC3& vwDst,
 												float damage,
@@ -97,10 +89,10 @@ public:
 																	const XSKILL::EFFECT *pEffect,
 																	int level ) override;
 	XSKILL::xtInvokeTarget
-	OnGetInvokeTarget( XSKILL::XSkillDat *pDat,
+	OnGetInvokeTarget( const XSKILL::XSkillDat *pDat,
 										const XSKILL::EFFECT *pEffect,
 										XSKILL::xtInvokeTarget invokeTarget ) override;
-	void OnArriveTarget( UnitPtr spUnit, const XE::VEC3& vwDst ) override;
+	void OnArriveTarget( XSPUnit spUnit, const XE::VEC3& vwDst ) override;
 	void OnAISet( bool bSet ) override;
 	XE::VEC2 DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp ) override;
 	_tstring GetstrIds() override;

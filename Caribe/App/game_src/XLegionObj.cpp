@@ -28,6 +28,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace XGAME;
 
 ////////////////////////////////////////////////////////////////
+int XLegionObj::s_numObj = 0;		// 메모리 릭 추적용
 XLegionObj::XLegionObj( /*XAccount *pAccount, */LegionPtr& spLegion, BIT bitCamp, BOOL )
 {
 	Init();
@@ -49,6 +50,7 @@ void XLegionObj::Release()
 	for( auto& spSquad : m_listSquad )	{
 		spSquad->Release();
 	}
+	m_listSquad.clear();
 	m_spLegion.reset();
 }
 
@@ -337,14 +339,13 @@ XSPSquad XLegionObj::FindNearSquadLeastHp( XSquadObj *pFinder,
 /**
  @brief vwSrc좌표의 반경에 들어온 유닛을 this부대에서 찾는다.
 */
-UnitPtr XLegionObj::FindNearUnit( const XE::VEC3& vwSrc, float meterRadius ) const
+XSPUnit XLegionObj::FindNearUnit( const XE::VEC3& vwSrc, float meterRadius ) const
 {
 	for( auto spSquadObj : m_listSquad ) {
 		if( spSquadObj->IsLive() ) {
 			//
-			for( auto spwUnit : spSquadObj->GetlistUnit() ) {
-				auto spUnit = spwUnit.lock();
-				if( spUnit->IsLive() ) {
+			for( auto spUnit : spSquadObj->GetlistUnit() ) {
+				if( spUnit && spUnit->IsLive() ) {
 					auto distSq = spUnit->GetDistSqBetweenPos( vwSrc );
 					const auto pixelRadius = xMETER_TO_PIXEL( meterRadius );
 					if( distSq < pixelRadius * pixelRadius ) {
@@ -583,14 +584,14 @@ int XLegionObj::GetAllUnit( XVector<XBaseUnit*> *pOutAry )
 /**
  @brief 군단내에서 idHero영웅을 찾음.
 */
-UnitPtr XLegionObj::GetHeroUnit( ID idHero )
+XSPUnit XLegionObj::GetHeroUnit( ID idHero )
 {
 	for( auto& spSquad : m_listSquad ) {
 		auto spHeroUnit = spSquad->GetspHeroUnit();
 		if( spHeroUnit && spHeroUnit->GetidProp() == idHero ) 
 			return spHeroUnit;
 	}
-	return UnitPtr();
+	return XSPUnit();
 }
 
 /**

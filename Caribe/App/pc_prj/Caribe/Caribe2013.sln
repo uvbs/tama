@@ -83,8 +83,8 @@ Global
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Softnyx|Win32.ActiveCfg = Debug_GLES2|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Softnyx|Win32.Build.0 = Debug_GLES2|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Softnyx|x64.ActiveCfg = Debug_Softnyx|Win32
-		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugSingleHome|Win32.ActiveCfg = Debug_single|Win32
-		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugSingleHome|Win32.Build.0 = Debug_single|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugSingleHome|Win32.ActiveCfg = DebugSingleHome|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugSingleHome|Win32.Build.0 = DebugSingleHome|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelCrewGoogle|Win32.ActiveCfg = RelCrewGoogle|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelCrewGoogle|Win32.Build.0 = RelCrewGoogle|Win32
@@ -119,8 +119,8 @@ Global
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Softnyx|Win32.ActiveCfg = Debug_single|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Softnyx|Win32.Build.0 = Debug_single|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Softnyx|x64.ActiveCfg = Debug_single|Win32
-		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugSingleHome|Win32.ActiveCfg = Debug_single|Win32
-		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugSingleHome|Win32.Build.0 = Debug_single|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugSingleHome|Win32.ActiveCfg = DebugSingleHome|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugSingleHome|Win32.Build.0 = DebugSingleHome|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelCrewGoogle|Win32.ActiveCfg = RelCrewGoogle|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelCrewGoogle|Win32.Build.0 = RelCrewGoogle|Win32
@@ -170,7 +170,6 @@ Global
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelGMO|Win32.Build.0 = Release|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelGMO|x64.ActiveCfg = Release_Bot|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelSingle|Win32.ActiveCfg = Release|Win32
-		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelSingle|Win32.Build.0 = Release|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelSingle|x64.ActiveCfg = Release_Bot|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}._DebugGoogle|Win32.ActiveCfg = Debug|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}._DebugGoogle|Win32.Build.0 = Debug|Win32

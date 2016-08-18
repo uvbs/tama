@@ -43,7 +43,7 @@ BOOL XFSMBase::IsTargetRight( const XE::VEC3& vwDst )
  @spTarget 추적해야할 대상
  @param fsmNext 사거리까지 도달한 후 해야할 fsm을 지정한다.
 */
-XFSMChase* XFSMBase::DoChase( const UnitPtr& spTarget, XFSMBase::xtFSM fsmNext )
+XFSMChase* XFSMBase::DoChase( const XSPUnit& spTarget, XFSMBase::xtFSM fsmNext )
 {
 	XBREAK( spTarget != nullptr && spTarget->GetpSquadObj() == NULL );
 	m_pUnit->SetspTarget( spTarget );
@@ -52,8 +52,7 @@ XFSMChase* XFSMBase::DoChase( const UnitPtr& spTarget, XFSMBase::xtFSM fsmNext )
 		// 추적중엔 타겟방향으로 보게 한다.
 		m_pUnit->DoDirToTarget( spTarget->GetvwPos() );
 		spTarget->AddCntTargeting( 1 );
-		XFSMChase *pfsm
-			= static_cast<XFSMChase*>( ChangeFSM( XFSMBase::xFSM_CHASE ) );
+		auto pfsm = static_cast<XFSMChase*>( ChangeFSM( XFSMBase::xFSM_CHASE ) );
 		pfsm->SetidNextFSM( fsmNext );
 		return pfsm;
 	} else
@@ -194,7 +193,7 @@ void XFSMChase::Uninit( void )
 	m_bDash = FALSE;
 }
 
-// void XFSMChase::Init( UnitPtr& spUnit )
+// void XFSMChase::Init( XSPUnit& spUnit )
 // {
 // //	m_spTarget = spUnit;
 // }
@@ -362,7 +361,7 @@ int XFSMChase::ProcessTraceBind( float dt )
 //			CONSOLE( "chase move arrive: idNextFSM=%s", XFSMBase::sGetStrFSM( GetidNextFSM() ) );
 			// 공격모션이 "공격금지"상태등으로 실행이 안될수도 있으니 일단 대기모션으로 전환.
 			m_pUnit->GetpSprObj()->SetAction( ACT_IDLE1 );
-			m_pUnit->OnArriveTarget( UnitPtr(), m_vwDstTarget );
+			m_pUnit->OnArriveTarget( XSPUnit(), m_vwDstTarget );
 			if( GetidNextFSM() ) {
 				XEBaseFSM *pBaseFSM = ChangeFSM( GetidNextFSM() );
 				if( pBaseFSM->GetidFSM() == XFSMBase::xFSM_NORMAL_ATTACK ) {
@@ -481,7 +480,7 @@ void XFSMNormalAttack::Destroy()
 
 void XFSMNormalAttack::Release()
 {
-//	m_spLastTargetSquad.reset();
+	m_spLastTargetSquad.reset();
 }
 
 void XFSMNormalAttack::Init( void )
@@ -496,7 +495,7 @@ void XFSMNormalAttack::Init( void )
 	//	XBREAK( m_pUnit->GetspTargetSquad() == nullptr );
 }
 
-void XFSMNormalAttack::Init( UnitPtr& spUnit )
+void XFSMNormalAttack::Init( XSPUnit& spUnit )
 {
 	XBREAK( spUnit == nullptr );
 	//	m_spTarget = spUnit;
@@ -558,7 +557,7 @@ void XFSMNormalAttack::DoAttackMotion( void )
 				if( bMelee ) {
 					m_pUnit->GetpSprObj()->SetAction( ACT_ATTACK2, xRPT_1PLAY );
 					m_pUnit->SettypeCurrMeleeType( XGAME::xMT_MELEE );
-					m_pUnit->OnAfterAttackMotion( XSKILL::xJC_CLOSE_ATTACK );
+// 					m_pUnit->OnAfterAttackMotion( XSKILL::xJC_CLOSE_ATTACK );		"근접공격시" 이벤트는 타점에 불리는게 맞아서 옮김
 				} else {
 					m_pUnit->SettypeCurrMeleeType( XGAME::xMT_RANGE );
 					// 현재 부대가 원거리 공격중이면 원거리모션으로 플레이
@@ -569,21 +568,21 @@ void XFSMNormalAttack::DoAttackMotion( void )
 							m_pUnit->GetpSprObj()->SetAction( ACT_ATTACK3, xRPT_1PLAY );
 					}	else
 						m_pUnit->GetpSprObj()->SetAction( ACT_ATTACK1, xRPT_1PLAY );
-					m_pUnit->OnAfterAttackMotion( XSKILL::xJC_RANGE_ATTACK_START );
+					//m_pUnit->OnAfterAttackMotion( XSKILL::xJC_RANGE_ATTACK_START );	// 타점에서 호출하게 하는게 맞는듯.
 				}
 			// if( m_pUnit->GetTypeAtk() == XGAME::xAT_RANGE )
 			} else {
 				ID ary[ 3 ] = {ACT_ATTACK1, ACT_ATTACK2};
 				m_pUnit->GetpSprObj()->SetAction( ary[ random( 2 ) ], xRPT_1PLAY );
 				m_pUnit->SettypeCurrMeleeType( XGAME::xMT_MELEE );
-				m_pUnit->OnAfterAttackMotion( XSKILL::xJC_CLOSE_ATTACK );
+// 				m_pUnit->OnAfterAttackMotion( XSKILL::xJC_CLOSE_ATTACK );		"근접공격시" 이벤트는 타점에 불리는게 맞아서 옮김
 			}
 			m_pUnit->StartAttackDelay( m_pUnit->GetspTarget() );
 		} // if( nExec )
 //		m_timerAttack.Set( m_pUnit->GetSpeedAttack() );
 		// 마지막으로 공격한 타겟부대
-		if( !m_spLastTargetSquad.expired() &&
-			m_spLastTargetSquad.lock()->GetsnSquadObj() != m_pUnit->GetpSquadObj()->GetspTarget()->GetsnSquadObj() )
+		if( m_spLastTargetSquad &&
+			m_spLastTargetSquad->GetsnSquadObj() != m_pUnit->GetpSquadObj()->GetspTarget()->GetsnSquadObj() )
 			m_pUnit->SetcntAttack( 0 );
 
 		m_spLastTargetSquad = m_pUnit->GetpSquadObj()->GetspTarget();
@@ -653,7 +652,7 @@ int XFSMNormalAttack::FrameMove( float dt )
 			if( random(2) == 0 )
 			{
 				// 50%의 확률로 자기편 타겟으로 바꾼다.
-				UnitPtr unitFriend = m_pUnit->GetNearUnit( 10.f, 
+				XSPUnit unitFriend = m_pUnit->GetNearUnit( 10.f, 
 											m_pUnit->GetCamp().GetbitCamp(), true );
 				m_pUnit->DoChaseAndAttack( unitFriend );
 				return 1;

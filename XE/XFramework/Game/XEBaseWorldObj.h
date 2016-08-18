@@ -2,6 +2,8 @@
 #include <memory>
 #include "sprite/XDelegateSprObj.h"
 #include "sprite/Sprdef.h"
+#include "etc/Types.h"
+#include "etc/Global.h"
 
 class XEWndWorld;
 class XArchive;
@@ -12,9 +14,16 @@ class XEBaseWorldObj : public XDelegateSprObj,
 					public std::enable_shared_from_this<XEBaseWorldObj>
 {
 	static DWORD s_idSerial;
+	static int s_numObj;		// 메모리 릭 추적용
 public:	
 	static DWORD sGenerateID() {
 		return s_idSerial++;
+	}
+	static int sGetnumObj() {
+		return s_numObj;
+	}
+	static void sClearnumObj() {
+		s_numObj = 0;
 	}
 	enum {
 		xFG_NONE = 0,
@@ -43,6 +52,7 @@ private:
 		m_dwFlag = 0;
 		m_vScale.Set(1.f);
 		m_Alpha = 1.f;
+		++s_numObj;
 	}
 	void Destroy();
 	SET_ACCESSOR( ID, snObj );
@@ -62,9 +72,9 @@ public:
 		m_vwPos = vPos;
 		m_pWndWorld = pWndWorld;
 	}
-	virtual ~XEBaseWorldObj() { Destroy(); }
+	virtual ~XEBaseWorldObj() { Destroy(); --s_numObj; }
 	//
-	WorldObjPtr GetThis() {
+	XSPWorldObj GetThis() {
 		return shared_from_this();
 	}
 	XSPWorldObjConst GetThisConst() const {
@@ -92,7 +102,7 @@ public:
 		m_vwPos.z += add;
 		return m_vwPos.z;
 	}
-	BOOL IsDestroy() const {
+	bool IsDestroy() const {
 		return (m_Destroy == 1 );
 	}
 	/**
@@ -101,7 +111,7 @@ public:
 	 GetScaleImage()는 최종적으로 화면에 출력되는 스케일값을 얻지만, GetScaleObj는 카메라와는 관계없이
 	 이 오브젝트가 어떤스케일 상태인지를 나타낸다.
 	*/
-	XE::VEC3 GetScaleObj() {
+	const XE::VEC3& GetScaleObj() const {
 		return m_vScale;
 	}
 	/**
@@ -121,7 +131,7 @@ public:
 	void SetScaleObj( float sx, float sz ) {
 		m_vScale.Set( sx, m_vScale.y, sz );
 	}
-	GET_SET_ACCESSOR( float, Alpha );
+	GET_SET_ACCESSOR_CONST( float, Alpha );
 	void SetRotateY( float dAng );
 	/// 터치가능 속성을 지정한다.
 	void SetTouchable( BOOL bFlag ) {
@@ -130,16 +140,16 @@ public:
 		else
 			m_dwFlag &= ~xFG_TOUCHABLE;
 	}
-	BOOL GetTouchable() {
+	BOOL GetTouchable() const {
 		return (m_dwFlag & xFG_TOUCHABLE);
 	}
 	void SetError() {
 		m_snObj = 0;
 	}
-	BOOL IsError() {
+	BOOL IsError() const {
 		return m_snObj == 0;
 	}
-	BOOL IsSuccess() {
+	BOOL IsSuccess() const {
 		return ! IsError();
 	}
 /*
@@ -150,7 +160,7 @@ public:
 		return (m_dwFlag & xFG_ERROR);
 	}
 */
-	virtual int GetClassType() { return m_Type; }
+	int GetClassType() const { return m_Type; }
 	//
 	virtual int Serialize( XArchive& ar );
 	virtual int DeSerialize( XArchive& ar );
@@ -190,14 +200,14 @@ public:
 	 GetWidth,GetHeight는 하위클래스에서 바운딩박스등으로 구현해야 한다.
 	 바닥을 딛고 서있는류의 오브젝트를 기준으로 한것이다.
 	*/
-	XE::VEC3 GetvCenterLocal() {
+	XE::VEC3 GetvCenterLocal() const {
 		return XE::VEC3( 0, 0, GetSize().h / -2.f );
 	}
 	/**
 	 @brief 객체의 머리위 좌표
 	 @param adjZ 머리위 좌표에서 추가 보정치
 	*/
-	XE::VEC3 GetvTopLocal( float adjZ ) {
+	XE::VEC3 GetvTopLocal( float adjZ ) const {
 		auto vSize = GetSize()/* * m_vScale*/;
 		return XE::VEC3( 0, 0, -(vSize.z + adjZ) );
 	}
@@ -210,7 +220,7 @@ public:
 	/**
 	 @brief 스케일링된 오브젝트의 월드 중앙좌표를 구한다.
 	*/
-	XE::VEC3 GetvCenterWorld() {
+	XE::VEC3 GetvCenterWorld() const {
 		return GetvwPos() + GetvCenterLocal();
 	}
 	/**
@@ -225,7 +235,7 @@ public:
 	/**
 	 @brief 오브젝트상단의 월드좌표를 얻는다.
 	*/
-	XE::VEC3 GetvwTop( float wAdjZ = 0.f ) {
+	XE::VEC3 GetvwTop( float wAdjZ = 0.f ) const {
 		return GetvwPos() + GetvTopLocal(wAdjZ);
 	}
 	/**

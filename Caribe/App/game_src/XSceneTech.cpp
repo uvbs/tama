@@ -398,7 +398,7 @@ void XSceneTech::UpdateSelectedAbil( XWnd *pRoot
 		// 특성의 설명
 		if( pDesc && pProp->idDesc ) {
 			pDesc->SetbShow( true );
-			auto pSkillDat = SKILL_MNG->FindByIdentifier( pProp->strSkill );
+			auto pSkillDat = SKILL_MNG->FindByIds( pProp->strSkill );
 			if( XASSERT( pSkillDat ) ) {
 				auto pNode = XPropTech::sGet()->GetpNodeBySkill( m_unitSelected, pProp->strSkill );
 				if( XASSERT( pNode ) ) {

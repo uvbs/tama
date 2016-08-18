@@ -198,10 +198,10 @@ BOOL XWndFaceInBattle::OnCreate()
 int XWndFaceInBattle::Process( float dt )
 {
 	auto pBar = SafeCast2<XWndProgressBar2*>( Find("bar.hp") );
-	if( pBar && !m_spSquadObj.expired() ) {
-		if( m_spSquadObj.lock()->IsLive() ) {
-			const float sumHp = m_spSquadObj.lock()->GetMaxHpAllMember();
-			const float hp = m_spSquadObj.lock()->GetSumHpAllMember();
+	if( pBar && m_spSquadObj ) {
+		if( m_spSquadObj->IsLive() ) {
+			const float sumHp = m_spSquadObj->GetMaxHpAllMember();
+			const float hp = m_spSquadObj->GetSumHpAllMember();
 			pBar->SetLerp( hp / sumHp );
 		} else {
 			xSET_SHOW( this, "rect.red", true );
@@ -237,8 +237,8 @@ void XWndFaceInBattle::Update()
 	const auto sizeThisNoTrans = GetSizeLocalNoTrans();
 	const auto sizeThis = sizeThisNoTrans * vScale;
 	auto pBar = Find("bar.hp");
-	if( pBar && !m_spSquadObj.expired() ) {
-		if( m_spSquadObj.lock()->IsLive() ) {
+	if( pBar && m_spSquadObj ) {
+		if( m_spSquadObj->IsLive() ) {
 			const auto sizeBar = pBar->GetSizeLocalNoTrans();
 			const auto scale = sizeThisNoTrans.w / sizeBar.w;
 			pBar->SetScaleLocal( scale );

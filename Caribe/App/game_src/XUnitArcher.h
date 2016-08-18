@@ -28,12 +28,18 @@ public:
 								float multipleAbility );
 	virtual ~XUnitArcher() { Destroy(); }
 	//
-	void ShootRangeAttack( UnitPtr& spTarget,
+	void ShootRangeAttack( XSPUnit& spTarget,
 							const XE::VEC3& vwSrc,
 							const XE::VEC3& vwDst,
 							float damage,
 							bool bCritical,
 							const std::string& strType,
 							const _tstring& strSpr ) override;
+	// 발사체오브젝트를 생성하고 월드에 추가시킨다. 효과, 시전대상, 시전자, 좌표
+// 	XSKILL::XSkillUser* CreateAndAddToWorldShootObj( XSKILL::XSkillDat *pSkillDat,
+// 																									 int level,
+// 																									 XSKILL::XSkillReceiver *pBaseTarget,
+// 																									 XSKILL::XSkillUser *pCaster,
+// 																									 const XE::VEC2& vPos ) override;
 };
 

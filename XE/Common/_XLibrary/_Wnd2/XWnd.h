@@ -810,16 +810,16 @@ public:
 	template<typename T>
 	void SetEvent( DWORD msg, XWnd *pOwner, T func, DWORD param1=0, DWORD param2=0 ) {
 		typedef int (XWnd::*CALLBACK_FUNC)( XWnd *, DWORD dwParam1, DWORD dwParam2 );
-		LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap ) {
-			if( msgMap.msg == msg ) {
-				XWND_MESSAGE_MAP *pMsgMap = &(*itor);
-				pMsgMap->msg = msg;
-				pMsgMap->param = param1;
-				pMsgMap->pOwner = pOwner;
-				pMsgMap->pHandler = static_cast<CALLBACK_FUNC>( func );
+		for( auto& msgMap2 : m_listMessageMap ) {
+			if( msgMap2.msg == msg ) {
+				//XWND_MESSAGE_MAP *pMsgMap = &msgMap;
+				msgMap2.msg = msg;
+				msgMap2.param = param1;
+				msgMap2.pOwner = pOwner;
+				msgMap2.pHandler = static_cast<CALLBACK_FUNC>( func );
 				return;
 			}
-		} END_LOOP;
+		}
 		XWND_MESSAGE_MAP msgMap;
 		msgMap.msg = msg;
 		msgMap.param = param1;
@@ -828,8 +828,7 @@ public:
 		m_listMessageMap.push_back( msgMap );
 	}
 	void ClearEvent( DWORD msg ) {
-		LIST_MANUAL_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )
-		{
+		LIST_MANUAL_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )	{
 			if( msgMap.msg == msg )
 				m_listMessageMap.erase( itor++ );
 			else
@@ -837,8 +836,7 @@ public:
 		} END_LOOP;
 	}
 	XWND_MESSAGE_MAP FindMsgMap( DWORD msg ) {
-		LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )
-		{
+		LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )	{
 			if( msgMap.msg == msg )
 				return msgMap;
 		} END_LOOP;
@@ -846,8 +844,7 @@ public:
 		return msgMap;
 	}
 	BOOL IsHaveEvent( DWORD msg ) {
-		LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )
-		{
+		LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )	{
 			if( msgMap.msg == msg )
 				return TRUE;
 		} END_LOOP;

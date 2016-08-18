@@ -14,6 +14,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+using namespace XSKILL;
 #ifdef _XMEM_POOL
 template<> XPool<XUnitArcher>* XMemPool<XUnitArcher>::s_pPool = NULL;
 #endif
@@ -33,16 +34,17 @@ void XUnitArcher::Destroy()
 {
 }
 
-
-void XUnitArcher::ShootRangeAttack( UnitPtr& spTarget,
-									const XE::VEC3& vwSrc,
-									const XE::VEC3& vwDst,
-									float damage,
-									bool bCritical,
-							const std::string& strType,
-							const _tstring& strSpr )
+/**
+ @brief 타점에서 호출되며 원거리 발사체를 만들어 날린다.
+*/
+void XUnitArcher::ShootRangeAttack( XSPUnit& spTarget,
+																		const XE::VEC3& vwSrc,
+																		const XE::VEC3& vwDst,
+																		float damage,
+																		bool bCritical,
+																		const std::string& strType,
+																		const _tstring& strSpr )
 {
-	//GetpSquadObj()->PlaySound( "arrow_10over" );
 	SOUNDMNG->OpenPlaySoundBySec( 31, xRandomF(0.5f, 1.5f) );
 	ShootArrow( spTarget, vwSrc, vwDst, damage, bCritical );
 }

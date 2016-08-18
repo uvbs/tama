@@ -36,23 +36,25 @@ int XSkillReceiver::AddSkillRecvObj( XBuffObj *pSkillRecvObj )
 /**
  @brief 비보정 파라메터 효과를 적용한다.
 */
-int XSkillReceiver::ApplyEffectNotAdjParam( XSkillDat *pSkillDat, 
+int XSkillReceiver::ApplyEffectNotAdjParam( XSkillDat *pDat, 
 																						XSkillUser *pCaster, 
-																						const EFFECT *pEffect, 
+																						const EFFECT *pEff, 
 																						int level )
 {
 	// 보정파라메터이거나 invalid한것은 0을 리턴
 	///< 발동되는 효과를 직접 하드코딩 하고 싶을때는 발동파라메터가 보통 0이기때문에 하위에서 상속받을수 있는 이곳에서 검사하게 했다. 웒하면 상속받는쪽에서 검사안할수 있으니까
-	if( IsAdjParam( pEffect->invokeParameter ) >= 0 )	return 0;		
-	if( pEffect->invokeParameter < 0 ) {
-		float invokeAbilityMin = pEffect->GetAbilityMin(level);
-		if( pEffect->invokeAddAbility != 0.f ) {
-			if( pEffect->idAddAbilityToClass == 0 )
-				XALERT("경고:%s:추가능력치는 있는데 추가능력치대상이 없습니다.", pSkillDat->GetstrIdentifier().c_str() );
-			if( IsInvokeAddTarget( pEffect->idAddAbilityToClass ) == TRUE )
-				invokeAbilityMin += pEffect->invokeAddAbility;
-		}
-		// 커스텀 추가 증폭
+//	if( IsAdjParam( pEffect->invokeParameter ) >= 0 )	return 0;		// 함수명이 모호해서 삭제
+	if( pEff->invokeParameter >= 0 )
+		return 0;
+//	if( pEffect->invokeParameter < 0 ) {
+	float ivkAbilMin = pEff->GetAbilityMin(level);
+	if( pEff->invokeAddAbility != 0.f ) {
+		if( pEff->idAddAbilityToClass == 0 )
+			XALERT("경고:%s:추가능력치는 있는데 추가능력치대상이 없습니다.", pDat->GetstrIdentifier().c_str() );
+		if( IsInvokeAddTarget( pEff->idAddAbilityToClass ) == TRUE )
+			ivkAbilMin += pEff->invokeAddAbility;
+	}
+	// 커스텀 추가 증폭
 // 		루프( 증폭버프 = 증폭스킬리스트 )	이와같은 방식으로 시스템화.
 // 		{
 // 			증폭Effect = 증폭버프->GetEffectIndex(0);
@@ -65,17 +67,17 @@ int XSkillReceiver::ApplyEffectNotAdjParam( XSkillDat *pSkillDat,
 // //				invokeAbilityMin = invokeAbilityMin + invokeAbilityMin * addMultiply;
 // 			}
 // 		}
-		float add = 0.f;
-		float addMultiply = 0.f;
-		pCaster->OnSkillAmplifyUser( pSkillDat, this, pEffect, xEA_ABILITY, &addMultiply, &add );
-		invokeAbilityMin += add;
-		invokeAbilityMin = invokeAbilityMin + invokeAbilityMin * addMultiply;
-		// 능력치값을 다른 다른형태로 변형해서 사용하고 싶다면 아래 핸들러를 정의해서 바꾼다.
-		pCaster->OnAdjustEffectAbility( pSkillDat, pEffect, pEffect->invokeParameter, &invokeAbilityMin );
-		//
-		return OnApplyEffectNotAdjParam( pCaster, pSkillDat, pEffect, invokeAbilityMin );
-	}
-	return 0;
+	float add = 0.f;
+	float addMultiply = 0.f;
+	pCaster->OnSkillAmplifyUser( pDat, this, pEff, xEA_ABILITY, &addMultiply, &add );
+	ivkAbilMin += add;
+	ivkAbilMin = ivkAbilMin + ivkAbilMin * addMultiply;
+	// 능력치값을 다른 다른형태로 변형해서 사용하고 싶다면 아래 핸들러를 정의해서 바꾼다.
+	pCaster->OnAdjustEffectAbility( pDat, pEff, pEff->invokeParameter, &ivkAbilMin );
+	//
+	return OnApplyEffectNotAdjParam( pCaster, pDat, pEff, ivkAbilMin );
+//	}
+// 	return 0;
 }
 /**
  @brief 보정 파라메터의 값을 보정한다.
@@ -86,7 +88,8 @@ int XSkillReceiver::ApplyEffectAdjParam( XSkillDat *pSkillDat,
 																				int level,
 																				XBuffObj *pBuffObj )
 {
-	if( pEffect->invokeParameter <= 0 || pEffect->invokeParameter >= XGAME::xMAX_PARAM )	return 0;
+	if( pEffect->invokeParameter <= 0 || pEffect->invokeParameter >= XGAME::xMAX_PARAM )	
+		return 0;
 	XBREAKF( IsAdjParam( pEffect->invokeParameter ) < 0, 
 		"처리하지 못한 비보정파라메터(%d)가 있습니다.", pEffect->invokeParameter );
 	if( pEffect->invokeAbilityMin.size() == 1 )
@@ -95,9 +98,10 @@ int XSkillReceiver::ApplyEffectAdjParam( XSkillDat *pSkillDat,
 	// 능력치값을 다른 다른형태로 변형해서 사용하고 싶다면 아래 핸들러를 정의해서 바꾼다.
 	pCaster->OnAdjustEffectAbility( pSkillDat, pEffect, pEffect->invokeParameter, &ability );
 	XBREAK( pBuffObj == nullptr );
-	if( pBuffObj && pBuffObj->IsFirstProcess() )
+	if( pBuffObj && pBuffObj->IsFirstProcess() ) {
 		OnApplyEffectAdjParam( pCaster, pSkillDat, pEffect, ability );
-	AddAdjParam( pEffect->invokeParameter
+	}
+	AddAdjParamMsg( pEffect->invokeParameter
 						, pEffect->valtypeInvokeAbility
 						, ability );
 	//
@@ -111,12 +115,13 @@ int XSkillReceiver::ApplyEffectAdjParam( XSkillDat *pSkillDat,
  xApply
 */
 int XSkillReceiver::ApplyInvokeEffect( XSkillDat *pSkillDat,
-										XSkillUser *pCaster, 
-										XSkillReceiver* pInvoker, 
-										XBuffObj *pBuffObj, 
-										const EFFECT *pEffect,
-										int level )
+																			 XSkillUser *pCaster,
+																			 XSkillReceiver* pInvoker,
+																			 XBuffObj *pBuffObj,
+																			 const EFFECT *pEffect,
+																			 int level )
 {
+	bool bApplied = false;
 	// 발동조건스킬이 지정되어있을땐 그 스킬(버프)을 인보커가 가지고 있는지 검사해야 한다.
 	if( pEffect->strInvokeIfHaveBuff.empty() == false )
 		if( !pInvoker->FindBuffSkill( pEffect->strInvokeIfHaveBuff.c_str() ) )
@@ -137,45 +142,96 @@ int XSkillReceiver::ApplyInvokeEffect( XSkillDat *pSkillDat,
 			// 상태이상을 저항하면 효과를 적용하지 않는다.
 			return 0;	
 		}
-		SetState( pEffect->invokeState, TRUE );
-		if( pBuffObj && pBuffObj->IsFirstProcess() )
+		SetStateMsg( pEffect->invokeState, true );
+		if( pBuffObj && pBuffObj->IsFirstProcess() ) {
 			OnFirstApplyState( pCaster, 
 												pInvoker, 
 												pEffect, 
 												pEffect->invokeState, 
 												IsState(pEffect->invokeState),
 												level );	// virtual
-			
-	}
-	// 발동스킬이 있는가?
-	if( pEffect->strInvokeSkill.empty() == false ) {
-		_tstring strInvokeSkill = pEffect->strInvokeSkill;
-		// strInvokeSkill이 바뀔수 있음.
-		bool bInvoke = pInvoker->OnInvokeSkill( pSkillDat, pEffect, this, level, &strInvokeSkill );
-		if( bInvoke ) {
-#ifdef _XSINGLE
-//			XLOGXN( "스킬발동: %s", pEffect->strInvokeSkill.c_str() );
-#endif // _XSINGLE
-			// 발동스킬을 실행시킨다. 기준타겟은 this로 된다.
-			auto infoUseSkill 
-				= pCaster->UseSkillByIdentifier( pEffect->strInvokeSkill.c_str(),
-																				level,
-																				this, nullptr );
-			XASSERT( infoUseSkill.errCode == xOK /*|| infoUseSkill.errCode == xERR_ALREADY_APPLY_SKILL*/ );
-			const ID idCallerBuff = (pBuffObj)? pBuffObj->GetidSkill() : 0;
-			if( infoUseSkill.errCode == xOK )
-				// 발동스킬은 지속형일수도 있고 즉시발동형일수도 있다.
-				pCaster->OnShootSkill( infoUseSkill, idCallerBuff );
+			bApplied = true;
 		}
+	} // invokeState
+	// 발동스킬이 있는가?
+	if( !pEffect->strInvokeSkill.empty()) {
+		const ID idCallerBuff = (pBuffObj)? pBuffObj->GetidSkill() : 0;
+		// this에게 스킬을 발동스킨다.
+		bApplied = DoInvokeSkill( this, XE::VEC2(), pSkillDat, pEffect, level, pCaster, idCallerBuff );
+// 		_tstring strInvokeSkillMut = pEffect->strInvokeSkill;
+// 		// strInvokeSkill이 바뀔수 있음.
+// 		bool bInvoke = pInvoker->OnInvokeSkill( pSkillDat, pEffect, this, level, &strInvokeSkillMut );
+// 		if( bInvoke ) {
+// #ifdef _XSINGLE
+// //			XLOGXN( "스킬발동: %s", pEffect->strInvokeSkill.c_str() );
+// #endif // _XSINGLE
+// 			// 발동스킬을 실행시킨다. 기준타겟은 this로 된다.
+// 			// 발동스킬이 m_listUseSkill에 들어가는 문제가 있어 안들어가도록 수정함.
+// 			auto infoUseSkill 
+// 				= pCaster->UseSkillByIds( strInvokeSkillMut, // 이게 맞는듯. pEffect->strInvokeSkill,
+// 																	level,
+// 																	this, nullptr );
+// 			XASSERT( infoUseSkill.errCode == xOK /*|| infoUseSkill.errCode == xERR_ALREADY_APPLY_SKILL*/ );
+// 			const ID idCallerBuff = (pBuffObj)? pBuffObj->GetidSkill() : 0;
+// 			if( infoUseSkill.errCode == xOK ) {
+// 				// 발동스킬은 지속형일수도 있고 즉시발동형일수도 있다.
+// 				pCaster->OnShootSkill( infoUseSkill, idCallerBuff );
+// 				bApplied = true;
+// 			}
+// 		}
 	}
 	// 효과발동자(시전대상)에게 이 스킬로 부터 발동될 스킬이 있으면 발생시킨다.
 	pInvoker->OnEventInvokeFromSkill( pSkillDat, pEffect, pCaster, this );
 	// 비보정파라메터와 보정파라메터를 나눠서 버추얼로 처리한다
-	int ret = ApplyEffectNotAdjParam( pSkillDat, pCaster, pEffect, level );
-	if( ret == 0 ) {
+	if( pEffect->invokeParameter < 0 ) {
+		return ApplyEffectNotAdjParam( pSkillDat, pCaster, pEffect, level );
+	} else 
+	if( pEffect->invokeParameter > 0 ) {
 		return ApplyEffectAdjParam( pSkillDat, pCaster, pEffect, level, pBuffObj );
 	}
-	return ret;
+	return bApplied;
+}
+
+/**
+ @brief pEff의 발동스킬을 발동대상(혹은 발동좌표)에 사용한다.
+ this는 발동자.
+ @param pIvkTarget 발동대상. 발동대상이 좌표형이면 null이다
+ @param vIvkPos 발동대상이 좌표형태일때 IzNotZero가 된다. 
+*/
+bool XSkillReceiver::DoInvokeSkill( XSkillReceiver* pIvkTarget,
+																		const XE::VEC2& vIvkPos, 
+																		const XSkillDat* pDat, 
+																		const EFFECT* pEffect, 
+																		int level, 
+																		XSkillUser* pCaster,
+																		ID idCallerBuff )
+{
+	// 좌표에 값이 있으면 타겟은 널이어야 한다.,
+	XBREAK( vIvkPos.IsNotZero() && pIvkTarget != nullptr );
+	bool bApplied = false;
+	auto pInvoker = this;		// this는 발동자
+	// 발동스킬이 있는가?
+	_tstring strInvokeSkillMut = pEffect->strInvokeSkill;
+	XBREAK( strInvokeSkillMut.empty() );
+	// strInvokeSkill이 바뀔수 있음.
+	bool bInvoke = (pIvkTarget)? pInvoker->OnInvokeSkill( pDat, pEffect, pIvkTarget, level, &strInvokeSkillMut ) : true;
+	if( bInvoke ) {
+#ifdef _XSINGLE
+	XTRACE( "스킬발동: %s", pEffect->strInvokeSkill.c_str() );
+#endif // _XSINGLE
+		// 발동스킬을 실행시킨다. 기준타겟은 pIvkTarget로 된다.
+		// 발동스킬이 m_listUseSkill에 들어가는 문제가 있어 안들어가도록 수정함.
+		auto infoUseSkill = pCaster->UseSkillByIds( strInvokeSkillMut,
+																								level, 
+																								pIvkTarget, vIvkPos );
+		XASSERT( infoUseSkill.errCode == xOK );
+		if( infoUseSkill.errCode == xOK ) {
+			// 발동스킬은 지속형일수도 있고 즉시발동형일수도 있다.
+			pCaster->OnShootSkill( infoUseSkill, idCallerBuff );
+			bApplied = true;
+		}
+	}
+	return bApplied;
 }
 
 /**
@@ -184,7 +240,7 @@ int XSkillReceiver::ApplyInvokeEffect( XSkillDat *pSkillDat,
 int XSkillReceiver::FrameMove( float dt )
 {
 #ifdef _DEBUG
-	XBREAK( IsClearAdjParam() == FALSE );
+// 	XBREAK( IsClearAdjParam() == FALSE );
 #endif
 	m_pAttacker = nullptr;		// 이것은 휘발성으로 매 프레임 초기화 된다.
 	//
@@ -244,7 +300,7 @@ XBuffObj* XSkillReceiver::FindBuffSkill( ID idSkillDat, XSkillUser *pCaster )
 
 XBuffObj* XSkillReceiver::FindBuffSkill( LPCTSTR idsSkill )
 {
-	auto pDat = XESkillMng::sGet()->FindByIdentifier( idsSkill );
+	auto pDat = XESkillMng::sGet()->FindByIds( idsSkill );
 	XBREAK( pDat == nullptr );
 	for( auto pBuff : m_listSkillRecvObj ) {
 		if( pBuff->GetbDestroy() )	
@@ -294,14 +350,18 @@ void XSkillReceiver::OnAttackToDefender( XSkillReceiver *pDefender,
 
 /**
  @brief 범용 이벤트 전달기
-*/
-void XSkillReceiver::OnEventJunctureCommon( ID idEvent, DWORD dwParam, const XSkillReceiver* pRecvParam )
+ @return 효과가 하나라도 적용되었다면 true를 리턴한다.
+ **/
+bool XSkillReceiver::OnEventJunctureCommon( ID idEvent, DWORD dwParam, const XSkillReceiver* pRecvParam )
 {
+	bool bApplied = false;
 	for( auto pBuff : m_listSkillRecvObj ) {
 		if( pBuff->GetbDestroy() )
 			continue;
-		pBuff->OnEventJunctureCommon( idEvent, dwParam, pRecvParam );
+		if( pBuff->OnEventJunctureCommon( idEvent, dwParam, pRecvParam ) )
+			bApplied = true;
 	}
+	return bApplied;
 }
 
 /**
@@ -326,15 +386,15 @@ void XSkillReceiver::OnEventInvokeFromSkill( XSkillDat *pFromSkill
  @brief 평타공격전(모션발생직후)에 호출되는 이벤트.
  junc에는 원거리인지 근접인지 정보가 온다.
 */
-void XSkillReceiver::OnEventBeforeAttack( XSKILL::xtJuncture junc )
-{
-	// 피격자가 가진 버프중에 맞으면 발동하는 스킬이 있으면 이벤트핸들러를 날려준다.
-	for( auto pBuff : m_listSkillRecvObj ) {
-		if( pBuff->GetbDestroy() )
-			continue;
-		pBuff->OnEventBeforeAttack( junc );
-	}
-}
+// void XSkillReceiver::OnEventBeforeAttack( XSKILL::xtJuncture junc )
+// {
+// 	// 피격자가 가진 버프중에 맞으면 발동하는 스킬이 있으면 이벤트핸들러를 날려준다.
+// 	for( auto pBuff : m_listSkillRecvObj ) {
+// 		if( pBuff->GetbDestroy() )
+// 			continue;
+// 		pBuff->OnEventBeforeAttack( junc );
+// 	}
+// }
 
 void XSkillReceiver::OnSkillEventKillEnemy( ID idDead )
 {
@@ -350,38 +410,38 @@ void XSkillReceiver::OnSkillEventKillEnemy( ID idDead )
  @brief this에게 붙는 이펙트를 만드는 공통 함수.
  @param secPlay 0:once 0>:해당시간동안 루핑 -1:무한루핑
 */
-ID XSkillReceiver::CreateSfx( XSkillDat *pSkillDat,
-															const _tstring& strEffect,
-															ID idAct,
-															xtPoint pointSfx,
-															float secPlay,
-															const XE::VEC2& vPos )
-{
-	if( strEffect.empty() )
-		return 0;
-	const float secLife = 0.f;
-	// 이펙트생성지점이 정해져있지 않으면 디폴트로 타겟 아래쪽에
-	if( pointSfx == xPT_NONE )
-		pointSfx = xPT_TARGET_BOTTOM;
-	if( idAct == 0 )
-		idAct = 1;
-	return OnCreateSkillSfx( pSkillDat,
-													 pointSfx,
-													 strEffect.c_str(),
-													 idAct,
-													 secPlay, vPos );
-}
+// ID XSkillReceiver::CreateSfx( const XSkillDat *pSkillDat,
+// 															const _tstring& strEffect,
+// 															ID idAct,
+// 															xtPoint pointSfx,
+// 															float secPlay,
+// 															const XE::VEC2& vPos )
+// {
+// 	if( strEffect.empty() )
+// 		return 0;
+// 	const float secLife = 0.f;
+// 	// 이펙트생성지점이 정해져있지 않으면 디폴트로 타겟 아래쪽에
+// 	if( pointSfx == xPT_NONE )
+// 		pointSfx = xPT_TARGET_BOTTOM;
+// 	if( idAct == 0 )
+// 		idAct = 1;
+// 	return OnCreateSkillSfx( pSkillDat,
+// 													 pointSfx,
+// 													 strEffect.c_str(),
+// 													 idAct,
+// 													 secPlay, vPos );
+// }
 
 /**
  @brief this에게 붙는 이펙트를 만드는 공통 함수.
  @param secPlay 0:once 0>:해당시간동안 루핑 -1:무한루핑
 */
-ID XSkillReceiver::CreateSfx( XSkillDat *pSkillDat
-																, const xEffSfx& effSfx
-																, float secPlay
-																, const XE::VEC2& vPos )
-{
-	return CreateSfx( pSkillDat, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
-}
+// ID XSkillReceiver::CreateSfx( const XSkillDat *pSkillDat
+// 															, const xEffSfx& effSfx
+// 															, float secPlay
+// 															, const XE::VEC2& vPos )
+// {
+// 	return CreateSfx( pSkillDat, effSfx.m_strSpr, effSfx.m_idAct, effSfx.m_Point, secPlay, vPos );
+// }
 
 XE_NAMESPACE_END

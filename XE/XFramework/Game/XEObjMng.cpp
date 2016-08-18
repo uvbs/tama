@@ -36,10 +36,10 @@ XEObjMng::XEObjMng( int maxObj )
 void XEObjMng::Destroy()
 {
 	// 모든 객체의 레퍼런스 카운트가 1인상태여야지 실제 이곳에서 객체가 파괴된다.
-	for( auto spObj : m_listObj ) {
-		const auto cnt = spObj.use_count();
-		XBREAK( cnt != 1 );
-	}
+// 	for( auto spObj : m_listObj ) {
+// 		const auto cnt = spObj.use_count();
+// 		XBREAK( cnt != 1 );
+// 	}
 }
 
 void XEObjMng::Release()
@@ -48,7 +48,8 @@ void XEObjMng::Release()
 		spObj->Release();
 	}
 	m_aryVisible.clear();
-//	m_listObj.clear();
+	m_listObj.clear();
+	m_mapObj.clear();
 }
 
 /**
@@ -65,21 +66,42 @@ void XEObjMng::DestroyAllObj( void )
 // 	}
 }
 
+void XEObjMng::_CheckLeak()
+{
+#ifdef _XLEAK_DETECT
+	for( auto itor = m_listAll.begin(); itor != m_listAll.end(); ) {
+		auto& spObj = (*itor);
+		const auto cnt = spObj.use_count();
+		if( cnt == 1 ) {
+			m_listAll.erase( itor++ );
+		} else {
+			++itor;
+		}
+	}
+	XBREAK( !m_listAll.empty() );
+	m_listAll.clear();
+#endif // _XLEAK_DETECT
+}
+
 ID XEObjMng::Add( const XSPWorldObj& spObj )
 {
 	m_listObj.push_back( spObj );
+#ifdef _XLEAK_DETECT
+	m_listAll.push_back( spObj );
+#endif // _DEBUG
 	m_mapObj[ spObj->GetsnObj() ] = spObj;
 	m_bAdded = TRUE;
 	return spObj->GetsnObj();
 }
 
-void XEObjMng::Add( ID snObj, const XSPWorldObj& spObj )
-{
-	spObj->SetsnObj( snObj );
-	m_listObj.push_back( spObj );
-	m_mapObj[ snObj ] = spObj;
-	m_bAdded = TRUE;
-}
+// void XEObjMng::Add( ID snObj, const XSPWorldObj& spObj )
+// {
+// 	spObj->SetsnObj( snObj );
+// 	m_listObj.push_back( spObj );
+// 	m_listAll.push_back( spObj );
+// 	m_mapObj[ snObj ] = spObj;
+// 	m_bAdded = TRUE;
+// }
 
 XSPWorldObj XEObjMng::Find( ID snObj )
 {
@@ -89,10 +111,6 @@ XSPWorldObj XEObjMng::Find( ID snObj )
 	if( itor != m_mapObj.end() ) {
 		return itor->second;
 	}
-// 	for( auto spObj : m_listObj ) {
-// 		if( spObj->GetsnObj() == snObj )
-// 			return spObj;
-// 	}
 	return nullptr;
 }
 
@@ -108,9 +126,7 @@ void XEObjMng::DestroyObjWithSN( ID snObj )
 void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 {
 	XPROF_OBJ_AUTO();
-// 	std::list<XSPWorldObj>::iterator itor;
-	for( auto itor = m_listObj.begin(); itor != m_listObj.end(); )
-	{
+	for( auto itor = m_listObj.begin(); itor != m_listObj.end(); ) {
 		XEBaseWorldObj *pObj = itor->get();
 		pObj->FrameMove( dt );
 		//
@@ -118,27 +134,26 @@ void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 		// 화면에서 벗어나서 삭제됨을 체크해줄것을 요청한다.
 		if( pObj->DelegateOutOfBoundary( vlPos ) )
 			pObj->SetDestroy( 1 );
-		if( pObj->GetDestroy() )
-		{
+		if( pObj->GetDestroy() ) {
 			pObj->Release();
 			// 하위상속 객체에 파괴됨을 알린다.
 			OnDestroyObj( pObj );		// virtual
 			if( pWndWorld->GetpWorld() )
 				pWndWorld->GetpWorld()->OnDestroyObj( pObj );
-			XSPWorldObj *p = &( *itor );
-//			m_aryDestroy.Add( (*itor) );
+			{
+				auto itorMap = m_mapObj.find( pObj->GetsnObj() );
+				if( XASSERT(itorMap != m_mapObj.end()) ) {
+					m_mapObj.erase( itorMap );
+				}
+			}
 			m_listObj.erase( itor++ );
+#ifdef _XLEAK_DETECT
+			m_listAll.DelByID( pObj->getid() );
+#endif // _DEBUG
 		}
 		else
 			++itor;
 	}
-	// 삭제될 오브젝트를 한꺼번에 반환시킨다.
-// 	XARRAYLINEARN_LOOP( m_aryDestroy, XSPWorldObj*, pspObj )
-// 	{
-// 		// 소유권 반환
-// 		(*pspObj).reset();
-// 	} END_LOOP;
-
 }
 
 // 객체들의 루프를 돌며 각 객체별로 델리게이트를 발생시킨다.
@@ -146,37 +161,25 @@ void XEObjMng::FrameMoveDelegate( XDelegateObjMng *pDelegate,
 								ID idEvent, 
 								float dt )
 {
-// 	std::list<XSPWorldObj>::iterator itor;
 	// 최종 반환되며 실제 삭제된다.
 	for( auto itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
 		pDelegate->OnDelegateFrameMoveEachObj( dt, idEvent, (*itor) );
-// 	LISTREF_LOOP( m_listObj, XSPWorldObj, itor )
-// 	{
-// 		pDelegate->OnDelegateFrameMoveEachObj( dt, idEvent, (*itor) );
-// 	} END_LOOP;
 }
 
 void XEObjMng::Draw( XEWndWorld *pWndWorld )
 {
 	XPROF_OBJ_AUTO();
-	if( pWndWorld )
-	{
+	if( pWndWorld )	{
 		XPROF_OBJ("select");
 		// 화면에 보이는 만큼 추려냄
 		m_aryVisible.Clear();
-		std::list<XSPWorldObj>::iterator itor;
-		{
-		// 최종 반환되며 실제 삭제된다.
-		for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
-//		LISTREF_LOOP( m_listObj, XSPWorldObj, itor )
-		{
+		for( auto spObj : m_listObj ) {
 			XPROF_OBJ( "select-sel" );
-			XEBaseWorldObj *pObj = itor->get();
+ 			XEBaseWorldObj *pObj = spObj.get();
 			XE::xRECT rectBB = pObj->GetBoundBoxWindow();
 			if( pWndWorld->IsOutBoundary( rectBB ) == FALSE )
 				m_aryVisible.Add( pObj );
 
-		}// END_LOOP;
 		}
 		// y좌표 소트함
 // 		if( m_timerSort.IsOff() )
@@ -189,7 +192,6 @@ void XEObjMng::Draw( XEWndWorld *pWndWorld )
 		{
 			XPROF_OBJ( "select-sort" );
 			std::sort( m_aryVisible.begin(), m_aryVisible.end(), compY );
-//			m_aryVisible.sort( compY );
 		}
 	}
 	
@@ -219,7 +221,7 @@ void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*
 				pObj->Draw( vsPos, scale );
 			}
 		} else {
-			XE::VEC2 vs = pObj->GetvwPos().ToVec2();
+			const XE::VEC2 vs = pObj->GetvwPos().ToVec2();
 			pObj->Draw( vs );
 		}
 	};
@@ -255,19 +257,12 @@ void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*
 
 void XEObjMng::OnLButtonUp( float lx, float ly )
 {
-#ifdef _XOBJMNG_OPTIMIZE
-	XList3<XSPWorldObj>::iterator itor;
-#else
 	std::list<XSPWorldObj>::iterator itor;
-#endif
-	// 최종 반환되며 실제 삭제된다.
-	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
-//	LISTREF_LOOP( m_listObj, XSPWorldObj, itor )
-	{
+	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor ) {
 		XEBaseWorldObj *pObj = itor->get();
 		if( pObj->GetTouchable() && pObj->GetDestroy() == 0 )
 			pObj->OnLButtonUp( lx, ly );
-	}// END_LOOP;
+	}
 }
 
 /**
@@ -314,115 +309,91 @@ XSPWorldObj XEObjMng::FindNearObjByFilter( const XE::VEC3& vwPos,
 }
 */
 
-XSPWorldObj XEObjMng::FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
-										const XE::VEC3& vwPos,
-										float radius,
-										BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ) )
-{
-	float minDist = 9999999;
-	XSPWorldObj spMinObj(nullptr);
-	float minDistAll = 9999999;
-	XSPWorldObj spMinObjAll;
-#ifdef _XOBJMNG_OPTIMIZE
-	XList3<XSPWorldObj>::iterator itor;
-#else
-	std::list<XSPWorldObj>::iterator itor;
-#endif
-	// 최종 반환되며 실제 삭제된다.
-	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
-	{
-		if( pfuncFilter( pSrcObj, (*itor).get() ) )
-		{
-			XE::VEC3 vDist = ( *itor )->GetvwPos() - vwPos;
-			float distsq = vDist.Lengthsq();
-			// 주어진 거리내에 있는가
-			if( distsq <= radius * radius )
-			{
-				minDist = distsq;
-				spMinObj = ( *itor );
-			}
-			else
-			{
-				// 못찾을경우를 대비해서 범위바깥의 오브젝트중에 가장 가까운것도 찾는다.
-				minDistAll = distsq;
-				spMinObjAll = ( *itor );
-			}
-		}
-	}
-	// 만약 범위내에서 못찾았으면 범위바깥에서 찾은거라도 돌려준다.
-	if( spMinObj == nullptr )
-		return spMinObjAll;
-	return spMinObj;
-
-}
+// XSPWorldObj XEObjMng::FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 
+// 										const XE::VEC3& vwPos,
+// 										float radius,
+// 										BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ) )
+// {
+// 	float minDist = 9999999;
+// 	XSPWorldObj spMinObj(nullptr);
+// 	float minDistAll = 9999999;
+// 	XSPWorldObj spMinObjAll;
+// 	std::list<XSPWorldObj>::iterator itor;
+// 	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor ) {
+// 		if( pfuncFilter( pSrcObj, (*itor).get() ) )	{
+// 			XE::VEC3 vDist = ( *itor )->GetvwPos() - vwPos;
+// 			float distsq = vDist.Lengthsq();
+// 			// 주어진 거리내에 있는가
+// 			if( distsq <= radius * radius )	{
+// 				minDist = distsq;
+// 				spMinObj = ( *itor );
+// 			}	else {
+// 				// 못찾을경우를 대비해서 범위바깥의 오브젝트중에 가장 가까운것도 찾는다.
+// 				minDistAll = distsq;
+// 				spMinObjAll = ( *itor );
+// 			}
+// 		}
+// 	}
+// 	// 만약 범위내에서 못찾았으면 범위바깥에서 찾은거라도 돌려준다.
+// 	if( spMinObj == nullptr )
+// 		return spMinObjAll;
+// 	return spMinObj;
+// 
+// }
 
 /**
  @brief 조건함수를 이용해 더 ~한 오브젝트를 찾는다.
 */
-XSPWorldObj XEObjMng::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
-										const XE::VEC3& vwPos,
-										float radius,
-										BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ),
-										BOOL( *pfuncCompare )( XEBaseWorldObj*, XEBaseWorldObj*, XEBaseWorldObj* ) )
-{
-	XSPWorldObj spCompObj;
-	float minDist = 99999999.f;
-	XSPWorldObj spCompObjForAll;
-#ifdef _XOBJMNG_OPTIMIZE
-	XList3<XSPWorldObj>::iterator itor;
-#else
-	std::list<XSPWorldObj>::iterator itor;
-#endif
-	// 최종 반환되며 실제 삭제된다.
-	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor )
-	{
-		BOOL bCondition = FALSE;
-		// 사용자 정의 필터함수를 호출해서 TRUE인것만 대상으로 한다.
-		if( ( *itor )->GetsnObj() != pSrcObj->GetsnObj() &&
-			pfuncFilter( pSrcObj, itor->get() ) )
-		{
-			if( radius > 0 )
-			{
-				// 일단 주어진 거리내에 있어야 한다.
-				XE::VEC3 vDist = ( *itor )->GetvwPos() - vwPos;
-				float distsq = vDist.Lengthsq();
-				if( distsq <= radius * radius )
-				{
-					bCondition = TRUE;
-				}
-				else
-				{
-					// 거리밖에 있는것들중에서 젤 가까운것도 찾아둔다.
-					if( distsq < minDist )	// 자기자신은 검색하지 않는다.
-					{
-						minDist = distsq;
-						spCompObjForAll = ( *itor );
-					}
-				}
-			}
-			else
-				// 범위가 없으면 거리 검사 안함.
-				bCondition = TRUE;
-			if( bCondition )
-			{
-				if( spCompObj == nullptr )
-					spCompObj = ( *itor );
-				else
-					// 사용자 정의 비교함수를 호출해서 TRUE인것만 취한다.
-					if( pfuncCompare( pSrcObj, itor->get(), spCompObj.get() ) )
-						spCompObj = ( *itor );
-			}
-		}
-	}
-	// 거리내에 조건을 만족하는게 없다.
-	if( spCompObj == nullptr )
-	{
-		// 그렇다면 거리밖에있는것들중에 가장가까운것을 리턴한다.
-		if( spCompObjForAll != nullptr )
-			return spCompObjForAll;
-		else
-			return spCompObj;	// 거리밖에서 조차 없다면 그냥 널리턴
-	}
-	return spCompObj;
-
-}
+// XSPWorldObj XEObjMng::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
+// 										const XE::VEC3& vwPos,
+// 										float radius,
+// 										BOOL( *pfuncFilter )( XEBaseWorldObj*, XEBaseWorldObj* ),
+// 										BOOL( *pfuncCompare )( XEBaseWorldObj*, XEBaseWorldObj*, XEBaseWorldObj* ) )
+// {
+// 	XSPWorldObj spCompObj;
+// 	float minDist = 99999999.f;
+// 	XSPWorldObj spCompObjForAll;
+// 	std::list<XSPWorldObj>::iterator itor;
+// 	// 최종 반환되며 실제 삭제된다.
+// 	for( itor = m_listObj.begin(); itor != m_listObj.end(); ++itor ) {
+// 		BOOL bCondition = FALSE;
+// 		// 사용자 정의 필터함수를 호출해서 TRUE인것만 대상으로 한다.
+// 		if( ( *itor )->GetsnObj() != pSrcObj->GetsnObj() &&
+// 			pfuncFilter( pSrcObj, itor->get() ) ) {
+// 			if( radius > 0 ) {
+// 				// 일단 주어진 거리내에 있어야 한다.
+// 				XE::VEC3 vDist = ( *itor )->GetvwPos() - vwPos;
+// 				float distsq = vDist.Lengthsq();
+// 				if( distsq <= radius * radius ) {
+// 					bCondition = TRUE;
+// 				} else {
+// 					// 거리밖에 있는것들중에서 젤 가까운것도 찾아둔다.
+// 					if( distsq < minDist ) {	// 자기자신은 검색하지 않는다.
+// 						minDist = distsq;
+// 						spCompObjForAll = ( *itor );
+// 					}
+// 				}
+// 			} else
+// 				// 범위가 없으면 거리 검사 안함.
+// 				bCondition = TRUE;
+// 			if( bCondition ) {
+// 				if( spCompObj == nullptr )
+// 					spCompObj = ( *itor );
+// 				else
+// 					// 사용자 정의 비교함수를 호출해서 TRUE인것만 취한다.
+// 					if( pfuncCompare( pSrcObj, itor->get(), spCompObj.get() ) )
+// 						spCompObj = ( *itor );
+// 			}
+// 		}
+// 	}
+// 	// 거리내에 조건을 만족하는게 없다.
+// 	if( spCompObj == nullptr ) {
+// 		// 그렇다면 거리밖에있는것들중에 가장가까운것을 리턴한다.
+// 		if( spCompObjForAll != nullptr )
+// 			return spCompObjForAll;
+// 		else
+// 			return spCompObj;	// 거리밖에서 조차 없다면 그냥 널리턴
+// 	}
+// 	return spCompObj;
+// 
+// }

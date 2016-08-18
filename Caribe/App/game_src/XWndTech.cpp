@@ -126,7 +126,7 @@ void XWndAbilButton::Update()
 	if( XASSERT(pHero) && pImg ) {
 		auto strIcon = m_pProp->strIcon;
 		if( strIcon.empty() ) {
-			auto pSkillDat = XSKILL::XESkillMng::sGet()->FindByIdentifier( m_pProp->strSkill );
+			auto pSkillDat = XSKILL::XESkillMng::sGet()->FindByIds( m_pProp->strSkill );
 			if( pSkillDat ) {
 				strIcon = pSkillDat->GetstrIcon();
 			}
@@ -254,7 +254,7 @@ XWndResearchConfirm::XWndResearchConfirm( XGAME::xtUnit unit
 		xSET_IMG( this, "img.abil", XE::MakePath( DIR_IMG, pNode->strIcon ) );
 		xSET_TEXT( this, "text.abil.name", XTEXT( pNode->idName ) );
 		_tstring strDesc = XTEXT( pNode->idDesc );
-		auto pSkillDat = SKILL_MNG->FindByIdentifier( pNode->strSkill );
+		auto pSkillDat = SKILL_MNG->FindByIds( pNode->strSkill );
 		pSkillDat->GetSkillDesc( &strDesc, point );
 		xSET_TEXT( this, "text.abil.desc", strDesc );
 		xSET_TEXT_FORMAT( this, "text.point", _T("%d"), point  );

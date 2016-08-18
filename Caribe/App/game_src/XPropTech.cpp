@@ -144,7 +144,7 @@ XPropTech::xNodeAbil* XPropTech::LoadUnit( XEXmlNode& nodeRoot, XGAME::xtUnit un
 			}
 			// 아이콘이 없으면 스킬프로퍼티에서 가져온다.
 			if( pNodeAbil->strIcon.empty() ) {
-				XSKILL::XSkillDat *pDat = SKILL_MNG->FindByIdentifier( pNodeAbil->strSkill );
+				auto pDat = SKILL_MNG->FindByIds( pNodeAbil->strSkill );
 				if( pDat == nullptr ) {
 					CONSOLE( "<propTech.xml> id=%d:not found skill:%s", pNodeAbil->idNode, pNodeAbil->strSkill.c_str() );
 					pNodeAbil->strIcon = _T( "icon_dummy.png" );

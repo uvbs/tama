@@ -1,125 +1,125 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <spearman>
-    <abil id="47" skill="atk_up" icon="spear_01.png" id_name="60032" id_desc="60033" tier="1" max_point="5" posx="140" posy="308">
+    <abil id="47" skill="atk_up" id_name="60032" id_desc="60033" tier="1" max_point="5" posx="140" posy="308">
       <parent node="0" />
       <child node="48" />
     </abil>
-    <abil id="48" skill="penetration" icon="spear_05.png" id_name="60034" id_desc="60035" tier="2" max_point="5" posx="140" posy="238">
+    <abil id="48" skill="penetration" id_name="60034" id_desc="60035" tier="2" max_point="5" posx="140" posy="238">
       <parent node="47" />
       <child node="49" />
     </abil>
-    <abil id="49" skill="purification" icon="spear_08.png" id_name="60036" id_desc="60037" tier="3" max_point="5" posx="140" posy="161">
+    <abil id="49" skill="purification" id_name="60036" id_desc="60037" tier="3" max_point="5" posx="140" posy="161">
       <parent node="48" />
       <child node="50" />
     </abil>
-    <abil id="50" skill="surprise_attack" icon="spear_12.png" id_name="60022" id_desc="60038" tier="4" max_point="5" posx="140" posy="91">
+    <abil id="50" skill="surprise_attack" id_name="60022" id_desc="60038" tier="4" max_point="5" posx="140" posy="91">
       <parent node="49" />
     </abil>
-    <abil id="51" skill="hp_up" icon="spear_03.png" id_name="60039" id_desc="60040" tier="1" max_point="5" posx="210" posy="308">
+    <abil id="51" skill="hp_up" id_name="60039" id_desc="60040" tier="1" max_point="5" posx="210" posy="308">
       <parent node="0" />
       <child node="53" />
     </abil>
-    <abil id="52" skill="def_up" icon="spear_02.png" id_name="60041" id_desc="60042" tier="1" max_point="5" posx="280" posy="308">
+    <abil id="52" skill="def_up" id_name="60041" id_desc="60042" tier="1" max_point="5" posx="280" posy="308">
       <parent node="0" />
       <child node="53" />
     </abil>
-    <abil id="53" skill="evasion" icon="spear_07.png" id_name="60043" id_desc="60044" tier="2" max_point="5" posx="245" posy="238">
+    <abil id="53" skill="evasion" id_name="60043" id_desc="60044" tier="2" max_point="5" posx="245" posy="238">
       <parent node="51" />
       <parent node="52" />
       <child node="54" />
       <child node="55" />
     </abil>
-    <abil id="54" skill="smoke_screen" icon="spear_09.png" id_name="60045" id_desc="60046" tier="3" max_point="5" posx="210" posy="161">
+    <abil id="54" skill="smoke_screen" id_name="60045" id_desc="60046" tier="3" max_point="5" posx="210" posy="161">
       <parent node="53" />
       <child node="56" />
     </abil>
-    <abil id="55" skill="hook" icon="spear_10.png" id_name="60047" id_desc="60048" tier="3" max_point="5" posx="280" posy="161">
+    <abil id="55" skill="hook" id_name="60047" id_desc="60048" tier="3" max_point="5" posx="280" posy="161">
       <parent node="53" />
       <child node="57" />
     </abil>
-    <abil id="56" skill="shield" icon="spear_13.png" id_name="60049" id_desc="60050" tier="4" max_point="5" posx="210" posy="91">
+    <abil id="56" skill="shield" id_name="60049" id_desc="60050" tier="4" max_point="5" posx="210" posy="91">
       <parent node="54" />
     </abil>
-    <abil id="57" skill="self_healing" icon="spear_14.png" id_name="60051" id_desc="60052" tier="4" max_point="5" posx="280" posy="91">
+    <abil id="57" skill="self_healing" id_name="60051" id_desc="60052" tier="4" max_point="5" posx="280" posy="91">
       <parent node="55" />
     </abil>
-    <abil id="58" skill="prayer" icon="spear_04.png" id_name="60053" id_desc="60054" tier="1" max_point="5" posx="350" posy="308">
+    <abil id="58" skill="prayer" id_name="60053" id_desc="60054" tier="1" max_point="5" posx="350" posy="308">
       <parent node="0" />
       <child node="59" />
     </abil>
-    <abil id="59" skill="march" icon="spear_06.png" id_name="60055" id_desc="60056" tier="2" max_point="5" posx="350" posy="238">
+    <abil id="59" skill="march" id_name="60055" id_desc="60056" tier="2" max_point="5" posx="350" posy="238">
       <parent node="58" />
       <child node="60" />
     </abil>
-    <abil id="60" skill="javelin" icon="spear_11.png" id_name="60057" id_desc="60058" tier="3" max_point="5" posx="350" posy="161">
+    <abil id="60" skill="javelin" id_name="60057" id_desc="60058" tier="3" max_point="5" posx="350" posy="161">
       <parent node="59" />
       <child node="61" />
     </abil>
-    <abil id="61" skill="gungnir" icon="spear_15.png" id_name="60059" id_desc="60060" tier="4" max_point="5" posx="350" posy="91">
+    <abil id="61" skill="gungnir" id_name="60059" id_desc="60060" tier="4" max_point="5" posx="350" posy="91">
       <parent node="60" />
     </abil>
   </spearman>
   <archer>
-    <abil id="62" skill="archer_atk" icon="archer_01.png" id_name="60032" id_desc="60061" tier="1" max_point="5" posx="140" posy="315">
+    <abil id="62" skill="archer_atk" id_name="60032" id_desc="60061" tier="1" max_point="5" posx="140" posy="315">
       <parent node="0" />
       <child node="63" />
     </abil>
-    <abil id="63" skill="penetration_up" icon="archer_04.png" id_name="60062" id_desc="60063" tier="2" max_point="5" posx="140" posy="259">
+    <abil id="63" skill="penetration_up" id_name="60062" id_desc="60063" tier="2" max_point="5" posx="140" posy="259">
       <parent node="62" />
       <child node="64" />
     </abil>
-    <abil id="64" skill="atk_speed_up" icon="archer_08.png" id_name="60064" id_desc="60065" tier="3" max_point="5" posx="140" posy="196">
+    <abil id="64" skill="atk_speed_up" id_name="60064" id_desc="60065" tier="3" max_point="5" posx="140" posy="196">
       <parent node="63" />
       <child node="65" />
     </abil>
-    <abil id="65" skill="quick_firing" icon="archer_11.png" id_name="60066" id_desc="60067" tier="4" max_point="5" posx="140" posy="140">
+    <abil id="65" skill="quick_firing" id_name="60066" id_desc="60067" tier="4" max_point="5" posx="140" posy="140">
       <parent node="64" />
       <child node="66" />
     </abil>
-    <abil id="66" skill="instant_death_arrow" icon="archer_14.png" id_name="60068" id_desc="60069" tier="5" max_point="5" posx="175" posy="77">
+    <abil id="66" skill="instant_death_arrow" id_name="60068" id_desc="60069" tier="5" max_point="5" posx="175" posy="77">
       <parent node="65" />
       <parent node="67" />
     </abil>
-    <abil id="67" skill="nearing_fire" icon="archer_12.png" id_name="60076" id_desc="60077" tier="4" max_point="5" posx="210" posy="140">
+    <abil id="67" skill="nearing_fire" id_name="60076" id_desc="60077" tier="4" max_point="5" posx="210" posy="140">
       <parent node="68" />
       <child node="66" />
     </abil>
-    <abil id="68" skill="pyeonjeon" icon="archer_09.png" id_name="60074" id_desc="60075" tier="3" max_point="5" posx="210" posy="196">
+    <abil id="68" skill="pyeonjeon" id_name="60074" id_desc="60075" tier="3" max_point="5" posx="210" posy="196">
       <parent node="69" />
       <child node="67" />
     </abil>
-    <abil id="69" skill="cri_dmg_up" icon="archer_05.png" id_name="60072" id_desc="60073" tier="2" max_point="5" posx="210" posy="259">
+    <abil id="69" skill="cri_dmg_up" id_name="60072" id_desc="60073" tier="2" max_point="5" posx="210" posy="259">
       <parent node="70" />
       <child node="68" />
     </abil>
-    <abil id="70" skill="archer_cri_up" icon="archer_02.png" id_name="60070" id_desc="60071" tier="1" max_point="5" posx="210" posy="315">
+    <abil id="70" skill="archer_cri_up" id_name="60070" id_desc="60071" tier="1" max_point="5" posx="210" posy="315">
       <parent node="0" />
       <child node="69" />
     </abil>
-    <abil id="71" skill="chill_blast_arrow" icon="archer_03.png" id_name="60078" id_desc="60079" tier="1" max_point="5" posx="315" posy="315">
+    <abil id="71" skill="chill_blast_arrow" id_name="60078" id_desc="60079" tier="1" max_point="5" posx="315" posy="315">
       <parent node="0" />
       <child node="72" />
       <child node="73" />
     </abil>
-    <abil id="72" skill="chill_spread" icon="archer_06.png" id_name="60080" id_desc="60081" tier="2" max_point="5" posx="280" posy="259">
+    <abil id="72" skill="chill_spread" id_name="60080" id_desc="60081" tier="2" max_point="5" posx="280" posy="259">
       <parent node="71" />
       <child node="74" />
     </abil>
-    <abil id="73" skill="chill_up" icon="archer_07.png" id_name="60082" id_desc="60083" tier="2" max_point="5" posx="350" posy="259">
+    <abil id="73" skill="chill_up" id_name="60082" id_desc="60083" tier="2" max_point="5" posx="350" posy="259">
       <parent node="71" />
       <child node="74" />
     </abil>
-    <abil id="74" skill="crushing_arrow" icon="archer_10.png" id_name="60084" id_desc="60085" tier="3" max_point="5" posx="315" posy="196">
+    <abil id="74" skill="crushing_arrow" id_name="60084" id_desc="60085" tier="3" max_point="5" posx="315" posy="196">
       <parent node="73" />
       <parent node="72" />
       <child node="77" />
     </abil>
-    <abil id="77" skill="freeze_arrow" icon="archer_13.png" id_name="60086" id_desc="60087" tier="4" max_point="5" posx="315" posy="140">
+    <abil id="77" skill="freeze_arrow" id_name="60086" id_desc="60087" tier="4" max_point="5" posx="315" posy="140">
       <parent node="74" />
       <child node="78" />
     </abil>
-    <abil id="78" skill="range_increase" icon="archer_15.png" id_name="60088" id_desc="60089" tier="5" max_point="5" posx="315" posy="77">
+    <abil id="78" skill="range_increase" id_name="60088" id_desc="60089" tier="5" max_point="5" posx="315" posy="77">
       <parent node="77" />
     </abil>
   </archer>

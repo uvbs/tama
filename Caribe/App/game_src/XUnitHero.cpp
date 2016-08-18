@@ -51,7 +51,7 @@ XUnitHero::XUnitHero( XSPSquad spSquadObj,
 #endif // 
 	{
 		if( pHero->GetSkillDatActive() )
-			m_pSkillActive = CreateAddUseSkillByIdentifier( m_pProp->strActive.c_str() );
+			m_pSkillActive = CreateAddUseSkillByIds( m_pProp->strActive.c_str() );
 	}
 	// 이 영웅이 군단장이냐
 #if defined(WIN32) && defined(_CHEAT)
@@ -67,12 +67,12 @@ XUnitHero::XUnitHero( XSPSquad spSquadObj,
 				// this가 리더영웅이면 패시브가 아군전체에 적용됨
 				if( m_pProp->strPassive.empty() == false ) {
 					// 스킬을 useSkill로 만들어 this가 소유
-					m_pSkillPassive = CreateAddUseSkillByIdentifier( m_pProp->strPassive.c_str() );
+					m_pSkillPassive = CreateAddUseSkillByIds( m_pProp->strPassive.c_str() );
 				}
 			} else {
 				// 리더가 아니면 개인에게만 적용됨.
 				if( m_pProp->strPassive.empty() == false ) {
-					m_pSkillPassive = CreateAddUseSkillByIdentifier( m_pProp->strPassive.c_str() );
+					m_pSkillPassive = CreateAddUseSkillByIds( m_pProp->strPassive.c_str() );
 				}
 			}
 		}
@@ -91,30 +91,12 @@ void XUnitHero::OnCreate( void )
 	XBaseUnit::OnCreate();
 }
 
-int XUnitHero::GetSkillLevel( XSKILL::XSkillObj* pSkillObj )
-{
-	return XBaseUnit::GetSkillLevel( pSkillObj );
-}
-
 /*
 . 검기가 날아가는류의 스킬이 아닌이상 근접스킬은 평타치고 있을때 발동한다.
 .스킬 쿨타임이 끝났는데 평타로 치고 있지 않은상황이면 스킬사용은 보류된다.
 */
 void XUnitHero::FrameMove( float dt )
 {
-#ifdef _DEBUG
-	if( IsPlayer() ) {
-		int a = 0;
-		if( IsHero() ) {
-			int b = 0;
-		}
-	} else {
-		int a = 0;
-		if( IsHero() ) {
-			int b = 0;
-		}
-	}
-#endif // _DEBUG
 	auto spSelected = XWndBattleField::sGet()->GetspSelectSquad();
 	bool bSelected = (spSelected && spSelected->GetsnSquadObj() == GetpSquadObj()->GetsnSquadObj());
 	XBaseUnit *pTarget = (GetspTarget())? GetspTarget().get() : nullptr;
@@ -122,19 +104,19 @@ void XUnitHero::FrameMove( float dt )
 	if( IsAI() && !bSelected )
 		// 자신에게 쓰는 버프타입이고
 		if( m_pSkillActive ) {
-			auto pSkillDat = m_pSkillActive->GetpDat();
+			auto pDat = m_pSkillActive;
 			// 공속딜레이중이 아니며
 				// 스킬 쿨타임도 아니고 AI가 작동중일때.
 				if( !IsSkillCool() && IsLive() ) {
 					float distAttack = GetAttackRadiusByPixel();
-					if( pSkillDat->GetwhenUse() == xWC_EVENT_IMMEDIATELY ) {
+					if( pDat->GetwhenUse() == xWC_EVENT_IMMEDIATELY ) {
 						// 시전시점:즉시(자신에게 쓰는 버프나 힐류)
 						DoSkillMotion();
 					} else 
 					// 시전시점: 기준타겟근접
 					// 시전시점: 공격타겟근접
-					if( pSkillDat->GetwhenUse() == xWC_ATTACK_TARGET_NEAR
-						|| pSkillDat->GetwhenUse() == xWC_BASE_TARGET_NEAR ) {
+					if( pDat->GetwhenUse() == xWC_ATTACK_TARGET_NEAR
+						|| pDat->GetwhenUse() == xWC_BASE_TARGET_NEAR ) {
 						if( pTarget ) {
 							float distsq = ( pTarget->GetvwPos() - GetvwPos() ).Lengthsq();
 							if( distsq < distAttack * distAttack ) {
@@ -182,28 +164,27 @@ int XUnitHero::DoSkillMotion( void )
 {
 	const float secCool = CalcAdjParam( 10.f, XGAME::xADJ_SKILL_COOL );
 	// 스킬을 사용할 시간이 되었다.
-	XSKILL::XSkillObj *pUseSkill = m_pSkillActive;
+	auto pDat = m_pSkillActive;
 	m_bUseSkill = FALSE;
-	if( pUseSkill == nullptr )
+	if( pDat == nullptr )
 		return 0;
 	// 패시브나 특성은 이걸로 사용되어선 안됨.
-	if(XBREAK( pUseSkill->IsPassiveCategory() || pUseSkill->IsAbilityCategory() ))
+	if(XBREAK( pDat->IsPassiveCategory() || pDat->IsAbilityCategory() ))
 		return 0;
-// 	if( pUseSkill->IsPassive() || pUseSkill->IsAbility() )
-// 		return 0;
 	if( IsState( XGAME::xST_SILENCE ) )
 		return 0;
 	XBREAK( IsDead() );
 	///< 
-	int level = GetSkillLevel( pUseSkill );
-	m_infoUseSkill = UseSkill( pUseSkill, level, GetspTarget().get(), nullptr );
+	int level = GetSkillLevel( pDat );
+	const XE::VEC2 vZero;
+	m_infoUseSkill = UseSkill( pDat, level, GetspTarget().get(), vZero );
 	// 현재 동작 FSM설계에 문제가 있어서 이동중에 스킬을 사용하지 못한다.
 	// 일단 스킬 모션과 관계없이 모션이 시작하면 바로 스킬을 쓰도록 바꿔두고 나중에 고친다.
 	if( m_infoUseSkill.errCode == xOK ) {
 		// 스킬모션이 지정되어있다면 그걸 쓰고 없다면 디폴트값을 쓴다.
 		ID idAct = ACT_SKILL1;
-		if( pUseSkill->GetpDat()->GetidCastMotion() ) {
-			idAct = pUseSkill->GetpDat()->GetidCastMotion();
+		if( pDat->GetidCastMotion() ) {
+			idAct = pDat->GetidCastMotion();
 			if( GetpSprObj()->IsHaveAction( idAct ) == FALSE )
 				idAct = ACT_SKILL1;
 		}
@@ -222,11 +203,11 @@ int XUnitHero::DoSkillMotion( void )
 //		CONSOLE("OnShootSkill:%s", pUseSkill->GetpDat()->GetstrIdentifier().c_str() );
 		// 스킬이름 외치기
 		if( IsPlayer() ) {
-			SCENE_BATTLE->OnUseSkill( GetspSquadObj(), pUseSkill->GetpDat()->GetSkillName() );
+			SCENE_BATTLE->OnUseSkill( GetspSquadObj(), pDat->GetSkillName() );
 			auto v = GetvwPos();
 			v.z -= 85.f;
 			XCOLOR col = (IsPlayer())? XCOLOR_WHITE : XCOLOR_RED;
-			_tstring str = XFORMAT( "%s!", pUseSkill->GetpDat()->GetSkillName() );
+			_tstring str = XFORMAT( "%s!", pDat->GetSkillName() );
 			auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
 			AddObj( pObjText );
 		}
@@ -269,8 +250,8 @@ void XUnitHero::OnHitEventSkill( const XE::VEC3& vwSrc )
 
 
 void XUnitHero::OnArriveBullet( XObjBullet *pBullet,
-								UnitPtr spAttacker,
-								UnitPtr spTarget,
+								XSPUnit spAttacker,
+								XSPUnit spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,
@@ -278,13 +259,11 @@ void XUnitHero::OnArriveBullet( XObjBullet *pBullet,
 								DWORD dwParam ) 
 
 {
-	if( pBullet->GetstrIdentifier() == _T("frozen_arrow") )
-	{
-		XSKILL::XSkillObj *pUseSkill = GetSkillObjByIndex( 0 );
+	if( pBullet->GetstrIdentifier() == _T("frozen_arrow") )	{
+		auto pUseSkill = GetSkillObjByIndex( 0 );
 		if( pUseSkill )	{
 			const int level = GetSkillLevel( pUseSkill );
-//			ApplyEffect( pUseSkill->GetpDat(), level, nullptr, pUseSkill->GetidSkill() );
-			CastSkillToBaseTarget( pUseSkill->GetpDatMutable(), level, spTarget.get(), XE::VEC2(), pUseSkill->GetidSkill() );
+			CastSkillToBaseTarget( pUseSkill, level, spTarget.get(), XE::VEC2(), pUseSkill->GetidSkill() );
 		}
 	}
 	XBaseUnit::OnArriveBullet( pBullet, spAttacker, spTarget, vwDst, damage, bCritical, sprArrive, idActArrive, dwParam );
@@ -306,7 +285,7 @@ void XUnitHero::OnEventHit( const xSpr::xEvent& event )
 // 		XBaseUnit::OnEventSprObj( pSprObj, pKey, lx, ly, idEvent, fAngle, fOverSec );
 	}
 }
-void XUnitHero::ShootRangeAttack( UnitPtr& spTarget,
+void XUnitHero::ShootRangeAttack( XSPUnit& spTarget,
 								const XE::VEC3& vwSrc,
 								const XE::VEC3& vwDst,
 								float damage,
@@ -336,10 +315,10 @@ bool XUnitHero::IsLeader()
 }
 
 bool XUnitHero::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
-										XSKILL::XBuffObj *pBuffObj,
-										XSKILL::XSkillDat *pSkillDat,
-										const XSKILL::EFFECT *pEffect,
-										int level )
+																					XSKILL::XBuffObj *pBuffObj,
+																					XSKILL::XSkillDat *pSkillDat,
+																					const XSKILL::EFFECT *pEffect,
+																					int level )
 {
 	if( pSkillDat->GetstrIdentifier() == _T( "morale" ) 
 		|| pSkillDat->GetstrIdentifier() == _T( "divine_protection" ) 
@@ -347,29 +326,23 @@ bool XUnitHero::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
 		|| pSkillDat->GetstrIdentifier() == _T( "prayer" )
 		|| pSkillDat->GetstrIdentifier() == _T( "chill_blast_arrow" )
 // 		|| pSkillDat->GetstrIdentifier() == _T( "chill_explosion" )
-		|| pSkillDat->GetstrIdentifier() == _T( "divine_protection" )
-		)
-	{
+		|| pSkillDat->GetstrIdentifier() == _T( "divine_protection" )	)	{
 		// 특성발동 외치기
-//		if( pCaster->IsPlayer() )
-		{
-			auto pAttacker = static_cast<XBaseUnit*>( pCaster );
-			auto v = pAttacker->GetvwPos();
-			v.z -= 80.f;
-			auto pNode = XPropTech::sGet()->GetpNodeBySkill( pAttacker->GetUnitType(), pSkillDat->GetstrIdentifier() );
-			if( XASSERT(pNode) )
-			{
-				_tstring str = XFORMAT( "%s!", XTEXT( pNode->idName ) );
-				XCOLOR col = ( IsPlayer() ) ? XCOLOR_WHITE : XCOLOR_RED;
-				auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
-				AddObj( pObjText );
-			}
+		auto pAttacker = static_cast<XBaseUnit*>( pCaster );
+		auto v = pAttacker->GetvwPos();
+		v.z -= 80.f;
+		auto pNode = XPropTech::sGet()->GetpNodeBySkill( pAttacker->GetUnitType(), pSkillDat->GetstrIdentifier() );
+		if( XASSERT(pNode) )	{
+			_tstring str = XFORMAT( "%s!", XTEXT( pNode->idName ) );
+			XCOLOR col = ( IsPlayer() ) ? XCOLOR_WHITE : XCOLOR_RED;
+			auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
+			AddObj( pObjText );
 		}
 	}
 	return XBaseUnit::OnEventApplyInvokeEffect( pCaster, pBuffObj, pSkillDat, pEffect, level );
 }
 XSKILL::xtInvokeTarget 
-XUnitHero::OnGetInvokeTarget( XSKILL::XSkillDat *pDat, 
+XUnitHero::OnGetInvokeTarget( const XSKILL::XSkillDat *pDat, 
 															const XSKILL::EFFECT *pEffect,
 															XSKILL::xtInvokeTarget invokeTarget )
 {
@@ -391,7 +364,7 @@ XUnitHero::OnGetInvokeTarget( XSKILL::XSkillDat *pDat,
 /**
  @brief 목표에게 향하다가 목표(객체나 좌표)에 도달함.
 */
-void XUnitHero::OnArriveTarget( UnitPtr spUnit, const XE::VEC3& vwDst )
+void XUnitHero::OnArriveTarget( XSPUnit spUnit, const XE::VEC3& vwDst )
 {
 }
 

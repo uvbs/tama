@@ -29,14 +29,14 @@ public:
 	~XUnitCyclops() { Destroy(); }
 	//
 //	static void 
-	static void sShootLaser( UnitPtr spShooter,
-																	UnitPtr& spTarget,
+	static void sShootLaser( XSPUnit spShooter,
+																	XSPUnit& spTarget,
 																	const XE::VEC3& vwSrc,
 																	const XE::VEC3& vwDst,
 																	float damage,
 																	bool bCritical,
 																	const _tstring& _strSpr );
-	void ShootRangeAttack( UnitPtr& spTarget,
+	void ShootRangeAttack( XSPUnit& spTarget,
 							const XE::VEC3& vwSrc,
 							const XE::VEC3& vwDst,
 							float damage,

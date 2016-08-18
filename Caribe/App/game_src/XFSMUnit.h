@@ -133,7 +133,7 @@ class XFSMNormalAttack : public XFSMBase
 	XE::VEC3 m_vTarget;			///< 목표가 좌표형태일 경우
 //	CTimer m_timerAttack;	///< 공속타이머
 //	XGAME::xtMelee m_typeCurrMeleeType;	///< 현재 어떤 공격중이었는가.
-	XSPSquadW m_spLastTargetSquad;		///< 마지막으로 공격하고 있던 타겟부대
+	XSPSquad m_spLastTargetSquad;		///< 마지막으로 공격하고 있던 타겟부대
 	void _Init() {
 
 	}

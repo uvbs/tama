@@ -102,7 +102,7 @@ void XGAME::UpdateHeroTooltip( const XPropHero::xPROP *pProp, XWnd *pRoot, int c
 	{
 		XWnd *pWnd = pRoot->Find( "key.skill.passive" );
 		if( pWnd ) {
-			auto pPropSkill = SKILL_MNG->FindByIdentifier( pProp->strPassive );
+			auto pPropSkill = SKILL_MNG->FindByIds( pProp->strPassive );
 			if( XASSERT( pPropSkill ) ) {
 				xSET_TEXT( pWnd, "text.name", pPropSkill->GetSkillName() );
 				auto pImg = xSET_IMG( pWnd, "img.icon", pPropSkill->GetResIcon() );
@@ -114,7 +114,7 @@ void XGAME::UpdateHeroTooltip( const XPropHero::xPROP *pProp, XWnd *pRoot, int c
 	{
 		XWnd *pWnd = pRoot->Find( "key.skill.active" );
 		if( pWnd ) {
-			auto pPropSkill = SKILL_MNG->FindByIdentifier( pProp->strActive );
+			auto pPropSkill = SKILL_MNG->FindByIds( pProp->strActive );
 			if( XASSERT( pPropSkill ) ) {
 				xSET_TEXT( pWnd, "text.name", pPropSkill->GetSkillName() );
 				auto pImg = xSET_IMG( pWnd, "img.icon", pPropSkill->GetResIcon() );

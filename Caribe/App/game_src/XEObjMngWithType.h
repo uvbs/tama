@@ -25,26 +25,26 @@ public:
 	}
 private:
 	static XEObjMngWithType* s_pInstance;
-	XList4<XSPUnitW> m_listUnits;
-	XList4<XSPWorldObjW> m_listEtc;
+	XList4<XSPUnit> m_listUnits;
+	XList4<XSPWorldObj> m_listEtc;
 	void Init() {}
 	void Destroy();
 public:
 	XEObjMngWithType( int maxObj, int maxType );
 	virtual ~XEObjMngWithType() { Destroy(); }
 	//
-	GET_ACCESSOR_CONST( const XList4<XSPUnitW>&, listUnits );
-	XList4<XSPUnitW>& GetlistUnitsMutable() {
+	GET_ACCESSOR_CONST( const XList4<XSPUnit>&, listUnits );
+	XList4<XSPUnit>& GetlistUnitsMutable() {
 		return m_listUnits;
 	}
 	//
-	virtual void Release();
-	virtual ID AddUnit( const XSPUnit& spObj );
-	virtual void AddUnit( ID idObj, const XSPUnit& spObj );
-	virtual ID Add( const XSPWorldObj& spObj );
-	virtual void Add( ID idObj, const XSPWorldObj& spObj );
-	virtual void OnDestroyObj( XEBaseWorldObj *pObj );
-	virtual XSPWorldObj Find( int type, ID idObj );
+	void Release() override;
+	ID AddUnit( const XSPUnit& spObj );
+//	void AddUnit( ID idObj, const XSPUnit& spObj );
+	ID Add( const XSPWorldObj& spObj ) override;
+// 	virtual void Add( ID idObj, const XSPWorldObj& spObj );
+	void OnDestroyObj( XEBaseWorldObj *pObj ) override;
+//	XSPWorldObj Find( int type, ID idObj );
 	void DestroyAllObj( void ) override;
 //	XSPWorldObj FindNearObjByFilter( const XE::VEC3& vwPos, float radius, BIT bitSide );
 	XSPUnit FindNearObjByFunc( XEBaseWorldObj *pSrcObj, 

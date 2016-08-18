@@ -37,7 +37,10 @@
 #define XLOW		2
 //#define		SUCCESS		1
 //#define		FAIL			-1
-
+#ifndef XFPS		// 프리컴파일헤더나 version.h등에서 XFPS가 정의되었다면 자체 디파인을 쓰지 않는다
+#define XFPS		(60.0f)
+#endif
+#define XSPF		(1.0f/XFPS)		// sec per frame(프레임당 sec)
 
 // XE::것을 쓸것.
 enum xRESULT {
@@ -50,22 +53,9 @@ namespace XE {
 		xSUCCESS
 	};
 };
-/*
-typedef enum tagxRESULT {
-	xFAIL = 0,
-	xSUCCESS
-} xRESULT;
-*/
-//#ifdef SAFE_DELETE
 #undef SAFE_DELETE
-//#endif
-//#ifdef SAFE_DELETE_ARRAY
 #undef SAFE_DELETE_ARRAY
-//#endif
-//#ifdef SAFE_RELEASE
 #undef SAFE_RELEASE
-//#endif
-
 /*
 	if(1) 
 		SAFE_DELTE( p );      <- 이런식으로 쓸때 { }; else 형태로 바껴서 매크로를 좀 바꿨음
@@ -96,16 +86,10 @@ typedef enum tagxRESULT {
 
 #ifdef WIN32
 template<class Interface>
-inline void
-SafeRelease(
-    Interface **ppInterfaceToRelease
-    )
-{
-    if (*ppInterfaceToRelease != NULL)
-    {
+inline void SafeRelease( Interface **ppInterfaceToRelease ) {
+    if (*ppInterfaceToRelease != nullptr) {
         (*ppInterfaceToRelease)->Release();
-
-        (*ppInterfaceToRelease) = NULL;
+        (*ppInterfaceToRelease) = nullptr;
     }
 }
 #endif // WIN32
@@ -264,44 +248,37 @@ inline float ROUND_AUP( float num ) {
 									}	\
 								}	\
 
-#define LIST_LOOP( LIST, NODE_TYPE, I, E )	{			\
-	std::list<NODE_TYPE>::iterator I; \
-	int li;	\
-	for( li=0, I = (LIST).begin(); I != (LIST).end(); li++, ++I ) \
-	{	\
-		NODE_TYPE E = (*I);		\
+#define LIST_LOOP( LIST, NODE_TYPE, I, E )	{ \
+	for( auto& E : LIST ) {
+// 	std::list<NODE_TYPE>::iterator I; \
+// 	int li;	\
+// 	for( li=0, I = (LIST).begin(); I != (LIST).end(); li++, ++I ) \
+// 	{	\
+// 		NODE_TYPE E = (*I);		\
 
 #define LIST_LOOP_REVERSE( LIST, NODE_TYPE, I, E )	{			\
 								std::list<NODE_TYPE>::reverse_iterator I; \
-								for( I = (LIST).rbegin(); I != (LIST).rend(); ++I ) \
-								{	\
-									NODE_TYPE E = (*I);		\
+								for( I = (LIST).rbegin(); I != (LIST).rend(); ++I ) {	\
+									NODE_TYPE E = (*I);
 
 
 #define LIST_MANUAL_LOOP( LIST, NODE_TYPE, I, E )	{			\
-								std::list<NODE_TYPE>::iterator I; \
-								for( I = (LIST).begin(); I != (LIST).end(); ) \
-								{	\
-									NODE_TYPE E = (*I);		\
+								for( auto I = (LIST).begin(); I != (LIST).end(); ) {	\
+									NODE_TYPE E = (*I);
 
 #define LIST_MANUAL_LOOP_AUTO( LIST, I, E )	{			\
-								for( auto I = (LIST).begin(); I != (LIST).end(); ) \
-																{	\
-									auto E = (*I);		\
+								for( auto I = (LIST).begin(); I != (LIST).end(); ) {	\
+									auto E = (*I);
 
 #define LISTREF_LOOP( LIST, NODE_TYPE, I )	{			\
-	std::list<NODE_TYPE>::iterator I; \
 	int li;	\
-	for( li=0, I = (LIST).begin(); I != (LIST).end(); li++, ++I ) \
-		{	\
+	for( auto li=0, I = (LIST).begin(); I != (LIST).end(); li++, ++I ) {
 
 /**
  @brief iterator I를 수동으로 증가시켜주는 버전
 */
 #define LISTREF_MANUAL_LOOP( LIST, NODE_TYPE, I )	{			\
-	std::list<NODE_TYPE>::iterator I; \
-	for( I = (LIST).begin(); I != (LIST).end(); ) \
-			{	\
+	for( auto I = (LIST).begin(); I != (LIST).end(); ) {
 
 #define END_LOOP		} }
 

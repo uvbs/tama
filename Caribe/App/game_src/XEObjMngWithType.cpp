@@ -62,12 +62,12 @@ ID XEObjMngWithType::AddUnit( const XSPUnit& spObj )
 	return XEObjMng::Add( spObj );
 }
 
-void XEObjMngWithType::AddUnit( ID idObj, const XSPUnit& spObj )
-{
-	XBREAK( spObj->GetType() == XGAME::xUNIT_NONE );	// 오브젝트는 반드시 타입이 있어야 한다.
-	m_listUnits.push_back( spObj );
-	XEObjMng::Add( idObj, spObj );
-}
+// void XEObjMngWithType::AddUnit( ID idObj, const XSPUnit& spObj )
+// {
+// 	XBREAK( spObj->GetType() == XGAME::xUNIT_NONE );	// 오브젝트는 반드시 타입이 있어야 한다.
+// 	m_listUnits.push_back( spObj );
+// 	XEObjMng::Add( idObj, spObj );
+// }
 
 ID XEObjMngWithType::Add( const XSPWorldObj& spObj )
 {
@@ -81,17 +81,17 @@ ID XEObjMngWithType::Add( const XSPWorldObj& spObj )
 	return XEObjMng::Add( spObj );
 }
 
-void XEObjMngWithType::Add( ID idObj, const XSPWorldObj& spObj )
-{
-	XBREAK( spObj->GetType() == XGAME::xOT_NONE );	// 오브젝트는 반드시 타입이 있어야 한다.
-	if( spObj->GetType() == XGAME::xOT_UNIT )
-	{
-		XSPUnit spUnit = std::static_pointer_cast<XBaseUnit>( spObj );
-		m_listUnits.push_back( spUnit );
-	} else
-		m_listEtc.push_back( spObj );
-	XEObjMng::Add( idObj, spObj );
-}
+// void XEObjMngWithType::Add( ID idObj, const XSPWorldObj& spObj )
+// {
+// 	XBREAK( spObj->GetType() == XGAME::xOT_NONE );	// 오브젝트는 반드시 타입이 있어야 한다.
+// 	if( spObj->GetType() == XGAME::xOT_UNIT )
+// 	{
+// 		XSPUnit spUnit = std::static_pointer_cast<XBaseUnit>( spObj );
+// 		m_listUnits.push_back( spUnit );
+// 	} else
+// 		m_listEtc.push_back( spObj );
+// 	XEObjMng::Add( idObj, spObj );
+// }
 
 
 /**
@@ -105,7 +105,7 @@ void XEObjMngWithType::OnDestroyObj( XEBaseWorldObj *pObj )
 	BOOL bFound = FALSE;
 	if( type == XGAME::xOT_UNIT )	{
 		for( auto itor = m_listUnits.begin(); itor != m_listUnits.end(); )		{
-			auto& spUnit = (*itor).lock();
+			auto spUnit = (*itor);
 			if( spUnit->GetsnObj() == pObj->GetsnObj() )			{
 				// 소유권 반환
 				spUnit.reset();
@@ -119,7 +119,7 @@ void XEObjMngWithType::OnDestroyObj( XEBaseWorldObj *pObj )
 	} else
 	{
 		for( auto itor = m_listEtc.begin(); itor != m_listEtc.end(); )		{
-			auto& spEtc = (*itor).lock();
+			auto spEtc = (*itor);
 			if( spEtc->GetsnObj() == pObj->GetsnObj() )			{
 				// 소유권 반환
 				spEtc.reset();
@@ -139,31 +139,32 @@ void XEObjMngWithType::OnDestroyObj( XEBaseWorldObj *pObj )
 /**
  @brief type을이용해서 더 빨리 찾는다.
 */
-XSPWorldObj XEObjMngWithType::Find( int type, ID snObj )
-{
-	if( snObj == 0 )
-		return nullptr;
-	return XEObjMng::Find( snObj );
-// 	if( type == XGAME::xOT_UNIT )
-// 	{
-// 
-// 	}
-// 	std::list<XSPUnit>::iterator itor;
-// 	for( itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor )
-// 	{
-// 		if( (*itor)->GetsnObj() == snObj )
-// 			return *itor;
-// 	}
-// 	// 못찾았으면 nullptr을 리턴하는데 에러검증을 위해 원본 리스트에서도 찾아보고 있다면 잘못된것이다.
-// 	XBREAKF( XEObjMng::Find( snObj ), "not found obj:type=%d, id=%d", type, snObj);
-	return nullptr;
-}
+// XSPWorldObj XEObjMngWithType::Find( int type, ID snObj )
+// {
+// 	if( snObj == 0 )
+// 		return nullptr;
+// 	return XEObjMng::Find( snObj );
+// // 	if( type == XGAME::xOT_UNIT )
+// // 	{
+// // 
+// // 	}
+// // 	std::list<XSPUnit>::iterator itor;
+// // 	for( itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor )
+// // 	{
+// // 		if( (*itor)->GetsnObj() == snObj )
+// // 			return *itor;
+// // 	}
+// // 	// 못찾았으면 nullptr을 리턴하는데 에러검증을 위해 원본 리스트에서도 찾아보고 있다면 잘못된것이다.
+// // 	XBREAKF( XEObjMng::Find( snObj ), "not found obj:type=%d, id=%d", type, snObj);
+// 	return nullptr;
+// }
 
 void XEObjMngWithType::DestroyObjWithType( int type, ID snObj )
 {
 	if( snObj == 0 )
 		return;
-	auto spObj = Find( type, snObj );
+//	auto spObj = Find( type, snObj );		// 현재 사용하지 않음.
+	auto spObj = Find( snObj );
 	if( spObj ) {
 		spObj->SetDestroy( 1 );
 	}
@@ -185,7 +186,9 @@ XSPUnit XEObjMngWithType::FindNearObjByFunc( XEBaseWorldObj *pSrcObj,
 	float minDistAll = 99999999.f;
 	XSPUnit spMinObjAll;
 	for( auto itor = m_listEtc.begin(); itor != m_listEtc.end(); ++itor ) {
-		auto& spEtc = (*itor).lock();
+		auto spEtc = (*itor);
+		if( spEtc->IsDestroy() )
+			continue;
 		// 사용자 정의 조건함수를 호출해서 통과한것만 거리테스트를 한다.
 		if( pfuncFilter( pSrcObj, spEtc.get() ) ) {
 			const XE::VEC3 vDist = spEtc->GetvwPos() - vwPos;
@@ -230,7 +233,9 @@ XSPUnit XEObjMngWithType::FindNearUnitByFunc( XBaseUnit *pSrcObj,
 	float minDistAll = 99999999.f;
 	XSPUnit spMinObjAll;
 	for( auto itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor ) {
-		auto& spUnit = (*itor).lock();
+		auto spUnit = (*itor);
+		if( spUnit->IsDestroy() )
+			continue;
 		// 사용자 정의 조건함수를 호출해서 통과한것만 거리테스트를 한다.
 		if( pfuncFilter( pSrcObj, spUnit.get() ) )	{
 			XE::VEC3 vDist = spUnit->GetvwPos() - vwPos;
@@ -274,7 +279,9 @@ XSPWorldObj XEObjMngWithType::FindNearObjByMore( XEBaseWorldObj *pSrcObj,
 	float minDist = 99999999.f;
 	XSPWorldObj spCompObjForAll;
 	for( auto itor = m_listEtc.begin(); itor != m_listEtc.end(); ++itor ) {
-		auto& spEtc = (*itor).lock();
+		auto spEtc = (*itor);
+		if( spEtc->IsDestroy() )
+			continue;
 		BOOL bCondition = FALSE;
 		// 사용자 정의 필터함수를 호출해서 TRUE인것만 대상으로 한다.
 		if( spEtc->GetsnObj() != pSrcObj->GetsnObj() 
@@ -330,7 +337,9 @@ XSPUnit XEObjMngWithType::FindNearUnitByMore( XBaseUnit *pSrcObj,
 	float minDist = 99999999.f;
 	XSPUnit spCompObjForAll;
 	for( auto itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor ) {
-		auto& spUnit = (*itor).lock();
+		auto spUnit = (*itor);
+		if( spUnit->IsDestroy() )
+			continue;
 		BOOL bCondition = FALSE;
 		// 사용자 정의 필터함수를 호출해서 TRUE인것만 대상으로 한다.
 		if( spUnit->GetsnObj() != pSrcObj->GetsnObj() 
@@ -443,8 +452,9 @@ int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
 	XVector<XSPUnit> aryInNew;				// pOutAry에 이미 타겟이 있는채로 들어왔을때 그것은 제한 리스트
 	XVector<XSPUnit> aryIn = *pOutAry;	// 기존타겟에 반경검사타겟까지 포함.
 	int costSum = 0;
-	for( auto spwUnit : m_listUnits ) {
-		auto spUnit = spwUnit.lock();
+	for( auto spUnit : m_listUnits ) {
+		if( spUnit->IsDestroy() )
+			continue;
 		XBREAK( spUnit == nullptr );
 		if( (spUnit->GetCamp() & bitSideFilter) == 0 )
 			continue;
@@ -478,9 +488,11 @@ int XEObjMngWithType::GetListUnitRadius2( XVector<XSPUnit> *pOutAry,
 			costSum += spUnit->GetSizeCost();		// 배열에 들어간 유닛들의 토탈코스트
 		} // in radius
 	} // for
-	// 목표코스트를 다 못채웠으면 랜덤으로 뽑아낼필요 없음.
-	if( costSum <= numCost )
+	// 목표코스트를 다 채우지 못했거나 딱맞게 채웠을때는 전체 리스트에서 랜덤으로 뽑을필요가 없으므로 그냥 검색된 리스트를 모두 리턴한다.
+	if( costSum <= numCost ) {
+		*pOutAry = aryIn;
 		return pOutAry->Size();
+	}
 	int currCost = numCost;
 // 	XVector<XSPUnit> ary = *pOutAry;
 // 	pOutAry->Clear();
@@ -577,9 +589,11 @@ XSPUnit XEObjMngWithType::GetPickUnit( XWndBattleField *pWndWorld,
 										BOOL *pOutPickExclude/*=nullptr*/)
 {
 	for( auto itor = m_listUnits.begin(); itor != m_listUnits.end(); ++itor )	{
-		auto pUnit = SafeCast<XBaseUnit*>( ( *itor ).lock().get() );
+		auto pUnit = SafeCast<XBaseUnit*>( ( *itor ).get() );
 		if( XBREAK( pUnit == nullptr ) )
 			return nullptr;
+		if( pUnit->IsDestroy() )
+			continue;
 		if( pUnit->IsDead() )
 			continue;;
 		// bitCamp와 같은진영만 검사한다. 제외부대가 지정되어있을경우 해당부대의 유닛은 제외한다.

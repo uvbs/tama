@@ -49,7 +49,7 @@ public:
 	}
 	GET_ACCESSOR( XSeq*, pSeq );
 	GET_SET_ACCESSOR_CONST( bool, bDestroy );
-	bool IsDestroy() const {
+	inline bool IsDestroy() const {
 		return m_bDestroy;
 	}
 	GET_ACCESSOR( ID, snOrder );

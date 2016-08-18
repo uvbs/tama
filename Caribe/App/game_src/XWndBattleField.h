@@ -17,22 +17,27 @@ public:
 private:
 	static XWndBattleField *s_pInstance;
 	XBattleField *m_prefBattleField;
-	XSPSquadW m_spTempSelect;		///< 임시선택
-	XSPSquadW m_spSelectSquad;		///< 선택된 아군 부대
-	XSPSquadW m_spTempSelectEnemy;	///< 적진영 임시선택
+	XSPSquad m_spTempSelect;		///< 임시선택
+	XSPSquad m_spSelectSquad;		///< 선택된 아군 부대
+	XSPSquad m_spTempSelectEnemy;	///< 적진영 임시선택
 	XE::VEC2 m_vTouch;				///< 터치다운시 좌표
 	void Init() {
 		m_prefBattleField = NULL;
 	}
 	void Destroy();
+	void Release() override {
+		m_spTempSelect.reset();
+		m_spSelectSquad.reset();
+		m_spTempSelectEnemy.reset();
+	}
 public:
 	XWndBattleField();
 	virtual ~XWndBattleField() { Destroy(); }
 	///< 
 	GET_ACCESSOR( XBattleField*, prefBattleField );
-	GET_SET_SHARED_ACCESSOR( XSPSquad, spSelectSquad );
-	GET_SHARED_ACCESSOR( XSPSquad, spTempSelect );
-	GET_SHARED_ACCESSOR( XSPSquad, spTempSelectEnemy );
+	GET_SET_ACCESSOR( XSPSquad, spSelectSquad );
+	GET_ACCESSOR( XSPSquad, spTempSelect );
+	GET_ACCESSOR( XSPSquad, spTempSelectEnemy );
 	ID GetidSelectSquad( void );
 	/// 선택한 부대를 해제시킨다.
 	void ClearSelectSquad( void ) {

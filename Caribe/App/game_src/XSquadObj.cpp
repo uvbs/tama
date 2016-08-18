@@ -32,14 +32,15 @@ using namespace XGAME;
 using namespace XSKILL;
 
 #define LIVE_UNIT_LOOP( SPUNIT ) {		\
-	for( auto& spwUnit : m_listUnit ) { \
-		if( !spwUnit.lock()->IsLive() ) \
+	for( auto& SPUNIT : m_listUnit ) { \
+		if( !SPUNIT->IsLive() ) \
 			continue; \
-		auto SPUNIT = spwUnit.lock();
 	
 
 
 ////////////////////////////////////////////////////////////////
+int XSquadObj::s_numObj = 0;		// 메모리 릭 추적용
+
 XSquadObj::XSquadObj( XSPLegionObj spLegionObj, 
 						const XSquadron *pSquad, 
 						const XE::VEC3& vwPos )
@@ -73,19 +74,19 @@ XSquadObj::XSquadObj( XSPLegionObj spLegionObj,
 		auto pNode = XPropTech::sGet()->GetpNodeBySkill( XGAME::xUNIT_PALADIN, _T( "breakthrough" ) );
 		m_lvBreakThrough = pHero->GetLevelAbil( XGAME::xUNIT_PALADIN, pNode->idNode );
 		if( m_lvBreakThrough > 0 ) {
-			m_pBreakThrough = SKILL_MNG->FindByIdentifier(_T("breakthrough"));
+			m_pBreakThrough = SKILL_MNG->FindByIds(_T("breakthrough"));
 			XBREAK( m_pBreakThrough == nullptr );
 		}
 		pNode = XPropTech::sGet()->GetpNodeBySkill( XGAME::xUNIT_PALADIN, _T( "flame_knight" ) );
 		m_lvFlameKnight = pHero->GetLevelAbil( XGAME::xUNIT_PALADIN, pNode->idNode );
 		if( m_lvFlameKnight >= 0 ) {
-			m_pFlameKnight = SKILL_MNG->FindByIdentifier(_T("flame_knight"));
+			m_pFlameKnight = SKILL_MNG->FindByIds(_T("flame_knight"));
 			XBREAK( m_pFlameKnight == nullptr );
 		}
 		pNode = XPropTech::sGet()->GetpNodeBySkill( XGAME::xUNIT_PALADIN, _T( "courage" ) );
 		m_lvCourage = pHero->GetLevelAbil( XGAME::xUNIT_PALADIN, pNode->idNode );
 		if( m_lvCourage >= 0 ) {
-			m_pCourage = SKILL_MNG->FindByIdentifier(_T("courage"));
+			m_pCourage = SKILL_MNG->FindByIds(_T("courage"));
 			XBREAK( m_pCourage == nullptr );
 		}
 	}
@@ -96,21 +97,21 @@ void XSquadObj::Destroy()
 
 void XSquadObj::Release()
 {
-// 	m_spTarget.reset();
+	// 자기가 가진것만 소유권을 포기한다는 정책.
 // 	for( auto spUnit : m_listUnit )
 // 		spUnit->Release();
-// 	m_listUnit.Clear();
-// 	m_spHeroUnit.reset();
-// 	m_spTargetForCmd.reset();
-// 	m_spBleedingTarget.reset();
-// 	m_spLegionObj.reset();
-// 	m_listAttackMe.clear();
-// 	m_spLegionObj.reset();
+ 	m_listUnit.Clear();
+ 	m_spHeroUnit.reset();
+	m_spBleedingTarget.reset();
+	m_spTarget.reset();
+ 	m_spTargetForCmd.reset();
+ 	m_spLegionObj.reset();
+ 	m_listAttackMe.clear();
 }
 
 const XECompCamp& XSquadObj::GetCamp() const
 {
-	return m_spLegionObj.lock()->GetCamp();
+	return m_spLegionObj->GetCamp();
 }
 
 /// 디버깅용. 살아있는 유닛수를 센다.
@@ -314,7 +315,8 @@ void XSquadObj::SetAI( BOOL bFlag )
 	}
 //  		SOUNDMNG->StopAllSound();
 	for( auto& spUnit : m_listUnit ) {
-		spUnit.lock()->SetAI( bFlag );
+		if( spUnit->IsLive() )
+			spUnit->SetAI( bFlag );
 	}
 	if( bFlag )
 		// this와 가장가까운 적부대를 찾는다.
@@ -347,11 +349,9 @@ void XSquadObj::DoRequestMoveMode()
 */
 void XSquadObj::OnSkillEvent( XSKILL::xtJuncture event )
 {
-	for( auto& spwUnit : m_listUnit ) {
-		auto spUnit = spwUnit.lock();
-		if( !spUnit->IsLive() ) {
+	for( auto& spUnit : m_listUnit ) {
+		if( !spUnit->IsLive() )
 			continue;
-		}
 		spUnit->OnEventBySkillUser( event );
 	}
 }
@@ -398,10 +398,10 @@ void XSquadObj::ProcessLycan( float dt )
 	if( point <= 0 )
 		return;
 	// 출혈걸린 타겟이 없거나, 타겟을 추적중이거나 공격중인데 타겟이 죽으면 새로 찾음.
-	if( !m_spBleedingTarget.expired() && !m_spBleedingTarget.lock()->IsLive() ) {
+	if( m_spBleedingTarget && m_spBleedingTarget->IsDead() ) {
 		m_spBleedingTarget.reset();
 	}
-	if( m_spBleedingTarget.expired() ) {
+	if( m_spBleedingTarget == nullptr ) {
 		// 출혈에 걸린적을 찾는다.
 		m_spBleedingTarget = GetEnemyLegion()->FindNearSquad( this,
 			[]( XSPSquad& spSquad )->bool {
@@ -411,8 +411,8 @@ void XSquadObj::ProcessLycan( float dt )
 			return false;
 		} );
 		// 찾은 목표부대로 이동하게 한다. 만약 못찾았다면 현재자리에서 Idle로 들어간다.
-		if( !m_spBleedingTarget.expired() ) {
-			DoMoveTo( m_spBleedingTarget.lock() );
+		if( m_spBleedingTarget ) {
+			DoMoveTo( m_spBleedingTarget );
 			// 만약 이동모드가 예약되었다면 취소시킴.
 			SetCmdRequest( xCMD_CHANGE_MOVEMODE );
 // 			m_bRequestMoveModeChange = FALSE;
@@ -432,8 +432,8 @@ void XSquadObj::ProcessCmd()
 	if( m_cmdRequest ) {
 		if( m_cmdRequest == xCMD_CHANGE_MOVEMODE ) {
 			// 이동모드 바꾸라는 명령이 왔을때 출혈타겟이 없거나 있어도 죽은거면 명령을 수행함.
-			if( m_spBleedingTarget.expired() || 
-				(!m_spBleedingTarget.expired() && !m_spBleedingTarget.lock()->IsLive()) ) {
+			if( m_spBleedingTarget == nullptr 
+					|| (m_spBleedingTarget && m_spBleedingTarget->IsDead()) ) {
 				// 월드에게 새 타겟을 찾아달라고 요청함
 				XSPSquad spTargetSquad = XBattleField::sGet()->FindNearSquadEnemy( this );
 				// 찾은 목표부대로 이동하게 한다. 만약 못찾았다면 현재자리에서 Idle로 들어간다.
@@ -441,8 +441,8 @@ void XSquadObj::ProcessCmd()
 			}
 		} else
 		if( m_cmdRequest == xCMD_ATTACK_TARGET ) {
-			XBREAK( m_spTargetForCmd.expired() );
-			DoMoveTo( m_spTargetForCmd.lock() );
+			XBREAK( m_spTargetForCmd == nullptr );
+			DoMoveTo( m_spTargetForCmd );
 		} else
 		if( m_cmdRequest == xCMD_MOVE_POS ) {
 			XBREAK( m_vDstForCmd.IsZero() );
@@ -481,8 +481,8 @@ void XSquadObj::FrameMove( float dt )
 			}
 		}
 		BOOL bArrive = FALSE;
-		if( !m_spTarget.expired() ) {
-			m_vwTarget = m_spTarget.lock()->GetvwPos();	// 타겟이 있을때는 계속 갱신해줘야 한다.
+		if( m_spTarget ) {
+			m_vwTarget = m_spTarget->GetvwPos();	// 타겟이 있을때는 계속 갱신해줘야 한다.
 			float distsq = (m_vwTarget - GetvwPos()).Lengthsq();
 			// 근처까지 다가갔는지 검사
 			float sizeRadius = GetDistAttack();
@@ -532,11 +532,11 @@ void XSquadObj::FrameMove( float dt )
 				break;
 			}
 			// 유닛 개별적으로 타겟을 잡고 추적하도록 한다.
-			if( !m_spTarget.expired() ) {
+			if( m_spTarget ) {
 				// 타겟이 부대일경우는 공격했다는 이벤트를 날림
-				m_spTarget.lock()->OnAttacked( GetThis() );
+				m_spTarget->OnAttacked( GetThis() );
 				// 이미 타겟이 지정되어있었으면 그 타겟을 공격한다.
-				DoAllUnitsChase( m_spTarget.lock() );
+				DoAllUnitsChase( m_spTarget );
 			} else {
 				//좌표로 도착했으면 가까운 적을 찾아 공격한다.
 				auto spTarget = XBattleField::sGet()->FindNearSquadEnemy( this );
@@ -548,7 +548,7 @@ void XSquadObj::FrameMove( float dt )
 	} else {
 	// 맞붙어 싸우는중.
 		// 현재 부대중심을 실제 유닛들이 모여있는곳으로 한다. 부대끼리 맞붙고 나서 서로 떨어지는 거리를 측정하기위해 좀더 자연스럽값으로 하기위함.
-		if( !m_spTarget.expired() || m_vwTarget.IsHave() ) {
+		if( m_spTarget || m_vwTarget.IsHave() ) {
 			// 어떤타겟이라도 있어야 갱신함.
 			XE::VEC3 vwCenter = GetvCenterByUnits();
 			// 중심좌표가 0이면 갱신하면 안된다. 부대원이 없다는뜻임
@@ -560,8 +560,8 @@ void XSquadObj::FrameMove( float dt )
 			// 원거리 모드인가
 			if( m_bMeleeMode == FALSE ) {
 				// 타겟부대와 붙었는가
-// 				if( !m_spTarget.expired() && IsNear( m_spTarget.get() ) ) {
-				if( !m_spTarget.expired() && GetNumAttackMeByMelee() > 0 ) {
+// 				if( m_spTarget && IsNear( m_spTarget.get() ) ) {
+				if( m_spTarget && GetNumAttackMeByMelee() > 0 ) {
 					bool bCounterAttack = true;
 					if( m_bInoreCounterAttack == false ) {
 						LPCTSTR szAbil = _T( "concentration" );
@@ -576,8 +576,8 @@ void XSquadObj::FrameMove( float dt )
 					if( bCounterAttack ) {
 						m_bMeleeMode = TRUE;	// 근접전 모드로 전환
 						// 텔레포트 하드코딩
-						if( !m_spHeroUnit.expired() ) {
-							auto pBuff = m_spHeroUnit.lock()->FindBuffSkill( _T( "teleport" ) );
+						if( m_spHeroUnit ) {
+							auto pBuff = m_spHeroUnit->FindBuffSkill( _T( "teleport" ) );
 							if( pBuff ) 
 								DoTeleport();
 						}
@@ -591,8 +591,8 @@ void XSquadObj::FrameMove( float dt )
 			} else {
 			// 근접전 모드인가.
 				// 원거리 부대의 경우 타겟부대가 멀어지면 다시 부대단위 추적모드로 바꿈
-//				if( !m_spTarget.expired() && IsNear( m_spTarget.get() ) == FALSE ) {
-				if( !m_spTarget.expired() ) {
+//				if( m_spTarget && IsNear( m_spTarget.get() ) == FALSE ) {
+				if( m_spTarget ) {
 					if( GetNumAttackMeByMelee() == 0 ) {		// 더이상 날 공격중인 근접부대가 없으면 원거리모드 해제
 						m_bMeleeMode = FALSE;
 #ifdef _XSINGLE
@@ -601,8 +601,8 @@ void XSquadObj::FrameMove( float dt )
 #endif // _XSINGLE
 					}
 				} else {
-					if( !m_spHeroUnit.expired() ) {
-						auto pBuff = m_spHeroUnit.lock()->FindBuffSkill( _T( "teleport" ) );
+					if( m_spHeroUnit ) {
+						auto pBuff = m_spHeroUnit->FindBuffSkill( _T( "teleport" ) );
 						if( pBuff )
 							DoTeleport();
 					}
@@ -611,16 +611,16 @@ void XSquadObj::FrameMove( float dt )
 		// IsRange()
 		} else {
 		// IsNotRange()
-			if( !m_spTarget.expired() ) {
+			if( m_spTarget ) {
 				// 타겟부대가 다시 멀어지는지 감지
-				m_vwTarget = m_spTarget.lock()->GetvwPos();	// 타겟이 있을때는 계속 갱신해줘야 한다.
+				m_vwTarget = m_spTarget->GetvwPos();	// 타겟이 있을때는 계속 갱신해줘야 한다.
 				float distsq = ( m_vwTarget - GetvwPos() ).Lengthsq();
 				// 부대간 공격유효거리를 벗어났는가
 				float sizeRadius = GetDistAttack();
 				sizeRadius *= 2;	// 다시 멀어졌음을 판단할때는 서로의 원이 완전히 겹치지 않아야 한다..
 				if( distsq > sizeRadius * sizeRadius ) {
-					m_spTarget.lock()->OnAttackLeave( GetThis() );
-					DoMoveTo( m_spTarget.lock() );
+					m_spTarget->OnAttackLeave( GetThis() );
+					DoMoveTo( m_spTarget );
 				}
 			}
 		}
@@ -628,7 +628,7 @@ void XSquadObj::FrameMove( float dt )
 	}
 	// 하드코딩 프로세스
 	ProcessHardcode( dt );
-}
+} // FrameMove
 
 void XSquadObj::ProcessHardcode( float dt )
 {
@@ -661,31 +661,22 @@ void XSquadObj::ProcessHardcode( float dt )
 		XBattleField::sGet()->GetNearSquad( this, &ary, m_Radius / 2.f );
 		auto pEffect = m_pCourage->GetEffectByIdx( 0 );
 		float abil = pEffect->invokeAbilityMin[ m_lvCourage ];
-		if( ary.size() > 0 )
-		{
+		if( ary.size() > 0 )	{
 			XBREAK( pEffect->invokeAbilityMin[ m_lvCourage ] == 0 );
 			auto& spSquad = ary[ 0 ];
-			spSquad->AddAdjParam( ( XGAME::xtParameter )pEffect->invokeParameter,
-				pEffect->valtypeInvokeAbility,
-				pEffect->invokeAbilityMin[ m_lvCourage ] );
+			spSquad->AddAdjParam( (xtParameter)pEffect->invokeParameter,
+														pEffect->valtypeInvokeAbility,
+														pEffect->invokeAbilityMin[m_lvCourage] );
 			if( m_timerHeal.IsOff() )
 				m_timerHeal.Set( 1.f );
-			if( m_timerHeal.IsOver() )
-			{
+			if( m_timerHeal.IsOver() )	{
 				m_timerHeal.Reset();
 				// 안수치료 특성이 있는지 확인
 				LPCTSTR szAbil = _T( "ordination_treatment" );
 				int point = GetLevelByAbil( XGAME::xUNIT_PALADIN, szAbil );
-				// 				auto pNode = XPropTech::sGet()->GetpNodeBySkill( XGAME::xUNIT_PALADIN, 
-				// 															_T("ordination_treatment"));
-				// 				if( XASSERT(pNode) )
-				// 				{
-				// 					auto pAbil = GetAccount()->GetAbilNode( XGAME::xUNIT_PALADIN, pNode->idNode );
-				if( point > 0 )
-				{
-					auto pSkillDat = SKILL_MNG->FindByIdentifier( szAbil );
-					if( XASSERT( pSkillDat ) )
-					{
+				if( point > 0 )	{
+					auto pSkillDat = SKILL_MNG->FindByIds( szAbil );
+					if( XASSERT( pSkillDat ) ) {
 						auto pEffect = pSkillDat->GetEffectByIdx( 0 );
 						XBREAK( pEffect == nullptr );
 						float adjVal = pEffect->invokeAbilityMin[ point ];
@@ -739,7 +730,7 @@ int XSquadObj::GetLevelByAbil( XGAME::xtUnit unit, ID idAbil )
 float XSquadObj::GetInvokeRatioAbil( LPCTSTR sid, XGAME::xtUnit unit )
 {
 	// 이함수가 꼭 필요한가.
-	auto pSkillDat = SKILL_MNG->FindByIdentifier( sid );
+	auto pSkillDat = SKILL_MNG->FindByIds( sid );
 	if( pSkillDat == nullptr )
 		return 0;
 	int level = 0;
@@ -841,7 +832,7 @@ void XSquadObj::sCalcBattlePos( const XSPUnit& unit1, const XSPUnit& unit2 )
 */
 XSPUnit XSquadObj::GetNewTargetInTargetSquad( BOOL bIncludeHero )
 {
-	return m_spTarget.lock()->FindAttackTarget( bIncludeHero );
+	return (m_spTarget)? m_spTarget->FindAttackTarget( bIncludeHero ) : nullptr;
 }
 
 /**
@@ -849,11 +840,15 @@ XSPUnit XSquadObj::GetNewTargetInTargetSquad( BOOL bIncludeHero )
 */
 void XSquadObj::DoMoveTo( XSPSquad spTarget )
 {
-	if( !m_spTarget.expired() && ( ( spTarget && m_spTarget.lock()->getid() != spTarget->getid() ) || spTarget == nullptr ) )
-		m_spTarget.lock()->OnAttackLeave( GetThis() );		// 기존에 공격받던 부대에게 이벤트.
+	if( m_spTarget ) {
+		if( ( ( spTarget && m_spTarget->getid() != spTarget->getid() ) )
+				|| spTarget == nullptr ) {
+			m_spTarget->OnAttackLeave( GetThis() );		// 기존에 공격받던 부대에게 이벤트.
+		}
+	}
 	m_spTarget = spTarget;
 	XBREAK( IsRange() == FALSE && m_bMeleeMode == FALSE );
-	if( spTarget != nullptr )	{
+	if( spTarget )	{
 		DoMoveTo( spTarget->GetvwPos() );
 	} else {
 		m_bMove = FALSE;
@@ -899,7 +894,7 @@ void XSquadObj::DoMoveTo( const XE::VEC3& vwDst )
 */
 XSPSquad XSquadObj::FindAttackSquad()
 {
-	return m_spLegionObj.lock()->FindNearSquad( this );
+	return m_spLegionObj->FindNearSquad( this );
 }
 
 /**
@@ -945,12 +940,12 @@ XSPUnit XSquadObj::FindAttackTarget( BOOL bIncludeHero )
 */
 void XSquadObj::OnDieMember( XBaseUnit *pUnit )
 {
-	int cntOld = m_spLegionObj.lock()->GetcntLive();
+	int cntOld = m_spLegionObj->GetcntLive();
 	XBREAK( pUnit->GetpSquadObj()->GetsnSquadObj() != GetsnSquadObj() );
 //	BOOL bSuccess = m_listUnit.DelByID( pUnit->GetsnObj() );
-	auto spFind = m_listUnit.FindwpByID( pUnit->GetsnObj() );
-	XBREAKF( spFind.expired(), "not found squad member:unit_id=%d, sn=0x%08x", pUnit->GetidProp(), pUnit->GetsnObj() );
-	if( !spFind.expired() ) {
+	auto spFind = m_listUnit.FindByID( pUnit->GetsnObj() );
+	XBREAKF( spFind == nullptr, "not found squad member:unit_id=%d, sn=0x%08x", pUnit->GetidProp(), pUnit->GetsnObj() );
+	if( spFind ) {
 		int oldCntLive = m_cntLive;
 		AddCntLive( -1 );
 //		XALERT("헬로우:%s",_T("테스트"));
@@ -963,9 +958,9 @@ void XSquadObj::OnDieMember( XBaseUnit *pUnit )
 		if( pUnit->IsHero() )
 			m_spHeroUnit.reset();	// 죽은게 영웅이었으면 shared_ptr도 지워줌
 		if( m_cntLive == 0 ) {
-			m_spLegionObj.lock()->OnDieSuqad( GetThis() );
+			m_spLegionObj->OnDieSuqad( GetThis() );
 			for( auto& spUnit : m_listUnit ) {
-				XBREAK( spUnit.lock()->IsLive() );
+				XBREAK( spUnit && spUnit->IsLive() );
 			}
 		}
 	}
@@ -1023,14 +1018,14 @@ BOOL XSquadObj::IsNear( XSquadObj *pTarget )
 */
 XSPUnit XSquadObj::GetAttackTargetForUnit( const XSPUnit& unit )
 {
-//	XBREAK( m_spTarget.expired() );
-	if( m_spTarget.expired() )
-		return XSPUnit();
+//	XBREAK( m_spTarget == nullptr );
+	if( m_spTarget == nullptr )
+		return nullptr;
 	XSPUnit spUnitTarget;
 	// 모든 영웅과 병사는 상대의 병사들부터 먼저 찾는다.
 	{
 		BOOL bIncludeHero = FALSE;		// 영웅을 우선순위에서 뒤로한다.
-		spUnitTarget = m_spTarget.lock()->FindAttackTarget( bIncludeHero );
+		spUnitTarget = m_spTarget->FindAttackTarget( bIncludeHero );
 	}
 	return spUnitTarget;
 }
@@ -1049,7 +1044,7 @@ void XSquadObj::DoAllUnitsChase( XSPSquad spTarget )
 	LIVE_UNIT_LOOP( spUnit )	{
 		if( spUnit->IsBindTarget() == FALSE )	{// 이미 바인드 되어있으면 타겟을 검색하지 않는다.
 			// 타겟부대내에서 개별타겟을 찾음 
-			XBREAK( m_spTarget.expired() );
+			XBREAK( m_spTarget == nullptr );
 			XSPUnit spUnitTarget = GetAttackTargetForUnit( spUnit );
 			if( spUnitTarget == nullptr ) {
 				// 적당한 타겟을 못찾았을땐 
@@ -1085,8 +1080,7 @@ void XSquadObj::OnAttacked( const XSPSquad spAttacker )
 	AddAttackMe( spAttacker );
 
 	// 이미 치고있던 부대가 공격자부대면 반격할일 없음
-	if( !m_spTarget.expired() 
-		&& m_spTarget.lock()->GetsnSquadObj() == spAttacker->GetsnSquadObj() )		
+	if( m_spTarget && m_spTarget->GetsnSquadObj() == spAttacker->GetsnSquadObj() )		
 		return;
 #ifdef _DEBUG
 // 	CONSOLE( "%s:부대 근접공격받음:%s", m_pHero->GetstrName().c_str()
@@ -1102,8 +1096,8 @@ void XSquadObj::OnAttacked( const XSPSquad spAttacker )
 		if( IsRange() )		
 			return;
 		// 반격. this는 근접부대
-		if( !m_spTarget.expired() && m_spTarget.lock()->getid() != spAttacker->getid() )
-			m_spTarget.lock()->OnAttackLeave( GetThis() );		// 기존에 공격받던 부대에게 이벤트.
+		if( m_spTarget && m_spTarget->getid() != spAttacker->getid() )
+			m_spTarget->OnAttackLeave( GetThis() );		// 기존에 공격받던 부대에게 이벤트.
 		DoAllUnitsChase( spAttacker );
 	} else	{
 		// 부대 이동중이 아닐때
@@ -1130,17 +1124,17 @@ void XSquadObj::OnAttacked( const XSPSquad spAttacker )
 					bCounterAttack = false;
 			}
 			// 반격
-			if( bCounterAttack  ) {
-				if( !m_spTarget.expired() && m_spTarget.lock()->getid() != spAttacker->getid() )
-					m_spTarget.lock()->OnAttackLeave( GetThis() );		// 기존에 공격받던 부대에게 이벤트.
+			if( bCounterAttack ) {
+				if( m_spTarget && m_spTarget->getid() != spAttacker->getid() )
+					m_spTarget->OnAttackLeave( GetThis() );		// 기존에 공격받던 부대에게 이벤트.
 				DoAllUnitsChase( spAttacker );
 			}
 		} else {
 		// 근접부대
 			// 반격
-			if( bCounterAttack && m_spTarget.expired() ) {
-				if( !m_spTarget.expired() && m_spTarget.lock()->getid() != spAttacker->getid() )
-					m_spTarget.lock()->OnAttackLeave( GetThis() );		// 기존에 공격받던 부대에게 이벤트.
+			if( bCounterAttack ) {
+				if( m_spTarget && m_spTarget->getid() != spAttacker->getid() )
+					m_spTarget->OnAttackLeave( GetThis() );		// 기존에 공격받던 부대에게 이벤트.
 				// attacker를 공격
 				DoAllUnitsChase( spAttacker );
 			}
@@ -1158,7 +1152,7 @@ void XSquadObj::OnAttackLeave( XSPSquad spAttacker )
 	if( IsRange() && m_bMeleeMode ) {
 		bool bAttackedMelee = false;
 		for( auto spSquad : m_listAttackMe ) {
-			if( spSquad.lock()->IsMelee() )
+			if( spSquad->IsMelee() )
 				bAttackedMelee = true;
 		}
 		if( !bAttackedMelee ) {
@@ -1222,10 +1216,10 @@ float XSquadObj::GetDistAttack()
 	// 원거리의 경우 원거리사거리까지 더해준다.
 	if( m_pProp->typeAtk == XGAME::xAT_RANGE ) {
 		// 영웅이있으면 영웅의 사거리를 가져와 더한다. 없다면 기본값으로 사용한다.
-		if( !m_spHeroUnit.expired() ) {
+		if( m_spHeroUnit ) {
 			// 부대가 원거린데 영웅이 원거리가 아닌경우
-			XBREAK( m_spHeroUnit.lock()->IsRange() == FALSE );
-			sizeRadius += m_spHeroUnit.lock()->GetAttackRadiusByPixel();
+			XBREAK( m_spHeroUnit->IsRange() == FALSE );
+			sizeRadius += m_spHeroUnit->GetAttackRadiusByPixel();
 		} else
 			sizeRadius += m_pProp->radiusAtkByPixel;
 	}
@@ -1265,7 +1259,6 @@ void XSquadObj::DoDamageByPercent( float ratio, BOOL bCritical )
 			bitHit |= XGAME::xBHT_CRITICAL;
 		if( damage == 0 )
 			bitHit &= ~XGAME::xBHT_HIT;
-//		spUnit->DoDamage( NULL, damage, -1, XSKILL::xDMG_NONE, bitHit, XGAME::xDA_NONE );
 		auto pMsg = std::make_shared<xnUnit::XMsgDmg>( nullptr
 																								, spUnit
 																								, damage
@@ -1279,16 +1272,14 @@ void XSquadObj::DoDamageByPercent( float ratio, BOOL bCritical )
 
 void XSquadObj::AddAdjParam( XGAME::xtParameter adjParam, XSKILL::xtValType valType, float adj )
 {
-	LIVE_UNIT_LOOP( spUnit )
-	{
-		spUnit->AddAdjParam( adjParam, valType, adj );
+	LIVE_UNIT_LOOP( spUnit ) {
+		spUnit->AddAdjParamMsg( adjParam, valType, adj );
 	} END_LOOP;
 }
 
 void XSquadObj::DoHeal( float addHp )
 {
-	LIVE_UNIT_LOOP( spUnit )
-	{
+	LIVE_UNIT_LOOP( spUnit ) {
 		spUnit->DoHeal( addHp );
 	} END_LOOP;
 }
@@ -1312,10 +1303,8 @@ void XSquadObj::DoHealByPercent( float ratio )
 float XSquadObj::GetTotalHp()
 {
 	float sum = 0;
-	LIVE_UNIT_LOOP( spUnit )
-	{
-		if( spUnit->IsLive() )
-			sum += spUnit->GetHp();
+	LIVE_UNIT_LOOP( spUnit ) {
+		sum += spUnit->GetHp();
 	} END_LOOP;
 	return sum;
 }
@@ -1327,8 +1316,7 @@ float XSquadObj::GetTotalHpRate()
 {
 	float sum = 0;
 	LIVE_UNIT_LOOP( spUnit ) {
-		if( spUnit->IsLive() )
-			sum += spUnit->GetHp();
+		sum += spUnit->GetHp();
 	} END_LOOP;
 	return sum / GetMaxHpAllMember();
 }
@@ -1341,8 +1329,7 @@ float XSquadObj::GetAvgSpeedUnits()
 {
 	float sum = 0;
 	int numLive = 0;
-	LIVE_UNIT_LOOP( spUnit )
-	{
+	LIVE_UNIT_LOOP( spUnit )	{
 		sum += spUnit->GetSpeedMoveForPixel();
 		++numLive;
 	} END_LOOP;
@@ -1465,8 +1452,7 @@ float XSquadObj::GetMaxHpAllMember() const
 	float sum = 0;
 	int numLive = 0;
 	bool bHeroLive = false;
-	for( auto& spwUnit : m_listUnit ) { 
-		auto spUnit = spwUnit.lock();
+	for( auto& spUnit : m_listUnit ) { 
 		if( spUnit->IsLive() ) {
 			sum += spUnit->GetMaxHp();
 			++numLive;
@@ -1474,8 +1460,8 @@ float XSquadObj::GetMaxHpAllMember() const
 				bHeroLive = true;
 		}
 	}  
-	if( !m_spLegionObj.expired() ) {
-		auto spLegion = m_spLegionObj.lock()->GetspLegion();
+	if( m_spLegionObj ) {
+		auto spLegion = m_spLegionObj->GetspLegion();
 		if( spLegion ) {
 			if( bHeroLive == false ) {
 				// 영웅이 죽어서 위에서 집계가 안됐다면 여기서 추가함.
@@ -1507,8 +1493,7 @@ float XSquadObj::DrawMembersHp( const XE::VEC2& vPos )
 	PUT_STRINGF_SMALL( v.x, v.y, XCOLOR_WHITE, _T("%s(lvSq:%d)"), XGAME::GetStrUnit( GetpHero()->GetUnit() )
 																															, m_pHero->GetlevelSquad() );
 	v.y += sizeFont;
-	for( auto& spwUnit : m_listUnit ) {
-		auto spUnit = spwUnit.lock();
+	for( auto& spUnit : m_listUnit ) {
 		if( !spUnit->IsDestroy() ) {
 			XCOLOR col = XCOLOR_WHITE;
 			if( spUnit->IsDead() )
@@ -1561,15 +1546,14 @@ void XSquadObj::DoTeleport()
 // 		m_vwPos.Set( 300, 700, 0 );
 // 	s_bFlag = !s_bFlag;
 	auto pSfx = new XObjLoop( XGAME::xOT_SFX, vOld, _T("sfx_heal2.spr"), 1 );
-	pSfx->SetDir( m_spHeroUnit.lock()->GetDir() );
-	XBattleField::sGet()->AddObj( WorldObjPtr(pSfx) );
+	pSfx->SetDir( m_spHeroUnit->GetDir() );
+	XBattleField::sGet()->AddObj( XSPWorldObj(pSfx) );
 	// 유닛들의 좌표와 상태도 그에 맞춰 변환시킨다.
-	for( auto spwUnit : m_listUnit ) {
-		auto spUnit = spwUnit.lock();
+	for( auto spUnit : m_listUnit ) {
 		spUnit->SetvwPos( m_vwPos + spUnit->GetvLocalFromSquad() );
 		spUnit->DoIdle();
 	}
-	if( !m_spTarget.expired() && !IsInAttackRadius( m_spTarget.lock() ) ) {
+	if( m_spTarget && !IsInAttackRadius( m_spTarget ) ) {
 		// 타겟과의 사거리를 벗어나면 다른 타겟 찾음.
 		DoAttackAutoTargetEnemy();
 	}
@@ -1581,7 +1565,7 @@ void XSquadObj::DoTeleport()
 bool XSquadObj::IsResourceSquad() const
 {
 	XBREAK( m_pHero == nullptr );
-	return GetspLegionObj()->GetspLegion()->IsResourceSquad( m_pHero->GetsnHero() );
+	return GetspLegionObjConst()->GetspLegion()->IsResourceSquad( m_pHero->GetsnHero() );
 }
 
 /**
@@ -1611,3 +1595,4 @@ ID XSquadObj::GetsnHero() const
 		return 0;
 	return m_pHero->GetsnHero();
 }
+

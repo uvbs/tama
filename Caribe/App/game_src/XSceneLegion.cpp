@@ -207,7 +207,7 @@ int XSceneLegion::OnClickSquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 		xSET_TEXT(this, "text.hero.name", XE::Format(XTEXT(80047), pHero->GetLevel(), pHero->GetpProp()->GetstrName().c_str()));
 		xSET_IMG(this, "img.icon.hero", XE::MakePath(DIR_IMG, pHero->GetpProp()->strFace.c_str()));
 
-		XSKILL::XSkillDat* pSkill = SKILL_MNG->FindByIdentifier(pHero->GetpProp()->strActive.c_str());
+		XSKILL::XSkillDat* pSkill = SKILL_MNG->FindByIds(pHero->GetpProp()->strActive.c_str());
 		XWndImage* pImg = SafeCast<XWndImage*, XWnd*>(Find("img.icon.active"));
 		if (pImg)		{
 			if (pSkill)			{
@@ -232,7 +232,7 @@ int XSceneLegion::OnClickSquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 			}
 		}
 
-		pSkill = SKILL_MNG->FindByIdentifier(pHero->GetpProp()->strPassive.c_str());
+		pSkill = SKILL_MNG->FindByIds(pHero->GetpProp()->strPassive.c_str());
 		pImg = SafeCast<XWndImage*, XWnd*>(Find("img.icon.passive"));
 		if (pImg)
 		{

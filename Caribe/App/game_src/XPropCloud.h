@@ -24,7 +24,7 @@ public:
 		bool bOpened = false;		// 지역에 속해있으나 오픈되어있는(그리지 않는)헥사 구름.
 		xHexa() {
 			idx = 0;
-			idxImg = random(MAX_IMG);
+			idxImg = xRandom(MAX_IMG);
 		}
 		BOOL operator == ( const xHexa& h ) const {
 			return h.idx == idx;
@@ -53,7 +53,6 @@ public:
 #endif
 		xCloud() {
 			idCloud = 0;
-//			idxCloud = random(MAX_IMG);
 			lvArea = 0;
 			cost = 0;
 		}

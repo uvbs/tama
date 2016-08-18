@@ -33,8 +33,8 @@ void XUnitTreant::Destroy()
 {
 }
 
-void XUnitTreant::sShootRock( UnitPtr spShooter,
-															UnitPtr& spTarget,
+void XUnitTreant::sShootRock( XSPUnit spShooter,
+															XSPUnit& spTarget,
 															const XE::VEC3& vwSrc,
 															const XE::VEC3& vwDst,
 															float damage,
@@ -85,10 +85,10 @@ void XUnitTreant::sShootRock( UnitPtr spShooter,
 		}
 	}
 	pRock->SetpDelegate( spShooter.get() );
-	spShooter->GetpWndWorld()->AddObj( WorldObjPtr( pRock ) );
+	spShooter->GetpWndWorld()->AddObj( XSPWorldObj( pRock ) );
 }
 
-void XUnitTreant::ShootRangeAttack( UnitPtr& spTarget,
+void XUnitTreant::ShootRangeAttack( XSPUnit& spTarget,
 									const XE::VEC3& vwSrc,
 									const XE::VEC3& vwDst,
 									float damage,
@@ -101,8 +101,8 @@ void XUnitTreant::ShootRangeAttack( UnitPtr& spTarget,
 
 // 2/3/4/5/6
 void XUnitTreant::OnArriveBullet( XObjBullet *pBullet,
-								UnitPtr spAttacker,
-								UnitPtr spTarget,
+								XSPUnit spAttacker,
+								XSPUnit spTarget,
 								const XE::VEC3& vwDst,
 								float damage,
 								bool bCritical,
@@ -173,22 +173,24 @@ void XUnitTreant::DoDamageToTarget( XSPUnit spTarget
 																	, bool bCritical
 																	, XGAME::xtDamageAttr typeDmgAttr )
 {
-	if( XASSERT( spTarget ) ) {
-		float ratioPenet = GetPenetrationRatio();
-		BIT bitHit = XGAME::xBHT_HIT;
-		if( bCritical )
-			bitHit |= XGAME::xBHT_CRITICAL;
-		if( damage == 0 )
-			bitHit &= ~XGAME::xBHT_HIT;
-//		spTarget->DoDamage( this, damage, ratioPenet, typeDmg, bitHit, typeDmgAttr );
-		auto pMsg = std::make_shared<xnUnit::XMsgDmg>( GetThis()
-																								, spTarget
-																								, damage
-																								, ratioPenet
-																								, typeDmg
-																								, bitHit
-																								, typeDmgAttr );
-		spTarget->PushMsg( pMsg );
+	if( !spTarget->IsDestroy() ) {
+		if( XASSERT( spTarget ) ) {
+			float ratioPenet = GetPenetrationRatio();
+			BIT bitHit = XGAME::xBHT_HIT;
+			if( bCritical )
+				bitHit |= XGAME::xBHT_CRITICAL;
+			if( damage == 0 )
+				bitHit &= ~XGAME::xBHT_HIT;
+			//		spTarget->DoDamage( this, damage, ratioPenet, typeDmg, bitHit, typeDmgAttr );
+			auto pMsg = std::make_shared<xnUnit::XMsgDmg>( GetThis()
+																										 , spTarget
+																										 , damage
+																										 , ratioPenet
+																										 , typeDmg
+																										 , bitHit
+																										 , typeDmgAttr );
+			spTarget->PushMsg( pMsg );
+		}
 	}
 }
 

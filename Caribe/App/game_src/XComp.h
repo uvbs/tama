@@ -91,10 +91,16 @@ public:
 	inline bool IsDisappear() const {
 		return m_State == xST_DISAPPEAR;
 	}
+	inline bool IsDestroy() const {
+		return m_State == xST_DESTROYED;
+	}
 	virtual float GetLerpTime() const { 
 		return m_timerState.GetSlerp(); 
 	}
 	GET_ACCESSOR( CTimer&, timerState );
+	const CTimer& GettimerStateConst() const {
+		return m_timerState;
+	}
 protected:
 	GET_SET_ACCESSOR_CONST( const XE::VEC3&, vwDelta );
 	inline const XE::VEC3& AddvwDelta( const XE::VEC3& vwDelta ) {
@@ -125,11 +131,11 @@ public:
 	// public member
 	int FrameMove( float dt );
 	float GetLerpTime() const override {
-		return m_timerLife.GetSlerp();
+		return GettimerStateConst().GetSlerp();
 	}
 private:
 	// private member
-	CTimer m_timerLife;
+//	CTimer m_timerLife;
 	float m_Alpha = 1.f;
 private:
 	// private method
