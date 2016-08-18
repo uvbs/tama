@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinFTGL", "WinFTGL\WinFTGL.vcxproj", "{2B5E3650-4DEA-47C8-8A04-CA91E333811B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5372879D-27AE-400B-B43B-45BD767781EB} = {5372879D-27AE-400B-B43B-45BD767781EB}
@@ -11,17 +13,27 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Debug2015|Win32 = Debug2015|Win32
 		Release|Win32 = Release|Win32
+		Release2015|Win32 = Release2015|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2B5E3650-4DEA-47C8-8A04-CA91E333811B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{2B5E3650-4DEA-47C8-8A04-CA91E333811B}.Debug|Win32.Build.0 = Debug|Win32
+		{2B5E3650-4DEA-47C8-8A04-CA91E333811B}.Debug2015|Win32.ActiveCfg = Debug2015|Win32
+		{2B5E3650-4DEA-47C8-8A04-CA91E333811B}.Debug2015|Win32.Build.0 = Debug2015|Win32
 		{2B5E3650-4DEA-47C8-8A04-CA91E333811B}.Release|Win32.ActiveCfg = Release|Win32
 		{2B5E3650-4DEA-47C8-8A04-CA91E333811B}.Release|Win32.Build.0 = Release|Win32
+		{2B5E3650-4DEA-47C8-8A04-CA91E333811B}.Release2015|Win32.ActiveCfg = Release2015|Win32
+		{2B5E3650-4DEA-47C8-8A04-CA91E333811B}.Release2015|Win32.Build.0 = Release2015|Win32
 		{5372879D-27AE-400B-B43B-45BD767781EB}.Debug|Win32.ActiveCfg = Debug|Win32
 		{5372879D-27AE-400B-B43B-45BD767781EB}.Debug|Win32.Build.0 = Debug|Win32
+		{5372879D-27AE-400B-B43B-45BD767781EB}.Debug2015|Win32.ActiveCfg = Debug2015|Win32
+		{5372879D-27AE-400B-B43B-45BD767781EB}.Debug2015|Win32.Build.0 = Debug2015|Win32
 		{5372879D-27AE-400B-B43B-45BD767781EB}.Release|Win32.ActiveCfg = Release|Win32
 		{5372879D-27AE-400B-B43B-45BD767781EB}.Release|Win32.Build.0 = Release|Win32
+		{5372879D-27AE-400B-B43B-45BD767781EB}.Release2015|Win32.ActiveCfg = Release2015|Win32
+		{5372879D-27AE-400B-B43B-45BD767781EB}.Release2015|Win32.Build.0 = Release2015|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
