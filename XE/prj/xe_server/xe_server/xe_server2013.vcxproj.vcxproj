@@ -95,12 +95,9 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>xe_server</RootNamespace>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>Perforce Project</SccProjectName>
+    <SccLocalPath>..\..\..\..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
     <ProjectName>xe_server_2013</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -223,7 +220,7 @@
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Static</UseOfMfc>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -876,8 +873,6 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\XXMLDoc.h" />
     <ClInclude Include="..\..\..\Third_Party_lib\tinyxml\tinystr.h" />
     <ClInclude Include="..\..\..\Third_Party_lib\tinyxml\tinyxml.h" />
-    <ClInclude Include="..\..\..\XFramework\Game\Skill\SkillDef.h" />
-    <ClInclude Include="..\..\..\XFramework\Game\Skill\SkillType.h" />
     <ClInclude Include="..\..\..\XFramework\Game\XEComponents.h" />
     <ClInclude Include="..\..\..\XFramework\Game\XFLevel.h" />
     <ClInclude Include="..\..\..\XFramework\MFC\CoolDialogBar.h" />

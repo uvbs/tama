@@ -191,11 +191,14 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 
 void XSceneBattle::Release()
 {
+	XBattleField::sGet()->GetpObjMng()->Release();
 	s_BattleStart.Release();
 	XSceneBase::Release();
 	for( auto& camp : m_aryCamp ) {
-		camp.Release();
+		camp.m_spLegionObj->Release();
+		camp.m_spLegionObj.reset();
 	}
+	CheckLeak();
 }
 
 void XSceneBattle::Destroy()
@@ -209,7 +212,6 @@ void XSceneBattle::Destroy()
 	SAFE_DELETE( XUnitCommon::s_pPool );
 #endif // _XMEM_POOL
 	XAPP->m_fAccel = (float)1.f;
-	CheckLeak();
 }
 
 void XSceneBattle::Create( void )

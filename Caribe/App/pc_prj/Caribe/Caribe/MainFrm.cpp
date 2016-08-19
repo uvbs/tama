@@ -37,10 +37,10 @@
 #include "XOption.h"
 #include "_Wnd2/XWnd.h"
 #include "Sprite/SprMng.h"
-#ifdef _XSINGLE
+#ifdef WIN32
 #include "XObjEtc.h"
+#endif // WIN32
 
-#endif // _XSINGLE
 
 // #ifdef _DEBUG
 // #define new DEBUG_NEW

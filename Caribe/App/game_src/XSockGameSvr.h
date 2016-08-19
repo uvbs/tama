@@ -405,7 +405,7 @@ public:
 	BOOL SendUnregistPushMsg(XWnd *pTimeoutCallback, int idacc, int type1, int type2);
 	BOOL SendCheckUnlockUnit( XGAME::xtUnit unit );
 	BOOL SendTouchSquadInReadyScene( int idxSquad );
-	BOOL SendControlSquadInBattle( XHero *pHero );
+	BOOL SendControlSquadInBattle( const XHero *pHero );
 	BOOL SendCheckEncounterLog( ID idSpot );
 	BOOL SendGotoHome( int secTimeout );
 	BOOL SendReqRegisterFacebook( XWnd *pTimeoutCallback, const std::string& strcFbUserId, const std::string& strFbUsername );

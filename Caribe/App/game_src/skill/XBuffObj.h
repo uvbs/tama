@@ -89,7 +89,9 @@ public:
 	inline XSkillDat* GetpDatMutable() {
 		return m_pDat;
 	}
+#ifdef _CLIENT
 	GET_SET_ACCESSOR_CONST( ID, idSfx );
+#endif // _CLIENT
 	GET_ACCESSOR_CONST( ID, idCallerSkill );
 	LPCTSTR GetstrIconByCaller() const;
 //	GET_ACCESSOR_CONST( ID, idCaster );

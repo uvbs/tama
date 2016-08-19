@@ -187,7 +187,9 @@ XSPLegion XLegion::sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, b
 				sqParam.grade = sGetGradeHeroByInfo( squad, lvLegion );
 				sqParam.mulAtk = squad.mulAtk;
 				sqParam.mulHp = squad.mulHp;
+#ifdef _XSINGLE
 				sqParam.m_numAbil = squad.m_numAbil;
+#endif // _XSINGLE
 				auto pSquad = sCreateSquadronForNPC2( lvLegion
 																						, pPropHero
 																						, sqParam );
@@ -469,9 +471,12 @@ XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
 	pHero->SetGrade( sqParam.grade );
 	pSquad->SetmulAtk( sqParam.mulAtk );
 	pSquad->SetmulHp( sqParam.mulHp );
+#if defined(_CLIENT) || defined(_GAME_SERVER)
 	for( auto& abil : sqParam.m_listAbil ) {
 		pHero->SetAbilPoint( abil.m_idsAbil, abil.point );
 	}
+#endif // #if defined(_CLIENT) || defined(_GAME_SERVER)
+
 #ifdef _XSINGLE
 	if( sqParam.m_listAbil.empty() && sqParam.m_numAbil > 0 ) {
 		// 매뉴얼 지정한 특성이 없다면 랜덤으로 특성을 부여한다.

@@ -1644,7 +1644,9 @@ int XSceneTech::OnCheat( XWnd* pWnd, DWORD p1, DWORD p2 )
 			auto pProp = XPropTech::sGet()->GetpNode( m_unitSelected, m_idSelectedNode );
 			XBREAK( pProp == nullptr );
 			pHero->SetAbilPoint( m_unitSelected, m_idSelectedNode, 0 );
+#ifdef _XSINGLE
 			m_bUpdated = true;
+#endif // _XSINGLE
 			SetbUpdate( true );
 		}
 	}

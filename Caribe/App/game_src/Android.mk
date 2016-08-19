@@ -8,6 +8,8 @@ LOCAL_MODULE := gamesrc_static
 LOCAL_MODULE_FILENAME := libgamesrc
 
 LOCAL_SRC_FILES := \
+XComp.cpp \
+XMsgUnit.cpp \
 XWndPopupDaily.cpp \
 XSpotDaily.cpp \
 XWndCampaignHero.cpp \

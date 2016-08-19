@@ -17,11 +17,16 @@ static char THIS_FILE[] = __FILE__;
 #define _XDEBUG_SKILL
 #endif
 
+
+#ifdef WIN32
 #define LCONSOLE( EXP, F, ... ) \
 			(((EXP)) ? (__xLogfTag( "skill", \
 															XLOGTYPE_LOG, \
 															XSTR(_T("%s:"),_T(F)), \
 															pSkillDat->GetstrIdentifier().c_str(), ##__VA_ARGS__), 1) : 0)
+#else
+#define LCONSOLE( EXP, F, ... )  (0)
+#endif // WIN32
 
 //_T( "%s:" )##_T( F ), \
 

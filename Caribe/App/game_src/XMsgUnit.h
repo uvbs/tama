@@ -22,6 +22,7 @@ class XMsgBase;
 *****************************************************************/
 class XMsgQ
 {
+	friend class ::XBaseUnit;
 public:
 #ifdef _XLEAK_DETECT
 	static XList4<XSPMsgBase> s_qMsgAll;			// memory leak 감지용
@@ -51,7 +52,6 @@ private:
 		s_qMsgAll.push_back( spMsg );
 #endif // _XLEAK_DETECT
 	}
-friend class XBaseUnit;
 }; // class XMsgQ
 
 /****************************************************************

@@ -87,12 +87,14 @@ void _NSLog( const char *str, ... );
 #if (_MSC_VER >= 1900)
 #define XTSTR( A, B )  _T(A##B)
 #define XTSTR3( A, B, C )  _T(A##B##C)
+#define XSTR( A, B )  A##B
+#define XSTR3( A, B, C )  (A##B##C)
 #else
 #define XTSTR( A, B )  _T(A)_T(B)
 #define XTSTR3( A, B, C )  _T(A)_T(B)_T(C)
-#endif
 #define XSTR( A, B )  A##B
 #define XSTR3( A, B, C )  (A##B##C)
+#endif
 
 // 파일과 VC/이클립스 ide의 콘솔창에 쓴다. call한 파일명과 함수명도 함께 기록한다. 
 // 파일명/함수명을 쓰고 \n을 하고 본문을 쓰고 다시 \n을 한다. 주로 치명적인 에러를 표시할때 사용한다.

@@ -204,6 +204,7 @@ int XHero::DeSerialize(XArchive& ar, XSPAcc spAcc, int verHero )
 	ar >> m_snHero;
 	ar >> w0;	idProp = w0;
 // 	SetpProp( idProp );
+	m_idProp = idProp;
 // 	auto pProp = _m_pProp;
 #if _DEV_LEVEL <= DLV_DEV_EXTERNAL
 	auto pProp = PROP_HERO->GetpProp( idProp );

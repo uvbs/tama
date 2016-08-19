@@ -56,12 +56,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1565A2CB-DB14-4F22-8545-F51B7C11C502}</ProjectGuid>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>Perforce Project</SccProjectName>
+    <SccLocalPath>..\..\..\..\..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
     <ProjectName>Caribe2013</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -78,7 +75,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>

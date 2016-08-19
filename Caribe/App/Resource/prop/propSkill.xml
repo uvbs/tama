@@ -547,7 +547,7 @@
       <strong_elastic 발동파라메터="하드코딩" 능력치="#" 능력치테이블="1:2 2:3 3:4 4:5 5:6" icon="treant_10.png">
         <!--강한탄성-->
       </strong_elastic>
-      <phytoncide 발동대상="시전대상주변" 발동대상우호="아군" 발동범위="15" 적용대상수="999" 발동주기="1" 발동스킬="invoke_phytoncide" _독저항="100" icon="treant_11.png">
+      <phytoncide 발동대상="시전대상주변" 발동대상우호="아군" 발동범위="15" 적용대상수="255" 발동주기="1" 발동스킬="invoke_phytoncide" _독저항="100" icon="treant_11.png">
         <!--피톤치드(중독면역을 적용하지 못함)-->
       </phytoncide>
       <view_blocked 발동대상="시전대상주변" 발동범위="10" 시전대상우호="아군" 적용대상수="0" 발동스킬="invoke_view_blocked" 발동주기="1" icon="treant_12.png">

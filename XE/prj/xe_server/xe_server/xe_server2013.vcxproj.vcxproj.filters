@@ -207,12 +207,6 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\etc\Global.h">
       <Filter>source\etc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\Game\Skill\SkillDef.h">
-      <Filter>source\skill</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\Game\Skill\SkillType.h">
-      <Filter>source\skill</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>resource</Filter>
     </ClInclude>
@@ -450,9 +444,6 @@
     </Filter>
     <Filter Include="source\main">
       <UniqueIdentifier>{15dffb6a-ae98-493c-a7df-89521ad6fdce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\skill">
-      <UniqueIdentifier>{e7e41321-be2d-4f49-8281-16cea8a0fd1a}</UniqueIdentifier>
     </Filter>
     <Filter Include="source\xml">
       <UniqueIdentifier>{8e54b374-2bc2-49ac-a196-89b6f297e406}</UniqueIdentifier>

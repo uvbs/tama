@@ -149,7 +149,7 @@ public:
 	/**
 	 @brief 상태 초기화 함수
 	*/
-	void Init( XSPUnit& spUnit );
+	void Init( XSPUnit spUnit );
 	void DoAttackMotion( void );
 	virtual void AddDebugStr( _tstring& str ) {
 		str += XE::Format( _T( "NAttack\n" ) );

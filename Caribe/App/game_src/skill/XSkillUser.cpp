@@ -515,7 +515,9 @@ xtError XSkillUser::CastEffToCastTargetByBuff( const XSkillDat *pDat,
 			const XE::VEC2 vZero;
 			ID idSfx = CreateSfx( pCastingTarget, pDat, pEffect->m_PersistEff, secPlay, vZero );
 			if( idSfx ) {
+#ifdef _CLIENT
 				pBuffObj->SetidSfx( idSfx );
+#endif // _CLIENT
 			}
 		}
 		// 시전사운드 플레이

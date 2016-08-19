@@ -353,6 +353,7 @@ void EFFECT::DeSerialize( XArchive& ar, int ) {
 	ar >> aryInvokeSize;
 	ar >> secInvokeDOT;
 	ar >> m_invokeTargetEff;
+	ar >> m_invokerEff;
 	ar >> idInvokeSound;
 	ar >> strCreateObj;
 	ar >> idCreateObj;
@@ -382,7 +383,7 @@ void XSkillDat::Serialize( XArchive& ar ) const
 	ar << (char)m_listEffects.size();
 	ar << (char)m_bitBaseTarget;
 	ar << (char)m_Debug;
-	ar << (char)0;
+	ar << (char)m_MoveType;
 	for( auto pEffect : m_listEffects ) {
 		pEffect->Serialize( ar );
 	}
@@ -397,6 +398,7 @@ void XSkillDat::Serialize( XArchive& ar ) const
 	ar << m_strShootObj;
 	ar << m_idShootObj;
 	ar << m_shootObjSpeed;
+	ar << m_aryTag;
 
 }
 void XSkillDat::DeSerialize( XArchive& ar, int ver )
@@ -414,7 +416,7 @@ void XSkillDat::DeSerialize( XArchive& ar, int ver )
 	ar >> c0;		int num = c0;
 	ar >> c0;		m_bitBaseTarget = (xtFriendshipFilt)c0;
 	ar >> c0;		m_Debug = c0;
-	ar >> c0;
+	ar >> c0;		m_MoveType = (xtMoving)c0;
 	for( int i = 0; i < num; ++i ) {
 		auto pEffect = new EFFECT();
 		pEffect->DeSerialize( ar, ver );
@@ -431,6 +433,7 @@ void XSkillDat::DeSerialize( XArchive& ar, int ver )
 	ar >> m_strShootObj;
 	ar >> m_idShootObj;
 	ar >> m_shootObjSpeed;
+	ar >> m_aryTag;
 }
 
 /**

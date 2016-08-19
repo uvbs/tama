@@ -495,7 +495,7 @@ void XFSMNormalAttack::Init( void )
 	//	XBREAK( m_pUnit->GetspTargetSquad() == nullptr );
 }
 
-void XFSMNormalAttack::Init( XSPUnit& spUnit )
+void XFSMNormalAttack::Init( XSPUnit spUnit )
 {
 	XBREAK( spUnit == nullptr );
 	//	m_spTarget = spUnit;

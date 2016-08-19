@@ -5539,7 +5539,7 @@ BOOL XSockGameSvr::SendTouchSquadInReadyScene( int idxSquad )
  @param param 사용자가 정의해서 쓰시오
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
 */
-BOOL XSockGameSvr::SendControlSquadInBattle( XHero *pHero )
+BOOL XSockGameSvr::SendControlSquadInBattle( const XHero *pHero )
 {
 	_XCHECK_CONNECT(0);
 	//
