@@ -1,0 +1,4 @@
+* ConcurrentLua support.
+* LuaSys Support.
+* LuaRocks support. - Waiting for updated LuaRocks.
+* LuaJit support. - This just won't work unless we have a new file extesion.

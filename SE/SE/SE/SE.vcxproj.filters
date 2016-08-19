@@ -1,0 +1,938 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\_DirectX">
+      <UniqueIdentifier>{423024f0-18f6-481b-ab93-a87eb020122e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_DirectX\d3dapp">
+      <UniqueIdentifier>{bd666c54-5812-48ef-b4da-d9f4fc29ee88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_DirectX\_DXUT">
+      <UniqueIdentifier>{a6d4b295-a367-41e1-b4e0-dcca15499294}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_Resource">
+      <UniqueIdentifier>{6baf956d-cbb5-4065-b597-650eac28b915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\View">
+      <UniqueIdentifier>{9665d0cb-dc61-4e97-8440-4713be5234f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\MFC class">
+      <UniqueIdentifier>{05298916-ff47-46a1-ac19-aa58b7f35904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Dialog">
+      <UniqueIdentifier>{603ec329-433b-41f5-b372-a4cb91d7696d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_Library">
+      <UniqueIdentifier>{aeb0dcdb-9079-4718-8859-acc367fee3ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_Library\_Graphics">
+      <UniqueIdentifier>{26366016-c262-4143-929d-db2487d17fc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_Library\_Sound">
+      <UniqueIdentifier>{a953008f-e8c6-4ff0-8fa5-04aca2bcfe70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_Library\_Sound\Ogg">
+      <UniqueIdentifier>{24b57b65-4275-451a-a22b-b08cca922e36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_Library\_Sound\OpenAL_Framework">
+      <UniqueIdentifier>{8acba555-6953-4354-8985-21d12cdd3761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_Library\etc">
+      <UniqueIdentifier>{111d592f-3894-42a7-9146-c52c046bee97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_Library\Lua">
+      <UniqueIdentifier>{91289b34-e68f-48f7-9ac8-3c1fd26da5d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_Library\_Font">
+      <UniqueIdentifier>{ab9a172d-9620-4447-b116-fc59dee3f0b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Main">
+      <UniqueIdentifier>{6dac8588-1e11-4f9e-b300-0760c5503a2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_ToolLib">
+      <UniqueIdentifier>{1255c0f3-b379-4218-b828-ea026b5981bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Sprite_SE">
+      <UniqueIdentifier>{9c4cc61d-02d3-483a-af96-dd44dee75c69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\Sprite_SE\layer">
+      <UniqueIdentifier>{fd952546-8ed6-42bc-8c9b-ae3e27a87b29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Sprite_SE\key">
+      <UniqueIdentifier>{be2c4a7d-e375-4abd-9c28-8ecb45473f4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일\SE">
+      <UniqueIdentifier>{4977b7ef-723f-4f57-a054-ce35123ad786}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Library">
+      <UniqueIdentifier>{3ca8c154-b496-4606-9cb8-bbd365c3c012}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\_DirectX\d3dView.cpp">
+      <Filter>소스 파일\_DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_DirectX\d3dapp\d3dapp.cpp">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_DirectX\d3dapp\d3denumeration.cpp">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_DirectX\d3dapp\d3dsettings.cpp">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_DirectX\d3dapp\d3dutil.cpp">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_DirectX\d3dapp\dxutil.cpp">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_DirectX\DXUT\DXUTText.cpp">
+      <Filter>소스 파일\_DirectX\_DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionListView.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="AdjustView.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationView.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleView.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameView.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="ModifyView.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbView.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="XViewSpline.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>소스 파일\MFC class</Filter>
+    </ClCompile>
+    <ClCompile Include="SE.cpp">
+      <Filter>소스 파일\MFC class</Filter>
+    </ClCompile>
+    <ClCompile Include="SEDoc.cpp">
+      <Filter>소스 파일\MFC class</Filter>
+    </ClCompile>
+    <ClCompile Include="SEView.cpp">
+      <Filter>소스 파일\MFC class</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgDrawProperty.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgDummyProp.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgEditAni.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgEventProperty.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgObjProperty.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgPosProp.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgRenameAction.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgRotProp.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgScaleProp.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSoundProp.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSprite.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgTest.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="LeftTool.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="WndAdjustView.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="WndLeftTool.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="WndSpline.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="WndThumbView.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="XDlgBaseKey.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="XDlgConvert.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="XDlgEditInterpolation.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="XDlgLuaEditor.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="XDragSelect.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="XViewGraph.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableInterface.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="SEFont.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="TestView.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="UndoAction.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="UndoMng.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="xuzhukey.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_Tool\CoolDialogBar.cpp">
+      <Filter>소스 파일\_ToolLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_Tool\CrashDlg.cpp">
+      <Filter>소스 파일\_ToolLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_Tool\Select.cpp">
+      <Filter>소스 파일\_ToolLib</Filter>
+    </ClCompile>
+    <ClCompile Include="SprDat.cpp">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </ClCompile>
+    <ClCompile Include="SprObj.cpp">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </ClCompile>
+    <ClCompile Include="XLuaSprObj.cpp">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </ClCompile>
+    <ClCompile Include="XSprObjTool.cpp">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </ClCompile>
+    <ClCompile Include="WndFrameBar.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="WndTimeline.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_Tool\XMyD3DView.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="WndConsole.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="WndActionList.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\XCrypto.cpp">
+      <Filter>소스 파일\_Library</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\XE.cpp">
+      <Filter>소스 파일\_Library</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\XFactory.cpp">
+      <Filter>소스 파일\_Library</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\XSystem.cpp">
+      <Filter>소스 파일\_Library</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\ConstantDefine.cpp">
+      <Filter>소스 파일\_Library</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\ResMng.cpp">
+      <Filter>소스 파일\_Library</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\XBaseFontDat.cpp">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\XBaseFontObj.cpp">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XFontDatDX.cpp">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XFontObjDX.cpp">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\XFontMng.cpp">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\XGraphics.cpp">
+      <Filter>소스 파일\_Library\_Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\XSurface.cpp">
+      <Filter>소스 파일\_Library\_Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XGraphicsD3DTool.cpp">
+      <Filter>소스 파일\_Library\_Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XGraphicsD3D.cpp">
+      <Filter>소스 파일\_Library\_Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\XOpenAL.cpp">
+      <Filter>소스 파일\_Library\_Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL.cpp">
+      <Filter>소스 파일\_Library\_Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\XSoundMng.cpp">
+      <Filter>소스 파일\_Library\_Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\aldlist.cpp">
+      <Filter>소스 파일\_Library\_Sound\OpenAL_Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\CWaves.cpp">
+      <Filter>소스 파일\_Library\_Sound\OpenAL_Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\Framework.cpp">
+      <Filter>소스 파일\_Library\_Sound\OpenAL_Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\LoadOAL.cpp">
+      <Filter>소스 파일\_Library\_Sound\OpenAL_Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\Ogg\XOgg.cpp">
+      <Filter>소스 파일\_Library\_Sound\Ogg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\Timer.cpp">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\Token.cpp">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\xUtil.cpp">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\Alert.cpp">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\ConvertString.cpp">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\Debug.cpp">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\path.cpp">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\XLua.cpp">
+      <Filter>소스 파일\_Library\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\lua_tinker.cpp">
+      <Filter>소스 파일\_Library\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XSurfaceD3D.cpp">
+      <Filter>소스 파일\_Library\_Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="XAniAction.cpp">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </ClCompile>
+    <ClCompile Include="XViews.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="Layer.cpp">
+      <Filter>소스 파일\Sprite_SE\layer</Filter>
+    </ClCompile>
+    <ClCompile Include="XLayerSound.cpp">
+      <Filter>소스 파일\Sprite_SE\layer</Filter>
+    </ClCompile>
+    <ClCompile Include="XLayerDummy.cpp">
+      <Filter>소스 파일\Sprite_SE\layer</Filter>
+    </ClCompile>
+    <ClCompile Include="XLayerEvent.cpp">
+      <Filter>소스 파일\Sprite_SE\layer</Filter>
+    </ClCompile>
+    <ClCompile Include="XLayerImage.cpp">
+      <Filter>소스 파일\Sprite_SE\layer</Filter>
+    </ClCompile>
+    <ClCompile Include="XLayerMove.cpp">
+      <Filter>소스 파일\Sprite_SE\layer</Filter>
+    </ClCompile>
+    <ClCompile Include="XLayerObject.cpp">
+      <Filter>소스 파일\Sprite_SE\layer</Filter>
+    </ClCompile>
+    <ClCompile Include="Key.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XKeyCreateObj.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XKeyDummy.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XKeyEffect.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XKeyEvent.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XKeyImage.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XKeyPos.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XKeyRot.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XKeyScale.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XKeySound.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XKeyBase.cpp">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClCompile>
+    <ClCompile Include="XLayerBase.cpp">
+      <Filter>소스 파일\Sprite_SE\layer</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSpriteAttr.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="XDlgCompressConverter.cpp">
+      <Filter>소스 파일\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="XActObj.cpp">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </ClCompile>
+    <ClCompile Include="SprMng.cpp">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\_DirectX\d3dView.h">
+      <Filter>소스 파일\_DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_DirectX\d3dapp\d3dapp.h">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_DirectX\d3dapp\d3denumeration.h">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_DirectX\d3dapp\d3dres.h">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_DirectX\d3dapp\d3dsettings.h">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_DirectX\d3dapp\d3dutil.h">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_DirectX\d3dapp\dxutil.h">
+      <Filter>소스 파일\_DirectX\d3dapp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_DirectX\DXUT\DXUTText.h">
+      <Filter>소스 파일\_DirectX\_DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="MovableInterface.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSprite.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgTest.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XDlgBaseKey.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XDlgConvert.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XDlgEditInterpolation.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XDlgLuaEditor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XDragSelect.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XSprObjTool.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionListView.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="AdjustView.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="AllView.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationView.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleView.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgDrawProperty.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgDummyProp.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgEditAni.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgEventProperty.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgObjProperty.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgPosProp.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgRenameAction.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgRotProp.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgScaleProp.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSoundProp.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameView.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="Key.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="Layer.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="LeftTool.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="ModifyView.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="SE.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="SEDoc.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="SEView.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="SprDat.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="SprObj.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbView.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolEtc.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="WndLeftTool.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="WndThumbView.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="XLuaSprObj.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="XViewSpline.h">
+      <Filter>헤더 파일\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XDlgCompressConverter.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XList.h">
+      <Filter>소스 파일\_Library</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XBaseFontDat.h">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XBaseFontObj.h">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XFont.h">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XFontObjDX.h">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XFontDatDX.h">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XFontMng.h">
+      <Filter>소스 파일\_Library\_Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\XGraphicsDef.h">
+      <Filter>소스 파일\_Library\_Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\XSurfaceDef.h">
+      <Filter>소스 파일\_Library\_Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\LoadOAL.h">
+      <Filter>소스 파일\_Library\_Sound\OpenAL_Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\aldlist.h">
+      <Filter>소스 파일\_Library\_Sound\OpenAL_Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\CWaves.h">
+      <Filter>소스 파일\_Library\_Sound\OpenAL_Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\Framework.h">
+      <Filter>소스 파일\_Library\_Sound\OpenAL_Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\Ogg\XOgg.h">
+      <Filter>소스 파일\_Library\_Sound\Ogg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\Types.h">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\xMath.h">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\Global.h">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\D3D\xMathD3D.h">
+      <Filter>소스 파일\_Library\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\XGraphics.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XGraphicsD3D.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XGraphicsD3DTool.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\XSurface.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XSurfaceD3D.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\XOpenAL.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XSoundMng.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\Alert.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\ConvertString.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\Debug.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\path.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\Timer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\Token.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\xUtil.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XLua.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\lua_tinker.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\ConstantDefine.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\ResMng.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XCrypto.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XE.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XFactory.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_Tool\CoolDialogBar.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_Tool\CrashDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_Tool\Select.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WndActionList.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WndAdjustView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WndConsole.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WndFrameBar.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WndSpline.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WndTimeline.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_Tool\XMyD3DView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XViewGraph.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SEFont.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TestView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UndoAction.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UndoMng.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="xuzhukey.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\XList4.h">
+      <Filter>소스 파일\_Library</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\xLib.h">
+      <Filter>소스 파일\_Library</Filter>
+    </ClInclude>
+    <ClInclude Include="XViews.h">
+      <Filter>소스 파일\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\xeDef.h">
+      <Filter>소스 파일\_Library</Filter>
+    </ClInclude>
+    <ClInclude Include="XLayerDummy.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XLayerEvent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XLayerImage.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XLayerMove.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XLayerObject.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XLayerSound.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeyCreateObj.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeyDummy.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeyEffect.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeyEvent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeyImage.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeyPos.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeyRot.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeyScale.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeySound.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeyBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XLayerBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XKeyAll.h">
+      <Filter>소스 파일\Sprite_SE\key</Filter>
+    </ClInclude>
+    <ClInclude Include="XLayerAll.h">
+      <Filter>소스 파일\Sprite_SE\layer</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSpriteAttr.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="xLayerInfo.h">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprdef.h">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </ClInclude>
+    <ClInclude Include="SprMng.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XActObj.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XAniAction.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_XLibrary\etc\xColor.h">
+      <Filter>소스 파일\_Library\_Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lua5.1.lib">
+      <Filter>소스 파일\_Library\Lua</Filter>
+    </Library>
+    <Library Include="lua51.lib">
+      <Filter>소스 파일\_Library\Lua</Filter>
+    </Library>
+    <Library Include="CrashReport.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\bitmap1.bmp">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\cursor1.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\rcdata1.bin">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\SE.ico">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\SE.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\SEDoc.ico">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\Toolbar.bmp">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\Toolbar256.bmp">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="UserImages.bmp">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="_2dsprite.fx" />
+    <None Include="memo.txt" />
+    <None Include="ReadMe.txt" />
+    <None Include="res\cur00001.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="..\..\_XLibrary\XList4.inl">
+      <Filter>소스 파일\_Library</Filter>
+    </None>
+    <None Include="XAniAction.inl">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </None>
+    <None Include="SprObj.inl">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </None>
+    <None Include="XActObj.inl">
+      <Filter>소스 파일\Sprite_SE</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SE.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2C2A1CC1-2CF3-451E-BA47-75C6E52A321E}</ProjectGuid>
+    <RootNamespace>SE</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+    <SccProjectName>Perforce Project</SccProjectName>
+    <SccLocalPath>..\..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
+    <ProjectName>SE_Caribe</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Build\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">SE</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;..\..\_DirectX;..\..\_DirectX\d3dapp;..\..\_DirectX\DXUT;..\..\_Tool;..\..\_XLibrary;..\..\_XLibrary\etc;..\..\_XLibrary\etc\D3D;..\..\_XLibrary\etc\_GraphicsSub\_D3D;..\..\_XLibrary\Sprite\SprMng;..\..\_XLibrary\Sound\Windows;..\..\_Third_Party_lib\LuaTinker;..\..\_Third_Party_lib;..\..\_Third_Party_lib\Lua\5.1\include;$(DXSDK_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0412</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>xzlibd.lib;windowscodecs.lib;winmm.lib;d3d9.lib;d3dx9d.lib;d3dx10d.lib;d3dxof.lib;dsound.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\..\bin\MTDLL_Debug;$(DXSDK_DIR)\lib\x86;..\..\_Third_Party_lib\OpenAL_SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>.\;..\..\_DirectX;..\..\_DirectX\d3dapp;..\..\_DirectX\DXUT;..\..\_Tool;..\..\_XLibrary;..\..\_XLibrary\etc;..\..\_XLibrary\etc\D3D;..\..\_XLibrary\etc\_GraphicsSub\_D3D;..\..\_XLibrary\Sprite\SprMng;..\..\_XLibrary\Sound\Windows;..\..\_Third_Party_lib\LuaTinker;..\..\_Third_Party_lib;..\..\_Third_Party_lib\Lua\5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0412</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>xzlib.lib;windowscodecs.lib;winmm.lib;d3d9.lib;d3dx9.lib;d3dx10.lib;d3dxof.lib;dxerr.lib;dsound.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\..\..\..\XE\bin/MTDLL_Release;$(DXSDK_DIR)\lib\x86;..\..\_Third_Party_lib\OpenAL_SDK\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\_DirectX\d3dView.cpp" />
+    <ClCompile Include="..\..\_DirectX\d3dapp\d3dapp.cpp" />
+    <ClCompile Include="..\..\_DirectX\d3dapp\d3denumeration.cpp" />
+    <ClCompile Include="..\..\_DirectX\d3dapp\d3dsettings.cpp" />
+    <ClCompile Include="..\..\_DirectX\d3dapp\d3dutil.cpp" />
+    <ClCompile Include="..\..\_DirectX\d3dapp\dxutil.cpp" />
+    <ClCompile Include="..\..\_DirectX\DXUT\DXUTText.cpp" />
+    <ClCompile Include="..\..\_Tool\XMyD3DView.cpp" />
+    <ClCompile Include="..\..\_XLibrary\ConstantDefine.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\Alert.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\ConvertString.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\Debug.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\path.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\Timer.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\Token.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\XGraphics.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\XSurface.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\xUtil.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XFontDatDX.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XFontObjDX.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XGraphicsD3D.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XGraphicsD3DTool.cpp" />
+    <ClCompile Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XSurfaceD3D.cpp" />
+    <ClCompile Include="..\..\_XLibrary\lua_tinker.cpp" />
+    <ClCompile Include="..\..\_XLibrary\ResMng.cpp" />
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\Ogg\XOgg.cpp" />
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\aldlist.cpp" />
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\CWaves.cpp" />
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\Framework.cpp" />
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\LoadOAL.cpp" />
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\XOpenAL.cpp" />
+    <ClCompile Include="..\..\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL.cpp" />
+    <ClCompile Include="..\..\_XLibrary\XBaseFontDat.cpp" />
+    <ClCompile Include="..\..\_XLibrary\XBaseFontObj.cpp" />
+    <ClCompile Include="..\..\_XLibrary\XCrypto.cpp" />
+    <ClCompile Include="..\..\_XLibrary\XE.cpp" />
+    <ClCompile Include="..\..\_XLibrary\XFactory.cpp" />
+    <ClCompile Include="..\..\_XLibrary\XFontMng.cpp" />
+    <ClCompile Include="..\..\_XLibrary\XLua.cpp" />
+    <ClCompile Include="..\..\_XLibrary\XSoundMng.cpp" />
+    <ClCompile Include="..\..\_XLibrary\XSystem.cpp" />
+    <ClCompile Include="ActionListView.cpp" />
+    <ClCompile Include="AdjustView.cpp" />
+    <ClCompile Include="AnimationView.cpp" />
+    <ClCompile Include="ConsoleView.cpp" />
+    <ClCompile Include="DlgSpriteAttr.cpp" />
+    <ClCompile Include="FrameView.cpp" />
+    <ClCompile Include="ModifyView.cpp" />
+    <ClCompile Include="SprMng.cpp" />
+    <ClCompile Include="ThumbView.cpp" />
+    <ClCompile Include="WndActionList.cpp" />
+    <ClCompile Include="WndConsole.cpp" />
+    <ClCompile Include="WndFrameBar.cpp" />
+    <ClCompile Include="WndTimeline.cpp" />
+    <ClCompile Include="XActObj.cpp" />
+    <ClCompile Include="XAniAction.cpp" />
+    <ClCompile Include="XDlgCompressConverter.cpp" />
+    <ClCompile Include="XKeyBase.cpp" />
+    <ClCompile Include="XKeyCreateObj.cpp" />
+    <ClCompile Include="XKeyDummy.cpp" />
+    <ClCompile Include="XKeyEffect.cpp" />
+    <ClCompile Include="XKeyEvent.cpp" />
+    <ClCompile Include="XKeyImage.cpp" />
+    <ClCompile Include="XKeyPos.cpp" />
+    <ClCompile Include="XKeyRot.cpp" />
+    <ClCompile Include="XKeyScale.cpp" />
+    <ClCompile Include="XKeySound.cpp" />
+    <ClCompile Include="XLayerBase.cpp" />
+    <ClCompile Include="XLayerDummy.cpp" />
+    <ClCompile Include="XLayerEvent.cpp" />
+    <ClCompile Include="XLayerImage.cpp" />
+    <ClCompile Include="XLayerMove.cpp" />
+    <ClCompile Include="XLayerObject.cpp" />
+    <ClCompile Include="XLayerSound.cpp" />
+    <ClCompile Include="XViews.cpp" />
+    <ClCompile Include="XViewSpline.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="SE.cpp" />
+    <ClCompile Include="SEDoc.cpp" />
+    <ClCompile Include="SEView.cpp" />
+    <ClCompile Include="DlgDrawProperty.cpp" />
+    <ClCompile Include="DlgDummyProp.cpp" />
+    <ClCompile Include="DlgEditAni.cpp" />
+    <ClCompile Include="DlgEventProperty.cpp" />
+    <ClCompile Include="DlgObjProperty.cpp" />
+    <ClCompile Include="DlgPosProp.cpp" />
+    <ClCompile Include="DlgRenameAction.cpp" />
+    <ClCompile Include="DlgRotProp.cpp" />
+    <ClCompile Include="DlgScaleProp.cpp" />
+    <ClCompile Include="DlgSoundProp.cpp" />
+    <ClCompile Include="DlgSprite.cpp" />
+    <ClCompile Include="DlgTest.cpp" />
+    <ClCompile Include="LeftTool.cpp" />
+    <ClCompile Include="WndAdjustView.cpp" />
+    <ClCompile Include="WndLeftTool.cpp" />
+    <ClCompile Include="WndSpline.cpp" />
+    <ClCompile Include="WndThumbView.cpp" />
+    <ClCompile Include="XDlgBaseKey.cpp" />
+    <ClCompile Include="XDlgConvert.cpp" />
+    <ClCompile Include="XDlgEditInterpolation.cpp" />
+    <ClCompile Include="XDlgLuaEditor.cpp" />
+    <ClCompile Include="XDragSelect.cpp" />
+    <ClCompile Include="XViewGraph.cpp" />
+    <ClCompile Include="MovableInterface.cpp" />
+    <ClCompile Include="SEFont.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TestView.cpp" />
+    <ClCompile Include="Tool.cpp" />
+    <ClCompile Include="UndoAction.cpp" />
+    <ClCompile Include="UndoMng.cpp" />
+    <ClCompile Include="xuzhukey.cpp" />
+    <ClCompile Include="..\..\_Tool\CoolDialogBar.cpp" />
+    <ClCompile Include="..\..\_Tool\CrashDlg.cpp" />
+    <ClCompile Include="..\..\_Tool\Select.cpp" />
+    <ClCompile Include="Key.cpp" />
+    <ClCompile Include="Layer.cpp" />
+    <ClCompile Include="SprDat.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SprObj.cpp" />
+    <ClCompile Include="XLuaSprObj.cpp" />
+    <ClCompile Include="XSprObjTool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\_DirectX\d3dView.h" />
+    <ClInclude Include="..\..\_DirectX\d3dapp\d3dapp.h" />
+    <ClInclude Include="..\..\_DirectX\d3dapp\d3denumeration.h" />
+    <ClInclude Include="..\..\_DirectX\d3dapp\d3dres.h" />
+    <ClInclude Include="..\..\_DirectX\d3dapp\d3dsettings.h" />
+    <ClInclude Include="..\..\_DirectX\d3dapp\d3dutil.h" />
+    <ClInclude Include="..\..\_DirectX\d3dapp\dxutil.h" />
+    <ClInclude Include="..\..\_DirectX\DXUT\DXUTText.h" />
+    <ClInclude Include="..\..\_Tool\XMyD3DView.h" />
+    <ClInclude Include="..\..\_XLibrary\ConstantDefine.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\Alert.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\ConvertString.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\D3D\xMathD3D.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\Debug.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\Global.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\path.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\Timer.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\Token.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\Types.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\xColor.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\XGraphics.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\XGraphicsDef.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\xMath.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\XSurface.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\XSurfaceDef.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\xUtil.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XFontDatDX.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XFontObjDX.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XGraphicsD3D.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XGraphicsD3DTool.h" />
+    <ClInclude Include="..\..\_XLibrary\etc\_GraphicsSub\_D3D\XSurfaceD3D.h" />
+    <ClInclude Include="..\..\_XLibrary\lua_tinker.h" />
+    <ClInclude Include="..\..\_XLibrary\ResMng.h" />
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\Ogg\XOgg.h" />
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\aldlist.h" />
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\CWaves.h" />
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\Framework.h" />
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\LoadOAL.h" />
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\XOpenAL.h" />
+    <ClInclude Include="..\..\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL.h" />
+    <ClInclude Include="..\..\_XLibrary\XBaseFontDat.h" />
+    <ClInclude Include="..\..\_XLibrary\XBaseFontObj.h" />
+    <ClInclude Include="..\..\_XLibrary\XCrypto.h" />
+    <ClInclude Include="..\..\_XLibrary\XE.h" />
+    <ClInclude Include="..\..\_XLibrary\xeDef.h" />
+    <ClInclude Include="..\..\_XLibrary\XFactory.h" />
+    <ClInclude Include="..\..\_XLibrary\XFont.h" />
+    <ClInclude Include="..\..\_XLibrary\XFontMng.h" />
+    <ClInclude Include="..\..\_XLibrary\xLib.h" />
+    <ClInclude Include="..\..\_XLibrary\XList.h" />
+    <ClInclude Include="..\..\_XLibrary\XList4.h" />
+    <ClInclude Include="..\..\_XLibrary\XLua.h" />
+    <ClInclude Include="..\..\_XLibrary\XSoundMng.h" />
+    <ClInclude Include="..\..\_XLibrary\XSystem.h" />
+    <ClInclude Include="DlgSpriteAttr.h" />
+    <ClInclude Include="Sprdef.h" />
+    <ClInclude Include="SprMng.h" />
+    <ClInclude Include="WndActionList.h" />
+    <ClInclude Include="WndAdjustView.h" />
+    <ClInclude Include="WndConsole.h" />
+    <ClInclude Include="WndFrameBar.h" />
+    <ClInclude Include="WndSpline.h" />
+    <ClInclude Include="WndTimeline.h" />
+    <ClInclude Include="XActObj.h" />
+    <ClInclude Include="XAniAction.h" />
+    <ClInclude Include="XDlgCompressConverter.h" />
+    <ClInclude Include="XKeyAll.h" />
+    <ClInclude Include="XKeyBase.h" />
+    <ClInclude Include="XKeyCreateObj.h" />
+    <ClInclude Include="XKeyDummy.h" />
+    <ClInclude Include="XKeyEffect.h" />
+    <ClInclude Include="XKeyEvent.h" />
+    <ClInclude Include="XKeyImage.h" />
+    <ClInclude Include="XKeyPos.h" />
+    <ClInclude Include="XKeyRot.h" />
+    <ClInclude Include="XKeyScale.h" />
+    <ClInclude Include="XKeySound.h" />
+    <ClInclude Include="XLayerAll.h" />
+    <ClInclude Include="XLayerBase.h" />
+    <ClInclude Include="XLayerDummy.h" />
+    <ClInclude Include="XLayerEvent.h" />
+    <ClInclude Include="XLayerImage.h" />
+    <ClInclude Include="xLayerInfo.h" />
+    <ClInclude Include="XLayerMove.h" />
+    <ClInclude Include="XLayerObject.h" />
+    <ClInclude Include="XLayerSound.h" />
+    <ClInclude Include="XViewGraph.h" />
+    <ClInclude Include="MovableInterface.h" />
+    <ClInclude Include="SEFont.h" />
+    <ClInclude Include="TestView.h" />
+    <ClInclude Include="UndoAction.h" />
+    <ClInclude Include="UndoMng.h" />
+    <ClInclude Include="xuzhukey.h" />
+    <ClInclude Include="..\..\_Tool\CoolDialogBar.h" />
+    <ClInclude Include="..\..\_Tool\CrashDlg.h" />
+    <ClInclude Include="..\..\_Tool\Select.h" />
+    <ClInclude Include="DlgSprite.h" />
+    <ClInclude Include="DlgTest.h" />
+    <ClInclude Include="XDlgBaseKey.h" />
+    <ClInclude Include="XDlgConvert.h" />
+    <ClInclude Include="XDlgEditInterpolation.h" />
+    <ClInclude Include="XDlgLuaEditor.h" />
+    <ClInclude Include="XDragSelect.h" />
+    <ClInclude Include="XSprObjTool.h" />
+    <ClInclude Include="ActionListView.h" />
+    <ClInclude Include="AdjustView.h" />
+    <ClInclude Include="AllView.h" />
+    <ClInclude Include="AnimationView.h" />
+    <ClInclude Include="ConsoleView.h" />
+    <ClInclude Include="DlgDrawProperty.h" />
+    <ClInclude Include="DlgDummyProp.h" />
+    <ClInclude Include="DlgEditAni.h" />
+    <ClInclude Include="DlgEventProperty.h" />
+    <ClInclude Include="DlgObjProperty.h" />
+    <ClInclude Include="DlgPosProp.h" />
+    <ClInclude Include="DlgRenameAction.h" />
+    <ClInclude Include="DlgRotProp.h" />
+    <ClInclude Include="DlgScaleProp.h" />
+    <ClInclude Include="DlgSoundProp.h" />
+    <ClInclude Include="FrameView.h" />
+    <ClInclude Include="Key.h" />
+    <ClInclude Include="Layer.h" />
+    <ClInclude Include="LeftTool.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="ModifyView.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SE.h" />
+    <ClInclude Include="SEDoc.h" />
+    <ClInclude Include="SEView.h" />
+    <ClInclude Include="SprDat.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SprObj.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="ThumbView.h" />
+    <ClInclude Include="Tool.h" />
+    <ClInclude Include="ToolEtc.h" />
+    <ClInclude Include="WndLeftTool.h" />
+    <ClInclude Include="WndThumbView.h" />
+    <ClInclude Include="XLuaSprObj.h" />
+    <ClInclude Include="XViews.h" />
+    <ClInclude Include="XViewSpline.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lua5.1.lib" />
+    <Library Include="lua51.lib" />
+    <Library Include="CrashReport.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\_XLibrary\XList4.inl" />
+    <None Include="res\bitmap1.bmp" />
+    <None Include="res\cur00001.cur" />
+    <None Include="res\cursor1.cur" />
+    <None Include="res\rcdata1.bin" />
+    <None Include="res\SE.ico" />
+    <None Include="res\SE.rc2" />
+    <None Include="res\SEDoc.ico" />
+    <None Include="res\Toolbar.bmp" />
+    <None Include="res\Toolbar256.bmp" />
+    <None Include="SprObj.inl" />
+    <None Include="UserImages.bmp" />
+    <None Include="XActObj.inl" />
+    <None Include="XAniAction.inl" />
+    <None Include="_2dsprite.fx" />
+    <None Include="memo.txt" />
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SE.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="SE.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
