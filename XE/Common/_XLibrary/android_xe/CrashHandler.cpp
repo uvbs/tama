@@ -22,16 +22,16 @@ void __backtrace( FILE *pFile, void* pFunc, char* trace )
 	void* funcAddr = (void*) *((int*)pFunc);	// NDK 컴파일러에 의한 코드는 fp의 위치에 호출된 함수의 주소 저장
 
 	Dl_info info;
-// 	XLOG("dladdr() funcAddr=0x%08x", (DWORD)funcAddr);
+ 	XLOG("dladdr() funcAddr=0x%08x", (DWORD)funcAddr);
 	if( dladdr( funcAddr, &info ) ) {
-// 		XLOG("dladdr()in:%d(%s)", info.dli_fbase, info.dli_fname );
+ 		XLOG("dladdr()in:%d(%s)", info.dli_fbase, info.dli_fname );
 		funcAddr = (void*) ( (unsigned int)funcAddr - (unsigned int)info.dli_fbase );	// funcAddr은 프로세스의 메모리 상의 주소이므로, 라이브러리상의 함수 주소로 변환
 		char buffer[1024];
 		sprintf( buffer, "%s %p\r\n", info.dli_fname, funcAddr);
 		strcat( trace, buffer );
 		fprintf_s( pFile, "%s", buffer );
 		fflush( pFile );
-// 		XLOG("call line:%s", buffer );
+ 		XLOG("call line:%s", buffer );
 	}
 //	XLOG("%s", "dladdr()out" );
 	__backtrace( pFile, (void*)(*((int*)pFunc - 1)), trace );	// fp 위치의 다음 필드가 이전의 fp

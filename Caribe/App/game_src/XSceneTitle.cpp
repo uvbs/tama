@@ -197,6 +197,13 @@ void XSceneTitle::Update()
 			GAME->Add( pButt );
 			v.x += sizeButt.w;
 		}
+		if( GAME->Find( "butt.log" ) == nullptr ) {
+			auto pButt = new XWndButtonDebug( v, sizeButt, _T( "log" ) );
+			pButt->SetstrIdentifier( "butt.log" );
+			pButt->SetEvent( XWM_CLICKED, GAME, &XGame::OnClickDebugShowLog, 0 );
+			GAME->Add( pButt );
+			v.x += sizeButt.w;
+		}
 		v.x = XE::GetGameWidth() - sizeButt.w;
 		v.y = 128.f;
 #ifdef _SOFTNYX
@@ -242,6 +249,7 @@ void XSceneTitle::Update()
 		GAME->DestroyWndByIdentifier("butt.ipchange");
 		GAME->DestroyWndByIdentifier("butt.logout");
 		GAME->DestroyWndByIdentifier("butt.appstore");
+		GAME->DestroyWndByIdentifier("butt.log");
 	}
 #endif
 }

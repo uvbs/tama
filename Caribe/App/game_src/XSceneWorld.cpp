@@ -65,6 +65,13 @@ using namespace XGAME;
 
 XSceneWorld *SCENE_WORLD = nullptr;
 
+void XSceneWorld::xLayout::DestroyAll() {
+	SAFE_DELETE( pShop );
+	SAFE_DELETE( pRank );
+	SAFE_DELETE( pSocial );
+	SAFE_DELETE( pMail );
+}
+
 //////////////////////////////////////////////////////////////////////////
 void XSceneWorld::Destroy() 
 {	
@@ -3959,98 +3966,98 @@ void XSceneWorld::ApplyAreaBannerByAry( const std::vector<ID>& aryArea, bool bSh
 	}
 }
 
-/**
- @brief 
-*/
-#ifdef _CHEAT
-int XSceneWorld::OnClickDebugShowLog( XWnd* pWnd, DWORD p1, DWORD p2 )
-{
-	CONSOLE( "OnClickDebugShowLog" );
-	char cFullpath[ 1024 ];
-	XE::GetLogFilename( cFullpath );
-	//
-	if( p1 == 1 ) {
-		XSYSTEM::RemoveFile( cFullpath );
-		return 1;
-	} else 
-	if( p1 == 2 ) {
-		// log toggle
-		XE::SetbAllowLog( !XE::GetbAllowLog() );
-		auto pButt = dynamic_cast<XWndButtonDebug*>( pWnd );
-		if( pButt ) {
-			pButt->SetbCheck( XE::GetbAllowLog() );
-			pButt->SetbUpdate( true );
-		}
-	} else 
-	if( p1 == 0 ) {
-		//
-		auto pPopup = new XWndPopup( XE::VEC2(455,340), _T("popup01.png") );
-		pPopup->AddButtonOk(_T("ok"), _T("common_butt_small.png") );
-		Add( pPopup );
-		auto pScrlView = new XWndScrollView( XE::VEC2(7,9), XE::VEC2(451,302) );
-	//	pScrlView->SetScrollVertOnly();
-		pPopup->Add( pScrlView );
-		TCHAR szLine[ 1024 ];
-		TCHAR szBuff[ 1024 ];
-		XE::VEC2 v;
-		int cntLine = 0;
-		float sizeFont = 18.f;
-		int cntBlock = 0;
-		FILE *fp;
-		_tfopen_s( &fp, C2SZ(cFullpath), _T( "rt" ) );
-		if( fp == nullptr ) {
-			XWND_ALERT("file not found[%s]", C2SZ(cFullpath) );
-			return 1;
-		}
-		long offset = ftell( fp );
-		fseek( fp, 0, SEEK_END );
-		int size = ftell( fp );			// file size
-		fseek( fp, offset, SEEK_SET );
-		while( !feof( fp ) ) {
-			szBuff[ 0 ] = 0;
-			if( cntBlock == 0 ) {
-	#ifdef _VER_ANDROID
-				_tcscat_s( szBuff, XFORMAT("size=%d",size) );
-	#endif // _VER_ANDROID
-			}
-			while(1) {
-				if( feof( fp ) )
-					break;
-	#ifdef WIN32
-				fgetws( szLine, 1024, fp );		// utf8
-	#else
-				fgets( szLine, 1024, fp );		// utf8
-	#endif
-				if( _tcslen( szBuff ) + _tcslen(szLine) > 1000 )
-					break;
-				_tcscat_s( szBuff, szLine );
-	#ifdef _VER_ANDROID
-	// 				_tcscat_s( szBuff, _T("\r\n"));
-	#endif // _VER_ANDROID
-				++cntLine;
-			}
-			XSYSTEM::strReplace( szBuff, _T( '\r' ), _T( ' ' ) );
-			auto pText = new XWndTextString( v,
-																			szBuff,
-																			FONT_NANUM,
-																			sizeFont );
-	//			pText->SetLineLength( 100 );
-			pText->SetLineLength( pScrlView->GetSizeLocal().w - 10 );
-			XBREAK( pText == NULL );
-			pScrlView->Add( pText );
-			v.y += pText->GetSizeNoTransLayout().h;
-			++cntBlock;
-		}
-		fclose( fp );
-		pScrlView->SetScrollViewAutoSize();
-		auto vSizeView = pScrlView->GetsizeScroll();
-		vSizeView.h = vSizeView.h * 1.01f;
-		pScrlView->SetViewSize( vSizeView );
-		pScrlView->SetFocusView( 0, vSizeView.h );	
-	} // p1 == 0
-	return 1;
-}
-#endif // _CHEAT
+// /**
+//  @brief 
+// */
+// #ifdef _CHEAT
+// int XSceneWorld::OnClickDebugShowLog( XWnd* pWnd, DWORD p1, DWORD p2 )
+// {
+// 	CONSOLE( "OnClickDebugShowLog" );
+// 	char cFullpath[ 1024 ];
+// 	XE::GetLogFilename( cFullpath );
+// 	//
+// 	if( p1 == 1 ) {
+// 		XSYSTEM::RemoveFile( cFullpath );
+// 		return 1;
+// 	} else 
+// 	if( p1 == 2 ) {
+// 		// log toggle
+// 		XE::SetbAllowLog( !XE::GetbAllowLog() );
+// 		auto pButt = dynamic_cast<XWndButtonDebug*>( pWnd );
+// 		if( pButt ) {
+// 			pButt->SetbCheck( XE::GetbAllowLog() );
+// 			pButt->SetbUpdate( true );
+// 		}
+// 	} else 
+// 	if( p1 == 0 ) {
+// 		//
+// 		auto pPopup = new XWndPopup( XE::VEC2(455,340), _T("popup01.png") );
+// 		pPopup->AddButtonOk(_T("ok"), _T("common_butt_small.png") );
+// 		Add( pPopup );
+// 		auto pScrlView = new XWndScrollView( XE::VEC2(7,9), XE::VEC2(451,302) );
+// 	//	pScrlView->SetScrollVertOnly();
+// 		pPopup->Add( pScrlView );
+// 		TCHAR szLine[ 1024 ];
+// 		TCHAR szBuff[ 1024 ];
+// 		XE::VEC2 v;
+// 		int cntLine = 0;
+// 		float sizeFont = 18.f;
+// 		int cntBlock = 0;
+// 		FILE *fp;
+// 		_tfopen_s( &fp, C2SZ(cFullpath), _T( "rt" ) );
+// 		if( fp == nullptr ) {
+// 			XWND_ALERT("file not found[%s]", C2SZ(cFullpath) );
+// 			return 1;
+// 		}
+// 		long offset = ftell( fp );
+// 		fseek( fp, 0, SEEK_END );
+// 		int size = ftell( fp );			// file size
+// 		fseek( fp, offset, SEEK_SET );
+// 		while( !feof( fp ) ) {
+// 			szBuff[ 0 ] = 0;
+// 			if( cntBlock == 0 ) {
+// 	#ifdef _VER_ANDROID
+// 				_tcscat_s( szBuff, XFORMAT("size=%d",size) );
+// 	#endif // _VER_ANDROID
+// 			}
+// 			while(1) {
+// 				if( feof( fp ) )
+// 					break;
+// 	#ifdef WIN32
+// 				fgetws( szLine, 1024, fp );		// utf8
+// 	#else
+// 				fgets( szLine, 1024, fp );		// utf8
+// 	#endif
+// 				if( _tcslen( szBuff ) + _tcslen(szLine) > 1000 )
+// 					break;
+// 				_tcscat_s( szBuff, szLine );
+// 	#ifdef _VER_ANDROID
+// 	// 				_tcscat_s( szBuff, _T("\r\n"));
+// 	#endif // _VER_ANDROID
+// 				++cntLine;
+// 			}
+// 			XSYSTEM::strReplace( szBuff, _T( '\r' ), _T( ' ' ) );
+// 			auto pText = new XWndTextString( v,
+// 																			szBuff,
+// 																			FONT_NANUM,
+// 																			sizeFont );
+// 	//			pText->SetLineLength( 100 );
+// 			pText->SetLineLength( pScrlView->GetSizeLocal().w - 10 );
+// 			XBREAK( pText == NULL );
+// 			pScrlView->Add( pText );
+// 			v.y += pText->GetSizeNoTransLayout().h;
+// 			++cntBlock;
+// 		}
+// 		fclose( fp );
+// 		pScrlView->SetScrollViewAutoSize();
+// 		auto vSizeView = pScrlView->GetsizeScroll();
+// 		vSizeView.h = vSizeView.h * 1.01f;
+// 		pScrlView->SetViewSize( vSizeView );
+// 		pScrlView->SetFocusView( 0, vSizeView.h );	
+// 	} // p1 == 0
+// 	return 1;
+// }
+// #endif // _CHEAT
 
 XE::VEC2 XSceneWorld::OnDelegateProjection2( const XE::VEC3& vPos )
 {

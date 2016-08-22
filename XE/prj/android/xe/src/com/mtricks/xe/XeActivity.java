@@ -50,6 +50,7 @@ import com.mtricks.trivialdrivesample.util.IabHelper.QueryInventoryFinishedListe
 import com.mtricks.trivialdrivesample.util.IabResult;
 import com.mtricks.trivialdrivesample.util.Inventory;
 import com.mtricks.trivialdrivesample.util.Purchase;
+import com.mtricks.trivialdrivesample.util.SkuDetails;
 import com.mtricks.xe.Cocos2dxHandler.xSoftnyxBuyItem;
 import com.mtricks.xe.Cocos2dxHelper.Cocos2dxHelperListener;
 //import com.ini3.Ini3UserAuthen;
@@ -452,7 +453,14 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 			Inventory inv;
 			try {
 				inv = mHelper.queryInventory(true, moreSkus);
-				strPrice = inv.getSkuDetails(stridProduct).getPrice();
+				if( inv == null )
+					Log.e(TAG, "GoogleIAP:inv = null");
+				Log.d(TAG, "GoogleIAP:stridProduct=" + stridProduct);
+				SkuDetails skuDetail = inv.getSkuDetails(stridProduct);
+				if( skuDetail == null )
+					Log.e(TAG, "GoogleIAP:not found sku:" + stridProduct);
+				strPrice = skuDetail.getPrice();
+//				strPrice = inv.getSkuDetails(stridProduct).getPrice();
 				if( debugLog )
 					Log.d(TAG, "GoogleIAP:onBuyProduct:price:" + strPrice );
 			} catch (IabException e) {

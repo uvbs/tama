@@ -391,7 +391,10 @@ public:
 	void OnAfterPropSerialize() override;
 	int OnClickFillAPByCash( XWnd* pWnd, DWORD p1, DWORD p2 );
 	GET_ACCESSOR( XList4<XGAME::xAlertWorld>&, listAlertWorld );		// 시범적으로 만든거라 const로 하지 않음.
-// 	static bool sDoAlertCampaignByError( XGAME::xtError errCode );
+#ifdef _CHEAT
+	int OnClickDebugShowLog( XWnd* pWnd, DWORD p1, DWORD p2 );
+#endif // _CHEAT
+	// 	static bool sDoAlertCampaignByError( XGAME::xtError errCode );
 // 	static void sDoPopupSpotWithStageObj( XSpot* pBaseSpot, XSPCampObj spCampObj, XSPStageObj spStageObj );
 }; // class XGame
 

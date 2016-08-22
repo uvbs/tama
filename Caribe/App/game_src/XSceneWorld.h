@@ -69,12 +69,7 @@ private:
 		xLayout() {
 			DestroyAll();
 		}
-		void DestroyAll() {
-			SAFE_DELETE( pShop );
-			SAFE_DELETE( pRank );
-			SAFE_DELETE( pSocial );
-			SAFE_DELETE( pMail );
-		}
+		void DestroyAll();
 	} m_LayoutGroup;
 	XLayoutObj m_Layout;
 	XWndScrollView *m_pScrollView;
@@ -146,7 +141,7 @@ private:
 protected:
 public:
 	XSceneWorld( XGame *pGame, SceneParamPtr& spBaseParam );
-	virtual ~XSceneWorld(void) { Destroy(); }
+	~XSceneWorld() { Destroy(); }
 	
 	GET_ACCESSOR( XLayoutObj&, Layout );
 #ifdef _xIN_TOOL
@@ -212,7 +207,7 @@ public:
 	int OnCheatDelQuest( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnClickKill( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnClickXuzhuMode( XWnd* pWnd, DWORD p1, DWORD p2 );
-	int OnClickDebugShowLog( XWnd* pWnd, DWORD p1, DWORD p2 );
+//	int OnClickDebugShowLog( XWnd* pWnd, DWORD p1, DWORD p2 );
 #endif // _CHEAT
 
 public:

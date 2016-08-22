@@ -62,12 +62,9 @@
     <ProjectGuid>{34C374D5-01E8-480D-AF18-581CE9A42CA0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ExtractList</RootNamespace>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>Perforce Project</SccProjectName>
+    <SccLocalPath>..\..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
     <ProjectName>1_ExtractList</ProjectName>
     <SccAuxPath>
     </SccAuxPath>

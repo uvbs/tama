@@ -106,7 +106,7 @@ extern "C"
 	//////////////////////////////////////////////////////////////////////////
 	// JAVA-> C++
 	//  юн╬ш
-	JNIEXPORT jstring JNICALL Java_com_gemtree_caribe_MyMainActivity_JavaToCpp(JNIEnv* env, jobject thiz, jstring id, jstring param1, jstring param2);
+	JNIEXPORT jstring JNICALL Java_com_mtricks_caribe_MyMainActivity_JavaToCpp(JNIEnv* env, jobject thiz, jstring id, jstring param1, jstring param2);
 	/////////////////////////////////////////////////////////////////////////
 	// C++ -> JAVA
 	//  юн╬ш

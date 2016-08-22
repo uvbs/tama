@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.gemtree.caribe" android:versionCode="5" android:versionName="0.0.05">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.mtricks.caribe" android:versionCode="60" android:versionName="0.0.40">
   <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="19" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="com.android.vending.BILLING" />
@@ -15,8 +15,8 @@
   
   <!-- Push -->
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-  <permission android:name="com.gemtree.caribe.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-  <uses-permission android:name="com.gemtree.caribe.permission.C2D_MESSAGE" />
+  <permission android:name="com.mtricks.caribe.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+  <uses-permission android:name="com.mtricks.caribe.permission.C2D_MESSAGE" />
   <!-- Required to read and write the expansion files on shared storage -->
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <!-- 네트워크 연결상태를 확인하기 위해 -->
@@ -24,7 +24,7 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <!-- android:debuggable="true" -->
   <application android:allowBackup="true" android:label="Conquerors" android:icon="@drawable/ic_launcher">
-    <activity android:name="com.gemtree.caribe.MyMainActivity" android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:label="Conquerors">
+    <activity android:name="com.mtricks.caribe.MyMainActivity" android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:label="정복자들">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -44,13 +44,13 @@
            	android:theme="@style/Theme.pgman.Transparent">
     </activity>
     <!-- Push -->
-    <receiver android:name="com.gemtree.caribe.GcmBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
+    <receiver android:name="com.mtricks.caribe.GcmBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
       <intent-filter>
         <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-        <category android:name="com.gemtree.caribe" />
+        <category android:name="com.mtricks.caribe" />
       </intent-filter>
     </receiver>
-    <service android:name="com.gemtree.caribe.GcmIntentService" />
+    <service android:name="com.mtricks.caribe.GcmIntentService" />
     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
     <meta-data 
         android:name="@string/pgman_registered_app_id"
