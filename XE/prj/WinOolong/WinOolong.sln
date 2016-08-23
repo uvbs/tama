@@ -1,18 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinOolong", "WinOolong.vcxproj", "{0C4742A0-4FF6-402D-A432-1AC7C1CED902}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Rel2015|Win32 = Rel2015|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Debug|Win32.ActiveCfg = Debug|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Debug|Win32.Build.0 = Debug|Win32
+		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Rel2015|Win32.ActiveCfg = Rel2015|Win32
+		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Rel2015|Win32.Build.0 = Rel2015|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Release|Win32.ActiveCfg = Release|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
