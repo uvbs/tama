@@ -17,7 +17,9 @@
 // #endif
 #ifdef WIN32
 // 서버에서도 DirectX의 헤더를 사용함. 벡터의 사용을 위해.
+#ifdef _VER_DX
 #include <d3dx9.h>
+#endif // _DEBUG
 #endif // WIN32
 
 namespace XE
