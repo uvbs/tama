@@ -226,7 +226,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Release\</OutDir>
+    <OutDir>$(ProjectDir)\..\..\..\bin\Release\</OutDir>
     <TargetName>xe_client_gles2</TargetName>
     <IntDir>$(Configuration)\</IntDir>
   </PropertyGroup>

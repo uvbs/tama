@@ -1,27 +1,46 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xe_client", "xe_client\xe_client.vcxproj", "{4E6645B0-5901-4E21-A75D-C7D453C9A552}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xe_client2013", "xe_client\xe_client2013.vcxproj.vcxproj", "{4E6645B0-5901-4E21-A75D-C7D453C9A552}"
 EndProject
 Global
-	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 2
-		SccProjectName0 = Perforce\u0020Project
-		SccLocalPath0 = ..\\..
-		SccProvider0 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection0 = prj\\xe_client\\
-		SccProjectUniqueName1 = xe_client\\xe_client.vcxproj
-		SccLocalPath1 = ..\\..
-		SccProjectFilePathRelativizedFromConnection1 = prj\\xe_client\\xe_client\\
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
-		Release|Win32 = Release|Win32
+		Debug_Bot2|x86 = Debug_Bot2|x86
+		Debug_DX|x86 = Debug_DX|x86
+		Debug_GLES2|x86 = Debug_GLES2|x86
+		Debug_Patch5|x86 = Debug_Patch5|x86
+		Debug_single|x86 = Debug_single|x86
+		DebugSingleHome|x86 = DebugSingleHome|x86
+		Rel_Bot|x86 = Rel_Bot|x86
+		RelCrewGoogle|x86 = RelCrewGoogle|x86
+		RelCrewSoftnyx|x86 = RelCrewSoftnyx|x86
+		Release_Bot2|x86 = Release_Bot2|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug|Win32.ActiveCfg = Debug|Win32
-		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug|Win32.Build.0 = Debug|Win32
-		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release|Win32.ActiveCfg = Release|Win32
-		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release|Win32.Build.0 = Release|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Bot2|x86.ActiveCfg = Debug_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Bot2|x86.Build.0 = Debug_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_DX|x86.ActiveCfg = Debug_DX|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_DX|x86.Build.0 = Debug_DX|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_GLES2|x86.ActiveCfg = Debug_GLES2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_GLES2|x86.Build.0 = Debug_GLES2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Patch5|x86.ActiveCfg = Debug_Patch5|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Patch5|x86.Build.0 = Debug_Patch5|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_single|x86.ActiveCfg = Debug_single|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_single|x86.Build.0 = Debug_single|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugSingleHome|x86.ActiveCfg = DebugSingleHome|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugSingleHome|x86.Build.0 = DebugSingleHome|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Rel_Bot|x86.ActiveCfg = Rel_Bot|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Rel_Bot|x86.Build.0 = Rel_Bot|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelCrewGoogle|x86.ActiveCfg = RelCrewGoogle|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelCrewGoogle|x86.Build.0 = RelCrewGoogle|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelCrewSoftnyx|x86.ActiveCfg = RelCrewSoftnyx|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelCrewSoftnyx|x86.Build.0 = RelCrewSoftnyx|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release_Bot2|x86.ActiveCfg = Release_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release_Bot2|x86.Build.0 = Release_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release|x86.ActiveCfg = Release|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
