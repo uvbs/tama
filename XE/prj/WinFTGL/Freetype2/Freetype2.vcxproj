@@ -82,7 +82,7 @@
     <TargetName>Freetype2_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)\..\..\bin\MTDLL_Release\</OutDir>
+    <OutDir>$(ProjectDir)\..\..\..\bin\MTDLL_Release\</OutDir>
     <TargetName>Freetype2</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2015|Win32'">
