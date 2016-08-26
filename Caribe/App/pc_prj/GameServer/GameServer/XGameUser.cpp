@@ -9287,6 +9287,7 @@ void XGameUser::SimulAttackedHome( ID idAcc, int lvAcc, const _tstring& strName,
 				log.AddLootRes( resType, aryLoss[i] );	// 약탈량합산
 		}
 	} else {
+		log.addScore = 0;
 		// 공격자(가상더미)로부터 방어에 실패함.
 		log.addScore = -xRandom( 5, 10 );
 		// 지역창고에 손실을 입힌다.
