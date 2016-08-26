@@ -250,7 +250,7 @@
     <TargetName>Caribe</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">
-    <OutDir>$(ProjectDir)\..\..\..\bin</OutDir>
+    <OutDir>$(ProjectDir)\..\..\bin</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>Caribe</TargetName>

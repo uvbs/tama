@@ -218,7 +218,7 @@
     <TargetName>LoginServer</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">
-    <OutDir>$(ProjectDir)\..\..\</OutDir>
+    <OutDir>$(ProjectDir)\..\..\bin</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>LoginServer</TargetName>
