@@ -468,7 +468,7 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\release;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xe_client_gles2.lib;libGLESv2.lib;libgles_cm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;windowscodecs.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xe_client_gles2.lib;libGLESv2.lib;libgles_cm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;windowscodecs.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>
       </AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
