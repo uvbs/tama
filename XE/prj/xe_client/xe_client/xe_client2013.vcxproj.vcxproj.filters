@@ -476,10 +476,10 @@
     <ClCompile Include="..\..\..\XFramework\client\XASyncLoad.cpp">
       <Filter>source\Framework</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString.cpp">
+    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\CrashHandler.cpp">
       <Filter>source\android</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\CrashHandler.cpp">
+    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString_android.cpp">
       <Filter>source\android</Filter>
     </ClCompile>
   </ItemGroup>

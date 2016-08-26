@@ -757,11 +757,7 @@
     <ClCompile Include="..\..\..\Common\XDrawGraph.cpp" />
     <ClCompile Include="..\..\..\Common\XGameUtil.cpp" />
     <ClCompile Include="..\..\..\Common\XInterpolationObj.cpp" />
-    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString_android.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\CrashHandler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
     </ClCompile>
