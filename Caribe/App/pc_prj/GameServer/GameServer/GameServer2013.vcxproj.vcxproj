@@ -218,7 +218,7 @@
     <TargetName>GameServer</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">
-    <OutDir>$(SolutionDir)\..\</OutDir>
+    <OutDir>$(ProjectDir)\..\..\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>GameServer</TargetName>

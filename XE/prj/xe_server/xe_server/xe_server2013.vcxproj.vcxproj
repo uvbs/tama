@@ -414,7 +414,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\MTRelease\</OutDir>
+    <OutDir>$(ProjectDir)\..\..\..\bin\MTRelease\</OutDir>
     <TargetName>xe_server</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
