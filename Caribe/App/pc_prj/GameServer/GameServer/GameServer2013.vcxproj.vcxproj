@@ -218,7 +218,7 @@
     <TargetName>GameServer</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">
-    <OutDir>$(ProjectDir)\..\..\bin</OutDir>
+    <OutDir>$(ProjectDir)\..\..\bin\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>GameServer</TargetName>
@@ -230,7 +230,7 @@
     <TargetName>GameServerBot</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_DummyGenerator|Win32'">
-    <OutDir>$(ProjectDir)\..\..\bin</OutDir>
+    <OutDir>$(ProjectDir)\..\..\bin\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>GameServerDummy</TargetName>

@@ -218,7 +218,7 @@
     <TargetName>DBAgentServer</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'">
-    <OutDir>$(ProjectDir)\..\..\bin</OutDir>
+    <OutDir>$(ProjectDir)\..\..\bin\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>DBAgentServer</TargetName>
@@ -230,7 +230,7 @@
     <TargetName>DBAgentServerBot</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_DummyGenerator|Win32'">
-    <OutDir>$(ProjectDir)\..\..\bin</OutDir>
+    <OutDir>$(ProjectDir)\..\..\bin\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>DBAgentServerDummy</TargetName>
