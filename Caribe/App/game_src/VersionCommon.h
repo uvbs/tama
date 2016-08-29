@@ -23,12 +23,12 @@
 #endif
 #endif
 
-#ifdef _JAEBUM
+#ifdef _XCREW
 #ifdef WIN32
-//	#define _xIN_TOOL	// 구름 찍기 툴이 포함됨.
+#define _xIN_TOOL	// 툴이 포함됨.
 #endif
-//	#define _XSINGLE
-#endif
+
+#endif // _XCREW
 
 #if defined(_XTHAILAND)
 	// 국가별 설정을 넣으시오

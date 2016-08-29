@@ -79,7 +79,9 @@ void CDlgNewBgObj::OnOK()
 {
 	UPDATE_C2D();
 	m_Prop.m_Type = (XGAME::xtBgObj)(m_comboType.GetCurSel() + 1);
+#ifdef _xIN_TOOL
 	m_Prop.m_strType = xnBgObj::GetstrEnum( m_Prop.m_Type );
+#endif // _xIN_TOOL
 	m_Prop.m_strSpr = m_strSpr;
 	if( !m_strSndFile.IsEmpty() )
 		m_Prop.m_strSnd = XE::GetFileTitle( (LPCTSTR)m_strSndFile );

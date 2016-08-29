@@ -120,7 +120,7 @@
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewSoftnyx|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -220,7 +220,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\..\..\..\..\bin\Release\</OutDir>
+    <OutDir>$(ProjectDir)\..\..\..\bin\Release\</OutDir>
     <TargetName>xe_client_gles2</TargetName>
     <IntDir>$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -757,11 +757,7 @@
     <ClCompile Include="..\..\..\Common\XDrawGraph.cpp" />
     <ClCompile Include="..\..\..\Common\XGameUtil.cpp" />
     <ClCompile Include="..\..\..\Common\XInterpolationObj.cpp" />
-    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString_android.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\CrashHandler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">true</ExcludedFromBuild>
     </ClCompile>
