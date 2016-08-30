@@ -1,3 +1,4 @@
+@echo
 rmdir /s /q "..\..\patch\patch_server"
 mkdir "..\..\patch\patch_server\"
 mkdir "..\..\patch\patch_server\fonts\"
@@ -53,4 +54,27 @@ cd "..\prop"
 del /q /f _*.*
 cd ..\ui"
 del /q /f _*.png
+cd ..
+
+net use k: \\192.168.0.193\caribe_patch_tool Ahqlf099! /user:mtricks_dev1
+@if not "%ERRORLEVEL%" == "0" goto FAIL
+
+xcopy *.* "k:\patchFile" /e /s /y /i
+@if not "%ERRORLEVEL%" == "0" goto FAIL
+
+net use k: /del /y
+@if not "%ERRORLEVEL%" == "0" goto FAIL
+
+goto OK
+
+:OK
+@echo 복사성공! 193서버에서 extract.exe와 patchTool.exe를 실행시켜주십시오.
 pause
+goto QUIT
+
+:FAIL
+echo 에러.
+pause
+goto QUIT
+
+:QUIT
