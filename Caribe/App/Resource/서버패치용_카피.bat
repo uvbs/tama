@@ -13,7 +13,7 @@ del /q /f _*.*
 
 :압축
 @cd ..
-@"c:\Program Files\7-Zip\7z.exe" a app_res.zip *.*
+@"c:\Program Files\7-Zip\7z.exe" a -r app_res.zip *.*
 @if not "%ERRORLEVEL%" == "0" goto FAIL
 
 : GMO(windows)서버의 share로 전송
