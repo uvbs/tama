@@ -17,7 +17,8 @@ del /q /f _*.*
 @if not "%ERRORLEVEL%" == "0" goto FAIL
 
 : GMO(windows)서버의 share로 전송
-"..\..\pscp" -scp -pw q#E35ktvhQjnt app_res.zip root@211.125.93.152:~/test/share
+cd ..\..\
+pscp -scp -pw q#E35ktvhQjnt patch\server\app_res.zip root@211.125.93.152:~/test/share
 @if not "%ERRORLEVEL%" == "0" goto FAIL
 
 
