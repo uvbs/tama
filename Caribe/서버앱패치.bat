@@ -13,8 +13,8 @@
 @set SHARE_PATH=C:\Users\Administrator\Desktop\share
 
 @cd %APP_PATH%
-:@call 현재버전백업.bat
-:@if not "%ERRORLEVEL%" == "0" goto FAIL
+@call 현재버전백업.bat
+@if not "%ERRORLEVEL%" == "0" goto FAIL
 
 @echo -------------------extract caribe/Resource 업데이트-------------------
 @cd %SHARE_PATH%
