@@ -5382,10 +5382,15 @@ void XGameSvrConnection::RecvGoogleInappBuyCash(XPacket& p, ID idKey)
 	p >> idClientConnect;
 	p >> idPacket;
 	// C2SZ는 스레드안전하지 않아서 변환해서 보냄.
-	XBREAK( inapp.m_strcPayload.empty() );
+// 	XBREAK( inapp.m_strcPayload.empty() );
+// 	XBREAK( inapp.m_idsProduct.empty() );
+	XBREAK( inapp.AssertValid() == false );
 	const _tstring strPayload = C2SZ( inapp.m_strcPayload );
 	const std::string strcPublicKey = SZ2C( _strPublicKey );
-	CONSOLE_ACC( "iap", idAcc, "product=%s", inapp.m_idsProduct.c_str() );
+	CONSOLE_ACC( "iap", idAcc, "idAcc=%d, product=%s, publicKey=%s"
+							 , idAcc
+							 , inapp.m_idsProduct.c_str()
+							 , _strPublicKey.c_str() );
 
 	//Google 은 횟수 제한이 있으니까....DB 먼저검색 해서 결과를 가지고 Google Verify 를 진행 하도록 하자.
 	DBMNG->DoAsyncCall( GetThis(),

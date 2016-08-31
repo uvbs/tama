@@ -47,7 +47,7 @@ XRefRes.cpp \
 XSoundMng.cpp \
 XTransition.cpp \
 XImageMng.cpp \
-android_xe/ConvertString.cpp \
+android_xe/ConvertString_android.cpp \
 android_xe/CrashHandler.cpp \
 etc/Alert.cpp \
 etc/Debug.cpp \
