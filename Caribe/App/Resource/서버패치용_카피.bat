@@ -18,7 +18,7 @@ del /q /f _*.*
 
 : GMO(windows)서버의 share로 전송
 cd ..\..\
-pscp -scp -y -pw q#E35ktvhQjnt patch\server\app_res.zip root@211.125.93.152:~/test/share
+pscp -scp -pw q#E35ktvhQjnt patch\server\app_res.zip root@211.125.93.152:~/test/share
 @if not "%ERRORLEVEL%" == "0" goto FAIL
 
 
