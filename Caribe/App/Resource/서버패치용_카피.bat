@@ -2,25 +2,35 @@ rmdir /s /q "..\..\patch\server"
 mkdir "..\..\patch\server\"
 mkdir "..\..\patch\server\prop\"
 
-rem copy "fonts\*.ttf" "..\..\patch\server\fonts"
-rem copy "fonts\en" "..\..\patch\server\fonts\en"
-rem copy "icon\*.png" "..\..\patch\server\icon"
-rem copy "img\*.png" "..\..\patch\server\img"
-rem copy "img\en\*.png" "..\..\patch\server\img\en"
 copy "prop\*.xml" "..\..\patch\server\prop"
 copy "prop\*.txt" "..\..\patch\server\prop"
 copy "prop\*.lua" "..\..\patch\server\prop"
-rem copy "prop\layout\*.xml" "..\..\patch\server\prop\layout"
-rem copy "prop\layout\en\*.xml" "..\..\patch\server\prop\layout\en"
-rem copy "prop\particles\*.xml" "..\..\patch\server\prop\particles"
-rem copy "snd\*.ogg" "..\..\patch\server\snd"
-rem copy "snd\mp3\*.mp3" "..\..\patch\server\snd\mp3"
-rem copy "spr\*.spr" "..\..\patch\server\spr"
-rem copy "ui\*.png" "..\..\patch\server\ui"
-rem copy "ui\en\*.png" "..\..\patch\server\ui\en"
 copy *.h "..\..\patch\server"
 copy *.txt "..\..\patch\server"
 
 cd "..\..\patch\server\prop"
 del /q /f _*.*
-pause
+
+:압축
+@cd ..
+@"c:\Program Files\7-Zip\7z.exe" a -r app_res.zip *.*
+@if not "%ERRORLEVEL%" == "0" goto FAIL
+
+: GMO(windows)서버의 share로 전송
+cd ..\..\
+pscp -scp -P 10022 -pw q#E35ktvhQjnt patch\server\app_res.zip root@211.125.93.152:~/test/share
+@if not "%ERRORLEVEL%" == "0" goto FAIL
+
+
+:OK
+@echo 작업성공
+@pause
+@goto QUIT
+
+:FAIL
+@echo 작업실패
+@pause
+@goto QUIT
+
+:QUIT
+

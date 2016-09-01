@@ -85,6 +85,20 @@ using namespace XGAME;
 #pragma message("--------------------------single version-------")
 #endif 
 
+#if defined(_SOFTNYX)
+#pragma message("SOFTNYX build=============================================")
+#elif defined(_XGMO)
+#pragma message("GMO build=============================================")
+#elif defined(_VER_ANDROID)
+#pragma message("GoogleStore build=============================================")
+#elif defined(_VER_IOS)
+#pragma message("AppleStore build=============================================")
+#elif defined(WIN32)
+#pragma message("Windows Store build=============================================")
+#else
+#error "마켓 전처리기가 지정되지 않음."
+#endif
+
 #define XWM_TIMEOUT	1001
 
 XGame *GAME = nullptr;

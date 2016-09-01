@@ -135,6 +135,8 @@ bool XConsoleMain::IsLogidAcc( ID idAcc )
 {
 	if( m_bLoadingLog )
 		return false;
+	if( m_listLogidAcc.empty() )	// 계정을 특별히 지정해놓지 않았으면 모든 유저의 로그가 남는다.
+		return true;
 	return m_listLogidAcc.Findp( idAcc ) != nullptr;
 }
 

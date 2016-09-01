@@ -643,6 +643,17 @@ struct xInApp {
 		, m_strcJsonReceipt(strcJsonReceipt), m_strcPurchaseTime(strcPurchaseTime)
 		, m_strcOrderId(strcOrderId), m_strcPayload(strcPayload) {
 	}
+	inline bool AssertValid() const {
+		if( XBREAK( m_Platform == xPL_NONE ) )
+			return false;
+		if( XBREAK( m_idsProduct.empty() ) )
+			return false;
+		if( XBREAK( m_strcJsonReceipt.empty() ) )
+			return false;
+		if( XBREAK( m_strcPayload.empty() ) )
+			return false;
+		return true;
+	}
 	bool IsSubscribe() const {
 		return m_typeProduct == XGAME::xtCashType::xCT_SUBSCRIBE;
 	}

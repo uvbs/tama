@@ -24,6 +24,28 @@ struct xReceipt {
 	int statePurchase = 0;
 	std::string m_strToken;
 	std::string m_strPayload;
+	_tstring GetstrLog() const {
+		const _tstring strOrderId = C2SZ(m_strOrderId);
+		const _tstring strTime = C2SZ(m_strTime);
+		const _tstring strToken = C2SZ(m_strToken);
+		const _tstring strPayload = C2SZ(m_strPayload);
+		return XE::Format(_T("product=%s, orderId=%s, time=%s, state=%d, token=%s\n, payload=%s")
+											 , m_idsProduct.c_str() 
+											 , strOrderId.c_str()
+											 , strTime.c_str()
+											 , statePurchase
+											 , strToken.c_str()
+											 , strPayload.c_str() );
+	}
+	inline bool AssertValid() const {
+		if( XBREAK( m_idsProduct.empty() ) )
+			return false;
+		if( XBREAK( m_strToken.empty() ) )
+			return false;
+		if( XBREAK( m_strPayload.empty() ) )
+			return false;
+		return true;
+	}
 };
 //
 XE_NAMESPACE_END; // xGoogle

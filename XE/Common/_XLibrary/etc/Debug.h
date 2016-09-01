@@ -185,14 +185,15 @@ void xPutsTimeStringW( FILE *fp );
 // 조건 EXP를 만족하면 에러창을 띄움
 #ifdef _XDEBUG
 	// ide에선 브레이크가 잡힌다. 릴리즈일경우 파일에도 쓴다.
+	// 끝에 \n만했었는데 안드로이드에서 줄바꿈이 안되서 \r까지 붙임.
 	#define XBREAK(EXP)	\
-			(((EXP)) ? (XBREAK_POINT(), __xLogf( XLOGTYPE_ERROR, _T("%s(%d) %s():*********************\r\n%s\n"), __FILENAME, __LINE__, __TFUNC__, _T(#EXP) ), 1) : 0)		// 브레이크부터 걸리고 로그기록함.
+			(((EXP)) ? (XBREAK_POINT(), __xLogf( XLOGTYPE_ERROR, _T("%s(%d) %s():*********************\r\n%s\r\n"), __FILENAME, __LINE__, __TFUNC__, _T(#EXP) ), 1) : 0)		// 브레이크부터 걸리고 로그기록함.
 	#define XBREAKF(EXP, F, ...) \
-			(((EXP)) ? (XBREAK_POINT(), __xLogf( XLOGTYPE_ERROR, XTSTR3("%s\n%s(%d) %s():*********************\r\n", F, "\n"), #EXP, __FILENAME, __LINE__, __TFUNC__,##__VA_ARGS__ ), 1) : 0)		// 브레이크부터 걸리고 로그기록함.
+			(((EXP)) ? (XBREAK_POINT(), __xLogf( XLOGTYPE_ERROR, XTSTR3("%s\n%s(%d) %s():*********************\r\n", F, "\r\n"), _T(#EXP), __FILENAME, __LINE__, __TFUNC__,##__VA_ARGS__ ), 1) : 0)		// 브레이크부터 걸리고 로그기록함.
 	#define XASSERT(EXP) \
-			((!(EXP)) ? (XBREAK_POINT(), __xLogf( XLOGTYPE_ERROR, _T("%s(%d) %s():*********************\r\n%s\n"), __FILENAME, __LINE__, __TFUNC__, #EXP ), 0) : 1)		// 브레이크부터 걸리고 로그기록함.
+			((!(EXP)) ? (XBREAK_POINT(), __xLogf( XLOGTYPE_ERROR, _T("%s(%d) %s():*********************\r\n%s\r\n"), __FILENAME, __LINE__, __TFUNC__, _T(#EXP) ), 0) : 1)		// 브레이크부터 걸리고 로그기록함.
 	#define XASSERTF(EXP, F, ...) \
-			((!(EXP)) ? (XBREAK_POINT(), __xLogf( XLOGTYPE_ERROR, XTSTR3("%s\n%s(%d) %s():*********************\r\n", F, "\n"), #EXP, __FILENAME, __LINE__, __TFUNC__,##__VA_ARGS__ ), 0) : 1)		// 브레이크부터 걸리고 로그기록함.
+			((!(EXP)) ? (XBREAK_POINT(), __xLogf( XLOGTYPE_ERROR, XTSTR3("%s\n%s(%d) %s():*********************\r\n", F, "\r\n"), _T(#EXP), __FILENAME, __LINE__, __TFUNC__,##__VA_ARGS__ ), 0) : 1)		// 브레이크부터 걸리고 로그기록함.
 	// 평가식에 따라 콘솔에 로그를 남긴다. 브레이크를 걸지는 않는다.
 	#define CONSOLE_EXP(EXP, TAG, MSG) \
 			(((EXP)) ? (__xLogTag( TAG, XLOGTYPE_LOG, MSG), 1) : 0)

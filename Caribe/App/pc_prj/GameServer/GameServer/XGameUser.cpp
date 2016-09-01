@@ -4958,8 +4958,8 @@ int XGameUser::RecvBuyCashtemIAP(XPacket& p)
 {	
 	BYTE b0;
 	xtErrorIAP errCode = xIAPP_NONE;
-	_tstring idsProduct;
 	const ID idaccount = GetidAcc();
+	_tstring idsProduct;
 	do {
 		_tstring _strJson, _strSignature;
 		p >> b0;		auto platForm = (xtPlatform)b0;
@@ -4976,15 +4976,16 @@ int XGameUser::RecvBuyCashtemIAP(XPacket& p)
 			const _tstring strPayload = _strSignature;
 			const std::string strcPayload = strcSignature;
 			p >> idsProduct;
-			CONSOLE_ACC( TAG_SOFTNYX, "product=%s", idsProduct.c_str() );
-// 			if( CONSOLE_MAIN->IsLogidAcc( GetidAcc() ) ) {
-// 				CONSOLE2( "iap_softnyx", "%s:%s(%d) product=%s", __TFUNC__, GetspAcc()->GetstrName(), GetidAcc(), idsProduct.c_str() );
-			//}
-
 			errCode = XSoftnyx::sDoVerifyAfterPurchase( strcJsonReceiptFromClient
 																								, strcPayload
 																								, idsProduct
 																								, &inapp );
+			CONSOLE_ACC( TAG_SOFTNYX, "platform=%d, strJson=%s, strSignature=%s, idsProduct=%s, errCode=%d"
+									 , platForm
+									 , _strJson.c_str()
+									 , _strSignature.c_str()
+									 , idsProduct.c_str()
+									 , errCode );
 		} else
 		//////////////////////////////////////////////////////////////////////////
 		if( platForm == xPL_GOOGLE_STORE ) {
@@ -4997,7 +4998,16 @@ int XGameUser::RecvBuyCashtemIAP(XPacket& p)
 				클라이언트에서 같은 영수증이 두번 날아올수도 있음.
 				중복되는 영수증이 두번날아오면 그냥 씹고 세번째부터는 해킹의심유저로 봐야함.
 			*/
-
+			if( errCode != xIAPP_NONE ) {
+				CONSOLE_ACC( TAG_IAP, "platform=%d, strJson=%s\r\n, strSignature=%s\r\n, product=%s, devPayload=%s, errCode=%d"
+										 , platForm
+										 , _strJson.c_str()
+										 , _strSignature.c_str()
+										 , inapp.m_idsProduct.c_str()
+										 , C2SZ( inapp.m_strcPayload )
+										 , errCode );
+			}
+			XBREAK( inapp.AssertValid() == false );
 			XBREAK( XEnv::sGet()->GetstrPublicKey().empty() );
 		} // if( platForm == xPL_ANDROID )
 		//////////////////////////////////////////////////////////////////////////
@@ -5014,9 +5024,8 @@ int XGameUser::RecvBuyCashtemIAP(XPacket& p)
 	// 에러가 났을경우 클라로 결과보냄
 	XBREAK( errCode == xIAPP_SUCCESS );		// success는 아직 판단하지 않음.
 	if( errCode != xIAPP_NONE ) {
-//#if _DEV_LEVEL <= DLV_DEV_EXTERNAL
-		CONSOLE_ACC( TAG_IAP, "IAP error: err=%d", errCode );
-//#endif
+		CONSOLE_ACC( TAG_IAP, "IAP error: product=%s, err=%d"
+								 , idsProduct.c_str(), errCode );
 		SendCashItemBuyGoogle( errCode, idsProduct );
 	}
 	return 1;
@@ -5035,6 +5044,8 @@ void XGameUser::cbCashItemBuyGoogle( XPacket& p )
 	p >> inapp;
 	p >> idConnect;
 	p >> idPacket;
+	XBREAK( inapp.m_Platform == xPL_NONE );
+	XBREAK( inapp.m_idsProduct.empty() );
 	// 검증에 성공하면 계정에 적용.
 	auto pGoodsInfo = XGlobalConst::sGet()->GetCashItem( inapp.m_idsProduct, inapp.m_Platform );
 	if( XASSERT(pGoodsInfo) ) {
@@ -5088,6 +5099,7 @@ void XGameUser::cbDeletePayload( XPacket& p )
 	p >> b0 >> b0 >> b0;
 	p >> idAcc;
 	p >> idsProduct;
+	XBREAK( idsProduct.empty() );
 	// 클라로 구매 결과를 보냄.
 	SendCashItemBuyGoogle( errCode, idsProduct );
 }
@@ -5103,8 +5115,9 @@ void XGameUser::SendCashItemBuyGoogle( XGAME::xtErrorIAP errCode
 	ar << (BYTE)0;
 	ar << (BYTE)0;
 	ar << (BYTE)0;
+	XBREAK( idsProduct.empty() );
 	ar << idsProduct;
-	ar << m_spAcc->GetCashtem();  //(성공의 경우 1 반환)
+	ar << m_spAcc->GetCashtem();  
 	Send( ar );
 }
 
