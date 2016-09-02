@@ -1,6 +1,7 @@
 ﻿#pragma once
 //#include "SprDat.h"
 #include "VersionXE.h"
+#include "etc/XGraphicsDef.h"
 class XSprDat;
 
 #ifndef _XASYNC_SPR

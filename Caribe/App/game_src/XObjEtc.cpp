@@ -10,6 +10,7 @@
 #include "XSkillMng.h"
 #include "XMsgUnit.h"
 #include "XComp.h"
+#include "XFramework/XEProfile.h"
 #if defined(_CHEAT) && defined(WIN32)
 #include "client/XAppMain.h"
 #endif
@@ -153,6 +154,15 @@ void XObjBullet::OnArriveBullet( DWORD dwParam )
 																		dwParam );
 	}
 }
+
+#ifdef _XPROFILE
+void XObjBullet::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ )
+{
+	XPROF_OBJ_AUTO();
+	XEBaseWorldObj::Draw( vPos, scale, alpha );
+}
+#endif // _XPROFILE
+
 ////////////////////////////////////////////////////////////////
 /*
 DPS = 초당이동하는거리
@@ -237,6 +247,7 @@ void XObjArrow::FrameMove( float dt )
 }
 void XObjArrow::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 {
+	XPROF_OBJ_AUTO();
 	XObjBullet::Draw( vPos, scale, alpha );
 }
 
@@ -336,6 +347,7 @@ void XObjRock::OnArriveBullet( DWORD _dwParam )
 
 void XObjRock::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 {
+	XPROF_OBJ_AUTO();
 	if( m_psfcShadow )
 	{
 		XE::VEC3 vGround = GetvwPos();
@@ -400,6 +412,7 @@ void XObjLaser::FrameMove( float dt )
 
 void XObjLaser::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha )
 {
+	XPROF_OBJ_AUTO();
 	XE::VEC2 vStart = GetpWndWorld()->GetPosWorldToWindow( m_vwStart );
 	XE::VEC2 vEnd = GetpWndWorld()->GetPosWorldToWindow( m_vwEnd );
 	float dAng = XE::CalcAngle( vStart, vEnd );
@@ -539,6 +552,7 @@ void XObjLoop::OnEventSprObj( XSprObj *pSprObj,
 
 void XObjLoop::Draw( const XE::VEC2& vPos, float scale, float alpha )
 {
+	XPROF_OBJ_AUTO();
 #if defined(_CHEAT) && defined(WIN32)
 	if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_SKILL_SFX) )
 #endif // defined(_CHEAT) && defined(WIN32)
@@ -573,6 +587,14 @@ void XSkillSfxReceiver::FrameMove( float dt )
 	XEBaseWorldObj::FrameMove( dt );
 }
 
+#ifdef _XPROFILE
+void XSkillSfxReceiver::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ )
+{
+	XPROF_OBJ_AUTO();
+	XEBaseWorldObj::Draw(vPos,scale, alpha);
+}
+#endif // _XPROFILE
+
 ////////////////////////////////////////////////////////////////
 XSkillShootObj::XSkillShootObj( XEWndWorld *pWndWorld,
 																const XSPUnit& spOwner,
@@ -598,14 +620,13 @@ void XSkillShootObj::CallCallbackFunc( void )
 		m_Callback.funcCallback( m_Callback.pOwner, this );
 }
 
-// XE::VEC3 XSkillShootObj::OnInterpolation( const XE::VEC3& vSrc,
-// 																					const XE::VEC3& vDst, 
-// 																					float lerpTime )
-// {
-// 
-// 	XE::VEC3 vCurr = vSrc + (vDst - vSrc) * lerpTime;
-// 	return vCurr;
-// }
+#ifdef _XPROFILE
+void XSkillShootObj::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ )
+{
+	XPROF_OBJ_AUTO();
+	XObjArrow::Draw( vPos, scale, alpha );
+}
+#endif // _XPROFILE
 
 ////////////////////////////////////////////////////////////////
 _tstring XObjDmgNum::s_strFont = _T("damage.ttf");
@@ -726,7 +747,8 @@ void XObjDmgNum::FrameMove( float dt )
 
 void XObjDmgNum::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ )
 {
-//#ifndef _XUZHU_HOME
+	XPROF_OBJ_AUTO();
+	//#ifndef _XUZHU_HOME
 	BYTE a = (BYTE)(GetAlpha() * 255);
 	if( a > 255 )
 		a = 255;
@@ -818,6 +840,7 @@ void XObjYellSkill::FrameMove( float dt )
 
 void XObjYellSkill::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ )
 {
+	XPROF_OBJ_AUTO();
 	auto vLT = vPos - m_psfcBg->GetSize() * 0.5f;
 	if( m_psfcBg ) {
 		m_psfcBg->SetfAlpha( GetAlpha() * 0.75f );
@@ -974,6 +997,7 @@ void XObjRes::FrameMove( float dt )
 
 void XObjRes::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 {
+	XPROF_OBJ_AUTO();
 	const XE::VEC3 vwPos = GetvwPos();
 	if( m_psfcShadow ) {
 		float scaleDraw = GetScaleObj().x * scale;
@@ -1040,6 +1064,7 @@ void XObjResNum::FrameMove( float dt )
 
 void XObjResNum::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 {
+	XPROF_OBJ_AUTO();
 	const XE::VEC3 vwPos = GetvwPos();
 	XEBaseWorldObj::Draw( vPos, scale, alpha );
 	// 자원 개수를 표시

@@ -2,6 +2,7 @@
 #include "XWndList.h"
 #include "XWndListH.h"
 #include "XWndImage.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

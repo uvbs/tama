@@ -32,6 +32,17 @@ namespace XE {
 									, const XE::VEC2* pvLines
 									, int numLine
 									, float x1, float y1, float x2, float y2 );
+// 	// s_dwDraw용 비트
+// 	enum {
+// 		xeBitNone = 0,
+// 		xeBitNoDraw = 0x01,
+// 		xeBitNoDP = 0x02, // no draw primitive
+// 		xeBitNoTexture = 0x04, // SetTexture생략
+// 		xeBitSmallTex = 0x08,		// 작은 텍스쳐 사용
+// 		xeBitNoDrawBar = 0x10,	// DrawProgressBar생략
+// 		xeBitNoFont = 0x20,			// 폰트그리기 생략
+// 		xeBitNoProcess = 0x40,	// ObjMng의 객체들 frameMove생략
+// 	};
 };
 
 #define WARNING_NOT_IMPLEMENT	XBREAKF(1,"구현되지 않은 virtual멤버%s를 사용했습니다", __FUNCTION__)
@@ -57,6 +68,7 @@ public:
 		}
 		s_bCaptureBackBuffer = FALSE;
 	}
+	static DWORD s_dwDraw;
 private:
 	/**
 	스크린의 논리적 해상도. 게임의 논리적 해상도라고도 불린다. 

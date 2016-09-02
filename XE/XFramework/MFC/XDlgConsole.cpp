@@ -4,6 +4,7 @@
 #include "stdafx.h"
 //#include "game.h"
 #include "XDlgConsole.h"
+#include "resource.h"
 #include "MainFrm.h"
 
 // XDlgConsole 대화 상자입니다.

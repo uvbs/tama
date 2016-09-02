@@ -1,12 +1,9 @@
 ﻿#include "stdafx.h"
 #include "XWndProgressBar.h"
-// #include "XWndButton.h"
 #include "XWndImage.h"
 #include "sprite/SprObj.h"
-// #include "XFramework/client/XLayout.h"
 #include "../XDrawGraph.h"
-// #include "XSoundMng.h"
-// #include "XFramework/client/XEContent.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

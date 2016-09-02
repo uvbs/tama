@@ -2,6 +2,7 @@
 #include "XFramework/XInApp.h"
 #include "XFramework/XReceiverCallback.h"
 #include "XSystem.h"
+#include "XFramework/client/XApp.h"
 #if defined(_VER_ANDROID)
 #include "XFramework/android/JniHelper.h"
 #elif defined(_VER_IOS)

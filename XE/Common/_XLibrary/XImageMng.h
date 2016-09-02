@@ -1,6 +1,11 @@
 ﻿#pragma once
 
+#include "etc/XGraphicsDef.h"
+
 class XSurface;
+namespace XE {
+struct xImage;
+}
 class XImageMng
 {
 public:
@@ -94,11 +99,7 @@ public:
 		return num;
 	}
 	bool DoForceDestroy( const _tstring& strRes );
-	inline bool DoForceDestroy( XSurface *pSurface ) {
-		if( !pSurface )
-			return false;
-		return DoForceDestroy( pSurface->GetstrRes() );
-	}
+	bool DoForceDestroy( XSurface *pSurface );
 	void DoFlushCache();
 // #ifdef WIN32
 // 	void OnPauseByWin32();

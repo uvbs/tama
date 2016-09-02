@@ -2,6 +2,7 @@
 #include "glesView.h"
 #include "OpenGL2/XGraphicsOpenGL.h"
 #include "XFramework/client/XClientMain.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -95,17 +96,18 @@ void XGLESView::Draw()
 
 void XGLESView::Draw( /*CDC* pTargetDC,*/ XClientMain *pMain )
 {
+	XPROF_OBJ_AUTO();
 	if( pMain ) {
-		XPROF_OBJ_AUTO();
-		{
-			XPROF_OBJ("XClientMain::FrameMove");
-			pMain->FrameMove();				// XGraphics::ScreenToSurface()땜에 밖으로 나온듯
-		}
+		XPROF_OBJ("frameMove/draw");
+		pMain->FrameMove();				// XGraphics::ScreenToSurface()땜에 밖으로 나온듯
 		pMain->Draw();
 	}
 	// Swap buffers
 //	if( !pTargetDC->IsPrinting() ) {
+	{
+		XPROF_OBJ("swap buff");
 		eglSwapBuffers( m_eglDisplay, m_eglSurface );
+	}
 //	}
 }
 

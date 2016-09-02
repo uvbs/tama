@@ -141,7 +141,7 @@
 // 	#define _XGLM				// 수학라이브러리 GLM으로 교체
   #endif
 //  #define _XOBJMNG_OPTIMIZE	// 오브젝트 매니저 XList3로 쓰는 버전
-//  #define _XPROFILE
+  #define _XPROFILE
 #endif
 
 #ifdef _JAEBUM

@@ -17,6 +17,7 @@
 #include "XImage.h"
 //#include "Mathematics.h"
 #include "etc/xMath.h"
+#include "XFramework/client/XClientMain.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -102,12 +103,26 @@ bool XSurfaceOpenGL::Create( const XE::POINT& sizeSurfaceOrig
 {
 	if( XBREAK(pImgSrc == nullptr) )
 		return false;
+	auto _sizeMemSrc = sizeMemSrc;
+	auto _sizeMemSrcAligned = sizeMemSrcAligned;
 	// 텍스쳐 생성
+#if defined(_XPROFILE)
+	if( XGraphics::s_dwDraw & XE::xeBitSmallTex )	{
+		if( _sizeMemSrc.w > 32 ) {
+			_sizeMemSrc.w = 32;
+			_sizeMemSrcAligned.w = 32;
+		}
+		if( _sizeMemSrc.h > 32 ) {
+			_sizeMemSrc.h = 32;
+			_sizeMemSrcAligned.h = 32;
+		}
+	}
+#endif // _XPROFILE
 	m_glTexture = GRAPHICS_GL->CreateTextureGL( pImgSrc
-																						, sizeMemSrc
-																						, formatImgSrc
-																						, sizeMemSrcAligned
-																						, formatSurface );
+																							, _sizeMemSrc
+																							, formatImgSrc
+																							, _sizeMemSrcAligned
+																							, formatSurface );
 	if( XBREAK( m_glTexture == 0 ) )
 		return false;
 	// 버텍스버퍼생성.
@@ -1011,8 +1026,13 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
 
 #endif // 0
 //-------------------------------------------------------------
+// 가변윈도우 프레임 그릴때 사용
 void XSurfaceOpenGL::DrawLocal( float x, float y, float lx, float ly )
 {
+#ifdef _XPROFILE
+	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
+		return;
+#endif // _XPROFILE
 	XBREAK( GetsizeMem().IsZero() );
 	if( GetDrawMode() != xDM_NONE )	{
 		glEnable( GL_BLEND );
@@ -1072,6 +1092,10 @@ void XSurfaceOpenGL::DrawLocal( float x, float y, float lx, float ly )
 // 매트릭스 변환이 없는 코어버전.
 void XSurfaceOpenGL::DrawCore( void )
 {
+#ifdef _XPROFILE
+	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
+		return;
+#endif // _XPROFILE
 	XBREAK( GetsizeMem().IsZero() );
 	// Restore가 아직 안되어 0일수도 있으므로(페북프로필사진같은) 그때는 그냥 그리지만 않게 한다.
 	if( m_glVertexBuffer == 0 )
@@ -1094,25 +1118,31 @@ void XSurfaceOpenGL::DrawCore( void )
 		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, c ) );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
 		// bind texture
-		glBindTexture( GL_TEXTURE_2D, m_glTexture );
+#ifdef _XPROFILE
+		if( !(XGraphics::s_dwDraw & XE::xeBitNoTexture) )
+#endif // _XPROFILE
+			glBindTexture( GL_TEXTURE_2D, m_glTexture );
 
-		glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+#ifdef _XPROFILE
+		if( !(XGraphics::s_dwDraw & XE::xeBitNoDP) )
+#endif // _XPROFILE
+			glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
 	
 }
 
 // this의 RECT:src영역을 x,y위치에 그린다.
 void XSurfaceOpenGL::DrawSub( float x, float y, const XE::xRECTi *src )
 {
+#ifdef _XPROFILE
+	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
+		return;
+#endif // _XPROFILE
 	XBREAK( GetsizeMem().IsZero() );
 	int memw, memh;
 	GLfloat l, t, r, b;
 	const auto sizeMemAligned = GetsizeMemAlignedVec2();
 	if( src ) {
 		XE::xRECTi memRect;
-// 		memRect.SetLeft( ConvertToMemSize( src->GetLeft() ) );
-// 		memRect.SetRight( ConvertToMemSize( src->GetRight() ) );
-// 		memRect.SetTop( ConvertToMemSize( src->GetTop() ) );
-// 		memRect.SetBottom( ConvertToMemSize( src->GetBottom() ) );
 		memRect.SetLeft( src->GetLeft() * 2 );
 		memRect.SetRight( src->GetRight() * 2 );
 		memRect.SetTop( src->GetTop() * 2 );
@@ -1172,8 +1202,15 @@ void XSurfaceOpenGL::DrawSub( float x, float y, const XE::xRECTi *src )
 	glEnableVertexAttribArray( XE::ATTRIB_COLOR );
 	glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col );
 	// bind texture
-	glBindTexture( GL_TEXTURE_2D, m_glTexture );
-	glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+#ifdef _XPROFILE
+	if( !(XGraphics::s_dwDraw & XE::xeBitNoTexture) )
+#endif // _XPROFILE
+		glBindTexture( GL_TEXTURE_2D, m_glTexture );
+
+#ifdef _XPROFILE
+	if( !(XGraphics::s_dwDraw & XE::xeBitNoDP) )
+#endif // _XPROFILE
+		glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
 	//
 	XSurface::ClearAttr();
 // 	m_DrawMode = xDM_NORMAL;

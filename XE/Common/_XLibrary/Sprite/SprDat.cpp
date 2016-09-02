@@ -18,6 +18,8 @@
 #include "XResObj.h"
 #include "XResMng.h"
 #include "XAutoPtr.h"
+#include "XFramework/client/XApp.h"
+#include "XFramework/client/XClientMain.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

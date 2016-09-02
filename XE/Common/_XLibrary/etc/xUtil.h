@@ -56,68 +56,23 @@ inline bool xBOOLToBool( BOOL flag ) {
 	return ( flag != 0 );
 }
 
+// ex: xToggleBit( dwBit, 0x02 );
+template <typename T, typename T2>
+inline bool xToggleBit( T& bitBody, T2 bitFlag ) {
+	(bitBody & bitFlag)? bitBody &= ~bitFlag : bitBody |= bitFlag;
+	return ((bitBody & bitFlag) != 0);
+}
+
+template <typename T, typename T2>
+inline bool xIsBitOn( T bitBody, T2 bit ) {
+	return ((bitBody & bit) != 0);
+}
+template <typename T, typename T2>
+inline BOOL xIsBitOn2( T bitBody, T2 bit ) {
+	return ((bitBody & bit)? TRUE : FALSE);
+}
 ////////////////////////////////////////////////////////////////
 #define DWORD_COMPOSITION(N1,N2,N3,N4)		((DWORD)((((N1)&0xff)<<24)|(((N2)&0xff)<<16)|(((N3)&0xff)<<8)|((N4)&0xff)))
-
-/**
- @brief rand()를 사용하는 버전
-*/
-// class XRandom
-// {
-// 	DWORD m_Seed;
-// 	void Init() {
-// 		m_Seed = 0;
-// 	}
-// 	void Destroy() {}
-// public:
-// 	XRandom( DWORD seed=0 ) { 
-// 		Init(); 
-// 		SetSeed( seed );
-// 	}
-// 	~XRandom() { Destroy(); }
-// 	//
-// //	GET_ACCESSOR( DWORD, Seed );
-// 	void SetSeed( DWORD seed ) {
-// 		m_Seed = seed;
-// 		::srand( m_Seed );
-// 	}
-// 	DWORD GetRand() {
-// 		BYTE n1 = (BYTE)(rand() & 0xff);
-// 		BYTE n2 = (BYTE)(rand() & 0xff);
-// 		BYTE n3 = (BYTE)(rand() & 0xff);
-// 		BYTE n4 = (BYTE)(rand() & 0xff);
-// 		DWORD dwNum = DWORD_COMPOSITION( n1, n2, n3, n4 );
-// 		return dwNum;
-// 	}
-// 	DWORD GetRandom( DWORD range ) {
-// 		if( XBREAK(range == 0) )	return 0;
-// 		return GetRand() % range;
-// 	}
-// 	/**
-// 	 max - min이 0x7fffffff를 넘지 않도록 주의
-// 	 리턴값이 0x7fffffff을 넘지 않도록 주의
-// 	*/
-// 	int GetRandom( int min, int max ) {
-// 		if( min == max )
-// 			return min;
-// 		if( max < min )
-// 			SWAP( min, max );
-// 		XASSERT( max - min + 1 > 0 );
-// 		XBREAK( max - min + 1 > 0x7fffffff );	// 이렇게 큰수가 넘어가면 (int)했을때 마이너스가 될 우려가 있다.
-// 		return min + (int)GetRandom( max - min + 1 );
-// 	}
-// 	float GetRandomF( float range ) {
-// 		return (float)(((double)GetRand() / 0xFFFFFFFF) * range);
-// 	}
-// 	float GetRandomF( float min, float max ) {
-// 		if( min == max )
-// 			return min;
-// 		if( max < min )
-// 			std::swap( min, max );
-// 		float f = min + GetRandomF( max - min );
-// 		return f;
-// 	}
-// };
 
 DWORD xRand();
 DWORD xRandom( DWORD nRange );

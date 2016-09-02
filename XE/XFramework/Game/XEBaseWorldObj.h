@@ -4,11 +4,16 @@
 #include "sprite/Sprdef.h"
 #include "etc/Types.h"
 #include "etc/Global.h"
+#include "etc/XGraphicsDef.h"
 
 class XEWndWorld;
 class XArchive;
 class XEBaseWorldObj;
 class XSprObj;
+class XSurface;
+namespace XE {
+struct xHSL;
+}
 
 class XEBaseWorldObj : public XDelegateSprObj,
 					public std::enable_shared_from_this<XEBaseWorldObj>

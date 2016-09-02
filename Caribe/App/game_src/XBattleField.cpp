@@ -17,6 +17,7 @@
 #include "XGame.h"
 #include "XSceneBattle.h"
 #endif
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

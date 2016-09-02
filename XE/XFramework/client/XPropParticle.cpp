@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "XPropParticle.h"
+#include "etc/XSurfaceDef.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -13,6 +14,16 @@ using namespace XE;
 using namespace xParticle;
 std::shared_ptr<XPropParticle> XPropParticle::s_spInstance;
 ID XPropParticle::s_idGlobal = 0;
+
+XPropParticle::xEmitter::xEmitter() 
+	: aryFunc( xParticle::xIC_MAX )
+	, blendFunc(xBF_MULTIPLY) {
+	aryFunc[xParticle::xIC_SPEED].range.Set( 1.f );
+	aryFunc[xParticle::xIC_ALPHA].range.Set( 1.f );
+	aryFunc[xParticle::xIC_SCALE].range.Set( 1.f );
+}
+
+//////////////////////////////////////////////////////////////////////////
 std::shared_ptr<XPropParticle>& XPropParticle::sGet() 
 {
 	if( s_spInstance == nullptr )

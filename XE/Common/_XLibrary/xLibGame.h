@@ -29,14 +29,11 @@
 
 #include "XFramework/XFType.h"
 #include "XE3d.h"
-#include "etc/XGraphics.h"
-#include "XImage.h"
-#include "XImageMng.h"
-//#include "../XDrawGraph.h"
-//#include "XFramework/client/XEContent.h"
+// #include "etc/XGraphics.h"
+// #include "XImage.h"
+// #include "XImageMng.h"
+//#include "XFramework/XTextTable.h"
 //#include "XFramework/client/XClientMain.h"
-#include "XFramework/XTextTable.h"
-#include "XFramework/client/XClientMain.h"
 #endif // c++
 
 #ifdef WIN32

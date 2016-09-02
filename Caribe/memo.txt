@@ -378,13 +378,39 @@ HsSsLs += ang;
 
 렌더링 최적화 전략
 {
+	.심플마인드 참고.
   .draw콜을 최소화 해야한다.
 	.이를 위해서는 몰아찍어야 한다.
 	.텍스쳐 한번 전환시 최대한 많이 찍어야 한다.
 	.스프라이트 찍기 우선순위가 있기때문에 z버퍼가 필수가 된다.
 	.z버퍼가 작동하려면 모든 스프라이트들의 깊이좌표가 있어야한다.
 	.투영은 평행투영으로 한다.
-	.
+	
+	테스트전략 {
+	  .작은 텍스쳐로 테스트
+		.DP생략
+		.SetState류 생략
+		.행렬변환 생략
+	}
+	테스트결과 {
+		.평상시 25fps 가량
+	  .텍스쳐를 작은걸 써봄
+		  .30fps가량
+			.폰트나 pbar들은 정상처리.
+		.DP를 생략
+		  .30fps가량
+			.폰트나 pbar등은 그리고 있었음
+		.DrawCore류등을 아예 호출하지 않음.
+		  .40fps가량
+		.NoDraw + NoFont + NoBar
+		  .objmng.framemove: 약 10000ms 가량
+		.objmng.draw생략 + NoFont + NoBar: 2500ms 가량
+		.objMng.draw만 생략: 약 2000ms(위에거랑 비슷함)
+	}
+_XPROFILE시 각 부분의 draw on/off를 만들어서 테스트
+폰트 on/off
+pbar on/off
+객체 동적할당 on/off
 }
 
 
@@ -3484,4 +3510,45 @@ invoke_화염 {
 	발동효과: 체력감소
 	능력치: 10%
 }
+
+depth(*)	func	share	avg	min	max	depth
+
+ + frameMove/draw	0.2%	48074	446
+ ++ XClientMain::FrameMove	4.3%	2050	446
+ +++ XGame::Process	99.8%	2046	446
+ ++++ XBattleField::Process	95.7%	1957	446
+ +++++ XEObjMng::FrameMove	35.3%	691	446
+ ++ XClientMain::Draw	95.7%	46021	446
+ +++ XEObjMng::Draw	95.7%	44054	446
+ ++++ select	0.1%	38	446
+ ++++ select-sort	0.1%	59	446
+ ++++ XEObjMngWithType::DrawVisible	99.8%	43952	446
+ +++++ draw floor/shadow	5.1%	2237	446
+ +++++ draw normal	94.7%	41605	446
+ ++++++ projection obj	0.2%	86	446
+ ++++++ draw each obj	98.7%	41071	446
+ +++++++ XObjDmgNum::Draw	9.8%	4020	446
+ +++++++ XBaseUnit::Draw	55.3%	22731	446
+ ++++++++ draw unit	46.3%	10521	446
+ ++++++++ draw buff	10.9%	2488	446
+ ++++++++ draw bar	11.6%	2637	446
+ ++++++++ draw name	19.7%	4486	446
+ ++++++++ draw hit	9.3%	2113	446
+ +++++++ XObjLoop::Draw	31.7%	13033	446
+ +++++++ XObjYellSkill::Draw	1.7%	707	446
+ +++++++ XSkillShootObj::Draw	0.5%	185	31
+ ++++++++ XObjArrow::Draw	45.4%	84	360
+ +++++++++ XObjBullet::Draw	121.4%	102	399
+ +++++++ XObjLaser::Draw	0.2%	81	324
+ +++++++ XObjRock::Draw	0.2%	91	260
+ +++++++ XSkillSfxReceiver::Draw	0.0%	0	422
+ +++++++ XObjRes::Draw	0.9%	385	251
+ +++++ draw ui_obj	0.2%	105	446
+ ++++++ XObjResNum::Draw	295.2%	310	145
+ +++ XWndImage::Draw	0.7%	314	891
+ +++ XWndTextString::Draw	0.9%	400	446
+ +++ XWndButtonDebug::Draw	1.1%	523	446
+ +++ XClientMain::DrawDebugInfo	0.6%	277	446
+ + swap buff	0.0%	1016	445
+
 

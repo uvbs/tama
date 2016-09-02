@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Resource.h"
+//#include "Resource.h"
 
 // XDlgConsole 대화 상자입니다.
 
@@ -17,7 +17,7 @@ public:
 	void Message( const char *cFormat, ... );
 
 // 대화 상자 데이터입니다.
-	enum { IDD = IDD_CONSOLE };
+	enum { IDD = 310 };	// IDD_CONSOLE(resource.h포함안시키려고 꼼수)
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.

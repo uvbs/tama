@@ -1,14 +1,11 @@
 ﻿#include "stdafx.h"
 #include "XWndButtonRadio.h"
-// #include "etc/xUtil.h"
-// #include "sprite/SprObj.h"
 #ifdef WIN32
 #include "_DirectX/XGraphicsD3DTool.h"
 #else
 #endif
-// #include "XFramework/client/XClientMain.h"
-// #include "XFramework/client/XEContent.h"
-// #include "XSoundMng.h"
+#include "XFramework/XEProfile.h"
+
 using namespace XE;
 
 #ifdef WIN32
@@ -18,42 +15,6 @@ using namespace XE;
 static char THIS_FILE[] = __FILE__;
 #endif
 #endif
-
-/////////////////////////////////////////////////
-// static
-////////////////////////////////////////////////////////////////
-// XWndButtonRadio::XWndButtonRadio( float x, float y,
-// 																	LPCTSTR szText,
-// 																	XCOLOR colText,
-// 																	XBaseFontDat *pFontDat,
-// 																	LPCTSTR szImgUp,
-// 																	LPCTSTR szImgDown,
-// 																	LPCTSTR szImgDisable )
-// 	: XWnd( x, y ), XWndButton( x, y, szImgUp, szImgDown, szImgDisable ) 
-// {
-// 	Init();
-// 	XE::VEC2 vSize = GetSizeLocal();
-// 	//			m_pTextArea = new XWndTextStringArea( XE::VEC2(0), vSize, szText, pFontDat, colText );
-// 	XWnd *pWnd = new XWndTextString( XE::VEC2( 0 ), vSize, szText, pFontDat, colText );
-// 	Add( pWnd );
-// }
-// XWndButtonRadio::XWndButtonRadio( ID idGroup,		// 라디오 그룹 아이디. 같은 그룹내 라디오버튼들은 동일한 아이디를 부여해야 한다.
-// 																	float x, float y,
-// 																	LPCTSTR szText,
-// 																	XCOLOR colText,
-// 																	LPCTSTR szFont,
-// 																	float sizeFont,
-// 																	LPCTSTR szImgUp,
-// 																	LPCTSTR szImgDown,
-// 																	LPCTSTR szImgDisable )
-// 	: XWnd( x, y ),	XWndButton( x, y, szImgUp, szImgDown, szImgDisable ) 
-// {
-// 	Init();
-// 	m_idGroup = idGroup;
-// 	XE::VEC2 vSize = GetSizeLocal();
-// 	m_pText = new XWndTextString( XE::VEC2( 0 ), vSize, szText, szFont, sizeFont, colText );
-// 	Add( m_pText );
-// }
 
 void XWndButtonRadio::OnNCLButtonUp( float lx, float ly ) 
 {

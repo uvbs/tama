@@ -57,9 +57,6 @@
 #include "etc/Global.h"
 #include "xeDef.h"
 #include "XE.h"
-//#ifdef _CLIENT
-//#include "XE3d.h"
-//#endif
 #include "etc/Debug.h"
 #ifndef WIN32
 #include "etc/iOS/xStringiOS.h"
@@ -68,14 +65,11 @@
 #include "etc/xUtil.h"
 #include "etc/Alert.h"
 #include "etc/xLang.h"
-//#include "XResObj.h"
-//#include "XResMng.h"
 #include "XLibrary.h"
 #include "etc/xMath.h"
 #include "etc/xColor.h"
 #include "etc/ConvertString.h"
 #include "etc/ContainerSTL.h"
-//#include "XSystem.h"
 
 #include "etc/Timer.h"
 #include "etc/XTimer2.h"
@@ -83,8 +77,6 @@
 #include "XList.h"
 #include "XFramework/XTextTable.h"
 #include "XFramework/XConstant.h"
-//#include "XPool.h"
-#include "XFramework/XEProfile.h"
 #include "../XGameUtil.h"
 #include "XArchive.h"
 /*

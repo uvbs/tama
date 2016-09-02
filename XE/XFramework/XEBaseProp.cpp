@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "XFramework/XEBaseProp.h"
 #include "XFramework/XConstant.h"
+#include "XFramework/client/XClientMain.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

@@ -37,9 +37,14 @@
 #include "XOption.h"
 #include "_Wnd2/XWnd.h"
 #include "Sprite/SprMng.h"
+#include "etc/xUtil.h"
 #ifdef WIN32
 #include "XObjEtc.h"
 #endif // WIN32
+#ifdef _XPROFILE
+#include "XSceneBattle.h"
+#include "XFramework/XEProfile.h"
+#endif // _XPROFILE
 
 
 // #ifdef _DEBUG
@@ -262,6 +267,20 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_UPDATE_COMMAND_UI( IDM_RELOAD_PROPSKILL_BY_RETRY, &CMainFrame::OnUpdateReloadWhenRetryPropSkill )
 	ON_COMMAND( IDM_RELOAD_PROPLEGION_BY_RETRY, &CMainFrame::OnReloadWhenRetryPropLegion )
 	ON_UPDATE_COMMAND_UI( IDM_RELOAD_PROPLEGION_BY_RETRY, &CMainFrame::OnUpdateReloadWhenRetryPropLegion )
+	ON_COMMAND( ID_PROFILETEST_NODRAW, &CMainFrame::OnProfileTestNoDraw )
+	ON_UPDATE_COMMAND_UI( ID_PROFILETEST_NODRAW, &CMainFrame::OnUpdateProfileTestNoDraw )
+	ON_COMMAND( ID_PROFILETEST_NODP, &CMainFrame::OnProfileTestNoDP )
+	ON_UPDATE_COMMAND_UI( ID_PROFILETEST_NODP, &CMainFrame::OnUpdateProfileTestNoDP )
+	ON_COMMAND( ID_PROFILETEST_NOTEXTURE, &CMainFrame::OnProfileTestNoTexture )
+	ON_UPDATE_COMMAND_UI( ID_PROFILETEST_NOTEXTURE, &CMainFrame::OnUpdateProfileTestNoTexture )
+	ON_COMMAND( ID_PROFILETEST_SMALLTEXTURE, &CMainFrame::OnProfileTestSmallTex )
+	ON_UPDATE_COMMAND_UI( ID_PROFILETEST_SMALLTEXTURE, &CMainFrame::OnUpdateProfileTestSmallTex )
+	ON_COMMAND( ID_PROFILETEST_NOFONTDRAW, &CMainFrame::OnProfileTestNoFontDraw )
+	ON_UPDATE_COMMAND_UI( ID_PROFILETEST_NOFONTDRAW, &CMainFrame::OnUpdateProfileTestNoFontDraw )
+	ON_COMMAND( ID_PROFILETEST_NODRAWBAR, &CMainFrame::OnProfileTestNoDrawBar )
+	ON_UPDATE_COMMAND_UI( ID_PROFILETEST_NODRAWBAR, &CMainFrame::OnUpdateProfileTestNoDrawBar )
+	ON_COMMAND( IDM_PROFILING, &CMainFrame::OnProfiling )
+	ON_UPDATE_COMMAND_UI( IDM_PROFILING, &CMainFrame::OnUpdateProfiling )
 END_MESSAGE_MAP()
 
 
@@ -2628,5 +2647,85 @@ void CMainFrame::OnReloadWhenRetryPropLegion()
 void CMainFrame::OnUpdateReloadWhenRetryPropLegion( CCmdUI *pCmdUI )
 {
 	pCmdUI->SetCheck( xboolToBOOL( XAPP->m_bReloadWhenRetryPropLegion ) );
+}
+
+void CMainFrame::OnProfileTestNoDraw()
+{
+	xToggleBit( XGraphics::s_dwDraw, XE::xeBitNoDraw );
+//	XAPP->XClientMain::SaveCheat();
+}
+void CMainFrame::OnUpdateProfileTestNoDraw( CCmdUI *pCmdUI )
+{
+	pCmdUI->SetCheck( xIsBitOn2( XGraphics::s_dwDraw, XE::xeBitNoDraw) );
+}
+
+void CMainFrame::OnProfileTestNoDP()
+{
+	xToggleBit( XGraphics::s_dwDraw, XE::xeBitNoDP );
+	//	XAPP->XClientMain::SaveCheat();
+}
+void CMainFrame::OnUpdateProfileTestNoDP( CCmdUI *pCmdUI )
+{
+	pCmdUI->SetCheck( xIsBitOn2( XGraphics::s_dwDraw, XE::xeBitNoDP ) );
+}
+
+void CMainFrame::OnProfileTestNoTexture()
+{
+	xToggleBit( XGraphics::s_dwDraw, XE::xeBitNoTexture );
+	//	XAPP->XClientMain::SaveCheat();
+}
+void CMainFrame::OnUpdateProfileTestNoTexture( CCmdUI *pCmdUI )
+{
+	pCmdUI->SetCheck( xIsBitOn2( XGraphics::s_dwDraw, XE::xeBitNoTexture ) );
+}
+
+void CMainFrame::OnProfileTestSmallTex()
+{
+	xToggleBit( XGraphics::s_dwDraw, XE::xeBitSmallTex );
+	//	XAPP->XClientMain::SaveCheat();
+}
+void CMainFrame::OnUpdateProfileTestSmallTex( CCmdUI *pCmdUI )
+{
+	pCmdUI->SetCheck( xIsBitOn2( XGraphics::s_dwDraw, XE::xeBitSmallTex ) );
+}
+
+void CMainFrame::OnProfileTestNoDrawBar()
+{
+	xToggleBit( XGraphics::s_dwDraw, XE::xeBitNoDrawBar );
+	//	XAPP->XClientMain::SaveCheat();
+}
+void CMainFrame::OnUpdateProfileTestNoDrawBar( CCmdUI *pCmdUI )
+{
+	pCmdUI->SetCheck( xIsBitOn2( XGraphics::s_dwDraw, XE::xeBitNoDrawBar ) );
+}
+
+void CMainFrame::OnProfileTestNoFontDraw()
+{
+	xToggleBit( XGraphics::s_dwDraw, XE::xeBitNoFont );
+	//	XAPP->XClientMain::SaveCheat();
+}
+void CMainFrame::OnUpdateProfileTestNoFontDraw( CCmdUI *pCmdUI )
+{
+	pCmdUI->SetCheck( xIsBitOn2( XGraphics::s_dwDraw, XE::xeBitNoFont ) );
+}
+
+void CMainFrame::OnProfileTestNoProcess()
+{
+	xToggleBit( XGraphics::s_dwDraw, XE::xeBitNoProcess );
+	//	XAPP->XClientMain::SaveCheat();
+}
+void CMainFrame::OnUpdateProfileTestNoProcess( CCmdUI *pCmdUI )
+{
+	pCmdUI->SetCheck( xIsBitOn2( XGraphics::s_dwDraw, XE::xeBitNoProcess ) );
+}
+
+void CMainFrame::OnProfiling()
+{
+	if( SCENE_BATTLE )
+		SCENE_BATTLE->OnDebugProfile( nullptr, 0, 0 );
+}
+void CMainFrame::OnUpdateProfiling( CCmdUI *pCmdUI )
+{
+	pCmdUI->SetCheck( XEProfile::sIsActive() );
 }
 

@@ -23,6 +23,7 @@ static char THIS_FILE[] = __FILE__;
 XGraphics* XGraphics::s_pGraphics = NULL;
 BOOL		XGraphics::s_bCaptureBackBuffer = FALSE;			// Present전에 현재 백버퍼를 카피해둬야 함
 XSurface* XGraphics::s_pLastBackBuffer = NULL;			// 마지막으로 캡쳐된 백버퍼 화면
+DWORD XGraphics::s_dwDraw = 0;
 
 #pragma mark Init
 

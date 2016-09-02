@@ -12,6 +12,9 @@
 #include <memory>
 #include <vector>
 
+namespace XE {
+enum xtBlendFunc;
+}
 /****************************************************************
 * @brief 
 * @author xuzhu
@@ -76,7 +79,7 @@ public:
 	struct xEmitter {
 		ID idProp = 0;
 		XE::VEC3 vwPos;			/// 방출 좌표
-		XE::xtBlendFunc blendFunc = XE::xBF_MULTIPLY;
+		XE::xtBlendFunc blendFunc;
 		std::vector<xParticle::xFunc> aryFunc;
 		// 입자파라메터
 		_tstring strSpr;		/// 사용 spr파일명
@@ -95,12 +98,7 @@ public:
 				aryFunc[ xParticle::xIC_SCALE ].range.Set( 1.f );
 			}
 		} particle;
-		xEmitter() : aryFunc( xParticle::xIC_MAX ) {
-//			aryFunc.resize( xParticle::xIC_MAX );
-			aryFunc[ xParticle::xIC_SPEED ].range.Set( 1.f );
-			aryFunc[ xParticle::xIC_ALPHA ].range.Set( 1.f );
-			aryFunc[ xParticle::xIC_SCALE ].range.Set( 1.f );
-		}
+		xEmitter();
 	};
 	struct xSfx {
 		_tstring strIdentifier;

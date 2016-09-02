@@ -42,9 +42,7 @@
 #include "XFramework/XFacebook.h"
 #include "XFramework/XReceiverCallback.h"
 #include "XHSLMap.h"
-//#ifdef _XBSD_SOCKET
-//#include "XBSDSocketClient.h"
-//#endif
+#include "XFramework/XEProfile.h"
 
 //#define _SOUND_TEST
 //#define _BACK_TEST
@@ -421,51 +419,6 @@ void XClientMain::StartAnimatiom( void )
 	m_bDraw = TRUE;
 }
 
-// void XClientMain::FrameMove( void )
-// {
-// 	XPROF_OBJ_AUTO();
-// 	float dt = CalcDT();
-// 	CTimer::UpdateTimer( dt );
-// 	//
-// 	if( m_Restore == xRST_TRUE )	{
-// 		//리스토어를 먼저하고 OnResume()이 호출됨.
-// 		RestoreDevice();
-// 	} else
-// 	if( m_Restore == xRST_FALSE )	// 디바이스 자원 잃은 상태에선 더이상 진행 안함.
-// 		return;
-// 	if( m_bFrameMove == FALSE )
-// 		return;
-// 	//
-// 	do 	{
-// 		if( m_pGame )	{
-// 			if( m_bResume )	{
-// 				// resume이 블로킹 되어있으면 실행하지 않는다. 페이스북 인증같은거 할때 사용.
-// //				if( XE::GetbResumeBlock() == FALSE )	
-// 					m_pGame->OnResume();
-// 					CONSOLE("dt: %.3f", dt);
-// 				m_bResume = FALSE;
-// 			}
-// 			// 인증결과가 담겨돌아왔다.
-// 			if( m_pResultAuthen )	{
-// 				if( XASSERT(XFacebook::sGetpDelegate()) )	{
-// 					XLOGXNA("DelegateFacebookCertResult: id=%s, username=%s", m_pResultAuthen->string[0].c_str(), m_pResultAuthen->string[1].c_str() );
-// 					XFacebook::sGetpDelegate()->DelegateFacebookCertResult( 
-// 											m_pResultAuthen->string[0].c_str(),
-// 											m_pResultAuthen->string[1].c_str(),
-// 											m_pResultAuthen->dwValue[0] );
-// //					XE::SetbResumeBlock( FALSE );	// OnResume()이 다시 동작하도록 한다.
-// 				}
-// 				SAFE_DELETE( m_pResultAuthen );		// 쓰고나서 바로 지움.
-// 			}
-// 			if( XFacebook::sIsActivated() )
-// 				XFacebook::sGet()->Process();
-// 			XReceiverCallback::sGet()->Process();
-// 			OnDelegateFrameMove( dt );	// m_pGame->Process( dt );
-// 		}
-// 	} while(0);
-// 	//
-// // 	CTimer::UpdateTimer( dt );
-// }
 void XClientMain::FrameMove( void )
 {
 	XPROF_OBJ_AUTO();
@@ -557,12 +510,13 @@ void XClientMain::Draw( void )
 	DrawDebugInfo( 96.f, 15.f );
 #ifdef _XPROFILE
 	// 프로파일링 결과를 받는다.
-	if( m_pGame )
-	{	// 프로파일링 끝을 명령받았다면 프로파일 결과를 만들고 초기화를 시킨다.
-		if( XEProfile::sIsFinish() )
-		{
+	if( m_pGame )	{	// 프로파일링 끝을 명령받았다면 프로파일 결과를 만들고 초기화를 시킨다.
+		if( XEProfile::sIsFinish() ) {
 			XEProfile::sGet()->DoEvaluation();
 			m_pGame->OnFinishProfiling( XEProfile::sGetResult() );
+		}
+		if( XEProfile::sIsActive() ) {
+			XEProfile::sGet()->ClearDepth();
 		}
 	}
 #endif
@@ -576,8 +530,10 @@ void XClientMain::DrawDebugInfo( float x, float y )
 #ifdef _CHEAT
 	XE::VEC2 vMouse = INPUTMNG->GetMousePos();
 	_tstring str;
-	if( m_bViewFrameRate )	// 이건 치트모드 안해도 보임.
-		str += XE::Format( _T( "fps:%d  " ), CalcFPS() );
+	const int fps = CalcFPS();
+	if( m_bViewFrameRate ) {	// 이건 치트모드 안해도 보임.
+		str += XE::Format( _T( "fps:%d  " ), fps );
+	}
 
 	if( m_bDebugDrawArea && m_vTouchStart.IsValid() && m_vTouchCurr.IsValid() ) {
 		GRAPHICS->DrawRect( m_vTouchStart, m_vTouchCurr, XCOLOR_WHITE );	// 마우스 우클릭 블럭 사각형
@@ -605,8 +561,12 @@ void XClientMain::DrawDebugInfo( float x, float y )
 	}
 	if( !str.empty() ) {
 		PUT_STRING_STYLE( v.x, v.y, XCOLOR_WHITE, xFONT::xSTYLE_STROKE, str.c_str() );
-// 		if( m_pGame )
-// 			m_pGame->DrawDebugInfo( x, y, XCOLOR_WHITE, BASE_FONT );
+		if( XGraphics::s_dwDraw & XE::xeBitNoFont ) {
+			static auto fpsPrev = fps;
+			if( fpsPrev != fps )
+				CONSOLE("%s", str.c_str());
+			fpsPrev = fps;
+		}
 	}
 	if( m_bDebugMode )
 		if( m_pGame )

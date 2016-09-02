@@ -10,6 +10,8 @@
 #include "XFramework/client/XClientMain.h"
 #include "XFramework/client/XEContent.h"
 #include "XSoundMng.h"
+#include "XFramework/XEProfile.h"
+
 using namespace XE;
 
 #ifdef WIN32

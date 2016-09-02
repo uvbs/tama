@@ -5,6 +5,7 @@
 //#include "game.h"
 #include "XDlgConsole.h"
 #include "MainFrm.h"
+#include "resource.h"
 
 // XDlgConsole 대화 상자입니다.
 static XDlgConsole *s_pDlgConsole = nullptr;
