@@ -527,6 +527,9 @@
     <ClCompile Include="..\..\..\game_src\XComp.cpp">
       <Filter>source\battle</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneTest.cpp">
+      <Filter>source\scean</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
@@ -1122,6 +1125,9 @@
       <Filter>source\main</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XComp.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSceneTest.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

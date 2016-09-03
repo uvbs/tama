@@ -478,6 +478,7 @@ namespace XGAME
 		xSC_READY,			///< 인게임 전투배치씬.
 		xSC_PATCH,
 		xSC_LOADING,		///< 로딩씬
+		xSC_TEST,				///< 각종테스트용 empty 씬
 		xSCENE_MAX,
 	};
 	// 컷씬 이벤트 파라메터

@@ -281,6 +281,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_UPDATE_COMMAND_UI( ID_PROFILETEST_NODRAWBAR, &CMainFrame::OnUpdateProfileTestNoDrawBar )
 	ON_COMMAND( IDM_PROFILING, &CMainFrame::OnProfiling )
 	ON_UPDATE_COMMAND_UI( IDM_PROFILING, &CMainFrame::OnUpdateProfiling )
+	ON_COMMAND( IDM_TEST_SCENE, &CMainFrame::OnGotoTestScene )
 END_MESSAGE_MAP()
 
 
@@ -2729,3 +2730,8 @@ void CMainFrame::OnUpdateProfiling( CCmdUI *pCmdUI )
 	pCmdUI->SetCheck( XEProfile::sIsActive() );
 }
 
+void CMainFrame::OnGotoTestScene()
+{
+	if( XGame::sGet()->GetCurrScene() )
+		XGame::sGet()->GetCurrScene()->DoExit( XGAME::xSC_TEST );
+}

@@ -68,6 +68,9 @@
 #include "client/XAppDelegate.h"
 #include "XDefNetwork.h"
 #include "XFramework/XEProfile.h"
+#ifdef WIN32
+#include "XSceneTest.h"
+#endif // WIN32
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -111,6 +114,7 @@ bool XGame::s_bLoaded = false;
 
 _tstring XGame::s_strSessionKey;		// 임시
 std::list<_tstring> XGame::s_masterMessages;
+XGame* XGame::s_pInstance = nullptr;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -120,7 +124,7 @@ std::list<_tstring> XGame::s_masterMessages;
 XGame::XGame() 
 { 
 	GAME = this;
-
+	s_pInstance = this;
 	Init();
 	XWndButton::s_modeAnimationDefault = XE::xBA_MOVE;	// 버튼들의 눌릴때 애니메이션 방식
 #ifdef _XUZHU
@@ -134,6 +138,7 @@ XGame::XGame()
 void XGame::Destroy() 
 {
 	GAME = nullptr;
+	s_pInstance = nullptr;
 	XTRACE("XGame::Destroy\n");
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcProfile );
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcBgPopup );
@@ -273,6 +278,7 @@ void XGame::DidFinishCreated()
 		m_pSceneMng->AddSceneInfo( xSC_GUILD, xSC_LOADING );
 		m_pSceneMng->AddSceneInfo( xSC_GUILD_SHOP, xSC_LOADING );
 		m_pSceneMng->AddSceneInfo( xSC_OPENNING, xSC_LOADING );
+		m_pSceneMng->AddSceneInfo( xSC_INGAME, xSC_LOADING );
 	}
 //	CONSOLE( "GetViewportHeight:%d", (int)GRAPHICS->GetViewportHeight() );
 //	CONSOLE( "vc.y:%d", (int)( GRAPHICS->GetViewportHeight() * 2.f - 0 ) );
@@ -488,6 +494,12 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, Scen
 		pScene = new XScenePatchClient();
 		pScene->SetstrIdentifier( "scene.patch" );
 		break;
+#ifdef WIN32
+	case XGAME::xSC_TEST:
+		pScene = new XSceneTest( this, spParam );
+		pScene->SetstrIdentifier( "scene.test" );
+		break;
+#endif // WIN32
 	case XGAME::xSC_LOADING: {
 		pScene = new XSceneLoading( this, spParam );
 		pScene->SetstrIdentifier( "scene.loading" );

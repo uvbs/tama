@@ -757,6 +757,7 @@
     <ClInclude Include="..\..\..\game_src\XSceneStorage.h" />
     <ClInclude Include="..\..\..\game_src\XSceneTech.h" />
     <ClInclude Include="..\..\..\game_src\XSceneTechSel.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneTest.h" />
     <ClInclude Include="..\..\..\game_src\XSceneTitle.h" />
     <ClInclude Include="..\..\..\game_src\XSceneTrader.h" />
     <ClInclude Include="..\..\..\game_src\XSceneUnitOrg.h" />
@@ -956,6 +957,7 @@
     <ClCompile Include="..\..\..\game_src\XSceneStorage.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneTech.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneTechSel.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneTest.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneTitle.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneTrader.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneUnitOrg.cpp" />

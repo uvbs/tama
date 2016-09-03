@@ -301,8 +301,9 @@ public:
 	afx_msg void OnUpdateProfileTestNoFontDraw( CCmdUI *pCmdUI );
 	afx_msg void OnProfileTestNoProcess();
 	afx_msg void OnUpdateProfileTestNoProcess( CCmdUI *pCmdUI );
-	void OnProfiling();
-	void OnUpdateProfiling( CCmdUI *pCmdUI );
+	afx_msg void OnProfiling();
+	afx_msg void OnUpdateProfiling( CCmdUI *pCmdUI );
+	afx_msg void OnGotoTestScene();
 };
 
 extern CMainFrame *g_pMainFrm;

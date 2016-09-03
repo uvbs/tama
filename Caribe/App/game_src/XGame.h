@@ -87,6 +87,9 @@ class XGame : public XEContent, public XGameCommon//, public XNetworkDelegate
 													, public XDelegateSprObj
 {
 public:
+	static XGame* sGet() {
+		return s_pInstance;
+	}
 	struct xBrilliant {
 		float dAng;
 		ID idWnd;
@@ -117,6 +120,7 @@ public:
 	std::string m_strcNodeParticle;
 #endif // cheat
 private:
+	static XGame* s_pInstance;
 	static _tstring s_strSessionKey;		// 임시
 	XESceneMng *m_pSceneMng;
 	ID m_idAccount;						// 임시 저장
