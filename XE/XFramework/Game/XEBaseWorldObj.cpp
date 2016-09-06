@@ -62,7 +62,10 @@ void XEBaseWorldObj::Destroy()
 /**
  @brief 
 */
-bool XEBaseWorldObj::LoadSpr( LPCTSTR szSpr, const XE::xHSL& hsl, ID idAct, xRPT_TYPE typeLoop )
+bool XEBaseWorldObj::LoadSpr( LPCTSTR szSpr, 
+															const XE::xHSL& hsl, 
+															ID idAct, 
+															xRPT_TYPE typeLoop )
 {
 	if( XBREAK( XE::IsEmpty( szSpr ) == TRUE ) )
 		return FALSE;
