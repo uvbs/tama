@@ -1574,23 +1574,15 @@ public:
 			push_back( elem );
 		}
 	}
-
+	// 기존코드 호환용임. 가급적이면 push_back으로 쓸것.
 	inline T Add( T&& elem ) {
 		this->push_back( elem );
 		return elem;
 	}
-// 	inline T Add( const T&& elem ) {
-// 		this->push_back( elem );
-// 		return elem;
-// 	}
 	inline T Add( const T& elem ) {
 		this->push_back( elem );
 		return elem;
 	}
-// 	inline T Add( T& elem ) {
-// 		this->push_back( elem );
-// 		return elem;
-// 	}
 	void Del( T& elem ) {
 		auto iter = std::find( this->begin(), this->end(), elem );
 		if( iter != this->end() )

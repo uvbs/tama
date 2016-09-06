@@ -15,7 +15,9 @@ class XNode;
 // 벽(?)과 공간을 나타내는 노드
 class XNode {
 public:
-	XNode() {	}
+	XNode() {}
+	XNode( const XE::VEC2& size ) 
+		: m_Rect( XE::VEC2(0), size - XE::VEC2(1.f) ) {}
 	~XNode() { Destroy(); }
 	//
 	void Destroy();

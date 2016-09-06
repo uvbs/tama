@@ -14,12 +14,6 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 int XSprite::s_sizeTotalMem = 0;
-// float XSprite::s_H = 0.f;
-// float XSprite::s_S = 0.f;
-// float XSprite::s_L = 0.f;		
-// XE::VEC3 XSprite::s_HSL;
-// XE::VEC2 XSprite::s_Range1;
-// XE::VEC2 XSprite::s_Range2;
 XE::xHSL XSprite::s_HSL;
 /**
  @brief 
@@ -30,17 +24,12 @@ XSprite::XSprite( int idx ) {
 	// 이제 highreso가 false인 스프라이트는 없는걸로. 있으면 m_bHighReso다시 살릴것.
 	m_pSurface = GRAPHICS->CreateSurface();
 }
-// XSprite::XSprite( BOOL bHighReso, int idx ) {
-// 	Init();
-// 	m_idxSprite = idx;
-// 	m_pSurface = GRAPHICS->CreateSurface( bHighReso );
-// }
 
 void XSprite::Destroy( void )
 {
 	SAFE_DELETE( m_pSurface );
 }
-void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, BOOL bSrcKeep, BOOL bRestore )
+void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, bool bUseAtlas, BOOL _bSrcKeep, BOOL bRestore )
 {
 	if( bRestore ) {
 		m_pSurface->ClearDevice();
@@ -80,9 +69,6 @@ void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, BOOL bSrcKeep, BOOL bResto
 	const auto vSizeMem = sizeSurface * 2;
 	const XE::POINT sizeMem( (int)vSizeMem.w, (int)vSizeMem.h );
 	const int size = sizeMem.Size();
-// 	int memw = m_pSurface->ConvertToMemSize( width );
-// 	int memh = m_pSurface->ConvertToMemSize( height );
-// 	int size = memw * memh;
 	if( pSprDat->IsUpperVersion(25) ) {
 		// 압축포맷
 		int sizeComp, sizeUncomp;
@@ -127,54 +113,22 @@ void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, BOOL bSrcKeep, BOOL bResto
 		else
 			ApplyHSLRanged( pImg, size, h, s, l, range1, range2 );
 	}
-#ifdef _VER_OPENGL
-	if( bRestore )
-		// restore는 bKeepSrc를 무조건 false로 해야 중복해서 소스이미지가 만들어지지 않는다.
-		m_pSurface->Create( XE::POINT(width, height)
-											, XE::VEC2(adjX,adjY)
-											, formatSurface
-											, pImg
-											, XE::xPF_ARGB8888
-											, sizeMem // XE::POINT(memw,memh)
-											, false
-											, false );
-//		m_pSurface->Create( width, height, adjX, adjY, xALPHA, pImg, sizeof(DWORD), 0, FALSE );
-	else
-		m_pSurface->Create( XE::POINT(width, height)
-											, XE::VEC2(adjX,adjY)
-											, formatSurface
-											, pImg
-											, XE::xPF_ARGB8888
-											, sizeMem // XE::POINT(memw,memh)
-											, bSrcKeep != FALSE
-											, false );
-//		m_pSurface->Create( width, height, adjX, adjY, xALPHA, pImg, sizeof(DWORD), 0, bSrcKeep );
+	XSPR_TRACE( "SprDat: CreateSurface" );
+	const bool bSrcKeep = (_bSrcKeep != FALSE);
+	m_pSurface->Create( XE::POINT( width, height ),
+											XE::VEC2( adjX, adjY ),
+											formatSurface,
+											pImg,
+											XE::xPF_ARGB8888, sizeMem,
+											bSrcKeep,
+											false,
+											bUseAtlas );
+	// d3d쪽도 Create()안에서 메모리를 삭제하는 방식은 피해야 할듯
 	SAFE_DELETE_ARRAY( pImg );    // 뭐야 이거 -_-;;;  조낸 일관성 없네.
-#else // opengl
+#ifdef _VER_DX
 	// d3d쪽은 restore를 아직 구현안했음. 윈도8포팅할때는 아래 Create()없애고 CreateFromImg()를 똑같이 일관되게 써서 구현할것.
 	XBREAK( bRestore == TRUE );
-	XSPR_TRACE("SprDat: CreateSurface" );
-	if( bRestore )
-		m_pSurface->Create( XE::POINT(width, height)
-											, XE::VEC2(adjX,adjY)
-											, formatSurface
-											, pImg
-											, XE::xPF_ARGB8888
-											, sizeMem //XE::POINT(memw,memh)
-											, false
-											, false );
-	else
-		m_pSurface->Create( XE::POINT(width, height)
-											, XE::VEC2(adjX,adjY)
-											, formatSurface
-											, pImg
-											, XE::xPF_ARGB8888
-											, sizeMem // XE::POINT(memw,memh)
-											, bSrcKeep != FALSE
-											, false );
-    // d3d쪽도 Create()안에서 메모리를 삭제하는 방식은 피해야 할듯
-	SAFE_DELETE_ARRAY( pImg );		// 15.12.07 추가
-#endif // win32
+#endif // verdx
 }
 /**
  @brief ABGR포맷으로 저장되어있는 pImg블럭의 픽셀데이타를 ARGB포맷으로 변환해서 pImg에 다시 넣는다.

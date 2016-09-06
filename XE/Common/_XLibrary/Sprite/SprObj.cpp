@@ -14,6 +14,7 @@
 #include "XDelegateSprObj.h"
 #include "XFramework/client/XApp.h"
 #include "XFramework/client/XClientMain.h"
+#include "etc/Debug.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -247,26 +248,36 @@ XSprObj::XSprObj( DWORD dwID )
 XSprObj::XSprObj( LPCTSTR szFilename, XDelegateSprObj *pDelegate/* = nullptr*/ ) 
 { 
 	Init(); 
-	Load( szFilename, XE::xHSL(), FALSE, false ); 
+	Load( szFilename, XE::xHSL(), false, FALSE, false ); 
 	m_pDelegate = pDelegate; 
 }
 XSprObj::XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, XDelegateSprObj *pDelegate/* = nullptr*/ ) 
 {
 	Init();
-	Load( szFilename, hsl, FALSE, false );
+	Load( szFilename, hsl, false, FALSE, false );
 	m_pDelegate = pDelegate;
 }
+XSprObj::XSprObj( LPCTSTR szFilename, 
+									const XE::xHSL& hsl, 
+									bool bUseAtlas, 
+									XDelegateSprObj *pDelegate/* = nullptr*/ )
+{
+	Init();
+	Load( szFilename, hsl, bUseAtlas, FALSE, false );
+	m_pDelegate = pDelegate;
+}
+
 // for lua
 XSprObj::XSprObj( BOOL bKeepSrc, const char *cFilename ) 
 {
 	Init();
-	Load( Convert_char_To_TCHAR(cFilename), XE::xHSL(), bKeepSrc, false );
+	Load( C2SZ(cFilename), XE::xHSL(), false, bKeepSrc, false );
 }
 #ifdef WIN32
 XSprObj::XSprObj( BOOL bKeepSrc, LPCTSTR szFilename ) 
 {
 	Init();
-	Load( szFilename, XE::xHSL(), bKeepSrc, false );
+	Load( szFilename, XE::xHSL(), false, bKeepSrc, false );
 }
 #endif // WIN32
 
@@ -529,6 +540,10 @@ void XSprObj::JumpToRandomFrame()
 	int idxKey = 0;	// 첫키부터 실행
 	pAction->ExecuteKey( this, idxKey, m_fFrameCurrent );		// frameCurr까지 모든 키 실행
 }
+
+/**
+ @brief 
+*/
 void XSprObj::FrameMove( float dt )
 {
 #ifdef _XSPR_LAZY_LOAD
@@ -539,7 +554,7 @@ void XSprObj::FrameMove( float dt )
 		if( lazy.timerLazyLoad.IsOver() ) 
 #endif // not _XASYNC_SPR
 		{
-			if( Load( lazy.strFilename.c_str(), lazy.m_HSL, lazy.bKeepSrc, false ) ) {
+			if( Load( lazy.strFilename.c_str(), lazy.m_HSL, lazy.m_bUseAtlas, lazy.bKeepSrc, false ) ) {
 				SetAction( lazy.idAct, lazy.playType );
 				lazy.timerLazyLoad.Off();
 			} else
@@ -612,7 +627,7 @@ void XSprObj::JumpKeyPos( XAniAction *pAction, float fJumpFrame )
  스프라이트 객체를 생성하고 로딩한다.
 */
 // BOOL XSprObj::Load( LPCTSTR szFilename, const XE::VEC3& vHSL, BOOL bKeepSrc, bool bAsyncLoad ) 
-BOOL XSprObj::Load( LPCTSTR szFilename, const XE::xHSL& hsl, BOOL bKeepSrc, bool bAsyncLoad )
+BOOL XSprObj::Load( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, BOOL bKeepSrc, bool bAsyncLoad )
 { 
 #ifdef _XDEBUG
 	if( m_pSprDat ) {
@@ -622,7 +637,7 @@ BOOL XSprObj::Load( LPCTSTR szFilename, const XE::xHSL& hsl, BOOL bKeepSrc, bool
 	}
 #endif
 	XBREAK( SPRMNG == NULL );
-	m_pSprDat = SPRMNG->Load( szFilename, hsl, TRUE, bKeepSrc, bAsyncLoad );
+	m_pSprDat = SPRMNG->Load( szFilename, hsl, bUseAtlas, TRUE, bKeepSrc, bAsyncLoad );
 	if( m_pSprDat == nullptr ) {
 		// spr파일을 못읽었으면 SprObj::Process내에서 비동기로딩을 시작한다.
 		// 알림창 띄우지 말것.
@@ -632,6 +647,7 @@ BOOL XSprObj::Load( LPCTSTR szFilename, const XE::xHSL& hsl, BOOL bKeepSrc, bool
 		// 파일을 못찾았으면 파일정보를 기록해둠
 		m_LazyInfo.strFilename = szFilename;
 		m_LazyInfo.m_HSL = hsl;
+		m_LazyInfo.m_bUseAtlas = bUseAtlas;
 		if( XE::GetMain()->m_bDebugMode ) {
 			CONSOLE("spr not found:%s", szFilename);
 		}
@@ -657,7 +673,6 @@ BOOL XSprObj::Load( LPCTSTR szFilename, const XE::xHSL& hsl, BOOL bKeepSrc, bool
 		for( j = 0; j < pAction->GetnNumLayerInfo(); j++ ) {
 			LAYER_INFO *pLayerInfo = pAction->GetLayer( j );
 			pObjAct->CreateLayer( j, pLayerInfo );
-//			pObjAct->CreateLayer( j, pLayerInfo->type, pLayerInfo->nLayer, pLayerInfo->fAdjustAxisX, pLayerInfo->fAdjustAxisY );		// 실제 레이어를 만들어준다
 		}
 	}
 	return TRUE;

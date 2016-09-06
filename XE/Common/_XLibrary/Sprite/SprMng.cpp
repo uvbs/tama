@@ -152,8 +152,12 @@ void XSprMng::DoFlushCache()
  @brief .spr파 일을 읽어 XSprDat* 객체로 만든다. 
  @param bAsyncLoad 파일을 비동기로 읽는다
 */
-// XSprDat *XSprMng::Load( LPCTSTR szFilename, const XE::VEC3& vHSL, BOOL bAddRefCnt, BOOL bSrcKeep, bool bAsyncLoad )
-XSprDat *XSprMng::Load( LPCTSTR szFilename, const XE::xHSL& /*hsl*/, BOOL bAddRefCnt, BOOL bSrcKeep, bool bAsyncLoad )
+XSprDat *XSprMng::Load( LPCTSTR szFilename, 
+												const XE::xHSL& /*hsl*/, 
+												bool bUseAtlas, 
+												BOOL bAddRefCnt, 
+												BOOL bSrcKeep, 
+												bool bAsyncLoad )
 {
 	XE::xHSL hsl;
 	_tstring strFile = szFilename;
@@ -163,9 +167,7 @@ XSprDat *XSprMng::Load( LPCTSTR szFilename, const XE::xHSL& /*hsl*/, BOOL bAddRe
 	if( pHslFile ) {
 		strFile = pHslFile->m_strFile;
 		hsl = pHslFile->m_HSL;
-// 		XSprite::sSetHSL( pHslFile->m_HSL );
 	} else {
-// 		XSprite::sClearHSL();
 	}
 	/*
 	비동기로딩은 무조건 스레드를 써야한다. 프로세스에서 실시간으로 읽으면 파일읽는 시간은 여전히 존재하기때문에
@@ -173,7 +175,6 @@ XSprDat *XSprMng::Load( LPCTSTR szFilename, const XE::xHSL& /*hsl*/, BOOL bAddRe
 	*/
 	XBREAK( bAddRefCnt == FALSE );		// 이제 이 옵션은 필요없게 됬다. 사전로딩을 위한거였는데 사전로딩도 TRUE로 읽어야 하게 바뀜
 	// 리스트에 szFilename으로 생성된게 있는지 찾는다.
-// 	auto pSprDat = Find( szFilename, bSrcKeep, hsl );
 	xDat* pDat = Find( szFilename, bSrcKeep, hsl );
 	XSprDat* pSprDat = nullptr;
 	if( pDat ) {
@@ -184,22 +185,11 @@ XSprDat *XSprMng::Load( LPCTSTR szFilename, const XE::xHSL& /*hsl*/, BOOL bAddRe
 		DestroyOlderFile();			// 여기다 쓰지말고 씬로딩완료 직후에 한번 불러주는게 더 효율적일듯.
 		return pSprDat;
 	}
-// 	if( pSprDat ) {
-// 		if( bAddRefCnt )
-// 			pSprDat->AddRefCnt();
-// 		return pSprDat;
-// 	}
-//    XLOG("%s...loaded", szFilename );
 	if( bAsyncLoad )	// 비동기 로딩이면 sprDat객체를 지금 생성하지 않음.
 		return nullptr;
 	pSprDat = new XSprDat;
-// 	XSprite::sSetHSL( hsl );
-// 	if( !vHSL.IsZero() ) {
-// 		XSprite::sSetHSLRange1( XE::VEC2(315.f, 345.f) );
-// 		XSprite::sSetHSLRange2( XE::VEC2(15.f, 45.f) );
-// 	}
 	XSprite::sSetHSL( hsl );
-	if( pSprDat->Load( strFile.c_str(), bSrcKeep ) ) {
+	if( pSprDat->Load( strFile.c_str(), bUseAtlas, bSrcKeep, FALSE ) ) {
 		s_sizeTotalVM += pSprDat->GetSizeByte();
 		Add( _tstring(szFilename), pSprDat, hsl );
 		if( bAddRefCnt )

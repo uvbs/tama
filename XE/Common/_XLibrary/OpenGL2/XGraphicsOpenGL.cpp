@@ -14,6 +14,7 @@
 #include "XImage.h"
 #include "etc/xMath.h"
 #include "xShader.h"
+#include "etc/Debug.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -1100,49 +1101,50 @@ void XGraphicsOpenGL::DrawPieClip( const XE::VEC2 *pvLines, int numLine, float x
 void XGraphicsOpenGL::DrawTexture( GLint idTexture, float x, float y, float w, float h, BOOL bBlendAdd )
 {
 	GLfloat tex[8] = { 0, 1.0f, 1.0f, 1.0f, 0, 0, 1.0f, 0 };
-	GLfloat pos[8] = { x, y+h, x+w, y+h, x, y, x+w, y };
-	GLfloat col[16] = { 1.0f, 1.0f, 1.0f, 1.0f,
-                        1.0f, 1.0f, 1.0f, 1.0f,
-                        1.0f, 1.0f, 1.0f, 1.0f,
-                        1.0f, 1.0f, 1.0f, 1.0f };
-    MATRIX mTrans, mScale, mMVP;
-    MatrixTranslation( mTrans, x, y, 0 );
-	MatrixScaling(mScale, 1.f, 1.f, 1.f);
+	GLfloat pos[8] = { x, y + h, x + w, y + h, x, y, x + w, y };
+	GLfloat col[16] = { 
+		1.0f, 1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 1.0f };
+	MATRIX mTrans, mScale, mMVP;
+	MatrixTranslation( mTrans, x, y, 0 );
+	MatrixScaling( mScale, 1.f, 1.f, 1.f );
 	MatrixIdentity( mMVP );
-    MatrixMultiply( mMVP, mMVP, mScale );
-    MatrixMultiply( mMVP, mMVP, mTrans );
-    MatrixMultiply( mMVP, mMVP, XE::x_mViewProjection );
+	MatrixMultiply( mMVP, mMVP, mScale );
+	MatrixMultiply( mMVP, mMVP, mTrans );
+	MatrixMultiply( mMVP, mMVP, XE::x_mViewProjection );
 	// 8픽셀 크기로 블러가 되게 하려고 8픽셀 여유를 뒀다.
 	// 현재 쉐이더를 얻어온다
 	XShader *pShader = XGraphicsOpenGL::sGetShader();
 	pShader->SetUniformMVP( mMVP );
 	pShader->SetUniformColor( 1.0f, 1.0f, 1.0f, 1.0f );
-//	pShader->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
-//    GRAPHICS_GL->GetpBaseShader()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
-//    GRAPHICS_GL->GetpBaseShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
-  
-    glEnable(GL_BLEND);
+	//	pShader->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
+	//    GRAPHICS_GL->GetpBaseShader()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
+	//    GRAPHICS_GL->GetpBaseShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
+
+	glEnable( GL_BLEND );
 	if( bBlendAdd )
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	else
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	//    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 #ifdef _XVAO
-    glBindVertexArrayOES( 0 );
+	glBindVertexArrayOES( 0 );
 #endif
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glEnableVertexAttribArray( XE::ATTRIB_POS );
-    glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
-    glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, tex);
-    glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
-    glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-    glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
+	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+	glEnableVertexAttribArray( XE::ATTRIB_POS );
+	glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos );
+	glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, tex );
+	glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col );
+	glEnableVertexAttribArray( XE::ATTRIB_COLOR );
+	glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
 	// bind texture
-	glBindTexture(GL_TEXTURE_2D, idTexture);
-	
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBindTexture( GL_TEXTURE_2D, idTexture );
+
+	glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 }
 //////////////////////////////
 #pragma mark create manager obj
@@ -1196,7 +1198,7 @@ GLuint XGraphicsOpenGL::CreateTextureGL( void* const pImgSrc
 																			, int wSrcAligned, int hSrcAligned
 																			, XE::xtPixelFormat formatSurface ) const
 {
-	XBREAK( pImgSrc == nullptr );
+//	XBREAK( pImgSrc == nullptr );
 	const int bppImgSrc = XE::GetBpp( formatImgSrc );
 	const int bppSurface = XE::GetBpp( formatSurface );
 	const auto glFormatSurface = XGraphicsOpenGL::sToGLFormat( formatSurface );
@@ -1209,22 +1211,26 @@ GLuint XGraphicsOpenGL::CreateTextureGL( void* const pImgSrc
 		return 0;
 	}
 	glBindTexture( GL_TEXTURE_2D, idTexture );
-// 	const auto glTypeTexel = XGraphicsOpenGL::sToGLFormat( formatSurface );
-// 	const auto glformatTexel = XGraphicsOpenGL::sToGLFormat( formatSurface );
+#ifdef _DEBUG
+	auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR );
+#endif // _DEBUG
 	const int sizeSrcAligned = wSrcAligned * hSrcAligned;
 	//////////////////////////////////////////////////////////////////////////
 	if( bppSurface == 4 ) {
-		// gl텍스쳐로 쓰기 위해 정렬된 사이즈의 메모리에 이미지를 복사
-		DWORD *temp = new DWORD[ sizeSrcAligned ];
-		DWORD *_temp = temp;
-		memset( temp, 0, sizeSrcAligned * bppSurface );
-		int i, j;
-		DWORD *src = (DWORD* const)pImgSrc;
-		for( i = 0; i < hSrc; i++ ) {
-			for( j = 0; j < wSrc; j++ ) {
-				*_temp++ = *src++;
+		DWORD *temp = nullptr;
+		if( pImgSrc ) {
+			// gl텍스쳐로 쓰기 위해 정렬된 사이즈의 메모리에 이미지를 복사
+			DWORD* _temp = temp = new DWORD[sizeSrcAligned];
+			memset( _temp, 0, sizeSrcAligned * bppSurface );
+			int i, j;
+			DWORD *src = (DWORD* const)pImgSrc;
+			for( i = 0; i < hSrc; i++ ) {
+				for( j = 0; j < wSrc; j++ ) {
+					*_temp++ = *src++;
+				}
+				_temp += (wSrcAligned - wSrc);
 			}
-			_temp += ( wSrcAligned - wSrc );
 		}
 		glTexImage2D( GL_TEXTURE_2D,
 									0,
@@ -1235,25 +1241,32 @@ GLuint XGraphicsOpenGL::CreateTextureGL( void* const pImgSrc
 									GL_RGBA,
 									GL_UNSIGNED_BYTE,
 									temp );
+#ifdef _DEBUG
+		glErr = glGetError();
+		XASSERT( glErr == GL_NO_ERROR );
+#endif // _DEBUG
 		SAFE_DELETE_ARRAY( temp );
 	} else
 	//////////////////////////////////////////////////////////////////////////
 	if( bppSurface == 2 ) {
-		// gl텍스쳐로 쓰기 위해 정렬된 사이즈의 메모리에 이미지를 복사
-		WORD *pDst = new WORD[ sizeSrcAligned ];
-		memset( pDst, 0, sizeSrcAligned * bppSurface );
-		if( formatSurface == XE::xPF_RGB565 
-			|| formatSurface == XE::xPF_RGB555 ) {
-			XE::ConvertBlockABGR8888ToRGB565( pDst, wSrcAligned, hSrcAligned, (DWORD*)pImgSrc, wSrc, hSrc );
-		} else
-		if( formatSurface == XE::xPF_ARGB4444 ) {
-			// 현재 WIN32 opengl에서는 RGBA4444로 넘겨야 제대로 나오지만 기기 opengl에서는 어떤게 맞는지 알수없음. 아마도 같지 않을까 함.
-			XE::ConvertBlockABGR8888ToRGBA4444( pDst, wSrcAligned, hSrcAligned, (DWORD*)pImgSrc, wSrc, hSrc );
-		} else
-		if( formatSurface == XE::xPF_ARGB1555 ) {
-			XE::ConvertBlockABGR8888ToRGBA1555( pDst, wSrcAligned, hSrcAligned, (DWORD*)pImgSrc, wSrc, hSrc );
-		} else {
-			XBREAK(1);
+		WORD *pDst = nullptr;
+			// gl텍스쳐로 쓰기 위해 정렬된 사이즈의 메모리에 이미지를 복사
+		if( pImgSrc ) {
+			WORD *_pDst = pDst = new WORD[ sizeSrcAligned ];
+			memset( _pDst, 0, sizeSrcAligned * bppSurface );
+			if( formatSurface == XE::xPF_RGB565 
+				|| formatSurface == XE::xPF_RGB555 ) {
+				XE::ConvertBlockABGR8888ToRGB565( pDst, wSrcAligned, hSrcAligned, (DWORD*)pImgSrc, wSrc, hSrc );
+			} else
+			if( formatSurface == XE::xPF_ARGB4444 ) {
+				// 현재 WIN32 opengl에서는 RGBA4444로 넘겨야 제대로 나오지만 기기 opengl에서는 어떤게 맞는지 알수없음. 아마도 같지 않을까 함.
+				XE::ConvertBlockABGR8888ToRGBA4444( pDst, wSrcAligned, hSrcAligned, (DWORD*)pImgSrc, wSrc, hSrc );
+			} else
+			if( formatSurface == XE::xPF_ARGB1555 ) {
+				XE::ConvertBlockABGR8888ToRGBA1555( pDst, wSrcAligned, hSrcAligned, (DWORD*)pImgSrc, wSrc, hSrc );
+			} else {
+				XBREAK(1);
+			}
 		}
 		glTexImage2D( GL_TEXTURE_2D,
 									0,
@@ -1264,17 +1277,21 @@ GLuint XGraphicsOpenGL::CreateTextureGL( void* const pImgSrc
 									glFormatSurface,
 									glTypeSurface,
 									pDst );
+#ifdef _DEBUG
+		glErr = glGetError();
+		XASSERT( glErr == GL_NO_ERROR );
+#endif // _DEBUG
 		SAFE_DELETE_ARRAY( pDst );
 	}
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-//	XSurface::s_sizeTotalVMem += sizeSrcAligned * bppSurface;
 	XSurface::sAddSizeTotalVMem( sizeSrcAligned * bppSurface );
 	//
 	return idTexture;
-}
+} // CreateTextureGL
+
 
 /**
  @brief 이미지의 일부분을 gl텍스쳐로 만든다.

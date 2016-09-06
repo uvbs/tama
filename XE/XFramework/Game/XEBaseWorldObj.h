@@ -170,14 +170,14 @@ public:
 	virtual int Serialize( XArchive& ar );
 	virtual int DeSerialize( XArchive& ar );
 	//
-	BOOL LoadSpr( LPCTSTR szSpr, const XE::xHSL& hsl, ID idAct, xRPT_TYPE typeLoop=xRPT_LOOP );
-	inline BOOL LoadSpr( LPCTSTR szSpr, ID idAct, xRPT_TYPE typeLoop = xRPT_LOOP ) {
+	bool LoadSpr( LPCTSTR szSpr, const XE::xHSL& hsl, ID idAct, xRPT_TYPE typeLoop=xRPT_LOOP );
+	inline bool LoadSpr( LPCTSTR szSpr, ID idAct, xRPT_TYPE typeLoop = xRPT_LOOP ) {
 		return LoadSpr( szSpr, XE::xHSL(), idAct, typeLoop );
 	}
-	inline BOOL LoadSpr( const _tstring& strSpr, ID idAct, xRPT_TYPE typeLoop = xRPT_LOOP ) {
+	inline bool LoadSpr( const _tstring& strSpr, ID idAct, xRPT_TYPE typeLoop = xRPT_LOOP ) {
 		return LoadSpr( strSpr.c_str(), XE::xHSL(), idAct, typeLoop );
 	}
-	inline BOOL LoadSpr( const _tstring& strSpr, const XE::xHSL& hsl, ID idAct, xRPT_TYPE typeLoop = xRPT_LOOP ) {
+	inline bool LoadSpr( const _tstring& strSpr, const XE::xHSL& hsl, ID idAct, xRPT_TYPE typeLoop = xRPT_LOOP ) {
 		return LoadSpr( strSpr.c_str(), hsl, idAct, typeLoop );
 	}
 	void LoadImage( LPCTSTR szImg );

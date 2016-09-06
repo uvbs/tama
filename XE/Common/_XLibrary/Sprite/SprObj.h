@@ -127,6 +127,7 @@ private:
 		_tstring strFilename;	// 읽으려고 한 spr파일명
 		CTimer timerLazyLoad;
 		BOOL bKeepSrc;
+		bool m_bUseAtlas = false;
 //		XE::VEC3 vHSL;
 		XE::xHSL m_HSL;
 		LAZY_INFO() {
@@ -168,6 +169,7 @@ private:
 	BOOL m_bFinish;					// 애니메이션이 끝났는가
 	float m_multiplySpeed;				// 애니메이션 스피드 배속
   bool m_bCallHandler = false;    // 이벤트키의 콜백이 실행중.
+//	bool m_bUseAtlas = false;			// 텍스쳐 아틀라스 쓰는 객체인지
 #ifdef _SPR_USE_LUA
 	XLua *m_pLua;					// SprObj마다 붙어있는 루아쓰레드
 #endif 
@@ -213,7 +215,8 @@ public:
 	XSprObj( DWORD dwID );
 	XSprObj( LPCTSTR szFilename, XDelegateSprObj *pDelegate = nullptr );
 	XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, XDelegateSprObj *pDelegate = nullptr );
-  // for lua
+	XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, XDelegateSprObj *pDelegate = nullptr );
+	// for lua
 	XSprObj( BOOL bKeepSrc, const char *cFilename );
 #ifdef WIN32
 	XSprObj( BOOL bKeepSrc, LPCTSTR szFilename );
@@ -221,7 +224,7 @@ public:
 	XSprObj( const _tstring& strSpr, XDelegateSprObj *pDelegate = nullptr ) 
 		: XSprObj( strSpr.c_str(), pDelegate ) {}
 
-	virtual ~XSprObj() { Destroy(); }
+	~XSprObj() { Destroy(); }
 	
 	void Reset() {	// new로 생성이 안되고 캐시에서 다시 가져오게 됐을경우에도 기본적인 사항은 리셋시켜함
 		ResetAction();
@@ -440,7 +443,7 @@ public:
 	void SetPlayTime( float secPlay );
 	XSprite* GetSprite( int idx );
 	// file
-	BOOL Load( LPCTSTR szFilename, const XE::xHSL& hsl, BOOL bKeepSrc, bool bAsyncLoad );
+	BOOL Load( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, BOOL bKeepSrc, bool bAsyncLoad );
 	// preload sprobj
 	XSprObj* AddSprObj( LPCTSTR szSprObj, ID idAct, xRPT_TYPE playMode, ID idBase, ID idLocal, ID idActParent, ID idLayerParent );
 	// virtual 

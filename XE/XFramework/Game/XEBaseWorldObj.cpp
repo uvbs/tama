@@ -62,12 +62,14 @@ void XEBaseWorldObj::Destroy()
 /**
  @brief 
 */
-BOOL XEBaseWorldObj::LoadSpr( LPCTSTR szSpr, const XE::xHSL& hsl, ID idAct, xRPT_TYPE typeLoop )
+bool XEBaseWorldObj::LoadSpr( LPCTSTR szSpr, const XE::xHSL& hsl, ID idAct, xRPT_TYPE typeLoop )
 {
 	if( XBREAK( XE::IsEmpty( szSpr ) == TRUE ) )
 		return FALSE;
 	m_strSpr = szSpr;
-	m_pSprObj = new XSprObj( szSpr, hsl, this );
+	// 이 객체는 전투때만 쓰므로 곧바로 2버전으로 호출시킴
+	const bool bUseAtlas = true;
+	m_pSprObj = new XSprObj( szSpr, hsl, bUseAtlas, this );
 	//	XTRACE( "new XSprObj(%s)", szSpr );
 	if( XBREAK( m_pSprObj == NULL ) )
 		return FALSE;
@@ -81,25 +83,6 @@ BOOL XEBaseWorldObj::LoadSpr( LPCTSTR szSpr, const XE::xHSL& hsl, ID idAct, xRPT
 	m_pSprObj->SetAction( idAct, typeLoop );
 	return TRUE;
 }
-// BOOL XEBaseWorldObj::LoadSpr( LPCTSTR szSpr, const XE::VEC3& vHSL, ID idAct, xRPT_TYPE typeLoop )
-// {
-// 	if( XBREAK( XE::IsEmpty(szSpr) == TRUE ) )
-// 		return FALSE;
-// 	m_strSpr = szSpr;
-// 	m_pSprObj = new XSprObj( szSpr, vHSL, this );
-// //	XTRACE( "new XSprObj(%s)", szSpr );
-// 	if( XBREAK(m_pSprObj == NULL) )
-// 		return FALSE;
-// 	// 비동기 로딩땜에 assert를 내지 않는게 맞지만 현재 그 기능이 없으므로 assert를 냄
-// 	XBREAK( m_pSprObj->IsError() );
-// 	if( m_pSprObj->IsError() ) {
-// 		m_snObj = 0;
-// 		SAFE_DELETE( m_pSprObj );
-// 		return FALSE;
-// 	}
-// 	m_pSprObj->SetAction( idAct, typeLoop );
-// 	return TRUE;
-// }
 
 void XEBaseWorldObj::LoadImage( LPCTSTR szImg )
 {

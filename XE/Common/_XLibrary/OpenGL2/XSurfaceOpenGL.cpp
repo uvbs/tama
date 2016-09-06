@@ -18,6 +18,7 @@
 //#include "Mathematics.h"
 #include "etc/xMath.h"
 #include "XFramework/client/XClientMain.h"
+#include "XTextureAtlas.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -99,7 +100,8 @@ bool XSurfaceOpenGL::Create( const XE::POINT& sizeSurfaceOrig
 													, void* const pImgSrc
 													, XE::xtPixelFormat formatImgSrc
 													, const XE::POINT& sizeMemSrc
-													, const XE::POINT& sizeMemSrcAligned )
+													, const XE::POINT& sizeMemSrcAligned
+													, bool bUseAtlas )
 {
 	if( XBREAK(pImgSrc == nullptr) )
 		return false;
@@ -118,21 +120,41 @@ bool XSurfaceOpenGL::Create( const XE::POINT& sizeSurfaceOrig
 		}
 	}
 #endif // _XPROFILE
-	m_glTexture = GRAPHICS_GL->CreateTextureGL( pImgSrc
-																							, _sizeMemSrc
-																							, formatImgSrc
-																							, _sizeMemSrcAligned
-																							, formatSurface );
-	if( XBREAK( m_glTexture == 0 ) )
-		return false;
-	// 버텍스버퍼생성.
-	return CreateVertexBuffer( sizeSurfaceOrig
-													, vAdj
-													, sizeMemSrc
-													, sizeMemSrcAligned );
+	if( bUseAtlas ) {
+		XE::xRect2 rcInAtlas;
+		// 텍스쳐 아틀라스에 pImgSrc를 삽입하고(혹은 아틀라스를 생성) 아틀라스의 아이디를 얻는다. 또한 rect에는 삽입된 위치를 얻는다.
+		// pImgSrc를 아틀라스에 배치하고 텍스쳐아이디와 위치를 얻는다.
+		m_glTexture = XTextureAtlas::sGet()->ArrangeImg( 0, &rcInAtlas, pImgSrc, _sizeMemSrc, formatImgSrc, formatSurface );
+		if( XBREAK( m_glTexture == 0 ) )
+			return false;
+		// 버텍스버퍼생성.
+		return CreateVertexBuffer2( sizeSurfaceOrig
+																, vAdj
+																, rcInAtlas );
+	} else {
+		// no atlas
+		m_glTexture = GRAPHICS_GL->CreateTextureGL( pImgSrc
+																								, _sizeMemSrc
+																								, formatImgSrc
+																								, _sizeMemSrcAligned
+																								, formatSurface );
+		if( XBREAK( m_glTexture == 0 ) )
+			return false;
+		// 버텍스버퍼생성.
+		return CreateVertexBuffer( sizeSurfaceOrig
+															 , vAdj
+															 , sizeMemSrc
+															 , sizeMemSrcAligned );
+	}
+	if( bUseAtlas ) {
+	} else {
+	}
 }
 
 // pure virtual
+/**
+ @brief 
+*/
 bool XSurfaceOpenGL::CreateSub( const XE::POINT& posMemSrc
 															, const XE::POINT& sizeArea
 															, const XE::POINT& sizeAreaAligned
@@ -157,6 +179,7 @@ bool XSurfaceOpenGL::CreateSub( const XE::POINT& posMemSrc
 													, sizeArea
 													, sizeAreaAligned );
 }
+
 /**
  @brief 기존코드 호환용.(단 외부에서 쓰는건 막음)
 */
@@ -178,7 +201,8 @@ bool XSurfaceOpenGL::CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMask )
 													, pImg
 													, XE::xPF_ARGB8888		// formatImgSrc
 													, sizeMem
-													, bSrcKeep, bMakeMask );
+													, bSrcKeep, bMakeMask
+													, false );
 }
 
 typedef struct tagSTRUCT_VERTEX_SURFACE{
@@ -198,44 +222,82 @@ xRESULT XSurfaceOpenGL::CreateVertexBuffer( float surfaceW, float surfaceH
 {
 	XBREAK( alignW == 0 );
 	XBREAK( alignH == 0 );
-    float adjx = (float)((int)_adjx);
-    float adjy = (float)((int)_adjy);
-	
-    float u = (float)memw / alignW; // 텍스쳐 우하귀의 u,v좌표 
-    float v = (float)memh / alignH;
+	float adjx = (float)((int)_adjx);
+	float adjy = (float)((int)_adjy);
+	float u = (float)memw / alignW; // 텍스쳐 우하귀의 u,v좌표 
+	float v = (float)memh / alignH;
 	XBREAK( u < 0 || u > 1.0f );
 	XBREAK( v < 0 || v > 1.0f );
-	const STRUCT_VERTEX_SURFACE vertices[4] =
-	{ 
-		adjx, surfaceH+adjy,		0, v,  1.0f, 1.0f, 1.0f, 1.0f,	// left/bottom
-		surfaceW+adjx, surfaceH+adjy,u, v,  1.0f, 1.0f, 1.0f, 1.0f,  // right/bottom
+	const STRUCT_VERTEX_SURFACE vertices[4] = {
+		adjx, surfaceH + adjy,		0, v,  1.0f, 1.0f, 1.0f, 1.0f,	// left/bottom
+		surfaceW + adjx, surfaceH + adjy,u, v,  1.0f, 1.0f, 1.0f, 1.0f,  // right/bottom
 		adjx, adjy,					0, 0,  1.0f, 1.0f, 1.0f, 1.0f,		// left/top
-		surfaceW+adjx, adjy,		u, 0,  1.0f, 1.0f, 1.0f, 1.0f	// right/top
+		surfaceW + adjx, adjy,		u, 0,  1.0f, 1.0f, 1.0f, 1.0f	// right/top
 	};
 	static GLubyte indices[4] = { 0, 1, 2, 3 };
-	
+
 #ifdef _XVAO
-    glGenVertexArraysOES(1, &m_idVertexArray );
-    glBindVertexArrayOES( m_idVertexArray );
+	glGenVertexArraysOES( 1, &m_idVertexArray );
+	glBindVertexArrayOES( m_idVertexArray );
 #endif
-	glGenBuffers(1, &m_glVertexBuffer);
-	glGenBuffers(1, &m_glIndexBuffer);
+	glGenBuffers( 1, &m_glVertexBuffer );
+	glGenBuffers( 1, &m_glIndexBuffer );
 	if( XBREAK( m_glVertexBuffer == 0 ) )
 		return xFAIL;
 	if( XBREAK( m_glIndexBuffer == 0 ) )
 		return xFAIL;
-	
-	glBindBuffer(GL_ARRAY_BUFFER, m_glVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
+	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
+	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( indices ), indices, GL_STATIC_DRAW );
+
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+	glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
 	return xSUCCESS;
-}
+} // CreateVertexBuffer
 
+bool XSurfaceOpenGL::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
+																					const XE::VEC2& vAdj,
+																					const XE::xRect2& rcInAtlas )
+{
+	const float u = rcInAtlas.vLT.x;		// 아틀라스내 좌상귀
+	const float v = rcInAtlas.vLT.y;
+	const float u2 = rcInAtlas.vRB.x;		// 아틀라스내 우하귀
+	const float v2 = rcInAtlas.vRB.y;
+	XBREAK( u < 0 || u > 1.0f );
+	XBREAK( v < 0 || v > 1.0f );
+	XBREAK( u2 < 0 || u2 > 1.0f );
+	XBREAK( v2 < 0 || v2 > 1.0f );
+	const STRUCT_VERTEX_SURFACE vertices[4] =	{
+		vAdj.x, sizeSurface.h + vAdj.y,		u, v2,  1.0f, 1.0f, 1.0f, 1.0f,	// left/bottom
+		sizeSurface.w + vAdj.x, sizeSurface.h + vAdj.y, u2, v2,  1.0f, 1.0f, 1.0f, 1.0f,  // right/bottom
+		vAdj.x, vAdj.y,					u, v,  1.0f, 1.0f, 1.0f, 1.0f,		// left/top
+		sizeSurface.w + vAdj.x, vAdj.y,		u2, v,  1.0f, 1.0f, 1.0f, 1.0f	// right/top
+	};
+	static GLubyte indices[4] = { 0, 1, 2, 3 };
+
+#ifdef _XVAO
+	glGenVertexArraysOES( 1, &m_idVertexArray );
+	glBindVertexArrayOES( m_idVertexArray );
+#endif
+	glGenBuffers( 1, &m_glVertexBuffer );
+	glGenBuffers( 1, &m_glIndexBuffer );
+	if( XBREAK( m_glVertexBuffer == 0 ) )
+		return xFAIL;
+	if( XBREAK( m_glIndexBuffer == 0 ) )
+		return xFAIL;
+	glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
+	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
+	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( indices ), indices, GL_STATIC_DRAW );
+
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+
+	return xSUCCESS;
+} // CreateVertexBuffer2
 void XSurfaceOpenGL::DestroyDevice()
 {
 	if( m_glTexture )

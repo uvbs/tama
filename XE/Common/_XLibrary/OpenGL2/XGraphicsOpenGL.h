@@ -159,6 +159,7 @@ class XGraphicsOpenGL : public XGraphics
 {
 	static XShader *m_pCurrShader;
 public:
+	static XGraphicsOpenGL* sGet() { return s_pGraphicsOpenGL;	}
 	static XGraphicsOpenGL *s_pGraphicsOpenGL;		// 일단 이렇게 하고 나중에 멀티플랫폼용으로 고치자.
 #ifdef _XBLUR
     static GLuint s_glBlurFBO, s_glBlurRBO, s_glBlurTexture;
@@ -233,6 +234,13 @@ public:
 															, const XE::POINT& sizeSrcAligned
 															, XE::xtPixelFormat formatSurface ) {
 		return CreateTextureGL( pSrc, sizeSrc.w, sizeSrc.h, formatImgSrc, sizeSrcAligned.w, sizeSrcAligned.h, formatSurface );
+	}
+	inline GLuint CreateTextureGL( void* const pSrc, 
+																 const XE::VEC2& sizeSrc, 
+																 XE::xtPixelFormat formatImgSrc, 
+																 const XE::VEC2& sizeSrcAligned,
+																 XE::xtPixelFormat formatSurface ) {
+		return CreateTextureGL( pSrc, (int)sizeSrc.w, (int)sizeSrc.h, formatImgSrc, (int)sizeSrcAligned.w, (int)sizeSrcAligned.h, formatSurface );
 	}
 	GLuint CreateTextureSubGL( void* const pImgSrc
 													, const XE::POINT& sizeSrc			// pImgSrc의 크기

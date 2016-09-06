@@ -38,7 +38,7 @@ public:
 	virtual ~XSprMng() { XTRACE("destroy sprmng"); Destroy(); }
 
 	void CheckRelease( void );
-	XSprDat *Load( LPCTSTR szFilename, const XE::xHSL& hsl = XE::xHSL(), BOOL bAddRefCnt=TRUE, BOOL bSrcKeep=FALSE, bool bAsyncLoad = false );	
+	XSprDat *Load( LPCTSTR szFilename, const XE::xHSL& hsl/* = XE::xHSL()*/, bool bUseAtlas, BOOL bAddRefCnt=TRUE, BOOL bSrcKeep=FALSE, bool bAsyncLoad = false );
 	void RestoreDevice();
 	void Add( const _tstring& strKey, XSprDat *pSprDat, const XE::xHSL& hsl );
 //	XSprDat *New( void );

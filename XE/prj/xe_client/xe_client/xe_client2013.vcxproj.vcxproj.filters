@@ -482,6 +482,15 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\ConvertString_android.cpp">
       <Filter>source\android</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\XActObj.cpp">
+      <Filter>source\sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XTextureAtlas.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XSplitNode.cpp">
+      <Filter>source\Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stdafx.h" />
@@ -1031,16 +1040,7 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\XReceiverCallback.h">
-      <Filter>source\Framework</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\XFramework\XReceiverCallbackH.h">
-      <Filter>source\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\XInApp.h">
-      <Filter>source\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\XEOption.h">
       <Filter>source\Framework</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XFontObjFTGL.h">
@@ -1054,9 +1054,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\XFramework\android\CocosDenshion\android\opensl\android\asset_manager_jni.h">
       <Filter>source\sound\android</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\XParamObj.h">
-      <Filter>source\Framework</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndH.h">
       <Filter>source\wnd</Filter>
@@ -1091,9 +1088,6 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndListH.h">
       <Filter>source\wnd</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\client\XASyncLoad.h">
-      <Filter>source\Framework</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\XFramework\XF.h">
       <Filter>header</Filter>
     </ClInclude>
@@ -1108,6 +1102,27 @@
     </ClInclude>
     <ClInclude Include="..\..\..\XFramework\XFType.h">
       <Filter>source\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XASyncLoad.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XEOption.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XInApp.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XParamObj.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XReceiverCallback.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XActObj.h">
+      <Filter>source\sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XTextureAtlas.h">
+      <Filter>source\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

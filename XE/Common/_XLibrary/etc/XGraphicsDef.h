@@ -33,7 +33,7 @@ enum xAlpha {
 
 XE_NAMESPACE_START(XE)
 
-enum xtPixelFormat {
+enum xtPixelFormat : int {
 	xPF_NONE,
 	xPF_ARGB8888,
 	xPF_ARGB4444,

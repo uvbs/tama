@@ -36,7 +36,7 @@ bool XSurface::Create( const XE::POINT& sizeSurfaceOrig
 										, void* const pImgSrc
 										, XE::xtPixelFormat formatImgSrc
 										, const XE::POINT& sizeMemSrc
-										, bool bSrcKeep, bool bMakeMask )
+										, bool bSrcKeep, bool bMakeMask, bool bUseAtlas )
 {
 	SetAdjust( vAdj );
 	// XE::xPF_ARGB8888 이외의 포맷은 아직 지원하지 않음
@@ -74,7 +74,8 @@ bool XSurface::Create( const XE::POINT& sizeSurfaceOrig
 									, pImgSrc
 									, formatImgSrc
 									, sizeMemSrc
-									, m_sizeMemAligned );
+									, m_sizeMemAligned
+									, bUseAtlas );
 	if( bOk ) {
 		AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
 		// 상위딴에서 집계하려고 했으나 하위딴에서 자기들끼리 호출하는건 집계가 안되는 문제가 있어 집계는 하위딴에게 맡김.

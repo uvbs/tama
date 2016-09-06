@@ -279,7 +279,7 @@ XSurface* XImageMng::CreateSurface( const char* cKey
 														, pImgSrc
 														, XE::xPF_ARGB8888
 														, sizeMemSrc
-														, false, false );
+														, false, false, false );
 		}
 		return pImg->m_pSurface;
 	}

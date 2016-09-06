@@ -1130,6 +1130,9 @@
     <ClInclude Include="..\..\..\game_src\XSceneTest.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\XSplitNode.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\daily_work.txt" />

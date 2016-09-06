@@ -22,12 +22,12 @@ XNode* XNode::Insert( const XE::VEC2& sizeImg )
 	if( !IsLeaf() ) {
 		auto pNewNode = m_Child[0]->Insert( sizeImg );
 		if( pNewNode ) {
-			XBREAK( m_Child[0]->GetRect().vRB.x > 255.f || m_Child[0]->GetRect().vRB.y > 255.f );
-			XBREAK( m_Child[1]->GetRect().vRB.x > 255.f || m_Child[1]->GetRect().vRB.y > 255.f );
+// 			XBREAK( m_Child[0]->GetRect().vRB.x > 255.f || m_Child[0]->GetRect().vRB.y > 255.f );
+// 			XBREAK( m_Child[1]->GetRect().vRB.x > 255.f || m_Child[1]->GetRect().vRB.y > 255.f );
 			return pNewNode;
 		}
-		XBREAK( m_Child[0]->GetRect().vRB.x > 255.f || m_Child[0]->GetRect().vRB.y > 255.f );
-		XBREAK( m_Child[1]->GetRect().vRB.x > 255.f || m_Child[1]->GetRect().vRB.y > 255.f );
+// 		XBREAK( m_Child[0]->GetRect().vRB.x > 255.f || m_Child[0]->GetRect().vRB.y > 255.f );
+// 		XBREAK( m_Child[1]->GetRect().vRB.x > 255.f || m_Child[1]->GetRect().vRB.y > 255.f );
 		// 방이 없으면 두번째 방에 삽입한다.
 		return m_Child[1]->Insert( sizeImg );
 	} else {
@@ -54,13 +54,13 @@ XNode* XNode::Insert( const XE::VEC2& sizeImg )
 		if( vd.w > vd.h ) {
 			m_Child[0]->SetRect( m_Rect.vLT, XE::VEC2( m_Rect.Left() + wImg - 1.f, m_Rect.Bottom() ) );
 			m_Child[1]->SetRect( XE::VEC2( m_Rect.Left() + wImg, m_Rect.Top() ), m_Rect.vRB );
-			XBREAK( m_Child[0]->GetRect().vRB.x > 255.f || m_Child[0]->GetRect().vRB.y > 255.f );
-			XBREAK( m_Child[1]->GetRect().vRB.x > 255.f || m_Child[1]->GetRect().vRB.y > 255.f );
+// 			XBREAK( m_Child[0]->GetRect().vRB.x > 255.f || m_Child[0]->GetRect().vRB.y > 255.f );
+// 			XBREAK( m_Child[1]->GetRect().vRB.x > 255.f || m_Child[1]->GetRect().vRB.y > 255.f );
 		} else {
 			m_Child[0]->SetRect( m_Rect.vLT, XE::VEC2(m_Rect.Right(), m_Rect.Top()+hImg-1.f) );
 			m_Child[1]->SetRect( XE::VEC2(m_Rect.Left(), m_Rect.Top()+hImg), m_Rect.vRB );
-			XBREAK( m_Child[0]->GetRect().vRB.x > 255.f || m_Child[0]->GetRect().vRB.y > 255.f );
-			XBREAK( m_Child[1]->GetRect().vRB.x > 255.f || m_Child[1]->GetRect().vRB.y > 255.f );
+// 			XBREAK( m_Child[0]->GetRect().vRB.x > 255.f || m_Child[0]->GetRect().vRB.y > 255.f );
+// 			XBREAK( m_Child[1]->GetRect().vRB.x > 255.f || m_Child[1]->GetRect().vRB.y > 255.f );
 		}
 		return m_Child[0]->Insert( sizeImg );
 	}

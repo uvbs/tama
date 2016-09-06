@@ -645,6 +645,7 @@
     <ClInclude Include="..\..\..\..\..\XE\XFramework\Game\XEComponentMng.h" />
     <ClInclude Include="..\..\..\..\..\XE\XFramework\Game\XEComponents.h" />
     <ClInclude Include="..\..\..\..\..\XE\XFramework\MFC\GenericChildDialog.h" />
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\XSplitNode.h" />
     <ClInclude Include="..\..\..\game_src\android\VersionAndroid.h" />
     <ClInclude Include="..\..\..\game_src\client\XAppDelegate.h" />
     <ClInclude Include="..\..\..\game_src\client\XAppMain.h" />

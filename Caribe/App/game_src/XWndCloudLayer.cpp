@@ -36,7 +36,7 @@ XWndCloudLayer::XWndCloudLayer( const XE::VEC2& vPos,
 	: XWnd( vPos.x, vPos.y, vSize.w, vSize.h )
 {
 	Init();
-	m_psdCloud = SPRMNG->Load( _T("cloud.spr") );
+	m_psdCloud = SPRMNG->Load( _T("cloud.spr"), XE::xHSL(), false );
 //	SetbTouchable( FALSE );
 	m_objMove[0].SetState1();
 	m_objMove[1].SetState2();

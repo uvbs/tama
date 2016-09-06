@@ -349,7 +349,8 @@ private:
 										, void* const pImgSrc
 										, XE::xtPixelFormat formatImgSrc
 										, const XE::POINT& sizeMemSrc
-										, const XE::POINT& sizeMemSrcAligned ) = 0;
+										, const XE::POINT& sizeMemSrcAligned
+										, bool bUseAtlas ) = 0;
 	// pure virtual
 	virtual bool CreateSub( const XE::POINT& posMemSrc
 										, const XE::POINT& sizeArea
@@ -368,7 +369,7 @@ public:
 						, void* const pImgSrc
 						, XE::xtPixelFormat formatImgSrc
 						, const XE::POINT& sizeMemSrc
-						, bool bSrcKeep, bool bMakeMask );
+						, bool bSrcKeep, bool bMakeMask, bool bUseAtlas );
 	bool CreateSub( const XE::POINT& posMemSrc
 							, const XE::POINT& sizeArea
 							, const XE::POINT& sizeMemSrc
@@ -379,24 +380,23 @@ public:
 							, XE::xtPixelFormat formatSurface
 							, bool bSrcKeep, bool bMakeMask );
 	// 기존코드 호환용
-	xRESULT Create( const float width, const float height, 
-									const float adjx, const float adjy, 
-									xAlpha alpha, 
-									const void *pImg, 
-									int bytePerPixel, 
-									XCOLOR dwKeyColor/* = 0*/, 
-									BOOL bSrcKeep, BOOL bMakeMask ) {
-//		const auto sizeMemSrc = ConvertToMemSize( width, height );
-//		const auto sizeMemSrc = XE::POINT(width, height) * 2;
-		auto bOk = Create( XE::POINT(width, height)
-										, XE::VEC2(adjx, adjy) 
-										, XE::xPF_ARGB4444
-										, (void* const)pImg
-										, XE::xPF_ARGB8888
-										, m_sizeMem.ToPoint() // sizeMemSrc
-										, bSrcKeep != FALSE
-										, bMakeMask != FALSE );
-		return (bOk)? xSUCCESS : xFAIL;
+	inline xRESULT Create( const float width, const float height,
+												 const float adjx, const float adjy,
+												 xAlpha alpha,
+												 const void *pImg,
+												 int bytePerPixel,
+												 XCOLOR dwKeyColor/* = 0*/,
+												 BOOL bSrcKeep, BOOL bMakeMask ) {
+		auto bOk = Create( XE::POINT( width, height )
+											 , XE::VEC2( adjx, adjy )
+											 , XE::xPF_ARGB4444
+											 , (void* const)pImg
+											 , XE::xPF_ARGB8888
+											 , m_sizeMem.ToPoint() // sizeMemSrc
+											 , bSrcKeep != FALSE
+											 , bMakeMask != FALSE
+											 , false );
+		return (bOk) ? xSUCCESS : xFAIL;
 	}
 	BYTE* MakeMask( DWORD *src, int memDstw, int memDsth );
 

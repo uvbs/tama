@@ -15,39 +15,13 @@ class XBaseRes;
 #include "etc/XSurface.h"
 class XSprite
 {
-	/**
-	 @brief 로딩시 적용할 HSL값(포토샵 단위)
-	 @param s_H -180 ~ 180
-	 @param s_S -100 ~ 100
-	 @param s_L -100 ~ 100
-	 @param s_Range1 0~0
-	 @param s_Range2 0~0
-	*/
-// 	static XE::VEC3 s_HSL;
-// 	static XE::VEC2 s_Range1;
-// 	static XE::VEC2 s_Range2;
 	static XE::xHSL s_HSL;
 public:
 	static int s_sizeTotalMem;		// 스프라이트들의 총 메모리할당량(이미지데이타만..)
 	static void sSetHSL( const XE::xHSL& hsl ) {
 		s_HSL = hsl;
 	}
-// 	static void sSetHSL( const XE::VEC3& vHSL ) {
-// 		s_HSL = vHSL;
-// //		const float PI2 = D2R(360.f);
-// // 		s_Range1.Set(0.f, PI2);
-// // 		s_Range2.Set(0.f, PI2);
-// 		s_Range1.Set(0);
-// 		s_Range2.Set(0);
-// 	}
-// 	static void sSetHSLRange1( const XE::VEC2& vRange1 ) {
-// 		s_Range1 = vRange1;
-// 	}
-// 	static void sSetHSLRange2( const XE::VEC2& vRange2 ) {
-// 		s_Range2 = vRange2;
-// 	}
 	static void sClearHSL() {
-//		s_HSL.Set(0);
 		s_HSL.m_vHSL.Set(0);
 		s_HSL.m_vRange1.Set(0);
 		s_HSL.m_vRange2.Set(0);
@@ -61,17 +35,14 @@ private:
 	}
 	void Destroy();
 public:
-//	XSprite( BOOL bHighReso, int idx );
 	XSprite( int idx );
-	virtual ~XSprite() { Destroy(); }	// 부모의 파괴자를 호출하는지 확인할것
+	~XSprite() { Destroy(); }	// 부모의 파괴자를 호출하는지 확인할것
 	//
-	GET_ACCESSOR( int, idxSprite );
+	GET_ACCESSOR_CONST( int, idxSprite );
 	GET_ACCESSOR( XSurface*, pSurface );
 	//
 	void Save( XBaseRes *pRes ) {}
-	void Load( XSprDat *pSprDat,XBaseRes *pRes, BOOL bSrcKeep=FALSE, BOOL bRestore=FALSE );
-	//	virtual void RestoreDevice( XBaseRes *pRes );
-	//	DWORD GetPixel( int lx, int ly, BYTE *pa = NULL, BYTE *pr = NULL, BYTE *pg = NULL, BYTE *pb = NULL  );
+	void Load( XSprDat *pSprDat,XBaseRes *pRes, bool bUseAtlas, BOOL bSrcKeep=FALSE, BOOL bRestore=FALSE );
 	void SetScale( float sx, float sy ) { m_pSurface->SetScale(sx, sy); }	// 여기는 GRAPHICS->GetfGScale과 곱하지 않는다 XLayerImage::Draw에서 이걸 계속 호출하기 때문이다
 	void SetScale( const XE::VEC2& vScale ) { m_pSurface->SetScale( vScale ); }
 	void SetScale( float scalexy ) { m_pSurface->SetScale( scalexy ); }

@@ -619,7 +619,8 @@ XSurface* XGraphics::CreateSurface( bool bHighReso
 																, XE::xPF_ARGB8888		// formatImgSrc
 																, sizeImgMem
 																, bSrcKeep
-																, bMakeMask );
+																, bMakeMask 
+																, false );
 			if( bOk ) {
 				pSurface->SetstrRes( szRes );
 			} else {
@@ -660,7 +661,8 @@ XSurface* XGraphics::CreateSurface( const XE::POINT& sizeSurfaceOrig
 															, XE::xPF_ARGB8888		// formatImgSrc
 															, sizeMemSrc
 															, bSrcKeep
-															, bMakeMask );
+															, bMakeMask
+															, false );
 		if( !bOk ) {
 			SAFE_DELETE( pSurface );
 		}
