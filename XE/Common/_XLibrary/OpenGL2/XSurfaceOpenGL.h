@@ -32,7 +32,7 @@ private:
 		auto result = CreateVertexBuffer( sizeSurface.w, sizeSurface.h, vAdj.x, vAdj.y, sizeTexture.w, sizeTexture.h, sizeTextureAligned.w, sizeTextureAligned.h );
 		return result == xSUCCESS;
 	}
-	bool CreateVertexBuffer2( const XE::VEC2& sizeSurface, const XE::VEC2& vAdj, const XE::xRect2& rcInAtlas );
+	bool CreateVertexBuffer2( const XE::VEC2& sizeSurface, const XE::VEC2& vAdj, const XE::VEC2& uvlt, const XE::VEC2& uvrb );
 	void Init();
 	void Destroy();
 	bool CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMask );
@@ -132,9 +132,7 @@ public:
 	void DrawSub( float x, float y, const XE::xRECTi *src ) override;
 	void Fill( XCOLOR col );
 	//	DWORD GetPixel( float x, float y );			
-	void SetTexture( void ) override {
-		glBindTexture( GL_TEXTURE_2D, m_glTexture );
-	}
+	void SetTexture( void ) override;
 	bool IsEmpty() override {
 		if( !m_glVertexBuffer || !m_glIndexBuffer || !m_glTexture ) {
 			DestroyDevice();

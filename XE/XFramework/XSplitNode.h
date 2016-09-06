@@ -17,7 +17,7 @@ class XNode {
 public:
 	XNode() {}
 	XNode( const XE::VEC2& size ) 
-		: m_Rect( XE::VEC2(0), size - XE::VEC2(1.f) ) {}
+		: m_Rect( XE::VEC2(0), size ) {}
 	~XNode() { Destroy(); }
 	//
 	void Destroy();

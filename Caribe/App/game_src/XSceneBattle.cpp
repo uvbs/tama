@@ -762,6 +762,7 @@ int XSceneBattle::Process( float dt )
 	return XEBaseScene::Process( dt );
 }
 
+#include "OpenGL2/XTextureAtlas.h"
 //
 void XSceneBattle::Draw( void ) 
 {
@@ -769,6 +770,9 @@ void XSceneBattle::Draw( void )
 	XEBaseScene::Draw();
 	XEBaseScene::DrawTransition();
 	//
+// 	auto idTex = XTextureAtlas::sGet()->GetidTex( 0 );
+// 	if( idTex )
+// 		GRAPHICS_GL->DrawTexture( idTex, 0, 0, 256.f, 256.f, FALSE );
 #ifdef _CHEAT
 	if( XAPP->m_bDebugMode )	{
 		auto pb = XBattleField::sGet();

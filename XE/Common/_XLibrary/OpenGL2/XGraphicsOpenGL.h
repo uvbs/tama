@@ -305,6 +305,7 @@ public:
 	//
 	void DrawFan( float *pAryPos, float *pAryCol, int numVertex, int numFan ) override;
 	void CopyValueSurface( XSurface* pDst, XSurface* pSrc ) override;
+	static void sBindTexture( ID idTex );
 }; // XGraphicsOpenGL
 
 

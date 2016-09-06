@@ -721,4 +721,40 @@ bool XGraphics::LoadImg( const _tstring& resImg, XE::xImage* pOut )
 	return LoadImg( resImg.c_str(), pOut );
 }
 
-
+/**
+@brief fmtSrc로 되어있는 pImgSrc를 fmtDst포맷으로 바꾼다.
+*/
+void XE::CreateConvertPixels( const void* pImgSrc,
+															int wSrc, int hSrc,
+															xtPixelFormat fmtSrc,
+															const void** ppDstOut,
+															xtPixelFormat fmtDst )
+{
+	XBREAK( fmtSrc == fmtDst );
+	XBREAK( fmtSrc != xPF_ARGB8888 );
+	XBREAK( fmtDst == xPF_ARGB8888 );
+	const int bppSrc = XE::GetBpp( fmtSrc );
+	const int bppDst = XE::GetBpp( fmtDst );
+	if( bppDst == 4 ) {
+		// 4바이트 포맷은 현재는 8888밖에 없어서 변환할 필요가 없어서 그냥 놔둠.
+	} else
+		if( bppDst == 2 ) {
+			auto pDst = new WORD[wSrc * hSrc];
+			*ppDstOut = pDst;
+			switch( fmtDst ) {
+			case xPF_ARGB1555:
+				ConvertBlockABGR8888ToRGBA1555( pDst, wSrc, hSrc, (DWORD*)pImgSrc, wSrc, hSrc );
+				break;
+			case xPF_ARGB4444:
+				XE::ConvertBlockABGR8888ToRGBA4444( pDst, wSrc, hSrc, (DWORD*)pImgSrc, wSrc, hSrc );
+				break;
+			case xPF_RGB565:
+			case xPF_RGB555:
+				XE::ConvertBlockABGR8888ToRGB565( pDst, wSrc, hSrc, (DWORD*)pImgSrc, wSrc, hSrc );
+				break;
+			default:
+				XBREAK( 1 );
+				break;
+			}
+		}
+}

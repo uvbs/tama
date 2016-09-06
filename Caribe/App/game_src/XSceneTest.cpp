@@ -18,11 +18,11 @@ using namespace xSplit;
 /////////////////////////////////////////////////////////////////////////////////////////
 XSceneTest* XSceneTest::s_pSingleton = nullptr;
 XSceneTest* XSceneTest::sGet(){	return s_pSingleton;}
-static const XE::VEC2 c_sizeAtlas = XE::VEC2( 256, 256 );
+//static const XE::VEC2 c_sizeAtlas = XE::VEC2( 4096, 4096 );
 //////////////////////////////////////////////////////////////////////////
 void XSceneTest::Destroy() 
 {	
-	SAFE_DELETE_ARRAY( m_pAtlas );
+//	SAFE_DELETE_ARRAY( m_pAtlas );
 	XBREAK( s_pSingleton == nullptr );	// 이미 사라져있다면 잘못된것임
 	XBREAK( s_pSingleton != this );		// 싱글톤이 this가 아니면 잘못된것임.
 	s_pSingleton = nullptr;
@@ -39,8 +39,8 @@ XSceneTest::XSceneTest( XGame *pGame, SceneParamPtr& spParam )
 	//
 	// TODO: 이곳에 코딩하시오
 	//
-	m_pAtlas = new DWORD[ (int)c_sizeAtlas.Size() ];
-	::memset( m_pAtlas, 0, (int)c_sizeAtlas.Size() * sizeof(DWORD) );
+// 	m_pAtlas = new DWORD[ (int)c_sizeAtlas.Size() ];
+// 	::memset( m_pAtlas, 0, (int)c_sizeAtlas.Size() * sizeof(DWORD) );
 	SetbUpdate( true );
 }
 
@@ -73,7 +73,10 @@ void XSceneTest::Draw()
 	XSceneBase::DrawTransition();
 	//
 	if( m_glTexture ) {
- 		GRAPHICS_GL->DrawTexture( m_glTexture, 0, 0, c_sizeAtlas.h, c_sizeAtlas.h, FALSE );
+		// 256으로 축소해서 찍음
+ 		GRAPHICS_GL->DrawTexture( m_glTexture, 0, 0, 256.f, 256.f, FALSE );
+		{ auto glErr = glGetError();
+		XASSERT( glErr == GL_NO_ERROR ); }
 	}
 }
 
@@ -107,6 +110,8 @@ void XSceneTest::OnLButtonUp( float lx, float ly )
 																											sizeImg,
 																											XE::xPF_ARGB8888,
 																											XE::xPF_ARGB8888 );
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 	if( glTexture ) {
 		m_glTexture = glTexture;
 		CONSOLE( "%.1fx%.1f, addNode=%.1fx%.1f-%.1fx%.1f", 
@@ -138,24 +143,24 @@ void XSceneTest::OnMouseMove( float lx, float ly ) {
 	XSceneBase::OnMouseMove( lx, ly );
 }
 
-void XSceneTest::ReplaceTexture( DWORD* pAtlas, const XE::xRECT& rect, int wMax )
-{
-	XCOLOR col = XCOLOR_RGBA( xRandom(50, 255), xRandom(50, 255), xRandom(50, 255), 255 );
-	const int w = (int)rect.GetWidth();
-	const int h = (int)rect.GetHeight();
-	for( int y = (int)rect.vLT.y; y < (int)rect.vLT.y + h; ++y ) {
-		for( int x = (int)rect.vLT.x; x < (int)rect.vLT.x + w; ++x ) {
-			m_pAtlas[ y * wMax + x ] = col;
-		}
-	}
-}
+// void XSceneTest::ReplaceTexture( DWORD* pAtlas, const XE::xRECT& rect, int wMax )
+// {
+// 	XCOLOR col = XCOLOR_RGBA( xRandom(50, 255), xRandom(50, 255), xRandom(50, 255), 255 );
+// 	const int w = (int)rect.GetWidth();
+// 	const int h = (int)rect.GetHeight();
+// 	for( int y = (int)rect.vLT.y; y < (int)rect.vLT.y + h; ++y ) {
+// 		for( int x = (int)rect.vLT.x; x < (int)rect.vLT.x + w; ++x ) {
+// 			m_pAtlas[ y * wMax + x ] = col;
+// 		}
+// 	}
+// }
 
 void XSceneTest::OnRButtonUp( float lx, float ly ) {
-	XSceneBase::OnRButtonUp( lx, ly );
-	::memset( m_pAtlas, 0, (int)c_sizeAtlas.Size() * sizeof( DWORD ) );
-	m_idCurr = 0;
-	::glDeleteTextures( 1, &m_glTexture );
-	m_glTexture = 0;
-	SAFE_DELETE( m_pRoot );
+ 	XSceneBase::OnRButtonUp( lx, ly );
+// 	::memset( m_pAtlas, 0, (int)c_sizeAtlas.Size() * sizeof( DWORD ) );
+// 	m_idCurr = 0;
+// 	::glDeleteTextures( 1, &m_glTexture );
+// 	m_glTexture = 0;
+// 	SAFE_DELETE( m_pRoot );
 }
 

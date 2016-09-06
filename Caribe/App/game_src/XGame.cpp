@@ -413,8 +413,8 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, Scen
 	case XGAME::xSC_START:
 		XAccount::sGetPlayer().reset();
 #ifdef _XSINGLE
-		pSceneMng->SetidNextScene( XGAME::xSC_TEST );
-//	 		pSceneMng->SetidNextScene( XGAME::xSC_INGAME );
+//		pSceneMng->SetidNextScene( XGAME::xSC_TEST );
+	 		pSceneMng->SetidNextScene( XGAME::xSC_INGAME );
 #else
 #ifdef _XPATCH
 		pSceneMng->SetidNextScene( XGAME::xSC_PATCH );

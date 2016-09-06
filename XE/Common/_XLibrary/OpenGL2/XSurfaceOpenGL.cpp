@@ -121,16 +121,24 @@ bool XSurfaceOpenGL::Create( const XE::POINT& sizeSurfaceOrig
 	}
 #endif // _XPROFILE
 	if( bUseAtlas ) {
+
 		XE::xRect2 rcInAtlas;
 		// 텍스쳐 아틀라스에 pImgSrc를 삽입하고(혹은 아틀라스를 생성) 아틀라스의 아이디를 얻는다. 또한 rect에는 삽입된 위치를 얻는다.
 		// pImgSrc를 아틀라스에 배치하고 텍스쳐아이디와 위치를 얻는다.
-		m_glTexture = XTextureAtlas::sGet()->ArrangeImg( 0, &rcInAtlas, pImgSrc, _sizeMemSrc, formatImgSrc, formatSurface );
+		m_glTexture = XTextureAtlas::sGet()->ArrangeImg( 0,				// auto glTex id
+																										 &rcInAtlas, 
+																										 pImgSrc, 
+																										 _sizeMemSrc, 
+																										 formatImgSrc, 
+																										 formatSurface );
 		if( XBREAK( m_glTexture == 0 ) )
 			return false;
 		// 버텍스버퍼생성.
+		XE::VEC2 uvlt = rcInAtlas.vLT / XTextureAtlas::sGetMaxSizeTex();
+		XE::VEC2 uvrb = rcInAtlas.vRB / XTextureAtlas::sGetMaxSizeTex();
 		return CreateVertexBuffer2( sizeSurfaceOrig
 																, vAdj
-																, rcInAtlas );
+																, uvlt, uvrb );
 	} else {
 		// no atlas
 		m_glTexture = GRAPHICS_GL->CreateTextureGL( pImgSrc
@@ -235,6 +243,8 @@ xRESULT XSurfaceOpenGL::CreateVertexBuffer( float surfaceW, float surfaceH
 		surfaceW + adjx, adjy,		u, 0,  1.0f, 1.0f, 1.0f, 1.0f	// right/top
 	};
 	static GLubyte indices[4] = { 0, 1, 2, 3 };
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 
 #ifdef _XVAO
 	glGenVertexArraysOES( 1, &m_idVertexArray );
@@ -254,18 +264,20 @@ xRESULT XSurfaceOpenGL::CreateVertexBuffer( float surfaceW, float surfaceH
 
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 
 	return xSUCCESS;
 } // CreateVertexBuffer
 
 bool XSurfaceOpenGL::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 																					const XE::VEC2& vAdj,
-																					const XE::xRect2& rcInAtlas )
-{
-	const float u = rcInAtlas.vLT.x;		// 아틀라스내 좌상귀
-	const float v = rcInAtlas.vLT.y;
-	const float u2 = rcInAtlas.vRB.x;		// 아틀라스내 우하귀
-	const float v2 = rcInAtlas.vRB.y;
+																					const XE::VEC2& uvlt,
+																					const XE::VEC2& uvrb ) {
+	const float u = uvlt.x;		// 아틀라스내 좌상귀
+	const float v = uvlt.y;
+	const float u2 = uvrb.x;		// 아틀라스내 우하귀
+	const float v2 = uvrb.y;
 	XBREAK( u < 0 || u > 1.0f );
 	XBREAK( v < 0 || v > 1.0f );
 	XBREAK( u2 < 0 || u2 > 1.0f );
@@ -277,6 +289,8 @@ bool XSurfaceOpenGL::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 		sizeSurface.w + vAdj.x, vAdj.y,		u2, v,  1.0f, 1.0f, 1.0f, 1.0f	// right/top
 	};
 	static GLubyte indices[4] = { 0, 1, 2, 3 };
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 
 #ifdef _XVAO
 	glGenVertexArraysOES( 1, &m_idVertexArray );
@@ -295,11 +309,16 @@ bool XSurfaceOpenGL::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 
 	return xSUCCESS;
 } // CreateVertexBuffer2
+
 void XSurfaceOpenGL::DestroyDevice()
 {
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 	if( m_glTexture )
 		XSurface::DestroyDevice();
 	if( GetstrRes().empty() == false )
@@ -323,6 +342,8 @@ void XSurfaceOpenGL::DestroyDevice()
 		m_idVertexArray = 0;
 	}
 #endif
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 }
 
 
@@ -411,7 +432,7 @@ void XSurfaceOpenGL::CopySurface( XSurface *src )
 		return;
 	}
 	// copy texture from framebuffer
-	glBindTexture(GL_TEXTURE_2D, m_glTexture);
+	XGraphicsOpenGL::sBindTexture( m_glTexture);
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, pSrc->GetMemWidth(), pSrc->GetMemHeight());    
 	// FBO해제
 	GRAPHICS_GL->RestoreFrameBuffer();
@@ -428,6 +449,8 @@ void XSurfaceOpenGL::Draw( float x, float y, const MATRIX &mParent )
 		return;
 	}
 //	XBREAK( GetsizeMem().IsZero() );
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 	do	{
 		if( GetDrawMode() != xDM_NONE )	{
 			glEnable( GL_BLEND );
@@ -446,6 +469,8 @@ void XSurfaceOpenGL::Draw( float x, float y, const MATRIX &mParent )
 				//glBlendEquation (GL_FUNC_SUBTRACT);
 				glBlendEquation (GL_FUNC_REVERSE_SUBTRACT);
 			}
+			{ auto glErr = glGetError();
+			XASSERT( glErr == GL_NO_ERROR ); }
 			MATRIX mWorld;
 			GetMatrix( XE::VEC2(x,y), &mWorld );
 			MatrixMultiply( mWorld, mWorld, mParent );
@@ -460,7 +485,9 @@ void XSurfaceOpenGL::Draw( float x, float y, const MATRIX &mParent )
 			const auto vColor = Getv4Color();
 //			pShader->SetShader( mMVP,  m_ColorR, m_ColorG, m_ColorB, m_fAlpha );
 			pShader->SetShader( mMVP, vColor );
-		
+			{ auto glErr = glGetError();
+			XASSERT( glErr == GL_NO_ERROR ); }
+
 // 			if( m_fAlpha < 1.0f ) {
 // 				DrawCoreAlpha();
 // 			} else {		
@@ -470,6 +497,8 @@ void XSurfaceOpenGL::Draw( float x, float y, const MATRIX &mParent )
 	} while(0);
 	XSurface::ClearAttr();
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 }
 
 //#define _XSCALE_BLUR	//확대해서 블러 하는 버전
@@ -506,6 +535,8 @@ static void DrawTexture( XShader *pShader,
 #ifdef _XVAO
 	glBindVertexArrayOES( 0 );
 #endif
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glEnableVertexAttribArray( XE::ATTRIB_POS );
@@ -533,9 +564,11 @@ static void DrawTexture( XShader *pShader,
 		glBindFramebuffer(GL_FRAMEBUFFER, idFBO );
 		glBindRenderbuffer(GL_RENDERBUFFER, idRBO );
 		// bind texture
-		glBindTexture(GL_TEXTURE_2D, idTex );
+		XGraphicsOpenGL::sBindTexture( idTex );
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 }
 //
 #ifdef _XBLUR
@@ -554,7 +587,7 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
         glBindFramebuffer( GL_FRAMEBUFFER, GRAPHICS_GL->s_glBlurFBO );
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, GRAPHICS_GL->s_glBlurRBO );
         glGenTextures(1, &GRAPHICS_GL->s_glBlurTexture );
-        glBindTexture( GL_TEXTURE_2D, GRAPHICS_GL->s_glBlurTexture );
+        XGraphicsOpenGL::sBindTexture( GRAPHICS_GL->s_glBlurTexture );
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -572,7 +605,7 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
         glBindFramebuffer( GL_FRAMEBUFFER, GRAPHICS_GL->s_glBlurFBO2 );
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, GRAPHICS_GL->s_glBlurRBO2 );
         glGenTextures(1, &GRAPHICS_GL->s_glBlurTexture2 );
-        glBindTexture( GL_TEXTURE_2D, GRAPHICS_GL->s_glBlurTexture2 );
+        XGraphicsOpenGL::sBindTexture( GRAPHICS_GL->s_glBlurTexture2 );
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -659,7 +692,7 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
 		glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
 
 		// bind texture
-		glBindTexture(GL_TEXTURE_2D, m_glTexture);
+		XGraphicsOpenGL::sBindTexture( m_glTexture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -760,7 +793,7 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
 			glClear(GL_COLOR_BUFFER_BIT);
 			GRAPHICS_GL->GetpBlurShaderH()->SetShader( XE::x_mViewProjection, 1.f, 1.f, 1.f, 1.f );
 			// bind texture
-			glBindTexture(GL_TEXTURE_2D, idCurrSrcTexture );
+			XGraphicsOpenGL::sBindTexture( idCurrSrcTexture );
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}
 #endif // not xDownScale_blur
@@ -801,7 +834,7 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
         glEnableVertexAttribArray( XE::ATTRIB_COLOR );
         glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
         // bind texture
-        glBindTexture(GL_TEXTURE_2D, idCurrSrcTexture );
+        XGraphicsOpenGL::sBindTexture( idCurrSrcTexture );
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -847,7 +880,7 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
         glEnableVertexAttribArray( XE::ATTRIB_COLOR );
         glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
         // bind texture
-        glBindTexture(GL_TEXTURE_2D, idCurrSrcTexture );
+        XGraphicsOpenGL::sBindTexture( idCurrSrcTexture );
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -881,7 +914,7 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
         glBindFramebuffer( GL_FRAMEBUFFER, GRAPHICS_GL->s_glBlurFBO );
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, GRAPHICS_GL->s_glBlurRBO );
         glGenTextures(1, &GRAPHICS_GL->s_glBlurTexture );
-        glBindTexture( GL_TEXTURE_2D, GRAPHICS_GL->s_glBlurTexture );
+        XGraphicsOpenGL::sBindTexture( GRAPHICS_GL->s_glBlurTexture );
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -899,7 +932,7 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
         glBindFramebuffer( GL_FRAMEBUFFER, GRAPHICS_GL->s_glBlurFBO2 );
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, GRAPHICS_GL->s_glBlurRBO2 );
         glGenTextures(1, &GRAPHICS_GL->s_glBlurTexture2 );
-        glBindTexture( GL_TEXTURE_2D, GRAPHICS_GL->s_glBlurTexture2 );
+        XGraphicsOpenGL::sBindTexture( GRAPHICS_GL->s_glBlurTexture2 );
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -979,7 +1012,7 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
 		glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
 		
 		// bind texture
-		glBindTexture(GL_TEXTURE_2D, m_textureID);
+		XGraphicsOpenGL::sBindTexture( m_textureID);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -1029,8 +1062,8 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
         glEnableVertexAttribArray( XE::ATTRIB_COLOR );
         glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
         // bind texture
-        glBindTexture(GL_TEXTURE_2D, idTex[i%2] );
-		//        glBindTexture(GL_TEXTURE_2D, GRAPHICS_GL->s_glBlurTexture );
+        XGraphicsOpenGL::sBindTexture( idTex[i%2] );
+		//        XGraphicsOpenGL::sBindTexture( GRAPHICS_GL->s_glBlurTexture );
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -1072,7 +1105,7 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
         glEnableVertexAttribArray( XE::ATTRIB_COLOR );
         glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
         // bind texture
-        glBindTexture(GL_TEXTURE_2D, GRAPHICS_GL->s_glBlurTexture2 );
+        XGraphicsOpenGL::sBindTexture( GRAPHICS_GL->s_glBlurTexture2 );
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -1096,6 +1129,8 @@ void XSurfaceOpenGL::DrawLocal( float x, float y, float lx, float ly )
 		return;
 #endif // _XPROFILE
 	XBREAK( GetsizeMem().IsZero() );
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 	if( GetDrawMode() != xDM_NONE )	{
 		glEnable( GL_BLEND );
 		glBlendEquation( GL_FUNC_ADD );
@@ -1113,6 +1148,8 @@ void XSurfaceOpenGL::DrawLocal( float x, float y, float lx, float ly )
 			//glBlendEquation (GL_FUNC_SUBTRACT);
 			glBlendEquation( GL_FUNC_REVERSE_SUBTRACT );
 		}
+		{ auto glErr = glGetError();
+		XASSERT( glErr == GL_NO_ERROR ); }
 		MATRIX mWorld, m;
 		MatrixIdentity( mWorld );
 		MatrixTranslation( m, lx, ly, 0 );
@@ -1145,10 +1182,14 @@ void XSurfaceOpenGL::DrawLocal( float x, float y, float lx, float ly )
 //		GRAPHICS_GL->GetpBaseShader()->SetShader( mMVP, m_ColorR, m_ColorG, m_ColorB, m_fAlpha );
 		const XE::VEC4 vColor = Getv4Color();
 		GRAPHICS_GL->GetpBaseShader()->SetShader( mMVP, vColor );
-			DrawCore();
+		{ auto glErr = glGetError();
+		XASSERT( glErr == GL_NO_ERROR ); }
+		DrawCore();
 	}
 	XSurface::ClearAttr();
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 } // draw local
 
 // 매트릭스 변환이 없는 코어버전.
@@ -1170,6 +1211,8 @@ void XSurfaceOpenGL::DrawCore( void )
 	XBREAK( m_idVertexArray == 0 );
     glBindVertexArrayOES( m_idVertexArray );
 #endif
+		{ auto glErr = glGetError();
+		XASSERT( glErr == GL_NO_ERROR ); }
 		// bind vertex/index buffer
 		glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
 		glEnableVertexAttribArray( XE::ATTRIB_POS );
@@ -1179,22 +1222,30 @@ void XSurfaceOpenGL::DrawCore( void )
 		glEnableVertexAttribArray( XE::ATTRIB_COLOR );
 		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, c ) );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
+		{ auto glErr = glGetError();
+		XASSERT( glErr == GL_NO_ERROR ); }
 		// bind texture
 #ifdef _XPROFILE
 		if( !(XGraphics::s_dwDraw & XE::xeBitNoTexture) )
 #endif // _XPROFILE
-			glBindTexture( GL_TEXTURE_2D, m_glTexture );
+			XGraphicsOpenGL::sBindTexture( m_glTexture );
+		{ auto glErr = glGetError();
+		XASSERT( glErr == GL_NO_ERROR ); }
 
 #ifdef _XPROFILE
 		if( !(XGraphics::s_dwDraw & XE::xeBitNoDP) )
 #endif // _XPROFILE
 			glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
-	
+		{ auto glErr = glGetError();
+		XASSERT( glErr == GL_NO_ERROR ); }
+
 }
 
 // this의 RECT:src영역을 x,y위치에 그린다.
 void XSurfaceOpenGL::DrawSub( float x, float y, const XE::xRECTi *src )
 {
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 #ifdef _XPROFILE
 	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
 		return;
@@ -1218,6 +1269,8 @@ void XSurfaceOpenGL::DrawSub( float x, float y, const XE::xRECTi *src )
 	} else {
 		// src가 지정되어 있지 않으면 전체 출력.
 		Draw( x, y );
+		{ auto glErr = glGetError();
+		XASSERT( glErr == GL_NO_ERROR ); }
 		return;
 	}
 	GLfloat tex[ 8 ] = {l, b, r, b, l, t, r, t};
@@ -1230,6 +1283,8 @@ void XSurfaceOpenGL::DrawSub( float x, float y, const XE::xRECTi *src )
 											1.0f, 1.0f, 1.0f, alpha,
 											1.0f, 1.0f, 1.0f, alpha};
 
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 	glEnable( GL_BLEND );
 	glBlendEquation( GL_FUNC_ADD );
 	if( GetDrawMode() == xDM_NORMAL )
@@ -1252,6 +1307,8 @@ void XSurfaceOpenGL::DrawSub( float x, float y, const XE::xRECTi *src )
 	const auto vColor = Getv4Color();
 // 	GRAPHICS_GL->GetpBaseShader()->SetShader( mMVP, m_ColorR, m_ColorG, m_ColorB, 1.0f );
 	GRAPHICS_GL->GetpBaseShader()->SetShader( mMVP, vColor );
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 #ifdef _XVAO
 	glBindVertexArrayOES( 0 );
 #endif
@@ -1263,20 +1320,28 @@ void XSurfaceOpenGL::DrawSub( float x, float y, const XE::xRECTi *src )
 	glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, tex );
 	glEnableVertexAttribArray( XE::ATTRIB_COLOR );
 	glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col );
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 	// bind texture
 #ifdef _XPROFILE
 	if( !(XGraphics::s_dwDraw & XE::xeBitNoTexture) )
 #endif // _XPROFILE
-		glBindTexture( GL_TEXTURE_2D, m_glTexture );
+		XGraphicsOpenGL::sBindTexture( m_glTexture );
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 
 #ifdef _XPROFILE
 	if( !(XGraphics::s_dwDraw & XE::xeBitNoDP) )
 #endif // _XPROFILE
 		glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
 	//
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 	XSurface::ClearAttr();
 // 	m_DrawMode = xDM_NORMAL;
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	{ auto glErr = glGetError();
+	XASSERT( glErr == GL_NO_ERROR ); }
 }
 
 void XSurfaceOpenGL::Fill( XCOLOR col )
@@ -1291,5 +1356,9 @@ void*	XSurfaceOpenGL::Lock( int *pMemW, BOOL bReadOnly)
 	return GetSrcImg( &w, &h );
 }
 
+void XSurfaceOpenGL::SetTexture( void )
+{
+	XGraphicsOpenGL::sBindTexture( m_glTexture );
+}
 
 #endif // gl

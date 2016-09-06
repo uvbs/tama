@@ -3,6 +3,7 @@
 #include "XFontMng.h"
 #include "_Wnd2/XWndPopup.h"
 #include "XImageMng.h"
+#include "OpenGL2/XTextureAtlas.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -35,6 +36,7 @@ void XEContent::Destroy()
 
 BOOL XEContent::OnCreate()
 {
+	XTextureAtlas::sSetMaxSizeTex( XE::VEC2(4096, 4096) );
 	const auto strKeyLang = OnSelectLanguageKey();		// virtual. lang.txt의 국가키를 받는다.
 	XE::LANG.SetSelectedKey( strKeyLang );
 	CreateSystemFont();
