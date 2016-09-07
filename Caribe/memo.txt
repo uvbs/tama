@@ -1114,6 +1114,13 @@ http://graph.facebook.com/1385798771667701/picture?type=normal
 	  .cheat모드에서 화면 한켠에 현재 로딩된 폰트들의 폰트이름과 크기리스트를 볼수 있게 하면 좋을듯.
 	.압축텍스쳐의 사용
 	.모든 png의 565포맷사용으로용량 감소.
+	.스레드로딩
+	  .OpenGL은 주스레드 이외의 스레드에서 opengl context를 쓸수 없다고 한다.
+	  .파일i/o만 스레드로 놓고 텍스쳐 생성등은 주스레드에서 하는수밖에 없다.
+	  .SprMng::Load()를 하면 로딩예약만 걸어놓고 빠져나간다.
+	  .로딩하면서 할당한 메모리를 XSprite에 일단 보관한다.
+	  .SprMng::Process(주스레드)에서 로딩이 완료된 spr파일의 각 XSprite들을 텍스쳐 아틀라스에 집어넣는다.
+	  .XSprObj에 pSprDat를 연결시킨다.
 }
 
 

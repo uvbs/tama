@@ -103,13 +103,15 @@ void XSceneTest::OnLButtonUp( float lx, float ly )
 		}
 	}
 	XE::xRect2 rc;
+	XE::VEC2 sizeAtlas;
 	// glTexture아틀라스에 새 사각형을 배치
 	auto glTexture = XTextureAtlas::sGet()->ArrangeImg( m_glTexture,
 																											&rc,
 																											pCurrImg,
 																											sizeImg,
 																											XE::xPF_ARGB8888,
-																											XE::xPF_ARGB8888 );
+																											XE::xPF_ARGB8888,
+																											&sizeAtlas );
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	if( glTexture ) {

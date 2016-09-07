@@ -16,14 +16,18 @@ int XSurface::s_sizeTotalVMem = 0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void XSurface::DestroyDevice()
 {
-	AddSizeByte( -GetbytesMemAligned() );
-	XSurface::s_sizeTotalVMem -= GetbytesMemAligned();
+	if( !m_bAtlas ) {
+		AddSizeByte( -GetbytesMemAligned() );
+		XSurface::s_sizeTotalVMem -= GetbytesMemAligned();
+	}
 }
 
 void XSurface::RestoreDeviceFromSrcImg()
 {
-	AddSizeByte( GetbytesMemAligned() );
-	XSurface::s_sizeTotalVMem += GetbytesMemAligned();
+	if( !m_bAtlas ) {
+		AddSizeByte( GetbytesMemAligned() );
+		XSurface::s_sizeTotalVMem += GetbytesMemAligned();
+	}
 }
 /**
  @brief 
@@ -77,10 +81,9 @@ bool XSurface::Create( const XE::POINT& sizeSurfaceOrig
 									, m_sizeMemAligned
 									, bUseAtlas );
 	if( bOk ) {
-		AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
-		// 상위딴에서 집계하려고 했으나 하위딴에서 자기들끼리 호출하는건 집계가 안되는 문제가 있어 집계는 하위딴에게 맡김.
-// 		m_sizeByte += ( m_sizeMemAligned.Size() * bppSurface );
-// 		XSurface::s_sizeTotalVMem += (m_sizeMemAligned.Size() * bppSurface );
+		m_bAtlas = bUseAtlas;
+		if( !m_bAtlas )
+			AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
 	}
 	return bOk;
 }
@@ -143,7 +146,8 @@ bool XSurface::CreateSub( const XE::POINT& posMemSrc
 														, vAdj
 														, formatSurface );
 	if( bOk ) {
-		AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
+		if( !m_bAtlas )
+			AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
 	}
 	return bOk;
 }

@@ -655,6 +655,7 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\XFont.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\XFontMng.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\XFontSpr.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\XGraphicsUtil.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\XHSLMap.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\XImage.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\XImageLibPng.h" />
@@ -915,6 +916,7 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\XError.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\XFontMng.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\XFontSpr.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\XGraphicsUtil.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\XHSLMap.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\XImage.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\XImageLibPng.cpp" />

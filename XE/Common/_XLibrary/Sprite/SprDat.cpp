@@ -155,7 +155,8 @@ BOOL XSprDat::Load( LPCTSTR _szFilename, bool bUseAtlas, BOOL bSrcKeep, BOOL bRe
 			XE::VEC2 vSize = pSpr->GetsizeMemAligned();
 			int byteSize = (int)(vSize.w * vSize.h * 2);
 			XSprite::s_sizeTotalMem += byteSize;
-			m_SizeByte += byteSize;
+			if( !bUseAtlas )
+				m_SizeByte += byteSize;
 		} else {
 			// restore device mode
 			pSpr = m_ppSprites[ i ];

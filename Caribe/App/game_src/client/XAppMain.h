@@ -87,6 +87,7 @@ public:
 	BOOL m_bWaitAfterWin = false;			// 상대부대 전멸 후 대기
 	xtTestMode m_ModeTest = xTEST_NONE;
 //	bool m_bLow = false;
+	int m_idxViewAtlas = -1;
 #ifdef WIN32
 	bool m_bViewMemoryInfo = false;
 	std::string m_strLayoutXml;

@@ -477,6 +477,7 @@ void XClientMain::OnDelegateFrameMove( float dt )
 
 void XClientMain::Draw( void )
 {
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	XPROF_OBJ_AUTO();
 	if( m_Restore == xRST_FALSE ) {	// 디바이스 자원 잃은 상태에선 더이상 진행 하지 않는다.
 #ifdef WIN32
@@ -520,6 +521,7 @@ void XClientMain::Draw( void )
 		}
 	}
 #endif
+	XGraphicsOpenGL::s_numCallBindTexture = 0;
 }
 
 void XClientMain::DrawDebugInfo( float x, float y )

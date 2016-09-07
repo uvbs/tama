@@ -59,6 +59,7 @@ private:
 	BYTE *m_pMask;			// 픽킹용 마스크 이미지. 알파값만 들어있다.
 	XE::xtPixelFormat m_formatSurface = XE::xPF_NONE;	// vRam에 만들어진 서피스의 픽셀포맷.
 	int m_sizeByte = 0;			// vram에 로딩된 텍스쳐의 크기
+	bool m_bAtlas = false;		// atlas에 텍스쳐가 있는지.
 	inline void SetsizeSurface( float w, float h ) {
 		m_Width = w;
 		m_Height = h;
@@ -150,6 +151,7 @@ private:
 private:
 	SET_ACCESSOR( const XE::VEC2&, sizeMem );
 public:
+	GET_SET_BOOL_ACCESSOR( bAtlas );
 	GET_ACCESSOR_CONST( const XE::VEC2&, sizeMem );
 	GET_ACCESSOR_CONST( const XE::POINT&, sizeMemAligned );
 	GET_ACCESSOR_CONST( XE::xtPixelFormat, formatSurface );

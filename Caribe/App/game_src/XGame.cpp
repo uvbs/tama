@@ -11,6 +11,7 @@
 #include "XSystem.h"
 #ifdef WIN32
 #include "CaribeView.h"
+#include "XSceneTest.h"
 #endif // WIN32
 #ifdef _VER_IOS
 	#include "objc/xe_ios.h"
@@ -68,9 +69,9 @@
 #include "client/XAppDelegate.h"
 #include "XDefNetwork.h"
 #include "XFramework/XEProfile.h"
-#ifdef WIN32
-#include "XSceneTest.h"
-#endif // WIN32
+#ifdef _CHEAT
+#include "OpenGL2/XTextureAtlas.h"
+#endif // _CHEAT
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -796,6 +797,11 @@ void XGame::Draw()
 // 		PUT_STRING_STROKE( vMouse.x + 100.f, vMouse.y, XCOLOR_YELLOW, strt.c_str() );
 	}
 #endif // WIN32
+	if( XAPP->m_idxViewAtlas >= 0 ) {
+		auto idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
+		if( idTex )
+			GRAPHICS_GL->DrawTexture( idTex, 0, 0, 356.f, 356.f, FALSE );
+	}
 #endif // _CHEAT
 // 	if( m_psoTest ) {
 // 		auto vMouse = INPUTMNG->GetMousePos();

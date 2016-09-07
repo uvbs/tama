@@ -36,7 +36,7 @@ void XEContent::Destroy()
 
 BOOL XEContent::OnCreate()
 {
-	XTextureAtlas::sSetMaxSizeTex( XE::VEC2(4096, 4096) );
+//	XTextureAtlas::sSetMaxSizeTex( XE::VEC2(4096, 4096) );
 	const auto strKeyLang = OnSelectLanguageKey();		// virtual. lang.txt의 국가키를 받는다.
 	XE::LANG.SetSelectedKey( strKeyLang );
 	CreateSystemFont();

@@ -125,17 +125,19 @@ bool XSurfaceOpenGL::Create( const XE::POINT& sizeSurfaceOrig
 		XE::xRect2 rcInAtlas;
 		// 텍스쳐 아틀라스에 pImgSrc를 삽입하고(혹은 아틀라스를 생성) 아틀라스의 아이디를 얻는다. 또한 rect에는 삽입된 위치를 얻는다.
 		// pImgSrc를 아틀라스에 배치하고 텍스쳐아이디와 위치를 얻는다.
+		XE::VEC2 sizeAtlas;
 		m_glTexture = XTextureAtlas::sGet()->ArrangeImg( 0,				// auto glTex id
 																										 &rcInAtlas, 
 																										 pImgSrc, 
 																										 _sizeMemSrc, 
 																										 formatImgSrc, 
-																										 formatSurface );
+																										 formatSurface,
+																										 &sizeAtlas );
 		if( XBREAK( m_glTexture == 0 ) )
 			return false;
 		// 버텍스버퍼생성.
-		XE::VEC2 uvlt = rcInAtlas.vLT / XTextureAtlas::sGetMaxSizeTex();
-		XE::VEC2 uvrb = rcInAtlas.vRB / XTextureAtlas::sGetMaxSizeTex();
+		XE::VEC2 uvlt = rcInAtlas.vLT / sizeAtlas;
+		XE::VEC2 uvrb = rcInAtlas.vRB / sizeAtlas;
 		return CreateVertexBuffer2( sizeSurfaceOrig
 																, vAdj
 																, uvlt, uvrb );
@@ -228,6 +230,7 @@ xRESULT XSurfaceOpenGL::CreateVertexBuffer( float surfaceW, float surfaceH
 																					, int memw, int memh
 																					, int alignW, int alignH )
 {
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	XBREAK( alignW == 0 );
 	XBREAK( alignH == 0 );
 	float adjx = (float)((int)_adjx);
@@ -274,6 +277,7 @@ bool XSurfaceOpenGL::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 																					const XE::VEC2& vAdj,
 																					const XE::VEC2& uvlt,
 																					const XE::VEC2& uvrb ) {
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	const float u = uvlt.x;		// 아틀라스내 좌상귀
 	const float v = uvlt.y;
 	const float u2 = uvrb.x;		// 아틀라스내 우하귀
@@ -317,6 +321,7 @@ bool XSurfaceOpenGL::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 
 void XSurfaceOpenGL::DestroyDevice()
 {
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	if( m_glTexture )
@@ -324,10 +329,14 @@ void XSurfaceOpenGL::DestroyDevice()
 	if( GetstrRes().empty() == false )
 		S_TRACE("destroy Surface: %s", GetstrRes().c_str() );
 	// 홈으로 나갈때 자동으로 디바이스 자원은 파괴되지만 m_glTexture등도 클리어 시켜주지 않으면 돌아왔을때 새로 할당한 번호가 겹쳐서 다시 지워버릴 수 있다.
-	if( m_glTexture )	{
-		glDeleteTextures(1, &m_glTexture);
-		m_glTexture = 0;
+	if( IsbAtlas() ) {
+		XTextureAtlas::sGet()->Release( m_glTexture );
+	} else {
+		if( m_glTexture ) {
+			glDeleteTextures( 1, &m_glTexture );
+		}
 	}
+	m_glTexture = 0;
 	if( m_glVertexBuffer ) {
 		glDeleteBuffers(1, &m_glVertexBuffer);
 		m_glVertexBuffer = 0;
@@ -355,6 +364,7 @@ void XSurfaceOpenGL::DestroyDevice()
  */
 void XSurfaceOpenGL::RestoreDevice( void )
 {
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	XE::VEC2 vSize;
 	DWORD *pSrcImg = GetSrcImg( &vSize );
 //#ifdef _VER_IOS
@@ -419,6 +429,7 @@ void XSurfaceOpenGL::RestoreDeviceFromSrcImg( void )
 // src서피스를 this로 카피.
 void XSurfaceOpenGL::CopySurface( XSurface *src )
 {
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	XSurfaceOpenGL *pSrc = (XSurfaceOpenGL *)src;
 	// src를 FBO에 연결
 	// glCopyTexImage를 이용해 src에서 this로 옮김.
@@ -444,6 +455,7 @@ void XSurfaceOpenGL::CopySurface( XSurface *src )
 
 void XSurfaceOpenGL::Draw( float x, float y, const MATRIX &mParent )
 {
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	if( GetsizeMem().w == 0 || GetsizeMem().h == 0 ) {
 		// 비동기상태로 로딩을 기다리고 있는 중.
 		return;
@@ -520,6 +532,7 @@ static void DrawTexture( XShader *pShader,
 						GLuint idFBO, GLuint idRBO,
 						MATRIX *pmParent )
 {
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	float u1 = 0;
 	float v1 = 0;
 	float u2 = _u2;
@@ -574,6 +587,7 @@ static void DrawTexture( XShader *pShader,
 #ifdef _XBLUR
 void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
 {
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	float rtw = RT_WIDTH;
 	float rth = RT_HEIGHT;
 	GLint wrap = GL_REPEAT;	// CLAMP_EDGE로 하니까 블러 끝에 밀리는색이 나타난다
@@ -894,232 +908,6 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
 }
 #endif // _XBLUR
 
-#if 0
-/*
-#define RT_WIDTH	512
-#define RT_HEIGHT	512
-#define BLUR_MARGIN	16.f
-void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
-{
-	float rtw = RT_WIDTH;
-	float rth = RT_HEIGHT;
-	GLint wrap = GL_REPEAT;
-    if( GRAPHICS_GL->s_glBlurRBO == 0 )
-    {
-		// 렌더버퍼가 생성이 안되어 있다면 새로 만든다.
-        glGenRenderbuffers( 1, &GRAPHICS_GL->s_glBlurRBO );
-        glBindRenderbuffer( GL_RENDERBUFFER, GRAPHICS_GL->s_glBlurRBO );
-        glRenderbufferStorage( GL_RENDERBUFFER, GL_RGBA8_OES, RT_WIDTH, RT_HEIGHT );
-        glGenFramebuffers(1, &GRAPHICS_GL->s_glBlurFBO );
-        glBindFramebuffer( GL_FRAMEBUFFER, GRAPHICS_GL->s_glBlurFBO );
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, GRAPHICS_GL->s_glBlurRBO );
-        glGenTextures(1, &GRAPHICS_GL->s_glBlurTexture );
-        XGraphicsOpenGL::sBindTexture( GRAPHICS_GL->s_glBlurTexture );
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, RT_WIDTH, RT_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, GRAPHICS_GL->s_glBlurTexture, 0 );
-        GLenum status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
-        if( status != GL_FRAMEBUFFER_COMPLETE ) {
-            return;
-        }
-        glGenRenderbuffers( 1, &GRAPHICS_GL->s_glBlurRBO2 );
-        glBindRenderbuffer( GL_RENDERBUFFER, GRAPHICS_GL->s_glBlurRBO2 );
-        glRenderbufferStorage( GL_RENDERBUFFER, GL_RGBA8_OES, RT_WIDTH, RT_HEIGHT );
-        glGenFramebuffers(1, &GRAPHICS_GL->s_glBlurFBO2 );
-        glBindFramebuffer( GL_FRAMEBUFFER, GRAPHICS_GL->s_glBlurFBO2 );
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, GRAPHICS_GL->s_glBlurRBO2 );
-        glGenTextures(1, &GRAPHICS_GL->s_glBlurTexture2 );
-        XGraphicsOpenGL::sBindTexture( GRAPHICS_GL->s_glBlurTexture2 );
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, RT_WIDTH, RT_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, GRAPHICS_GL->s_glBlurTexture2, 0 );
-        status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
-        if( status != GL_FRAMEBUFFER_COMPLETE ) {
-            return;
-        }
-    }
-	// 렌더타겟을 설정한다.
-    glBindFramebuffer(GL_FRAMEBUFFER, GRAPHICS_GL->s_glBlurFBO );
-    glBindRenderbuffer(GL_RENDERBUFFER, GRAPHICS_GL->s_glBlurRBO );
-	glRenderbufferStorage( GL_RENDERBUFFER, GL_RGBA8_OES, RT_WIDTH, RT_HEIGHT );
-    glViewport(0, 0, RT_WIDTH, RT_HEIGHT);
-	//    XE::SetProjection( 256, 256 );
-    MatrixMakeOrtho(XE::x_mViewProjection, 0, RT_WIDTH, 0, RT_HEIGHT, -1.0f, 1.0f);
-	//	XE::SetProjection(XE::GetGameWidth(), XE::GetGameHeight());
-	//	XE::SetProjection(256, 256);
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-	//
-    MATRIX mTrans, mScale, mMVP;
-	// 블러를 하면 원래크기보다 조금 줄어들기때문에 소스텍스쳐를 살짝 크게 만들어 넣는다.
-	// 세이더만드러 블러가 커지려면 멀티패스로 반복해서 블러를 먹여야 하는데 그것보다 소스자체를 살짝 크게 만들어 넣는 꼼수를 택함
-	MatrixIdentity( mMVP );
-    MatrixTranslation( mTrans, -42.f, -42.f, 0 );	// 중심을 기준으로 확대하기 위해 축조정
-    MatrixMultiply( mMVP, mMVP, mTrans );
-	// 8픽셀 크기로 블러가 되게 하려고 8픽셀 여유를 뒀다.
-    MatrixTranslation( mTrans, BLUR_MARGIN, BLUR_MARGIN, 0 );
-	MatrixScaling(mScale, 1.25f, 1.25f, 1.f);
-    MatrixMultiply( mMVP, mMVP, mScale );
-    MatrixMultiply( mMVP, mMVP, mTrans );
-    MatrixTranslation( mTrans, 42.f, 42.f, 0 );		// 축조정
-    MatrixMultiply( mMVP, mMVP, mTrans );
-	MatrixMultiply( mMVP, mMVP, XE::x_mViewProjection );
-    GRAPHICS_GL->GetpBaseShader()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
-    glEnable( GL_BLEND );
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-#ifdef _XVAO
-    glBindVertexArrayOES( m_idVertexArray );
-#endif
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
-    glEnableVertexAttribArray( XE::ATTRIB_POS );
-    glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, sizeof(STRUCT_VERTEX_SURFACE), (void*)offsetof(STRUCT_VERTEX_SURFACE,x));
-    glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
-    glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, sizeof(STRUCT_VERTEX_SURFACE), (void*)offsetof(STRUCT_VERTEX_SURFACE,t));
-    
-    glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-    glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(STRUCT_VERTEX_SURFACE), (void*)offsetof(STRUCT_VERTEX_SURFACE,c));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
-	
-	{
-		// this원본을 렌더타겟에 <원본크기>그대로 렌더링한다
-		float u = (float)GetMemWidth() / GetAlignedWidth();
-		float v = (float)GetMemHeight() / GetAlignedHeight();
-		float surfacew = GetMemWidth();
-		float surfaceh = GetMemHeight();
-		GLfloat tex[8] = { 0, v, u, v, 0, 0, u, 0 };
-		GLfloat pos[8] = { 0, surfaceh, surfacew, surfaceh, 0, 0, surfacew, 0 };
-		GLfloat col[16] = { 1.0f, 1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f, 1.0f };
-#ifdef _XVAO
-		glBindVertexArrayOES( 0 );
-#endif
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glEnableVertexAttribArray( XE::ATTRIB_POS );
-		glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
-		glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, tex);
-		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
-		glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-		glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
-		
-		// bind texture
-		XGraphicsOpenGL::sBindTexture( m_textureID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
-		
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	}
-    
-    // horiz blur
-	GLuint fbo[2] = { GRAPHICS_GL->s_glBlurFBO2, GRAPHICS_GL->s_glBlurFBO };
-	GLuint rbo[2] = { GRAPHICS_GL->s_glBlurRBO2, GRAPHICS_GL->s_glBlurRBO };
-	GLuint idTex[2] = { GRAPHICS_GL->s_glBlurTexture, GRAPHICS_GL->s_glBlurTexture2 };
-	for( int i = 0; i < 3; ++i )
-    {
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo[i%2] );
-        glBindRenderbuffer(GL_RENDERBUFFER, rbo[i%2] );
-		//        glBindFramebuffer(GL_FRAMEBUFFER, GRAPHICS_GL->s_glBlurFBO2 );
-		//        glBindRenderbuffer(GL_RENDERBUFFER, GRAPHICS_GL->s_glBlurRBO2 );
-		glViewport(0, 0, RT_WIDTH, RT_HEIGHT);
-		//        MatrixMakeOrtho(XE::x_mViewProjection, 0, 256, 0, 256, -1.0f, 1.0f);
-		//        MatrixMakeOrtho(XE::x_mViewProjection, 0, 360, 0, 540, -1.0f, 1.0f);
-        GRAPHICS_GL->GetpBlurShaderH()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
-		//		GRAPHICS_GL->GetpBaseShader()->SetShader( mMVP, 1.f, 1.f, 1.f, 1.f );
-        glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
-        float u1 = 0;
-        float v1 = 0;
-        float u2 = (GetMemWidth() + (BLUR_MARGIN*2.f)) / RT_WIDTH;
-        float v2 = (GetMemHeight() + (BLUR_MARGIN*2.f)) / RT_HEIGHT;
-        float surfacew = GetMemWidth() + (BLUR_MARGIN*2.f);
-        float surfaceh = GetMemHeight() + (BLUR_MARGIN*2.f);
-        GLfloat tex[8] = { u1, v2, u2, v2, u1, v1, u2, v1 };
-        GLfloat pos[8] = { 0, surfaceh, surfacew, surfaceh, 0, 0, surfacew, 0 };
-        GLfloat col[16] = { 1.0f, 1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f, 1.0f };
-#ifdef _XVAO
-        glBindVertexArrayOES( 0 );
-#endif
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glEnableVertexAttribArray( XE::ATTRIB_POS );
-        glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
-        glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, tex);
-        glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
-        glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-        glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
-        // bind texture
-        XGraphicsOpenGL::sBindTexture( idTex[i%2] );
-		//        XGraphicsOpenGL::sBindTexture( GRAPHICS_GL->s_glBlurTexture );
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    }
-	
-    
-    // vert blur shader
-    {
-        GRAPHICS_GL->RestoreFrameBuffer();
-        glEnable( GL_BLEND );
-		//		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE );
-        MatrixTranslation( mTrans, x-(BLUR_MARGIN*0.5f), y-(BLUR_MARGIN*0.5f), 0 );
-        MatrixMultiply( mMVP, mTrans, XE::x_mViewProjection );
-        GRAPHICS_GL->GetpBlurShaderV()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
-		//		GRAPHICS_GL->GetpBaseShader()->SetShader( mMVP, 1.f, 1.f, 1.f, 1.f );
-        float u = (GetMemWidth() + (BLUR_MARGIN*2.f)) / RT_WIDTH;
-        float v = (GetMemHeight() + (BLUR_MARGIN*2.f)) / RT_HEIGHT;
-        float surfacew = (BLUR_MARGIN*0.5f) + GetWidth() + (BLUR_MARGIN*0.5f);
-        float surfaceh = (BLUR_MARGIN*0.5f) + GetHeight() + (BLUR_MARGIN*0.5f);
-        GLfloat tex[8] = { 0, v, u, v, 0, 0, u, 0 };
-        GLfloat pos[8] = { 0, surfaceh, surfacew, surfaceh, 0, 0, surfacew, 0 };
-        GLfloat col[16] = { 1.0f, 1.0f, 1.0f, m_fAlpha,
-            1.0f, 1.0f, 1.0f, m_fAlpha,
-            1.0f, 1.0f, 1.0f, m_fAlpha,
-            1.0f, 1.0f, 1.0f, m_fAlpha };
-        
-#ifdef _XVAO
-        glBindVertexArrayOES( 0 );
-#endif
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glEnableVertexAttribArray( XE::ATTRIB_POS );
-        glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
-        glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, tex);
-        glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
-        glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-        glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
-        // bind texture
-        XGraphicsOpenGL::sBindTexture( GRAPHICS_GL->s_glBlurTexture2 );
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
-        
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    }
-    
-	//    GRAPHICS_GL->DrawTexture( GRAPHICS_GL->s_glBlurTexture, 0, 0, 256, 256 );
-    
-}
-*/
-
-#endif // 0
 //-------------------------------------------------------------
 // 가변윈도우 프레임 그릴때 사용
 void XSurfaceOpenGL::DrawLocal( float x, float y, float lx, float ly )
@@ -1128,6 +916,7 @@ void XSurfaceOpenGL::DrawLocal( float x, float y, float lx, float ly )
 	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
 		return;
 #endif // _XPROFILE
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	XBREAK( GetsizeMem().IsZero() );
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
@@ -1199,6 +988,7 @@ void XSurfaceOpenGL::DrawCore( void )
 	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
 		return;
 #endif // _XPROFILE
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	XBREAK( GetsizeMem().IsZero() );
 	// Restore가 아직 안되어 0일수도 있으므로(페북프로필사진같은) 그때는 그냥 그리지만 않게 한다.
 	if( m_glVertexBuffer == 0 )
@@ -1244,6 +1034,7 @@ void XSurfaceOpenGL::DrawCore( void )
 // this의 RECT:src영역을 x,y위치에 그린다.
 void XSurfaceOpenGL::DrawSub( float x, float y, const XE::xRECTi *src )
 {
+	XAUTO_LOCK2( XGraphics::s_spLock );
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 #ifdef _XPROFILE

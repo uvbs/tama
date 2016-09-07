@@ -47,6 +47,7 @@ private:
 	XEWndWorld *m_pWndWorld;
 	DWORD m_dwFlag;
 	_tstring m_strSpr;		// spr파일 이름.
+	ID m_idAtlas = 0;			
 	void Init() {
 		m_Type = 0;
 		m_snObj = sGenerateID();	// 순차적으로 번호가 생성되므로 나중에 생성된 객체가 먼저생성된 객체보다 위에 찍히게 하고 싶을때 소트용으로 써도 된다.

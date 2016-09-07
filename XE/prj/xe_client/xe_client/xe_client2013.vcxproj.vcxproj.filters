@@ -491,6 +491,9 @@
     <ClCompile Include="..\..\..\XFramework\XSplitNode.cpp">
       <Filter>source\Framework</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XGraphicsUtil.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stdafx.h" />
@@ -1082,9 +1085,6 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XDelegateSprObj.h">
       <Filter>source\sprite</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\_XLibrary\XHSLMap.h">
-      <Filter>source\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndListH.h">
       <Filter>source\wnd</Filter>
     </ClInclude>
@@ -1121,8 +1121,14 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XActObj.h">
       <Filter>source\sprite</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XGraphicsUtil.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\XHSLMap.h">
+      <Filter>header</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XTextureAtlas.h">
-      <Filter>source\graphics</Filter>
+      <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

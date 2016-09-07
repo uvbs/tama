@@ -162,6 +162,7 @@ public:
 	void CreateBattleUI();
 	//
 	int OnSulfurRetreat( XWnd* pWnd, DWORD p1, DWORD p2 );
+	int OnCheat( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnClickStatistic( XWnd* pWnd, DWORD p1, DWORD p2 );
 	void SendFinishBattle( XGAME::xtExitBattle ebCode, XGAME::xtSide bitWinner, int idxStgae, bool bRetreatSulfur );
 	XE::VEC2 OnDelegateProjection2( const XE::VEC3& vPos );

@@ -197,6 +197,7 @@ public:
 		}
 		return 0;
 	}
+	static int s_numCallBindTexture;
 private:
 	GLuint m_defaultFrameBuffer, m_defaultRenderBuffer;
 	WORD *m_pLockBackBuffer;

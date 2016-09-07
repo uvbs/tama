@@ -286,13 +286,13 @@ void XSprObj::Destroy( void )
 #ifdef _SPR_USE_LUA
 	SAFE_DELETE( m_pLua );
 #endif
-#ifdef _XSPR_LAZY_LOAD
-	if( m_pSprDat == NULL )
-		return;
-#endif // not spr_lazy_load
+// #ifdef _XSPR_LAZY_LOAD
+// 	if( m_pSprDat == NULL )
+// 		return;
+// #endif // not spr_lazy_load
 	// m_pSprDat를 삭제한다. 그러나 매니저를 통해 삭제해야한다. 그리고 RefCnt개념을 써야 한다
-	XBREAK( m_pSprDat == NULL );
-	if( SPRMNG )
+// 	XBREAK( m_pSprDat == NULL );
+	if( SPRMNG && m_pSprDat )
 		SPRMNG->Release( m_pSprDat );
 	m_pSprDat = NULL;
 	
@@ -367,21 +367,17 @@ XE::VEC2 XSprObj::GetAdjust()
 
 BOOL XSprObj::IsHaveAction( ID idAct ) 
 {
-#ifdef _XSPR_LAZY_LOAD
-	if( m_pSprDat == NULL )
+	if( m_pSprDat == nullptr )
 		return FALSE;
 	return m_pSprDat->IsHaveAction( idAct );
-#else
-	XBREAK( m_pSprDat == NULL );
-#endif
 }
 
 XAniAction* XSprObj::GetAction( ID idAct ) 
 {
-#ifdef _XSPR_LAZY_LOAD
+// #ifdef _XSPR_LAZY_LOAD
 	if( m_pSprDat == NULL )
 		return NULL;
-#endif
+// #endif
 	if( XBREAK( idAct >= XSprDat::MAX_ID ) )		// id는 unsigned이므로 < 0은 검사할필요 없음
 		return NULL;
 	return m_pSprDat->GetAction( idAct );
@@ -389,12 +385,12 @@ XAniAction* XSprObj::GetAction( ID idAct )
 
 XAniAction* XSprObj::GetAction() const 
 {
-#ifdef _XSPR_LAZY_LOAD
+// #ifdef _XSPR_LAZY_LOAD
 	if( m_pSprDat == NULL )
 		return NULL;
-#else
-	XBREAKF( !GetpObjActCurr(), "sprobj id=%d %s m_pObjActCurr=NULL", m_dwID, m_pSprDat->GetszFilename() );
-#endif
+// #else
+// 	XBREAKF( !GetpObjActCurr(), "sprobj id=%d %s m_pObjActCurr=NULL", m_dwID, m_pSprDat->GetszFilename() );
+// #endif
 	if( XBREAK( GetpObjActCurr() == nullptr ) )
 		return nullptr;
 	return GetpObjActCurr()->GetpAction();
@@ -481,6 +477,7 @@ XObjAct *XSprObj::AddObjAct( int idx, XAniAction *pAction )
 void XSprObj::SetAction( DWORD id, xRPT_TYPE playType, BOOL bExecFrameMove )
 {
   XBREAK( m_bCallHandler == true );   // 콜백실행중 SetAction금지;
+	XBREAK( id == 0 );
 #ifdef _XSPR_LAZY_LOAD
 	if( m_pSprDat == nullptr ) {
 		// 아직 SprDat가 없어서 예약만 걸어둠.
@@ -489,9 +486,11 @@ void XSprObj::SetAction( DWORD id, xRPT_TYPE playType, BOOL bExecFrameMove )
 		return;
 	}
 #else
-	XBREAK( m_pSprDat == NULL );
+	if( m_pSprDat == nullptr ) {
+		XSprMng::sGet()->AsyncSetAction(  id, playType, bExecFrameMove );
+		return;
+	}
 #endif
-	XBREAK( id == 0 );
 	if( _m_pObjActCurr && id == GetAction()->GetID() &&	m_PlayType == playType )		// 이미 셋된 액션아이디로 다시 셋시킬순 없다
 		return;
 	m_fFrameCurrent = 0;
@@ -626,9 +625,9 @@ void XSprObj::JumpKeyPos( XAniAction *pAction, float fJumpFrame )
 /**
  스프라이트 객체를 생성하고 로딩한다.
 */
-// BOOL XSprObj::Load( LPCTSTR szFilename, const XE::VEC3& vHSL, BOOL bKeepSrc, bool bAsyncLoad ) 
 BOOL XSprObj::Load( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, BOOL bKeepSrc, bool bAsyncLoad )
 { 
+	XAUTO_LOCK2( XGraphics::s_spLock );
 #ifdef _XDEBUG
 	if( m_pSprDat ) {
 		XLOG( "m_pSprDat(%s)가 해제되지 않았다 %s", m_pSprDat->GetszFilename(), szFilename );

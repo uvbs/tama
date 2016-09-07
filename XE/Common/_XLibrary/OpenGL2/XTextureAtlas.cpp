@@ -27,6 +27,15 @@ xAtlas::xAtlas( const XE::VEC2& size, xtPixelFormat formatSurface )
 
 xAtlas::~xAtlas() {
 	SAFE_DELETE( m_pRoot );
+	const GLuint glTex = (GLuint)m_idTex;
+	::glDeleteTextures( 1, &glTex );
+	const int bpp = XE::GetBpp( m_FormatSurface );
+	XSurface::sAddSizeTotalVMem( (int)(-m_Size.Size() * bpp) );
+#ifdef WIN32
+	TRACE("destroy atlas: id=%d\n", m_idTex );
+
+
+#endif // WIN32
 }
 
 /**
@@ -68,7 +77,8 @@ void xAtlas::UpdateSubToDevice( const void* _pImg,
 									 pImg );
 #ifdef _DEBUG
 	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	XASSERT( glErr == GL_NO_ERROR ); 
+	}
 #endif // _DEBUG
 	if( fmtImg != m_FormatSurface ) {
 		SAFE_DELETE_ARRAY( pImg );
@@ -82,7 +92,7 @@ XE_NAMESPACE_END; // xTextureAtlas
 using namespace xnTexAtlas;
 
 std::shared_ptr<XTextureAtlas> XTextureAtlas::s_spInstance;
-XE::VEC2 XTextureAtlas::s_sizeDefault = XE::VEC2( 256, 256 );
+//XE::VEC2 XTextureAtlas::s_sizeDefault = XE::VEC2( 256, 256 );
 ////////////////////////////////////////////////////////////////
 std::shared_ptr<XTextureAtlas>& XTextureAtlas::sGet() {	if( s_spInstance == nullptr )		s_spInstance = std::shared_ptr<XTextureAtlas>( new XTextureAtlas );	return s_spInstance;}
 void XTextureAtlas::sDestroyInstance() {
@@ -95,6 +105,31 @@ XTextureAtlas::XTextureAtlas()
 	Init();
 }
 
+void XTextureAtlas::Release( ID idTex )
+{
+	auto spAtlas = GetspAtlas( idTex );
+	if( spAtlas ) {
+		--spAtlas->m_refCnt;
+		XBREAK( spAtlas->m_refCnt < 0 );
+		if( spAtlas->m_refCnt == 0 ) {
+			DestroyAtlas( spAtlas );
+		}
+	}
+}
+
+void XTextureAtlas::DestroyAtlas( XSPAtlas spAtlas )
+{
+	const ID idDestroy = spAtlas->m_idTex;
+	for( auto itor = m_listAtlas.begin(); itor != m_listAtlas.end(); ) {
+		if( (*itor)->m_idTex == idDestroy ) {
+			m_listAtlas.erase( itor++ );
+			break;
+		} else {
+			++itor;
+		}
+	}
+}
+
 /**
  @brief 이미지를 아틀라스에 배치하고 그 아이디와 위치를 얻는다.
  @param idTex 지정한 아틀라스에 배치한다. 0이면 적당한 아틀라스를 찾아서 배치한후 그 아이디를 리턴한다.
@@ -104,13 +139,14 @@ ID XTextureAtlas::ArrangeImg( ID idTex,
 															const void* pImgSrc,
 															const XE::VEC2& sizeMemSrc,
 															XE::xtPixelFormat fmtImgSrc,
-															XE::xtPixelFormat fmtSurface )
+															XE::xtPixelFormat fmtSurface,
+															XE::VEC2* pOutSizeAtlas )
 {
 	xSplit::XNode* pNewNode = nullptr;
 	XSPAtlas spAtlas;
 	if( idTex == 0 ) {
 		if( m_listAtlas.empty() ) {
-			AddAtlas( XTextureAtlas::s_sizeDefault, fmtSurface );
+			AddAtlas( /*XTextureAtlas::s_sizeDefault*/XE::VEC2(0), fmtSurface );
 		}
 		//
 		for( auto _spAtlas : m_listAtlas ) {
@@ -127,9 +163,10 @@ ID XTextureAtlas::ArrangeImg( ID idTex,
 		// 루프를 다 돌았는데도 삽입을 못했다면 모든 아틀라스에 공간이 없다는것임.
 		if( !spAtlas ) {
 			// 공간이 더이상 없음. 새 아틀라스 추가
-			spAtlas = AddAtlas( XTextureAtlas::s_sizeDefault, fmtSurface );
+			spAtlas = AddAtlas( /*XTextureAtlas::s_sizeDefault*/XE::VEC2( 0 ), fmtSurface );
 			if( XASSERT( spAtlas ) ) {
 				pNewNode = InsertElem( spAtlas, sizeMemSrc );
+				XBREAK( pNewNode == nullptr );
 			}
 		}
 	} else {
@@ -146,11 +183,13 @@ ID XTextureAtlas::ArrangeImg( ID idTex,
 			XE::xRECT rect = pNewNode->GetRect();
 			pOut->vLT = rect.vLT;
 			pOut->vRB = rect.vRB + XE::VEC2( 1, 1 );
+			++spAtlas->m_refCnt;
 			// 실제 디바이스 텍스쳐에 갱신.
 			spAtlas->UpdateSubToDevice( pImgSrc,
 																	pNewNode->GetRect().vLT,
 																	pNewNode->GetRect().GetSize(),
 																	fmtImgSrc );
+			*pOutSizeAtlas = spAtlas->m_Size;
 			return spAtlas->m_idTex;
 		}
 	}
@@ -183,6 +222,14 @@ XSPAtlas XTextureAtlas::GetspAtlas( ID idTex )
 	}
 	return nullptr;
 }
+XSPAtlasConst XTextureAtlas::GetspAtlasConst( ID idTex ) const
+{
+	for( auto& spAtlas : m_listAtlas ) {
+		if( spAtlas->m_idTex == idTex )
+			return spAtlas;
+	}
+	return nullptr;
+}
 /**
  @brief pbo버퍼에 pImg를 갱신하고 텍스쳐로 전송
 */
@@ -198,11 +245,16 @@ XSPAtlas XTextureAtlas::GetspAtlas( ID idTex )
 /**
  @brief 새 아틀라스를 생성하고 그 아틀라스를 리턴한다.
 */
-XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& size, XE::xtPixelFormat formatSurface )
+XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& _size, XE::xtPixelFormat formatSurface )
 {
+	auto size = _size;
+// 	if( formatSurface == XE::xPF_ARGB8888 )
+		size.Set( 2048, 2048 );
+// 	else
+// 		size.Set( 512, 512 );
 	XSPAtlas spAtlas = std::make_shared<xAtlas>( size, formatSurface );
 	// PBO버퍼와 텍스쳐를 만든다.
-//	DWORD* pImg = new DWORD[(int)(spAtlas->m_Size.Size()) ];		// 일단이걸로 테스트후 null로 바꿔봄
+// 	DWORD* pImg = new DWORD[(int)(spAtlas->m_Size.Size()) ];		// 일단이걸로 테스트후 null로 바꿔봄
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 // 	spAtlas->m_idTex = GRAPHICS_GL->CreateTextureGL( pImg,
@@ -210,6 +262,9 @@ XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& size, XE::xtPixelFormat format
 // 																									 XE::xPF_ARGB8888,
 // 																									 spAtlas->m_Size,	// aligned
 // 																									 formatSurface );
+	extern int s_glFmt, s_glType;
+	spAtlas->m_glFmt = s_glFmt;
+	spAtlas->m_glType = s_glType;
 	spAtlas->m_idTex = GRAPHICS_GL->CreateTextureGL( nullptr,
 																									 spAtlas->m_Size,
 																									 XE::xPF_ARGB8888,
@@ -217,7 +272,7 @@ XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& size, XE::xtPixelFormat format
 																									 formatSurface );
 	XBREAK( spAtlas->m_idTex == 0 );
 	m_listAtlas.push_back( spAtlas );
-// 	SAFE_DELETE_ARRAY( pImg );
+//  	SAFE_DELETE_ARRAY( pImg );
 	return spAtlas;
 }
 

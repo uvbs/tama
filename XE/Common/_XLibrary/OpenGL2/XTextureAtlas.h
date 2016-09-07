@@ -11,6 +11,9 @@ struct xAtlas {
 	XE::xtPixelFormat m_FormatSurface;		// 아틀라스 서피스의 포맷
 	xSplit::XNode* m_pRoot;			// 아틀라스 트리의 루트
 	XE::VEC2 m_maxFill;					// 배치된 아틀라스의 최대크기
+	int m_refCnt = 0;						// 이 아틀라스를 가리키는 객체수.
+	int m_glFmt = 0;
+	int m_glType = 0;
 	//
 	xAtlas( const XE::VEC2& size, XE::xtPixelFormat formatSurface );
 	~xAtlas();
@@ -33,26 +36,33 @@ class XTextureAtlas
 public:
 	static std::shared_ptr<XTextureAtlas>& sGet();
 	static void sDestroyInstance();
-	static void sSetMaxSizeTex( const XE::VEC2& sizeTex ) {
-		s_sizeDefault = sizeTex;
-	}
-	static XE::VEC2 sGetMaxSizeTex() {
-		return s_sizeDefault;
-	}
+// 	static void sSetMaxSizeTex( const XE::VEC2& sizeTex ) {
+// 		s_sizeDefault = sizeTex;
+// 	}
+// 	static XE::VEC2 sGetMaxSizeTex() {
+// 		return s_sizeDefault;
+// 	}
 public:
 	XTextureAtlas();
-	~XTextureAtlas() { Destroy(); }
+	~XTextureAtlas() {		Destroy();	}
+	void Release( ID idTex );
+	void DestroyAtlas( XSPAtlas spAtlas );
 	//
 	ID ArrangeImg( ID idTex,
 								 XE::xRect2* pOut,
 								 const void* pImgSrc,
 								 const XE::VEC2& sizeMemSrc,
 								 XE::xtPixelFormat formatImgSrc,
-								 XE::xtPixelFormat formatSurface );
+								 XE::xtPixelFormat formatSurface,
+								 XE::VEC2* pOutSizeAtlas );
 	inline int GetnumAtlas() const {
 		return m_listAtlas.size();
 	}
 	ID GetidTex( int idxAtlas );
+	inline XE::xtPixelFormat GetfmtByidxAtlas( int idxAtlas ) {
+		auto spAtlas = m_listAtlas.GetByIndex( idxAtlas );
+		return (spAtlas)? spAtlas->m_FormatSurface : XE::xPF_NONE;
+	}
 private:
 	static std::shared_ptr<XTextureAtlas> s_spInstance;
 	void Init() {}
@@ -61,7 +71,8 @@ private:
 	xSplit::XNode* InsertElem( XSPAtlas spAtlas,
 														 const XE::VEC2& sizeElem ) const;
 	XSPAtlas GetspAtlas( ID idTex );
-//	void UpdateSub( const DWORD* pImg, const XE::VEC2& vLT, const XE::VEC2& sizeImg, ID glTex );
+	XSPAtlasConst GetspAtlasConst( ID idTex ) const;
+	//	void UpdateSub( const DWORD* pImg, const XE::VEC2& vLT, const XE::VEC2& sizeImg, ID glTex );
 private:
 	static XE::VEC2 s_sizeDefault;
 	XList4<XSPAtlas> m_listAtlas;		// 커다란 아틀라스들의 리스트

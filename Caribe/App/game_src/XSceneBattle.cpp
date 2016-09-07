@@ -32,6 +32,7 @@
 #include "XHero.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
+#include "OpenGL2/XTextureAtlas.h"
 #endif // _CHEAT
 #ifdef _XSINGLE
 #include "XLegion.h"
@@ -558,6 +559,22 @@ void XSceneBattle::CreateDebugButtons( void )
 		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnDebugAllKill, 3 );
 		Add( pButt );
 		v.x += size.w;
+		pButt = new XWndButtonDebug( v.x, v.y,
+																 size.w, size.h,
+																 _T( "<-" ),
+																 XE::GetMain()->GetpGame()->GetpfdSystem() );
+		pButt->SetstrIdentifier( "butt.debug.minus" );
+		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnCheat, 0 );
+		Add( pButt );
+		v.x += size.w;
+		pButt = new XWndButtonDebug( v.x, v.y,
+																 size.w, size.h,
+																 _T( "->" ),
+																 XE::GetMain()->GetpGame()->GetpfdSystem() );
+		pButt->SetstrIdentifier( "butt.debug.plus" );
+		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnCheat, 1 );
+		Add( pButt );
+		v.x += size.w;
 
 
 	}
@@ -762,7 +779,6 @@ int XSceneBattle::Process( float dt )
 	return XEBaseScene::Process( dt );
 }
 
-#include "OpenGL2/XTextureAtlas.h"
 //
 void XSceneBattle::Draw( void ) 
 {
@@ -770,9 +786,6 @@ void XSceneBattle::Draw( void )
 	XEBaseScene::Draw();
 	XEBaseScene::DrawTransition();
 	//
-// 	auto idTex = XTextureAtlas::sGet()->GetidTex( 0 );
-// 	if( idTex )
-// 		GRAPHICS_GL->DrawTexture( idTex, 0, 0, 256.f, 256.f, FALSE );
 #ifdef _CHEAT
 	if( XAPP->m_bDebugMode )	{
 		auto pb = XBattleField::sGet();
@@ -1055,6 +1068,37 @@ int XSceneBattle::OnSulfurRetreat( XWnd* pWnd, DWORD p1, DWORD p2 )
 	
 	return 1;
 }
+
+/**
+ @brief 
+*/
+int XSceneBattle::OnCheat( XWnd* pWnd, DWORD p1, DWORD p2 )
+{
+#ifdef _CHEAT
+	CONSOLE("%s", __TFUNC__);
+	//
+	auto fmtAtlas = XE::xPF_NONE;
+	if( p1 == 0 ) {
+		if( XAPP->m_idxViewAtlas >= 0 )
+			--XAPP->m_idxViewAtlas;
+		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
+	} else
+	if( p1 == 1 ) {
+		if( XAPP->m_idxViewAtlas < XTextureAtlas::sGet()->GetnumAtlas() - 1 )
+			++XAPP->m_idxViewAtlas;
+		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
+	}
+	if( p1 == 0 || p1 == 1 ) {
+		CONSOLE( "Atlas=(%d/%d), fmt=%s",
+						 XAPP->m_idxViewAtlas,
+						 XTextureAtlas::sGet()->GetnumAtlas(),
+						 XE::GetstrPixelformat( fmtAtlas ) );
+	}
+	return 1;
+#endif // _CHEAT
+}
+
+
 int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 #if defined(_XSINGLE) && defined(WIN32)

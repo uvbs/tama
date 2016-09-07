@@ -103,7 +103,6 @@
 //#define _XMODE_TOP_CUT		// 게임뷰 상단을 잘라버리는 모드(거울에만 적용)Debug_AccRef빌드에 정의되어 있다.
 
 #define _XSOUND2			// sound.txt를 사용하는 버전
-#define _XSPR_LAZY_LOAD		// 리소스 없으면 일단찍고 나중에 로드하는 버전
 #define _XNEW_WND_TEXT		// WndTextString 동적할당 버전
 #define _XCRYPT_PACKET	// 패킷암호화
 #define _XBUG_140123_SPR	// 스프라이트 링크오브젝트 알파 오류 버그수정
@@ -114,7 +113,8 @@
 #define _XPACKET2			// XPacket클래스 포맷 바뀜
 #define _XSKILL_SYS			// 
 #define _XLIBPNG			// png로더를 libpng로 바꾼다. 안드로이드나 ios는 이것이 기본이다.
-//#define _XASYNC_SPR		// 비동기 로딩
+#define _XASYNC_SPR		// 스레드 비동기 로딩
+//#define _XSPR_LAZY_LOAD		// 리소스 없으면 일단찍고 나중에 로드하는 버전
 #define _XSPR_LOAD2			// 로딩루팅 개선한 버전
 
 #define DLV_LOCAL					1		// 개발자 개인자리의 개발하는 서버

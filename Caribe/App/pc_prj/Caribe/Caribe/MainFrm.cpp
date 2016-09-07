@@ -2524,6 +2524,9 @@ void CMainFrame::OnCheatCommand()
 	if( dlg.DoModal() == IDOK ) {
 		s_strCmd = (LPCTSTR)dlg.m_strCmd;
 		if( !s_strCmd.empty() ) {
+			if( s_strCmd == _T( "show atlas" ) ) {
+
+			}
 			GAMESVR_SOCKET->SendCheat( GAME, 99, 0, 0, 0, 0, s_strCmd );
 		}
 	}
