@@ -19,7 +19,10 @@
 #include "_Wnd2/XWndEdit.h"
 #include "_Wnd2/XWndPopup.h"
 #include "XResMng.h"
-
+#include "sprite/Sprdef.h"
+#include "sprite/SprObj.h"
+#include "_Wnd2/XWndSprObj.h"
+#include "sprite/XActObj2.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -121,7 +124,7 @@ BOOL XLayout::Reload( void )
 */
 BOOL XLayout::CreateLayout( const char *cKeyWnd, XWnd *pParent, const char *cKeyGroup )
 {
-	XLP1;
+	XLOAD_PROFILE1;
 //	CONSOLE("layout create: key=%s", C2SZ(cKeyWnd) );
 	TiXmlNode *nodeWnd = NULL;
 	if( XE::IsHave( cKeyGroup ) ) {
@@ -152,7 +155,7 @@ BOOL XLayout::CreateLayout( const char *cKeyWnd, XWnd *pParent, const char *cKey
 			pParent->SetSizeLocal( attr.vSize );
 	}
 	auto bRet = CreateLayout( nodeWnd->ToElement(), pParent );
-	XLP2;
+	XLOAD_PROFILE2;
 	_tstring strKey = C2SZ(cKeyWnd);
 	XLOGP( "%s, %s, %llu", XE::GetFileName( C2SZ(m_strFullpath) ),  strKey.c_str(), __llPass );
 	return bRet;

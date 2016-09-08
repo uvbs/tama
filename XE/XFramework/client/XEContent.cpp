@@ -4,6 +4,9 @@
 #include "_Wnd2/XWndPopup.h"
 #include "XImageMng.h"
 #include "OpenGL2/XTextureAtlas.h"
+#ifdef _XASYNC_SPR
+#include "Sprite/SprMng.h"
+#endif // _XASYNC_SPR
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -141,6 +144,9 @@ void XEContent::OnMouseMove( float lx, float ly )
 int XEContent::Process( float dt )
 {
 	IMAGE_MNG->Process( m_bDraging );
+#ifdef _XASYNC_SPR
+	SPRMNG->Process();
+#endif // _XASYNC_SPR
 	return XWnd::Process( dt );
 }
 

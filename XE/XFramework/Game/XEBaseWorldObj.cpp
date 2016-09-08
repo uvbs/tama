@@ -68,29 +68,28 @@ bool XEBaseWorldObj::LoadSpr( LPCTSTR szSpr,
 															xRPT_TYPE typeLoop )
 {
 	if( XBREAK( XE::IsEmpty( szSpr ) == TRUE ) )
-		return FALSE;
+		return false;
 	m_strSpr = szSpr;
 	// 이 객체는 전투때만 쓰므로 곧바로 2버전으로 호출시킴
 	const bool bUseAtlas = true;
 	m_pSprObj = new XSprObj( szSpr, hsl, bUseAtlas, this );
 	//	XTRACE( "new XSprObj(%s)", szSpr );
 	if( XBREAK( m_pSprObj == NULL ) )
-		return FALSE;
+		return false;
 	// 비동기 로딩땜에 assert를 내지 않는게 맞지만 현재 그 기능이 없으므로 assert를 냄
 	XBREAK( m_pSprObj->IsError() );
 	if( m_pSprObj->IsError() ) {
 		m_snObj = 0;
 		SAFE_DELETE( m_pSprObj );
-		return FALSE;
+		return false;
 	}
 	m_pSprObj->SetAction( idAct, typeLoop );
-	return TRUE;
+	return true;
 }
 
 void XEBaseWorldObj::LoadImage( LPCTSTR szImg )
 {
-	if( XE::IsHave( szImg ) )
-	{
+	if( XE::IsHave( szImg ) )	{
 		m_pSurface = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_IMG, szImg ) );
 		XBREAK( m_pSurface == NULL );
 	}
@@ -171,8 +170,7 @@ void XEBaseWorldObj::OnLButtonUp( float lx, float ly )
 // 오브젝트 중심기준 좌표계로 바운딩박스를 만든다.
 XE::xRECT XEBaseWorldObj::GetBoundBoxLocal( void ) 
 {
-	if( GetpSprObj() )
-	{
+	if( GetpSprObj() )	{
 		XE::xRECT rect;
 		rect.vLT = GetpSprObj()->GetAction()->GetBoundBoxLT();
 		rect.vRB = GetpSprObj()->GetAction()->GetBoundBoxRB();
@@ -180,8 +178,7 @@ XE::xRECT XEBaseWorldObj::GetBoundBoxLocal( void )
 		rect.vRB *= GetpSprObj()->GetScale();
 		return rect;
 	} else
-	if( m_pSurface )
-	{
+	if( m_pSurface )	{
 		XE::xRECT rect;
 		XE::VEC2 vSize = m_pSurface->GetSize();
 		rect.vLT.x = -(vSize.w / 2.f);

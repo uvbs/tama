@@ -24,7 +24,7 @@ XGraphics* XGraphics::s_pGraphics = NULL;
 BOOL		XGraphics::s_bCaptureBackBuffer = FALSE;			// Present전에 현재 백버퍼를 카피해둬야 함
 XSurface* XGraphics::s_pLastBackBuffer = NULL;			// 마지막으로 캡쳐된 백버퍼 화면
 DWORD XGraphics::s_dwDraw = 0;
-XSPLock XGraphics::s_spLock;
+//XSPLock XGraphics::s_spLock;
 
 #pragma mark Init
 
@@ -238,7 +238,7 @@ void XGraphics::Init( int nResolutionWidth, int nResolutionHeight, xPixelFormat 
 //	m_nPhyScreenWidth = m_nWidth;
 //	m_nPhyScreenHeight = m_nHeight;
 	ClearScreen( XCOLOR_BLACK );
-	XGraphics::s_spLock = std::make_shared<XLock>();
+//	XGraphics::s_spLock = std::make_shared<XLock>();
 }
 
 #pragma mark Convert pixel

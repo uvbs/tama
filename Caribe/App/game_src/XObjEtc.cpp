@@ -55,7 +55,7 @@ XObjBullet::XObjBullet( ID idBullet,
 	m_spTarget = spTarget;
 	m_Damage = damage;
 	m_bCritical = bCritical;
-	XBREAK( GetpSprObj() == nullptr );
+//	XBREAK( GetpSprObj() == nullptr );
 	
 	// 목표쪽으로의 각도
 // 	XE::VEC2 vs = GetpWorld()->GetPosWorldToWindow( vwSrc );
@@ -125,7 +125,7 @@ void XObjBullet::OnArriveBullet( DWORD dwParam )
 	// 발사체에 발동스킬이 있으면 발동시킨다.
 	for( auto& strInvokeSkill : m_aryInvokeSkill ) {
 #ifdef _XSINGLE
-		XLOGXN( "스킬발동: %s", strInvokeSkill.c_str() );
+//		XLOGXN( "스킬발동: %s", strInvokeSkill.c_str() );
 #endif // _XSINGLE
 		if( m_spTarget ) {
 			// 발동스킬을 액티브로 실행시킨다.
@@ -334,7 +334,7 @@ void XObjRock::OnArriveBullet( DWORD _dwParam )
 															 vwDst,
 															 m_AddDamage,
 															 false,
-															 GetpSprObj()->GetSprFilename(),
+															 GetstrSpr().c_str(),
 															 GetpSprObj()->GetActionID() );
 		++m_cntElastic;
 		pRock->SetpDelegate( GetpDelegate() );	

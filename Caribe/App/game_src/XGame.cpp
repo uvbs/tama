@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "XGame.h"
 #include "sprite/SprMng.h"
+#include "sprite/SprObj.h"
 #include "sprite/Key.h"
 #include "XParticleMng.h"
 #include "XFramework/XEToolTip.h"

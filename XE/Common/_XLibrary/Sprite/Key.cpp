@@ -14,6 +14,7 @@
 #include "XBaseObj.h"
 #include "XResObj.h"
 #include "XResMng.h"
+#include "XActObj2.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -367,7 +368,7 @@ void XKeyPos::Execute( XSprObj *pSprObj, float fOverSec )
 // 	}
 }
 // 키로딩이 끝나면 idx키들의 실제 포인터를 구해야 한다
-void XKeyPos::OnFinishLoad( XAniAction *pAction )
+void XKeyPos::OnFinishLoad( XActDat *pAction )
 {
 	if( m_idxInterpolationEndKey >= 0 )	{// 키의 인덱스
 		m_pInterpolationEndKey = SafeCast<XKeyPos*>( pAction->GetKey( m_idxInterpolationEndKey ) );	

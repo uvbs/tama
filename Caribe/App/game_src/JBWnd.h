@@ -232,8 +232,7 @@ class XWndCallbackSpr : public XWndSprObj
 public:
 	template<typename T>
 	XWndCallbackSpr( XWnd *pOwner, LPCTSTR szFilename, ID action, const XE::VEC2& vPos, int( T::*pFunc )( XWnd* pWnd, DWORD p1, DWORD p2 ), DWORD param1 = 0, DWORD param2 = 0 )
-		: XWndSprObj( szFilename, action, vPos, xRPT_1PLAY_CONT )
-	{
+		: XWndSprObj( szFilename, action, vPos, xRPT_1PLAY_CONT )	{
 		Init();
 		typedef int ( XWnd::*CALLBACK_FUNC )( XWnd *, DWORD dwParam1, DWORD dwParam2 );
 		m_dwParam1 = param1;
@@ -243,13 +242,7 @@ public:
 	}
 	virtual ~XWndCallbackSpr(){ Destroy(); }
 
-	int Process( float dt )
-	{
-		if( m_pOwner && GetpSprObj()->IsFinish() )
-			( m_pOwner->*m_pFunc )( this, m_dwParam1, m_dwParam2 );
-
-		return XWndSprObj::Process( dt );
-	}
+	int Process( float dt ) override;
 };
 
 

@@ -4,6 +4,7 @@
 #include "_Wnd2/XWndImage.h"
 #include "_Wnd2/XWndCtrls.h"
 #include "XFramework/client/XLayout.h"
+#include "_Wnd2/XWndSprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

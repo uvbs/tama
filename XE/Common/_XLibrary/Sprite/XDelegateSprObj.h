@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 class XSprObj;
+class XSprDat;
 class XSprite;
 class XBaseKey;
 class XKeyEvent;
@@ -50,4 +51,6 @@ public:
 	virtual BOOL OnDelegateCreateObj( XSprObj *pSprObj, XSprite *pSprSrc, XLayerObject *pImageLayer, XEFFECT_PARAM *pEffectParam, float x, float y, const MATRIX &mParent ) {
 		return FALSE;
 	}
+	// 비동기 로딩으로 spr로딩과 SetAction까지 끝나면 호출된다.
+	virtual void OnFinishAsyncLoad( const XSprDat* pSprDat ) {}
 };

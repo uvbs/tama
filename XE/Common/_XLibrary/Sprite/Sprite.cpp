@@ -14,7 +14,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 int XSprite::s_sizeTotalMem = 0;
-XE::xHSL XSprite::s_HSL;
+//XE::xHSL XSprite::s_HSL;
 /**
  @brief 
 */
@@ -29,7 +29,13 @@ void XSprite::Destroy( void )
 {
 	SAFE_DELETE( m_pSurface );
 }
-void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, bool bUseAtlas, BOOL _bSrcKeep, BOOL bRestore )
+void XSprite::Load( XSprDat *pSprDat, 
+										XBaseRes *pRes, 
+										bool bUseAtlas, 
+										bool bAsyncLoad,
+										const XE::xHSL& hsl,
+										BOOL _bSrcKeep, 
+										BOOL bRestore )
 {
 	if( bRestore ) {
 		m_pSurface->ClearDevice();
@@ -66,6 +72,7 @@ void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, bool bUseAtlas, BOOL _bSrc
 	pRes->Read( &adjY, 4 );
 	XSPR_TRACE("SprDat: w,h(%d,%d)", (int)width, (int)height );
 	const auto sizeSurface = XE::VEC2( width, height );
+	const auto ptSizeSurface = XE::POINT( width, height );
 	const auto vSizeMem = sizeSurface * 2;
 	const XE::POINT sizeMem( (int)vSizeMem.w, (int)vSizeMem.h );
 	const int size = sizeMem.Size();
@@ -102,12 +109,12 @@ void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, bool bUseAtlas, BOOL _bSrc
 	ConvertMemBGR2RGB( pImg, size );
 #endif // WIN32
 	// HSL값이 있다면 변환
-	if( !s_HSL.m_vHSL.IsZero() ) {
-		const float h = D2R(s_HSL.m_vHSL.x);
-		const float s = s_HSL.m_vHSL.y / 100.f;
-		const float l = s_HSL.m_vHSL.z / 100.f;
-		const XE::VEC2 range1 = D2R(s_HSL.m_vRange1);
-		const XE::VEC2 range2 = D2R(s_HSL.m_vRange2);
+	if( !hsl.m_vHSL.IsZero() ) {
+		const float h = D2R( hsl.m_vHSL.x);
+		const float s = hsl.m_vHSL.y / 100.f;
+		const float l = hsl.m_vHSL.z / 100.f;
+		const XE::VEC2 range1 = D2R( hsl.m_vRange1);
+		const XE::VEC2 range2 = D2R( hsl.m_vRange2);
 		if( range1.v2 - range1.v1 == 0.f || range2.v2 - range2.v1 == 0.f)
 			ApplyHSLNormal( pImg, size, h, s, l);
 		else
@@ -115,21 +122,64 @@ void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, bool bUseAtlas, BOOL _bSrc
 	}
 	XSPR_TRACE( "SprDat: CreateSurface" );
 	const bool bSrcKeep = (_bSrcKeep != FALSE);
-	m_pSurface->Create( XE::POINT( width, height ),
-											XE::VEC2( adjX, adjY ),
-											formatSurface,
-											pImg,
-											XE::xPF_ARGB8888, sizeMem,
-											bSrcKeep,
-											false,
-											bUseAtlas );
+
+#ifdef _XASYNC_SPR
+	// 주 스레드에서 읽을수 있도록 파일에서 읽은 내용을 서피스쪽에다 담아둠.
+	auto spInfoSurface 
+		= std::make_shared<XE::xSurfaceInfo>( ptSizeSurface,
+																					XE::VEC2( adjX, adjY ),
+																					formatSurface,
+																					(void*)pImg,
+																					sizeMem,
+																					XE::xPF_ARGB8888,
+																					bSrcKeep,
+																					false,
+																					bUseAtlas );
+	// 비동기로딩을 하기위해 메모리 데이터를 받아둠.
+	m_pSurface->SetspSurfaceInfo( spInfoSurface );
+#else
+	XE::xSurfaceInfo infoSurface( ptSizeSurface,
+																XE::VEC2( adjX, adjY ),
+																formatSurface,
+																pImg,
+																XE::xPF_ARGB8888,
+																sizeMem,
+																bSrcKeep,
+																false,
+																bUseAtlas );
+	CreateDevice( infoSurface );
 	// d3d쪽도 Create()안에서 메모리를 삭제하는 방식은 피해야 할듯
 	SAFE_DELETE_ARRAY( pImg );    // 뭐야 이거 -_-;;;  조낸 일관성 없네.
+#endif // _XASYNC_SPR
 #ifdef _VER_DX
 	// d3d쪽은 restore를 아직 구현안했음. 윈도8포팅할때는 아래 Create()없애고 CreateFromImg()를 똑같이 일관되게 써서 구현할것.
 	XBREAK( bRestore == TRUE );
 #endif // verdx
 }
+
+void XSprite::CreateDevice()
+{
+	XBREAK( m_pSurface->GetspSurfaceInfo() == nullptr );
+	const auto& infoSurface = *(m_pSurface->GetspSurfaceInfo());
+	CreateDevice( infoSurface );
+}
+
+void XSprite::CreateDevice( const XE::xSurfaceInfo& infoSurface )
+{
+	if( XASSERT(m_pSurface) ) {
+		m_pSurface->Create( infoSurface.m_ptSizeSurface,
+												infoSurface.m_vAdj,
+												infoSurface.m_fmtSurface,
+												infoSurface.m_pImg,
+												infoSurface.m_fmtSrc,
+												infoSurface.m_ptSizeMem,
+												infoSurface.m_bSrcKeep,
+												infoSurface.m_bMakeMask,
+												infoSurface.m_bUseAtlas );
+		m_pSurface->SetspSurfaceInfo( nullptr );		// 메모리 삭제
+	}
+}
+
 /**
  @brief ABGR포맷으로 저장되어있는 pImg블럭의 픽셀데이타를 ARGB포맷으로 변환해서 pImg에 다시 넣는다.
 */

@@ -113,7 +113,7 @@ void XGLESView::Draw( /*CDC* pTargetDC,*/ XClientMain *pMain )
 
 void XGLESView::OnDraw( CDC* /*pDC*/ )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	// 	WinGLDoc* pDoc = GetDocument();
 // 	ASSERT_VALID( pDoc );
 // 	if( !pDoc )

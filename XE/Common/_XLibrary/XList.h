@@ -340,12 +340,14 @@ public:
 	} 
 
 	T GetFirst() {
-		typename std::list<T>::iterator itor = m_List.begin();
-		return (*itor);
+		return m_List.front();
+// 		typename std::list<T>::iterator itor = m_List.begin();
+// 		return (*itor);
 	}
 	T GetLast() {				// 
-		typename std::list<T>::iterator itor = m_List.end();
-		return (*--itor);
+		return m_List.back();
+// 		typename std::list<T>::iterator itor = m_List.end();
+// 		return (*--itor);
 	}
 
 	T GetFromIndex( int idx ) {
@@ -1664,10 +1666,27 @@ public:
 		if (iter != this->end())
 			this->erase(iter);
 	}
+	/* 	m_list.FindpIf( [idDat]( XTest& spTest )->bool {
+	 		return spTest->m_idDat == idDat;
+	 	} ); */
 	template<typename F>
 	T* FindpIf( F func ) {
 		auto iter = std::find_if(this->begin(), this->end(), func);
 		if (iter != this->end())
+			return &(*iter);
+		return nullptr;
+	}
+	template<typename F>
+	T FindIf( F func ) {
+		auto iter = std::find_if( this->begin(), this->end(), func );
+		if( iter != this->end() )
+			return *iter;
+		return T();
+	}
+	template<typename F>
+	const T* FindpIfConst( F func ) const {
+		auto iter = std::find_if( this->begin(), this->end(), func );
+		if( iter != this->end() )
 			return &(*iter);
 		return nullptr;
 	}
@@ -1746,10 +1765,12 @@ public:
 		return idx;
 	}
 	T* GetpFirst() {
-		return &(*this->begin());
+//		return &(*this->begin());
+		return &(this->front());
 	}
 	T* GetpLast() {
-		return &(*--this->end());
+//		return &(*--this->end());
+		return &(this->back());
 	}
 	T* GetpByIndex( int idx ) {
 		int i = 0;

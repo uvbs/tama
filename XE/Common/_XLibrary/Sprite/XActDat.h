@@ -8,7 +8,7 @@
 #include <list>
 
 class XSprDat;
-class XObjAct;
+class XActObj;
 class XBaseRes;
 
 struct LAYER_INFO {
@@ -17,7 +17,7 @@ struct LAYER_INFO {
 	int nLayer;						// 레이어번호
 	float fAdjustAxisX, fAdjustAxisY;
 };
-class XAniAction
+class XActDat
 {
 	XSprDat *m_pSprDat;
 	DWORD m_ID;						// 이 액션의고유번호(걷기번호 뛰기번호등이 들어간다)
@@ -53,9 +53,9 @@ class XAniAction
 	void Destroy( void );
 	GET_SET_ACCESSOR( XSprDat*, pSprDat );
 public:
-	XAniAction( XSprDat *pSprDat, DWORD id ) { Init(); m_ID = id; m_pSprDat = pSprDat; Create(); }
-	XAniAction( XSprDat *pSprDat, DWORD id, LPCTSTR szActName ) { Init(); m_ID = id; m_pSprDat = pSprDat; _tcscpy_s( m_szActName, szActName ); Create(); }
-	~XAniAction() { Destroy(); }
+	XActDat( XSprDat *pSprDat, DWORD id ) { Init(); m_ID = id; m_pSprDat = pSprDat; Create(); }
+	XActDat( XSprDat *pSprDat, DWORD id, LPCTSTR szActName ) { Init(); m_ID = id; m_pSprDat = pSprDat; _tcscpy_s( m_szActName, szActName ); Create(); }
+	~XActDat() { Destroy(); }
 	
 	GET_ACCESSOR( DWORD, ID );
 	GET_SET_ACCESSOR( float, fSpeed );

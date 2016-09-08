@@ -3,6 +3,7 @@
 #include "XEWorld.h"
 #include "XEWndWorld.h"
 #include "XFramework/XEProfile.h"
+#include "sprite/SprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -180,9 +181,12 @@ void XEObjMng::Draw( XEWndWorld *pWndWorld )
 			//XPROF_OBJ( "select" );
 			for( auto spObj : m_listObj ) {
 				XEBaseWorldObj *pObj = spObj.get();
-				XE::xRECT rectBB = pObj->GetBoundBoxWindow();
-				if( pWndWorld->IsOutBoundary( rectBB ) == FALSE )
-					m_aryVisible.Add( pObj );
+				auto pSprObj = pObj->GetpSprObj();
+				if( pSprObj && pSprObj->GetAction() ) {
+					XE::xRECT rectBB = pObj->GetBoundBoxWindow();
+					if( pWndWorld->IsOutBoundary( rectBB ) == FALSE )
+						m_aryVisible.Add( pObj );
+				}
 			}
 		}
 		{

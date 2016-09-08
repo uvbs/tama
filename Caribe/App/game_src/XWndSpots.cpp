@@ -13,6 +13,7 @@
 #include "_Wnd2/XWndButton.h"
 #include "XTemp.h"
 #include "XGlobalConst.h"
+#include "sprite/SprObj.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT

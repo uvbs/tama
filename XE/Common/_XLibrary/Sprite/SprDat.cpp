@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "SprDat.h"
-#include "XActObj.h"
+#include "XActDat.h"
 #include "SprObj.h"
 #include "etc/types.h"
 #include "etc/Debug.h"
@@ -10,6 +10,7 @@
 #include "XAutoPtr.h"
 #include "XFramework/client/XApp.h"
 #include "XFramework/client/XClientMain.h"
+#include "Sprite/SprMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -26,7 +27,7 @@ using namespace XE;
 // class XSprObj
 //
 /////////////////////////////////////////////////////////
-void XSprDat::Destroy( void )
+void XSprDat::Destroy()
 {
 	int i;
 	// 액션리스트 삭제
@@ -34,15 +35,16 @@ void XSprDat::Destroy( void )
 		SAFE_DELETE( m_ppActions[i] );
 	SAFE_DELETE_ARRAY( m_ppActions );
 	// 스프라이트 삭제
-	for( i = 0; i < GetnNumSprites(); i++ )
-		SAFE_DELETE( m_ppSprites[i] );
-	SAFE_DELETE_ARRAY( m_ppSprites );
+	XVECTOR_DESTROY( m_arySprite );
+// 	for( i = 0; i < GetnNumSprites(); i++ )
+// 		SAFE_DELETE( m_ppSprites[i] );
+// 	SAFE_DELETE_ARRAY( m_ppSprites );
 
 	SAFE_DELETE_ARRAY( m_pcLuaAll );
 }
 
 // 액션을 하나추가하고 그 액션인덱스를 리턴한다.
-void XSprDat::AddAction( int idx, XAniAction *pAction )
+void XSprDat::AddAction( int idx, XActDat *pAction )
 {
 #ifdef _XDEBUG
 	if( idx >= GetnNumActions() ) {
@@ -54,127 +56,143 @@ void XSprDat::AddAction( int idx, XAniAction *pAction )
 }
 
 
-void XSprDat::AddSprite( int idx, XSprite *pSpr )
+void XSprDat::AddSprite( /*int idx, */XSprite *pSpr )
 {
-#ifdef _XDEBUG
-	if( idx >= GetnNumSprites() ) {
-		XLOG( "%s idx(%d) >= GetnNumSprites(%d)", GetszFilename(), idx, GetnNumSprites() );
-		return;
-	}
-#endif
-	m_ppSprites[ idx ] = pSpr;
+// #ifdef _XDEBUG
+// 	if( idx >= GetnNumSprites() ) {
+// 		XLOG( "%s idx(%d) >= GetnNumSprites(%d)", GetszFilename(), idx, GetnNumSprites() );
+// 		return;
+// 	}
+// #endif
+//	m_ppSprites[ idx ] = pSpr;
+	m_arySprite.push_back( pSpr );
 }
 //
-BOOL XSprDat::Load( LPCTSTR _szFilename, bool bUseAtlas, BOOL bSrcKeep, BOOL bRestore )
+BOOL XSprDat::Load( LPCTSTR _szFilename, 
+										bool bUseAtlas, 
+										bool bAsyncLoad,
+										const XE::xHSL& hsl,
+										BOOL bSrcKeep, 
+										BOOL bRestore )
 {
-	XLP1;
-	LPCTSTR szFilename = NULL;
+	XLOAD_PROFILE1;
+// 	XAUTO_LOCK3( SPRMNG );
+	m_HSL = hsl;
+	LPCTSTR szFilename = _T("");
 	if( bRestore )	{
-		szFilename = static_cast<LPCTSTR>( m_szFilename );
-		XBREAK( XE::IsEmpty(szFilename) == TRUE );
+		szFilename = m_strFile.c_str();
+		XBREAK( m_strFile.empty() );
 	} else {
 		szFilename = _szFilename;
 	}
 	m_bUseAtlas = bUseAtlas;
-	XSPR_TRACE( "%s load start", MakePath( DIR_SPR, szFilename ) );
+	XSPR_TRACE( "%s load start", MakePath2( DIR_SPR, szFilename ) );
 	XSPR_TRACE("XSprDat::Load: try find lang folder");
 	// 국가폴더 우선으로 읽도록 바뀜
-	XBaseRes *pRes = XE::CreateResHandle( XE::MakePathLang( DIR_SPR, szFilename ) );
-	XAutoPtr<XBaseRes*> _ptr( pRes );		// pRes는 블럭을 벗어날때 자동 삭제됨
-	if( pRes == NULL )	{
+	std::shared_ptr<XBaseRes> spRes( XE::CreateResHandle( XE::MakePathLang2( DIR_SPR, szFilename ) ) );
+//	XAutoPtr<XBaseRes*> _ptr( pRes );		// pRes는 블럭을 벗어날때 자동 삭제됨
+	if( spRes == nullptr )	{
 		XSPR_TRACE("XSprDat::Load: try find main folder");
-		pRes = XE::CreateResHandle( XE::MakePath( DIR_SPR, szFilename ) );
-		_ptr.Setptr( pRes );
-		if( pRes == NULL )	{
-#if defined(WIN32) && defined(_DEBUG)
-			XBREAK(1);		// lazyload 상황이 아닌데 spr파일 없을때 그냥 지나가버려서 문제점 찾는데 오래걸려서 일단 넣어봄
-#endif
-#ifndef _XSPR_LAZY_LOAD
+		spRes = std::shared_ptr<XBaseRes>( XE::CreateResHandle( XE::MakePath2( DIR_SPR, szFilename ) ) );
+// 		_ptr.Setptr( pRes );
+		if( spRes == nullptr )	{
+#if  !defined(_XSPR_LAZY_LOAD) || defined(_XASYNC_SPR)
 			XERROR( "sprite %s open failed", szFilename );
+#elif (defined(WIN32) && defined(_DEBUG))
+			XBREAK( 1 );		// lazyload 상황이 아닌데 spr파일 없을때 그냥 지나가버려서 문제점 찾는데 오래걸려서 일단 넣어봄
 #endif // not spr lazy load
-			XSprite::sClearHSL();
 			return FALSE;
 		}
 	}
-	if( bRestore == FALSE )
-		_tcscpy_s( m_szFilename, szFilename );
+	if( !bRestore ) {
+		m_strFile = szFilename;
+	}
 	WORD wData;
 	DWORD dw1;
-	pRes->Read( &wData, 2 );					// version
+	spRes->Read( &wData, 2 );					// version
 	if( wData > XSprDat::SPR_VER ) {	// 툴에서 저장된 버전은 높은데 xcode소스는 버전이 낮을때 이런게 생긴다. 반면 오히려 낮은버전의 파일이면 읽기를 취소하지 않고 호환되게 읽기를 시도한다
+#ifdef _XASYNC_SPR
+		XTRACE( "%s 파일의 버전(%d)이 최신버전인 %d보다 크다", szFilename, (int)wData, XSprDat::SPR_VER );
+#else
 		XALERT( "%s 파일의 버전(%d)이 최신버전인 %d보다 크다", szFilename, (int)wData, XSprDat::SPR_VER );
-		XSprite::sClearHSL();
+#endif // _XASYNC_SPR
 		return FALSE;
 	}
 	if( bRestore == FALSE )
 		m_nVersion = wData;
 	dw1 = 0;
 	DWORD reserved[4];
-	pRes->Read( &dw1, 4 );		// 고해상도 플래그
+	spRes->Read( &dw1, 4 );		// 고해상도 플래그
 	if( bRestore == FALSE ) {
 //		m_bHighReso = (BOOL)dw1;
 		BOOL bHighReso = (BOOL)dw1;
 		XBREAK( bHighReso == FALSE );		// 혹시나 저해상도로 쓰고있는 파일이 있으면 bHighReso속성은 없애면 안됨.
 	}
-	pRes->Read( reserved, 4, 3 );	//reserved
-	pRes->Read( &dw1, 4 );			// layer global id(게임에선 걍 스킵)
+	spRes->Read( reserved, 4, 3 );	//reserved
+	spRes->Read( &dw1, 4 );			// layer global id(게임에선 걍 스킵)
 	// 합쳐진 lua코드
 	if( IsUpperVersion(19) ) {
 		int len;
-		pRes->Read( &len, 4 );		// lua length 널포함 길이
+		spRes->Read( &len, 4 );		// lua length 널포함 길이
 		XBREAK( len < 0 );
 		if( len > 0 ) {		// 루아코드가 있을때만
 			if( bRestore )
-				pRes->Seek( len );	// restore모드에선 건너뜀
+				spRes->Seek( len );	// restore모드에선 건너뜀
 			else {
 				m_pcLuaAll = new char[ len ];
-				pRes->Read( m_pcLuaAll, len );		// lua code read
+				spRes->Read( m_pcLuaAll, len );		// lua code read
 			}
 		}
 	}
 	// sprites
 	int numSpr;
-	pRes->Read( &numSpr, 4 );		// 스프라이트 개수
-	if( bRestore == FALSE ) {
-		m_nNumSprites = numSpr;
-		m_ppSprites = new XSprite*[ numSpr ];
-	} else {
-		XBREAKF( numSpr != m_nNumSprites, "numSpr(%d) != m_nNumSprites(%d)", numSpr, m_nNumSprites );
-		XBREAK( m_ppSprites == NULL );
+	spRes->Read( &numSpr, 4 );		// 스프라이트 개수
+	if( bRestore ) {
+		XBREAK( m_arySprite.empty() );
 	}
-	XSPR_TRACE("SprDat: num sprites:%d", m_nNumSprites );
+// 	if( bRestore == FALSE ) {
+// 		m_nNumSprites = numSpr;
+// 		m_ppSprites = new XSprite*[ numSpr ];
+// 	} else {
+// 		XBREAKF( numSpr != m_nNumSprites, "numSpr(%d) != m_nNumSprites(%d)", numSpr, m_nNumSprites );
+// 		XBREAK( m_ppSprites == nullptr );
+// 	}
+	XSPR_TRACE("SprDat: num sprites:%d", GetnNumSprites() );
 	int i;
 	// sprite list load
 	for( i = 0; i < numSpr; i ++ ) {
 		XSPR_TRACE("SprDat: spr%d", i );
-		XSprite *pSpr = NULL;
+		XSprite *pSpr = nullptr;
 		if( bRestore == FALSE ) {
 			pSpr = new XSprite( i );
-			pSpr->Load( this, pRes, bUseAtlas, bSrcKeep, FALSE );
-			AddSprite( i, pSpr );
-			XE::VEC2 vSize = pSpr->GetsizeMemAligned();
-			int byteSize = (int)(vSize.w * vSize.h * 2);
-			XSprite::s_sizeTotalMem += byteSize;
-			if( !bUseAtlas )
-				m_SizeByte += byteSize;
+			pSpr->Load( this, spRes.get(), bUseAtlas, bAsyncLoad, m_HSL, bSrcKeep, FALSE );
+			AddSprite( /*i, */pSpr );
+			if( !bAsyncLoad ) {
+				XE::VEC2 vSize = pSpr->GetsizeMemAligned();
+				int byteSize = (int)(vSize.w * vSize.h * 2);
+				XSprite::s_sizeTotalMem += byteSize;
+				if( !bUseAtlas )
+					m_SizeByte += byteSize;
+			}
 		} else {
 			// restore device mode
-			pSpr = m_ppSprites[ i ];
-			XBREAK( pSpr == NULL );
-			pSpr->Load( this, pRes, bUseAtlas, bSrcKeep, TRUE );
+//			pSpr = m_ppSprites[ i ];
+			pSpr = m_arySprite[ i ];
+			XBREAK( pSpr == nullptr );
+			pSpr->Load( this, spRes.get(), bUseAtlas, bUseAtlas, hsl, bSrcKeep, TRUE );
 		}
 	}
 	if( bRestore == FALSE )	{
 		// action list load
-		pRes->Read( &m_nNumActions, 4 );
-		m_ppActions = new XAniAction*[ m_nNumActions ];
+		spRes->Read( &m_nNumActions, 4 );
+		m_ppActions = new XActDat*[ m_nNumActions ];
 		for( i = 0; i < m_nNumActions; i ++ ) {
 			DWORD id=0;
-			pRes->Read( &id, 4 );			// action id
+			spRes->Read( &id, 4 );			// action id
 			if( id == 0 )
 				XLOG( "%s index %d의 action id가 0이다", GetszFilename(), id );
-			auto pAction = new XAniAction( this, id );
-			pAction->Load( this, pRes, m_nVersion );
+			auto pAction = new XActDat( this, id );
+			pAction->Load( this, spRes.get(), m_nVersion );
 			AddAction( i, pAction );
 			if( pAction->GetID() >= MAX_ID )
 				XLOG( "%s act idx=%d id=%d id > MAX_ID ", szFilename, i, pAction->GetID() );
@@ -183,18 +201,34 @@ BOOL XSprDat::Load( LPCTSTR _szFilename, bool bUseAtlas, BOOL bSrcKeep, BOOL bRe
 		}
 		m_bKeepSrc = bSrcKeep;
 	}
-	XLP2;
-	XLOGP( "%s, %llu",  XE::GetFileName( m_szFilename ), __llPass );
-	XSprite::sClearHSL();
+	XLOAD_PROFILE2;
+	XLOGP( "%s, %llu",  XE::GetFileName( m_strFile ), __llPass );
+//	XSprite::sClearHSL();
 	return TRUE;
 }
+
+/**
+@brief 비동기로딩으로 메모리에 올라온 데이터를 바탕으로 디바이스 자원을 생성한다.
+*/
+void XSprDat::CreateDevice()
+{
+	for( auto pSpr : m_arySprite )
+		pSpr->CreateDevice();
+//	m_bLoadComplete = true;
+}
+
+
 
 #ifdef WIN32
 void XSprDat::Reload()
 {
 	Destroy();
-	if( XE::IsHave(m_szFilename) )
-		Load( m_szFilename, m_bUseAtlas, m_bKeepSrc, FALSE );
+	if( !m_strFile.empty() )
+#ifdef _XASYNC_SPR
+		Load( m_strFile.c_str(), m_bUseAtlas, true, m_HSL, m_bKeepSrc, FALSE );
+#else
+		Load( m_szFilename, m_bUseAtlas, false, m_HSL, m_bKeepSrc, FALSE );
+#endif // _XASYNC_SPR
 }
 
 #endif // WIN32
@@ -204,13 +238,16 @@ void XSprDat::Reload()
 */
 void XSprDat::DestroyDevice()
 {
-	for( auto i = 0; i < GetnNumSprites(); i++ ) {
-		auto pSprite = m_ppSprites[ i ];
-		if( pSprite )
-			pSprite->GetpSurface()->DestroyDevice();
+// 	for( auto i = 0; i < GetnNumSprites(); i++ ) {
+// 		auto pSprite = m_ppSprites[ i ];
+// 		if( pSprite )
+// 			pSprite->GetpSurface()->DestroyDevice();
+// 	}
+	for( auto pSpr : m_arySprite ) {
+		if( pSpr ) {
+			if( pSpr->GetpSurface() )
+				pSpr->GetpSurface()->DestroyDevice();
+		}
 	}
 }
-
-
-
 

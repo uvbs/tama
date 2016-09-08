@@ -2,6 +2,8 @@
 #include "_Wnd2/XWndSprObj.h"
 #include "sprite/SprDat.h"
 #include "XFramework/XEProfile.h"
+#include "sprite/SprObj.h"
+#include "sprite/XActObj2.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -57,8 +59,11 @@ XWndSprObj::XWndSprObj( LPCTSTR szSpr, ID idAct, const XE::VEC2& vPos, xRPT_TYPE
 // 			m_bCreate = TRUE;
 	}
 }
+void XWndSprObj::Destroy() 
+{
+	SAFE_DELETE( m_pSprObj );
+}
 
-//////////////////////////////////////////////////////////////////////////
 XSprObj* XWndSprObj::CreateSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, bool bAsyncLoad )
 {
 	if( XE::IsEmpty( szSpr ) ) {
@@ -200,4 +205,56 @@ XE::xRECT XWndSprObj::GetBoundBoxByVisibleNoTrans()
 	} else {
 		return XWnd::GetBoundBoxByVisibleNoTrans();
 	}
+}
+
+ID XWndSprObj::GetidAct() 
+{
+	return (m_pSprObj) ? m_pSprObj->GetActionID() : 0;
+}
+
+void XWndSprObj::SetpDelegateBySprObj( XDelegateSprObj *pDelegate ) {
+	if( m_pSprObj )
+		m_pSprObj->SetpDelegate( pDelegate );
+}
+
+void XWndSprObj::SetColor( XCOLOR col ) {
+	if( m_pSprObj )
+		m_pSprObj->SetColor( col );
+}
+void XWndSprObj::SetColor( float r, float g, float b ) {
+	if( m_pSprObj )
+		m_pSprObj->SetColor( r, g, b );
+}
+void XWndSprObj::SetFlipHoriz( BOOL bFlag ) {
+	if( m_pSprObj )
+		m_pSprObj->SetFlipHoriz( bFlag );
+}
+void XWndSprObj::SetFlipVert( BOOL bFlag ) {
+	if( m_pSprObj )
+		m_pSprObj->SetFlipVert( bFlag );
+}
+void XWndSprObj::SetFlipHoriz( bool bFlag ) {
+	if( m_pSprObj )
+		m_pSprObj->SetFlipHoriz( xboolToBOOL( bFlag ) );
+}
+void XWndSprObj::SetFlipVert( bool bFlag ) {
+	if( m_pSprObj )
+		m_pSprObj->SetFlipVert( xboolToBOOL( bFlag ) );
+}
+
+void XWndSprObj::SetAction( ID idAct, xRPT_TYPE typeLoop ) {
+	if( m_pSprObj )
+		m_pSprObj->SetAction( idAct, typeLoop );
+}
+void XWndSprObj::GoFirstFrame( void ) {
+	if( m_pSprObj )
+		m_pSprObj->ResetAction();
+}
+void XWndSprObj::GoRandomFrame() {
+	if( m_pSprObj )
+		m_pSprObj->JumpToRandomFrame();
+}
+void XWndSprObj::SetSizeSprObjHeight( float h ) {
+	float ratio = h / m_pSprObj->GetHeight();
+	SetScaleLocal( ratio );
 }

@@ -13,6 +13,7 @@
 #include "XUnitTreant.h"
 #include "XUnitCyclops.h"
 #include "skill/XSkillDat.h"
+#include "sprite/SprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

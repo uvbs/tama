@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "XActObj.h"
+#include "XActDat.h"
 #include "SprDat.h"
 #include "SprObj.h"
 #include "etc/types.h"
@@ -9,6 +9,7 @@
 #include "XAutoPtr.h"
 #include "XFramework/client/XApp.h"
 #include "XFramework/client/XClientMain.h"
+#include "XActObj2.h"		// 이게 여기 인클루드 되면 안됨.
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -25,7 +26,7 @@ using namespace XE;
 // class XAniAction
 //
 /////////////////////////////////////////////////////////
-void XAniAction::Destroy( void )
+void XActDat::Destroy( void )
 {
 	// key list 삭제
 	int i;
@@ -39,14 +40,14 @@ void XAniAction::Destroy( void )
 	
 }
 #ifdef _XDEBUG
-XBaseKey *XAniAction::GetKey( int idx ) { 
+XBaseKey *XActDat::GetKey( int idx ) { 
 	if( idx >= m_nNumKeys || idx < 0 ) {
 		XBREAKF( 1, "%s %s idx(%d) >= m_nNumKeys(%d)", m_pSprDat->GetszFilename(), GetszActName(), idx, m_nNumKeys );
 		return NULL;
 	}
 	return m_ppKeys[ idx ]; 
 }
-LAYER_INFO *XAniAction::GetLayer( int idx ) {
+LAYER_INFO *XActDat::GetLayer( int idx ) {
 	if( idx >= m_nNumLayerInfo || idx < 0 ) {
 		XBREAKF( 1, "%s %s idx(%d) >= m_nNumLayerInfo(%d)", m_pSprDat->GetszFilename(), GetszActName(), idx, m_nNumLayerInfo );
 		return NULL;
@@ -55,7 +56,7 @@ LAYER_INFO *XAniAction::GetLayer( int idx ) {
 }
 #endif 
 
-void XAniAction::Create( void )
+void XActDat::Create( void )
 {
 }
 #define KEY_LOOP( K )	int K##i;		\
@@ -81,7 +82,7 @@ void XAniAction::Create( void )
 //	} 
 //	LOOP_END
 //}
-LAYER_INFO *XAniAction::AddLayerInfo( int idx, xSpr::xtLayer type, int nLayer, ID idLayer )
+LAYER_INFO *XActDat::AddLayerInfo( int idx, xSpr::xtLayer type, int nLayer, ID idLayer )
 {
 	XBREAK( idLayer == 0 );
 #ifdef _XDEBUG
@@ -99,7 +100,7 @@ LAYER_INFO *XAniAction::AddLayerInfo( int idx, xSpr::xtLayer type, int nLayer, I
 	m_ppLayerInfo[ idx ] = pLayer;
 	return pLayer;
 }
-XKeyPos *XAniAction::CreatePosKey( XBaseKey::xTYPE type )
+XKeyPos *XActDat::CreatePosKey( XBaseKey::xTYPE type )
 {
 	return new XKeyPos;
 /*	switch( type )
@@ -113,7 +114,7 @@ XKeyPos *XAniAction::CreatePosKey( XBaseKey::xTYPE type )
 	}
 	return NULL; */
 }
-XKeyRot *XAniAction::CreateRotKey( XBaseKey::xTYPE type )
+XKeyRot *XActDat::CreateRotKey( XBaseKey::xTYPE type )
 {
 	return new XKeyRot;
 /*	switch( type )
@@ -127,7 +128,7 @@ XKeyRot *XAniAction::CreateRotKey( XBaseKey::xTYPE type )
 	}
 	return NULL; */
 }
-XKeyScale *XAniAction::CreateScaleKey( XBaseKey::xTYPE type )
+XKeyScale *XActDat::CreateScaleKey( XBaseKey::xTYPE type )
 {
 	return new XKeyScale;
 /*	switch( type )
@@ -141,7 +142,7 @@ XKeyScale *XAniAction::CreateScaleKey( XBaseKey::xTYPE type )
 	}
 	return NULL; */
 }
-XKeyEffect *XAniAction::CreateEffectKey( XBaseKey::xTYPE type )
+XKeyEffect *XActDat::CreateEffectKey( XBaseKey::xTYPE type )
 {
 	return new XKeyEffect;
 /*	switch( type )
@@ -156,7 +157,7 @@ XKeyEffect *XAniAction::CreateEffectKey( XBaseKey::xTYPE type )
 	return NULL; */
 }
 
-void XAniAction::Load( XSprDat *pSprDat, XBaseRes *pRes, int verSpr )
+void XActDat::Load( XSprDat *pSprDat, XBaseRes *pRes, int verSpr )
 {
 	DWORD dw1;
 	WORD wData;
@@ -350,7 +351,7 @@ void XAniAction::Load( XSprDat *pSprDat, XBaseRes *pRes, int verSpr )
 	} 
 
 }
-int XAniAction::AddKey( int idx, XBaseKey *pNewKey, float fFrame )
+int XActDat::AddKey( int idx, XBaseKey *pNewKey, float fFrame )
 {
 #ifdef _XDEBUG
 	if( idx >= m_nNumKeys ) {
@@ -368,7 +369,7 @@ int XAniAction::AddKey( int idx, XBaseKey *pNewKey, float fFrame )
  @param nKeyCurr 시작할 키의 인덱스
  @param fFrame 목표 프레임위치
 */
-void XAniAction::ExecuteKey( XSprObj *pSprObj, int &nKeyCurr, float fFrame )
+void XActDat::ExecuteKey( XSprObj *pSprObj, int &nKeyCurr, float fFrame )
 {
 	if( nKeyCurr >= m_nNumKeys )
 		return;
@@ -394,7 +395,7 @@ void XAniAction::ExecuteKey( XSprObj *pSprObj, int &nKeyCurr, float fFrame )
 	}
 }
 
-void XAniAction::JumpKey( XSprObj *pSprObj, int &nKeyCurr, float fFrame )
+void XActDat::JumpKey( XSprObj *pSprObj, int &nKeyCurr, float fFrame )
 {
 	if( nKeyCurr >= m_nNumKeys )
 		return;

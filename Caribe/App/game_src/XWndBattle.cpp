@@ -9,6 +9,7 @@
 #include "XUnitHero.h"
 #include "XSquadObj.h"
 #include "Sprite/Layer.h"
+#include "sprite/SprObj.h"
 #include "XHero.h"
 #include "skill/XSkillDat.h"
 

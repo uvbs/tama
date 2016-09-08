@@ -107,7 +107,7 @@ BOOL XShader::LoadShaderFromString( const GLchar *cVertShader
 																	, const GLchar *cFragShader
 																	, const char *cszTag )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	GLuint vertShader, fragShader;
 	BOOL bRet = FALSE;
 	do {
@@ -182,7 +182,7 @@ BOOL XShader::CompileShaderFromString( GLuint *shader
 																		, const GLchar *cShader
 																		, const char *cszTag )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	GLint status;
 	*shader = glCreateShader( type );
 	glShaderSource( *shader, 1, &cShader, NULL );
@@ -206,7 +206,7 @@ BOOL XShader::CompileShaderFromString( GLuint *shader
 
 BOOL XShader::LinkShader( GLuint prog, const char *cszTag )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	GLint status;
 	glLinkProgram( prog );
 	GLint logLength;
@@ -228,7 +228,7 @@ BOOL XShader::LinkShader( GLuint prog, const char *cszTag )
 void XShader::SetShader( const MATRIX& mMVP,
 						float r, float g, float b, float a )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	glUseProgram( m_glProgram );
 	glUniformMatrix4fv( m_locUniforms[UNIFORM_MVP_MATRIX], 1, 0, GetMatrixPtr( mMVP ) );
 	if( m_locUniforms[UNIFORM_COLOR] >= 0 )
@@ -237,21 +237,21 @@ void XShader::SetShader( const MATRIX& mMVP,
 
 void XShader::SetUniformMVP( const MATRIX& mMVP )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	glUseProgram( m_glProgram );
 	glUniformMatrix4fv( m_locUniforms[UNIFORM_MVP_MATRIX], 1, 0, GetMatrixPtr( mMVP ) );
 }
 
 void XShader::SetUniformColor( float r, float g, float b, float a )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	glUseProgram( m_glProgram );
 	if( m_locUniforms[UNIFORM_COLOR] >= 0 )
 		glUniform4f(m_locUniforms[UNIFORM_COLOR], r, g, b, a);
 }
 void XShader::SetUniformFloat( float v )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	glUseProgram( m_glProgram );
 	if( m_locUniforms[UNIFORM_FLOAT] >= 0 )
 		glUniform1f(m_locUniforms[UNIFORM_FLOAT], v);
@@ -260,7 +260,7 @@ void XShader::SetUniformFloat( float v )
 XRenderTargetGLImpl::XRenderTargetGLImpl( float _w, float _h )
 	: XRenderTargetImpl( _w, _h )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	Init();
 	const GLsizei w = (GLsizei)_w;
 	const GLsizei h = (GLsizei)_h;
@@ -289,7 +289,7 @@ XRenderTargetGLImpl::XRenderTargetGLImpl( float _w, float _h )
 
 void XRenderTargetGLImpl::BindRenderTarget( void )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	glBindFramebuffer( GL_FRAMEBUFFER, m_idFBO );
 	glBindRenderbuffer( GL_RENDERBUFFER, m_idRBO );
 	glRenderbufferStorage( GL_RENDERBUFFER, GL_RGBA8_OES, (GLsizei)GetSize().w, (GLsizei)GetSize().h );
@@ -357,7 +357,7 @@ void XGraphicsOpenGL::Init( void )
 
 void XGraphicsOpenGL::RestoreDevice( void )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XTRACE("restore device resource");
 	GLint sizeMax = 512;
 	{ auto glErr = glGetError();
@@ -396,7 +396,7 @@ void XGraphicsOpenGL::RestoreDevice( void )
 
 void XGraphicsOpenGL::Destroy( void )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	SAFE_DELETE( m_pBaseShader );
 	SAFE_DELETE( m_pGrayShader );
 	SAFE_DELETE( m_pTextureShader );
@@ -416,7 +416,7 @@ void XGraphicsOpenGL::Destroy( void )
 
 xRESULT XGraphicsOpenGL::Create( void )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XGraphicsOpenGL::s_pGraphicsOpenGL = this;
     //
     m_pBaseShader = new XShader;
@@ -432,7 +432,7 @@ xRESULT XGraphicsOpenGL::Create( void )
 
 void XGraphicsOpenGL::RestoreFrameBuffer( void )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFrameBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, m_defaultRenderBuffer );
 	glViewport(0, 0, GetPhyScreenWidth(), GetPhyScreenHeight());
@@ -444,7 +444,7 @@ void XGraphicsOpenGL::RestoreFrameBuffer( void )
 // m_nWidth는 논리적서피스의 크기이고 work와 같고, back,frame 버퍼는 실제물리적 해상도인것으로 구분해줄 필요 있다.
 void*	XGraphicsOpenGL::ReadBackBuffer( int phywidth, int phyheight, void *pBuffer )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	if( GetPixelFormat() != xPIXELFORMAT_RGB565 )
 		XERROR( "아직은 RGB565포맷만 사용가능함." );
 //	glReadBufferOES( GL_BACK );	// gl1.2 ES엔 없는듯.
@@ -459,7 +459,7 @@ void*	XGraphicsOpenGL::ReadBackBuffer( int phywidth, int phyheight, void *pBuffe
 // w,y,width,height: 스크린 좌표
 void	XGraphicsOpenGL::ScreenToSurface( int x, int y, int width, int height, XSurface *pSurface )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	if( GetPixelFormat() != xPIXELFORMAT_RGB565 )
 		XERROR( "아직은 RGB565포맷만 사용가능함." );
 	int px, py, pw, ph;		// 물리적스크린크기와 좌표.
@@ -494,7 +494,7 @@ void XGraphicsOpenGL::ReleaseDrawTarget( void )
 
 XSurface* XGraphicsOpenGL::CreateScreenToSurface( BOOL bHighReso )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XSurface *pSurface = new XSurfaceOpenGL( FALSE );
 	ScreenToSurface( 0, 0, (int)GetLogicalScreenSize().w, (int)GetLogicalScreenSize().h, pSurface );
 	return pSurface;
@@ -508,7 +508,7 @@ XSurface*	XGraphicsOpenGL::CreateSurface( BOOL bHighReso
 																				, DWORD *pSrcImg
 																				, BOOL bSrcKeep )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XSurface *pSurface = new XSurfaceOpenGL( bHighReso
 																				, srcx, srcy
 																				, srcw, srch
@@ -522,13 +522,13 @@ XSurface*	XGraphicsOpenGL::CreateSurface( BOOL bHighReso
 
 XSurface* XGraphicsOpenGL::CreateSurface()
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	return new XSurfaceOpenGL();
 }
 
 BOOL XGraphicsOpenGL::LoadImg( LPCTSTR szFilename, int *pWidth, int *pHeight, DWORD **ppImage )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XImage image(TRUE);
   BOOL bRet = FALSE;
 	if( image.Load( szFilename ) ) {
@@ -547,7 +547,7 @@ BOOL XGraphicsOpenGL::LoadImg( LPCTSTR szFilename, int *pWidth, int *pHeight, DW
 
 void XGraphicsOpenGL::SetViewport( int left, int top, int right, int bottom )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XGraphics::SetViewport( left, top, right, bottom );
 	//
 	float ratioX = GetRatioWidth();
@@ -574,7 +574,7 @@ void XGraphicsOpenGL::RestoreViewport( void )
 // virtual draw function
 void XGraphicsOpenGL::ClearScreen( XCOLOR color )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	float r, g, b, a;
 	r = XCOLOR_RGB_R(color) / 255.f;
 	g = XCOLOR_RGB_G(color) / 255.f;
@@ -591,7 +591,7 @@ int	 XGraphicsOpenGL::GetPixel( int x, int y )
 }
 void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR color )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	if( w == 0 || h == 0 )	return;
@@ -651,7 +651,7 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR color
 
 void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR collt, XCOLOR colrt, XCOLOR collb, XCOLOR colrb  )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 #define _XXR(C)	(XCOLOR_RGB_R(C) / 255.0f)
@@ -723,7 +723,7 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR collt
 
 void XGraphicsOpenGL::DrawRect( float x, float y, float w, float h, XCOLOR color )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	//	if( x > GetScreenWidth() || y > GetScreenHeight() )
@@ -775,7 +775,7 @@ void XGraphicsOpenGL::DrawRect( float x, float y, float w, float h, XCOLOR color
 
 void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR color )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	if( x1 > GetViewportRight() || y1 > GetViewportBottom() )
@@ -823,7 +823,7 @@ void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR c
 }
 void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR col1, XCOLOR col2 )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	if( x1 > GetViewportRight() || y1 > GetViewportBottom() )
@@ -868,7 +868,7 @@ void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR c
 
 void XGraphicsOpenGL::DrawLineList( XGraphics::xVERTEX *vList, int numLines )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	// 클리핑
@@ -915,7 +915,7 @@ void XGraphicsOpenGL::DrawLineList( XGraphics::xVERTEX *vList, int numLines )
 
 void XGraphicsOpenGL::DrawFan( float *pAryPos, float *pAryCol, int numVertex, int numFan )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	GetpColorShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
@@ -940,7 +940,7 @@ static XE::VEC2 _vLists[ MAX_VERTEX ];
 
 void XGraphicsOpenGL::DrawPieClip( const XE::VEC2 *pvLines, int numLine, float x, float y, float radius, float angStart, float angEnd, XCOLOR color, int maxSlice )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	if( angStart == angEnd )
@@ -1040,7 +1040,7 @@ void XGraphicsOpenGL::DrawTexture( GLint idTexture,
 																	 float width, float height, 
 																	 BOOL bBlendAdd )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	GLfloat tex[8] = { 0, 1.0f, 1.0f, 1.0f, 0, 0, 1.0f, 0 };
@@ -1114,7 +1114,7 @@ CSpriteManagerGL* XGraphicsOpenGL::CreateSprMngObj( void )
 
 void*	XGraphicsOpenGL::LockBackBufferPtr( int *pWidth, BOOL bReadOnly )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	int pw, ph;
 	pw = GetPhyScreenWidth();
 	ph = GetPhyScreenHeight();
@@ -1142,7 +1142,7 @@ void*	XGraphicsOpenGL::LockBackBufferPtr( int *pWidth, BOOL bReadOnly )
 
 void XGraphicsOpenGL::UnlockBackBufferPtr( void )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	SAFE_DELETE_ARRAY( m_pLockBackBuffer );
 }
 
@@ -1157,7 +1157,7 @@ GLuint XGraphicsOpenGL::CreateTextureGL( void* const pImgSrc
 																			, int wSrcAligned, int hSrcAligned
 																			, XE::xtPixelFormat formatSurface ) const
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	//	XBREAK( pImgSrc == nullptr );
 	const int bppImgSrc = XE::GetBpp( formatImgSrc );
 	const int bppSurface = XE::GetBpp( formatSurface );
@@ -1276,7 +1276,7 @@ GLuint XGraphicsOpenGL::CreateTextureSubGL( void* const pImgSrc
 																		, XE::xtPixelFormat formatImgSrc
 																		, XE::xtPixelFormat formatSurface )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	const XE::POINT sizeTex = rectSrc.GetSize();
 	const XE::POINT sizeTexAligned = XGraphics::sAlignPowSize( sizeTex );
 	const int bppSurface = XE::GetBpp( formatSurface );
@@ -1362,7 +1362,7 @@ void XGraphicsOpenGL::sBindTexture( ID idTex )
 	static ID s_idPrev = -1;
 	if( s_idPrev == idTex )
 		return;
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	glBindTexture( GL_TEXTURE_2D, (GLuint)idTex );
 	++s_numCallBindTexture;
 	s_idPrev = idTex;

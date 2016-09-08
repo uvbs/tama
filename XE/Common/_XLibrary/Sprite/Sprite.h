@@ -15,17 +15,17 @@ class XBaseRes;
 #include "etc/XSurface.h"
 class XSprite
 {
-	static XE::xHSL s_HSL;
+// 	static XE::xHSL s_HSL;
 public:
 	static int s_sizeTotalMem;		// 스프라이트들의 총 메모리할당량(이미지데이타만..)
-	static void sSetHSL( const XE::xHSL& hsl ) {
-		s_HSL = hsl;
-	}
-	static void sClearHSL() {
-		s_HSL.m_vHSL.Set(0);
-		s_HSL.m_vRange1.Set(0);
-		s_HSL.m_vRange2.Set(0);
-	}
+// 	static void sSetHSL( const XE::xHSL& hsl ) {
+// 		s_HSL = hsl;
+// 	}
+// 	static void sClearHSL() {
+// 		s_HSL.m_vHSL.Set(0);
+// 		s_HSL.m_vRange1.Set(0);
+// 		s_HSL.m_vRange2.Set(0);
+// 	}
 private:
 	XSurface *m_pSurface;
 	int m_idxSprite;	// 이 스프라이트의 인덱스
@@ -42,8 +42,18 @@ public:
 	GET_ACCESSOR( XSurface*, pSurface );
 	//
 	void Save( XBaseRes *pRes ) {}
-	void Load( XSprDat *pSprDat,XBaseRes *pRes, bool bUseAtlas, BOOL bSrcKeep=FALSE, BOOL bRestore=FALSE );
-	void SetScale( float sx, float sy ) { m_pSurface->SetScale(sx, sy); }	// 여기는 GRAPHICS->GetfGScale과 곱하지 않는다 XLayerImage::Draw에서 이걸 계속 호출하기 때문이다
+	void Load( XSprDat *pSprDat,
+						 XBaseRes *pRes, 
+						 bool bUseAtlas, 
+						 bool bAsyncLoad,
+						 const XE::xHSL& hsl,
+						 BOOL bSrcKeep=FALSE, 
+						 BOOL bRestore=FALSE );
+	void CreateDevice( const XE::xSurfaceInfo& infoSurface );
+	void CreateDevice();
+	void SetScale( float sx, float sy ) {
+		m_pSurface->SetScale( sx, sy );
+	}	// 여기는 GRAPHICS->GetfGScale과 곱하지 않는다 XLayerImage::Draw에서 이걸 계속 호출하기 때문이다
 	void SetScale( const XE::VEC2& vScale ) { m_pSurface->SetScale( vScale ); }
 	void SetScale( float scalexy ) { m_pSurface->SetScale( scalexy ); }
 	MATRIX* GetMatrix( MATRIX *pOut, float lx, float ly );

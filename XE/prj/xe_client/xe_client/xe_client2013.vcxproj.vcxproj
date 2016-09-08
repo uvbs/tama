@@ -637,8 +637,10 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\Sprdef.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\Sprite.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprMng.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprMng_old.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprObj.h" />
-    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XActObj.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XActDat.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XActObj2.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XBaseObj.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\XDelegateSprObj.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\VersionXE.h" />
@@ -902,8 +904,10 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprDat.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\Sprite.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprMng.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprMng_old.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprObj.cpp" />
-    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\XActObj.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\XActDat.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\XActObj2.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\XBaseObj.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\XArchive.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\XAutoPtr.cpp" />

@@ -6,6 +6,7 @@
 #include "XFramework/client/XLayoutObj.h"
 #include "XFramework/client/XEContent.h"
 #include "XFramework/XEProfile.h"
+#include "sprite/SprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -183,9 +184,6 @@ BOOL XWndView::ProcessEnterLeaveAnimation( float dt )
 
 int XWndView::Process( float dt )
 {
-	{
-	}
-
 	XSprObj::s_LuaDt = dt;		// 루아글루에 사용
 	return XWnd::Process( dt );
 }

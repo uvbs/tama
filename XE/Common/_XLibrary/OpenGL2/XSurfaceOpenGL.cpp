@@ -230,7 +230,7 @@ xRESULT XSurfaceOpenGL::CreateVertexBuffer( float surfaceW, float surfaceH
 																					, int memw, int memh
 																					, int alignW, int alignH )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XBREAK( alignW == 0 );
 	XBREAK( alignH == 0 );
 	float adjx = (float)((int)_adjx);
@@ -277,7 +277,7 @@ bool XSurfaceOpenGL::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 																					const XE::VEC2& vAdj,
 																					const XE::VEC2& uvlt,
 																					const XE::VEC2& uvrb ) {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	const float u = uvlt.x;		// 아틀라스내 좌상귀
 	const float v = uvlt.y;
 	const float u2 = uvrb.x;		// 아틀라스내 우하귀
@@ -321,7 +321,7 @@ bool XSurfaceOpenGL::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 
 void XSurfaceOpenGL::DestroyDevice()
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 	if( m_glTexture )
@@ -364,7 +364,7 @@ void XSurfaceOpenGL::DestroyDevice()
  */
 void XSurfaceOpenGL::RestoreDevice( void )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XE::VEC2 vSize;
 	DWORD *pSrcImg = GetSrcImg( &vSize );
 //#ifdef _VER_IOS
@@ -429,7 +429,7 @@ void XSurfaceOpenGL::RestoreDeviceFromSrcImg( void )
 // src서피스를 this로 카피.
 void XSurfaceOpenGL::CopySurface( XSurface *src )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XSurfaceOpenGL *pSrc = (XSurfaceOpenGL *)src;
 	// src를 FBO에 연결
 	// glCopyTexImage를 이용해 src에서 this로 옮김.
@@ -455,7 +455,7 @@ void XSurfaceOpenGL::CopySurface( XSurface *src )
 
 void XSurfaceOpenGL::Draw( float x, float y, const MATRIX &mParent )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	if( GetsizeMem().w == 0 || GetsizeMem().h == 0 ) {
 		// 비동기상태로 로딩을 기다리고 있는 중.
 		return;
@@ -532,7 +532,7 @@ static void DrawTexture( XShader *pShader,
 						GLuint idFBO, GLuint idRBO,
 						MATRIX *pmParent )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	float u1 = 0;
 	float v1 = 0;
 	float u2 = _u2;
@@ -587,7 +587,7 @@ static void DrawTexture( XShader *pShader,
 #ifdef _XBLUR
 void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	float rtw = RT_WIDTH;
 	float rth = RT_HEIGHT;
 	GLint wrap = GL_REPEAT;	// CLAMP_EDGE로 하니까 블러 끝에 밀리는색이 나타난다
@@ -916,7 +916,7 @@ void XSurfaceOpenGL::DrawLocal( float x, float y, float lx, float ly )
 	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
 		return;
 #endif // _XPROFILE
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XBREAK( GetsizeMem().IsZero() );
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
@@ -988,7 +988,7 @@ void XSurfaceOpenGL::DrawCore( void )
 	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
 		return;
 #endif // _XPROFILE
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	XBREAK( GetsizeMem().IsZero() );
 	// Restore가 아직 안되어 0일수도 있으므로(페북프로필사진같은) 그때는 그냥 그리지만 않게 한다.
 	if( m_glVertexBuffer == 0 )
@@ -1034,7 +1034,7 @@ void XSurfaceOpenGL::DrawCore( void )
 // this의 RECT:src영역을 x,y위치에 그린다.
 void XSurfaceOpenGL::DrawSub( float x, float y, const XE::xRECTi *src )
 {
-	XAUTO_LOCK2( XGraphics::s_spLock );
+	
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 #ifdef _XPROFILE

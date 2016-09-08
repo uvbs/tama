@@ -14,6 +14,13 @@ DWORD XSurface::s_dwMaxSurfaceWidth = 0;
 int XSurface::s_sizeTotalVMem = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void XSurface::Destroy() 
+{
+	XBREAK( XRefRes::Getid64Res() > 0 && XRefRes::GetnRefCnt() > 0 );
+	SAFE_DELETE_ARRAY( __pSrcImg );
+	SAFE_DELETE_ARRAY( m_pMask );
+}
+
 void XSurface::DestroyDevice()
 {
 	if( !m_bAtlas ) {
@@ -402,3 +409,4 @@ void XSurface::GetMatrix( const XE::VEC2& vPos, MATRIX* pOut )
 	MatrixTranslation( m, vPos.x, vPos.y, 0 );
 	MatrixMultiply( mWorld, mWorld, m );
 }
+

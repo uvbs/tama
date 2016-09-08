@@ -1,5 +1,9 @@
 ﻿#pragma once
-#ifdef _XASYNC_SPR
+
+#ifndef _XASYNC_SPR
+// 여기 있는 코드는 구코드를 참고할필요가 있을때만 사용한다.
+// 신코드(비동기)가 완전히 완성되면 구코드를 버리도록 한 용도이다.
+// 이곳에 새 코드를 넣지 말아야 한다.
 #include "VersionXE.h"
 #include "etc/XGraphicsDef.h"
 class XSprDat;
@@ -11,20 +15,15 @@ XE_NAMESPACE_START( xSpr )
 struct xDat {
 	ID m_idDat = 0;
 	_tstring m_strKey;			// HSL로딩이 있기때문에 pSprDat의 파일명과 일치하지 않을 수 있음.
-	_tstring m_strLoadFile;		// 실제 읽는 파일의 파일명
 	XSprDat *m_pSprDat = nullptr;
 	XE::xHSL m_HSL;
 	xSec m_secLoaded = 0;			// 파일을 로드한 시간
 	ID m_idAsync = 0;					// 비동기로딩중이면 아이디가 있다.
 	xDat() : m_idDat( XE::GenerateID() ) {}
-	xDat( const _tstring& strKey, const _tstring& strFile, XSprDat* _pSprDat, const XE::xHSL& hsl )
-		: m_idDat(XE::GenerateID())
-		, m_strKey( strKey )
-		, m_strLoadFile( strFile )
-		, m_pSprDat( _pSprDat )
-		, m_HSL( hsl ) { }
-// 	xDat( const _tstring& strKey, XSprDat* _pSprDat )
-// 		: m_idDat(XE::GenerateID()), m_strKey( strKey ), m_pSprDat( _pSprDat ) { }
+	xDat( const _tstring& strKey, XSprDat* _pSprDat, const XE::xHSL& hsl )
+		: m_idDat(XE::GenerateID()), m_strKey( strKey ), m_pSprDat( _pSprDat ), m_HSL( hsl ) { }
+	xDat( const _tstring& strKey, XSprDat* _pSprDat )
+		: m_idDat(XE::GenerateID()), m_strKey( strKey ), m_pSprDat( _pSprDat ) { }
 	~xDat();
 	inline ID getid();
 	bool IsOverTime() const;
@@ -46,6 +45,7 @@ private:
 	struct xKey {
 
 	};
+#ifdef _XASYNC_SPR
 	struct xAsync {
 		ID m_idAsync = 0;
 		_tstring m_strFilename;				// 가상 파일이름.
@@ -56,13 +56,19 @@ private:
 		XSprDat* m_pSprDat = nullptr;		// 비동기로딩이 완료되었을때 그 sprdat
 		xAsync();
 	};
+#endif // _XASYNC_SPR
+//	XList4<xSpr::XSPDat> m_listSprDat;
+//	XList4<xSpr::XSPDat> m_listPreLoad;
+//	XList4<xSpr::XSPDat> m_listCache;		// use_count=0가 되었을때 메인리스트에선 삭제되지만 캐시에는 남는다. 다시 로딩이 필요할때 여기서 찾아서 로딩해 파일I/O시간을 줄인다.
 	std::map<_tstring, xSpr::XSPDat> m_mapDat;		// 현재 참조되고 있는 자원
 	std::map<_tstring, xSpr::XSPDat> m_mapCache;	// 현재 참조되고 있지는 않지만 캐시에 남아있는 자원.
+#ifdef _XASYNC_SPR
 	XList4<xAsync> m_listAsync;		// 비동기로 로딩이 예약된 스프라이트들
 	XList4<xAsync> m_listAsyncComplete;		// 비동기 로딩이 완료된 스프라이트
 	XSPLock m_spLock;
 	uintptr_t m_hThread = 0;
 	ID m_idThread = 0;
+#endif // _XASYNC_SPR
 	void Init( void ) {
 	}
 	void Destroy( void );
@@ -71,11 +77,17 @@ public:
 	~XSprMng() {
 		XTRACE( "destroy sprmng" ); Destroy();
 	}
+#ifdef _XASYNC_SPR
 	GET_ACCESSOR( XSPLock, spLock );
 	static unsigned int __stdcall _WorkThread( void *param );
 	void WorkThread();
+//	void AsyncSetAction( ID idAsync, ID idAct, xRPT_TYPE playType );
 	void OnCreate();
+//	xAsync* GetpAsyncInfo( ID idAsync );
+//	const XSprMng::xAsync* GetpAsyncComplete( ID idAsync );
 	void Process();
+#endif // _XASYNC_SPR
+	void CheckRelease( void );
 	XSprDat *Load( LPCTSTR szFilename,
 								 const XE::xHSL& hsl/* = XE::xHSL()*/,
 								 bool bUseAtlas,
@@ -97,17 +109,10 @@ public:
 		return nullptr;
 	}
 private:
-//	void CheckRelease( void );
-	xSpr::XSPDat AddNew( const _tstring& strKey, const _tstring& strFile, XSprDat *pSprDat, const XE::xHSL& hsl );
-	void MoveCacheToRefMap( const xSpr::XSPDat& spDat );
-	xSpr::XSPDat FindByKey( LPCTSTR szFilename );
-	xSpr::XSPDat FindByKeyAtCache( LPCTSTR szFilename );
-	inline xSpr::XSPDat FindByKey( const _tstring& strKeyFile ) {
-		return FindByKey( strKeyFile.c_str() );
-	}
-	inline xSpr::XSPDat FindByKeyAtCache( const _tstring& strKeyFile ) {
-		return FindByKeyAtCache( strKeyFile.c_str() );
-	}
+	xSpr::XSPDat AddNew( const _tstring& strKey, XSprDat *pSprDat, const XE::xHSL& hsl );
+	void MoveCacheToRefMap( const _tstring& strKey );
+	xSpr::XSPDat FindByKey( LPCTSTR szFilename, BOOL bSrcKeep, const XE::xHSL& hsl );
+	xSpr::XSPDat FindByKeyAtCache( LPCTSTR szFilename, BOOL bSrcKeep, const XE::xHSL& hsl );
 	xSpr::XSPDat FindByidAsync( ID idAsync );
 	void CompleteAsyncLoad( ID idAsync );
 	void DestroyOlderFile();
@@ -117,4 +122,4 @@ private:
 
 extern XSprMng *SPRMNG;
 
-#endif // _XASYNC_SPR
+#endif // not _XASYNC_SPR

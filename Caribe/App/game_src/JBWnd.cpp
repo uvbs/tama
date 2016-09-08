@@ -29,6 +29,7 @@
 #include "_Wnd2/XWndButton.h"
 #include "XSystem.h"
 #include "XCampObj.h"
+#include "sprite/SprObj.h"
 
 
 #ifdef WIN32
@@ -520,16 +521,13 @@ XWndLevelupElem::XWndLevelupElem(XBaseItem* pItem)
 	Add(m_pText);
 }
 
+int XWndCallbackSpr::Process( float dt )
+{
+	if( m_pOwner && GetpSprObj()->IsFinish() )
+		(m_pOwner->*m_pFunc)(this, m_dwParam1, m_dwParam2);
 
-//template<typename T>
-//XWndCallbackSpr::XWndCallbackSpr(XWnd *pOwner, LPCTSTR szFilename, ID action, const XE::VEC2& vPos, int(T::*pFunc)(XWnd* pWnd, DWORD p1, DWORD p2))
-//	: XWndSprObj(szFilename, action, vPos, xRPT_1PLAY)
-//{
-//	Init();
-//	m_pOwner = pOwner;
-//	//m_pFunc = static_cast<(XWnd::*)(XWnd* pWnd, DWORD p1, DWORD p2)> (pFunc);
-//}
-
+	return XWndSprObj::Process( dt );
+}
 
 //////////////////////////////////////////////////////////////////////////
 XWndStatArrow::XWndStatArrow(float fAfter, float fBefore, float x, float y)

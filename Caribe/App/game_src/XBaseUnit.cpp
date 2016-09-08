@@ -28,6 +28,7 @@
 #include "XMsgUnit.h"
 #include "XFramework/XFType.h"
 #include "XFramework/XEProfile.h"
+#include "sprite/SprObj.h"
 
 
 using namespace XSKILL;
@@ -255,15 +256,19 @@ void XBaseUnit::OnCreate()
 	LoadSpr( strSpr.c_str(), vHSL, ACT_IDLE1, xRPT_1PLAY );
 #endif // not _XUNIT_HSL
 	XBREAK( GetpSprObj() == nullptr );
-	XBREAK( GetpSprObj()->GetAction() == nullptr );
 	XE::VEC2 vScale( GetScaleObj().x, GetScaleObj().z );
 	GetpSprObj()->SetScale( vScale );		// 꼼수로 GetBoundBoxLocal()을 위해 확대시켜둠
-	// IDLE상태크기의 바운딩박스를 미리 구해둠
-	m_bbLocal = GetBoundBoxLocal();	// propUnit의 vScale이 반영된 결과
-	if( GetUnitType() == xUNIT_GOLEM ) {
-		m_bbLocal.vLT.Set( -36.f, -106.f );			// spr파일에 바운딩박스 값이 잘못돼서 직접 넣음.
-		m_bbLocal.vRB.Set( 36, 10 );
-	}
+#ifdef _XASYNC_SPR
+#else
+	XBREAK( GetpSprObj()->GetAction() == nullptr );
+	OnFinishLoad( GetpSprObj()->GetpSprDat() );
+// 	// IDLE상태크기의 바운딩박스를 미리 구해둠
+// 	m_bbLocal = GetBoundBoxLocal();	// propUnit의 vScale이 반영된 결과
+// 	if( GetUnitType() == xUNIT_GOLEM ) {
+// 		m_bbLocal.vLT.Set( -36.f, -106.f );			// spr파일에 바운딩박스 값이 잘못돼서 직접 넣음.
+// 		m_bbLocal.vRB.Set( 36, 10 );
+// 	}
+#endif // _XASYNC_SPR
 	m_HP = GetMaxHp();
 // 	if( IsPlayer() )
 // 		SetRotateY( 180.f );
@@ -273,6 +278,24 @@ void XBaseUnit::OnCreate()
 		m_Dir = XE::HDIR_LEFT;
 	XSkillUser::OnCreate();
 	// 전투 시작 이벤트.
+}
+
+void XBaseUnit::OnFinishLoad( const XSprDat* pSprDat )
+{
+	XBREAK( GetpSprObj() == nullptr );
+	if( GetpSprObj() && GetpSprObj()->GetAction() ) {
+		// IDLE상태크기의 바운딩박스를 미리 구해둠
+		m_bbLocal = GetBoundBoxLocal();	// propUnit의 vScale이 반영된 결과
+		if( GetUnitType() == xUNIT_GOLEM ) {
+			m_bbLocal.vLT.Set( -36.f, -106.f );			// spr파일에 바운딩박스 값이 잘못돼서 직접 넣음.
+			m_bbLocal.vRB.Set( 36, 10 );
+		}
+	}
+}
+
+void XBaseUnit::OnFinishAsyncLoad( const XSprDat* pSprDat )
+{
+	OnFinishLoad( pSprDat );
 }
 
 XSPSquad XBaseUnit::GetspSquadObj() const 
@@ -1435,7 +1458,7 @@ void XBaseUnit::CreateDmgNum( float damage, BIT bitAttrHit, xtHit hitType, int i
 void XBaseUnit::DoDie( XSPUnit spAtker )
 {
 	m_HP = 0;
-	XTRACE( "Die:%d ", GetsnObj() );
+//	XTRACE( "Die:%d ", GetsnObj() );
 	// 아직은 DoDie시 다른 데미지 파라메터가 필요없어서 초기값으로 지정함.
 	xnUnit::xDmg dmg( spAtker
 									, GetThisUnit(), 0.f, 0.f, xDMG_NONE, 0, xDA_NONE, false );
@@ -2151,7 +2174,7 @@ XObjLoop* XBaseUnit::sCreateSfxObj( XSPWorldObjConst spObj,
 	auto pUnit = (pObj && pObj->GetType() == xOT_UNIT)? static_cast<const XBaseUnit*>( pObj ) : nullptr;
 //	XSPUnitConst spUnit = (pUnit)? pUnit->GetThisUnit() : nullptr;
 #ifdef _DEBUG
-	XTRACE( "CreateSfxObj: %s, %d, sec=%.1f", szSpr, idAct, secPlay );
+//	XTRACE( "CreateSfxObj: %s, %d, sec=%.1f", szSpr, idAct, secPlay );
 #endif // _DEBUG
 	XObjLoop *pSfx = NULL;
 	if( !vPos.IsZero() ) {
@@ -2459,7 +2482,7 @@ BOOL XBaseUnit::OnFirstApplyState( XSkillUser *pCaster,
 									int level )
 {
 #ifdef _DEBUG
-	XTRACE("상태발동:%s", XGAME::GetStrState( (XGAME::xtState)idxState ));
+//	XTRACE("상태발동:%s", XGAME::GetStrState( (XGAME::xtState)idxState ));
 #endif // _DEBUG
 	// 상태발동 텍스트
 // 	auto pDmg = new XObjDmgNum( 0, xHT_STATE, idxState, GetvwTop() );

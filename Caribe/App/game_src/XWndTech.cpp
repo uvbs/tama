@@ -10,6 +10,7 @@
 #include "XSkillMng.h"
 #include "skill/XSkillDat.h"
 #include "skill/XESkillMng.h"
+#include "_Wnd2/XWndSprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

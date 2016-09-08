@@ -331,6 +331,8 @@ public:
 	}
 	BOOL IsNear( const XSPUnit& spUnit );
 	virtual void OnCreate();
+	virtual void OnFinishLoad( const XSprDat* pSprDat );
+	void OnFinishAsyncLoad( const XSprDat* pSprDat ) override;
 	//////////////////////////////////////////////////////////////////////////
 	// stat관련
 	// 프레임당 이동속도(픽셀단위)

@@ -71,7 +71,7 @@ void XFontDatFTGL::Reload2()
 {
 	SAFE_DELETE( m_font );
 	//
-	XLP1;		// profiling
+	XLOAD_PROFILE1;		// profiling
 //	XTRACE("FTTextureFont create");
 	TCHAR szFullpath[1024];
 	TCHAR szLocalpath[256];
@@ -97,7 +97,7 @@ void XFontDatFTGL::Reload2()
 	m_font->FaceSize( (int)GetFontSize() );
 	//	if( outset > 0 )
 	//		m_font->Outset( outset );		// 뚱뚱함의 굵기
-	XLP2;
+	XLOAD_PROFILE2;
 	XLOGP( "%s(%.2f), %llu", XE::GetFileName( szFullpath ), (float)GetFontSize(), __llPass );
 }
 

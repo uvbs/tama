@@ -79,7 +79,7 @@ public:
 // 	static XSPLock GetspLock() {
 // 		return s_spLock;
 // 	}
-	static XSPLock s_spLock;
+//	static XSPLock s_spLock;
 private:
 	/**
 	스크린의 논리적 해상도. 게임의 논리적 해상도라고도 불린다. 

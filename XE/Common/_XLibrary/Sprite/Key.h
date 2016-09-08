@@ -16,7 +16,7 @@ class XSprDat;
 class XSprObj;
 class XSprite;
 class XBaseKey;
-class XAniAction;
+class XActDat;
 class XBaseRes;
 class XActObj;
 ////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ public:
 	virtual void Load( XSprDat *pSprDat, XBaseRes *pRes );
 #endif // _XSPR_LOAD2
 	virtual void SetNextKey( XBaseKey* pKey ) {}
-	virtual void OnFinishLoad( XAniAction *pAction ) {}
+	virtual void OnFinishLoad( XActDat *pAction ) {}
 	
 };
 
@@ -167,7 +167,7 @@ public:
 	// virtual 
 	void Load( XSprDat *pSprDat, XBaseRes *pRes ) override;
 	void Execute( XSprObj *pSprObj, float fOverSec=0 ) override;
-	void OnFinishLoad( XAniAction *pAction ) override;
+	void OnFinishLoad( XActDat *pAction ) override;
 	inline XE::VEC2 GetvPosRandomed() {
 		if( m_vPosRandomed.IsInit() )
 			m_vPosRandomed = AssignRandom();

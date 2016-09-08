@@ -9,12 +9,14 @@
 #include "stdafx.h"
 #include "SprObj.h"
 #include "SprDat.h"
+#include "XActDat.h"
 #include "SprMng.h"
 #include "XArchive.h"
 #include "XDelegateSprObj.h"
 #include "XFramework/client/XApp.h"
 #include "XFramework/client/XClientMain.h"
 #include "etc/Debug.h"
+#include "XActObj2.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -24,193 +26,11 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-#define LAYER_LOOP( K )	int K##i;		\
-						XBaseLayer **ppLayers = m_ppLayers;	\
-						K##i = m_nNumLayers;		\
-						while( K##i-- )			\
-						{						\
-							XBaseLayer *K = *ppLayers++;	\
-							if( K == NULL )	continue;				// 이벤트레이어같은건 널이기때문에 이게 필요하다
-#define LAYER_LOOP_REV( K )	int K##i;		\
-							XBaseLayer **ppLayers = m_ppLayers + (m_nNumLayers - 1);	\
-							K##i = m_nNumLayers;		\
-							while( K##i-- )			\
-							{						\
-								XBaseLayer *K = *ppLayers--;	\
-								if( K == NULL )	continue;				// 이벤트레이어같은건 널이기때문에 이게 필요하다
-#define LOOP_END		}
 
 #ifdef _SPR_USE_LUA
 #pragma message("--------------------sprite use Lua!!")
 #endif
-///////////////////////////////////////////////////////////////
-//
-// XObjAct
-//
-////////////////////////////////////////////////////////////////
-XObjAct::XObjAct( XSprObj *pSprObj, XAniAction *pAction ) 
-{ 
-	m_pAction = pAction; 
-	m_pSprObj = pSprObj; 
-	m_nNumLayers = pAction->GetnNumLayerInfo();
-	m_ppLayers = new XBaseLayer*[ m_nNumLayers ];
-	memset( m_ppLayers, 0, sizeof(XBaseLayer*) * m_nNumLayers );
-}
-void XObjAct::Destroy( void )
-{
-	// layer 삭제
-	DestroyLayer();
-}
 
-void XObjAct::ClearLayer( void )
-{
-	LAYER_LOOP( pLayer )
-		pLayer->Clear();
-	LOOP_END
-}
-void XObjAct::FrameMove( float dt, float fFrmCurr )
-{
-	LAYER_LOOP( pLayer )
-		pLayer->FrameMove( m_pSprObj, dt, fFrmCurr );
-	LOOP_END
-}
-#ifdef _VER_OPENGL
-void XObjAct::Draw( float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam )
-{
-	LAYER_LOOP( pLayer )
-		pLayer->Draw( m_pSprObj, x, y, m, pEffectParam );
-	LOOP_END
-}
-#else
-void XObjAct::Draw( float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam )
-{
-	LAYER_LOOP( pLayer )
-		pLayer->Draw( m_pSprObj, x, y, m, pEffectParam );
-	LOOP_END
-}
-#endif
-void XObjAct::DestroyLayer( void )
-{
-	int i;
-	for( i = 0; i < m_nNumLayers; i ++ )
-		SAFE_DELETE( m_ppLayers[i] );
-	SAFE_DELETE_ARRAY( m_ppLayers );
-}
-XBaseLayer *XObjAct::CreateLayer( int idx, LAYER_INFO* pLayerInfo )
-{
-	auto pLayer = CreateLayer( idx
-													, pLayerInfo->type
-													, pLayerInfo->nLayer
-													, pLayerInfo->fAdjustAxisX
-													, pLayerInfo->fAdjustAxisY );		// 실제 레이어를 만들어준다
-	if( pLayer ) {
-		XBREAK( pLayerInfo->idLayer == 0 );
-		pLayer->SetidLayer( pLayerInfo->idLayer );
-	}
-	return pLayer;
-}
-// pLayer가 널이면 레이어를 초기화 상태로 만든다.
-XBaseLayer *XObjAct::CreateLayer( int idx, xSpr::xtLayer type, int nLayer, float fAdjAxisX, float fAdjAxisY )
-{
-	const XE::VEC2 vAdjAxis( fAdjAxisX, fAdjAxisY );
-#ifdef _XDEBUG
-	if( idx >= m_nNumLayers ) {
-		XLOG( "%s id=%d ACT %s(%d) idx(%d) >= m_nNumLayers(%d)", m_pSprObj->GetSprFilename(), m_pSprObj->GetdwID(),
-												m_pAction->GetszActName(), m_pAction->GetID(), idx, m_nNumLayers );
-		return NULL;
-	}
-																
-#endif
-		
-	XBaseLayer *pLayer = nullptr;
-	{
-		// 이거 나중에 XBaseLayer의스태틱 함수로 집어넣자. 안그러면 레이어종류가 추가될때마다 일일히 이런곳 찾아서 수정해줘야 한다
-		switch( type ) {
-			case xSpr::xLT_IMAGE:
-				pLayer = new XLayerImage;
-				((XLayerImage *)pLayer)->SetvAdjAxis( vAdjAxis );
-				break;
-			case xSpr::xLT_OBJ:
-				pLayer = new XLayerObject;
-				((XLayerObject *)pLayer)->SetvAdjAxis( vAdjAxis );
-				break;
-			case xSpr::xLT_SOUND:
-				pLayer = new XLayerSound;
-				break;
-			case xSpr::xLT_EVENT:
-				// 이벤트레이어는 게임에서 생성시킬 필요 없다
-				break;
-			case xSpr::xLT_DUMMY:
-				pLayer = new XLayerDummy;
-				((XLayerMove *)pLayer)->SetvAdjAxis( vAdjAxis );
-				break;
-			default:
-				pLayer = NULL;
-				XERROR( "layer 생성타입이 잘못되었음. %d", (int)type );
-				break;
-		}
-		if( pLayer ) {
-			pLayer->SetnLayer( nLayer );								// 지정한 레이어번호로 생성
-		}
-		m_ppLayers[ idx ] = pLayer;		// 널이 들어갈수도 있다
-	}
-	return pLayer;
-}
-XBaseLayer *XObjAct::GetLayer( xSpr::xtLayer type, int nLayer )
-{
-	LAYER_LOOP( pLayer )
-		if( pLayer->GetType() == type && pLayer->GetnLayer() == nLayer )
-			return pLayer;
-	
-	LOOP_END
-	return NULL;
-}
-
-// lx, ly는 0,0센터 기준 로컬좌표
-DWORD XObjAct::GetPixel( float cx, float cy, float mx, float my, const MATRIX &m, BYTE *pa, BYTE *pr, BYTE *pg, BYTE *pb )
-{
-	DWORD pixel;
-	LAYER_LOOP_REV( pLayer )
-	{
-		pixel = pLayer->GetPixel( cx, cy, mx, my, m, pa, pr, pg, pb );
-		if( *pa > 0 )
-			return pixel;			// 투명색이 아니면 픽셀이 있는것으로 간주하고 그 픽셀을 리턴한다
-	} LOOP_END;
-	return 0;
-}
-
-int XObjAct::Serialize( XArchive& ar )
-{
-	LAYER_LOOP( pLayer )
-	{
-		pLayer->Serialize( ar, m_pSprObj );
-	}
-	LOOP_END;
-	return 1;
-}
-
-int XObjAct::DeSerialize( XArchive& ar )
-{
-	LAYER_LOOP( pLayer )
-	{
-		pLayer->DeSerialize( ar, m_pSprObj );
-	}
-	LOOP_END;
-	return 1;
-}
-
-XBaseLayer* XObjAct::GetpLayerByidLocalInLayer( ID idLocalInLayer ) const 
-{
-	XBaseLayer **ppLayers = m_ppLayers;
-	int num = m_nNumLayers;
-	while( num-- ) {
-		XBaseLayer *pLayer = *ppLayers++;
-		if( pLayer == nullptr )	continue;				// 이벤트레이어같은건 널이기때문에 이게 필요하다
-		if( pLayer->GetidLayer() == idLocalInLayer )
-			return pLayer;
-	}
-	return nullptr;
-}
 
 ///////////////////////////////////////////////////////////////
 //
@@ -218,23 +38,17 @@ XBaseLayer* XObjAct::GetpLayerByidLocalInLayer( ID idLocalInLayer ) const
 //
 ////////////////////////////////////////////////////////////////
 #define OBJACT_LOOP( K )	int K##i;		\
-							XObjAct **ppObjActs = m_ppObjActs;	\
+							XActObj **ppObjActs = m_ppObjActs;	\
 							K##i = m_nNumObjActs;		\
 							while( K##i-- )			\
 							{						\
-								XObjAct *K = *ppObjActs++;	
+								XActObj *K = *ppObjActs++;	
 #define OBJACT_LOOP_REV( K )	int K##i;		\
-								XObjAct **ppObjActs = m_ppObjActs + (m_nNumObjActs - 1);	\
+								XActObj **ppObjActs = m_ppObjActs + (m_nNumObjActs - 1);	\
 								K##i = m_nNumObjActs;		\
 								while( K##i-- )			\
 								{						\
-									XObjAct *K = *ppObjActs--;	
-// #define SPROBJ_LOOP( K )	int K##i;		\
-// 							XSprObj **ppSprObjs = m_ppSprObjs;	\
-// 							K##i = m_nNumSprObjs;		\
-// 							while( K##i-- )			\
-// 							{						\
-// 								XSprObj *K = *ppSprObjs++;	
+									XActObj *K = *ppObjActs--;	
 #define LOOP_END		}
 
 float XSprObj::s_LuaDt = 0;		// LuaDraw()에서 씀. 이번프레임에 결정된 dt값을 저장한다
@@ -286,23 +100,11 @@ void XSprObj::Destroy( void )
 #ifdef _SPR_USE_LUA
 	SAFE_DELETE( m_pLua );
 #endif
-// #ifdef _XSPR_LAZY_LOAD
-// 	if( m_pSprDat == NULL )
-// 		return;
-// #endif // not spr_lazy_load
 	// m_pSprDat를 삭제한다. 그러나 매니저를 통해 삭제해야한다. 그리고 RefCnt개념을 써야 한다
-// 	XBREAK( m_pSprDat == NULL );
 	if( SPRMNG && m_pSprDat )
 		SPRMNG->Release( m_pSprDat );
-	m_pSprDat = NULL;
+	m_pSprDat = nullptr;
 	
-	// 사전로드 sprobj 삭제. 
-// 	{
-// 		int i;
-// 		for( i = 0; i < m_nNumSprObjs; i ++ )
-// 			SAFE_DELETE( m_ppSprObjs[i] );
-// 		SAFE_DELETE_ARRAY( m_ppSprObjs );
-// 	}
 	for( auto& useSpr : m_aryUseSprObj ) {
 		SAFE_DELETE( useSpr.m_pSprObj );
 	}
@@ -372,7 +174,7 @@ BOOL XSprObj::IsHaveAction( ID idAct )
 	return m_pSprDat->IsHaveAction( idAct );
 }
 
-XAniAction* XSprObj::GetAction( ID idAct ) 
+XActDat* XSprObj::GetAction( ID idAct ) 
 {
 // #ifdef _XSPR_LAZY_LOAD
 	if( m_pSprDat == NULL )
@@ -383,7 +185,7 @@ XAniAction* XSprObj::GetAction( ID idAct )
 	return m_pSprDat->GetAction( idAct );
 }
 
-XAniAction* XSprObj::GetAction() const 
+XActDat* XSprObj::GetAction() const 
 {
 // #ifdef _XSPR_LAZY_LOAD
 	if( m_pSprDat == NULL )
@@ -398,13 +200,16 @@ XAniAction* XSprObj::GetAction() const
 
 ID XSprObj::GetActionID() 
 {		// GetAction()->GetID()이렇게 쓰지말고 이걸쓸것
-	XAniAction *pAction = GetAction();
-	return ( pAction ) ? pAction->GetID() : 0;
+	XActDat *pAction = GetAction();
+	if( pAction ) {
+		return pAction->GetID();
+	}
+	return m_Async.m_idAct;
 }
 
 float XSprObj::GetPlayTime() 
 {
-	XAniAction *pAction = GetAction();
+	XActDat *pAction = GetAction();
 	if( pAction )
 		return pAction->GetPlayTime();
 	return 0.0f;
@@ -459,7 +264,7 @@ XBaseLayer* XSprObj::GetLayer( xSpr::xtLayer type, int nLayer )
 /**
  @brief 
 */
-XObjAct *XSprObj::AddObjAct( int idx, XAniAction *pAction )
+XActObj *XSprObj::AddObjAct( int idx, XActDat *pAction )
 {
 #ifdef _XDEBUG
 	if( idx >= m_nNumObjActs ) {
@@ -467,36 +272,41 @@ XObjAct *XSprObj::AddObjAct( int idx, XAniAction *pAction )
 		return NULL;
 	}
 #endif
-	XObjAct *pObjAct = new XObjAct( this, pAction );
+	XActObj *pObjAct = new XActObj( this, pAction );
 	m_ppObjActs[ idx ] = pObjAct;
 	return pObjAct;
 }
 /**
  @brief 
 */
-void XSprObj::SetAction( DWORD id, xRPT_TYPE playType, BOOL bExecFrameMove )
+void XSprObj::SetAction( DWORD idAct, xRPT_TYPE playType, BOOL bExecFrameMove )
 {
   XBREAK( m_bCallHandler == true );   // 콜백실행중 SetAction금지;
-	XBREAK( id == 0 );
+	XBREAK( idAct == 0 );
 #ifdef _XSPR_LAZY_LOAD
 	if( m_pSprDat == nullptr ) {
 		// 아직 SprDat가 없어서 예약만 걸어둠.
-		m_LazyInfo.idAct = id;
+		m_LazyInfo.idAct = idAct;
 		m_LazyInfo.playType = playType;
 		return;
 	}
 #else
 	if( m_pSprDat == nullptr ) {
-		XSprMng::sGet()->AsyncSetAction(  id, playType, bExecFrameMove );
+  #ifdef _XASYNC_SPR
+		XBREAK( m_Async.m_idAsyncLoad == 0 );
+		m_Async.m_idAct = idAct;
+		m_Async.m_playType = playType;
+//		XSprMng::sGet()->AsyncSetAction( m_Async.m_idAsyncLoad, idAct, playType );
+  #endif // _XASYNC_SPR
 		return;
 	}
 #endif
-	if( _m_pObjActCurr && id == GetAction()->GetID() &&	m_PlayType == playType )		// 이미 셋된 액션아이디로 다시 셋시킬순 없다
+	if( _m_pObjActCurr && idAct == GetAction()->GetID() &&	m_PlayType == playType )		// 이미 셋된 액션아이디로 다시 셋시킬순 없다
 		return;
 	m_fFrameCurrent = 0;
 	m_bFinish = FALSE;
 	m_multiplySpeed = 1.0f;	// 스피드 배수도 초기화
-	XAniAction *pAction = m_pSprDat->GetAction( id );
+	XActDat *pAction = m_pSprDat->GetAction( idAct );
 	OBJACT_LOOP( pObjAct )
 		if( pObjAct->GetpAction() == pAction ) {
 			SetpObjActCurr( pObjAct );
@@ -508,16 +318,7 @@ void XSprObj::SetAction( DWORD id, xRPT_TYPE playType, BOOL bExecFrameMove )
 		m_PlayType = pAction->GetPlayMode();
 	else
 		m_PlayType = playType;
-	// 레이어 내용 초기화(이부분을 왜 지웠었지?)
-// 	GetpObjActCurr()->ClearLayer();
-// 	if( bExecFrameMove )
-// 		FrameMove( 0 );	// 액션바꾼후 젤첫프레임의 키는 한번 실행해줘야 한다 안그러면 그림이 사라지는 상태가 된다
-// 	GetpObjActCurr()->ClearLayer();		
-// 	if( bExecFrameMove )
-// 		FrameMove(0);	// 액션바꾼후 젤첫프레임의 키는 한번 실행해줘야 한다 안그러면 그림이 사라지는 상태가 된다
-	
-//	pAction->SetAction( GetpObjActCurr() );	// Load에서 한번만 하도록 바뀜
-//	Update();			// 로딩된 직후에 레이어를 한번 업데이트 해줘야 함. 안그러면 
+
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -548,10 +349,10 @@ void XSprObj::FrameMove( float dt )
 #ifdef _XSPR_LAZY_LOAD
 	auto& lazy = m_LazyInfo;
 	if( m_pSprDat == nullptr && lazy.strFilename.empty() == false ) {
-#ifndef _XASYNC_SPR
+  #ifndef _XASYNC_SPR
 		// SprDat가 없을땐 1초마다 한번씩 파일이 생겼는지 확인해본다.
 		if( lazy.timerLazyLoad.IsOver() ) 
-#endif // not _XASYNC_SPR
+  #endif // not _XASYNC_SPR
 		{
 			if( Load( lazy.strFilename.c_str(), lazy.m_HSL, lazy.m_bUseAtlas, lazy.bKeepSrc, false ) ) {
 				SetAction( lazy.idAct, lazy.playType );
@@ -564,9 +365,27 @@ void XSprObj::FrameMove( float dt )
 		return;
 	}
 #endif
+#ifdef _XASYNC_SPR
+	if( IsAsyncLoading() ) {
+//		auto pAsync  = SPRMNG->GetpAsyncComplete( m_Async.m_idAsyncLoad );
+		auto spDat = SPRMNG->FindSprDatByidAsync( m_Async.m_idAsyncLoad );
+		if( spDat ) {
+			OnCompleteAsyncLoad( spDat );
+			if( m_Async.m_idAct ) {
+				SetAction( m_Async.m_idAct, m_Async.m_playType );
+			}
+			if( m_pDelegate ) {
+				m_pDelegate->OnFinishAsyncLoad( m_pSprDat );
+			}
+//			SPRMNG->DeleteAsyncComplete( m_Async.m_idAsyncLoad );
+			m_Async.Clear();
+		}
+		return;
+	}
+#endif // _XASYNC_SPR
 	if( m_bFinish )		
 		return;		// 애니메이션이 끝났으면 더이상 실행하지 않음
-	XAniAction *pAction = GetAction();
+	XActDat *pAction = GetAction();
 	if( pAction == nullptr )
 		return;
 	BOOL bPlay = IsPlaying();
@@ -616,7 +435,7 @@ void XSprObj::FrameMove( float dt )
 }
 
 // fFrameCurrent위치로 바로 점프한다. 그사이의 키는 실행하지 않는다
-void XSprObj::JumpKeyPos( XAniAction *pAction, float fJumpFrame )
+void XSprObj::JumpKeyPos( XActDat *pAction, float fJumpFrame )
 {
 	SetKeyCurrStart();		// 키를 첨으로 돌린다
 	// 키위치를 점프프레임위치의 키로 바로 이동
@@ -627,17 +446,20 @@ void XSprObj::JumpKeyPos( XAniAction *pAction, float fJumpFrame )
 */
 BOOL XSprObj::Load( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, BOOL bKeepSrc, bool bAsyncLoad )
 { 
-	XAUTO_LOCK2( XGraphics::s_spLock );
-#ifdef _XDEBUG
-	if( m_pSprDat ) {
-		XLOG( "m_pSprDat(%s)가 해제되지 않았다 %s", m_pSprDat->GetszFilename(), szFilename );
+	
+	XBREAK( SPRMNG == nullptr );
+	if( XBREAK( m_pSprDat != nullptr ) ) {
 		SPRMNG->Release( m_pSprDat );
 		m_pSprDat = nullptr;
 	}
-#endif
-	XBREAK( SPRMNG == NULL );
-	m_pSprDat = SPRMNG->Load( szFilename, hsl, bUseAtlas, TRUE, bKeepSrc, bAsyncLoad );
-	if( m_pSprDat == nullptr ) {
+	// 비동기로딩시에는 파일I/O만 예약한다.
+	auto pSprDat = SPRMNG->Load( szFilename,
+															 hsl,
+															 bUseAtlas,
+															 bKeepSrc,
+															 bAsyncLoad,
+															 &m_Async.m_idAsyncLoad );
+	if( pSprDat == nullptr ) {
 		// spr파일을 못읽었으면 SprObj::Process내에서 비동기로딩을 시작한다.
 		// 알림창 띄우지 말것.
 #ifdef _XSPR_LAZY_LOAD
@@ -653,29 +475,31 @@ BOOL XSprObj::Load( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, BOO
 #endif
 		return FALSE;
 	}
-	// SprDat에 루아코드가 있다면 루아쓰레드를 만들어야 한다
-	if( m_pSprDat->GetpcLuaAll() ) {
-#ifdef _SPR_USE_LUA
-		m_pLua = CreateScript();
-//		m_pLua = FACTORY->CreateScript();	// virtual
-		m_pLua->DoString( m_pSprDat->GetpcLuaAll() );
-#endif
-	}
-	//
-	int i, j;
-	m_nNumObjActs = m_pSprDat->GetnNumActions();
-	m_ppObjActs = new XObjAct*[ m_nNumObjActs ];
-	memset( m_ppObjActs, 0, sizeof(XObjAct*) * m_nNumObjActs );
-	for( i = 0; i < m_nNumObjActs; i++ ) {
-		XAniAction *pAction = m_pSprDat->GetActionIndex( i );		// 순차적으로 액션을 읽어온다
-		XObjAct *pObjAct = AddObjAct( i, pAction );		// 추가 액션정보를 만든다.
-		for( j = 0; j < pAction->GetnNumLayerInfo(); j++ ) {
-			LAYER_INFO *pLayerInfo = pAction->GetLayer( j );
-			pObjAct->CreateLayer( j, pLayerInfo );
-		}
-	}
+	// 레이어등을 생성한다.
+	OnFinishLoad( pSprDat );
+// 	// SprDat에 루아코드가 있다면 루아쓰레드를 만들어야 한다
+// 	if( m_pSprDat->GetpcLuaAll() ) {
+// #ifdef _SPR_USE_LUA
+// 		m_pLua = CreateScript();
+// //		m_pLua = FACTORY->CreateScript();	// virtual
+// 		m_pLua->DoString( m_pSprDat->GetpcLuaAll() );
+// #endif
+// 	}
+// 	//
+// 	int i, j;
+// 	m_nNumObjActs = m_pSprDat->GetnNumActions();
+// 	m_ppObjActs = new XObjAct*[ m_nNumObjActs ];
+// 	memset( m_ppObjActs, 0, sizeof(XObjAct*) * m_nNumObjActs );
+// 	for( i = 0; i < m_nNumObjActs; i++ ) {
+// 		XAniAction *pAction = m_pSprDat->GetActionIndex( i );		// 순차적으로 액션을 읽어온다
+// 		XObjAct *pObjAct = AddObjAct( i, pAction );		// 추가 액션정보를 만든다.
+// 		for( j = 0; j < pAction->GetnNumLayerInfo(); j++ ) {
+// 			LAYER_INFO *pLayerInfo = pAction->GetLayer( j );
+// 			pObjAct->CreateLayer( j, pLayerInfo );
+// 		}
+// 	}
 	return TRUE;
-}
+} // Load
 
 /**
  루아객체를 다시 만든다(완전 땜빵)
@@ -742,12 +566,18 @@ XSprObj* XSprObj::AddSprObj( LPCTSTR szSpr
 }
 
 #ifdef _VER_OPENGL
+void XSprObj::Draw( float x, float y ) 
+{
+	MATRIX m;
+	MatrixIdentity( m );
+	Draw( x, y, m );
+}
 void XSprObj::Draw( float x, float y, const MATRIX& mParent )
 { 
-#ifdef _XSPR_LAZY_LOAD
+#if defined(_XSPR_LAZY_LOAD) || defined(_XASYNC_SPR)
 	if( m_pSprDat == NULL )		// SprDat가 없으면 일단 찍지 않음.
 		return;
-#endif
+#endif // defined(_XSPR_LAZY_LOAD) || defined(_XASYNC_SPR)
 	auto pObjAct = GetpObjActCurr();
 	auto pAct = pObjAct->GetpAction();
 	MATRIX mWorld, m;
@@ -796,7 +626,7 @@ void XSprObj::Draw( float x, float y, const MATRIX& mParent )
 #ifdef _VER_DX
 void XSprObj::Draw( float x, float y, const D3DXMATRIX &m ) 
 { 
-#ifdef _XSPR_LAZY_LOAD
+#if defined(_XSPR_LAZY_LOAD) || defined(_XASYNC_SPR)
 	if( m_pSprDat == NULL )		// SprDat가 없으면 일단 찍지 않음.
 		return;
 #endif
@@ -895,7 +725,7 @@ void XSprObj::RegisterLua( XLua *pLua )
 // 현재 액션을 화면에 draw하면 화면을 벗어나는 부분이 있는가?
 BOOL XSprObj::IsDrawOutPartly( const XE::VEC2& vPos )
 {
-	XAniAction *pAction = GetAction();
+	XActDat *pAction = GetAction();
 	XBREAK( pAction == NULL );
 	if( pAction )
 	{
@@ -918,7 +748,7 @@ BOOL XSprObj::IsDrawOutPartly( const XE::VEC2& vPos )
 // vPos에 draw할때 왼쪽을 벗어나는 부분이 있는가.
 BOOL XSprObj::IsDrawOutPartlyLeft( const XE::VEC2& vPos )
 {
-	XAniAction *pAction = GetAction();
+	XActDat *pAction = GetAction();
 	XBREAK( pAction == NULL );
 	if( pAction )
 	{
@@ -932,7 +762,7 @@ BOOL XSprObj::IsDrawOutPartlyLeft( const XE::VEC2& vPos )
 // vPos에 draw할때 오른쪽을 벗어나는 부분이 있는가.
 BOOL XSprObj::IsDrawOutPartlyRight( const XE::VEC2& vPos )
 {
-	XAniAction *pAction = GetAction();
+	XActDat *pAction = GetAction();
 	XBREAK( pAction == NULL );
 	if( pAction )
 	{
@@ -947,7 +777,7 @@ BOOL XSprObj::IsDrawOutPartlyRight( const XE::VEC2& vPos )
 // vPos에 draw할때 아래쪽을 벗어나는 부분이 있는가.
 BOOL XSprObj::IsDrawOutPartlyBottom( const XE::VEC2& vPos )
 {
-	XAniAction *pAction = GetAction();
+	XActDat *pAction = GetAction();
 	XBREAK( pAction == NULL );
 	if( pAction )
 	{
@@ -962,7 +792,7 @@ BOOL XSprObj::IsDrawOutPartlyBottom( const XE::VEC2& vPos )
 // vPos에 draw할때 위쪽을 벗어나는 부분이 있는가.
 BOOL XSprObj::IsDrawOutPartlyTop( const XE::VEC2& vPos )
 {
-	XAniAction *pAction = GetAction();
+	XActDat *pAction = GetAction();
 	XBREAK( pAction == NULL );
 	if( pAction )
 	{
@@ -987,7 +817,7 @@ void XSprObj::SetPlayTime( float secPlay )
 
 int XSprObj::Serialize( XArchive& ar )
 {
-	XObjAct *pObjAct = GetpObjActCurr();
+	XActObj *pObjAct = GetpObjActCurr();
 	if( pObjAct )
 	{
 		ID idAct = GetActionID();
@@ -1003,7 +833,7 @@ int XSprObj::DeSerialize( XArchive& ar )
 	ID idAct;
 	ar >> idAct;
 	SetAction( idAct );
-	XObjAct *pObjAct = GetpObjActCurr();
+	XActObj *pObjAct = GetpObjActCurr();
 	if( pObjAct )
 		pObjAct->DeSerialize( ar );
 	// $(SolutionDir)$(Configuration)
@@ -1027,7 +857,7 @@ XSprObj* XSprObj::CreateSprObj( LPCTSTR szSpr, XDelegateSprObj *pDelegate )
 }
 
 // 새버전
-XBaseLayer* XSprObj::GetpLayerByidLocalInLayer( XObjAct* pActObj, ID idLocalInLayer ) 
+XBaseLayer* XSprObj::GetpLayerByidLocalInLayer( XActObj* pActObj, ID idLocalInLayer ) 
 {
 	auto pLayer = pActObj->GetpLayerByidLocalInLayer( idLocalInLayer );
 #ifdef _XDEBUG
@@ -1039,9 +869,107 @@ XBaseLayer* XSprObj::GetpLayerByidLocalInLayer( XObjAct* pActObj, ID idLocalInLa
 	return pLayer;
 } 
 
-XObjAct* XSprObj::GetpObjAct( ID idAct ) const 
+XActObj* XSprObj::GetpObjAct( ID idAct ) const 
 {
 	if( XBREAK( idAct >= XSprDat::MAX_ID ) )
 		return NULL;
 	return m_ppObjActs[ idAct ];
+}
+
+#ifdef _XASYNC_SPR
+void XSprObj::OnCompleteAsyncLoad( XSprDat* pSprDat ) 
+{
+	OnFinishLoad( pSprDat );
+}
+bool XSprObj::IsAsyncLoading() const 
+{
+	return m_pSprDat == nullptr && m_Async.m_idAsyncLoad != 0;
+}
+#endif // _XASYNC_SPR
+
+void XSprObj::OnFinishLoad( XSprDat* pSprDat )
+{
+	m_pSprDat = pSprDat;
+	//
+	// SprDat에 루아코드가 있다면 루아쓰레드를 만들어야 한다
+	if( m_pSprDat->GetpcLuaAll() ) {
+#ifdef _SPR_USE_LUA
+		m_pLua = CreateScript();
+		m_pLua->DoString( m_pSprDat->GetpcLuaAll() );
+#endif
+	}
+	//
+	int i, j;
+	m_nNumObjActs = m_pSprDat->GetnNumActions();
+	m_ppObjActs = new XActObj*[m_nNumObjActs];
+	memset( m_ppObjActs, 0, sizeof( XActObj* ) * m_nNumObjActs );
+	for( i = 0; i < m_nNumObjActs; i++ ) {
+		XActDat *pAction = m_pSprDat->GetActionIndex( i );		// 순차적으로 액션을 읽어온다
+		XActObj *pObjAct = AddObjAct( i, pAction );		// 추가 액션정보를 만든다.
+		for( j = 0; j < pAction->GetnNumLayerInfo(); j++ ) {
+			LAYER_INFO *pLayerInfo = pAction->GetLayer( j );
+			pObjAct->CreateLayer( j, pLayerInfo );
+		}
+	}
+
+}
+
+XActObj* XSprObj::GetpObjActCurr() const 
+{
+#if defined(_XSPR_LAZY_LOAD) || defined(_XASYNC_SPR)
+	if( m_pSprDat == NULL )
+		NULL;
+#else
+	XBREAK( _m_pObjActCurr == NULL );
+#endif
+	return _m_pObjActCurr;
+}
+
+bool XSprObj::IsError() const 
+{
+#ifdef _XASYNC_SPR
+	return m_pSprDat == nullptr && m_Async.m_idAsyncLoad == 0;
+#else
+	return m_pSprDat == nullptr;
+#endif // _XASYNC_SPR
+}
+
+void XSprObj::Transform( float *lx, float *ly ) 
+{
+	Vec3 v = Vec3( *lx, *ly, 0 );
+	MATRIX m, mRotX, mRotY, mRotZ, mScale;
+	MatrixRotationX( mRotX, D2R( m_fRotX ) );
+	MatrixRotationY( mRotY, D2R( m_fRotY ) );
+	MatrixRotationZ( mRotZ, D2R( m_fRotZ ) );
+	MatrixScaling( mScale, GetScaleX(), GetScaleY(), 1.0f );
+	MatrixIdentity( m );
+	MatrixMultiply( m, m, mScale );
+	MatrixMultiply( m, m, mRotX );
+	MatrixMultiply( m, m, mRotY );
+	MatrixMultiply( m, m, mRotZ );
+	Vec4 v4d;
+	MatrixVec4Multiply( v4d, v, m );
+	*lx = v4d.x;
+	*ly = v4d.y;
+}
+
+void XSprObj::Transform( float *fAngle ) 
+{
+	// 좌우플립됐을경우는....
+	if( m_fRotY == 180.0f ) {
+		float a = *fAngle;
+		if( a > 180.0f )		// 일단 각도계를 -180~+180기준으로 바꾼다음
+			a -= 360.0f;
+		else if( a < -180.0f )
+			a += 360.0f;
+		*fAngle = -a;		// 부호를 바꿔준다
+	}
+	// 다른 각도변환은 일단은 하지 않는다.
+}
+
+void XSprObj::ResetAction() 
+{	// 현재설정된 액션그대로 초기화만 시킨다
+	m_fFrameCurrent = 0;
+	SetKeyCurrStart();
+	m_bFinish = FALSE;
 }

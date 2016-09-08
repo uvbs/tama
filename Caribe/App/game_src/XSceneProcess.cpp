@@ -3,6 +3,7 @@
 #include "XSceneBattle.h"
 #include "XLegionObj.h"
 #include "XBattleField.h"
+#include "sprite/SprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

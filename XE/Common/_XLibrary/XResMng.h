@@ -32,6 +32,9 @@ namespace XE {
 	 SAFE_DELETE( pRes );
 	*/
 	XBaseRes* CreateResHandle( LPCTSTR szRes, LPCTSTR szPack=NULL );
+	inline XBaseRes* CreateResHandle( const _tstring& strRes, LPCTSTR szPack = NULL ) {
+		return CreateResHandle( strRes.c_str(), szPack );
+	}
 	/**
 	 패키지패스에서 szRes파일을 읽어서 리소스객체로 만든다.
 	 szRes는 "spr/test.spr"형태의 로컬패스여야 한다.

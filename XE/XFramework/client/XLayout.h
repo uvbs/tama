@@ -3,7 +3,7 @@
 #include "XBaseFontDat.h"
 #include "XBaseDelegate.h"
 #include "_Wnd2/XWnd.h"
-#include "_Wnd2/XWndSprObj.h"
+//#include "_Wnd2/XWndSprObj.h"
 
 #define XLAYOUT_ELEM	TiXmlElement
 #define XLAYOUT_NODE	TiXmlNode

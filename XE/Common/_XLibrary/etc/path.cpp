@@ -243,6 +243,14 @@ LPCTSTR	XE::MakePathLang( LPCTSTR szLocalPath, LPCTSTR szFile )
 #endif // not win32
 	return _szTempBuff;
 }
+_tstring XE::MakePathLang2( LPCTSTR szLocalPath, LPCTSTR szFile )
+{
+	_tstring str = szLocalPath;
+	str += LANG.GetLangDir();
+	str += szFile;
+	return str;
+}
+
 //#endif 
 
 // szPath + szFileName을 해 로컬패스를 만든다.

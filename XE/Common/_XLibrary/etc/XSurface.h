@@ -10,9 +10,47 @@
 #include "xUtil.h"
 #include "XRefRes.h"
 #include "xMath.h"
+#include "XGraphicsUtil.h"
 #if !defined(MATRIX) && !defined(CONSOLE)
 #error "not define MATRIX"
 #endif
+
+XE_NAMESPACE_START( XE )
+//
+struct xSurfaceInfo {
+	XE::POINT m_ptSizeSurface;
+	XE::POINT m_ptSizeMem;
+	XE::VEC2 m_vAdj;
+	XE::xtPixelFormat m_fmtSurface = xPF_NONE;
+	XE::xtPixelFormat m_fmtSrc = xPF_NONE;
+	void* m_pImg = nullptr;
+	bool m_bSrcKeep = false;
+	bool m_bMakeMask = false;
+	bool m_bUseAtlas = false;
+	xSurfaceInfo( const XE::POINT& ptSizeSurface,
+								const XE::VEC2& vAdj,
+								XE::xtPixelFormat fmtSurface,
+								void* pImg,
+								const XE::POINT& ptSizeMem,
+								XE::xtPixelFormat fmtSrc,
+								bool bSrcKeep,
+								bool bMakeMask,
+								bool bUseAtlas )
+		: m_ptSizeSurface( ptSizeSurface )
+		, m_ptSizeMem( ptSizeMem )
+		, m_vAdj( vAdj )
+		, m_fmtSurface( fmtSurface )
+		, m_pImg( pImg )
+		, m_fmtSrc( fmtSrc )
+		, m_bSrcKeep( bSrcKeep )
+		, m_bMakeMask( bMakeMask )
+		, m_bUseAtlas( bUseAtlas ) {	}
+	~xSurfaceInfo() {	}
+};
+
+//
+XE_NAMESPACE_END; // XE
+
 
 class XSurface : public XRefRes
 {
@@ -45,11 +83,7 @@ private:
 		m_dwDrawFlag = 0;
 		m_pMask = NULL;
 	}
-	void Destroy( void ) {
-		XBREAK( XRefRes::Getid64Res() > 0 && XRefRes::GetnRefCnt() > 0 );
-		SAFE_DELETE_ARRAY( __pSrcImg );
-		SAFE_DELETE_ARRAY( m_pMask );
-	}
+	void Destroy( void );
 	BOOL m_bHighReso;				// 아이폰용 고해상도 리소스
 	float	__fResoScale;		// 바른계산을 위해 고해상도용 스케읽밧을 받아둔다
 	float m_Width, m_Height;		///< 서피스 크기(주의:메모리 크기가 아님!). 고해상 메모리데이타의 크기가 11인경우 서피스크기는 5.5가 되므로 이제부턴 w,h값을 실수형으로 써야 한다
@@ -60,6 +94,7 @@ private:
 	XE::xtPixelFormat m_formatSurface = XE::xPF_NONE;	// vRam에 만들어진 서피스의 픽셀포맷.
 	int m_sizeByte = 0;			// vram에 로딩된 텍스쳐의 크기
 	bool m_bAtlas = false;		// atlas에 텍스쳐가 있는지.
+	std::shared_ptr<XE::xSurfaceInfo> m_spSurfaceInfo;		// 비동기로 로딩했을경우 파일에서 읽어온 데이터.
 	inline void SetsizeSurface( float w, float h ) {
 		m_Width = w;
 		m_Height = h;
@@ -155,6 +190,7 @@ public:
 	GET_ACCESSOR_CONST( const XE::VEC2&, sizeMem );
 	GET_ACCESSOR_CONST( const XE::POINT&, sizeMemAligned );
 	GET_ACCESSOR_CONST( XE::xtPixelFormat, formatSurface );
+	GET_SET_ACCESSOR_CONST( std::shared_ptr<XE::xSurfaceInfo>, spSurfaceInfo );
 	XE::POINT GetsizeMemToPoint() const {
 		return XE::POINT( (int)m_sizeMem.w, (int)m_sizeMem.h );
 	}

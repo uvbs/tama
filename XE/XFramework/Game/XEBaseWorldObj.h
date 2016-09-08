@@ -10,6 +10,7 @@ class XEWndWorld;
 class XArchive;
 class XEBaseWorldObj;
 class XSprObj;
+class XSprDat;
 class XSurface;
 namespace XE {
 struct xHSL;
@@ -18,6 +19,7 @@ struct xHSL;
 class XEBaseWorldObj : public XDelegateSprObj,
 					public std::enable_shared_from_this<XEBaseWorldObj>
 {
+friend class XEObjMng;
 	static DWORD s_idSerial;
 	static int s_numObj;		// 메모리 릭 추적용
 public:	
@@ -89,6 +91,7 @@ public:
 	void SetDestroy( int n ) { m_Destroy = n; }
 	GET_ACCESSOR_CONST( int, Type );
 	GET_ACCESSOR_CONST( ID, snObj );
+	GET_ACCESSOR_CONST( const _tstring&, strSpr );
 	//GET_ACCESSOR( ID, idObj );
 // 	ID GetsnObj() {
 // 		return m_snObj;
@@ -290,7 +293,7 @@ public:
 	float GetDistSqBetweenPos( const XE::VEC3& vwSrc ) const {
 		return (vwSrc - m_vwPos).Lengthsq();
 	}
-	
-friend class XEObjMng;
+// 	// 비동기 로딩으로 spr로딩과 SetAction까지 끝나면 호출된다.
+// 	virtual void OnFinishLoadSpr( const XSprDat* pSprDat ) {}
 };
 
