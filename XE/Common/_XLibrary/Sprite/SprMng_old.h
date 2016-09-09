@@ -6,6 +6,7 @@
 // 이곳에 새 코드를 넣지 말아야 한다.
 #include "VersionXE.h"
 #include "etc/XGraphicsDef.h"
+#include "XFType.h"
 class XSprDat;
 class XSprObj;
 enum xRPT_TYPE : int;
@@ -28,7 +29,6 @@ struct xDat {
 	inline ID getid();
 	bool IsOverTime() const;
 };
-typedef std::shared_ptr<xDat> XSPDat;
 //
 XE_NAMESPACE_END; // XE
 

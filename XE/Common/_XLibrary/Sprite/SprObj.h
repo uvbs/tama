@@ -1,12 +1,4 @@
-﻿/*
- *  SprObj.h
- *  Game
- *
- *  Created by xuzhu on 10. 12. 8..
- *  Copyright 2010 LINKS CO.,LTD. All rights reserved.
- *
- */
-#pragma once
+﻿#pragma once
 
 #include "etc/xMath.h"
 #include "etc/xGraphics.h"
@@ -36,6 +28,7 @@ class XActObj;
 struct LAYER_INFO;
 struct XEFFECT_PARAM;
 XE_NAMESPACE_START( xSpr )
+struct xDat;
 // KeyEvent 델리게이트시 넘겨주는 파라메터
 struct xEvent {
 	_tstring m_strSpr;
@@ -91,7 +84,8 @@ private:
 		XSprObj* m_pSprObj = nullptr;
 	};
 	DWORD m_dwID;												// 이 오브젝트만의고유한 아이디
-	XSprDat *m_pSprDat;
+//	xSpr::XSPDatConst m_spDat;
+	xSpr::XSPDat m_spDat;
 	XSprObj *m_pParentSprObj;		// this가 자식이면 부모포인터를 가리킨다
 	XDelegateSprObj *m_pDelegate;		// 델리게이트
 	int m_nNumSprObjs;
@@ -120,8 +114,8 @@ private:
 		ID m_idAct = 0;			// 비동기 로딩중에 들어온 setAction
 		xRPT_TYPE m_playType = xRPT_LOOP;
 		void Clear() {
-			m_idAsyncLoad = 0;
 			m_idAct = 0;
+			m_idAsyncLoad = 0;
 			m_playType = xRPT_LOOP;
 		}
 		} m_Async;
@@ -131,7 +125,6 @@ private:
 #endif 
 	void Init() {
 		m_dwID = XE::GenerateID();
-		m_pSprDat = NULL;
 		m_pDelegate = NULL;
 		m_pParentSprObj = NULL;
 		m_nNumSprObjs = 0;
@@ -162,10 +155,7 @@ private:
 	void Destroy();
 	void SetpObjActCurr( XActObj *pObjAct ) { _m_pObjActCurr = pObjAct; }
 	SET_ACCESSOR( DWORD, dwID );
-	XSprDat* GetpSprDat() {
-//		XBREAK( m_pSprDat == NULL );		// 비동기 로딩써야하므로 브레이크 걸리면 안됨.
-		return m_pSprDat;
-	}
+	XSprDat* GetpSprDat();
 public:
 	XSprObj() { Init(); }		// 툴에서 필요해서 살림. new XSprObj;로만 생성해서 sprObj->Load()로 읽어서 에러검출 할수 있도록.
 	XSprObj( DWORD dwID );
@@ -314,15 +304,21 @@ public:
 		Draw( vPos.x, vPos.y, m );
 	}
 	// action
-	BOOL IsHaveAction( ID idAct );
-	inline void ResetAction();
+	bool IsHaveAction( ID idAct );
+	void ResetAction();
 	void SetAction( DWORD id, xRPT_TYPE playType = xRPT_LOOP, BOOL bExecFrameMove=TRUE );
-	XActDat *GetAction() const;
-	XActDat *GetAction( ID idAct );
-	ID GetActionID();
-	XActObj *AddObjAct( int idx, XActDat *pAction );
+	const XActDat *GetAction() const;
+	inline XActDat* GetActionMutable() {
+		return const_cast<XActDat*>( GetAction() );
+	}
+	const XActDat *GetAction( ID idAct ) const;
+	XActDat* GetActionMutable( ID idAct ) {
+		return const_cast<XActDat*>( GetAction( idAct ) );
+	}
+	ID GetActionID() const;
+	XActObj *AddObjAct( int idx, const XActDat *pAction );
 	// 애니메이션 최대 플레이 시간을 초단위로 얻는다.
-	float GetPlayTime();
+	float GetPlayTime() const;
 	// key
 	void SetKeyCurrStart() {	m_nKeyCurr = 0; }			// 현재 가리키는 키를 맨 처음으로 돌린다.
 	
@@ -353,9 +349,9 @@ public:
 	BOOL IsDrawOutPartlyBottom( const XE::VEC2& vPos );
 	BOOL IsDrawOutPartlyTop( const XE::VEC2& vPos );
 	void SetPlayTime( float secPlay );
-	XSprite* GetSprite( int idx );
+	const XSprite* GetSprite( int idx ) const;
+	XSprite* GetSpriteMutable( int idx );  // 이건 장차 없어져야한다.
 	// file
-	BOOL Load( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, BOOL bKeepSrc, bool bAsyncLoad );
 	// preload sprobj
 	XSprObj* AddSprObj( LPCTSTR szSprObj, ID idAct, xRPT_TYPE playMode, ID idBase, ID idLocal, ID idActParent, ID idLayerParent );
 	// virtual 
@@ -382,8 +378,11 @@ public:
 	GET_SET_ACCESSOR_CONST( const struct tagAsync&, Async );
 	inline bool IsAsyncLoading() const;
 private:
+//	BOOL Load( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, BOOL bKeepSrc, bool bAsyncLoad );
 	void OnFinishLoad( XSprDat* pSprDat );
-	void OnCompleteAsyncLoad( XSprDat* pSprDat );
+//	void OnCompleteAsyncLoad( XSprDat* pSprDat );
+	xSpr::XSPDat LoadInternal( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, ID* pOutidAsync ) const;
+	xSpr::XSPDat LoadInternal( const char* cFilename, const XE::xHSL& hsl, bool bUseAtlas, ID* pOutidAsync ) const;
 #endif // _XASYNC_SPR
 };
 

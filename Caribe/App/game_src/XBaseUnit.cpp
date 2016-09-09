@@ -283,7 +283,7 @@ void XBaseUnit::OnCreate()
 void XBaseUnit::OnFinishLoad( const XSprDat* pSprDat )
 {
 	XBREAK( GetpSprObj() == nullptr );
-	if( GetpSprObj() && GetpSprObj()->GetAction() ) {
+	if( GetpSprObj() && GetpSprObjConst()->GetAction() ) {
 		// IDLE상태크기의 바운딩박스를 미리 구해둠
 		m_bbLocal = GetBoundBoxLocal();	// propUnit의 vScale이 반영된 결과
 		if( GetUnitType() == xUNIT_GOLEM ) {

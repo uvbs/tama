@@ -4,6 +4,8 @@
 #include "etc/XGraphicsDef.h"
 class XSprDat;
 class XSprObj;
+class XActDat;
+class XSprite;
 enum xRPT_TYPE : int;
 
 XE_NAMESPACE_START( xSpr )
@@ -16,6 +18,9 @@ struct xDat {
 	XE::xHSL m_HSL;
 	xSec m_secLoaded = 0;			// 파일을 로드한 시간
 	ID m_idAsync = 0;					// 비동기로딩중이면 아이디가 있다.
+// 	ID m_idAct = 0;
+// 	xRPT_TYPE m_playType = xRPT_LOOP;
+// 	bool m_bComplete = false;		// 비동기 로딩이 완료됨.
 	xDat() : m_idDat( XE::GenerateID() ) {}
 	xDat( const _tstring& strKey, const _tstring& strFile, XSprDat* _pSprDat, const XE::xHSL& hsl )
 		: m_idDat(XE::GenerateID())
@@ -28,8 +33,13 @@ struct xDat {
 	~xDat();
 	inline ID getid();
 	bool IsOverTime() const;
+	LPCTSTR GetszFilename() const;
+	const XActDat* GetAction( ID idAct ) const;
+	int GetnNumActions() const;
+	const XActDat* GetActionIndex( int index ) const;
+	const XSprite* GetSprite( int nSpr ) const;
+	XSprite* GetSpriteMutable( int nSpr );
 };
-typedef std::shared_ptr<xDat> XSPDat;
 //
 XE_NAMESPACE_END; // XE
 
@@ -76,7 +86,7 @@ public:
 	void WorkThread();
 	void OnCreate();
 	void Process();
-	XSprDat *Load( LPCTSTR szFilename,
+	xSpr::XSPDat Load( LPCTSTR szFilename,
 								 const XE::xHSL& hsl/* = XE::xHSL()*/,
 								 bool bUseAtlas,
 //								 BOOL bAddRefCnt = TRUE,
@@ -84,7 +94,7 @@ public:
 								 bool bAsyncLoad = false,
 								 ID* pOutidAsync =nullptr	);
 	void RestoreDevice();
-	void Release( XSprDat *pSprDat );
+	void Release( xSpr::XSPDat spDatRelease );
 	void DoFlushCache();
 #ifdef WIN32
 	void Reload();

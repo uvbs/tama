@@ -29,8 +29,32 @@ bool xSpr::xDat::IsOverTime() const {
 xSpr::xDat::~xDat() {
 	SAFE_DELETE( m_pSprDat );
 }
+LPCTSTR xDat::GetszFilename() const {
+	return (m_pSprDat) ? m_pSprDat->GetszFilename() : _T( "" );
+}
+
+const XActDat* xDat::GetAction( ID idAct ) const {
+	return (m_pSprDat) ? m_pSprDat->GetAction( idAct ) : nullptr;
+}
+
+int xDat::GetnNumActions() const {
+	return (m_pSprDat) ? m_pSprDat->GetnNumActions() : 0;
+}
+
+const XActDat* xDat::GetActionIndex( int index ) const {
+	return (m_pSprDat) ? m_pSprDat->GetActionIndex( index ) : nullptr;
+}
+
+const XSprite* xDat::GetSprite( int nSpr ) const {
+	return (m_pSprDat) ? m_pSprDat->GetSprite( nSpr ) : nullptr;
+}
+
+XSprite* xDat::GetSpriteMutable( int nSpr ) {
+	return (m_pSprDat) ? m_pSprDat->GetSpriteMutable( nSpr ) : nullptr;
+}
 
 
+//////////////////////////////////////////////////////////////////////////
 XSprMng::xAsync::xAsync() {
 	m_idAsync = XE::GenerateID();
 }
@@ -124,7 +148,7 @@ void XSprMng::DestroyOlderFile()
  해제된 자원은 캐시맵으로 들어가 일정시간후에 파괴된다.
  만약 그전에 그 자원에 대한 요청이 있다면 캐시에서 빠지고 다시 리스트에 올라간다.
 */
-void XSprMng::Release( XSprDat *pSprDat )
+void XSprMng::Release( XSPDat spDatRelease )
 {
 	XAUTO_LOCK2( m_spLock );
 	// 캐시에 있는것 중 오래된파일은 삭제한다.
@@ -133,13 +157,13 @@ void XSprMng::Release( XSprDat *pSprDat )
 	for( auto itor = m_mapDat.begin(); itor != m_mapDat.end(); ) {
 		auto spDat = itor->second;
 		auto pSprDat = spDat->m_pSprDat;
-		if( pSprDat && pSprDat->GetsnDat() == pSprDat->GetsnDat() ) {
+		if( pSprDat && pSprDat->GetsnDat() == spDatRelease->m_idDat ) {
 			// 캐시로 이동시켜 파괴되지 않도록 한다.
 #ifdef _XDEBUG
 			auto itorCache = m_mapCache.find( spDat->m_strKey );
-			if( XASSERT(itorCache == m_mapCache.end()) )
+			if( XASSERT( itorCache == m_mapCache.end() ) )
 #endif // _XDEBUG
-				m_mapCache[ spDat->m_strKey ] = spDat;
+				m_mapCache[spDat->m_strKey] = spDat;
 			// 참조맵에선 삭제
 			m_mapDat.erase( itor++ );
 			XBREAK( spDat.use_count() != 2 );
@@ -148,6 +172,30 @@ void XSprMng::Release( XSprDat *pSprDat )
 			itor++;
 	}
 }
+// void XSprMng::Release( XSprDat *pSprDat )
+// {
+// 	XAUTO_LOCK2( m_spLock );
+// 	// 캐시에 있는것 중 오래된파일은 삭제한다.
+// 	DestroyOlderFile();
+// 	//
+// 	for( auto itor = m_mapDat.begin(); itor != m_mapDat.end(); ) {
+// 		auto spDat = itor->second;
+// 		auto pSprDat = spDat->m_pSprDat;
+// 		if( pSprDat && pSprDat->GetsnDat() == pSprDat->GetsnDat() ) {
+// 			// 캐시로 이동시켜 파괴되지 않도록 한다.
+// #ifdef _XDEBUG
+// 			auto itorCache = m_mapCache.find( spDat->m_strKey );
+// 			if( XASSERT(itorCache == m_mapCache.end()) )
+// #endif // _XDEBUG
+// 				m_mapCache[ spDat->m_strKey ] = spDat;
+// 			// 참조맵에선 삭제
+// 			m_mapDat.erase( itor++ );
+// 			XBREAK( spDat.use_count() != 2 );
+// 			return;
+// 		} else
+// 			itor++;
+// 	}
+// }
 
 /**
 @brief 아무도 참조하고 있지는 않지만 캐쉬타임에 걸려 아직 파괴되지 않은 리스스들을 모두 날린다.
@@ -232,13 +280,12 @@ void XSprMng::CompleteAsyncLoad( ID idAsync )
 @param bAsyncLoad 파일을 비동기로 읽는다
 @param pOutidAsync 비동기 로딩을 하게 되면 비동기로딩정보의 아이디가 담긴다.
 */
-XSprDat *XSprMng::Load( LPCTSTR szFileKey,
-												const XE::xHSL& /*hsl*/,
-												bool bUseAtlas,
-//												BOOL bAddRefCnt,
-												BOOL bSrcKeep,
-												bool bAsyncLoad,
-												ID* pOutidAsync )
+XSPDat XSprMng::Load( LPCTSTR szFileKey,
+											const XE::xHSL& /*hsl*/,
+											bool bUseAtlas,
+											BOOL bSrcKeep,
+											bool bAsyncLoad,
+											ID* pOutidAsync )
 {
 	XAUTO_LOCK2( m_spLock );
 	XE::xHSL hsl;
@@ -269,7 +316,7 @@ XSprDat *XSprMng::Load( LPCTSTR szFileKey,
 			if( bExistAtCache )
 				// 캐시에 있는것을 참조맵으로 옮긴다.
 				MoveCacheToRefMap( spDat );
-			return pSprDat;
+			return spDat;
 		}
 	}
 	// 이미 로딩된게 없으면 비동기 로딩을 준비한다
@@ -289,8 +336,8 @@ XSprDat *XSprMng::Load( LPCTSTR szFileKey,
 		if( spDat ) {
 			spDat->m_idAsync = asyncSpr.m_idAsync;
 		}
+		return spDat;
 	}
-	return nullptr;
 } // Load
 
 xSpr::XSPDat XSprMng::AddNew( const _tstring& strKey, 
@@ -379,6 +426,7 @@ void XSprMng::Process()
 		auto spDat = FindByidAsync( async.m_idAsync );
 		if( spDat ) {
 			spDat->m_pSprDat = async.m_pSprDat;
+			spDat->m_idAsync = 0;
 		}
 		m_listAsyncComplete.erase( itor++ );
 		break;		// 한프레임에 하나씩만 처리하도록.
@@ -405,7 +453,7 @@ void XSprMng::WorkThread()
 					break;
 				}
 			}
-			Sleep( 100 );
+			Sleep( 1 );
 		} // while
 			//
 		{
@@ -433,7 +481,7 @@ void XSprMng::WorkThread()
 				SAFE_DELETE( pSprDat );
 			}
 		}
-		Sleep( 100 );
+		Sleep( 1 );
 	} // while
 
 }

@@ -122,8 +122,8 @@ public:
 #endif // _XSPR_LOAD2
 	virtual void SetNextKey( XBaseKey* pKey ) {}
 	virtual void OnFinishLoad( XActDat *pAction ) {}
-	
-};
+	virtual bool IsRandomType() const { return false; }
+}; //BaseKey
 
 ////////////////////////////////////////////////////
 class XKeyPos : public XBaseKey
@@ -146,18 +146,7 @@ private:
 protected:
 public:
 	XKeyPos() { Init(); }
-#ifndef _XSPR_LOAD2
-	XKeyPos( XBaseKey& keyBase, XKeyPos& key ) : XBaseKey( keyBase ) {
-		Init();
-		m_vPosOrig = key.GetvPosOrig();
-		m_vRangeRandomX = key.m_vRangeRandomX;
-		m_vRangeRandomY = key.m_vRangeRandomY;
-		m_radiusRandom = key.m_radiusRandom;
-		m_Interpolation = key.GetInterpolation();
-		m_idxInterpolationEndKey = key.GetidxInterpolationEndKey();
-	}
-#endif // not _XSPR_LOAD2
-	virtual ~XKeyPos() {}
+	~XKeyPos() {}
 	// get/set
 	GET_ACCESSOR_CONST( const XE::VEC2&, vPosOrig );
 	GET_ACCESSOR_CONST( XBaseLayer::xtInterpolation, Interpolation );
@@ -174,7 +163,8 @@ public:
 		return m_vPosRandomed;
 	}
 	XE::VEC2 AssignRandom() const;
-};
+	bool IsRandomType() const override;
+}; //KeyPos
 /////////////////////////////////////////////////////
 class XKeyEffect : public XBaseKey
 {
@@ -212,16 +202,7 @@ protected:
 	}
 public:
 	XKeyEffect() { Init(); }
-#ifndef _XSPR_LOAD2
-	XKeyEffect( XBaseKey& keyBase, XKeyEffect& key ) : XBaseKey( keyBase ) {
-		Init();
-		m_Interpolation = key.GetInterpolation();
-		m_dwFlag = key.GetdwFlag();
-		m_DrawMode = key.GetDrawMode();
-		m_fOpacityOrig = key.GetfOpacityOrig();
-	}
-#endif // not _XSPR_LOAD2
-	virtual ~XKeyEffect() {}
+	~XKeyEffect() {}
 	// get/set
 	BOOL GetFlipHoriz( void ) { return (m_dwFlag & EFF_FLIP_HORIZ) ? TRUE : FALSE; }
 	BOOL GetFlipVert( void ) { return (m_dwFlag & EFF_FLIP_VERT) ? TRUE : FALSE; }
@@ -244,7 +225,8 @@ public:
 		return m_fOpacityOrig + xRandomF( m_vRangeRandomed.v1, m_vRangeRandomed.v2 );
 	}
 	float GetOpacityRandomed();
-};
+	virtual bool IsRandomType() const {		return false;	}
+}; // KeyEffect
 //////////////////////////////////////////////////////
 class XKeyRot : public XBaseKey
 {
@@ -279,15 +261,7 @@ protected:
 	}
 public:
 	XKeyRot() { Init(); }
-#ifndef _XSPR_LOAD2
-	XKeyRot( XBaseKey& keyBase, XKeyRot& key ) : XBaseKey( keyBase ) {
-		Init();
-		m_dAngleOrig = key.m_dAngleOrig;
-		m_Interpolation = key.GetInterpolation();
-		m_vRangeRandom = key.m_vRangeRandom;
-	}
-#endif // not _XSPR_LOAD2
-	virtual ~XKeyRot() {}
+	~XKeyRot() {}
 	// get/set
 	GET_SET_ACCESSOR( float, dAngleOrig );
 	GET_ACCESSOR( XBaseLayer::xtInterpolation, Interpolation );
@@ -312,7 +286,10 @@ public:
 			m_dAngleRandomed = AssignRandom();
 		return m_dAngleRandomed;
 	}
-};
+	virtual bool IsRandomType() const {
+		return false;
+	}
+}; // KeyRot
 ////////////////////////////////////////////////////
 class XKeyScale : public XBaseKey
 {
@@ -348,17 +325,7 @@ protected:
 	}
 public:
 	XKeyScale() { Init(); }
-#ifndef _XSPR_LOAD2
-	XKeyScale( XBaseKey& keyBase, XKeyScale& key ) : XBaseKey( keyBase ) {
-		Init();
-		m_vScaleOrig = key.m_vScaleOrig;
-		m_vRangeRandomX = key.m_vRangeRandomX;
-		m_vRangeRandomY = key.m_vRangeRandomY;
-		m_vRangeRandomXY = key.m_vRangeRandomXY;
-		m_Interpolation = key.GetInterpolation();
-	}
-#endif // not _XSPR_LOAD2
-	virtual ~XKeyScale() {}
+	~XKeyScale() {}
 	// get/set
 	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vScaleOrig );
 	GET_ACCESSOR_CONST( XBaseLayer::xtInterpolation, Interpolation );
@@ -381,7 +348,10 @@ public:
 		return m_vScaleRandomed;
 	}
 	XE::VEC2 AssignRandom() const;
-};
+	virtual bool IsRandomType() const {
+		return false;
+	}
+}; //KeyScale
 ////////////////////////////////////////////////////
 class XKeyImageLayer : public XBaseKey
 {
@@ -429,7 +399,7 @@ public:
 		m_nSpr = key.GetnSpr();
 	}
 #endif // not _XSPR_LOAD2
-	virtual ~XKeyImage() {}
+	~XKeyImage() {}
 	GET_ACCESSOR( int, nSpr );
 	GET_SET_ACCESSOR( XSprite*, pSprite );
 	void Execute( XSprObj *pSprObj, float fOverSec=0 ) override;
@@ -688,7 +658,7 @@ public:
 	}
 #endif // not _XSPR_LOAD2
 	virtual ~XKeySound() { Destroy(); }
-	void Execute( XSprObj *pSprObj, float fOverSec=0 );
+	void Execute( XSprObj *pSprObj, float fOverSec=0 ) override;
 	GET_ACCESSOR( ID, idSound );
 	GET_ACCESSOR( float, fVolume );
 	virtual void Load( XSprDat *pSprDat, XBaseRes *pRes ) override;

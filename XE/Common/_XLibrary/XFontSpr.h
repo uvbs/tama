@@ -4,19 +4,20 @@
 #include "XFontMng.h"
 //#include "sprite/SprMng.h"
 // .spr파일로 폰트를 쓰는 버전+
-class XSprDat;
+namespace xSpr {
+struct xDat;
+}
 
 class XFontDatSpr : public XBaseFontDat
 {
 	void Init( void ) {	
-		m_pSprDat = NULL;
 		m_Alpha = 1.0f;
 	//	m_vScale.Set( 1.0f );
 		m_fDist = 0;
 	}
 	void Destroy( void );
 protected:
-	XSprDat *m_pSprDat;
+	xSpr::XSPDat m_spDat;
 	float m_Alpha;
 //	XE::VEC2 m_vScale;
 	float m_fDist;
@@ -26,11 +27,8 @@ public:
 	//s
 	float GetCharWidth( TCHAR tc );
 	SET_ACCESSOR( float, Alpha );
-//	SET_ACCESSOR( const XE::VEC2&, vScale );
-	GET_SET_ACCESSOR( float, fDist );
-	BOOL IsError( void ) {
-		return m_pSprDat == NULL;
-	}
+	GET_SET_ACCESSOR_CONST( float, fDist );
+	bool IsError( void ) const;
 	//
 	virtual int GetCharToIdx( TCHAR c );
 	virtual float GetFontHeight( void );

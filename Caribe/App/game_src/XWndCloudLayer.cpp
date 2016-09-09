@@ -36,7 +36,7 @@ XWndCloudLayer::XWndCloudLayer( const XE::VEC2& vPos,
 	: XWnd( vPos.x, vPos.y, vSize.w, vSize.h )
 {
 	Init();
-	m_psdCloud = SPRMNG->Load( _T("cloud.spr"), XE::xHSL(), false );
+	m_spDatCloud = SPRMNG->Load( _T("cloud.spr"), XE::xHSL(), false );
 //	SetbTouchable( FALSE );
 	m_objMove[0].SetState1();
 	m_objMove[1].SetState2();
@@ -44,7 +44,7 @@ XWndCloudLayer::XWndCloudLayer( const XE::VEC2& vPos,
 
 void XWndCloudLayer::Destroy()
 {
-	SPRMNG->Release( m_psdCloud );
+	SPRMNG->Release( m_spDatCloud );
 }
 
 void XWndCloudLayer::UpdateClouds( XArrayLinearN<ID, 512>& ary )
@@ -287,7 +287,7 @@ void XWndCloudLayer::DrawCloudArea( XPropCloud::xCloud* pProp
 		const float scaleCloud = 1.4f;
 		vSum += v;		// 헥사타일들의 좌표를 모두 더한다.
 		BOOL bDraw = TRUE;
-		XSprite *psfcCloud = m_psdCloud->GetSprite( hexa.idxImg );
+		auto psfcCloud = m_spDatCloud->GetSpriteMutable( hexa.idxImg );
 		const auto vSize = psfcCloud->GetSize() * scaleCloud;
 		if( v.x > sizeWin.w )
 			bDraw = FALSE;

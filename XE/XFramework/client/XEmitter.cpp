@@ -76,7 +76,7 @@ XEmitter::XEmitter( const XE::VEC2& vPos, XPropParticle::xEmitter* pPropEmitter,
 		auto psoSurfaces = new XSprObj( pPropEmitter->strSpr );
 		m_idxSpr = idxArySpr + 1;	// id는 0값이 초기화값이므로.
 		m_psoSurfaces = psoSurfaces;
-		m_psfcParticle = psoSurfaces->GetSprite( idxArySpr )->GetpSurface();
+		m_psfcParticle = psoSurfaces->GetSpriteMutable( idxArySpr )->GetpSurface();
 	} else {
 		m_strSpr = pPropEmitter->strSpr;
 	}

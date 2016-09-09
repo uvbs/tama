@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "etc/xColor.h"
-#include "Layer.h"
+//#include "Layer.h"
 #include "Key.h"
 #include "Sprite.h"
 #include "XActDat.h"
@@ -74,7 +74,7 @@ public:
 		return m_arySprite.Size();
 	}
 	GET_ACCESSOR_CONST( int, nNumActions );
-	GET_ACCESSOR( const char*, pcLuaAll );
+	GET_ACCESSOR_CONST( const char*, pcLuaAll );
 	GET_ACCESSOR_CONST( BOOL, bKeepSrc );
 	GET_ACCESSOR_CONST( int, SizeByte );
 	inline bool IsUpperVersion( int nVersion ) const { 
@@ -102,7 +102,9 @@ public:
 	//key
 	
 	// action
-	XActDat* GetActionIndex( int index ) { return m_ppActions[ index ]; }
+	XActDat* GetActionIndex( int index ) const { 
+		return m_ppActions[ index ]; 
+	}
 	inline int GetActionIndexFromID( DWORD id ) const { return m_indexFromID[ id ]; }
 	XActDat* GetAction( DWORD id ) {
 		int idx = m_indexFromID[id];
@@ -115,16 +117,23 @@ public:
 	/**
 	 @brief idAct액션이 있는지 검사
 	*/
-	inline BOOL IsHaveAction( ID idAct ) {
+	inline bool IsHaveAction( ID idAct ) const {
 		return m_indexFromID[idAct] != -1;
 	}	
 	// sprite
-	XSprite* GetSprite( int nSpr ) { 
+	const XSprite* GetSprite( int nSpr ) const { 
 		if( XBREAK( nSpr >= GetnNumSprites() || nSpr < 0 ) ) {
 			return nullptr;
 		}
 		XBREAK( m_arySprite[ nSpr ] == nullptr );
 		return m_arySprite[ nSpr ];
+	}
+	XSprite* GetSpriteMutable( int nSpr ) {
+		if( XBREAK( nSpr >= GetnNumSprites() || nSpr < 0 ) ) {
+			return nullptr;
+		}
+		XBREAK( m_arySprite[nSpr] == nullptr );
+		return m_arySprite[nSpr];
 	}
 #ifdef _XSPRITE2
 	XSurface* GetSpriteSurface( int idxSpr ) { 

@@ -186,7 +186,7 @@ int XUnitHero::DoSkillMotion( void )
 		ID idAct = ACT_SKILL1;
 		if( pDat->GetidCastMotion() ) {
 			idAct = pDat->GetidCastMotion();
-			if( GetpSprObj()->IsHaveAction( idAct ) == FALSE )
+			if( !GetpSprObj()->IsHaveAction( idAct ) )
 				idAct = ACT_SKILL1;
 		}
 		GetpSprObj()->SetAction( idAct, xRPT_1PLAY );

@@ -244,7 +244,7 @@ void XKeyImage::Load( XSprDat *pSprDat, XBaseRes *pRes )
 {
 	pRes->Read( &m_nSpr, 4 );
 #ifdef _XSPR_LOAD2
-	m_pSprite = pSprDat->GetSprite( m_nSpr );
+	m_pSprite = const_cast<XSprite*>( pSprDat->GetSprite( m_nSpr ) );
 #endif // _XSPR_LOAD2
 }
 void XKeyImage::Execute( XSprObj *pSprObj, float fOverSec )
@@ -314,6 +314,13 @@ XE::VEC2 XKeyPos::AssignRandom() const
 	return m_vPosOrig;
 }
 
+bool XKeyPos::IsRandomType() const 
+{
+	return( m_radiusRandom 
+					|| m_vRangeRandomX.IsNotZero() 
+					|| m_vRangeRandomY.IsNotZero() );
+}
+
 
 void XKeyPos::Execute( XSprObj *pSprObj, float fOverSec )
 {
@@ -328,12 +335,20 @@ void XKeyPos::Execute( XSprObj *pSprObj, float fOverSec )
 // 		auto pLayer = GetpLayerByidLayerT<XLayerMove>( pSprObj );
 		if( XASSERT( pLayer ) ) {
 			auto& cn = pLayer->GetcnPos();
+// 			if( cn.interpolation )		// 새 키가 실행될때 이전 채널값을 안지운다는 가정.
+// 				// 현재 채널이 보간모드면 이전 위치를 시작위치로 한다.
+// 				cn.m_vStart = cn.m_vEnd;
+// 			else
+// 				// 채널에 보간옵션이 없으면 현재키의 랜덤값으로 지정한다.
+// 				cn.m_vStart = AssignRandom();
 			if( m_pInterpolationEndKey ) {
 				cn.interpolation = m_Interpolation;
 				cn.m_frameStartKey = GetfFrame();
-				cn.m_vStart = GetvPosRandomed();
+ 				cn.m_vStart = GetvPosRandomed();
+// 				cn.m_vStart = AssignRandom();
 				cn.m_frameEndKey = m_pInterpolationEndKey->GetfFrame();
-				cn.m_vEnd = m_pInterpolationEndKey->GetvPosRandomed();
+// 				cn.m_vEnd = m_pInterpolationEndKey->GetvPosRandomed();
+				cn.m_vEnd = m_pInterpolationEndKey->AssignRandom();
 			} else {
 				// 다음키가 없다는것은 보간옵션이 켜져있어도 보간할게 없다는뜻임.
 				cn.interpolation = XBaseLayer::xNONE;
@@ -342,36 +357,15 @@ void XKeyPos::Execute( XSprObj *pSprObj, float fOverSec )
 // 				cn.m_frameEndKey = GetfFrame();
 			}
 			m_vPosRandomed = AssignRandom();
+// 			cn.m_mapRandom[ GetidKey() ] = AssignRandom();
 		} // pLayer
 	} // pActObj
-// 	auto pActObj = pSprObj->GetpObjActCurr();
-// 	if( XASSERT( pActObj ) ) {
-// 		auto pLayer = GetpLayerByidLayerT<XLayerMove>( pSprObj );
-// 		if( XASSERT( pLayer ) ) {
-// 			if( m_Interpolation ) {
-// 				XKeyPos *pInterEndKey = m_pInterpolationEndKey;
-// 				if( pInterEndKey ) {
-// 					pLayer->SetcnPos( this, pInterEndKey, m_PathType, m_Interpolation );
-// 				} else {
-// 					if( m_pPrevPathKey == NULL ) {	// path's head
-// 						pLayer->SetcnPos( NULL, NULL, SPR::xLINE_NONE, XBaseLayer::xNONE );
-// 						pLayer->Setxy( m_x, m_y );
-// 					} else {
-// 						// 보간구간의 중간키는 암것도 안함
-// 					}
-// 				}
-// 			} else {
-// 				pLayer->SetcnPos( NULL, NULL, SPR::xLINE_NONE, XBaseLayer::xNONE );		// 레이어에 패스세팅을 클리어함
-// 				pLayer->Setxy( m_x, m_y );		
-// 			}
-// 		}
-// 	}
 }
 // 키로딩이 끝나면 idx키들의 실제 포인터를 구해야 한다
 void XKeyPos::OnFinishLoad( XActDat *pAction )
 {
 	if( m_idxInterpolationEndKey >= 0 )	{// 키의 인덱스
-		m_pInterpolationEndKey = SafeCast<XKeyPos*>( pAction->GetKey( m_idxInterpolationEndKey ) );	
+		m_pInterpolationEndKey = SafeCast<XKeyPos*>( pAction->GetKeyMutable( m_idxInterpolationEndKey ) );	
 		XBREAK( m_pInterpolationEndKey == nullptr );
 	}
 // 	if( m_idxNextPathKey >= 0 )

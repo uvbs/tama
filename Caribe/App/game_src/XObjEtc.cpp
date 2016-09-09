@@ -335,7 +335,7 @@ void XObjRock::OnArriveBullet( DWORD _dwParam )
 															 m_AddDamage,
 															 false,
 															 GetstrSpr().c_str(),
-															 GetpSprObj()->GetActionID() );
+															 GetpSprObjConst()->GetActionID() );
 		++m_cntElastic;
 		pRock->SetpDelegate( GetpDelegate() );	
 		pRock->SetfactorSpline( 3.f );

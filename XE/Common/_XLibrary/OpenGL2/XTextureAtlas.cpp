@@ -77,7 +77,10 @@ void xAtlas::UpdateSubToDevice( const void* _pImg,
 									 pImg );
 #ifdef _DEBUG
 	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); 
+	if( glErr != GL_NO_ERROR ) {
+		XTRACE("%s: idTex=%d", __TFUNC__, m_idTex );
+	}
+//	XASSERTF( glErr == GL_NO_ERROR, "error:idTex=%d", m_idTex ); 
 	}
 #endif // _DEBUG
 	if( fmtImg != m_FormatSurface ) {
@@ -262,14 +265,14 @@ XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& _size, XE::xtPixelFormat forma
 // 																									 XE::xPF_ARGB8888,
 // 																									 spAtlas->m_Size,	// aligned
 // 																									 formatSurface );
-	extern int s_glFmt, s_glType;
-	spAtlas->m_glFmt = s_glFmt;
-	spAtlas->m_glType = s_glType;
 	spAtlas->m_idTex = GRAPHICS_GL->CreateTextureGL( nullptr,
 																									 spAtlas->m_Size,
 																									 XE::xPF_ARGB8888,
 																									 spAtlas->m_Size,	// aligned
 																									 formatSurface );
+	extern int s_glFmt, s_glType;
+	spAtlas->m_glFmt = s_glFmt;
+	spAtlas->m_glType = s_glType;
 	XBREAK( spAtlas->m_idTex == 0 );
 	m_listAtlas.push_back( spAtlas );
 //  	SAFE_DELETE_ARRAY( pImg );

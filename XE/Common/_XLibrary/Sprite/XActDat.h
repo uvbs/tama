@@ -51,20 +51,20 @@ class XActDat
 		InitBoundBox();
 	}
 	void Destroy( void );
-	GET_SET_ACCESSOR( XSprDat*, pSprDat );
+	GET_ACCESSOR_CONST( const XSprDat*, pSprDat );
 public:
 	XActDat( XSprDat *pSprDat, DWORD id ) { Init(); m_ID = id; m_pSprDat = pSprDat; Create(); }
 	XActDat( XSprDat *pSprDat, DWORD id, LPCTSTR szActName ) { Init(); m_ID = id; m_pSprDat = pSprDat; _tcscpy_s( m_szActName, szActName ); Create(); }
 	~XActDat() { Destroy(); }
 	
-	GET_ACCESSOR( DWORD, ID );
-	GET_SET_ACCESSOR( float, fSpeed );
-	GET_SET_ACCESSOR( float, fMaxFrame );
-	GET_ACCESSOR( int, nNumKeys );
-	GET_ACCESSOR( int, nNumLayerInfo );
-	LPCTSTR GetszActName( void ) { return m_szActName; }
-	GET_ACCESSOR( float, RepeatMark );
-	GET_ACCESSOR( xRPT_TYPE, PlayMode );
+	GET_ACCESSOR_CONST( DWORD, ID );
+	GET_SET_ACCESSOR_CONST( float, fSpeed );
+	GET_SET_ACCESSOR_CONST( float, fMaxFrame );
+	GET_ACCESSOR_CONST( int, nNumKeys );
+	GET_ACCESSOR_CONST( int, nNumLayerInfo );
+	LPCTSTR GetszActName( void ) const { return m_szActName; }
+	GET_ACCESSOR_CONST( float, RepeatMark );
+	GET_ACCESSOR_CONST( xRPT_TYPE, PlayMode );
 	const XE::VEC2 GetBoundBoxLT( void ) const { 
 		return m_vBoundBox[ 0 ];
 	}
@@ -79,14 +79,12 @@ public:
 		m_vBoundBox[1].Set( -999999.f, -999999.f );
 	} 
 	// 바운딩박스를 가지고 있는가? FALSE라면 bb값을 사용해선 안됨.
-	BOOL IsHaveBoundBox( void ) {
-		if( m_vBoundBox[0].x > 9999.f || m_vBoundBox[0].y > 9999.f ||
-			m_vBoundBox[1].x < -9999.f || m_vBoundBox[1].y < -9999.f )
-			return FALSE;
-		return TRUE;
+	bool IsHaveBoundBox( void ) const {
+		return !( m_vBoundBox[0].x > 9999.f || m_vBoundBox[0].y > 9999.f ||
+			m_vBoundBox[1].x < -9999.f || m_vBoundBox[1].y < -9999.f );
 	}
-	GET_SET_ACCESSOR( const XE::VEC2&, vScale );
-	GET_SET_ACCESSOR( const X3D::VEC3&, vRotate );
+	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vScale );
+	GET_SET_ACCESSOR_CONST( const X3D::VEC3&, vRotate );
 //	XBaseKey_Itor GetKeyItorBegin( void ) { return m_KeyList.begin(); }	
 	
 	void Create( void );
@@ -94,12 +92,15 @@ public:
 
 	// key
 #ifdef _XDEBUG
-	XBaseKey *GetKey( int idx );
+	const XBaseKey *GetKey( int idx ) const;
 #else
-	XBaseKey *GetKey( int idx ) { 
+	const XBaseKey *GetKey( int idx ) const { 
 		return m_ppKeys[ idx ]; 
 	}
 #endif 
+	XBaseKey* GetKeyMutable( int idx ) {
+		return const_cast<XBaseKey*>(GetKey( idx ));
+	}
 	XKeyPos *CreatePosKey( XBaseKey::xTYPE type );
 	XKeyRot *CreateRotKey( XBaseKey::xTYPE type );
 	XKeyScale *CreateScaleKey( XBaseKey::xTYPE type );
@@ -110,15 +111,16 @@ public:
 	//etc
 	// layer info
 #ifdef _XDEBUG
-	LAYER_INFO *GetLayer( int idx );
+	const LAYER_INFO *GetLayer( int idx ) const;
 #else
-	LAYER_INFO *GetLayer( int idx ) {
+	const LAYER_INFO *GetLayer( int idx ) const {
 		return m_ppLayerInfo[ idx ];
 	}
 #endif
-	LAYER_INFO *AddLayerInfo( int idx, xSpr::xtLayer type, int nLayer, ID idLayer );
 	// 애니메이션 최대 플레이 시간을 초단위로 얻는다.
-	float GetPlayTime( void ) {
+	float GetPlayTime( void ) const {
 		return GetfMaxFrame() / GetfSpeed() / 60.f;
 	}
+private:
+	LAYER_INFO *AddLayerInfo( int idx, xSpr::xtLayer type, int nLayer, ID idLayer );
 };

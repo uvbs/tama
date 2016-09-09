@@ -102,6 +102,9 @@ public:
 	GET_ACCESSOR_CONST( int, Destroy );
 	GET_SET_ACCESSOR( XEWndWorld*, pWndWorld );
 	GET_ACCESSOR( XSprObj*, pSprObj );
+	inline const XSprObj* GetpSprObjConst() const {
+		return m_pSprObj;
+	}
 	GET_ACCESSOR( XSurface*, pSurface );
 //	GET_SET_ACCESSOR( BIT, bitSide );
 //	GET_SET_ACCESSOR( float, Z );

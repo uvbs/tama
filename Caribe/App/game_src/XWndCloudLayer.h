@@ -60,7 +60,8 @@ class XWndCloudLayer : public XWnd
 		}
 	};
 	//	XSurface *m_psfcCloud[3];
-	XSprDat *m_psdCloud;
+//	XSprDat *m_psdCloud;
+	xSpr::XSPDat m_spDatCloud;
 	XArrayLinearN<ID, 512> m_aryCloud;	// 구름그룹 어레이
 	ID m_idSelected;		// 선택된 구름그룹
 	XList4<xtDisappear> m_listDisappear;		// 사라지고 있는 구름들
@@ -68,7 +69,7 @@ class XWndCloudLayer : public XWnd
 	void Init() {
 		//		XCLEAR_ARRAY( m_psfcCloud );
 		m_idSelected = 0;
-		m_psdCloud = nullptr;
+//		m_psdCloud = nullptr;
 	}
 	void Destroy();
 	void AddDisappear( xtDisappear& fadeCloud );

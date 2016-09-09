@@ -71,9 +71,9 @@ XSprObj* XWndSprObj::CreateSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, 
 		return nullptr;
 	}
 //	XSprObj *pSprObj = new XSprObj( szSpr );
-	auto pSprObj = new XSprObj();
 	const bool bUseAtlas = false;
-	pSprObj->Load( szSpr, XE::xHSL(), bUseAtlas, FALSE, false );
+	auto pSprObj = new XSprObj( szSpr, XE::xHSL(), bUseAtlas );
+//	pSprObj->Load( szSpr, XE::xHSL(), bUseAtlas, FALSE, false );
 	pSprObj->SetAction( idAct, loopType );
 	m_idAct = idAct;
 	m_loopType = loopType;

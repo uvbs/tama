@@ -130,6 +130,25 @@ void CHANNEL_EFFECT::FrameMove( float dt, float frmCurr ) {
 	}
 }
 
+void XLayerMove::Transform( float *pOutLx, float *pOutLy ) 
+{
+	MATRIX m, mRotX, mRotY, mRotZ, mScale;
+	MatrixRotationX( mRotX, 0 );
+	MatrixRotationY( mRotY, (GetcnEffect().IsFlipHoriz()) ? D2R( 180.f ) : 0 );
+	MatrixRotationZ( mRotZ, D2R( m_cnRot.fAngle ) );
+	MatrixScaling( mScale, m_cnScale.m_vScale.x, m_cnScale.m_vScale.y, 1.0f );
+	MatrixIdentity( m );
+	MatrixMultiply( m, m, mScale );
+	MatrixMultiply( m, m, mRotX );
+	MatrixMultiply( m, m, mRotY );
+	MatrixMultiply( m, m, mRotZ );
+	X3D::VEC3 v( m_cnPos.vPos.x, m_cnPos.vPos.y, 0 );
+	Vec4 v4d;
+	MatrixVec4Multiply( v4d, v, m );
+	*pOutLx = v4d.x;
+	*pOutLy = v4d.y;
+}
+
 /**
  @brief 
 */
@@ -254,7 +273,7 @@ int XLayerImage::DeSerialize( XArchive& ar, XSprObj *pSprObj )
 	int idxSpr;
 	ar >> idxSpr;
 	if( idxSpr >= 0 )
-		m_pSpriteCurr = pSprObj->GetSprite( idxSpr );
+		m_pSpriteCurr = pSprObj->GetSpriteMutable( idxSpr );
 	else
 		m_pSpriteCurr = NULL;
 	return 1;

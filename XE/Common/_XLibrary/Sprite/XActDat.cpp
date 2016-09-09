@@ -40,14 +40,14 @@ void XActDat::Destroy( void )
 	
 }
 #ifdef _XDEBUG
-XBaseKey *XActDat::GetKey( int idx ) { 
+const XBaseKey* XActDat::GetKey( int idx ) const { 
 	if( idx >= m_nNumKeys || idx < 0 ) {
 		XBREAKF( 1, "%s %s idx(%d) >= m_nNumKeys(%d)", m_pSprDat->GetszFilename(), GetszActName(), idx, m_nNumKeys );
 		return NULL;
 	}
 	return m_ppKeys[ idx ]; 
 }
-LAYER_INFO *XActDat::GetLayer( int idx ) {
+const LAYER_INFO *XActDat::GetLayer( int idx ) const {
 	if( idx >= m_nNumLayerInfo || idx < 0 ) {
 		XBREAKF( 1, "%s %s idx(%d) >= m_nNumLayerInfo(%d)", m_pSprDat->GetszFilename(), GetszActName(), idx, m_nNumLayerInfo );
 		return NULL;
@@ -374,7 +374,7 @@ void XActDat::ExecuteKey( XSprObj *pSprObj, int &nKeyCurr, float fFrame )
 	if( nKeyCurr >= m_nNumKeys )
 		return;
 	while(1) {
-		XBaseKey *pKeyCurr = GetKey( nKeyCurr ); 
+		auto pKeyCurr = GetKeyMutable( nKeyCurr );	// 일단 mutable로 하고 const형태로 바꾸자
 // 		if( fFrame >= pKeyCurr->GetfFrame() ) {
 		if( pKeyCurr->GetfFrame() <= fFrame ) {
 			float fOverFrame = fFrame - pKeyCurr->GetfFrame();	// 초과된 프레임
@@ -399,11 +399,9 @@ void XActDat::JumpKey( XSprObj *pSprObj, int &nKeyCurr, float fFrame )
 {
 	if( nKeyCurr >= m_nNumKeys )
 		return;
-	while(1)
-	{
-		XBaseKey *pKeyCurr = GetKey( nKeyCurr ); 
-		if( fFrame > pKeyCurr->GetfFrame() )
-		{
+	while(1) {
+		auto pKeyCurr = GetKeyMutable( nKeyCurr ); 
+		if( fFrame > pKeyCurr->GetfFrame() ) {
 			++ nKeyCurr;
 			if( nKeyCurr >= GetnNumKeys() )
 				break;

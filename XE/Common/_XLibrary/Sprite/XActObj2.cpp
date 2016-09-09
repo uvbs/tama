@@ -33,7 +33,8 @@ static char THIS_FILE[] = __FILE__;
 // XObjAct
 //
 ////////////////////////////////////////////////////////////////
-XActObj::XActObj( XSprObj *pSprObj, XActDat *pAction )
+XActObj::XActObj( XSprObj *pSprObj, const XActDat *pAction )
+	: m_pAction( pAction )
 {
 	m_pAction = pAction;
 	m_pSprObj = pSprObj;
@@ -81,7 +82,7 @@ void XActObj::DestroyLayer( void )
 		SAFE_DELETE( m_ppLayers[i] );
 	SAFE_DELETE_ARRAY( m_ppLayers );
 }
-XBaseLayer *XActObj::CreateLayer( int idx, LAYER_INFO* pLayerInfo )
+XBaseLayer *XActObj::CreateLayer( int idx, const LAYER_INFO* pLayerInfo )
 {
 	auto pLayer = CreateLayer( idx
 														 , pLayerInfo->type

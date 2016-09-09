@@ -326,8 +326,9 @@ void XSurfaceOpenGL::DestroyDevice()
 	XASSERT( glErr == GL_NO_ERROR ); }
 	if( m_glTexture )
 		XSurface::DestroyDevice();
-	if( GetstrRes().empty() == false )
+	if( GetstrRes().empty() == false ) {
 		S_TRACE("destroy Surface: %s", GetstrRes().c_str() );
+	}
 	// 홈으로 나갈때 자동으로 디바이스 자원은 파괴되지만 m_glTexture등도 클리어 시켜주지 않으면 돌아왔을때 새로 할당한 번호가 겹쳐서 다시 지워버릴 수 있다.
 	if( IsbAtlas() ) {
 		XTextureAtlas::sGet()->Release( m_glTexture );
