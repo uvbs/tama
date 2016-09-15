@@ -703,6 +703,7 @@ namespace XE
 	//////////////////////////////////////////////////////////////////////////
 	class VEC4 : public VEC3 {
 	public:
+		VEC4() : a(0) {}
 		VEC4( float _x, float _y, float _z, float _a ) 
 		: VEC3( _x, _y, _z ) {
 			a = _a;

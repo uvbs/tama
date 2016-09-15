@@ -2,7 +2,7 @@
 <root>
   <single1_player name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="15" boss="percival" mul_atk="1" mul_hp="1">
     <squad_default idx_pos="-1" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="" size_unit="xSIZE_NONE" lv_squad="10" lv_skill="1" mul_atk="1" mul_hp="1" num_abil="5" />
-    <_squad idx_pos="12" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_TREANT" size_unit="xSIZE_NONE" lv_squad="16" lv_skill="10" mul_atk="1" mul_hp="1">
+    <_squad idx_pos="2" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_CYCLOPS" size_unit="xSIZE_NONE" lv_squad="16" lv_skill="10" mul_atk="1" mul_hp="1">
       <abil>
         <entangling point="5" />
       </abil>

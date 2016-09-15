@@ -74,7 +74,7 @@ private:
 		m_dwKeyColor = 0;
 		m_fAlpha = 1.0f;
 		m_ColorR = m_ColorG = m_ColorB = 1.0f;
-		m_AdjustX = m_AdjustY = 0;
+		m_AdjustX = m_AdjustY = m_adjZ = 0;
 		m_fScaleX = m_fScaleY = m_fScaleZ = 1.0f;
 		m_fRotX = m_fRotY = m_fRotZ = 0;
 		m_fAdjustAxisX = m_fAdjustAxisY = 0;
@@ -87,7 +87,7 @@ private:
 	BOOL m_bHighReso;				// 아이폰용 고해상도 리소스
 	float	__fResoScale;		// 바른계산을 위해 고해상도용 스케읽밧을 받아둔다
 	float m_Width, m_Height;		///< 서피스 크기(주의:메모리 크기가 아님!). 고해상 메모리데이타의 크기가 11인경우 서피스크기는 5.5가 되므로 이제부턴 w,h값을 실수형으로 써야 한다
-	float	m_AdjustX, m_AdjustY;	// 이거 하위클래스에서 
+	float	m_AdjustX, m_AdjustY, m_adjZ;	// 이거 하위클래스에서 
 	XE::VEC2 m_sizeMem;					// 메모리데이타 원본의 크기
 	DWORD *__pSrcImg;		// 반드시 SetSrcImg()로 세팅하게 바꼈으므로 private이 됨
 	BYTE *m_pMask;			// 픽킹용 마스크 이미지. 알파값만 들어있다.
@@ -140,6 +140,7 @@ private:
 	float	m_fAdjustAxisX, m_fAdjustAxisY;	// 회전축보정
 	DWORD m_dwDrawFlag;		// EFF_****
 	xDM_TYPE m_DrawMode;
+	XE::xtBlendFunc m__funcBlend = XE::xBF_MULTIPLY;	// 장차 m_DrawMode는 blendfunc으로 바꾼다.
 
 	// 만약 외부에서 사용하는 SetSrcImg를 만들거라면 고해상도플래그도 받고, 버텍스버퍼/텍스쳐서피스까지 교체하는 함수를 만들어야 한다. 근데 가급적이면 그런식으로 사용하지 말고 필요하다면 걍 XSurface를 새로 생성하는게 나을듯
 	// 장차 private으로 들어가야함.
@@ -151,8 +152,8 @@ private:
 		SetSrcImg( pSrcImg, sizeMem.w, sizeMem.h );
 	}
 //protected:
-	BOOL IsHaveSrcImg( void ) {
-		return (__pSrcImg)? TRUE : FALSE;
+	inline bool IsHaveSrcImg( void ) const {
+		return (__pSrcImg != nullptr);
 	}
 //protected:
 //	float ConvertToSurfaceSize( int num ) { return num * __fResoScale; }
@@ -185,8 +186,13 @@ private:
 	}
 private:
 	SET_ACCESSOR( const XE::VEC2&, sizeMem );
+protected:
 public:
+	XE::xtBlendFunc GetfuncBlend() const {
+		return m__funcBlend;
+	}
 	GET_SET_BOOL_ACCESSOR( bAtlas );
+	GET_SET_ACCESSOR_CONST( float, adjZ );
 	GET_ACCESSOR_CONST( const XE::VEC2&, sizeMem );
 	GET_ACCESSOR_CONST( const XE::POINT&, sizeMemAligned );
 	GET_ACCESSOR_CONST( XE::xtPixelFormat, formatSurface );
@@ -257,8 +263,8 @@ public:
 	float GetWidth( void ) const { return m_Width; }
 	// 서피스의 크기(텍스쳐의 크기가 아님)
 	float GetHeight( void ) const { return m_Height; }
-	float GetAdjustX( void ) const { return m_AdjustX; }
-	float GetAdjustY( void ) const { return m_AdjustY; }
+	inline float GetAdjustX( void ) const { return m_AdjustX; }
+	inline float GetAdjustY( void ) const { return m_AdjustY; }
 	XE::VEC2 GetSize( void ) const { return XE::VEC2( m_Width, m_Height ); }
 	XE::VEC2 GetsizeSurface() const { return XE::VEC2( m_Width, m_Height ); }
 	float GetTransformedWidth( void ) const { return GetWidth() * m_fScaleX; }		// 스케일링 된 크기
@@ -314,10 +320,12 @@ public:
 	GET_ACCESSOR( float, fRotX );
 	GET_ACCESSOR( float, fRotY );
 	GET_ACCESSOR( float, fRotZ );
-	GET_ACCESSOR( float, fScaleX );
-	GET_ACCESSOR( float, fScaleY );
-	GET_SET_ACCESSOR( xDM_TYPE, DrawMode );
+	GET_ACCESSOR_CONST( float, fScaleX );
+	GET_ACCESSOR_CONST( float, fScaleY );
+	GET_ACCESSOR_CONST( xDM_TYPE, DrawMode );
+	void SetDrawMode( xDM_TYPE drawMode );
 	void SetBlendFunc( XE::xtBlendFunc blendFunc ) {
+		m__funcBlend = blendFunc;
 		m_DrawMode = XE::ConvertBlendFuncDMTypeDmType( blendFunc );
 	}
 	void SetColor( float r, float g, float b ) {
@@ -325,6 +333,9 @@ public:
 		m_ColorG = g;
 		m_ColorB = b;
 	}
+	GET_ACCESSOR_CONST( float, ColorR );
+	GET_ACCESSOR_CONST( float, ColorG );
+	GET_ACCESSOR_CONST( float, ColorB );
 	// 주의: alpha값은 넣지 않음.
 	void SetColor( DWORD rgb ) {
 		m_ColorR = XCOLOR_RGB_R(rgb) / 255.f;

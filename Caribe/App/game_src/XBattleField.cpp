@@ -97,8 +97,10 @@ int XBattleField::Process( XEWndWorld *pWndWorld, float dt )
 		}
 	}
 	// XSquadObj::FrameMove쪽에서 유닛들의 Adj값이나 상태등을 참조하는게 있어서 유닛::FrameMove뒤로 옮김.
-	GetLegionObj( 0 )->FrameMove( dt );
-	GetLegionObj( 1 )->FrameMove( dt );
+	if( GetLegionObj( 0 ) && GetLegionObj( 1 ) ) {
+		GetLegionObj( 0 )->FrameMove( dt );
+		GetLegionObj( 1 )->FrameMove( dt );
+	}
 	return ret;
 }
 

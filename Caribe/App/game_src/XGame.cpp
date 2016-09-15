@@ -343,6 +343,29 @@ void XGame::DidFinishCreated()
 	//
 //  	m_psoTest = new XSprObj(_T("unit_paladin.spr"));
 //  	m_psoTest->SetAction( 98 );
+#ifdef _CHEAT
+	{
+		const XE::VEC2 size( 32, 32 );
+		XE::VEC2 v( XE::GetGameWidth() - size.w, 0 );
+		auto 
+		pButt = new XWndButtonDebug( v.x, v.y,
+																 size.w, size.h,
+																 _T( "->" ),
+																 GetpfdSystem() );
+		pButt->SetstrIdentifier( "butt.debug.minus" );
+		pButt->SetEvent( XWM_CLICKED, this, &XGame::OnDebug, 1 );
+		Add( pButt );
+		v.x -= size.w;
+		pButt = new XWndButtonDebug( v.x, v.y,
+																 size.w, size.h,
+																 _T( "<-" ),
+																 GetpfdSystem() );
+		pButt->SetstrIdentifier( "butt.debug.plus" );
+		pButt->SetEvent( XWM_CLICKED, this, &XGame::OnDebug, 0 );
+		Add( pButt );
+		v.x -= size.w;
+	}
+#endif // _CHEAT
 	SetbUpdate( true );
 } // Create()
 
@@ -415,8 +438,12 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, Scen
 	case XGAME::xSC_START:
 		XAccount::sGetPlayer().reset();
 #ifdef _XSINGLE
-//		pSceneMng->SetidNextScene( XGAME::xSC_TEST );
-	 		pSceneMng->SetidNextScene( XGAME::xSC_INGAME );
+#ifdef _XTEST
+//		pSceneMng->SetidNextScene( XGAME::xSC_INGAME );
+		pSceneMng->SetidNextScene( XGAME::xSC_TEST );
+#else
+ 		pSceneMng->SetidNextScene( XGAME::xSC_INGAME );
+#endif // _XTEST
 #else
 #ifdef _XPATCH
 		pSceneMng->SetidNextScene( XGAME::xSC_PATCH );
@@ -2416,4 +2443,39 @@ int XGame::OnClickDebugShowLog( XWnd* pWnd, DWORD p1, DWORD p2 )
 	} // p1 == 0
 	return 1;
 }
+
 #endif // _CHEAT
+
+/**
+ @brief 
+*/
+int XGame::OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 )
+{
+#ifdef _CHEAT
+	CONSOLE("%s", __TFUNC__);
+	//
+	auto fmtAtlas = XE::xPF_NONE;
+	ID idTex = 0;
+	if( p1 == 0 ) {
+		if( XAPP->m_idxViewAtlas >= 0 )
+			--XAPP->m_idxViewAtlas;
+		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
+		idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas  );
+	} else
+		if( p1 == 1 ) {
+			if( XAPP->m_idxViewAtlas < XTextureAtlas::sGet()->GetnumAtlas() - 1 )
+				++XAPP->m_idxViewAtlas;
+			fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
+			idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
+		}
+	if( p1 == 0 || p1 == 1 ) {
+		CONSOLE( "Atlas=(%d/%d), fmt=%s idTex=%d",
+						 XAPP->m_idxViewAtlas,
+						 XTextureAtlas::sGet()->GetnumAtlas(),
+						 XE::GetstrPixelformat( fmtAtlas ),
+						 idTex );
+	}
+
+#endif // _CHEAT
+	return 1;
+}

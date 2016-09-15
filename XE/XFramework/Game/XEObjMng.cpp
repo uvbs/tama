@@ -24,8 +24,9 @@ static bool compY( const XEBaseWorldObj *pObj1, const XEBaseWorldObj *pObj2 )
 		DWORD snObj1 = ( pObj1 ) ? (int)( pObj1 )->GetsnObj() : 0x7fffffff;
 		DWORD snObj2 = ( pObj2 ) ? (int)( pObj2 )->GetsnObj() : 0x7fffffff;
 		return snObj1 < snObj2;
-	} else
-		return y1 < y2;
+	} else {
+ 		return y1 < y2;
+	}
 	// 그래도 소트껌뻑이는게 거슬린다면 x좌표소트, snObj소트도 할것.
 }
 

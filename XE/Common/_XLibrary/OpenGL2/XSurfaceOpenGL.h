@@ -12,6 +12,17 @@
 #include "etc/XSurface.h"
 #include "etc/xMath.h"
 
+XE_NAMESPACE_START( XE )
+//
+struct xVertex {
+	Vec3 pos;//, y;
+	Vec2 uv;//u, tv;
+	Vec4 rgba;// r,g,b,a;
+};
+//
+XE_NAMESPACE_END; // XE
+
+
 class XSurfaceOpenGL : public XSurface {
 private:
 	GLuint	m_glTexture;
@@ -20,17 +31,16 @@ private:
 #ifdef _XVAO
 	GLuint  m_idVertexArray;
 #endif
-	GLuint  m_glVertexBuffer;
-	GLuint	m_glIndexBuffer;
-	//	int m_sizeByte = 0;			// vram에 로딩된 텍스쳐의 크기
-
-	xRESULT CreateVertexBuffer( float surfaceW, float surfaceH, const float _adjx, const float _adjy, int memw, int memh, int alignW, int alignH );
+// 	GLuint  m_glVertexBuffer;
+// 	GLuint	m_glIndexBuffer;
+	static void sSetglBlendFunc( XE::xtBlendFunc funcBlend, GLenum *pOutsfactor, GLenum *pOutdfactor );
+	XE::xVertex m_Vertices[4];
+	bool CreateVertexBuffer( float surfaceW, float surfaceH, const float _adjx, const float _adjy, int memw, int memh, int alignW, int alignH );
 	inline bool CreateVertexBuffer( const XE::VEC2& sizeSurface
 																	, const XE::VEC2& vAdj
 																	, const XE::POINT& sizeTexture
 																	, const XE::POINT& sizeTextureAligned ) {
-		auto result = CreateVertexBuffer( sizeSurface.w, sizeSurface.h, vAdj.x, vAdj.y, sizeTexture.w, sizeTexture.h, sizeTextureAligned.w, sizeTextureAligned.h );
-		return result == xSUCCESS;
+		return CreateVertexBuffer( sizeSurface.w, sizeSurface.h, vAdj.x, vAdj.y, sizeTexture.w, sizeTexture.h, sizeTextureAligned.w, sizeTextureAligned.h );
 	}
 	bool CreateVertexBuffer2( const XE::VEC2& sizeSurface, const XE::VEC2& vAdj, const XE::VEC2& uvlt, const XE::VEC2& uvrb );
 	void Init();
@@ -61,9 +71,9 @@ public:
 		return m_glTexture;
 	}
 	GET_ACCESSOR_CONST( GLuint, glTexture );
-	GET_ACCESSOR( GLuint, glVertexBuffer );
-	GET_ACCESSOR( GLuint, glIndexBuffer );
-	GLint	GetFormat( void ) {
+// 	GET_ACCESSOR( GLuint, glVertexBuffer );
+// 	GET_ACCESSOR( GLuint, glIndexBuffer );
+	GLint	GetFormat( void ) const {
 		return m_format;
 	}
 	// surface출력시 외부지정 매트릭스 설정.
@@ -134,7 +144,8 @@ public:
 	//	DWORD GetPixel( float x, float y );			
 	void SetTexture( void ) override;
 	bool IsEmpty() override {
-		if( !m_glVertexBuffer || !m_glIndexBuffer || !m_glTexture ) {
+// 		if( !m_glVertexBuffer || !m_glIndexBuffer || !m_glTexture ) {
+		if( !m_glTexture ) {
 			DestroyDevice();
 			return true;
 		}

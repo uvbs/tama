@@ -44,6 +44,10 @@
 #include "XSoundMng.h"
 #include "XMsgUnit.h"
 #include "XFramework/XEProfile.h"
+#ifdef _XTEST
+#include "sprite/SprObj.h"
+
+#endif // _XTEST
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -559,22 +563,22 @@ void XSceneBattle::CreateDebugButtons( void )
 		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnDebugAllKill, 3 );
 		Add( pButt );
 		v.x += size.w;
-		pButt = new XWndButtonDebug( v.x, v.y,
-																 size.w, size.h,
-																 _T( "<-" ),
-																 XE::GetMain()->GetpGame()->GetpfdSystem() );
-		pButt->SetstrIdentifier( "butt.debug.minus" );
-		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnCheat, 0 );
-		Add( pButt );
-		v.x += size.w;
-		pButt = new XWndButtonDebug( v.x, v.y,
-																 size.w, size.h,
-																 _T( "->" ),
-																 XE::GetMain()->GetpGame()->GetpfdSystem() );
-		pButt->SetstrIdentifier( "butt.debug.plus" );
-		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnCheat, 1 );
-		Add( pButt );
-		v.x += size.w;
+// 		pButt = new XWndButtonDebug( v.x, v.y,
+// 																 size.w, size.h,
+// 																 _T( "<-" ),
+// 																 XE::GetMain()->GetpGame()->GetpfdSystem() );
+// 		pButt->SetstrIdentifier( "butt.debug.minus" );
+// 		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnCheat, 0 );
+// 		Add( pButt );
+// 		v.x += size.w;
+// 		pButt = new XWndButtonDebug( v.x, v.y,
+// 																 size.w, size.h,
+// 																 _T( "->" ),
+// 																 XE::GetMain()->GetpGame()->GetpfdSystem() );
+// 		pButt->SetstrIdentifier( "butt.debug.plus" );
+// 		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnCheat, 1 );
+// 		Add( pButt );
+// 		v.x += size.w;
 
 
 	}
@@ -732,50 +736,52 @@ int XSceneBattle::Process( float dt )
 		auto vCurr = m_FocusMng.GetCurrFocus();
 		m_pWndWorld->SetFocus( vCurr );
 	}
-	for( int i = 0; i < 2; ++i ) {
-		auto pLegionObj = XBattleField::sGet()->GetLegionObj( i );
-		if( pLegionObj )
-			m_hpMaxLegion[ i ] = pLegionObj->GetMaxHpAllSquad();
-	}
-	float hpLegion[2];
-	hpLegion[0] = XBattleField::sGet()->GetLegionObj(0)->GetSumHpAllSquad();
-	hpLegion[1] = XBattleField::sGet()->GetLegionObj(1)->GetSumHpAllSquad();
-	float hpMax[2];
-	hpMax[0] = m_hpMaxLegion[0];
-	hpMax[1] = m_hpMaxLegion[1];
-	// 일시적으로 hp가 max치를 넘어가는일이 생기면 hp치를 잠시 바꿔서 계산함.
-	if( hpLegion[0] > hpMax[0] )
-		hpMax[0] = hpLegion[0];
-	if( hpLegion[1] > hpMax[1] )
-		hpMax[1] = hpLegion[1];
-	if( m_aryBar[0] ) {
+	if( XBattleField::sGet()->GetLegionObj( 0 ) 
+			&& XBattleField::sGet()->GetLegionObj( 1 ) ) {
 		for( int i = 0; i < 2; ++i ) {
-			m_aryBar[i]->SetLerp( hpLegion[i] / hpMax[i] );
+			auto pLegionObj = XBattleField::sGet()->GetLegionObj( i );
+			if( pLegionObj )
+				m_hpMaxLegion[ i ] = pLegionObj->GetMaxHpAllSquad();
+		}
+		float hpLegion[2];
+		hpLegion[0] = XBattleField::sGet()->GetLegionObj(0)->GetSumHpAllSquad();
+		hpLegion[1] = XBattleField::sGet()->GetLegionObj(1)->GetSumHpAllSquad();
+		float hpMax[2];
+		hpMax[0] = m_hpMaxLegion[0];
+		hpMax[1] = m_hpMaxLegion[1];
+		// 일시적으로 hp가 max치를 넘어가는일이 생기면 hp치를 잠시 바꿔서 계산함.
+		if( hpLegion[0] > hpMax[0] )
+			hpMax[0] = hpLegion[0];
+		if( hpLegion[1] > hpMax[1] )
+			hpMax[1] = hpLegion[1];
+		if( m_aryBar[0] ) {
+			for( int i = 0; i < 2; ++i ) {
+				m_aryBar[i]->SetLerp( hpLegion[i] / hpMax[i] );
+			}
+		}
+
+		// 이미 전투가 끝났으면 다시 들어가지 않음.
+		if( m_bFinish == false ) {
+			// 시간 업데이트
+			xSec sec = (DWORD)m_timerPlay.GetRemainSec();
+			int h, m, s;
+			XSYSTEM::GetHourMinSec( sec, &h, &m, &s );
+			xSET_TEXT( this, "text.battle.time", XE::Format( _T( "%02d:%02d" ), m, s ) );
+			//	xSET_SHOW( this, "text.battle.time", FALSE );
+			if( m_timerPlay.IsOver() ) {
+				m_timerPlay.Off();
+				// 시간오버되면 패배
+				OnFinishBattle( XGAME::xSIDE_OTHER, false );
+			}
+		} else {
+			// 전투 종료됨
+			if( m_timerResult.IsOver() ) {
+				// 약간 기다렸다가 보냄,
+				m_timerResult.Off();
+				DoPopupBattleResult( m_resultBattle );
+			}
 		}
 	}
-
-	// 이미 전투가 끝났으면 다시 들어가지 않음.
-	if( m_bFinish == false ) {
-		// 시간 업데이트
-		xSec sec = (DWORD)m_timerPlay.GetRemainSec();
-		int h, m, s;
-		XSYSTEM::GetHourMinSec( sec, &h, &m, &s );
-		xSET_TEXT( this, "text.battle.time", XE::Format( _T( "%02d:%02d" ), m, s ) );
-		//	xSET_SHOW( this, "text.battle.time", FALSE );
-		if( m_timerPlay.IsOver() ) {
-			m_timerPlay.Off();
-			// 시간오버되면 패배
-			OnFinishBattle( XGAME::xSIDE_OTHER, false );
-		}
-	} else {
-		// 전투 종료됨
-		if( m_timerResult.IsOver() ) {
-			// 약간 기다렸다가 보냄,
-			m_timerResult.Off();
-			DoPopupBattleResult( m_resultBattle );
-		}
-	}
-
 	return XEBaseScene::Process( dt );
 }
 
@@ -789,8 +795,10 @@ void XSceneBattle::Draw( void )
 #ifdef _CHEAT
 	if( XAPP->m_bDebugMode )	{
 		auto pb = XBattleField::sGet();
-		PUT_STRINGF( 201, 25, XCOLOR_WHITE, "%d/%d", (int)pb->GetLegionObj(0)->GetSumHpAllSquad(), (int)m_hpMaxLegion[0] );
-		PUT_STRINGF( 384, 25, XCOLOR_WHITE, "%d/%d", (int)pb->GetLegionObj(1)->GetSumHpAllSquad(), (int)m_hpMaxLegion[1] );
+		if( pb->GetLegionObj(0) && pb->GetLegionObj(1) ) {
+			PUT_STRINGF( 201, 25, XCOLOR_WHITE, "%d/%d", (int)pb->GetLegionObj( 0 )->GetSumHpAllSquad(), (int)m_hpMaxLegion[0] );
+			PUT_STRINGF( 384, 25, XCOLOR_WHITE, "%d/%d", (int)pb->GetLegionObj( 1 )->GetSumHpAllSquad(), (int)m_hpMaxLegion[1] );
+		}
 	}
 	if( XAPP->m_bDebugMode && XAPP->m_bDebugViewSquadInfo )	{
 		XSPSquad spSquad = WND_WORLD->GetspSelectSquad();
@@ -1077,23 +1085,23 @@ int XSceneBattle::OnCheat( XWnd* pWnd, DWORD p1, DWORD p2 )
 #ifdef _CHEAT
 	CONSOLE("%s", __TFUNC__);
 	//
-	auto fmtAtlas = XE::xPF_NONE;
-	if( p1 == 0 ) {
-		if( XAPP->m_idxViewAtlas >= 0 )
-			--XAPP->m_idxViewAtlas;
-		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
-	} else
-	if( p1 == 1 ) {
-		if( XAPP->m_idxViewAtlas < XTextureAtlas::sGet()->GetnumAtlas() - 1 )
-			++XAPP->m_idxViewAtlas;
-		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
-	}
-	if( p1 == 0 || p1 == 1 ) {
-		CONSOLE( "Atlas=(%d/%d), fmt=%s",
-						 XAPP->m_idxViewAtlas,
-						 XTextureAtlas::sGet()->GetnumAtlas(),
-						 XE::GetstrPixelformat( fmtAtlas ) );
-	}
+// 	auto fmtAtlas = XE::xPF_NONE;
+// 	if( p1 == 0 ) {
+// 		if( XAPP->m_idxViewAtlas >= 0 )
+// 			--XAPP->m_idxViewAtlas;
+// 		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
+// 	} else
+// 	if( p1 == 1 ) {
+// 		if( XAPP->m_idxViewAtlas < XTextureAtlas::sGet()->GetnumAtlas() - 1 )
+// 			++XAPP->m_idxViewAtlas;
+// 		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
+// 	}
+// 	if( p1 == 0 || p1 == 1 ) {
+// 		CONSOLE( "Atlas=(%d/%d), fmt=%s",
+// 						 XAPP->m_idxViewAtlas,
+// 						 XTextureAtlas::sGet()->GetnumAtlas(),
+// 						 XE::GetstrPixelformat( fmtAtlas ) );
+// 	}
 	return 1;
 #endif // _CHEAT
 }

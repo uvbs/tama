@@ -400,6 +400,7 @@ public:
 #endif // _CHEAT
 	// 	static bool sDoAlertCampaignByError( XGAME::xtError errCode );
 // 	static void sDoPopupSpotWithStageObj( XSpot* pBaseSpot, XSPCampObj spCampObj, XSPStageObj spStageObj );
+	int OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 );
 }; // class XGame
 
 

@@ -95,6 +95,31 @@ void XEBaseWorldObj::LoadImage( LPCTSTR szImg )
 	}
 }
 
+// void XEBaseWorldObj::GetTransform( MATRIX* pOut ) const
+// {
+// 	MATRIX& mWorld = (*pOut);
+// 	MATRIX m;
+// 	MatrixIdentity( mWorld );
+// 	const auto vScale = GetScaleObj();
+// 	if( vScale.x != 1.0f || vScale.y != 1.0f || vScale.z != 1.0f ) {
+// 		MatrixScaling( m, vScale.x, vScale.y, 1.0f );
+// 		MatrixMultiply( mWorld, mWorld, m );
+// 	}
+// 	if( GetfRotZ() ) {
+// 		MatrixRotationZ( m, D2R( GetfRotZ() ) );
+// 		MatrixMultiply( mWorld, mWorld, m );
+// 	}
+// 	if( GetfRotY() ) {
+// 		MatrixRotationY( m, D2R( GetfRotY() ) );
+// 		MatrixMultiply( mWorld, mWorld, m );
+// 	}
+// 	if( !GetAdjustAxis().IsZero() ) {
+// 		MatrixTranslation( m, GetfAdjustAxisX(), GetfAdjustAxisY(), 0 );
+// 		MatrixMultiply( mWorld, mWorld, m );
+// 	}
+// 	MatrixTranslation( m, vPos.x, vPos.y, 0 );
+// 	MatrixMultiply( mWorld, mWorld, m );
+// }
 
 void XEBaseWorldObj::FrameMove( float dt )
 {
@@ -107,8 +132,7 @@ void XEBaseWorldObj::FrameMove( float dt )
 */
 void XEBaseWorldObj::Draw( const XE::VEC2& vPos, float scale/*=1.f*/, float alpha )
 {
-	if( m_pSprObj )
-	{
+	if( m_pSprObj )	{
 		// 카메라스케일과 오브젝트스케일을 곱해서 최종스케일값을 세팅한다.
 		XE::VEC2 vScale;
 		vScale.x = m_vScale.x;
@@ -116,7 +140,17 @@ void XEBaseWorldObj::Draw( const XE::VEC2& vPos, float scale/*=1.f*/, float alph
 		vScale *= scale;
 		m_pSprObj->SetScale( vScale );
 		m_pSprObj->SetfAlpha( m_Alpha * alpha );
-		m_pSprObj->Draw( vPos );
+		MATRIX mWorld;
+		MATRIX m;
+		MatrixIdentity( mWorld );
+		float z = GetvwPos().y;
+//		MatrixTranslation( m, vPos.x, vPos.y, z/* / 1000.f*/ );
+		MatrixTranslation( m, vPos.x, vPos.y, z);
+		MatrixMultiply( mWorld, mWorld, m );
+// 		MatrixScaling( m, m_vScale.x, m_vScale.y, m_vScale.z );
+// 		MatrixMultiply( mWorld, mWorld, m );
+		m_pSprObj->Draw( 0, 0, mWorld );
+// 		m_pSprObj->Draw( vPos, mWorld );
 	}
 	if( m_pSurface )
 	{

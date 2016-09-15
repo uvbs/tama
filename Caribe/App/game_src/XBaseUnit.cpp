@@ -730,7 +730,7 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 				col = XCOLOR_RGBA( 1, 211, 2, 255 );
 				colBg = XCOLOR_RGBA( 9, 43, 10, 255 );
 			}
-			XUTIL::DrawProgressBar( vDrawHp, lerp, sizeBar, col, colBg );
+// 			XUTIL::DrawProgressBar( vDrawHp, lerp, sizeBar, col, colBg );
 		}
 	}
 	if( m_timerDamage.IsOver() )

@@ -172,37 +172,49 @@ EGLConfig XGLESView::SelectEGLConfiguration( const BOOL bDepth, const BOOL bPBuf
 	EGLint		numConfigs = 0;
 	EGLint		index = -1;
 
-	EGLint configAttribs[ 32 ] = {0, };
+//	EGLint configAttribs[ 32 ] = {0, };
+	// typical high-quality attrib list
+	EGLint configAttribs[] = {
+		// 32 bit color
+		EGL_RED_SIZE, 8,
+		EGL_GREEN_SIZE, 8,
+		EGL_BLUE_SIZE, 8,
+		// at least 24 bit depth
+		EGL_DEPTH_SIZE, 24,
+		EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+		// want opengl-es 2.x conformant CONTEXT
+		EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+		EGL_NONE
+	};
+// 	configAttribs[ ++index ] = EGL_RENDERABLE_TYPE;
+// 	configAttribs[ ++index ] = EGL_OPENGL_ES2_BIT;
+// 	configAttribs[ ++index ] = EGL_DEPTH_SIZE;
+// 	configAttribs[ ++index ] = 0;
+// 
+// 	switch( nFSAA )
+// 	{
+// 	case 1:
+// 	{
+// 		configAttribs[ ++index ] = EGL_SAMPLE_BUFFERS;
+// 		configAttribs[ ++index ] = 1;
+// 		configAttribs[ ++index ] = EGL_SAMPLES;
+// 		configAttribs[ ++index ] = 2;
+// 	} break;
+// 	case 2:
+// 	{
+// 		configAttribs[ ++index ] = EGL_SAMPLE_BUFFERS;
+// 		configAttribs[ ++index ] = 1;
+// 		configAttribs[ ++index ] = EGL_SAMPLES;
+// 		configAttribs[ ++index ] = 4;
+// 	} break;
+// 	default:
+// 	{
+// 		configAttribs[ ++index ] = EGL_SAMPLE_BUFFERS;
+// 		configAttribs[ ++index ] = 0;
+// 	} break;
+// 	}
 
-	configAttribs[ ++index ] = EGL_RENDERABLE_TYPE;
-	configAttribs[ ++index ] = EGL_OPENGL_ES2_BIT;
-	configAttribs[ ++index ] = EGL_DEPTH_SIZE;
-	configAttribs[ ++index ] = 0;
-
-	switch( nFSAA )
-	{
-	case 1:
-	{
-		configAttribs[ ++index ] = EGL_SAMPLE_BUFFERS;
-		configAttribs[ ++index ] = 1;
-		configAttribs[ ++index ] = EGL_SAMPLES;
-		configAttribs[ ++index ] = 2;
-	} break;
-	case 2:
-	{
-		configAttribs[ ++index ] = EGL_SAMPLE_BUFFERS;
-		configAttribs[ ++index ] = 1;
-		configAttribs[ ++index ] = EGL_SAMPLES;
-		configAttribs[ ++index ] = 4;
-	} break;
-	default:
-	{
-		configAttribs[ ++index ] = EGL_SAMPLE_BUFFERS;
-		configAttribs[ ++index ] = 0;
-	} break;
-	}
-
-	configAttribs[ ++index ] = EGL_NONE;
+//	configAttribs[ ++index ] = EGL_NONE;
 
 	if( EGL_FALSE == eglChooseConfig( m_eglDisplay, &configAttribs[ 0 ], &eglConfig, 1, &numConfigs ) )
 	{

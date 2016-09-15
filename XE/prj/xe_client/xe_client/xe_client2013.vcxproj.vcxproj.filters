@@ -500,6 +500,9 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprMng_old.cpp">
       <Filter>source\sprite</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stdafx.h" />
@@ -1141,6 +1144,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprMng_old.h">
       <Filter>source\sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.h">
+      <Filter>source\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

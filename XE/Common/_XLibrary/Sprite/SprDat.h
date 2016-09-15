@@ -105,7 +105,9 @@ public:
 	XActDat* GetActionIndex( int index ) const { 
 		return m_ppActions[ index ]; 
 	}
-	inline int GetActionIndexFromID( DWORD id ) const { return m_indexFromID[ id ]; }
+	inline int GetActionIndexFromID( DWORD id ) const { 
+		return m_indexFromID[ id ]; 
+	}
 	XActDat* GetAction( DWORD id ) {
 		int idx = m_indexFromID[id];
 #ifdef _XDEBUG
@@ -114,6 +116,7 @@ public:
 #endif
 		return m_ppActions[ idx ]; 
 	}
+	ID GetidActByRandom() const;
 	/**
 	 @brief idAct액션이 있는지 검사
 	*/

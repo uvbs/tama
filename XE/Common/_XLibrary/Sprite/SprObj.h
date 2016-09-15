@@ -315,6 +315,7 @@ public:
 	XActDat* GetActionMutable( ID idAct ) {
 		return const_cast<XActDat*>( GetAction( idAct ) );
 	}
+	ID GetidActByRandom() const;
 	ID GetActionID() const;
 	XActObj *AddObjAct( int idx, const XActDat *pAction );
 	// 애니메이션 최대 플레이 시간을 초단위로 얻는다.

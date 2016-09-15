@@ -415,6 +415,38 @@ pbar on/off
 
 
 
+ depth(*)	func	share	avg	min	max	depth
+ + frameMove/draw	1.1%	134485	94
+ ++ XClientMain::FrameMove	54.7%	73528	94
+ +++ XGame::Process	100.0%	73496	94
+ ++++ XBattleField::Process	94.4%	69356	94
+ +++++ XEObjMng::FrameMove	0.9%	606	94
+ ++ XClientMain::Draw	45.3%	60896	94
+ +++ XEObjMng::Draw	81.4%	49587	94
+ ++++ select	2.9%	1453	94
+ ++++ select-sort	1.1%	536	94
+ ++++ XEObjMngWithType::DrawVisible	95.8%	47512	94
+ +++++ draw floor/shadow	0.8%	364	94
+ +++++ draw normal	98.9%	47004	94
+ ++++++ projection obj	0.6%	292	94
+ ++++++ draw each obj	82.1%	38598	94
+ +++++++ XBaseUnit::Draw	81.0%	31261	94
+ ++++++++ draw unit	5.3%	1642	94
+ ++++++++ draw hit	1.9%	598	94
+ ++++++++ draw bar	9.3%	2916	94
+ ++++++++ draw buff	30.3%	9465	94
+ ++++++++ draw name	30.2%	9433	94
+ +++++++ XObjArrow::Draw	0.5%	210	94
+ ++++++++ XObjBullet::Draw	37.6%	79	94
+ +++++++ XObjLoop::Draw	9.4%	3619	94
+ +++++ draw ui_obj	0.1%	64	94
+ +++ XWndImage::Draw	0.5%	314	187
+ +++ XWndTextString::Draw	1.4%	829	94
+ +++ XWndButtonDebug::Draw	1.8%	1082	94
+ +++ render_batch	8.7%	5268	94
+ +++ XClientMain::DrawDebugInfo	1.6%	982	94
+ + swap buff	0.0%	1343	93
+
 
 
 
@@ -3598,4 +3630,3 @@ depth(*)	func	share	avg	min	max	depth
 	}
 
  }
-

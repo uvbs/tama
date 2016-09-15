@@ -246,6 +246,7 @@ ID XSprObj::GetActionID() const
 	return m_Async.m_idAct;
 }
 
+
 float XSprObj::GetPlayTime() const
 {
 	auto pAction = GetAction();
@@ -396,6 +397,10 @@ void XSprObj::FrameMove( float dt )
 	}
 	if( m_bFinish )
 		return;		// 애니메이션이 끝났으면 더이상 실행하지 않음
+#ifdef _XTEST
+	if( GetpObjActCurr() == nullptr )
+		return;
+#endif // _XTEST
 	auto pAction = GetActionMutable();
 	if( pAction == nullptr )
 		return;
@@ -560,7 +565,13 @@ XSprObj* XSprObj::AddSprObj( LPCTSTR szSpr
 }
 
 #ifdef _VER_OPENGL
-void XSprObj::Draw( float x, float y ) 
+// void XSprObj::Draw( const MATRIX& mWorld )
+// {
+// 	MATRIX m;
+// 	MatrixIdentity( m );
+// 	Draw( 0, 0, m );
+// }
+void XSprObj::Draw( float x, float y )
 {
 	MATRIX m;
 	MatrixIdentity( m );
@@ -576,6 +587,8 @@ void XSprObj::Draw( float x, float y, const MATRIX& mParent )
 	}
 #endif // defined(_XSPR_LAZY_LOAD) || defined(_XASYNC_SPR)
 	auto pObjAct = GetpObjActCurr();
+	if( pObjAct == nullptr )
+		return;
 	auto pAct = pObjAct->GetpAction();
 	MATRIX mWorld, m;
 	if( m_DrawMode == xDM_NONE )		// 아무것도 그리지 않는 모드
@@ -609,15 +622,15 @@ void XSprObj::Draw( float x, float y, const MATRIX& mParent )
 	MatrixTranslation( m, x, y, 0 );
 	MatrixMultiply( mWorld, mWorld, m );
 	MatrixMultiply( mWorld, mWorld, mParent );
-	if( m_DrawMode != xDM_ERROR || m_fAlpha < 1.0f )	// 외부지정 드로우 모드가 있으면 그 파라메터를 넘김
-	{
-		XEFFECT_PARAM EffectParam;
+	XEFFECT_PARAM EffectParam;
+	if( m_DrawMode != xDM_ERROR || m_fAlpha < 1.0f ) {	// 외부지정 드로우 모드가 있으면 그 파라메터를 넘김
 		EffectParam.drawMode = m_DrawMode;
 		EffectParam.fAlpha = m_fAlpha;
 		GetpObjActCurr()->Draw( 0, 0, mWorld, &EffectParam );
 		m_DrawMode = xDM_ERROR;		// 드로우모드는 한번쓰고 다시 초기화시킴
-	} else
-		GetpObjActCurr()->Draw( 0, 0, mWorld, NULL );
+	} else {
+		GetpObjActCurr()->Draw( 0, 0, mWorld, &EffectParam );
+	}
 }
 #endif // GL
 #ifdef _VER_DX
@@ -977,4 +990,9 @@ void XSprObj::ResetAction()
 XSprDat* XSprObj::GetpSprDat() 
 {
 	return m_spDat->m_pSprDat;
+}
+
+ID XSprObj::GetidActByRandom() const 
+{
+	return (m_spDat->m_pSprDat) ? m_spDat->m_pSprDat->GetidActByRandom() : 0;
 }

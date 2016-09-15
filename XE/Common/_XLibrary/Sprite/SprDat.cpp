@@ -238,11 +238,6 @@ void XSprDat::Reload()
 */
 void XSprDat::DestroyDevice()
 {
-// 	for( auto i = 0; i < GetnNumSprites(); i++ ) {
-// 		auto pSprite = m_ppSprites[ i ];
-// 		if( pSprite )
-// 			pSprite->GetpSurface()->DestroyDevice();
-// 	}
 	for( auto pSpr : m_arySprite ) {
 		if( pSpr ) {
 			if( pSpr->GetpSurface() )
@@ -251,3 +246,9 @@ void XSprDat::DestroyDevice()
 	}
 }
 
+ID XSprDat::GetidActByRandom() const
+{
+	ID idxAct = xRandom( m_nNumActions );
+	const auto pActDat = m_ppActions[ idxAct ];
+	return (pActDat)? pActDat->GetID() : 0;
+}

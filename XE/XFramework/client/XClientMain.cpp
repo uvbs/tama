@@ -11,6 +11,7 @@
 // Graphics include
 #ifdef _VER_OPENGL
 	#include "OpenGL2/XGraphicsOpenGL.h"
+	#include "opengl2/XRenderCmd.h"
 #else 
 	#include "_DirectX/XGraphicsD3DTool.h"
 #endif
@@ -477,7 +478,6 @@ void XClientMain::OnDelegateFrameMove( float dt )
 
 void XClientMain::Draw( void )
 {
-	
 	XPROF_OBJ_AUTO();
 	if( m_Restore == xRST_FALSE ) {	// 디바이스 자원 잃은 상태에선 더이상 진행 하지 않는다.
 #ifdef WIN32
@@ -500,15 +500,25 @@ void XClientMain::Draw( void )
 	GRAPHICS->SetViewport( XE::VEC2(0), XGAME_SIZE );
 	XE::SetProjection( XE::GetGameWidth(), XE::GetGameHeight() );
 #endif
-	if( m_bDraw == FALSE )
+	if( m_bDraw == FALSE ) {
 		return;
+	}
 #if defined(_VER_ANDROID) || (defined(WIN32) && defined(_VER_OPENGL))
-    GRAPHICS->ClearScreen(XCOLOR_RGBA(0, 0, 0, 255));
+	GRAPHICS->ClearScreen( XCOLOR_RGBA( 128, 128, 128, 255 ) );
 #endif
-    if( m_pGame )
-        m_pGame->Draw();
+	if( m_pGame ) {
+		m_pGame->Draw();
+	}
 	//
-	DrawDebugInfo( 96.f, 15.f );
+	{
+		XPROF_OBJ( "render_batch" );
+		XRenderCmdMng::sGet()->RenderBatch();	// 레이어방식으로 해서 레이어별로 가지고 있어야 할듯.
+	}
+	//
+	{
+		XPROF_OBJ( "draw dbginfo" );
+		DrawDebugInfo( 96.f, 15.f );
+	}
 #ifdef _XPROFILE
 	// 프로파일링 결과를 받는다.
 	if( m_pGame )	{	// 프로파일링 끝을 명령받았다면 프로파일 결과를 만들고 초기화를 시킨다.

@@ -63,9 +63,11 @@ void XActObj::FrameMove( float dt, float fFrmCurr )
 #ifdef _VER_OPENGL
 void XActObj::Draw( float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam )
 {
-	LAYER_LOOP( pLayer )
-		pLayer->Draw( m_pSprObj, x, y, m, pEffectParam );
-	LOOP_END
+	auto eff = *pEffectParam;
+	LAYER_LOOP( pLayer ) {
+		pLayer->Draw( m_pSprObj, x, y, m, &eff );
+		eff.m_adjZ += 0.1f; // z fighting 방지용
+	} LOOP_END
 }
 #else
 void XActObj::Draw( float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam )

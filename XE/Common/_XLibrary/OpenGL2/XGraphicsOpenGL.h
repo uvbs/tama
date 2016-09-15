@@ -18,13 +18,18 @@
 //#include "Mathematics.h"
 #include "etc/xMath.h"
 
+#define CHECK_GL_ERROR() \
+		{ volatile auto glErr = glGetError(); \
+			XASSERT( glErr == GL_NO_ERROR ); }
+
 namespace XE {
-    enum { ATTRIB_POS,
-        ATTRIB_COLOR,
-        ATTRIB_TEXTURE,
-        ATTRIB_SIZE,
-    };
-    extern MATRIX  x_mViewProjection;
+	enum xtAttib {
+		ATTRIB_POS,
+		ATTRIB_COLOR,
+		ATTRIB_TEXTURE,
+		ATTRIB_SIZE,
+	};
+extern MATRIX  x_mViewProjection;
 //    extern GLKMatrix4 x_mViewProjection;
 	//
 	extern double x_tblGauss[ 32 ];
@@ -32,45 +37,48 @@ namespace XE {
 	void build_mask( double* mask, int lenMask, int* n, float d );
 }
 
-class XShader
-{
-    enum
-    {
-        UNIFORM_MVP_MATRIX,
+class XShader {
+	enum {
+		UNIFORM_MVP_MATRIX,
 		UNIFORM_COLOR,
 		UNIFORM_FLOAT,
-        NUM_UNIFORMS
-    };
-    GLint m_glProgram;
-    GLint m_locUniforms[NUM_UNIFORMS];
-    void Init() {
-        m_glProgram = 0;
-        XCLEAR_ARRAY(m_locUniforms);
-    }
-    void Destroy() {
-        glDeleteProgram( m_glProgram );
-    }
+		NUM_UNIFORMS
+	};
+	GLint m_glProgram;
+	GLint m_locUniforms[NUM_UNIFORMS];
+	void Init() {
+		m_glProgram = 0;
+		XCLEAR_ARRAY( m_locUniforms );
+	}
+	void Destroy() {
+		glDeleteProgram( m_glProgram );
+	}
 public:
-    XShader() { Init(); }
-    virtual ~XShader() { Destroy(); }
-    //
-//    BOOL LoadShader( LPCTSTR szVertexShader, LPCTSTR szFragShader );
-    BOOL LoadShaderFromString( const GLchar *cVertShader, const GLchar *cFragShader, const char *cszTag );
-//    BOOL CompileShader( GLuint *shader, GLenum type, NSString *pathFile );
-    BOOL CompileShaderFromString( GLuint *shader, GLenum type, const GLchar *cShader, const char *cszTag );
-    BOOL LinkShader( GLuint prog, const char *cszTag );
+	XShader() {
+		Init();
+	}
+	virtual ~XShader() {
+		Destroy();
+	}
+	GET_ACCESSOR_CONST( GLint, glProgram );
+	//
+	//    BOOL LoadShader( LPCTSTR szVertexShader, LPCTSTR szFragShader );
+	BOOL LoadShaderFromString( const GLchar *cVertShader, const GLchar *cFragShader, const char *cszTag );
+	//    BOOL CompileShader( GLuint *shader, GLenum type, NSString *pathFile );
+	BOOL CompileShaderFromString( GLuint *shader, GLenum type, const GLchar *cShader, const char *cszTag );
+	BOOL LinkShader( GLuint prog, const char *cszTag );
 	void SetShader( const MATRIX& mMVP,
-							float r, float g, float b, float a );
+									float r, float g, float b, float a );
 	inline void SetShader( const MATRIX& mMVP, const XE::VEC4& vColor ) {
 		SetShader( mMVP, vColor.x, vColor.y, vColor.z, vColor.a );
 	}
 	void SetUniformMVP( const MATRIX& mMVP );
 	void SetUniformColor( float r, float g, float b, float a );
 	void SetUniformFloat( float v );
-//	void SetColor( float r, float g, float b, float a );
-//    void SetMatrixModel( MATRIX& mModel ) {
-//        glUniformMatrix4fv(m_locUniforms[UNIFORM_MODEL_MATRIX], 1, 0, mModel.f);
-//    }
+	//	void SetColor( float r, float g, float b, float a );
+	//    void SetMatrixModel( MATRIX& mModel ) {
+	//        glUniformMatrix4fv(m_locUniforms[UNIFORM_MODEL_MATRIX], 1, 0, mModel.f);
+	//    }
 };
 
 

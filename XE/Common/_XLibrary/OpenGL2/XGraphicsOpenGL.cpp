@@ -99,7 +99,13 @@ namespace XE
 };
 void XE::SetProjection(float wLogicalResolution, float hLogicalResolution)
 {
-    MatrixMakeOrtho(x_mViewProjection, 0, wLogicalResolution, hLogicalResolution, 0, -1.0f, 1.0f);
+    MatrixMakeOrtho(x_mViewProjection, 
+										 0, 
+										 wLogicalResolution, 
+										 hLogicalResolution, 
+										 0, 
+										 1000.0f, 
+										 -1000.0f);
 }
 
 
@@ -137,7 +143,7 @@ BOOL XShader::LoadShaderFromString( const GLchar *cVertShader
 		glBindAttribLocation( m_glProgram, XE::ATTRIB_SIZE, "size" );
 		// Link program.
 		if( !LinkShader( m_glProgram, cszTag ) ) {
-			XTRACE( "Failed to link program: %d %s", m_glProgram, cszTag );
+			XTRACE( "Failed to link program: %d %s", m_glProgram, C2SZ(cszTag) );
 			if( vertShader ) {
 				glDeleteShader( vertShader );
 				vertShader = 0;
@@ -192,8 +198,11 @@ BOOL XShader::CompileShaderFromString( GLuint *shader
 	if( logLength > 0 ) {
 		GLchar *log = (GLchar *)malloc( logLength );
 		glGetShaderInfoLog( *shader, logLength, &logLength, log );
-		if( logLength > 0 )
-			XTRACE( "Shader compile log:\n    %s\n    [%s]\n", cszTag, log );
+		if( logLength > 0 ) {
+			const _tstring strTag = C2SZ(cszTag);
+			const _tstring strLog = C2SZ(log);
+			XTRACE( "Shader compile log:\n    %s\n    [%s]\n", strTag.c_str(), strLog.c_str() );
+		}
 		free( log );
 	}
 	glGetShaderiv( *shader, GL_COMPILE_STATUS, &status );
@@ -214,8 +223,11 @@ BOOL XShader::LinkShader( GLuint prog, const char *cszTag )
 	if( logLength > 0 ) {
 		GLchar *log = (GLchar *)malloc( logLength );
 		glGetProgramInfoLog( prog, logLength, &logLength, log );
-		if( logLength > 0 )
-			XTRACE( "Program link log:\n    %s\n    [%s]", cszTag, log );
+		if( logLength > 0 ) {
+			const _tstring strTag = C2SZ( cszTag );
+			const _tstring strLog = C2SZ( log );
+			XTRACE( "Program link log:\n    %s\n    [%s]\n", strTag.c_str(), strLog.c_str() );
+		}
 		free( log );
 	}
 	glGetProgramiv( prog, GL_LINK_STATUS, &status );
@@ -295,8 +307,8 @@ void XRenderTargetGLImpl::BindRenderTarget( void )
 	glRenderbufferStorage( GL_RENDERBUFFER, GL_RGBA8_OES, (GLsizei)GetSize().w, (GLsizei)GetSize().h );
 	glViewport( 0, 0, (GLsizei)GetSize().w, (GLsizei)GetSize().h );
 	MatrixMakeOrtho( XE::x_mViewProjection, 0, GetSize().w, 0, GetSize().h, -1.0f, 1.0f );
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 }
 
 void XRenderTargetGLImpl::SetTexture( void )
@@ -360,8 +372,8 @@ void XGraphicsOpenGL::RestoreDevice( void )
 	
 	XTRACE("restore device resource");
 	GLint sizeMax = 512;
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	glGetIntegerv( GL_MAX_TEXTURE_SIZE, (GLint*)&sizeMax );
 	XSurface::SetMaxSurfaceWidth( sizeMax );
 	XTRACE( "max texture size:%d", sizeMax );
@@ -372,8 +384,17 @@ void XGraphicsOpenGL::RestoreDevice( void )
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// Enable blending
 	glEnable(GL_BLEND);
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
+//  	glEnable( GL_DEPTH_TEST );
+//  	CHECK_GL_ERROR();
+	glDisable( GL_DEPTH_TEST );
+	CHECK_GL_ERROR();
+ 	glDepthFunc( GL_GEQUAL );
+ 	CHECK_GL_ERROR();
+ 	glClearDepthf( -1000.f );
+ 	CHECK_GL_ERROR();
+
 	// 세이더 로딩
 	XTRACE("base shader loading....");
 	m_pBaseShader->LoadShaderFromString( xvShader_Color_Texture, xfShader_Color_Texture, "base_shader" );
@@ -561,8 +582,8 @@ void XGraphicsOpenGL::SetViewport( int left, int top, int right, int bottom )
 	y -= (int)( GetvScreenLT().y * ratioY );
 #endif
 	glViewport( x, y, w, h );	// EAGLView에서 프레임버퍼 바인드할때 하도록 바꿔라
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	//    glViewport( 100, 100, 200, 200 );	// EAGLView에서 프레임버퍼 바인드할때 하도록 바꿔라
 }
 void XGraphicsOpenGL::RestoreViewport( void )
@@ -581,9 +602,9 @@ void XGraphicsOpenGL::ClearScreen( XCOLOR color )
 	b = XCOLOR_RGB_B(color) / 255.f;
 	a = XCOLOR_RGB_A(color) / 255.f;
 	glClearColor( r, g, b, a );
-	glClear(GL_COLOR_BUFFER_BIT);
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	CHECK_GL_ERROR();
+	
 }
 int	 XGraphicsOpenGL::GetPixel( int x, int y )
 {
@@ -592,8 +613,8 @@ int	 XGraphicsOpenGL::GetPixel( int x, int y )
 void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR color )
 {
 	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	if( w == 0 || h == 0 )	return;
     if( w < 0 )    {
         w = -w;     // w는 부호 바꿈
@@ -640,8 +661,8 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR color
     glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 
 //	glEnable( GL_TEXTURE_2D );
  
@@ -652,8 +673,8 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR color
 void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR collt, XCOLOR colrt, XCOLOR collb, XCOLOR colrb  )
 {
 	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 #define _XXR(C)	(XCOLOR_RGB_R(C) / 255.0f)
 #define _XXG(C)	(XCOLOR_RGB_G(C) / 255.0f)
 #define _XXB(C)	(XCOLOR_RGB_B(C) / 255.0f)
@@ -714,8 +735,8 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR collt
     glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 
 //	glEnable( GL_TEXTURE_2D );
 	
@@ -724,8 +745,8 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR collt
 void XGraphicsOpenGL::DrawRect( float x, float y, float w, float h, XCOLOR color )
 {
 	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	//	if( x > GetScreenWidth() || y > GetScreenHeight() )
 	if( x > GetViewportRight() || y > GetViewportBottom() )
 		return;
@@ -769,15 +790,15 @@ void XGraphicsOpenGL::DrawRect( float x, float y, float w, float h, XCOLOR color
 	glDrawArrays(GL_LINE_STRIP, 0, 5);
     
 //	glEnable( GL_TEXTURE_2D );	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	}
 
 void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR color )
 {
 	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	if( x1 > GetViewportRight() || y1 > GetViewportBottom() )
 		return;
 	if( x2 < 0 || y2 < 0 )
@@ -816,16 +837,16 @@ void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR c
 #endif
 	
 	glDrawArrays(GL_LINE_STRIP, 0, 2);
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 
 //	glEnable( GL_TEXTURE_2D );
 }
 void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR col1, XCOLOR col2 )
 {
 	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	if( x1 > GetViewportRight() || y1 > GetViewportBottom() )
 		return;
 	if( x2 < 0 || y2 < 0 )
@@ -861,16 +882,16 @@ void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR c
 #endif
 	
 	glDrawArrays(GL_LINE_STRIP, 0, 2);
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 
 }
 
 void XGraphicsOpenGL::DrawLineList( XGraphics::xVERTEX *vList, int numLines )
 {
 	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	// 클리핑
     // 버텍스버퍼를 생성
     static GLuint s_glVB=0;
@@ -898,8 +919,8 @@ void XGraphicsOpenGL::DrawLineList( XGraphics::xVERTEX *vList, int numLines )
     glDrawArrays( GL_LINES, 0, numLines * 2 );
     
 //     glEnable( GL_TEXTURE_2D );    
-		{ auto glErr = glGetError();
-		XASSERT( glErr == GL_NO_ERROR ); }
+		CHECK_GL_ERROR();
+		
 }
 
 
@@ -916,8 +937,8 @@ void XGraphicsOpenGL::DrawLineList( XGraphics::xVERTEX *vList, int numLines )
 void XGraphicsOpenGL::DrawFan( float *pAryPos, float *pAryCol, int numVertex, int numFan )
 {
 	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	GetpColorShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
 //	glDisable( GL_TEXTURE_2D );
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -931,8 +952,8 @@ void XGraphicsOpenGL::DrawFan( float *pAryPos, float *pAryCol, int numVertex, in
 #endif
 	glDrawArrays(GL_TRIANGLE_FAN, 0, numVertex);	// i==버텍스개수
 //	glEnable( GL_TEXTURE_2D );    
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 }
 
 
@@ -941,8 +962,8 @@ static XE::VEC2 _vLists[ MAX_VERTEX ];
 void XGraphicsOpenGL::DrawPieClip( const XE::VEC2 *pvLines, int numLine, float x, float y, float radius, float angStart, float angEnd, XCOLOR color, int maxSlice )
 {
 	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	if( angStart == angEnd )
 		return;
 	XE::VEC2 *pvList = _vLists;
@@ -1032,8 +1053,8 @@ void XGraphicsOpenGL::DrawPieClip( const XE::VEC2 *pvLines, int numLine, float x
         
 //         glEnable( GL_TEXTURE_2D );    
 	}
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 }
 void XGraphicsOpenGL::DrawTexture( GLint idTexture, 
 																	 float xpos, float ypos, 
@@ -1041,8 +1062,8 @@ void XGraphicsOpenGL::DrawTexture( GLint idTexture,
 																	 BOOL bBlendAdd )
 {
 	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	GLfloat tex[8] = { 0, 1.0f, 1.0f, 1.0f, 0, 0, 1.0f, 0 };
 	GLfloat pos[8] = { xpos, ypos + height, xpos + width, ypos + height, xpos, ypos, xpos + width, ypos };
 	GLfloat col[16] = { 
@@ -1059,6 +1080,7 @@ void XGraphicsOpenGL::DrawTexture( GLint idTexture,
 	MatrixMultiply( mMVP, mMVP, XE::x_mViewProjection );
 	// 8픽셀 크기로 블러가 되게 하려고 8픽셀 여유를 뒀다.
 	// 현재 쉐이더를 얻어온다
+	GRAPHICS_GL->sSetShader( GRAPHICS_GL->GetpBaseShader() );
 	XShader *pShader = XGraphicsOpenGL::sGetShader();
 	pShader->SetUniformMVP( mMVP );
 	pShader->SetUniformColor( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -1066,8 +1088,8 @@ void XGraphicsOpenGL::DrawTexture( GLint idTexture,
 	//    GRAPHICS_GL->GetpBaseShader()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
 	//    GRAPHICS_GL->GetpBaseShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
 
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	glEnable( GL_BLEND );
 	if( bBlendAdd )
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
@@ -1077,29 +1099,30 @@ void XGraphicsOpenGL::DrawTexture( GLint idTexture,
 #ifdef _XVAO
 	glBindVertexArrayOES( 0 );
 #endif
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 	glEnableVertexAttribArray( XE::ATTRIB_POS );
+	glEnableVertexAttribArray( XE::ATTRIB_COLOR );
+	glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
 	glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos );
 	glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, tex );
 	glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col );
-	glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-	glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	glEnableVertexAttribArray( XE::ATTRIB_SIZE );
+	CHECK_GL_ERROR();
+	
 	// bind texture
 	XGraphicsOpenGL::sBindTexture( idTexture );
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 
 	glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 }
 //////////////////////////////
 #pragma mark create manager obj
@@ -1166,17 +1189,14 @@ GLuint XGraphicsOpenGL::CreateTextureGL( void* const pImgSrc
 	XBREAK( pImgSrc && bppImgSrc == 2 );		// 아직 16bit픽셀소스는 지원하지 않음.
 	GLuint idTexture = 0;
 	glGenTextures( 1, &idTexture );
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	if( idTexture == 0 ) {
 		XERROR( "failed create texture: sizeSrc(%d,%d)", wSrc, hSrc );
 		return 0;
 	}
 	XGraphicsOpenGL::sBindTexture( idTexture );
-#ifdef _DEBUG
-	auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR );
-#endif // _DEBUG
+	CHECK_GL_ERROR();
 	const int sizeSrcAligned = wSrcAligned * hSrcAligned;
 	//////////////////////////////////////////////////////////////////////////
 	if( bppSurface == 4 ) {
@@ -1245,23 +1265,20 @@ GLuint XGraphicsOpenGL::CreateTextureGL( void* const pImgSrc
 									pDst );
 		s_glFmt = glFormatSurface;
 		s_glType = glTypeSrc;
-#ifdef _DEBUG
-		{	auto glErr = glGetError();
-			XASSERT( glErr == GL_NO_ERROR ); }
-#endif // _DEBUG
+		CHECK_GL_ERROR();
 		SAFE_DELETE_ARRAY( pDst );
 	}
 // 	XGraphicsOpenGL::sBindTexture( 0 );
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	//
 	XSurface::sAddSizeTotalVMem( sizeSrcAligned * bppSurface );
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	//
 	return idTexture;
 } // CreateTextureGL
@@ -1282,20 +1299,20 @@ GLuint XGraphicsOpenGL::CreateTextureSubGL( void* const pImgSrc
 	const int bppSurface = XE::GetBpp( formatSurface );
 	GLuint glTexture = 0;
 	glGenTextures( 1, &glTexture );
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
+	
 	if( XBREAK( glTexture == 0 ) )
 		return 0;
 	if( pImgSrc ) {
 		XGraphicsOpenGL::sBindTexture( glTexture );
-		{ auto glErr = glGetError();
-		XASSERT( glErr == GL_NO_ERROR ); }
+		CHECK_GL_ERROR();
+		
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-		{ auto glErr = glGetError();
-		XASSERT( glErr == GL_NO_ERROR ); }
+		CHECK_GL_ERROR();
+		
 		const auto glTypeTexel = XGraphicsOpenGL::sToGLType( formatSurface );
 		const auto glformatTexel = XGraphicsOpenGL::sToGLFormat( formatSurface );
 		// 영역만큼 이미지 잘라내어 pDst에 옮김.
@@ -1320,8 +1337,8 @@ GLuint XGraphicsOpenGL::CreateTextureSubGL( void* const pImgSrc
 										glformatTexel,
 										glTypeTexel,
 										pBuffClipped );
-			{ auto glErr = glGetError();
-			XASSERT( glErr == GL_NO_ERROR ); }
+			CHECK_GL_ERROR();
+			
 		} else // if( bppSurface == 4 ) {
 		if( bppSurface == 2 ) {
 			WORD *pDst16 = new WORD[ sizeTexAligned.Size() ];
@@ -1341,8 +1358,8 @@ GLuint XGraphicsOpenGL::CreateTextureSubGL( void* const pImgSrc
 										glformatTexel,
 										glTypeTexel,
 										pDst16 );
-			{ auto glErr = glGetError();
-			XASSERT( glErr == GL_NO_ERROR ); }
+			CHECK_GL_ERROR();
+			
 			SAFE_DELETE_ARRAY( pDst16 );
 		} // if( bppSurface == 2 ) {
 //		XSurface::s_sizeTotalVMem += sizeTexAligned.Size() * bppSurface;
@@ -1359,15 +1376,15 @@ void XGraphicsOpenGL::CopyValueSurface( XSurface* pDst, XSurface* pSrc )
 
 void XGraphicsOpenGL::sBindTexture( ID idTex )
 {
-	static ID s_idPrev = -1;
-	if( s_idPrev == idTex )
-		return;
-	
+// 	static ID s_idPrev = -1;
+// 	if( s_idPrev == idTex )
+// 		return;
+// 	
 	glBindTexture( GL_TEXTURE_2D, (GLuint)idTex );
 	++s_numCallBindTexture;
-	s_idPrev = idTex;
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+// 	s_idPrev = idTex;
+	CHECK_GL_ERROR();
+	
 }
 
 

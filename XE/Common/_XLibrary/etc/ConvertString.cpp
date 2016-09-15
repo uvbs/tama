@@ -168,9 +168,14 @@ WCHAR* _ConvertEUCKRToUTF16( WCHAR *wBuff, int lenBuff, const char *euckr )
 }
 WCHAR* _ConvertEUCKRToUTF16( const char *euckr )
 {
-	XLockObj autoLock( CONSOLE_MAIN->GetlockString(), __TFUNC__ );
-	_buffUTF16[0] = 0;
-	return _ConvertEUCKRToUTF16( _buffUTF16, euckr );
+	if( CONSOLE_MAIN ) {
+		XLockObj autoLock( CONSOLE_MAIN->GetlockString(), __TFUNC__ );
+		_buffUTF16[0] = 0;
+		return _ConvertEUCKRToUTF16( _buffUTF16, euckr );
+	} else {
+		_buffUTF16[0] = 0;
+		return _ConvertEUCKRToUTF16( _buffUTF16, euckr );
+	}
 }
 
 WCHAR* ConvertUTF8ToUTF16( const char *cUTF8 )

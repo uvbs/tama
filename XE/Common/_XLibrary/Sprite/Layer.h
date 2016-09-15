@@ -19,6 +19,7 @@ struct XEFFECT_PARAM
 {
 	xDM_TYPE drawMode;
 	float fAlpha;
+	float m_adjZ = 0;
 	XEFFECT_PARAM() {
 		drawMode = xDM_NORMAL;
 		fAlpha = 1.0f;

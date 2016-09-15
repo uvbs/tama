@@ -298,5 +298,6 @@ public:
 	}
 // 	// 비동기 로딩으로 spr로딩과 SetAction까지 끝나면 호출된다.
 // 	virtual void OnFinishLoadSpr( const XSprDat* pSprDat ) {}
+	void GetTransform( MATRIX* pOut ) const;
 };
 

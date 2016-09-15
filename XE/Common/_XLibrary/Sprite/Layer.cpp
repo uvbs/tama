@@ -164,7 +164,9 @@ void XLayerMove::FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr )
 	m_cnEffect.FrameMove( dt, fFrmCurr );
 }
 
-void XLayerImage::SetDrawInfoToSpr( XSprObj *pSprObj, XSprite *pSpr, XEFFECT_PARAM *pEffectParam )
+void XLayerImage::SetDrawInfoToSpr( XSprObj *pSprObj, 
+																		XSprite *pSpr, 
+																		XEFFECT_PARAM *pEffectParam )
 {
 #ifdef _XBUG_140123_SPR
 	XBREAK( pEffectParam == NULL );	// 이 버전부터 이것은 널이 될 수 없다.
@@ -178,6 +180,8 @@ void XLayerImage::SetDrawInfoToSpr( XSprObj *pSprObj, XSprite *pSpr, XEFFECT_PAR
 	// 이버전부터는 외부에서 주는대로만 찍는다.
 	pSpr->SetDrawMode( pEffectParam->drawMode );
 	pSpr->SetfAlpha( pEffectParam->fAlpha );	
+	pSpr->GetpSurface()->SetadjZ( pEffectParam->m_adjZ );
+
 }
 
 

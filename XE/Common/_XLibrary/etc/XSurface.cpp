@@ -410,3 +410,24 @@ void XSurface::GetMatrix( const XE::VEC2& vPos, MATRIX* pOut )
 	MatrixMultiply( mWorld, mWorld, m );
 }
 
+void XSurface::SetDrawMode( xDM_TYPE drawMode ) 
+{
+	m_DrawMode = drawMode;
+	switch( drawMode ) {
+	case xDM_NORMAL:
+	case xDM_MULTIPLY:
+		m__funcBlend = XE::xBF_MULTIPLY;
+		break;
+	case xDM_SCREEN:
+		m__funcBlend = XE::xBF_ADD;
+		break;
+	case xDM_SUBTRACT:
+		m__funcBlend = XE::xBF_SUBTRACT;
+		break;
+	case xDM_GRAY:
+		m__funcBlend = XE::xBF_GRAY;
+		break;
+	default:
+		break;
+	}
+}
