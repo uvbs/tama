@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "etc/XSurface.h"
 #include "etc/xGraphics.h"
+#include "etc/xMath.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -12,6 +13,58 @@ static char THIS_FILE[] = __FILE__;
 
 DWORD XSurface::s_dwMaxSurfaceWidth = 0;
 int XSurface::s_sizeTotalVMem = 0;
+
+void XE::xRenderParam::GetmTransform( MATRIX* pOut ) const {
+	MATRIX& mWorld = (*pOut);
+	MATRIX m;
+	MatrixIdentity( mWorld );
+	const auto& vAdjAxis = m_vAdjAxis;
+	if( !vAdjAxis.IsZero() ) {
+		MatrixTranslation( m, -vAdjAxis.x, -vAdjAxis.y, 0 );
+		MatrixMultiply( mWorld, mWorld, m );
+	}
+	const auto& vScale = m_vScale;
+	if( vScale.x != 1.0f || vScale.y != 1.0f || vScale.z != 1.0f ) {
+		MatrixScaling( m, vScale.x, vScale.y, 1.0f );
+		MatrixMultiply( mWorld, mWorld, m );
+	}
+	const auto& vRot = m_vRot;
+	if( vRot.z ) {
+		MatrixRotationZ( m, D2R( vRot.z ) );
+		MatrixMultiply( mWorld, mWorld, m );
+	}
+	if( vRot.y ) {
+		MatrixRotationY( m, D2R( vRot.y ) );
+		MatrixMultiply( mWorld, mWorld, m );
+	}
+	if( !vAdjAxis.IsZero() ) {
+		MatrixTranslation( m, vAdjAxis.x, vAdjAxis.y, 0 );
+		MatrixMultiply( mWorld, mWorld, m );
+	}
+	const auto& vPos = m_vPos;
+	MatrixTranslation( m, vPos.x, vPos.y, 0 );
+	MatrixMultiply( mWorld, mWorld, m );
+}
+
+void XE::xRenderParam::SetFlipHoriz( bool bFlag ) {
+	if( bFlag ) {
+		m_dwDrawFlag |= EFF_FLIP_HORIZ;
+		m_vRot.x += 180.f;
+	} else {
+		m_dwDrawFlag &= ~EFF_FLIP_HORIZ;
+		m_vRot.x += 0.f;
+	}
+}
+void XE::xRenderParam::SetFlipVert( bool bFlag ) {
+	if( bFlag ) {
+		m_dwDrawFlag |= EFF_FLIP_VERT;
+		m_vRot.x += 180.f;
+	} else {
+		m_dwDrawFlag &= ~EFF_FLIP_VERT;
+		m_vRot.x += 0;
+	}
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void XSurface::Destroy() 
@@ -378,9 +431,10 @@ void XSurface::ClearAttr()
 	m_ColorR = m_ColorG = m_ColorB = 1.f;
 	m_dwDrawFlag = 0;
 	m_DrawMode = xDM_NORMAL;
+	m_adjZ = 0;
 }
 
-void XSurface::GetMatrix( const XE::VEC2& vPos, MATRIX* pOut )
+void XSurface::GetMatrix( const XE::VEC2& vPos, MATRIX* pOut ) const 
 {
 	MATRIX& mWorld = (*pOut);
 	MATRIX m;
@@ -413,21 +467,22 @@ void XSurface::GetMatrix( const XE::VEC2& vPos, MATRIX* pOut )
 void XSurface::SetDrawMode( xDM_TYPE drawMode ) 
 {
 	m_DrawMode = drawMode;
-	switch( drawMode ) {
-	case xDM_NORMAL:
-	case xDM_MULTIPLY:
-		m__funcBlend = XE::xBF_MULTIPLY;
-		break;
-	case xDM_SCREEN:
-		m__funcBlend = XE::xBF_ADD;
-		break;
-	case xDM_SUBTRACT:
-		m__funcBlend = XE::xBF_SUBTRACT;
-		break;
-	case xDM_GRAY:
-		m__funcBlend = XE::xBF_GRAY;
-		break;
-	default:
-		break;
-	}
+	m__funcBlend = XE::ConvertDMTypeToBlendFunc( drawMode );
+// 	switch( drawMode ) {
+// 	case xDM_NORMAL:
+// 	case xDM_MULTIPLY:
+// 		m__funcBlend = XE::xBF_MULTIPLY;
+// 		break;
+// 	case xDM_SCREEN:
+// 		m__funcBlend = XE::xBF_ADD;
+// 		break;
+// 	case xDM_SUBTRACT:
+// 		m__funcBlend = XE::xBF_SUBTRACT;
+// 		break;
+// 	case xDM_GRAY:
+// 		m__funcBlend = XE::xBF_GRAY;
+// 		break;
+// 	default:
+// 		break;
+// 	}
 }

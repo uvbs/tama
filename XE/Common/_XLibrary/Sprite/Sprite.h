@@ -15,17 +15,8 @@ class XBaseRes;
 #include "etc/XSurface.h"
 class XSprite
 {
-// 	static XE::xHSL s_HSL;
 public:
 	static int s_sizeTotalMem;		// 스프라이트들의 총 메모리할당량(이미지데이타만..)
-// 	static void sSetHSL( const XE::xHSL& hsl ) {
-// 		s_HSL = hsl;
-// 	}
-// 	static void sClearHSL() {
-// 		s_HSL.m_vHSL.Set(0);
-// 		s_HSL.m_vRange1.Set(0);
-// 		s_HSL.m_vRange2.Set(0);
-// 	}
 private:
 	XSurface *m_pSurface;
 	int m_idxSprite;	// 이 스프라이트의 인덱스
@@ -74,18 +65,10 @@ public:
 	void SetfAlpha( float alpha ) { m_pSurface->SetfAlpha( alpha ); }	
 	void SetColor( XCOLOR col ) { m_pSurface->SetColor( col ); }
 	void SetColor( float r, float g, float b ) { m_pSurface->SetColor( r, g, b); }
-	void Draw( float x, float y ) { 
-		m_pSurface->Draw( x, y ); 
-	}
-	void Draw( float x, float y, const MATRIX &mParent ) { 
-		m_pSurface->Draw( x, y, mParent ); 
-	}
-	void Draw( const XE::VEC2& vPos, const MATRIX &mParent ) {
-		m_pSurface->Draw( vPos, mParent );
-	}
-	void Draw( const XE::VEC2& v ) {
-		Draw( v.x, v.y );
-	}
+	void Draw( float x, float y );
+	void Draw( float x, float y, const MATRIX &mParent );
+	void Draw( const XE::VEC2& vPos, const MATRIX &mParent );
+	void Draw( const XE::VEC2& v );
 	void SetAdjustAxis( float ax, float ay ) { m_pSurface->SetAdjustAxis( ax, ay ); }
 	void SetAdjustAxis( const XE::VEC2& vAdjAxis ) { m_pSurface->SetAdjustAxis( vAdjAxis ); }
 	void SetRotate( float dX, float dY, float dZ ) { m_pSurface->SetRotate( dX, dY, dZ ); }

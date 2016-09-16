@@ -8,6 +8,8 @@
 #include "XSquadObj.h"
 #include "XSceneBattle.h"
 #include "XUnitHero.h"
+#include "opengl2/XRenderCmd.h"
+#include "XFramework/XEProfile.h"
 
 using namespace XSKILL;
 using namespace XGAME;
@@ -91,7 +93,11 @@ int XWndBattleField::Process( float dt )
 void XWndBattleField::Draw( void )
 {
 	XEWndWorldImage::Draw();
-//	XParticleMng::sGet()->Draw();
+	{
+		XPROF_OBJ( "render_batch" );
+		XRenderCmdMng::sGet()->RenderBatch();	// 레이어방식으로 해서 레이어별로 가지고 있어야 할듯.
+	}
+	//	XParticleMng::sGet()->Draw();
 }
 
 void XWndBattleField::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat *pFontDat )

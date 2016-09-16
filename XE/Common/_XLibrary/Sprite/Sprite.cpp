@@ -21,8 +21,8 @@ int XSprite::s_sizeTotalMem = 0;
 XSprite::XSprite( int idx ) {
 	Init();
 	m_idxSprite = idx;
-	// 이제 highreso가 false인 스프라이트는 없는걸로. 있으면 m_bHighReso다시 살릴것.
-	m_pSurface = GRAPHICS->CreateSurface();
+	// 배치렌더버전으로 바뀜
+	m_pSurface = GRAPHICS->CreateSurface2();
 }
 
 void XSprite::Destroy( void )
@@ -329,4 +329,20 @@ MATRIX* XSprite::GetMatrix( MATRIX *pOut, float lx, float ly )
 	return pOut;
 }
 
+void XSprite::Draw( float x, float y ) 
+{
+	m_pSurface->Draw( x, y );
+}
+void XSprite::Draw( float x, float y, const MATRIX &mParent )
+{
+	m_pSurface->Draw( x, y, mParent );
+}
+void XSprite::Draw( const XE::VEC2& vPos, const MATRIX &mParent )
+{
+	m_pSurface->Draw( vPos, mParent );
+}
+void XSprite::Draw( const XE::VEC2& v )
+{
+	Draw( v.x, v.y );
+}
 

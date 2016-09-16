@@ -190,14 +190,17 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 	m_pWndWorld->SetFocus( XE::VEC2( 956, 450 ) );
 	// 전투타입을 지정한다.
 	XBattleField::sGet()->SettypeBattle( s_BattleStart.m_typeBattle );
-
-//	XObjDmgNum::s_strFont = FONT_BADABOOM;
+	// ui메인
+	auto pWnd = new XWnd();
+	pWnd->SetstrIdentifier("wnd.ui");
+	Add( pWnd );
 	SetbUpdate( true );
 }
 
 void XSceneBattle::Release()
 {
-	XBattleField::sGet()->GetpObjMng()->Release();
+	if( XBattleField::sGet() )
+		XBattleField::sGet()->GetpObjMng()->Release();
 	s_BattleStart.Release();
 	XSceneBase::Release();
 	for( auto& camp : m_aryCamp ) {
@@ -388,12 +391,18 @@ void XSceneBattle::SaveSingle()
 
 #endif // _XSINGLE
 
+XWnd* XSceneBattle::GetpLayerUI()
+{
+	return Find( "wnd.ui" );
+}
+
 void XSceneBattle::CreateBattleUI()
 {
+	auto pWndUI = GetpLayerUI();
 	// 전투 화면 UI
-	m_Layout.CreateLayout( "battle", this );
+	m_Layout.CreateLayout( "battle", pWndUI );
 
-	auto pRootTop = Find( "wnd.bars" );
+	auto pRootTop = pWndUI->Find( "wnd.bars" );
 	for( int side = 0; side < 2; ++side ) {
 		auto& camp = m_aryCamp[side];
 		auto pRootName = pRootTop->Findf( "mod.name.%d", side );
@@ -419,9 +428,9 @@ void XSceneBattle::CreateBattleUI()
 			}
 		}
 	} // for
-	xSET_ACTIVE( this, "wnd.bars", FALSE );		// UI 터치 안되게
+	xSET_ACTIVE( pWndUI, "wnd.bars", FALSE );		// UI 터치 안되게
 	auto pButt = 
-	xSET_BUTT_HANDLER( this, "butt.battle.surrrender", &XSceneBattle::OnSurrrender );		// 항복 버튼
+	xSET_BUTT_HANDLER( pWndUI, "butt.battle.surrrender", &XSceneBattle::OnSurrrender );		// 항복 버튼
 #ifdef _XSINGLE
 	if( pButt ) {
 		pButt->SetbShow( false );
@@ -1627,6 +1636,8 @@ void XSceneBattle::CheckLeak()
 	XBREAK( XSquadObj::sGetnumObj() );
 	xnUnit::XMsgQ::sCheckLeak();
 	XBREAK( xnUnit::XMsgBase::sGetnumObj() );
-	XBattleField::sGet()->GetpObjMng()->_CheckLeak();
+	if( XBattleField::sGet() )
+		if( XBattleField::sGet()->GetpObjMng() )
+			XBattleField::sGet()->GetpObjMng()->_CheckLeak();
 	XBREAK( XEBaseWorldObj::sGetnumObj() );
 }

@@ -164,25 +164,26 @@ void XLayerMove::FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr )
 	m_cnEffect.FrameMove( dt, fFrmCurr );
 }
 
-void XLayerImage::SetDrawInfoToSpr( XSprObj *pSprObj, 
-																		XSprite *pSpr, 
-																		XEFFECT_PARAM *pEffectParam )
-{
-#ifdef _XBUG_140123_SPR
-	XBREAK( pEffectParam == NULL );	// 이 버전부터 이것은 널이 될 수 없다.
-#endif
-	pSpr->SetAdjustAxis( GetvAdjAxis() );		// 회전축을 보정함
-	pSpr->SetRotateZ( GetcnRot().fAngle );
-	pSpr->SetScale( GetcnScale().m_vScale );
-	pSpr->SetFlipHoriz( (GetcnEffect().dwDrawFlag & EFF_FLIP_HORIZ) ? TRUE : FALSE );
-	pSpr->SetFlipVert( (GetcnEffect().dwDrawFlag & EFF_FLIP_VERT) ? TRUE : FALSE );
-	pSpr->SetColor( pSprObj->GetColorR(), pSprObj->GetColorG(), pSprObj->GetColorB() );
-	// 이버전부터는 외부에서 주는대로만 찍는다.
-	pSpr->SetDrawMode( pEffectParam->drawMode );
-	pSpr->SetfAlpha( pEffectParam->fAlpha );	
-	pSpr->GetpSurface()->SetadjZ( pEffectParam->m_adjZ );
-
-}
+// void XLayerImage::SetDrawInfoToSpr( XSprObj *pSprObj, 
+// 																		const XEFFECT_PARAM& effParam,
+// 																		XE::xRenderParam* pOut )
+// {
+// 	XE::xRenderParam param;
+// 	param
+// 
+// 	pSpr->SetAdjustAxis( GetvAdjAxis() );		// 회전축을 보정함
+// 	pSpr->SetRotateZ( GetcnRot().fAngle );
+// 	pSpr->SetScale( GetcnScale().m_vScale );
+// 	pSpr->SetFlipHoriz( (GetcnEffect().dwDrawFlag & EFF_FLIP_HORIZ) ? TRUE : FALSE );
+// 	pSpr->SetFlipVert( (GetcnEffect().dwDrawFlag & EFF_FLIP_VERT) ? TRUE : FALSE );
+// 	pSpr->SetColor( pSprObj->GetColorR(), pSprObj->GetColorG(), pSprObj->GetColorB() );
+// 	// 이버전부터는 외부에서 주는대로만 찍는다.
+// 	pSpr->SetDrawMode( effParam.drawMode );
+// 	pSpr->SetfAlpha( effParam.fAlpha );
+// 	pSpr->GetpSurface()->SetadjZ( effParam.m_adjZ );
+// 
+// 
+// }
 
 
 void XLayerImage::Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam )
@@ -221,17 +222,31 @@ void XLayerImage::Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEF
 																	m );
 			// 델리게이트에서 드로우를 하지 않았다면 자체드로우를 함.
 			if( bDelegateDraw == FALSE ) {
-				SetDrawInfoToSpr( pSprObj, pSpr, &effParam /*pEffectParam*/ );
-				pSpr->Draw( vPos + vLocal, m );
+				XE::xRenderParam param;
+				param.m_vPos = vPos + vLocal;
+				param.m_vAdjAxis = GetvAdjAxis();
+				param.m_vRot.z = GetcnRot().fAngle;
+				param.m_vScale = GetcnScale().m_vScale;
+				param.m_vColor = pSprObj->Getv4Color();
+				param.m_vColor.a = effParam.fAlpha;
+				param.SetFlipHoriz( GetcnEffect().IsFlipHoriz() );
+				param.SetFlipVert( GetcnEffect().IsFlipVert() );
+				param.m_funcBlend = effParam.GetfuncBlend();
+				param.m_adjZ = effParam.m_adjZ;
+//				SetDrawInfoToSpr( pSprObj, pSpr, effParam, &paramRender );
+				if( pSpr->GetpSurface() )
+					pSpr->GetpSurface()->DrawByParam( m, param );
+// 				pSpr->Draw( vPos + vLocal, m );
 //				pSpr->Draw( x + lx, y + ly, m );
 			}
 			if( pDelegate )
-				bDelegateDraw = pDelegate->OnDelegateDrawImageLayerAfter( pSprObj,
-																																	 pSpr,
-																																	 this,
-																																	 &effParam, // pEffectParam, 
-																																	 vPos + vLocal,
-																																	 m );
+				bDelegateDraw 
+				= pDelegate->OnDelegateDrawImageLayerAfter( pSprObj,
+																										pSpr,
+																										this,
+																										&effParam, // pEffectParam, 
+																										vPos + vLocal,
+																										m );
 		}
 	}
 }

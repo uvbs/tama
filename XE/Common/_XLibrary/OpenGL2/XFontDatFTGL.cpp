@@ -2,7 +2,6 @@
 #ifdef _VER_OPENGL
 #include "XFontDatFTGL.h"
 #include "XFontObjFTGL.h"
-//#include "Mathematics.h"
 #include "etc/xMath.h"
 #include "XResMng.h"
 #include "XFramework/client/XApp.h"

@@ -90,8 +90,17 @@ void XEWndWorldImage::Draw( void )
 		XE::VEC2 vsLT = vsWinCenter + (-vwCamera * scaleBg);		// 그림이 찍혀야할 화면 좌표
 
 		m_psfcBg->SetScale( scaleBg );
+//		GRAPHICS->SetbEnableZBuff( true );
+		GRAPHICS->SetPriority( 1000 );
+// 		m_psfcBg->SetadjZ( -500.f );
+// 		m_psfcBg->SetfAlpha( 0.5f );
+		
 		m_psfcBg->Draw( vsLT );
+//		GRAPHICS->SetbEnableZBuff( false );
+		GRAPHICS->SetPriority( 0 );
 	}
+	GRAPHICS->SetPriority( 500 );
 	XEWndWorld::Draw();
+	GRAPHICS->SetPriority( 0 );
+	// ui는 priority 0에 찍힌다.
 }
-

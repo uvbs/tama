@@ -144,13 +144,11 @@ void XEBaseWorldObj::Draw( const XE::VEC2& vPos, float scale/*=1.f*/, float alph
 		MATRIX m;
 		MatrixIdentity( mWorld );
 		float z = GetvwPos().y;
-//		MatrixTranslation( m, vPos.x, vPos.y, z/* / 1000.f*/ );
+//	MatrixTranslation( m, vPos.x, vPos.y, z/* / 1000.f*/ );
 		MatrixTranslation( m, vPos.x, vPos.y, z);
 		MatrixMultiply( mWorld, mWorld, m );
-// 		MatrixScaling( m, m_vScale.x, m_vScale.y, m_vScale.z );
-// 		MatrixMultiply( mWorld, mWorld, m );
 		m_pSprObj->Draw( 0, 0, mWorld );
-// 		m_pSprObj->Draw( vPos, mWorld );
+// 	m_pSprObj->Draw( vPos, mWorld );
 	}
 	if( m_pSurface )
 	{

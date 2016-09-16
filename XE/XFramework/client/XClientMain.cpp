@@ -11,7 +11,6 @@
 // Graphics include
 #ifdef _VER_OPENGL
 	#include "OpenGL2/XGraphicsOpenGL.h"
-	#include "opengl2/XRenderCmd.h"
 #else 
 	#include "_DirectX/XGraphicsD3DTool.h"
 #endif
@@ -510,10 +509,10 @@ void XClientMain::Draw( void )
 		m_pGame->Draw();
 	}
 	//
-	{
-		XPROF_OBJ( "render_batch" );
-		XRenderCmdMng::sGet()->RenderBatch();	// 레이어방식으로 해서 레이어별로 가지고 있어야 할듯.
-	}
+// 	{
+// 		XPROF_OBJ( "render_batch" );
+// 		XRenderCmdMng::sGet()->RenderBatch();	// 레이어방식으로 해서 레이어별로 가지고 있어야 할듯.
+// 	}
 	//
 	{
 		XPROF_OBJ( "draw dbginfo" );

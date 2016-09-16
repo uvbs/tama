@@ -51,7 +51,8 @@ XE_NAMESPACE_END;
 
 class XSceneBattle : public XSceneBase, public XParticleDelegate
 {
-//	static int s_mulPlay = 1;			// 플레이 배속
+	friend class XSceneProcessBattle;
+	friend class XSceneProcessReady;
 public:
 	static bool sIsHaveBattleStart() {
 		return s_BattleStart.IsValid();
@@ -198,8 +199,7 @@ private:
 	void Release() override;
 	void CreateHeroesFace();
 	int OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 );
-	friend class XSceneProcessBattle;
-friend class XSceneProcessReady;
+	XWnd* GetpLayerUI();
 };
 
 extern XSceneBattle *SCENE_BATTLE;

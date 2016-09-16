@@ -15,7 +15,6 @@
 
 #include "etc/xGraphics.h"
 #include "XSurfaceOpenGL.h"
-//#include "Mathematics.h"
 #include "etc/xMath.h"
 
 #define CHECK_GL_ERROR() \
@@ -63,7 +62,7 @@ public:
 	GET_ACCESSOR_CONST( GLint, glProgram );
 	//
 	//    BOOL LoadShader( LPCTSTR szVertexShader, LPCTSTR szFragShader );
-	BOOL LoadShaderFromString( const GLchar *cVertShader, const GLchar *cFragShader, const char *cszTag );
+	BOOL LoadShaderFromStr( const GLchar *cVertShader, const GLchar *cFragShader, const char *cszTag );
 	//    BOOL CompileShader( GLuint *shader, GLenum type, NSString *pathFile );
 	BOOL CompileShaderFromString( GLuint *shader, GLenum type, const GLchar *cShader, const char *cszTag );
 	BOOL LinkShader( GLuint prog, const char *cszTag );
@@ -209,8 +208,9 @@ public:
 private:
 	GLuint m_defaultFrameBuffer, m_defaultRenderBuffer;
 	WORD *m_pLockBackBuffer;
-    XShader *m_pBaseShader;     // 기본 쉐이더
-    XShader *m_pTextureShader;    // 컬러없이 텍스쳐만 있는 쉐이더
+    XShader *m_pShaderColTex;     // 기본 쉐이더
+		XShader *m_pShaderColTexAlphaTest = nullptr;     // 알파테스트 쉐이더
+		XShader *m_pTextureShader;    // 컬러없이 텍스쳐만 있는 쉐이더
     XShader *m_pGrayShader = nullptr;    // 그레이스케일 쉐이더
     XShader *m_pColorShader;    // 컬러만 있는 쉐이더
     XShader *m_pBlurShaderH;
@@ -224,13 +224,14 @@ public:
 	XGraphicsOpenGL( int nResolutionWidth, int nResolutionHeight, xPixelFormat pixelFormat );
 	virtual ~XGraphicsOpenGL() { Destroy(); }
     //
-    GET_ACCESSOR( XShader*, pBaseShader );
+	GET_ACCESSOR( XShader*, pShaderColTex );
+	GET_ACCESSOR( XShader*, pShaderColTexAlphaTest );
 	GET_ACCESSOR( XShader*, pTextureShader );
-    GET_ACCESSOR( XShader*, pColorShader );
+	GET_ACCESSOR( XShader*, pColorShader );
 	GET_ACCESSOR( XShader*, pGrayShader );
-    GET_ACCESSOR( XShader*, pOneColorShader );
-    GET_ACCESSOR( XShader*, pBlurShaderH );
-    GET_ACCESSOR( XShader*, pBlurShaderV );
+	GET_ACCESSOR( XShader*, pOneColorShader );
+	GET_ACCESSOR( XShader*, pBlurShaderH );
+	GET_ACCESSOR( XShader*, pBlurShaderV );
 	// wSrc,hSrc크기의 pSrc이미지로 gl용 텍스쳐를 만들어 아이디를 리턴한다. pOutAligned에는 2^로 정렬된 크기를 받는다.
 	GLuint CreateTextureGL( void* const pImgSrc
 														, int wSrc, int hSrc
@@ -299,7 +300,8 @@ public:
     void DrawTexture( GLint idTexture, float x, float y, float w, float h, BOOL bBlendAdd=FALSE );
 	// craete surface
 //	virtual XSurface* CreateSurface( BOOL bHighReso );
-	virtual XSurface* CreateSurface();
+	XSurface* CreateSurface() override;
+	XSurface* CreateSurface2() override;
 	// 이미지의 일부분만 서피스로 만드는 버전
 	virtual BOOL LoadImg( LPCTSTR szFilename, int *pWidth, int *pHeight, DWORD **ppImage );
 	virtual XSurface*	CreateSurface( BOOL bHighReso, int srcx, int srcy, int srcw, int srch, float dstw, float dsth, float adjx, float adjy, DWORD *pSrcImg, BOOL bSrcKeep );

@@ -56,6 +56,25 @@ inline xDM_TYPE ConvertBlendFuncDMTypeDmType( xtBlendFunc func ) {
 	}
 	return xDM_NORMAL;
 }
+
+inline xtBlendFunc ConvertDMTypeToBlendFunc( xDM_TYPE drawMode ) {
+	switch( drawMode ) {
+	case xDM_NORMAL:
+	case xDM_MULTIPLY:		
+		return XE::xBF_MULTIPLY;
+	case xDM_SCREEN:		
+		return XE::xBF_ADD;
+	case xDM_SUBTRACT:		
+		return XE::xBF_SUBTRACT;
+	case xDM_GRAY:		
+		return XE::xBF_GRAY;
+		break;
+	default:
+		XBREAK(1);
+		break;
+	}
+	return xBF_NONE;
+}
 }; // namespace XE
 
 

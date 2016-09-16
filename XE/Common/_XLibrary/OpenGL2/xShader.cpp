@@ -10,10 +10,14 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-const char *xvShader_Color_Texture =
+const char *xvShaderColTex =
 #include "OpenGL2/Shader/vshader_color_texture.h"
-const char *xfShader_Color_Texture =
+
+const char *xfShaderColTex =
 #include "OpenGL2/Shader/fshader_color_texture.h"
+
+const char *xfShaderColTexAlphaTest =
+#include "OpenGL2/Shader/fshader_col_tex_alphatest.h"
 
 const char *xfShader_Gray =
 #include "OpenGL2/Shader/fshader_gray.h"

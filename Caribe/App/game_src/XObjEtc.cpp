@@ -556,7 +556,16 @@ void XObjLoop::Draw( const XE::VEC2& vPos, float scale, float alpha )
 #if defined(_CHEAT) && defined(WIN32)
 	if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_SKILL_SFX) )
 #endif // defined(_CHEAT) && defined(WIN32)
+	{
+		// 이펙트류는 z버퍼와 알파테스트를 사용하지 않는다.
+// 		auto bAlphaTest = GRAPHICS->GetbAlphaTest();
+// 		auto bZBuffer = GRAPHICS->GetbEnableZBuff();
+//  		GRAPHICS->SetbAlphaTest( false );
+//  		GRAPHICS->SetbEnableZBuff( false );
 		XEBaseWorldObj::Draw( vPos, scale, alpha );
+//  		GRAPHICS->SetbEnableZBuff( bZBuffer );
+//  		GRAPHICS->SetbAlphaTest( bAlphaTest );
+	}
 }
 ////////////////////////////////////////////////////////////////
 XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp, 

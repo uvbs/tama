@@ -1,8 +1,9 @@
 ﻿#pragma once
 #include "XOpenGL.h"
 
-extern const GLchar *xvShader_Color_Texture;
-extern const GLchar *xfShader_Color_Texture;
+extern const GLchar *xvShaderColTex;
+extern const GLchar *xfShaderColTex;
+extern const GLchar *xfShaderColTexAlphaTest;
 extern const GLchar *xvShader_Texture;
 extern const GLchar *xfShader_Texture;
 extern const GLchar *xvShader_Color;

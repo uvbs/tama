@@ -11,6 +11,7 @@
 #include "XGraphicsOpenGL.h"
 #include "XOpenGL.h"
 #include "XSurfaceOpenGL.h"
+#include "XSurfaceOpenGL2.h"
 #include "XImage.h"
 #include "etc/xMath.h"
 #include "xShader.h"
@@ -27,7 +28,7 @@ static char THIS_FILE[] = __FILE__;
 //#define BTRACE(F, ...)					XTRACE( _T(F), ##__VA_ARGS__ )
 #define BTRACE(F, ...)					(0)
 
-XGraphicsOpenGL* XGraphicsOpenGL::s_pGraphicsOpenGL = NULL;
+XGraphicsOpenGL* XGraphicsOpenGL::s_pGraphicsOpenGL = nullptr;
 int XGraphicsOpenGL::s_numCallBindTexture = 0;
 #ifdef _XBLUR
 GLuint XGraphicsOpenGL::s_glBlurFBO = 0;
@@ -109,7 +110,7 @@ void XE::SetProjection(float wLogicalResolution, float hLogicalResolution)
 }
 
 
-BOOL XShader::LoadShaderFromString( const GLchar *cVertShader
+BOOL XShader::LoadShaderFromStr( const GLchar *cVertShader
 																	, const GLchar *cFragShader
 																	, const char *cszTag )
 {
@@ -191,7 +192,7 @@ BOOL XShader::CompileShaderFromString( GLuint *shader
 	
 	GLint status;
 	*shader = glCreateShader( type );
-	glShaderSource( *shader, 1, &cShader, NULL );
+	glShaderSource( *shader, 1, &cShader, nullptr );
 	glCompileShader( *shader );
 	GLint logLength;
 	glGetShaderiv( *shader, GL_INFO_LOG_LENGTH, &logLength );
@@ -299,7 +300,7 @@ XRenderTargetGLImpl::XRenderTargetGLImpl( float _w, float _h )
 		SetError( XE::xSUCCESS );
 }
 
-void XRenderTargetGLImpl::BindRenderTarget( void )
+void XRenderTargetGLImpl::BindRenderTarget()
 {
 	
 	glBindFramebuffer( GL_FRAMEBUFFER, m_idFBO );
@@ -311,7 +312,7 @@ void XRenderTargetGLImpl::BindRenderTarget( void )
 	
 }
 
-void XRenderTargetGLImpl::SetTexture( void )
+void XRenderTargetGLImpl::SetTexture()
 {
 	XGraphicsOpenGL::sBindTexture( m_idTexture );
 }
@@ -332,9 +333,11 @@ void XRenderTarget::Destroy()
 
 
 //===============================================================================
-XShader* XGraphicsOpenGL::m_pCurrShader = NULL;
+XShader* XGraphicsOpenGL::m_pCurrShader = nullptr;
 
-XGraphicsOpenGL::XGraphicsOpenGL( int nResolutionWidth, int nResolutionHeight, xPixelFormat pixelFormat )
+XGraphicsOpenGL::XGraphicsOpenGL( int nResolutionWidth, 
+																	int nResolutionHeight, 
+																	xPixelFormat pixelFormat )
 	: XGraphics( nResolutionWidth, nResolutionHeight, pixelFormat ) 
 {
 	Init();
@@ -342,32 +345,32 @@ XGraphicsOpenGL::XGraphicsOpenGL( int nResolutionWidth, int nResolutionHeight, x
 }
 
 
-void XGraphicsOpenGL::Init( void )
+void XGraphicsOpenGL::Init()
 {
-	XGraphicsOpenGL::s_pGraphicsOpenGL = NULL;
-	m_pLockBackBuffer = NULL;
-    m_pBaseShader = NULL;
-	m_pTextureShader = NULL;
-    m_pColorShader = NULL;
-    m_pBlurShaderH = NULL;
-    m_pBlurShaderV = NULL;
-	m_pOneColorShader = NULL;
-    m_defaultFrameBuffer = 0;
-    m_defaultRenderBuffer = 0;
-	
-    XE::SetProjection( GetLogicalScreenSize().w, GetLogicalScreenSize().h );
+	XGraphicsOpenGL::s_pGraphicsOpenGL = nullptr;
+	m_pLockBackBuffer = nullptr;
+	m_pShaderColTex = nullptr;
+	m_pShaderColTexAlphaTest = nullptr;
+	m_pTextureShader = nullptr;
+	m_pColorShader = nullptr;
+	m_pBlurShaderH = nullptr;
+	m_pBlurShaderV = nullptr;
+	m_pOneColorShader = nullptr;
+	m_defaultFrameBuffer = 0;
+	m_defaultRenderBuffer = 0;
+
+	XE::SetProjection( GetLogicalScreenSize().w, GetLogicalScreenSize().h );
 
 	// 가우시안 값 테이블 생성
-/*	XE::build_mask( XE::x_tblGauss, XNUM_ARRAY( XE::x_tblGauss), &XE::x_lenGaussTable, 3.5 );
+	/*	XE::build_mask( XE::x_tblGauss, XNUM_ARRAY( XE::x_tblGauss), &XE::x_lenGaussTable, 3.5 );
 	XE::build_mask( XE::x_tblGauss, XNUM_ARRAY( XE::x_tblGauss), &XE::x_lenGaussTable, 3.0 );
 	XE::build_mask( XE::x_tblGauss, XNUM_ARRAY( XE::x_tblGauss), &XE::x_lenGaussTable, 2.5 );
 	XE::build_mask( XE::x_tblGauss, XNUM_ARRAY( XE::x_tblGauss), &XE::x_lenGaussTable, 2.0 );
 	XE::build_mask( XE::x_tblGauss, XNUM_ARRAY( XE::x_tblGauss), &XE::x_lenGaussTable, 1.5 );
 	XE::build_mask( XE::x_tblGauss, XNUM_ARRAY( XE::x_tblGauss), &XE::x_lenGaussTable, 1.0 ); */
-	
 }
 
-void XGraphicsOpenGL::RestoreDevice( void )
+void XGraphicsOpenGL::RestoreDevice()
 {
 	
 	XTRACE("restore device resource");
@@ -396,62 +399,68 @@ void XGraphicsOpenGL::RestoreDevice( void )
  	CHECK_GL_ERROR();
 
 	// 세이더 로딩
-	XTRACE("base shader loading....");
-	m_pBaseShader->LoadShaderFromString( xvShader_Color_Texture, xfShader_Color_Texture, "base_shader" );
+	XTRACE("col tex shader loading....");
+	m_pShaderColTex->LoadShaderFromStr( xvShaderColTex,
+																			xfShaderColTex,
+																			"base_shader" );
+	XTRACE( "col tex alpha test shader loading...." );
+	m_pShaderColTexAlphaTest->LoadShaderFromStr( xvShaderColTex,
+																							 xfShaderColTexAlphaTest,
+																							 "alpha_test_shader" );
 	XTRACE("texture shader loading....");
-	m_pTextureShader->LoadShaderFromString( xvShader_Texture, xfShader_Texture, "texture_shader" );
+	m_pTextureShader->LoadShaderFromStr( xvShader_Texture, xfShader_Texture, "texture_shader" );
 	XTRACE("gray shader loading....");
-	m_pGrayShader->LoadShaderFromString( xvShader_Color_Texture, xfShader_Gray, "gray_shader" );
+	m_pGrayShader->LoadShaderFromStr( xvShaderColTex, xfShader_Gray, "gray_shader" );
 	XTRACE("color shader loading....");
-	m_pColorShader->LoadShaderFromString( xvShader_Color, xfShader_Color, "color_shader");
+	m_pColorShader->LoadShaderFromStr( xvShader_Color, xfShader_Color, "color_shader");
 	XTRACE("onecolor shader loading....");
-	m_pOneColorShader->LoadShaderFromString( xvShader_OneColor, xfShader_OneColor, "one_color shader" );
+	m_pOneColorShader->LoadShaderFromStr( xvShader_OneColor, xfShader_OneColor, "one_color shader" );
 	XTRACE("blurH shader loading....");
-	m_pBlurShaderH->LoadShaderFromString( xvShader_Color_Texture, xfShader_blurH, "blurH_shader" );
+	m_pBlurShaderH->LoadShaderFromStr( xvShaderColTex, xfShader_blurH, "blurH_shader" );
 	XTRACE("blurV shader loading....");
-	m_pBlurShaderV->LoadShaderFromString( xvShader_Color_Texture, xfShader_blurV, "blurV_shader" );
+	m_pBlurShaderV->LoadShaderFromStr( xvShaderColTex, xfShader_blurV, "blurV_shader" );
 	// 현재 쉐이더를 지정
-	XGraphicsOpenGL::sSetShader( m_pBaseShader );
+	XGraphicsOpenGL::sSetShader( m_pShaderColTex );
 	
 }
 
-void XGraphicsOpenGL::Destroy( void )
+void XGraphicsOpenGL::Destroy()
 {
-	
-	SAFE_DELETE( m_pBaseShader );
+	SAFE_DELETE( m_pShaderColTex );
+	SAFE_DELETE( m_pShaderColTexAlphaTest );
 	SAFE_DELETE( m_pGrayShader );
 	SAFE_DELETE( m_pTextureShader );
-    SAFE_DELETE( m_pColorShader );
+	SAFE_DELETE( m_pColorShader );
 	SAFE_DELETE( m_pOneColorShader );
-    SAFE_DELETE( m_pBlurShaderH );
-    SAFE_DELETE( m_pBlurShaderV );
+	SAFE_DELETE( m_pBlurShaderH );
+	SAFE_DELETE( m_pBlurShaderV );
 #ifdef _XBLUR
-    glDeleteFramebuffers(1, &s_glBlurFBO );
-    glDeleteRenderbuffers(1, &s_glBlurRBO );
-    glDeleteTextures(1, &s_glBlurTexture );
-    glDeleteFramebuffers(1, &s_glBlurFBO2 );
-    glDeleteRenderbuffers(1, &s_glBlurRBO2 );
-    glDeleteTextures(1, &s_glBlurTexture2 );
+	glDeleteFramebuffers( 1, &s_glBlurFBO );
+	glDeleteRenderbuffers( 1, &s_glBlurRBO );
+	glDeleteTextures( 1, &s_glBlurTexture );
+	glDeleteFramebuffers( 1, &s_glBlurFBO2 );
+	glDeleteRenderbuffers( 1, &s_glBlurRBO2 );
+	glDeleteTextures( 1, &s_glBlurTexture2 );
 #endif // _XBLUR
 }
 
-xRESULT XGraphicsOpenGL::Create( void )
+xRESULT XGraphicsOpenGL::Create()
 {
-	
 	XGraphicsOpenGL::s_pGraphicsOpenGL = this;
-    //
-    m_pBaseShader = new XShader;
+	//
+	m_pShaderColTex = new XShader;
+	m_pShaderColTexAlphaTest = new XShader;
 	m_pGrayShader = new XShader;
 	m_pTextureShader = new XShader;
-    m_pColorShader = new XShader;
-    m_pOneColorShader = new XShader;
-    m_pBlurShaderH = new XShader;
-    m_pBlurShaderV = new XShader;
-    
+	m_pColorShader = new XShader;
+	m_pOneColorShader = new XShader;
+	m_pBlurShaderH = new XShader;
+	m_pBlurShaderV = new XShader;
+
 	return xSUCCESS;
 }
 
-void XGraphicsOpenGL::RestoreFrameBuffer( void )
+void XGraphicsOpenGL::RestoreFrameBuffer()
 {
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFrameBuffer);
@@ -509,7 +518,7 @@ void	XGraphicsOpenGL::ScreenToSurface( int x, int y, int width, int height, XSur
 void XGraphicsOpenGL::SetDrawTarget( XSurface *pSurface )
 {
 }
-void XGraphicsOpenGL::ReleaseDrawTarget( void )
+void XGraphicsOpenGL::ReleaseDrawTarget()
 {
 }
 
@@ -541,10 +550,20 @@ XSurface*	XGraphicsOpenGL::CreateSurface( BOOL bHighReso
 	return pSurface;
 }
 
+/**
+ @brief 구버전
+*/
 XSurface* XGraphicsOpenGL::CreateSurface()
 {
-	
 	return new XSurfaceOpenGL();
+}
+
+/**
+ @brief 배치렌더 버전
+*/
+XSurface* XGraphicsOpenGL::CreateSurface2()
+{
+	return new XSurfaceOpenGL2();
 }
 
 BOOL XGraphicsOpenGL::LoadImg( LPCTSTR szFilename, int *pWidth, int *pHeight, DWORD **ppImage )
@@ -586,7 +605,7 @@ void XGraphicsOpenGL::SetViewport( int left, int top, int right, int bottom )
 	
 	//    glViewport( 100, 100, 200, 200 );	// EAGLView에서 프레임버퍼 바인드할때 하도록 바꿔라
 }
-void XGraphicsOpenGL::RestoreViewport( void )
+void XGraphicsOpenGL::RestoreViewport()
 {
     SetViewport( m_ptViewportStackLT.x, m_ptViewportStackLT.y, m_ptViewportStackRB.x, m_ptViewportStackRB.y );
 }
@@ -1080,7 +1099,7 @@ void XGraphicsOpenGL::DrawTexture( GLint idTexture,
 	MatrixMultiply( mMVP, mMVP, XE::x_mViewProjection );
 	// 8픽셀 크기로 블러가 되게 하려고 8픽셀 여유를 뒀다.
 	// 현재 쉐이더를 얻어온다
-	GRAPHICS_GL->sSetShader( GRAPHICS_GL->GetpBaseShader() );
+	GRAPHICS_GL->sSetShader( GRAPHICS_GL->GetpShaderColTex() );
 	XShader *pShader = XGraphicsOpenGL::sGetShader();
 	pShader->SetUniformMVP( mMVP );
 	pShader->SetUniformColor( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -1127,7 +1146,7 @@ void XGraphicsOpenGL::DrawTexture( GLint idTexture,
 //////////////////////////////
 #pragma mark create manager obj
 /*
-CSpriteManagerGL* XGraphicsOpenGL::CreateSprMngObj( void )
+CSpriteManagerGL* XGraphicsOpenGL::CreateSprMngObj()
 {
 	CSpriteManagerGL *pSprMng;// = new CSpriteManagerGL;
 	return pSprMng;
@@ -1163,7 +1182,7 @@ void*	XGraphicsOpenGL::LockBackBufferPtr( int *pWidth, BOOL bReadOnly )
 	return (void*)m_pLockBackBuffer;
 }
 
-void XGraphicsOpenGL::UnlockBackBufferPtr( void )
+void XGraphicsOpenGL::UnlockBackBufferPtr()
 {
 	
 	SAFE_DELETE_ARRAY( m_pLockBackBuffer );

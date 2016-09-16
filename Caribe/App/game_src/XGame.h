@@ -216,17 +216,18 @@ public:
 	void ProcessConnection();
 	void DoReconnectForExistUser( float secDelay );
 	//
-	virtual int Process( float dt );
-	virtual void Draw();
+	int Process( float dt ) override;
+	void Draw() override;
 	// handler
-	virtual void OnLButtonDown( float x, float y );
-	virtual void OnMouseMove( float x, float y );
-	virtual void OnLButtonUp( float x, float y );
-	virtual void OnRButtonDown( float x, float y );
-	virtual void OnRButtonUp( float x, float y );
-	virtual void OnCheatMode();
-	virtual void OnEndEditBox( int idEditField, const char *cStr );
-	virtual BOOL RestoreDevice();
+	void DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat* pFontDat ) override;
+	void OnLButtonDown( float x, float y ) override;
+	void OnMouseMove( float x, float y ) override;
+	void OnLButtonUp( float x, float y ) override;
+	void OnRButtonDown( float x, float y ) override;
+	void OnRButtonUp( float x, float y ) override;
+	void OnCheatMode();
+	void OnEndEditBox( int idEditField, const char *cStr );
+	BOOL RestoreDevice();
 	//
 	int OnSoundDown( XWnd *pWnd, DWORD, DWORD );
 	int OnExitApp( XWnd *pWnd, DWORD, DWORD );

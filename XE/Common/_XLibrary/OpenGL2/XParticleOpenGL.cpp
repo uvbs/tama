@@ -25,7 +25,7 @@ XParticleMngGL::XParticleMngGL()
 {
 	Init();
 	m_pShader = new XShader;
-	m_pShader->LoadShaderFromString( xvShader_PointSprite, xfShader_PointSprite, "point_spr_shader" );
+	m_pShader->LoadShaderFromStr( xvShader_PointSprite, xfShader_PointSprite, "point_spr_shader" );
 #ifdef _XVAO
 	glGenVertexArraysOES(1, &m_glArray );
 #endif
@@ -44,7 +44,7 @@ void XParticleMngGL::RestoreDevice( void )
 {
 	XBREAK( m_pShader == NULL );
 	if( m_pShader ) {
-		m_pShader->LoadShaderFromString( xvShader_PointSprite, xfShader_PointSprite, "point_spr_shader" );
+		m_pShader->LoadShaderFromStr( xvShader_PointSprite, xfShader_PointSprite, "point_spr_shader" );
 	}
 #ifdef _XVAO
 	glGenVertexArraysOES( 1, &m_glArray );

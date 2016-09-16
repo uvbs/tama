@@ -9,9 +9,6 @@
 #ifdef _SPR_USE_LUA
 #include "XLua.h"
 #endif
-#ifdef _VER_OPENGL
-//#include "Mathematics.h"
-#endif
 
 class XSprObj;
 class XBaseKey;
@@ -230,6 +227,9 @@ public:
 	GET_ACCESSOR_CONST( float, ColorR );
 	GET_ACCESSOR_CONST( float, ColorG );
 	GET_ACCESSOR_CONST( float, ColorB );
+	XE::VEC4 Getv4Color() const {
+		return XE::VEC4( m_ColorR, m_ColorG, m_ColorB, m_fAlpha );
+	}
 //	LPCTSTR GetszFilename() { return m_pSprDat->GetszFilename(); }
 	LPCTSTR GetSprFilename();
 	inline LPCTSTR GetszFilename() {

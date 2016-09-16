@@ -825,11 +825,6 @@ void XGame::Draw()
 // 		PUT_STRING_STROKE( vMouse.x + 100.f, vMouse.y, XCOLOR_YELLOW, strt.c_str() );
 	}
 #endif // WIN32
-	if( XAPP->m_idxViewAtlas >= 0 ) {
-		auto idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
-		if( idTex )
-			GRAPHICS_GL->DrawTexture( idTex, 0, 0, 356.f, 356.f, FALSE );
-	}
 #endif // _CHEAT
 // 	if( m_psoTest ) {
 // 		auto vMouse = INPUTMNG->GetMousePos();
@@ -837,6 +832,18 @@ void XGame::Draw()
 //  		m_psoTest->Draw( XE::GetGameSize() * 0.75f );
 // 	}
 } // void XGame::Draw()
+
+void XGame::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat* pFontDat )
+{
+	XEContent::DrawDebugInfo( x, y, col, pFontDat );
+#ifdef _CHEAT
+	if( XAPP->m_idxViewAtlas >= 0 ) {
+		auto idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
+		if( idTex )
+			GRAPHICS_GL->DrawTexture( idTex, 0, 0, 356.f, 356.f, FALSE );
+	}
+#endif // _CHEAT
+}
 
 void XGame::OnLButtonDown( float x, float y )
 {

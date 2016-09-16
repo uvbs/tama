@@ -48,6 +48,32 @@ struct xSurfaceInfo {
 	~xSurfaceInfo() {	}
 };
 
+struct xRenderParam {
+	XE::VEC3 m_vPos;
+	XE::VEC3 m_vAdjAxis;
+	XE::VEC3 m_vRot;
+	XE::VEC3 m_vScale;
+	XE::VEC4 m_vColor;
+	DWORD m_dwDrawFlag = 0;
+	xtBlendFunc m_funcBlend;
+//	bool m_bAlphaTest;
+// 	bool m_bZBuff;
+	float m_adjZ;
+// 	int m_Priority;
+	xRenderParam()
+		: m_vScale( 1.f, 1.f, 1.f )
+		, m_vColor( 1.f, 1.f, 1.f, 1.f )
+		, m_dwDrawFlag( 0 )
+		, m_funcBlend( xBF_MULTIPLY )
+		, m_adjZ( 0 ) 
+//		, m_bAlphaTest( false )
+// 		, m_bZBuff( false )
+// 		, m_Priority( 0 )
+		{	}
+	void GetmTransform( MATRIX* pOut ) const;
+	void SetFlipHoriz( bool bFlag );
+	void SetFlipVert( bool bFlag );
+};
 //
 XE_NAMESPACE_END; // XE
 
@@ -141,7 +167,6 @@ private:
 	DWORD m_dwDrawFlag;		// EFF_****
 	xDM_TYPE m_DrawMode;
 	XE::xtBlendFunc m__funcBlend = XE::xBF_MULTIPLY;	// 장차 m_DrawMode는 blendfunc으로 바꾼다.
-
 	// 만약 외부에서 사용하는 SetSrcImg를 만들거라면 고해상도플래그도 받고, 버텍스버퍼/텍스쳐서피스까지 교체하는 함수를 만들어야 한다. 근데 가급적이면 그런식으로 사용하지 말고 필요하다면 걍 XSurface를 새로 생성하는게 나을듯
 	// 장차 private으로 들어가야함.
 private:
@@ -156,7 +181,6 @@ private:
 		return (__pSrcImg != nullptr);
 	}
 //protected:
-//	float ConvertToSurfaceSize( int num ) { return num * __fResoScale; }
 	// 외부에서 쓰려면 ChangeAdjust를 쓸것
 private:
 	inline void SetAdjust( float adjx, float adjy ) {
@@ -293,9 +317,9 @@ public:
 	void SetAdjustAxisCenter( void ) {
 		SetAdjustAxis( GetSize() / 2.f );
 	}
-	GET_ACCESSOR( float, fAdjustAxisX );
-	GET_ACCESSOR( float, fAdjustAxisY );
-	XE::VEC2 GetAdjustAxis() {
+	GET_ACCESSOR_CONST( float, fAdjustAxisX );
+	GET_ACCESSOR_CONST( float, fAdjustAxisY );
+	XE::VEC2 GetAdjustAxis() const {
 		return XE::VEC2( m_fAdjustAxisX, m_fAdjustAxisY );
 	}
 	void SetColorKey( BOOL useFlag ) { m_bColorKey = useFlag; }
@@ -317,18 +341,21 @@ public:
 	void SetRotateY( float dAng ) { m_fRotY = dAng; }
 	void SetRotateZ( float dAng ) { m_fRotZ = dAng; }
 	void SetRotate( float dX, float dY, float dZ ) { SetRotateX(dX); SetRotateY(dY); SetRotateZ(dZ); }
-	GET_ACCESSOR( float, fRotX );
-	GET_ACCESSOR( float, fRotY );
-	GET_ACCESSOR( float, fRotZ );
+	inline XE::VEC3 GetvRotate() const {
+		return XE::VEC3( m_fRotX, m_fRotY, m_fRotZ );
+	}
+	GET_ACCESSOR_CONST( float, fRotX );
+	GET_ACCESSOR_CONST( float, fRotY );
+	GET_ACCESSOR_CONST( float, fRotZ );
 	GET_ACCESSOR_CONST( float, fScaleX );
 	GET_ACCESSOR_CONST( float, fScaleY );
 	GET_ACCESSOR_CONST( xDM_TYPE, DrawMode );
 	void SetDrawMode( xDM_TYPE drawMode );
-	void SetBlendFunc( XE::xtBlendFunc blendFunc ) {
+	inline void SetBlendFunc( XE::xtBlendFunc blendFunc ) {
 		m__funcBlend = blendFunc;
 		m_DrawMode = XE::ConvertBlendFuncDMTypeDmType( blendFunc );
 	}
-	void SetColor( float r, float g, float b ) {
+	inline void SetColor( float r, float g, float b ) {
 		m_ColorR = r;
 		m_ColorG = g;
 		m_ColorB = b;
@@ -337,12 +364,12 @@ public:
 	GET_ACCESSOR_CONST( float, ColorG );
 	GET_ACCESSOR_CONST( float, ColorB );
 	// 주의: alpha값은 넣지 않음.
-	void SetColor( DWORD rgb ) {
+	inline void SetColor( DWORD rgb ) {
 		m_ColorR = XCOLOR_RGB_R(rgb) / 255.f;
 		m_ColorG = XCOLOR_RGB_G(rgb) / 255.f;
 		m_ColorB = XCOLOR_RGB_B(rgb) / 255.f;
 	}
-	XE::VEC4 Getv4Color() const {
+	inline XE::VEC4 Getv4Color() const {
 		return XE::VEC4( m_ColorR, m_ColorG, m_ColorB, m_fAlpha );
 	}
 	inline void SetFlipHoriz( BOOL bFlag ) { 
@@ -365,18 +392,21 @@ public:
 			SetRotateX(0);
 		}
 	}
+protected:
+	GET_ACCESSOR_CONST( DWORD, dwDrawFlag );
+public:
 	inline void SetFlipHoriz( bool bFlag ) {
 		SetFlipHoriz( xboolToBOOL(bFlag) );
 	}
 	inline void SetFlipVert( bool bFlag ) {
 		SetFlipVert( xboolToBOOL(bFlag) );
 	}
-	DWORD GetPixel( const XE::VEC2& vPos, BYTE *pa = NULL, BYTE *pr = NULL, BYTE *pg = NULL, BYTE *pb = NULL  ) {	
+	inline DWORD GetPixel( const XE::VEC2& vPos, BYTE *pa = NULL, BYTE *pr = NULL, BYTE *pg = NULL, BYTE *pb = NULL  ) {
 		return GetPixel( vPos.x, vPos.y, pa, pr, pg, pb ); 	
 	}
 	DWORD GetPixel( float lx, float ly, BYTE *pa = NULL, BYTE *pr = NULL, BYTE *pg = NULL, BYTE *pb = NULL  );
 	BYTE GetMask( float lx, float ly );
-	BYTE GetMask( const XE::VEC2& vLocal ) {
+	inline BYTE GetMask( const XE::VEC2& vLocal ) {
 		return GetMask( vLocal.x, vLocal.y );
 	}
 
@@ -466,6 +496,7 @@ public:
 	/**
 	 @brief 서피스를 x.y를 좌상귀로 하는 지점에 그린다.
 	*/
+	virtual void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const = 0;
 	virtual void Draw( float x, float y ) = 0; //{ XBREAKF(1, "구현되지않음"); }
 	virtual void Draw( float x, float y, const MATRIX &mParent ) = 0;
 	inline void Draw( const XE::VEC2& vPos, const MATRIX &mParent ) {
@@ -488,7 +519,7 @@ public:
 	virtual bool IsEmpty() = 0;
 	// lua
 	void LuaDraw( float x, float y ) { Draw( x, y ); }
-	void GetMatrix( const XE::VEC2& vPos, MATRIX* pOut );
+	void GetMatrix( const XE::VEC2& vPos, MATRIX* pOut ) const;
 }; // XSurface
 
 

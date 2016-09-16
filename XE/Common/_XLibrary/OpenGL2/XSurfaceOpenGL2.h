@@ -12,7 +12,18 @@
 #include "etc/XSurface.h"
 #include "etc/xMath.h"
 
-class XSurfaceOpenGL : public XSurface {
+XE_NAMESPACE_START( XE )
+//
+struct xVertex {
+	Vec3 pos;//, y;
+	Vec2 uv;//u, tv;
+	Vec4 rgba;// r,g,b,a;
+};
+//
+XE_NAMESPACE_END; // XE
+
+
+class XSurfaceOpenGL2 : public XSurface {
 private:
 	GLuint	m_glTexture;
 	GLint	m_format;
@@ -20,17 +31,16 @@ private:
 #ifdef _XVAO
 	GLuint  m_idVertexArray;
 #endif
-	GLuint  m_glVertexBuffer;
-	GLuint	m_glIndexBuffer;
-	//	int m_sizeByte = 0;			// vram에 로딩된 텍스쳐의 크기
-
-	::xRESULT CreateVertexBuffer( float surfaceW, float surfaceH, const float _adjx, const float _adjy, int memw, int memh, int alignW, int alignH );
+// 	GLuint  m_glVertexBuffer;
+// 	GLuint	m_glIndexBuffer;
+	static void sSetglBlendFunc( XE::xtBlendFunc funcBlend, GLenum *pOutsfactor, GLenum *pOutdfactor );
+	XE::xVertex m_Vertices[4];
+	bool CreateVertexBuffer( float surfaceW, float surfaceH, const float _adjx, const float _adjy, int memw, int memh, int alignW, int alignH );
 	inline bool CreateVertexBuffer( const XE::VEC2& sizeSurface
 																	, const XE::VEC2& vAdj
 																	, const XE::POINT& sizeTexture
 																	, const XE::POINT& sizeTextureAligned ) {
-		auto result = CreateVertexBuffer( sizeSurface.w, sizeSurface.h, vAdj.x, vAdj.y, sizeTexture.w, sizeTexture.h, sizeTextureAligned.w, sizeTextureAligned.h );
-		return result == ::xSUCCESS;
+		return CreateVertexBuffer( sizeSurface.w, sizeSurface.h, vAdj.x, vAdj.y, sizeTexture.w, sizeTexture.h, sizeTextureAligned.w, sizeTextureAligned.h );
 	}
 	bool CreateVertexBuffer2( const XE::VEC2& sizeSurface, const XE::VEC2& vAdj, const XE::VEC2& uvlt, const XE::VEC2& uvrb );
 	void Init();
@@ -38,13 +48,13 @@ private:
 	bool CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMask );
 protected:
 public:
-	XSurfaceOpenGL() : XSurface( true ) {
+	XSurfaceOpenGL2() : XSurface( true ) {
 		Init();
 	}
-	XSurfaceOpenGL( BOOL bHighReso ) : XSurface( bHighReso ) {
+	XSurfaceOpenGL2( BOOL bHighReso ) : XSurface( bHighReso ) {
 		Init();
 	}
-	XSurfaceOpenGL( BOOL bHighReso
+	XSurfaceOpenGL2( BOOL bHighReso
 									, const int srcx, const int srcy
 									, const int srcw, const int srch
 									, const int dstw, const int dsth
@@ -53,7 +63,7 @@ public:
 									, const int bpp
 									, BOOL bSrcKeep = FALSE );
 
-	~XSurfaceOpenGL() {
+	~XSurfaceOpenGL2() {
 		Destroy();
 	}
 
@@ -61,9 +71,9 @@ public:
 		return m_glTexture;
 	}
 	GET_ACCESSOR_CONST( GLuint, glTexture );
-	GET_ACCESSOR( GLuint, glVertexBuffer );
-	GET_ACCESSOR( GLuint, glIndexBuffer );
-	GLint	GetFormat( void ) {
+// 	GET_ACCESSOR( GLuint, glVertexBuffer );
+// 	GET_ACCESSOR( GLuint, glIndexBuffer );
+	GLint	GetFormat( void ) const {
 		return m_format;
 	}
 	// surface출력시 외부지정 매트릭스 설정.
@@ -107,38 +117,32 @@ public:
 
 	//	RESULT	LoadTexture( LPCTSTR szFilename, XCOLOR dwColorKey );
 	void*	Lock( int *pWidth, BOOL bReadOnly = TRUE );
-
-	void CopySurface( XSurface *src );
-
+	void CopySurface( XSurface *src ) override;
+	void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override;
 	void DrawCore( void );
 	//	void DrawCoreAlpha( void );
 	void DrawCoreSub( float x, float y, const RECT *src );
-	void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override { XBREAK(1); }
 	inline void Draw( float x, float y ) {
 		MATRIX m;
 		MatrixIdentity( m );
 		Draw( x, y, m );
 	}
 	void Draw( float x, float y, const MATRIX &mParent );
-#ifdef _XBLUR
-	void DrawBlur( float x, float y, const MATRIX &mParent );
-#endif // _XBLUR
 	void DrawLocal( float x, float y, float lx, float ly );
 	inline void Draw( const XE::VEC2& vPos ) {
 		Draw( vPos.x, vPos.y );
 	}
 	void DrawSub( float x, float y, const XE::xRECTi *src ) override;
 	void Fill( XCOLOR col );
-	//	DWORD GetPixel( float x, float y );			
 	void SetTexture( void ) override;
 	inline bool IsEmpty() override {
-		if( !m_glVertexBuffer || !m_glIndexBuffer || !m_glTexture ) {
+// 		if( !m_glVertexBuffer || !m_glIndexBuffer || !m_glTexture ) {
+		if( !m_glTexture ) {
 			DestroyDevice();
 			return true;
 		}
 		return false;
 	}
-
 };
 
 

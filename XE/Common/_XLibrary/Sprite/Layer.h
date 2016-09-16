@@ -15,8 +15,7 @@
 #include "Sprdef.h"
 
 
-struct XEFFECT_PARAM
-{
+struct XEFFECT_PARAM {
 	xDM_TYPE drawMode;
 	float fAlpha;
 	float m_adjZ = 0;
@@ -24,7 +23,13 @@ struct XEFFECT_PARAM
 		drawMode = xDM_NORMAL;
 		fAlpha = 1.0f;
 	}
+	inline XE::xtBlendFunc GetfuncBlend() const {
+		return XE::ConvertDMTypeToBlendFunc( drawMode );
+	}
 };
+namespace XE {
+struct xRenderParam;
+}
 
 class XSprite;
 class XSprObj;
@@ -160,8 +165,8 @@ struct CHANNEL_EFFECT {
 	float fAlphaSrc = 1.f;				//     "               시작알파값
 	float fNextKeyFrame = 0.f;	// 보간하며 변환될 다음키의 프레임
 	float fStartKeyFrame = 0.f;	//         "            시작키의 프레임
-	BOOL IsFlipHoriz() { return dwDrawFlag & EFF_FLIP_HORIZ; }
-	BOOL IsFlipVert() { return dwDrawFlag & EFF_FLIP_VERT; }
+	bool IsFlipHoriz() { return (dwDrawFlag & EFF_FLIP_HORIZ) != 0; }
+	bool IsFlipVert() { return (dwDrawFlag & EFF_FLIP_VERT) != 0; }
 	void Clear() {
 		fAlpha = 1.f;
 		dwDrawFlag = 0;
@@ -237,18 +242,15 @@ public:
 	XLayerImage() : XLayerMove( xSpr::xLT_IMAGE ) { 
 		Init(); 
 	}
-	virtual ~XLayerImage() {}
+	~XLayerImage() {}
 	GET_SET_ACCESSOR( XSprite*, pSpriteCurr );
-	void SetDrawInfoToSpr( XSprObj *pSprObj, XSprite *pSpr, XEFFECT_PARAM *pEffectParam );
-	virtual void Clear( void ) { XLayerMove::Clear(); Init(); }
-//#ifdef _VER_OPENGL
-	virtual void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam );
-//#else
-//	virtual void Draw( XSprObj *pSprObj, float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam );
-//#endif
-	virtual DWORD GetPixel( float cx, float cy, float mx, float my, const MATRIX &m, BYTE *pa, BYTE *pr, BYTE *pg, BYTE *pb );
-	virtual int Serialize( XArchive& ar, XSprObj *pSprObj );
-	virtual int DeSerialize( XArchive& ar, XSprObj *pSprObj );
+	void Clear( void ) override { XLayerMove::Clear(); Init(); }
+	void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam ) override;
+	DWORD GetPixel( float cx, float cy, float mx, float my, const MATRIX &m, BYTE *pa, BYTE *pr, BYTE *pg, BYTE *pb ) override;
+	int Serialize( XArchive& ar, XSprObj *pSprObj ) override;
+	int DeSerialize( XArchive& ar, XSprObj *pSprObj ) override;
+private:
+//	void SetDrawInfoToSpr( XSprObj *pSprObj, XSprite *pSpr, const XEFFECT_PARAM& effParam, XE::xRenderParam* pOut );
 };
 ///////////////////////////////////////////////////////////////////////////////
 class XLayerObject : public XLayerMove

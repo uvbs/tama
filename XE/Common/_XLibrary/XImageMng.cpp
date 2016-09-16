@@ -213,14 +213,26 @@ XSurface* XImageMng::_Load( bool bHighReso
 		XE::LANG.ChangeToLangDir( strRes.c_str(), szLangPath );
 		strLoadTry = szLangPath;
 		auto llTime = XE::GetFreqTime();
-		auto pSurface = GRAPHICS->CreateSurface( bHighReso, szLangPath, format, bSrcKeep, bMakeMask );
+		auto pSurface = GRAPHICS->CreateSurface( bHighReso, 
+																						 szLangPath, 
+																						 format, 
+																						 false,			// ui는 일단 아틀라스를 사용하지 않기로
+																						 bSrcKeep, 
+																						 bMakeMask,
+																						 bAsync );			// async
 		auto llPass = XE::GetFreqTime() - llTime;
 		if( pSurface == nullptr ) {
 			llPass = 0;
 			strLoadTry = strRes;
 			// 없으면 루트 폴더에서 찾는다.
 			llTime = XE::GetFreqTime();
-			pSurface = GRAPHICS->CreateSurface( bHighReso, strRes.c_str(), format, bSrcKeep, bMakeMask );
+			pSurface = GRAPHICS->CreateSurface( bHighReso, 
+																					strRes.c_str(), 
+																					format, 
+																					false,
+																					bSrcKeep, 
+																					bMakeMask,
+																					bAsync );
 			if( pSurface ) {
 				llPass = XE::GetFreqTime() - llTime;
 				pSurface->SetstrRes( strRes.c_str() );
@@ -405,19 +417,25 @@ void XImageMng::Process( bool bTouching )
 			TCHAR szLangPath[1024];
 			XE::LANG.ChangeToLangDir( strRes.c_str(), szLangPath );
 			auto llTime = XE::GetFreqTime();
-			auto _pSurface = GRAPHICS->CreateSurface( pFirst->m_bHighReso
-																						, szLangPath
-																						, pFirst->m_Format
-																						, pFirst->m_bSrcKeep, pFirst->m_bMakeMask );
+			auto _pSurface = GRAPHICS->CreateSurface( pFirst->m_bHighReso, 
+																								szLangPath, 
+																								pFirst->m_Format, 
+																								false, 
+																								pFirst->m_bSrcKeep, 
+																								pFirst->m_bMakeMask,
+																								false );	// 비동기로 생성중이므로 false로 넘겨야 지금즉시 로딩함.
 			auto llPass = XE::GetFreqTime() - llTime;
 			if( _pSurface == nullptr ) {
 				llPass = 0;
 				// 없으면 루트 폴더에서 찾는다.
 				llTime = XE::GetFreqTime();
-				_pSurface = GRAPHICS->CreateSurface( pFirst->m_bHighReso
-																					, strRes.c_str()
-																					, pFirst->m_Format
-																					, pFirst->m_bSrcKeep, pFirst->m_bMakeMask );
+				_pSurface = GRAPHICS->CreateSurface( pFirst->m_bHighReso, 
+																						 strRes.c_str(), 
+																						 pFirst->m_Format, 
+																						 false, 
+																						 pFirst->m_bSrcKeep, 
+																						 pFirst->m_bMakeMask,
+																						 false );
 				if( _pSurface ) {
 					llPass = XE::GetFreqTime() - llTime;
 					_pSurface->SetstrRes( strRes.c_str() );

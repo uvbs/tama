@@ -12,9 +12,6 @@
 #endif
 #endif
 #include "etc/types.h"
-//#ifdef _VER_IOS
-//#include "Mathematics.h"
-//#endif
 #include "etc/xMath.h"
 #include "xVector.h"
 #include "xeDef.h"

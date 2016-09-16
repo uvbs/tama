@@ -203,18 +203,21 @@ void XEObjMng::Draw( XEWndWorld *pWndWorld )
 
 void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible )
 {
+// 	auto bAlphaTest = GRAPHICS->GetbAlphaTest();
+// 	auto bZBuffer = GRAPHICS->GetbEnableZBuff();
+// 	GRAPHICS->SetbAlphaTest( true );		// 월드객체는 기본적으로 알파테스트와 z버퍼를 사용한다. 이펙트류는 개별적으로 옵션을 선택하도록 한다.
+// 	GRAPHICS->SetbEnableZBuff( true );
 	XPROF_OBJ_AUTO();
 	for( auto pObj : aryVisible ) {
 		if( pWndWorld ) {
 			// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
 			float scale = 1.f;
 			// 투영함수에서 카메라 스케일값을 받아온다.
-			XE::VEC2 vsPos;
+			XE::VEC2 vsPos;	
 			{
 				XPROF_OBJ( "projection" );
 				vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
-			}
-			{
+			}	{
 				XPROF_OBJ( "draw each" );
 				pObj->Draw( vsPos, scale );
 			}
@@ -223,6 +226,8 @@ void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*
 			pObj->Draw( vs );
 		}
 	};
+// 	GRAPHICS->SetbAlphaTest( bAlphaTest );
+// 	GRAPHICS->SetbEnableZBuff( bZBuffer );
 }
 
 void XEObjMng::OnLButtonUp( float lx, float ly )

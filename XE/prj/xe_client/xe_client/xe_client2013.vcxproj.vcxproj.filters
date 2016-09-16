@@ -503,6 +503,9 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.cpp">
       <Filter>source\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL2.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stdafx.h" />
@@ -1147,6 +1150,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.h">
       <Filter>source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL2.h">
+      <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

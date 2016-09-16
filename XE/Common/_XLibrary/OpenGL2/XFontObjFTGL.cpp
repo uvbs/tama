@@ -2,7 +2,6 @@
 #ifdef _VER_OPENGL
 #include "XFontObjFTGL.h"
 #include "XFontMng.h"
-//#include "Mathematics.h"
 #include "etc/xMath.h"
 #ifdef _VER_IOS
 #undef min

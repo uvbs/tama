@@ -24,7 +24,6 @@ XGraphics* XGraphics::s_pGraphics = NULL;
 BOOL		XGraphics::s_bCaptureBackBuffer = FALSE;			// Present전에 현재 백버퍼를 카피해둬야 함
 XSurface* XGraphics::s_pLastBackBuffer = NULL;			// 마지막으로 캡쳐된 백버퍼 화면
 DWORD XGraphics::s_dwDraw = 0;
-//XSPLock XGraphics::s_spLock;
 
 #pragma mark Init
 
@@ -595,12 +594,13 @@ void XGraphics::DrawPie( float x, float y
 /**
  @brief 파일로부터 이미지를 읽어서 서피스를 만든다.
 */
-XSurface* XGraphics::CreateSurface( bool bHighReso
-																	, LPCTSTR szRes
-																	, XE::xtPixelFormat formatSurface
-																	, bool bSrcKeep/* = false*/
-																	, bool bMakeMask/* = false*/
-																	, bool bAsync/* = false*/ )
+XSurface* XGraphics::CreateSurface( bool bHighReso, 
+																		LPCTSTR szRes, 
+																		XE::xtPixelFormat formatSurface, 
+																		bool bUseAtlas, 
+																		bool bSrcKeep/* = false*/, 
+																		bool bMakeMask/* = false*/, 
+																		bool bAsync/* = false*/ )
 {
 	if( !bAsync ) {
 		DWORD *pImg = nullptr;
@@ -622,19 +622,12 @@ XSurface* XGraphics::CreateSurface( bool bHighReso
 																, sizeImgMem
 																, bSrcKeep
 																, bMakeMask 
-																, false );
+																, bUseAtlas );
 			if( bOk ) {
 				pSurface->SetstrRes( szRes );
 			} else {
 				SAFE_DELETE( pSurface );
 			}
-	// 		auto pSurface = _CreateSurface( sizeSurface
-	// 																, XE::VEC2(0)		// adj
-	// 																, formatSurface
-	// 																, pImg
-	// 																, XE::xPF_ARGB8888		// formatImgSrc
-	// 																, sizeImgMem
-	// 																, bSrcKeep, bMakeMask );
 			SAFE_DELETE_ARRAY( pImg );		// 이미지 원본 날림.
 		} else {
 			XBREAKF( pSurface == nullptr, "[%s] createSurface failed", szRes );

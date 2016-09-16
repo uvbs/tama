@@ -5,16 +5,14 @@
 //  Created by JungWoo Sung on 13. 6. 8..
 //  Copyright (c) 2013년 JungWoo Sung. All rights reserved.
 //
-
-#ifndef xe_xVector_h
-#define xe_xVector_h
+#pragma once
 #include "etc/Types.h"
 #include "etc/Global.h"
 #include <math.h>
 #include <stdlib.h>
-// #ifdef _VER_DX
-// #include <d3dx9.h>
-// #endif
+#if defined(_XOOLONG)
+#include "oolong_engine2/Include/Mathematics.h"
+#endif // defined(_XOOLONG)
 #ifdef WIN32
 // 서버에서도 DirectX의 헤더를 사용함. 벡터의 사용을 위해.
 #ifdef _VER_DX
@@ -708,10 +706,22 @@ namespace XE
 		: VEC3( _x, _y, _z ) {
 			a = _a;
 		}
-		float a;
+		union {
+			float a;
+			float w;
+		};
+		operator Vec4 () const {
+			return Vec4( x, y, z, a );
+		}
+		VEC4& operator = ( const Vec4& rhs ) {
+			x = rhs.x;
+			y = rhs.y;
+			z = rhs.z;
+			a = rhs.w;
+			return *this;
+		}
 	};
 }; // XE
 
-#endif
 
 
