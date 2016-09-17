@@ -12,6 +12,7 @@
 #include "XBattleField.h"
 #include "XSkillMng.h"
 #include "XStatistic.h"
+#include "XFramework/Game/XEWndWorld.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #include "XGame.h"
@@ -117,7 +118,7 @@ BOOL XLegionObj::CreateLegionDebug( XWndBattleField *pWndWorld,
 									XE::VEC3 vwStart, 
 									XGAME::xtLegionOption bitOption )
 {
-	vwStart.y = pWndWorld->GetpWorld()->GetvwSize().h / 2.f;
+	vwStart.y = pWndWorld->GetspWorld()->GetvwSize().h / 2.f;
 //	BIT bitSide = m_Camp.GetbitCamp(); // ( idxLegion == 0 ) ? XGAME::xSIDE_PLAYER : XGAME::xSIDE_OTHER;
 	XSquadron *pSquad = m_spLegion->GetSquadron( 2 );
 #ifdef _XSINGLE
@@ -420,7 +421,7 @@ void XLegionObj::Draw( XEWndWorld *pWndWorld )
 		for( auto& spSquad : m_listSquad ) {
 			if( spSquad->IsLive() ) {
 				XE::VEC3 vwPos = spSquad->GetvwPos();
-				XE::VEC2 vPos = pWndWorld->GetPosWorldToWindow( vwPos );
+				XE::VEC2 vPos = pWndWorld->GetPosWorldToWindow( vwPos, nullptr );
 				float radius = spSquad->GetRadius() * XWndBattleField::sGet()->GetscaleCamera();
 				XCOLOR col = XCOLOR_WHITE;
 				// 				switch( spSquad->GetUnitType() )
@@ -442,7 +443,7 @@ void XLegionObj::Draw( XEWndWorld *pWndWorld )
 				GRAPHICS->DrawCircle( vPos.x, vPos.y, radius, col );
 				// 부대의 평균 중심점에 십자를 그린다.
 				XE::VEC3 vwAvg = spSquad->GetvCenterByUnits();
-				XE::VEC2 vCenter = XWndBattleField::sGet()->GetPosWorldToWindow( vwAvg );
+				XE::VEC2 vCenter = pWndWorld->GetPosWorldToWindow( vwAvg, nullptr );
 				float len = 16.f;
 				GRAPHICS->DrawHLine( vCenter.x - (len / 2.f), vCenter.y, len, col );
 				GRAPHICS->DrawVLine( vCenter.x, vCenter.y - (len / 2.f), len, col );

@@ -530,6 +530,9 @@ BOOL Clipper( int _xl, int _yt, int _xr, int _yb, int *x, int *y, int *w, int *h
 
 namespace XE {
 void SetProjection( float wLogicalScr, float hLogicalScr );
+inline void SetProjection( const XE::VEC2& sizeLogScr ) {
+	return SetProjection( sizeLogScr.w, sizeLogScr.h );
+}
 //
 inline void DrawLine( float x1, float y1, float x2, float y2, XCOLOR color, float thickness = 1.0f ) {
 	if( GRAPHICS ) {

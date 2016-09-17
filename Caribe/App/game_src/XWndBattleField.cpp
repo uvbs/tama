@@ -8,8 +8,13 @@
 #include "XSquadObj.h"
 #include "XSceneBattle.h"
 #include "XUnitHero.h"
-#include "opengl2/XRenderCmd.h"
-#include "XFramework/XEProfile.h"
+//#include "XScroll.h"
+#include "XFramework/Game/XEWndWorldImage.h"
+#include "XFramework/Game/XEWndWorld.h"
+#include "XFramework/Game/XEWorldCamera.h"
+#include "XSystem.h"
+// #include "opengl2/XRenderCmd.h"
+// #include "XFramework/XEProfile.h"
 
 using namespace XSKILL;
 using namespace XGAME;
@@ -25,19 +30,20 @@ static char THIS_FILE[] = __FILE__;
 XWndBattleField* XWndBattleField::s_pInstance = nullptr;
 XWndBattleField* XWndBattleField::sGet() 
 {
-	if( s_pInstance == nullptr )
-		s_pInstance = new XWndBattleField;
+// 	if( s_pInstance == nullptr )
+// 		s_pInstance = new XWndBattleField;
 	return s_pInstance;
 }
 
 ////////////////////////////////////////////////////////////////
-XWndBattleField::XWndBattleField()
-	: XEWndWorldImage( nullptr )
+XWndBattleField::XWndBattleField( XSPWorld spWorld )
+	: m_spWorld( spWorld )
 {
+	XBREAK( s_pInstance != nullptr );
+	s_pInstance = this;
 	Init();
-//	SetscaleMin( 0.336f );
-	SetscaleMin( 0.4f );
-	SetscaleMax( 2.f );
+// 	SetscaleMin( 0.4f );
+// 	SetscaleMax( 2.f );
 }
 
 void XWndBattleField::Destroy()
@@ -47,20 +53,16 @@ void XWndBattleField::Destroy()
 
 BOOL XWndBattleField::OnCreate()
 {
-	auto bRet = XEWndWorldImage::OnCreate();
-	const auto vwSize = GetpWorld()->GetvwSize();
-// 	SetvwCamera( (vwSize * 0.5f) + XE::VEC2(0,-30) );
-//	XScroll::SetvCurr( (vwSize * 0.5f) + XE::VEC2(0,-30) );
+//	auto bRet = XEWndWorldImage::OnCreate();
 	// 최초 카메라 위치설정은 XSceneBattle에 있ㄷ음(SetFocus)
-	return bRet;
+	return TRUE;
 }
 
-XEWorld* XWndBattleField::OnCreateWorld( const XE::VEC2& vwSize )
-{
-	m_prefBattleField = new XBattleField( vwSize );
-//	SetvwCamera( m_pBattleField->GetvwSize() / 2.f );
-	return m_prefBattleField;
-}
+// XEWorld* XWndBattleField::OnCreateWorld( const XE::VEC2& vwSize )
+// {
+// 	m_prefBattleField = new XBattleField( vwSize );
+// 	return m_prefBattleField;
+// }
 
 ID XWndBattleField::GetidSelectSquad( void ) 
 {
@@ -72,6 +74,7 @@ ID XWndBattleField::GetidSelectSquad( void )
 */
 int XWndBattleField::Process( float dt )
 {
+	m_spCamera->Process( dt );
 	// 선택하고 있던 부대가 전멸하면 선택꺼줌
 	if( m_spSelectSquad && m_spSelectSquad->IsLive() == FALSE )
 		m_spSelectSquad.reset();
@@ -85,33 +88,61 @@ int XWndBattleField::Process( float dt )
 	if( m_spTempSelectEnemy && m_spTempSelectEnemy->IsLive() == FALSE )
 		m_spTempSelectEnemy.reset();
 
-	return XEWndWorldImage::Process( dt );
+	return XWnd::Process( dt );
 }
 /**
  
 */
 void XWndBattleField::Draw( void )
 {
-	XEWndWorldImage::Draw();
-	{
-		XPROF_OBJ( "render_batch" );
-		XRenderCmdMng::sGet()->RenderBatch();	// 레이어방식으로 해서 레이어별로 가지고 있어야 할듯.
-	}
+	XWnd::Draw();
 	//	XParticleMng::sGet()->Draw();
 }
 
-void XWndBattleField::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat *pFontDat )
-{
-	if( XAPP->m_bDebugSlowFrame )
-	{
-		for( int i = 0; i < 300; ++i )
-			XEWndWorldImage::DrawDebugInfo( x, y, col, pFontDat );
-	} else
-		XEWndWorldImage::DrawDebugInfo( x, y, col, pFontDat );
-}
+// void XWndBattleField::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat *pFontDat )
+// {
+// 	if( XAPP->m_bDebugSlowFrame )
+// 	{
+// 		XSYSTEM::xSleep( 100 );
+// //		for( int i = 0; i < 300; ++i )
+// //			XEWndWorldImage::DrawDebugInfo( x, y, col, pFontDat );
+// 	} else {
+// 		m_pBgLayer->DrawDebugInfo( x, y, col, pFontDat );
+// //		XEWndWorldImage::DrawDebugInfo( x, y, col, pFontDat );
+// 	}
+// }
 
+void XWndBattleField::DrawDebugInfo( float x, float y, 
+																		 XCOLOR col, 
+																		 XBaseFontDat *pFontDat )
+{
+#ifdef _CHEAT
+	if( XAPP->m_bDebugSlowFrame ) {
+		XSYSTEM::xSleep( 100 );
+	}
+#endif // _CHEAT
+	auto spWorld = GetspWorld();
+	if( spWorld == nullptr )
+		return;
+	XBREAK( spWorld == nullptr );
+	XBREAK( spWorld->GetpObjMng() == nullptr );
+	x = 2.f;
+	y = 0.f;
+	XE::VEC2 vlsPos = INPUTMNG->GetMousePos() - GetPosLocal();
+	XE::VEC2 vwMouse = GetPosWindowToWorld( vlsPos );
+	const auto vwCamera = m_spCamera->GetvwCamera();
+	for( int i = 0; i < 1; ++i ) {
+		pFontDat->DrawString( x, y, col,
+													XE::Format( _T( "vwCamera:%.0f,%.0f scaleCamera:%.1f vwMouse:%.0f,%.0f visibleObj:%d" ),
+													vwCamera.x, vwCamera.y,
+													m_spCamera->GetscaleCamera(),
+													vwMouse.x, vwMouse.y ),
+													m_spWorld->GetpObjMng()->GetNumVisibleObj() );
+	}
+}
 void XWndBattleField::OnLButtonDown( float lx, float ly )
 {
+	m_spCamera->OnLButtonDown( lx, ly );
 	m_spTempSelect.reset();		// 터치하기전 이전 임시셀렉트가 있으면 해제시킴
 	m_vTouch.Set(-1.f);
 
@@ -159,11 +190,12 @@ void XWndBattleField::OnLButtonDown( float lx, float ly )
 		m_vTouch.Set( lx, ly );
 
 	// 픽킹한 터치좌표를 받아둔다.
-	XEWndWorldImage::OnLButtonDown( lx, ly );
+	XWnd::OnLButtonDown( lx, ly );
 }
 
 void XWndBattleField::OnMouseMove( float lx, float ly )
 {
+	m_spCamera->OnMouseMove( lx, ly );
 	// 일정픽셀이상 드래깅을 했다면 선택을 취소한다.
 	if( m_vTouch.IsMinus() == FALSE )
 	{
@@ -176,11 +208,12 @@ void XWndBattleField::OnMouseMove( float lx, float ly )
 			m_vTouch.Set(-1.f);
 		}
 	}
-	XEWndWorldImage::OnMouseMove( lx, ly );
+	XWnd::OnMouseMove( lx, ly );
 }
 
 void XWndBattleField::OnLButtonUp( float lx, float ly )
 {
+	m_spCamera->OnLButtonUp( lx, ly );
 	// 임시선택한 유닛을 확정선택한다.
 	// 임시선택한 유닛이 여전히 있으면
 	if( m_spTempSelect )	{
@@ -208,7 +241,7 @@ void XWndBattleField::OnLButtonUp( float lx, float ly )
 		m_spTempSelectEnemy.reset();	// 다썼으니 해제
 	}
 	m_vTouch.Set(-1.f);
-	XEWndWorldImage::OnLButtonUp( lx, ly );
+	XWnd::OnLButtonUp( lx, ly );
 }
 
 /**
@@ -257,6 +290,92 @@ BOOL XWndBattleField::IsSelectedSquad( XSquadObj *pSquadObj )
 	return FALSE;
 }
 
+float XWndBattleField::GetscaleCamera() const
+{
+	return m_spCamera->GetscaleCamera();
+}
+
+// void XWndBattleField::SetScaleCamera( float scale ) {
+// 	m_pBgLayer->SetScaleCamera( scale );
+// 	m_pObjLayer->SetScaleCamera( scale );
+// }
+
+/**
+ @brief 바인딩된 월드객체를 얻는다. 같은게 바인딩되었으므로 아무 레이어것이나 상관없다.
+*/
+// XSPWorldConst XWndBattleField::GetspWorld()
+// {
+// 	return m_pObjLayer->GetspWorld();
+// }
+// 
+// XSPWorld XWndBattleField::GetspWorldMutable()
+// {
+// 	return m_pObjLayer->GetspWorld();
+// }
+
+std::shared_ptr<const XBattleField> 
+XWndBattleField::GetspBattleField()
+{
+	return std::static_pointer_cast<const XBattleField>( GetspWorld() );
+}
+
+std::shared_ptr<XBattleField>
+XWndBattleField::GetspBattleFieldMutable()
+{
+	return std::static_pointer_cast<XBattleField>(GetspWorldMutable());
+}
+
+void XWndBattleField::SetFocus( const XE::VEC2& vFocus )
+{
+	m_spCamera->SetFocus( vFocus );
+}
+
+XE::VEC2 XWndBattleField::GetPosWorldToWindow( const XE::VEC3& vwPos,
+																							 float *pOutScale/* = nullptr*/ )
+{
+	return m_spCamera->GetPosWorldToWindow( vwPos, pOutScale );
+}
+
+XE::VEC2 XWndBattleField::GetPosWindowToWorld( const XE::VEC2& vlsPos )
+{
+	return m_spCamera->GetPosWindowToWorld( vlsPos );
+}
+
+XE::VEC2 XWndBattleField::GetvwCamera() const
+{
+	return m_spCamera->GetvwCamera();
+}
+
+XEWndWorldImage* 
+XWndBattleField::AddBgLayer( XSurface* psfcBg, XSPWorld spWorld )
+{
+	XBREAK( psfcBg == nullptr );
+	auto pLayerBg = new XEWndWorldImage( psfcBg, spWorld );	// 월드 바인딩
+	pLayerBg->SetstrIdentifier("layer.bg");
+	Add( pLayerBg );
+	m_pBgLayer = pLayerBg;
+	XBREAK( m_spCamera == nullptr );
+	pLayerBg->SetspCamera( m_spCamera );
+	return pLayerBg;
+}
+
+XEWndWorld* XWndBattleField::AddObjLayer( XSPWorld spWorld )
+{
+	const auto vwSize = spWorld->GetvwSize();
+// 	auto pWorld = new XBattleField( vwSize );
+	auto pLayerObj = new XEWndWorld( spWorld );		// 월드 바인딩
+	pLayerObj->SetstrIdentifier( "layer.obj" );
+	m_pObjLayer = pLayerObj;
+	Add( pLayerObj );
+	XBREAK( m_spCamera == nullptr );
+	pLayerObj->SetspCamera( m_spCamera );
+	return pLayerObj;
+}
+
+void XWndBattleField::OnZoom( float scale, float lx, float ly )
+{
+	m_spCamera->OnZoom( scale, lx, ly );
+}
 #ifdef _CHEAT
 void XWndBattleField::OnReset( bool bReCreate )
 {
@@ -265,3 +384,4 @@ void XWndBattleField::OnReset( bool bReCreate )
 	m_spTempSelectEnemy.reset();
 }
 #endif // _CHEAT
+

@@ -1,5 +1,8 @@
 ﻿#include "stdafx.h"
 #include "XEWorld.h"
+#include "OpenGL2/XRenderCmd.h"
+#include "XFramework/XEProfile.h"
+#include "XFramework/Game/XEWndWorld.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -13,13 +16,10 @@ static char THIS_FILE[] = __FILE__;
  vSize: 월드 전체 크기
 */
 XEWorld::XEWorld( const XE::VEC2& vwSize ) 
-{ 
+{
 	Init(); 
 	// 
 	m_vwSize = vwSize;
-	// virtual. 오브젝트 매니저를 만든다.
-//	m_pObjMng = CreateObjMng( maxObj );	
-	// 필요에따라 오브젝트 매니저를 여러개 만들수 있도록. UIMng같은
 }
 
 
@@ -72,8 +72,9 @@ int XEWorld::Process( XEWndWorld *pWndWorld, float dt )
 
 void XEWorld::Draw( XEWndWorld *pWndWorld )
 {
-	if( m_pObjMng )
+	if( m_pObjMng ) {
 		m_pObjMng->Draw( pWndWorld );
+	}
 }
 
 /**

@@ -188,7 +188,7 @@ void XSquadObj::CreateHero( XWndBattleField *pWndWorld,
 												v, 
 												mulByLvSquad );
 	auto spUnit = AddUnit( pUnit );
-	pWndWorld->GetpWorld()->AddObj( spUnit );
+	pWndWorld->GetspWorldMutable()->AddObj( spUnit );
 	m_spHeroUnit = spUnit;
 	int a = 0;
 }
@@ -256,7 +256,7 @@ void XSquadObj::CreateAndAddUnit( XPropUnit::xPROP *pProp
 																			vCurr, mulByLvSquad );
 
 	XSPUnit spUnit = AddUnit( pUnit );
-	pWndWorld->GetpWorld()->AddObj( spUnit );
+	pWndWorld->GetspWorldMutable()->AddObj( spUnit );
 }
 /**
  m_pSquad를 바탕으로 대장과 유닛들을 생성한다.
@@ -1534,7 +1534,7 @@ void XSquadObj::DoTeleport()
 {
 	// 부대좌표를 랜덤좌표로 이동시킨다.
 	auto vOld = m_vwPos;
-	auto vwSize = XWndBattleField::sGet()->GetpWorld()->GetvwSize();
+	auto vwSize = XWndBattleField::sGet()->GetspWorld()->GetvwSize();
 	XE::VEC2 vNew;
 	vNew.x = (float)xRandom((int)vwSize.w);
 	vNew.y = 350.f + (float)xRandom((int)(vwSize.h - 350.f));

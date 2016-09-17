@@ -612,7 +612,7 @@ XSurface* XGraphics::CreateSurface( bool bHighReso,
 		XBREAK( sizeImgMem.h <= 0 );
 		// bHighReso의 잔재. 이 파일이 고해상도로 지정되어 있으면 실제 서피스 크기는 절반이 된다
 		const auto sizeSurface = (bHighReso)? sizeImgMem / 2 : sizeImgMem; 
-		auto pSurface = CreateSurface();
+		auto pSurface = (bUseAtlas)? CreateSurface2() : CreateSurface();
 		if( pSurface ) {
 			bool bOk = pSurface->Create( sizeSurface
 																, XE::VEC2(0)

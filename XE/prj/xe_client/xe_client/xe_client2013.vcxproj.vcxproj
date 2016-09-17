@@ -870,10 +870,13 @@
     <ClInclude Include="..\..\..\XFramework\client\XLayoutObj.h" />
     <ClInclude Include="..\..\..\XFramework\client\XPropParticle.h" />
     <ClInclude Include="..\..\..\XFramework\client\XTimeoutMng.h" />
+    <ClInclude Include="..\..\..\XFramework\client\XWndBatchRender.h" />
     <ClInclude Include="..\..\..\XFramework\Game\XEBaseWorldObj.h" />
     <ClInclude Include="..\..\..\XFramework\Game\XEWndWorld.h" />
     <ClInclude Include="..\..\..\XFramework\Game\XEWndWorldImage.h" />
+    <ClInclude Include="..\..\..\XFramework\Game\XEWndWorldObjs.h" />
     <ClInclude Include="..\..\..\XFramework\Game\XEWorld.h" />
+    <ClInclude Include="..\..\..\XFramework\Game\XEWorldCamera.h" />
     <ClInclude Include="..\..\..\XFramework\Game\XFLevel.h" />
     <ClInclude Include="..\..\..\XFramework\Game\XEObjMng.h" />
     <ClInclude Include="..\..\..\XFramework\Game\XFLevelH.h" />
@@ -1106,10 +1109,13 @@
     <ClCompile Include="..\..\..\XFramework\client\XLayoutObj.cpp" />
     <ClCompile Include="..\..\..\XFramework\client\XPropParticle.cpp" />
     <ClCompile Include="..\..\..\XFramework\client\XTimeoutMng.cpp" />
+    <ClCompile Include="..\..\..\XFramework\client\XWndBatchRender.cpp" />
     <ClCompile Include="..\..\..\XFramework\Game\XEBaseWorldObj.cpp" />
     <ClCompile Include="..\..\..\XFramework\Game\XEWndWorld.cpp" />
     <ClCompile Include="..\..\..\XFramework\Game\XEWndWorldImage.cpp" />
+    <ClCompile Include="..\..\..\XFramework\Game\XEWndWorldObjs.cpp" />
     <ClCompile Include="..\..\..\XFramework\Game\XEWorld.cpp" />
+    <ClCompile Include="..\..\..\XFramework\Game\XEWorldCamera.cpp" />
     <ClCompile Include="..\..\..\XFramework\Game\XFLevel.cpp" />
     <ClCompile Include="..\..\..\XFramework\Game\XEObjMng.cpp" />
     <ClCompile Include="..\..\..\XFramework\MFC\CoolDialogBar.cpp" />

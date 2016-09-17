@@ -1,6 +1,12 @@
 ﻿#pragma once
 #include "etc/XGraphicsDef.h"
 
+#define SET_ATLASES( ATLASES ) \
+{	auto pPrev = XTextureAtlas::_sSetpCurrMng( ATLASES );
+
+#define END_ATLASES \
+	XTextureAtlas::_sSetpCurrMng( pPrev ); }
+
 namespace xSplit {
 class XNode;
 }
@@ -34,16 +40,18 @@ typedef std::shared_ptr<xnTexAtlas::xAtlas const> XSPAtlasConst;
 class XTextureAtlas
 {
 public:
-	static std::shared_ptr<XTextureAtlas>& sGet();
-	static void sDestroyInstance();
-// 	static void sSetMaxSizeTex( const XE::VEC2& sizeTex ) {
-// 		s_sizeDefault = sizeTex;
-// 	}
-// 	static XE::VEC2 sGetMaxSizeTex() {
-// 		return s_sizeDefault;
-// 	}
+// 	static std::shared_ptr<XTextureAtlas>& sGet();
+// 	static void sDestroyInstance();
+	static XTextureAtlas* _sSetpCurrMng( XTextureAtlas* pMng ) {
+		auto pPrev = s_pCurrAtlasMng;
+		s_pCurrAtlasMng = pMng;
+		return pPrev;
+	}
+	static XTextureAtlas* sGetpCurrMng() {
+		return s_pCurrAtlasMng;
+	}
 public:
-	XTextureAtlas();
+	XTextureAtlas( const char* cTag );
 	~XTextureAtlas() {		Destroy();	}
 	void Release( ID idTex );
 	void DestroyAtlas( XSPAtlas spAtlas );
@@ -64,7 +72,8 @@ public:
 		return (spAtlas)? spAtlas->m_FormatSurface : XE::xPF_NONE;
 	}
 private:
-	static std::shared_ptr<XTextureAtlas> s_spInstance;
+// 	static std::shared_ptr<XTextureAtlas> s_spInstance;
+	static XTextureAtlas* s_pCurrAtlasMng;
 	void Init() {}
 	void Destroy() {}
 	XSPAtlas AddAtlas( const XE::VEC2& size, XE::xtPixelFormat formatSurface );
@@ -75,6 +84,8 @@ private:
 	//	void UpdateSub( const DWORD* pImg, const XE::VEC2& vLT, const XE::VEC2& sizeImg, ID glTex );
 private:
 	static XE::VEC2 s_sizeDefault;
+	ID m_idMng = 0;
+	std::string m_strTag;
 	XList4<XSPAtlas> m_listAtlas;		// 커다란 아틀라스들의 리스트
 }; // class XTextureAtlas
 

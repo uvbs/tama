@@ -28,7 +28,7 @@ xAtlas::xAtlas( const XE::VEC2& size, xtPixelFormat formatSurface )
 xAtlas::~xAtlas() {
 	SAFE_DELETE( m_pRoot );
 	const GLuint glTex = (GLuint)m_idTex;
-	::glDeleteTextures( 1, &glTex );
+//	::glDeleteTextures( 1, &glTex );
 	const int bpp = XE::GetBpp( m_FormatSurface );
 	XSurface::sAddSizeTotalVMem( (int)(-m_Size.Size() * bpp) );
 #ifdef WIN32
@@ -94,17 +94,20 @@ XE_NAMESPACE_END; // xTextureAtlas
 
 using namespace xnTexAtlas;
 
-std::shared_ptr<XTextureAtlas> XTextureAtlas::s_spInstance;
-//XE::VEC2 XTextureAtlas::s_sizeDefault = XE::VEC2( 256, 256 );
+// std::shared_ptr<XTextureAtlas> XTextureAtlas::s_spInstance;
+// //XE::VEC2 XTextureAtlas::s_sizeDefault = XE::VEC2( 256, 256 );
+// ////////////////////////////////////////////////////////////////
+// std::shared_ptr<XTextureAtlas>& XTextureAtlas::sGet() {	if( s_spInstance == nullptr )		s_spInstance = std::shared_ptr<XTextureAtlas>( new XTextureAtlas );	return s_spInstance;}
+// void XTextureAtlas::sDestroyInstance() {
+// 	s_spInstance.reset();
+// }
 ////////////////////////////////////////////////////////////////
-std::shared_ptr<XTextureAtlas>& XTextureAtlas::sGet() {	if( s_spInstance == nullptr )		s_spInstance = std::shared_ptr<XTextureAtlas>( new XTextureAtlas );	return s_spInstance;}
-void XTextureAtlas::sDestroyInstance() {
-	s_spInstance.reset();
-}
-////////////////////////////////////////////////////////////////
-XTextureAtlas::XTextureAtlas()
+XTextureAtlas* XTextureAtlas::s_pCurrAtlasMng = nullptr;
+XTextureAtlas::XTextureAtlas( const char* cTag )
+	: m_idMng( XE::GenerateID() )
+	, m_strTag( cTag )
 {
-	XBREAK( s_spInstance != nullptr );
+//	XBREAK( s_spInstance != nullptr );
 	Init();
 }
 

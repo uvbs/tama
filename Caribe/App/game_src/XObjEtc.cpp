@@ -11,6 +11,7 @@
 #include "XMsgUnit.h"
 #include "XComp.h"
 #include "XFramework/XEProfile.h"
+#include "XFramework/Game/XEWndWorld.h"
 #if defined(_CHEAT) && defined(WIN32)
 #include "client/XAppMain.h"
 #endif
@@ -43,7 +44,7 @@ XObjBullet::XObjBullet( ID idBullet,
 						bool bCritical,
 						LPCTSTR szSpr, ID idAct,
 						float secFly )
-	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwSrc, szSpr, idAct )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwSrc, szSpr, idAct )
 {
 	Init();
 	m_idBullet = idBullet;
@@ -58,8 +59,8 @@ XObjBullet::XObjBullet( ID idBullet,
 //	XBREAK( GetpSprObj() == nullptr );
 	
 	// 목표쪽으로의 각도
-// 	XE::VEC2 vs = GetpWorld()->GetPosWorldToWindow( vwSrc );
-// 	XE::VEC2 vd = GetpWorld()->GetPosWorldToWindow( vwDst );
+// 	XE::VEC2 vs = GetpWorld()->GetPosWorldToWindow( vwSrc, nullptr );
+// 	XE::VEC2 vd = GetpWorld()->GetPosWorldToWindow( vwDst, nullptr );
 // 	float dAng = XE::CalcAngle( vs, vd );
 // 	XBREAK( GetpSprObj() == nullptr );
 // 	GetpSprObj()->SetRotateZ( dAng );
@@ -78,8 +79,8 @@ void XObjBullet::FrameMove( float dt )
 	XE::VEC3 vDst = (m_spTarget != nullptr)? m_spTarget->GetvwPos() : m_vDst;
 	vDst += m_vOffset;
 	XE::VEC3 vwPos = OnInterpolation( m_vSrc, vDst, timeLerp );
-	XE::VEC2 vCurr = GetpWndWorld()->GetPosWorldToWindow( vwPos );
-	XE::VEC2 vPrev = GetpWndWorld()->GetPosWorldToWindow( GetvwPos() );
+	XE::VEC2 vCurr = GetpWndWorld()->GetPosWorldToWindow( vwPos, nullptr );
+	XE::VEC2 vPrev = GetpWndWorld()->GetPosWorldToWindow( GetvwPos(), nullptr );
 	SetvwPos( vwPos );
 	float dAng = XE::CalcAngle( vPrev, vCurr );
 	GetpSprObj()->SetRotateZ( dAng );
@@ -352,7 +353,7 @@ void XObjRock::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 	{
 		XE::VEC3 vGround = GetvwPos();
 		vGround.z = 0;
-		XE::VEC2 vShadow = GetpWndWorld()->GetPosWorldToWindow( vGround );
+		XE::VEC2 vShadow = GetpWndWorld()->GetPosWorldToWindow( vGround, nullptr );
 //		m_psfcShadow->SetfAlpha( 0.6f );
 		m_psfcShadow->Draw( vShadow );
 	}
@@ -361,7 +362,7 @@ void XObjRock::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 
 ////////////////////////////////////////////////////////////////
 XObjLaser::XObjLaser( LPCTSTR szSpr, const XE::VEC3& vwStart, const XE::VEC3& vwEnd )
-	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwStart, szSpr, 1 )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwStart, szSpr, 1 )
 {
 	Init();
 	///< 
@@ -413,8 +414,8 @@ void XObjLaser::FrameMove( float dt )
 void XObjLaser::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha )
 {
 	XPROF_OBJ_AUTO();
-	XE::VEC2 vStart = GetpWndWorld()->GetPosWorldToWindow( m_vwStart );
-	XE::VEC2 vEnd = GetpWndWorld()->GetPosWorldToWindow( m_vwEnd );
+	XE::VEC2 vStart = GetpWndWorld()->GetPosWorldToWindow( m_vwStart, nullptr );
+	XE::VEC2 vEnd = GetpWndWorld()->GetPosWorldToWindow( m_vwEnd, nullptr );
 	float dAng = XE::CalcAngle( vStart, vEnd );
 	GetpSprObj()->SetRotate( dAng );
 	XE::VEC3 vDist = vEnd - vStart;
@@ -433,7 +434,7 @@ void XObjLaser::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha )
  @param secLife 0은 한번만 플레이하고 중지. -1은 무한루프,>0 값은 해당 초동안 생존
 */
 XObjLoop::XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos, szSpr, idAct )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos, szSpr, idAct )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -444,7 +445,7 @@ XObjLoop::XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLif
 }
 
 XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGet(), typeObj, vwPos, szSpr, 1 )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, vwPos, szSpr, 1 )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -455,7 +456,7 @@ XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct,
 }
 
 XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGet(), typeObj, spTrace->GetvwPos(), szSpr, idAct )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, spTrace->GetvwPos(), szSpr, idAct )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -473,7 +474,7 @@ XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idA
  @brief 이펙트 생성은 vwPos에 생성되나 spTrace를 참조해야 하는 버전
 */
 XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGet(), typeObj, vwPos, szSpr, idAct )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, vwPos, szSpr, idAct )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -573,7 +574,7 @@ XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp,
 																			const _tstring& strSpr, 
 																			ID idAct, 
 																			float sec )
-	: XEBaseWorldObj( XWndBattleField::sGet(),
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(),
 										XGAME::xOT_SKILL_EFFECT, vwPos,
 										strSpr.c_str(), idAct )
 	, XSkillReceiver( 1, XGAME::xMAX_PARAM, 0 )
@@ -649,7 +650,7 @@ XObjDmgNum::XObjDmgNum( float num
 											, int paramHit
 											, const XE::VEC3& vwPos
 											, XCOLOR col )
-	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos )
 {
 	Init();
 	m_Number = (int)num;
@@ -690,7 +691,7 @@ XObjDmgNum::XObjDmgNum( float num
 
 XObjDmgNum::XObjDmgNum( LPCTSTR szStr
 											, const XE::VEC3& vwPos, XCOLOR col )
-	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos )
 {
 	Init();
 	m_strNumber = szStr;
@@ -781,7 +782,7 @@ XObjYellSkill::XObjYellSkill( LPCTSTR szText,
 															const XSPUnit& spOwner,
 															const XE::VEC3& vwPos, 
 															XCOLOR col )
-	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos )
 {
 	Init();
 	m_Col = col;
@@ -889,7 +890,7 @@ XObjFlame::XObjFlame( const XSPUnit& spAttacker,
 											float secLife,
 											BIT bitCampTarget,
 											LPCTSTR szSpr, ID idAct )
-	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_DAMAGE, vwPos, szSpr, idAct )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_DAMAGE, vwPos, szSpr, idAct )
 {
 	Init();
 	m_spAttacker = spAttacker;
@@ -947,7 +948,7 @@ void XObjFlame::FrameMove( float dt )
 //////////////////////////////////////////////////////////////////////////
 XObjRes::XObjRes( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct
 									, const XVector<XGAME::xRES_NUM>& aryLoots )
-	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_ETC, vwPos, szSpr, idAct )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos, szSpr, idAct )
 //	, m_spCompMove( 20.f, XE::VEC2( 270.f, 290.f ) )
 {
 	m_psfcShadow = IMAGE_MNG->Load( TRUE, PATH_IMG( "shadow.png" ) );
@@ -1012,7 +1013,7 @@ void XObjRes::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 		float scaleDraw = GetScaleObj().x * scale;
 		auto vGround = vwPos;
 		vGround.z = 0;
-		XE::VEC2 vShadow = GetpWndWorld()->GetPosWorldToWindow( vGround );
+		XE::VEC2 vShadow = GetpWndWorld()->GetPosWorldToWindow( vGround, nullptr );
 //		m_psfcShadow->SetfAlpha( 0.6f );
 		const XE::VEC2 vAdj = (m_psfcShadow->GetSize() * -0.5f) * scaleDraw;;
 		m_psfcShadow->SetScale( scaleDraw * 2.f );
@@ -1032,7 +1033,7 @@ void XObjRes::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 
 ////////////////////////////////////////////////////////////////
 XObjResNum::XObjResNum( const XE::VEC3& vwPos, XGAME::xtResource resType, int num )
-	: XEBaseWorldObj( XWndBattleField::sGet(), xOT_UI, vwPos, _T("obj_res.spr"), (int)resType+1 )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), xOT_UI, vwPos, _T("obj_res.spr"), (int)resType+1 )
 
 {
 	Init();

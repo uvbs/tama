@@ -248,7 +248,12 @@ XWndInvenHeroElem::XWndInvenHeroElem( XHero* pHero, XLegion *pLegion )
 	// 	}
 	m_psfcBgGradation = IMAGE_MNG->Load( PATH_UI( "bg_hero.png" ), XE::xPF_ARGB8888 );
 	m_pFace = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, m_pHero->GetpProp()->strFace.c_str() ), XE::xPF_ARGB8888 );
-	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ), 0, 0 );
+// 	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ), 0, 0 );
+	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ), XE::xPF_ARGB4444 );
+
+ 	왜 8888로 하면 읽혀지고 4444로 읽으면 안나오는가 와이어프레임이 그려진걸로봐선 가려진것 같다.
+
+
 	m_pNameCard = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "corps_heroname_bg.png" ) ) );
 	SetSizeLocal( m_pBG->GetWidth() + 4, m_pBG->GetHeight() + m_pNameCard->GetHeight() / 2 );
 	//m_pNameCard->SetScale(0.7f);
@@ -391,19 +396,8 @@ void XWndInvenHeroElem::Draw()
 				m_psfcStar->SetScale( 0.6f );
 				m_psfcStar->Draw( v );
 			}
-			else {
-				// 				m_psfcStarEmpty->SetScale( 0.6f );
-				// 				m_psfcStarEmpty->Draw( v );
-			}
 		}
 	}
-	// 	for (int i = 0; i < XGAME::xGD_MAX; ++i) {
-	// 		if( i <= numStar)
-	// 		if (m_pStar[i]) {
-	// 			m_pStar[i]->SetScale(0.6f);
-	// 			m_pStar[i]->Draw(vPos.x - 1 + i * 10, vPos.y - 1);
-	// 		}
-	// 	}
 	if( m_pNameCard ) {
 		m_pNameCard->SetScale( 1.2f, 1.f );
 		if( m_pUnitFace )

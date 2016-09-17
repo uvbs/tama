@@ -177,8 +177,8 @@ void XWndList::Draw( void )
 // 	if( m_psfcBg )
 // 		m_psfcBg->Draw( v + m_posBg );
 	// viewport 설정
-	XE::VEC2 vpLT = GRAPHICS->GetViewportLT();		// 스택에 백업.
-	XE::VEC2 vpSize = GRAPHICS->GetViewportSize();
+	const XE::VEC2 vpLT = GRAPHICS->GetViewportLT();		// 스택에 백업.
+	const XE::VEC2 vpSize = GRAPHICS->GetViewportSize();
 //	GRAPHICS->BackupViewport();
 	m_vAdjustByViewport.Set( 0 );
 	if( v.x < vpLT.x ) {

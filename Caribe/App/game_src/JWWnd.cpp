@@ -159,7 +159,11 @@ void XWndStoragyItemElem::SetHero( ID idProp )
 			const _tstring resFace = XE::MakePath( DIR_IMG, pProp->strFace );
 			XBREAK( resFace.empty() );
 			SAFE_RELEASE2( IMAGE_MNG, m_pItemImg );
-			m_pItemImg = IMAGE_MNG->Load( resFace, XE::xPF_ARGB8888, false, false, true );
+			m_pItemImg = IMAGE_MNG->Load( resFace, 
+																		XE::xPF_ARGB8888, 
+																		false, 
+																		false, 
+																		false ); // async
 			SetvScaleItemImg( XE::VEC2( 0.789f, 0.781f ) );
 			SetbUpdate( true );
 			m_Reward.SetHero( idProp );

@@ -120,28 +120,10 @@ bool XSurfaceOpenGL::Create( const XE::POINT& sizeSurfaceOrig
 		}
 	}
 #endif // _XPROFILE
-	if( bUseAtlas ) {
-
-		XE::xRect2 rcInAtlas;
-		// 텍스쳐 아틀라스에 pImgSrc를 삽입하고(혹은 아틀라스를 생성) 아틀라스의 아이디를 얻는다. 또한 rect에는 삽입된 위치를 얻는다.
-		// pImgSrc를 아틀라스에 배치하고 텍스쳐아이디와 위치를 얻는다.
-		XE::VEC2 sizeAtlas;
-		m_glTexture = XTextureAtlas::sGet()->ArrangeImg( 0,				// auto glTex id
-																										 &rcInAtlas, 
-																										 pImgSrc, 
-																										 _sizeMemSrc, 
-																										 formatImgSrc, 
-																										 formatSurface,
-																										 &sizeAtlas );
-		if( XBREAK( m_glTexture == 0 ) )
-			return false;
-		// 버텍스버퍼생성.
-		XE::VEC2 uvlt = rcInAtlas.vLT / sizeAtlas;
-		XE::VEC2 uvrb = rcInAtlas.vRB / sizeAtlas;
-		return CreateVertexBuffer2( sizeSurfaceOrig
-																, vAdj
-																, uvlt, uvrb );
-	} else {
+	XBREAK( bUseAtlas );	// 아틀라스를 사용하려면 XSurfaceOpenGL2를 이용해야함.
+// 	if( bUseAtlas ) {
+// 		XBREAK(1);
+// 	} else {
 		// no atlas
 		m_glTexture = GRAPHICS_GL->CreateTextureGL( pImgSrc
 																								, _sizeMemSrc
@@ -155,10 +137,7 @@ bool XSurfaceOpenGL::Create( const XE::POINT& sizeSurfaceOrig
 															 , vAdj
 															 , sizeMemSrc
 															 , sizeMemSrcAligned );
-	}
-	if( bUseAtlas ) {
-	} else {
-	}
+// 	}
 }
 
 // pure virtual
@@ -331,7 +310,8 @@ void XSurfaceOpenGL::DestroyDevice()
 	}
 	// 홈으로 나갈때 자동으로 디바이스 자원은 파괴되지만 m_glTexture등도 클리어 시켜주지 않으면 돌아왔을때 새로 할당한 번호가 겹쳐서 다시 지워버릴 수 있다.
 	if( IsbAtlas() ) {
-		XTextureAtlas::sGet()->Release( m_glTexture );
+		XBREAK(1);
+//		XTextureAtlas::sGet()->Release( m_glTexture );
 	} else {
 		if( m_glTexture ) {
 			glDeleteTextures( 1, &m_glTexture );

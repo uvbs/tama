@@ -51,7 +51,7 @@ public:
 	GET_ACCESSOR( CTimer&, timerLocalMove );
 	virtual void Release() override {}
 	//
-	XEWorld* GetWorld( void );
+	XSPWorld GetWorld( void );
 	/// 타겟이 this보다 오른쪽에 있는가
 	BOOL IsTargetRight( const XE::VEC3& vwDst );
 	XFSMChase* DoChase( const XSPUnit& spTarget, XFSMBase::xtFSM fsmNext );

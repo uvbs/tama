@@ -19,11 +19,11 @@
 	#include "etc/InputMng.h"
 	#include "sound/windows/OpenAL/XSoundMngOpenAL.h"
 #elif defined(_VER_IOS)
-    #include "InputMngiPhone.h"
+		#include "InputMngiPhone.h"
 	#include "XSoundMngOpenAL.h"
 #elif defined(_VER_ANDROID)
-    #include "etc/InputMng.h"
-    #include "Sound/Android/XSoundMngAndroid.h"
+		#include "etc/InputMng.h"
+		#include "Sound/Android/XSoundMngAndroid.h"
 	#include "Sound/Android/XSoundMngAndroid2.h"
 	#include "XFramework/android/com_mtricks_xe_Cocos2dxHelper.h"
 	#include "XFramework/android/JniHelper.h"
@@ -43,6 +43,8 @@
 #include "XFramework/XReceiverCallback.h"
 #include "XHSLMap.h"
 #include "XFramework/XEProfile.h"
+#include "OpenGL2/XRenderCmd.h"
+#include "OpenGL2/XTextureAtlas.h"
 
 //#define _SOUND_TEST
 //#define _BACK_TEST
@@ -98,7 +100,7 @@ void XClientMain::Destroy()
 
 XClientMain::XClientMain()
 {
-    XE::SetApp( this );
+		XE::SetApp( this );
 //	__xLog( XLOGTYPE_LOG, _T("ClientMain:0x%08x"), (DWORD)this );
 	Init();
 #ifdef WIN32
@@ -150,12 +152,12 @@ void XClientMain::Create( XE::xtDevice device,
 	패키지온리로 할수가 없다. 워킹폴더로 한번 카피해서 써야 하는데 패치서버가 붙지 않는이상
 	xLT_WORK_TO_PACKAGE_COPY 는 버전관리가 안되서 무용지물이다. 해결방법 필요함
 	1.개발시에는 약간 느려도 상관없으므로 워크폴더와 패키지의 파일을 상호 비교하는 방법
-	  cks파일이 없으면 
-	    워크폴더파일의 크기와 변경날짜/시간을 같은파일명_확장자.cks파일에 써둔다.
-	  있으면
-	    cks의 정보와 apk내 파일의 정보와 비교해서 달라졌다면
-		  워크폴더로 다시 카피해주고 cks를 갱신한다.
-	  문제는 apk로 파일이 들어갈때 변경시간이 변하는지가 관건..
+		cks파일이 없으면 
+			워크폴더파일의 크기와 변경날짜/시간을 같은파일명_확장자.cks파일에 써둔다.
+		있으면
+			cks의 정보와 apk내 파일의 정보와 비교해서 달라졌다면
+			워크폴더로 다시 카피해주고 cks를 갱신한다.
+		문제는 apk로 파일이 들어갈때 변경시간이 변하는지가 관건..
 
 	*/
 #ifdef WIN32
@@ -190,10 +192,10 @@ void XClientMain::Create( XE::xtDevice device,
 	XTRACE("pGraphicsGL->RestoreDevice();");
 	pGraphicsGL->RestoreDevice();
 	GRAPHICS = pGraphicsGL;
-    XLOGXN("created graphics engine. physize(%dx%d), logsize(%dx%d), logsize(%dx%d)",
-		   wPhy, hPhy,
-		   (int)sizeLogReso.w, (int)sizeLogReso.h,
-		   (int)XE::GetGameWidth(), (int)XE::GetGameHeight() );
+		XLOGXN("created graphics engine. physize(%dx%d), logsize(%dx%d), logsize(%dx%d)",
+			 wPhy, hPhy,
+			 (int)sizeLogReso.w, (int)sizeLogReso.h,
+			 (int)XE::GetGameWidth(), (int)XE::GetGameHeight() );
 #endif
 #ifdef _XDYNA_RESO
 	{
@@ -223,38 +225,38 @@ void XClientMain::Create( XE::xtDevice device,
 #endif // _XDYNA_RESO
 //	XSurface::SetMaxSurfaceWidth( 2048 );	// 나중에 제대로된 값읽어서 세팅하도록 바꿀것
 //    XLOGXN("max surface size: %d", XSurface::GetMaxSurfaceWidth() );
-    //
-    XLOGXN("device:%s", XE::GetDeviceString(device));
+		//
+		XLOGXN("device:%s", XE::GetDeviceString(device));
 #ifdef WIN32
 	INPUTMNG = new XInputMng;
-    XLOGXN("created XInputMng.");
+		XLOGXN("created XInputMng.");
 #endif
 #ifdef _VER_ANDROID
 	INPUTMNG = new XInputMng;
-    XLOGXN("created XInputMng.");
+		XLOGXN("created XInputMng.");
 #endif
 #ifdef _VER_IOS
 	XInputMngiPhone *pInputMng = NULL;
 	if( device == XE::DEVICE_IPAD )
-    {
+		{
 		pInputMng = new XInputMngiPad;
-        XLOGXN("created XInputMngiPad.");
-    }
+				XLOGXN("created XInputMngiPad.");
+		}
 	else
-    {
+		{
 		pInputMng = new XInputMngiPhone;
-        XLOGXN("created XInputMngiPhone.");
-    }
+				XLOGXN("created XInputMngiPhone.");
+		}
 	INPUTMNG = pInputMng;
 	INPUTMNG_IPHONE = pInputMng;
 #endif		// 워킹 폴더를 세팅한다.
-    //
+		//
 #if defined(_VER_IOS) || defined(WIN32)
 	SOUNDMNG = new XSoundMngOpenAL;
 #else
-    SOUNDMNG = new XSoundMngAndroid;
+		SOUNDMNG = new XSoundMngAndroid;
 #endif
-    XLOGXN("created soundmng");
+		XLOGXN("created soundmng");
 	//
 	SOUND_TBL = new XSoundTable;
 	SOUND_TBL->Load( _T("sound.txt") );
@@ -270,13 +272,13 @@ void XClientMain::Create( XE::xtDevice device,
 	SPRMNG = new XSprMng;
 	SPRMNG->OnCreate();
 	FONTMNG = CreateFontMng();		// virtual
-    if( FONTMNG )
-        XLOGXN("creat fontmng.....success");
-    else
-        XLOGXN("creat fontmng.....failed");
-    // 여기서부터 리소스를 읽기 시작하므로 패치 클라이언트가 붙으려면 이곳에서 붙어야 한다.
+		if( FONTMNG )
+				XLOGXN("creat fontmng.....success");
+		else
+				XLOGXN("creat fontmng.....failed");
+		// 여기서부터 리소스를 읽기 시작하므로 패치 클라이언트가 붙으려면 이곳에서 붙어야 한다.
 	// text_ko같은것도 앞으로 이쪽으로 옮겨올 예정이므로 그것도 고려해야함.
-    DidFinishInitEngine();
+		DidFinishInitEngine();
 #ifdef _VER_OPENGL
 	XLOGXN("xFTGL ver: v%d", xFTGL::GetVersion());
 	xFTGL::CreateShader();
@@ -286,7 +288,7 @@ void XClientMain::Create( XE::xtDevice device,
 #ifdef _BACK_TEST
 #else
 	//
-    XLOGXN("create Game.....");
+		XLOGXN("create Game.....");
 	m_pGame = CreateGame();				// virtual 게임 생성
 	if( m_pGame == nullptr ) {
 		XLOGXN( "create game failed" );
@@ -296,10 +298,12 @@ void XClientMain::Create( XE::xtDevice device,
 #endif
 	XBREAK( m_pGame->GetID() != 0 );
 	m_pGame->SetID( XE::GenerateID() );
-	m_pGame->OnCreate();
-	m_pGame->DidFinishCreated();
+	SET_ATLASES( m_pGame->GetpAtlas() ) {
+		m_pGame->OnCreate();
+		m_pGame->DidFinishCreated();
+	} END_ATLASES;
 #endif
-    
+		
 	DidFinishCreate();		// this의 Create가 끝난후 다른 Create가 있다면 하위클래스에 맡긴다.
 	GRAPHICS->ClearScreen( XCOLOR_BLACK );	// 최초 한번은 화면 지워줌
 	
@@ -388,7 +392,7 @@ float XClientMain::CalcDT( void )
 			dt *= m_fAccel;				// 프레임스키핑 적용
 #endif
 	}
-    
+		
 	if( m_bPause )
 		dt = 0;
 #ifdef _CHEAT
@@ -472,7 +476,9 @@ void XClientMain::FrameMove( void )
 
 void XClientMain::OnDelegateFrameMove( float dt ) 
 {
-	m_pGame->Process( dt );
+	SET_ATLASES( m_pGame->GetpAtlas() ) {
+		m_pGame->Process( dt );
+	} END_ATLASES;
 }
 
 void XClientMain::Draw( void )
@@ -506,7 +512,11 @@ void XClientMain::Draw( void )
 	GRAPHICS->ClearScreen( XCOLOR_RGBA( 128, 128, 128, 255 ) );
 #endif
 	if( m_pGame ) {
-		m_pGame->Draw();
+		SET_RENDERER( m_pGame->GetpRenderer() ) {
+			m_pGame->Draw();
+		} END_RENDERER;		// RenderBatch();
+		// 큐에 쌓인 모든 배치렌더러를 한꺼번에 렌더링 한다.
+		XRenderCmdMng::sRenderBatchs();
 	}
 	//
 // 	{
@@ -648,7 +658,7 @@ void XClientMain::OnCheatMode( void )
 
 XFontMng* XClientMain::CreateFontMng( void )
 {
-    return new XFontMng;
+		return new XFontMng;
 }
 
 // 치트모드 인식을 위한.
@@ -783,8 +793,8 @@ void XClientMain::OnPauseHandler( void )
 {
 	// 모든 애니메이션 갱신을 중단한다.
 //	SOUNDMNG->StopBGMusic();	// stop이 아니라 pause를 해야함 
- 	SOUNDMNG->SetbMuteBGM( true );
- 	SOUNDMNG->SetbMuteSound( true );
+	SOUNDMNG->SetbMuteBGM( true );
+	SOUNDMNG->SetbMuteSound( true );
 //	SOUNDMNG->SetBGMMasterVolume( )
 	// 리쥼막기 모드면 홈으로 나갈때 시작으로 돌아가지 않는다.
 // 		SPRMNG->OnPause();

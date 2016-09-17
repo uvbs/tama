@@ -18,6 +18,7 @@ class XBaseItem;
 class XWndProgressBar2;
 class XWndFaceInBattle;
 class XSurface;
+class XWndBatchRender;
 
 XE_NAMESPACE_START( XGAME )
 // 전투시 양측 진영의 모든 정보.
@@ -199,7 +200,7 @@ private:
 	void Release() override;
 	void CreateHeroesFace();
 	int OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 );
-	XWnd* GetpLayerUI();
+	XWndBatchRender* GetpLayerUI();
 };
 
 extern XSceneBattle *SCENE_BATTLE;

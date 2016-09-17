@@ -95,14 +95,24 @@ inline void SafeRelease( Interface **ppInterfaceToRelease ) {
 #endif // WIN32
 #define SET_ACCESSOR( x, y )       inline void Set##y( x t )   { m_##y = t; };
 #define GET_ACCESSOR( x, y )       inline x Get##y()           { return m_##y; };
-#define GET_ACCESSOR_CONST( x, y )       inline x Get##y() const { return m_##y; };
+#define GET_ACCESSOR_CONST( x, y )	inline x Get##y() const { return m_##y; };
+#define GET_ACCESSOR_MUTABLE( x, y )	inline x Get##y##Mutable() { return m_##y; };
 #define GET_SET_ACCESSOR( x, y )   SET_ACCESSOR( x, y ) GET_ACCESSOR( x, y )
 #define GET_SET_ACCESSOR_CONST( x, y )   SET_ACCESSOR( x, y ) GET_ACCESSOR_CONST( x, y )
 #define GET_SHARED_ACCESSOR( x, y )       inline x Get##y() const { return m_##y.lock(); };
 #define GET_SET_SHARED_ACCESSOR( x, y )       SET_ACCESSOR( x, y ) GET_SHARED_ACCESSOR( x, y )
+// shared_ptr전용
 #define GET_ACCESSOR2( x, y ) \
-	inline x Get##y() const { return m_##y; }; \
+	inline x##Const Get##y() const { return m_##y; }; \
 	inline x Get##y##Mutable() { return m_##y; };
+
+#define GET_SET_ACCESSOR2( x, y )   SET_ACCESSOR( x, y ) GET_ACCESSOR2( x, y )
+
+// 일반 포인터용
+#define GET_ACCESSOR_PTR( x, y ) \
+	inline const x Get##y() const { return m_##y; }; \
+	inline x Get##y##Mutable() { return m_##y; };
+#define GET_SET_ACCESSOR_PTR( x, y )   SET_ACCESSOR( x, y ) GET_ACCESSOR_PTR( x, y )
 ///< 
 /**
  @brief type형 m_name변수의 add macro(템플릿 객체형태로 만들면 더 좋을듯.)

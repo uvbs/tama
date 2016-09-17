@@ -5,6 +5,8 @@
 #include "XLegionObj.h"
 #include "XSquadObj.h"
 #include "Sprite/SprObj.h"
+#include "xframework/game/XEWndWorld.h"
+#include "XFramework/Game/XEWorld.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -26,9 +28,9 @@ void XFSMBase::Destroy()
 {
 }
 
-XEWorld* XFSMBase::GetWorld( void ) 
+XSPWorld XFSMBase::GetWorld( void ) 
 {
-	return m_pUnit->GetpWndWorld()->GetpWorld();
+	return m_pUnit->GetpWndWorld()->GetspWorld();
 }
 
 BOOL XFSMBase::IsTargetRight( const XE::VEC3& vwDst ) 

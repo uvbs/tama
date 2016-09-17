@@ -42,7 +42,7 @@ GLuint XGraphicsOpenGL::s_glBlurTexture2 = 0;
 
 namespace XE
 {
-    MATRIX  x_mViewProjection;
+		MATRIX  x_mViewProjection;
 	
 	double x_tblGauss[ 32 ];	//가우시안 테이블의 최대크기
 	int x_lenGaussTable;		// 가우시안 테이블의 실제 크기
@@ -96,17 +96,17 @@ namespace XE
 #endif
 		
 	}
-	
 };
+
 void XE::SetProjection(float wLogicalResolution, float hLogicalResolution)
 {
-    MatrixMakeOrtho(x_mViewProjection, 
-										 0, 
-										 wLogicalResolution, 
-										 hLogicalResolution, 
-										 0, 
-										 1000.0f, 
-										 -1000.0f);
+	MatrixMakeOrtho( x_mViewProjection,
+									 0,
+									 wLogicalResolution,
+									 hLogicalResolution,
+									 0,
+									 1000.0f,
+									 -1000.0f );
 }
 
 
@@ -393,10 +393,10 @@ void XGraphicsOpenGL::RestoreDevice()
 //  	CHECK_GL_ERROR();
 	glDisable( GL_DEPTH_TEST );
 	CHECK_GL_ERROR();
- 	glDepthFunc( GL_GEQUAL );
- 	CHECK_GL_ERROR();
- 	glClearDepthf( -1000.f );
- 	CHECK_GL_ERROR();
+	glDepthFunc( GL_GEQUAL );
+	CHECK_GL_ERROR();
+	glClearDepthf( -1000.f );
+	CHECK_GL_ERROR();
 
 	// 세이더 로딩
 	XTRACE("col tex shader loading....");
@@ -464,9 +464,9 @@ void XGraphicsOpenGL::RestoreFrameBuffer()
 {
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFrameBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, m_defaultRenderBuffer );
+		glBindRenderbuffer(GL_RENDERBUFFER, m_defaultRenderBuffer );
 	glViewport(0, 0, GetPhyScreenWidth(), GetPhyScreenHeight());
-    XE::SetProjection( GetLogicalScreenSize().w, GetLogicalScreenSize().h );
+		XE::SetProjection( GetLogicalScreenSize().w, GetLogicalScreenSize().h );
 }
 
 #pragma mark pure virtual
@@ -478,7 +478,7 @@ void*	XGraphicsOpenGL::ReadBackBuffer( int phywidth, int phyheight, void *pBuffe
 	if( GetPixelFormat() != xPIXELFORMAT_RGB565 )
 		XERROR( "아직은 RGB565포맷만 사용가능함." );
 //	glReadBufferOES( GL_BACK );	// gl1.2 ES엔 없는듯.
-    // gl1.x에선 프론트가 아니고 백버퍼만 읽을수 있는듯 하다. 잘못알고 있었음-_-;;
+		// gl1.x에선 프론트가 아니고 백버퍼만 읽을수 있는듯 하다. 잘못알고 있었음-_-;;
 	glReadPixels(0, 0, phywidth, phyheight, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, pBuffer );
 	return pBuffer;
 }
@@ -503,7 +503,7 @@ void	XGraphicsOpenGL::ScreenToSurface( int x, int y, int width, int height, XSur
 	DWORD *pdwBuffer = new DWORD[ pw * ph ];	
 	glReadPixels(px, py, pw, ph, GL_RGBA, GL_UNSIGNED_BYTE, pdwBuffer );	// 위아래 뒤집혀진 이미지
 	DWORD *pDst = new DWORD[ pw * ph ];
-    // 위아래를 바꿈
+		// 위아래를 바꿈
 	for( int i = 0; i < ph; i ++ )
 		for( int j = 0; j < pw; j ++ )
 			pDst[ i * pw + j ] = pdwBuffer[ (ph-1-i) * pw + j ];	
@@ -550,6 +550,25 @@ XSurface*	XGraphicsOpenGL::CreateSurface( BOOL bHighReso
 	return pSurface;
 }
 
+// XSurface*	XGraphicsOpenGL::CreateSurface2( BOOL bHighReso, 
+// 																					 int srcx, int srcy, 
+// 																					 int srcw, int srch, 
+// 																					 float dstw, float dsth, 
+// 																					 float adjx, float adjy, 
+// 																					 DWORD *pSrcImg, 
+// 																					 BOOL bSrcKeep )
+// {
+// 	auto pSurface = new XSurfaceOpenGL2( bHighReso,
+// 																			srcx, srcy,
+// 																			srcw, srch,
+// 																			(int)dstw, (int)dsth,
+// 																			(int)adjx, (int)adjy,
+// 																			pSrcImg,
+// 																			4,
+// 																			bSrcKeep );
+// 	return pSurface;
+// }
+
 /**
  @brief 구버전
 */
@@ -570,7 +589,7 @@ BOOL XGraphicsOpenGL::LoadImg( LPCTSTR szFilename, int *pWidth, int *pHeight, DW
 {
 	
 	XImage image(TRUE);
-  BOOL bRet = FALSE;
+	BOOL bRet = FALSE;
 	if( image.Load( szFilename ) ) {
 		*pWidth = image.GetMemWidth();
 		*pHeight = image.GetMemHeight();
@@ -580,14 +599,13 @@ BOOL XGraphicsOpenGL::LoadImg( LPCTSTR szFilename, int *pWidth, int *pHeight, DW
 		DWORD **pp = (DWORD **)ppImage;
 		image.MovePtr( pp );
 		*ppImage = (DWORD *)*pp;
-    bRet = TRUE;
+		bRet = TRUE;
 	}
 	return bRet;
 }
 
 void XGraphicsOpenGL::SetViewport( int left, int top, int right, int bottom )
 {
-	
 	XGraphics::SetViewport( left, top, right, bottom );
 	//
 	float ratioX = GetRatioWidth();
@@ -607,7 +625,7 @@ void XGraphicsOpenGL::SetViewport( int left, int top, int right, int bottom )
 }
 void XGraphicsOpenGL::RestoreViewport()
 {
-    SetViewport( m_ptViewportStackLT.x, m_ptViewportStackLT.y, m_ptViewportStackRB.x, m_ptViewportStackRB.y );
+		SetViewport( m_ptViewportStackLT.x, m_ptViewportStackLT.y, m_ptViewportStackRB.x, m_ptViewportStackRB.y );
 }
 #pragma mark Draw tile
 
@@ -635,14 +653,14 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR color
 	CHECK_GL_ERROR();
 	
 	if( w == 0 || h == 0 )	return;
-    if( w < 0 )    {
-        w = -w;     // w는 부호 바꿈
-        x -= w;     // 좌측 좌표를 -w만큼 이동시켜주고
-    }
-    if( h < 0 )    {
-        h = -h;
-        y -= h;
-    }
+		if( w < 0 )    {
+				w = -w;     // w는 부호 바꿈
+				x -= w;     // 좌측 좌표를 -w만큼 이동시켜주고
+		}
+		if( h < 0 )    {
+				h = -h;
+				y -= h;
+		}
 	if( x > GetViewportRight() || y > GetViewportBottom() )
 		return;
 	if( x + w < 0 || y + h < 0 )
@@ -660,24 +678,24 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR color
 						 r,g,b,a,
 						 r,g,b,a,
 						 r,g,b,a	};
-    MATRIX mMVP;
-    MATRIX mModel;
-    MatrixTranslation( mModel, x, y, 0 );
-    MatrixMultiply( mMVP, mModel, XE::x_mViewProjection );
-    GetpColorShader()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
+		MATRIX mMVP;
+		MATRIX mModel;
+		MatrixTranslation( mModel, x, y, 0 );
+		MatrixMultiply( mMVP, mModel, XE::x_mViewProjection );
+		GetpColorShader()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
 
 	glEnable(GL_BLEND);
 #ifdef _XVAO
-    glBindVertexArrayOES( 0 );
+		glBindVertexArrayOES( 0 );
 #endif
-    
+		
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glEnableVertexAttribArray( XE::ATTRIB_POS );
-    glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
+		glEnableVertexAttribArray( XE::ATTRIB_POS );
+		glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
 //    glDisableVertexAttribArray( XE::ATTRIB_TEXTURE );
-    glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-    glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
+		glEnableVertexAttribArray( XE::ATTRIB_COLOR );
+		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	CHECK_GL_ERROR();
@@ -685,7 +703,7 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR color
 
 //	glEnable( GL_TEXTURE_2D );
  
-    
+		
 }
 
 
@@ -699,16 +717,16 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR collt
 #define _XXB(C)	(XCOLOR_RGB_B(C) / 255.0f)
 #define _XXA(C)	(XCOLOR_RGB_A(C) / 255.0f)
 	if( w == 0 || h == 0 )	return;
-    if( w < 0 )
-    {
-        x -= w;     // 좌측 좌표를 -w만큼 이동시켜주고
-        w = -w;     // w는 부호 바꿈
-    }
-    if( h < 0 )
-    {
-        y -= h;
-        h = -h;
-    }
+		if( w < 0 )
+		{
+				x -= w;     // 좌측 좌표를 -w만큼 이동시켜주고
+				w = -w;     // w는 부호 바꿈
+		}
+		if( h < 0 )
+		{
+				y -= h;
+				h = -h;
+		}
 	if( x > GetViewportRight() || y > GetViewportBottom() )
 		return;
 	if( x + w < 0 || y + h < 0 )
@@ -733,25 +751,25 @@ void XGraphicsOpenGL::FillRect( float x, float y, float w, float h, XCOLOR collt
 						 _XXR(colrb), _XXG(colrb),_XXB(colrb),_XXA(colrb),	// 우하
 						 _XXR(collt), _XXG(collt),_XXB(collt),_XXA(collt),	// 좌상
 						 _XXR(colrt), _XXG(colrt),_XXB(colrt),_XXA(colrt)	};	// 우상
-    MATRIX mModel;
-    MATRIX mMVP;
-    MatrixTranslation( mModel, x, y, 0 );
-    MatrixMultiply( mMVP, mModel, XE::x_mViewProjection );
-    GetpColorShader()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
+		MATRIX mModel;
+		MATRIX mMVP;
+		MatrixTranslation( mModel, x, y, 0 );
+		MatrixMultiply( mMVP, mModel, XE::x_mViewProjection );
+		GetpColorShader()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
 //    GetpColorShader()->SetMatrixModel( mModel );
-    
+		
 	glEnable(GL_BLEND);
 //	glDisable( GL_TEXTURE_2D );
 #ifdef _XVAO
-    glBindVertexArray( 0 );
+		glBindVertexArray( 0 );
 #endif
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glDisableVertexAttribArray( XE::ATTRIB_TEXTURE );
-    glEnableVertexAttribArray( XE::ATTRIB_POS );
-    glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
-    glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-    glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
+		glDisableVertexAttribArray( XE::ATTRIB_TEXTURE );
+		glEnableVertexAttribArray( XE::ATTRIB_POS );
+		glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
+		glEnableVertexAttribArray( XE::ATTRIB_COLOR );
+		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	CHECK_GL_ERROR();
@@ -788,26 +806,26 @@ void XGraphicsOpenGL::DrawRect( float x, float y, float w, float h, XCOLOR color
 		r,g,b,a,
 		r,g,b,a,
 		r,g,b,a	};
-    MATRIX mModel;
-    MATRIX mMVP;
-    MatrixTranslation( mModel, x, y, 0 );
-    MatrixMultiply( mMVP, mModel, XE::x_mViewProjection );
-    GetpColorShader()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
+		MATRIX mModel;
+		MATRIX mMVP;
+		MatrixTranslation( mModel, x, y, 0 );
+		MatrixMultiply( mMVP, mModel, XE::x_mViewProjection );
+		GetpColorShader()->SetShader( mMVP, 1.0f, 1.0f, 1.0f, 1.0f );
 //    GetpColorShader()->SetMatrixModel( mModel );
 	glLineWidth( GetLineWidth() );
 //	glDisable( GL_TEXTURE_2D );
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glEnableVertexAttribArray( XE::ATTRIB_POS );
-    glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
-    glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-    glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
+		glEnableVertexAttribArray( XE::ATTRIB_POS );
+		glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
+		glEnableVertexAttribArray( XE::ATTRIB_COLOR );
+		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #ifdef _XVAO
-    glBindVertexArrayOES( 0 );
+		glBindVertexArrayOES( 0 );
 #endif
 	
 	glDrawArrays(GL_LINE_STRIP, 0, 5);
-    
+		
 //	glEnable( GL_TEXTURE_2D );	
 	CHECK_GL_ERROR();
 	
@@ -838,7 +856,7 @@ void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR c
 //	y2 = ((int)y2) - 0.5f;
 	GLfloat pos[4] = { x1, y1, x2, y2 };
 	GLfloat col[8] = {  r,g,b,a,  r,g,b,a	};
-    GetpColorShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
+		GetpColorShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
 //    MATRIX mModel;
 //    MatrixIdentity( mModel );
 //    GetpColorShader()->SetMatrixModel( mModel );
@@ -846,13 +864,13 @@ void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR c
 	glEnable(GL_BLEND);
 //	glDisable( GL_TEXTURE_2D );
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glEnableVertexAttribArray( XE::ATTRIB_POS );
-    glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
-    glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-    glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
+		glEnableVertexAttribArray( XE::ATTRIB_POS );
+		glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
+		glEnableVertexAttribArray( XE::ATTRIB_COLOR );
+		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #ifdef _XVAO
-    glBindVertexArrayOES( 0 );
+		glBindVertexArrayOES( 0 );
 #endif
 	
 	glDrawArrays(GL_LINE_STRIP, 0, 2);
@@ -885,19 +903,19 @@ void XGraphicsOpenGL::DrawLine( float x1, float y1, float x2, float y2, XCOLOR c
 	
 	GLfloat pos[4] = { x1, y1, x2, y2 };
 	GLfloat col[8] = {  r1,g1,b1,a1,  r2,g2,b2,a2	};
-    GetpColorShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
+		GetpColorShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
 	float ratio = GetPhyScreenWidth() / GetLogicalScreenSize().w;
 	float wLine = GetLineWidth() * ratio;
- 	glLineWidth( wLine );
+	glLineWidth( wLine );
 	glEnable(GL_BLEND);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glEnableVertexAttribArray( XE::ATTRIB_POS );
-    glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
-    glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-    glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
+		glEnableVertexAttribArray( XE::ATTRIB_POS );
+		glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
+		glEnableVertexAttribArray( XE::ATTRIB_COLOR );
+		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #ifdef _XVAO
-    glBindVertexArrayOES( 0 );
+		glBindVertexArrayOES( 0 );
 #endif
 	
 	glDrawArrays(GL_LINE_STRIP, 0, 2);
@@ -912,31 +930,31 @@ void XGraphicsOpenGL::DrawLineList( XGraphics::xVERTEX *vList, int numLines )
 	CHECK_GL_ERROR();
 	
 	// 클리핑
-    // 버텍스버퍼를 생성
-    static GLuint s_glVB=0;
-    if( s_glVB == 0 )
-        glGenBuffers( 1, &s_glVB );
-    // 버텍스버퍼에 라인정보 밀어넣음
-    XBREAK( s_glVB == 0 );
-    GetpColorShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
+		// 버텍스버퍼를 생성
+		static GLuint s_glVB=0;
+		if( s_glVB == 0 )
+				glGenBuffers( 1, &s_glVB );
+		// 버텍스버퍼에 라인정보 밀어넣음
+		XBREAK( s_glVB == 0 );
+		GetpColorShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
 //    MATRIX mModel;
 //    MatrixIdentity( mModel );
 //    GetpColorShader()->SetMatrixModel( mModel );
 	glEnable(GL_BLEND);
 //    glDisable( GL_TEXTURE_2D );
-    glBindBuffer( GL_ARRAY_BUFFER, s_glVB );
-    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-    glEnableVertexAttribArray( XE::ATTRIB_POS );
-    glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, sizeof(XGraphics::xVERTEX), 0);
-    glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-    glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(XGraphics::xVERTEX), (GLvoid*)(sizeof(GL_FLOAT)*2));
-    glBufferData( GL_ARRAY_BUFFER, sizeof(XGraphics::xVERTEX) * numLines * 2, vList, GL_DYNAMIC_DRAW );
-    
+		glBindBuffer( GL_ARRAY_BUFFER, s_glVB );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+		glEnableVertexAttribArray( XE::ATTRIB_POS );
+		glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, sizeof(XGraphics::xVERTEX), 0);
+		glEnableVertexAttribArray( XE::ATTRIB_COLOR );
+		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(XGraphics::xVERTEX), (GLvoid*)(sizeof(GL_FLOAT)*2));
+		glBufferData( GL_ARRAY_BUFFER, sizeof(XGraphics::xVERTEX) * numLines * 2, vList, GL_DYNAMIC_DRAW );
+		
 	float ratio = GetPhyScreenWidth() / GetLogicalScreenSize().w;
 	float wLine = GetLineWidth() * ratio;
- 	glLineWidth( wLine );
-    glDrawArrays( GL_LINES, 0, numLines * 2 );
-    
+	glLineWidth( wLine );
+		glDrawArrays( GL_LINES, 0, numLines * 2 );
+		
 //     glEnable( GL_TEXTURE_2D );    
 		CHECK_GL_ERROR();
 		
@@ -1032,44 +1050,44 @@ void XGraphicsOpenGL::DrawPieClip( const XE::VEC2 *pvLines, int numLine, float x
 	
 	// gl버텍스버퍼에 옮김
 	{
-        GLfloat r, g, b, a;
-        r = XCOLOR_RGB_R(color) / 255.0f;
-        g = XCOLOR_RGB_G(color) / 255.0f;
-        b = XCOLOR_RGB_B(color) / 255.0f;
-        a = XCOLOR_RGB_A(color) / 255.0f;
-        
-            GLfloat pos[MAX_VERTEX * 2]={0,};
-            GLfloat col[MAX_VERTEX * 4]={0,};
-        
-    //	float ratioX = (GetRatioWidth()) ;
-    //	float ratioY = (GetRatioHeight());
-        for( int i = 0; i < num+2; i ++ )	// num은 삼각형개수고 +2를 해야 버텍스 개수다
-        {
-            POS(i, _vLists[i].x, _vLists[i].y);
-            COLOR(i,r,g,b,a);
-    //		m_aVertex[i].vPos.x = _vLists[i].x * ratioX;
-    //		m_aVertex[i].vPos.y = _vLists[i].y * ratioY;
-    //		m_aVertex[i].dwColor = color;
-        }
+				GLfloat r, g, b, a;
+				r = XCOLOR_RGB_R(color) / 255.0f;
+				g = XCOLOR_RGB_G(color) / 255.0f;
+				b = XCOLOR_RGB_B(color) / 255.0f;
+				a = XCOLOR_RGB_A(color) / 255.0f;
+				
+						GLfloat pos[MAX_VERTEX * 2]={0,};
+						GLfloat col[MAX_VERTEX * 4]={0,};
+				
+		//	float ratioX = (GetRatioWidth()) ;
+		//	float ratioY = (GetRatioHeight());
+				for( int i = 0; i < num+2; i ++ )	// num은 삼각형개수고 +2를 해야 버텍스 개수다
+				{
+						POS(i, _vLists[i].x, _vLists[i].y);
+						COLOR(i,r,g,b,a);
+		//		m_aVertex[i].vPos.x = _vLists[i].x * ratioX;
+		//		m_aVertex[i].vPos.y = _vLists[i].y * ratioY;
+		//		m_aVertex[i].dwColor = color;
+				}
 	
-        GetpColorShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
+				GetpColorShader()->SetShader( XE::x_mViewProjection, 1.0f, 1.0f, 1.0f, 1.0f );
 //        MATRIX mModel;
 //        MatrixIdentity( mModel );
 //        GetpColorShader()->SetMatrixModel( mModel );
-        
+				
 //         glDisable( GL_TEXTURE_2D );
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glEnableVertexAttribArray( XE::ATTRIB_POS );
-        glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
-        glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-        glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				glEnableVertexAttribArray( XE::ATTRIB_POS );
+				glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos);
+				glEnableVertexAttribArray( XE::ATTRIB_COLOR );
+				glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #ifdef _XVAO
-        glBindVertexArrayOES( 0 );
+				glBindVertexArrayOES( 0 );
 #endif
-        
-        glDrawArrays(GL_TRIANGLE_FAN, 0, num+2);
-        
+				
+				glDrawArrays(GL_TRIANGLE_FAN, 0, num+2);
+				
 //         glEnable( GL_TEXTURE_2D );    
 	}
 	CHECK_GL_ERROR();

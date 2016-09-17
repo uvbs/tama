@@ -68,14 +68,14 @@ void XSceneProcessReady::Draw()
 
 ////////////////////////////////////////////////////////////////
 XSceneProcessBattle::XSceneProcessBattle( XSceneBattle *pScene, 
-								  XBattleField *pWorld )
+																					std::shared_ptr<XBattleField> spWorld )
 	: XSceneProcess( pScene )
 {
 	Init();
 	//
 //	m_aryLegion = aryLegion;
 	// 유닛 인공지능 시작
-	pWorld->OnStartBattle();
+	spWorld->OnStartBattle();
 	CONSOLE("xJC_START_BATTLE");
 }
 

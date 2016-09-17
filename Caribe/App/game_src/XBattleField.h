@@ -32,18 +32,18 @@ public:
 	GET_SET_ACCESSOR( XGAME::xtBattle, typeBattle );
 	XSPLegionObj GetLegionObj( int idx ) const;
 	///< 
-	virtual void Release( void );
-	virtual void DestroyAllObj( void );
+	void Release() override;
+	void DestroyAllObj() override;
 	// 월드좌표를 스크린전체 좌표로 변환한다.
-	virtual XE::VEC2 GetPosWorldToScreen( const XE::VEC3& vwPos ) {
-		return XE::VEC2(0);
-	}
-	// 월드좌표를 윈도우내 로컬좌표로 변환한다.
-	virtual XE::VEC2 GetPosWorldToWindow( const XE::VEC3& vwPos ) {
-		return XE::VEC2( 0 );
-	}
-	virtual int Process( XEWndWorld *pWndWorld, float dt );
-	virtual void Draw( XEWndWorld *pWndWorld );
+// 	virtual XE::VEC2 GetPosWorldToScreen( const XE::VEC3& vwPos ) {
+// 		return XE::VEC2(0);
+// 	}
+// 	// 월드좌표를 윈도우내 로컬좌표로 변환한다.
+// 	virtual XE::VEC2 GetPosWorldToWindow( const XE::VEC3& vwPos ) {
+// 		return XE::VEC2( 0 );
+// 	}
+	int Process( XEWndWorld *pWndWorld, float dt ) override;
+	void Draw( XEWndWorld *pWndWorld ) override;
 	//////////////////////////////////////////////////////////////////////////
 	// SKILL
 // 	XSKILL::XSkillReceiver* GetTarget( ID snObj );
@@ -75,7 +75,7 @@ public:
 	XSPSquad GetSquadBySN( XGAME::xtLegionIdx idxLegion, ID snSquad );
 	void SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit, bool bEnemy );
   void SetAI( bool bFlag );
-	void DrawLegionBar( const XE::VEC2& vPos, int idxLegion );
+	void DrawLegionBar( const XE::VEC2& vPos, int idxLegion ) const;
 	XSPUnit GetHeroUnit( ID idProp );
 	XSPWorldObj AddpObj( XEBaseWorldObj *pNewObj );
 	void SetLootRes( const XVector<XGAME::xRES_NUM>& aryLoots );

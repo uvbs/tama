@@ -234,10 +234,13 @@ void XLayerImage::Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEF
 				param.m_funcBlend = effParam.GetfuncBlend();
 				param.m_adjZ = effParam.m_adjZ;
 //				SetDrawInfoToSpr( pSprObj, pSpr, effParam, &paramRender );
-				if( pSpr->GetpSurface() )
-					pSpr->GetpSurface()->DrawByParam( m, param );
+				if( pSpr->GetpSurface() ) {
+					// 전용 배치렌더러에 렌더명령을 전달한다.
+					pSpr->GetpSurface()->DrawByParam( m, 
+																						param );
 // 				pSpr->Draw( vPos + vLocal, m );
 //				pSpr->Draw( x + lx, y + ly, m );
+				}
 			}
 			if( pDelegate )
 				bDelegateDraw 

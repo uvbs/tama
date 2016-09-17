@@ -161,9 +161,6 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\etc\Token.cpp">
       <Filter>source\etc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\client\XApp.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\XArchive.cpp">
       <Filter>source\etc</Filter>
     </ClCompile>
@@ -266,15 +263,6 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\XBaseFontObj.cpp">
       <Filter>source\font</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XConsoleMain.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\client\XClientMain.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XDBAccount.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Network\android\XBSDSocketClient.cpp">
       <Filter>source\network</Filter>
     </ClCompile>
@@ -286,66 +274,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Network\XDownloadTask.cpp">
       <Filter>source\network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XEBaseProp.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XEBaseScene.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\Game\XEBaseWorldObj.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\client\XEContent.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\_XLibrary\XBaseDelegate.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\XBaseObj.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\Game\XEObjMng.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XESceneMng.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XESceneSlide.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XEToolTip.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\Game\XEWndWorld.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\Game\XEWndWorldImage.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\Game\XEWorld.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\client\XLayout.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\client\XLayoutObj.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\Game\XFLevel.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\XGameUtil.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\XInterpolationObj.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XScroll.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\_XLibrary\XTransition.cpp">
-      <Filter>source\Framework</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Network\XSocket.cpp">
       <Filter>source\network</Filter>
@@ -395,18 +323,6 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\XXMLDoc.cpp">
       <Filter>source\etc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\client\XTimeoutMng.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XFacebook.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\client\XELaserDX.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\XDrawGraph.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid.cpp">
       <Filter>source\sound\android</Filter>
     </ClCompile>
@@ -434,23 +350,11 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\xVector.cpp">
       <Filter>source\etc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XReceiverCallback.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XInApp.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XEOption.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XFontObjFTGL.cpp">
       <Filter>source\font</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XFontDatFTGL.cpp">
       <Filter>source\font</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XParamObj.cpp">
-      <Filter>source\Framework</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL2.cpp">
       <Filter>source\sound</Filter>
@@ -473,9 +377,6 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\XHSLMap.cpp">
       <Filter>source\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\client\XASyncLoad.cpp">
-      <Filter>source\Framework</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\android_xe\CrashHandler.cpp">
       <Filter>source\android</Filter>
     </ClCompile>
@@ -484,9 +385,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XTextureAtlas.cpp">
       <Filter>source\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\XFramework\XSplitNode.cpp">
-      <Filter>source\Framework</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\XGraphicsUtil.cpp">
       <Filter>source\graphics</Filter>
@@ -505,6 +403,117 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL2.cpp">
       <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XBaseDelegate.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\XBaseObj.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XDBAccount.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEBaseProp.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEOption.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XFacebook.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XFLevel.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\XGameUtil.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XInApp.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\XInterpolationObj.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XParamObj.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XReceiverCallback.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XTimeoutMng.cpp">
+      <Filter>source\Framework\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEBaseWorldObj.cpp">
+      <Filter>source\Framework\client\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEObjMng.cpp">
+      <Filter>source\Framework\client\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEWndWorldImage.cpp">
+      <Filter>source\Framework\client\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEWndWorld.cpp">
+      <Filter>source\Framework\client\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XApp.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XASyncLoad.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XClientMain.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XConsoleMain.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\XDrawGraph.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEBaseScene.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XEContent.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XELaserDX.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XESceneMng.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XESceneSlide.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XEToolTip.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEWorld.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XLayout.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XLayoutObj.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XScroll.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\XSplitNode.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\XTransition.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\client\XWndBatchRender.cpp">
+      <Filter>source\Framework\client\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEWndWorldObjs.cpp">
+      <Filter>source\Framework\client\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\XFramework\Game\XEWorldCamera.cpp">
+      <Filter>source\Framework\client\world</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1055,9 +1064,6 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\XReceiverCallbackH.h">
-      <Filter>source\Framework</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XFontObjFTGL.h">
       <Filter>header</Filter>
     </ClInclude>
@@ -1072,9 +1078,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\_Wnd2\XWndH.h">
       <Filter>source\wnd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\Game\XFLevelH.h">
-      <Filter>source\Framework</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Windows\OpenAL\XSoundMngOpenAL2.h">
       <Filter>source\sound</Filter>
@@ -1111,9 +1114,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\xVector.h">
       <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\XFramework\XFType.h">
-      <Filter>source\Framework</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\XFramework\client\XASyncLoad.h">
       <Filter>header</Filter>
@@ -1153,6 +1153,24 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL2.h">
       <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XFLevelH.h">
+      <Filter>source\Framework\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XFType.h">
+      <Filter>source\Framework\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\XReceiverCallbackH.h">
+      <Filter>source\Framework\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\client\XWndBatchRender.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XEWndWorldObjs.h">
+      <Filter>source\Framework\client\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\XFramework\Game\XEWorldCamera.h">
+      <Filter>source\Framework\client\world</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1308,6 +1326,18 @@
     </Filter>
     <Filter Include="android\ftgl">
       <UniqueIdentifier>{f55eee3c-627f-4b50-897f-7cca6e054176}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Framework\client">
+      <UniqueIdentifier>{a1a167bb-a2f1-42c2-bfad-f4bc98acbfc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Framework\game">
+      <UniqueIdentifier>{ca7a472e-c04e-4d5b-8067-10fbc88b8859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Framework\client\world">
+      <UniqueIdentifier>{d4538aa5-2499-4feb-bc86-0d944d5b5cc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\Framework\client\etc">
+      <UniqueIdentifier>{dce4fe82-0609-4659-a4d7-e4a440a78c0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

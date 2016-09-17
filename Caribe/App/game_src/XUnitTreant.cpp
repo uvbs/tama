@@ -5,6 +5,7 @@
 #include "XBattleField.h"
 #include "XEObjMngWithType.h"
 #include "XMsgUnit.h"
+#include "XFramework/Game/XEWndWorld.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

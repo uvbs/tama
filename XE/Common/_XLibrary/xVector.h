@@ -169,33 +169,33 @@ namespace XE
 		
 		//		friend POINT operator * ( int, const POINT& );
 		
-		BOOL operator == ( const POINT& rhs ) const {
+		inline BOOL operator == ( const POINT& rhs ) const {
 			return (x == rhs.x && y == rhs.y );
 		}
-		BOOL operator != ( const POINT& rhs ) const {
+		inline BOOL operator != ( const POINT& rhs ) const {
 			return (x != rhs.x || y != rhs.y );
 		}
-		BOOL IsZero() const {
+		inline BOOL IsZero() const {
 			return (x == 0 && y == 0);
 		}
-		BOOL IsMinus() const {
+		inline BOOL IsMinus() const {
 			return (x == -1 && y == -1 );
 		}
-		BOOL IsHave() const {
+		inline BOOL IsHave() const {
 			return (x > 0 && y > 0);
 		}
-		float Length() const {
+		inline float Length() const {
 			return sqrt( (float)(x * x) + (float)(y * y) );
 		}
-		float Lengthsq() const {
+		inline float Lengthsq() const {
 			return (float)(x * x + y * y);
 		}
-		const POINT& Abs() {
+		inline const POINT& Abs() {
 			x = abs(x);
 			y = abs(y);
 			return *this;
 		}
-		int Size() const {
+		inline int Size() const {
 			return w * h;
 		}
 		VEC2 ToVec2() const;

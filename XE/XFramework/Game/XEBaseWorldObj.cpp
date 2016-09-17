@@ -6,6 +6,7 @@
 #include "XArchive.h"
 #include "Sprite/SprObj.h"
 #include "Sprite/SprDat.h"
+#include "OpenGL2/XRenderCmd.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -18,11 +19,11 @@ static char THIS_FILE[] = __FILE__;
 DWORD XEBaseWorldObj::s_idSerial = 1;
 int XEBaseWorldObj::s_numObj = 0;		// 메모리 릭 추적용
 
-XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, 
-								int type,
-								const XE::VEC3& vPos, 
-								LPCTSTR szImg )
-{ 
+XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld,
+																int type,
+																const XE::VEC3& vPos,
+																LPCTSTR szImg )
+{
 	Init(); 
 	m_Type = type;
 	LoadImage( szImg );
@@ -30,7 +31,10 @@ XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld,
 	m_pWndWorld = pWndWorld;
 }
 
-XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, int type, LPCTSTR szSpr, ID idAct ) 
+XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, 
+																int type, 
+																LPCTSTR szSpr, 
+																ID idAct ) 
 {
 	Init();
 	m_Type = type;
@@ -39,7 +43,11 @@ XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, int type, LPCTSTR szSpr, 
 		LoadSpr( szSpr, idAct );
 }
 
-XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szSpr, ID idAct ) 
+XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, 
+																int type, 
+																const XE::VEC3& vPos, 
+																LPCTSTR szSpr, 
+																ID idAct ) 
 {
 	Init();
 	m_Type = type;
@@ -185,8 +193,8 @@ XE::xRECT XEBaseWorldObj::GetBoundBoxWindow( void )
 {
 	XBREAK( m_pWndWorld == NULL );
 	XE::xRECT rect = GetBoundBoxWorld();
-	rect.vLT = m_pWndWorld->GetPosWorldToWindow( rect.vLT );
-	rect.vRB = m_pWndWorld->GetPosWorldToWindow( rect.vRB );
+	rect.vLT = m_pWndWorld->GetPosWorldToWindow( rect.vLT, nullptr );
+	rect.vRB = m_pWndWorld->GetPosWorldToWindow( rect.vRB, nullptr );
 	return rect;
 }
 

@@ -393,7 +393,7 @@ class XWndStatistic : public XWndPopup
 	void Destroy();
 public:
 	XWndStatistic( XSPLegionObj spLegionObj1, XSPLegionObj spLegionObj2 );
-	virtual ~XWndStatistic() { Destroy(); }
+	~XWndStatistic() { Destroy(); }
 	//
 	void CreateHerosUI( XWnd *pRoot, XSPLegionObj spLegionObj, float max, xtStatistic type, XGAME::xtSide side );
 	void Update() override;
@@ -427,7 +427,7 @@ private:
 	void Destroy() {}
 	void Update();
 // 	XWnd* UpdateRootLayout( bool *pOutbCreated );
- 	void UpdateSlotBase( XWnd* pWndRoot );
+	void UpdateSlotBase( XWnd* pWndRoot );
 	void UpdateSlotLock( XWnd* pWndRoot );
 	void UpdateSlotEmpty( XWnd* pWndRoot );
 	void UpdateSlotLvUp( XWnd* pWndRoot );
@@ -562,9 +562,9 @@ public:
 	XWndPaymentByCash( LPCTSTR szMsg, LPCTSTR szTitle = nullptr );
 	virtual ~XWndPaymentByCash() { Destroy(); }
 	//
-  XWnd* GetBuyButton() {
-    return Find("butt.buy");
-  }
+	XWnd* GetBuyButton() {
+		return Find("butt.buy");
+	}
 	void Update() override;
 	void SetTime( xSec secLack );
 	void SetAP( int apLack );

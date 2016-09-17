@@ -28,6 +28,7 @@
 #include "XMsgUnit.h"
 #include "XFramework/XFType.h"
 #include "XFramework/XEProfile.h"
+#include "XFramework/Game/XEWndWorld.h"
 #include "sprite/SprObj.h"
 
 
@@ -145,7 +146,7 @@ XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
 											BIT bitCamp,
 											const XE::VEC3& vPos,
 											float multipleAbility )
-	: XEBaseWorldObj( XWndBattleField::sGet(), XGAME::xOT_UNIT, vPos )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_UNIT, vPos )
 	, XSkillReceiver( 32, XGAME::xMAX_PARAM, XGAME::xST_MAX )
 	, XSkillUser( SKILL_MNG )
 	, m_vLocalFromSquad(vPos - spSquadObj->GetvwPos())
@@ -244,7 +245,9 @@ void XBaseUnit::OnCreate()
 			// 적 유닛의 경우만 2버전을 쓴다. 영웅은 2버전이 없다.
 			strSpr = strTitle + _T( "2.spr" );
 		}
-	LoadSpr( strSpr.c_str(), hsl, ACT_IDLE1 );
+	LoadSpr( strSpr.c_str(), 
+					 hsl, 
+					 ACT_IDLE1 );
 #else
 	if( m_Camp == XGAME::xSIDE_OTHER &&	// 상대편만 해당
 		GetidProp() <= XGAME::xUNIT_FALLEN_ANGEL ) {	// 유닛만 해당
@@ -426,7 +429,7 @@ void XBaseUnit::FrameMove( float dt )
 	}
 	++m_Count;
 	XEBaseWorldObj::FrameMove( dt );
-	auto pWorld = GetpWndWorld()->GetpWorld();
+	auto pWorld = GetpWndWorld()->GetspWorld();
 	if( pWorld ) {
 		auto size = pWorld->GetvwSize();
 		auto vwPos = GetvwPos();
@@ -1769,8 +1772,8 @@ void XBaseUnit::DoAttackTargetByBind( const XSPUnit& spTarget, BOOL bFirstDash )
 
 void XBaseUnit::DoDirToTarget( const XE::VEC3& vwDst )
 {
-	auto vsDst = GetpWndWorld()->GetPosWorldToWindow( vwDst );
-	auto vsThis = GetpWndWorld()->GetPosWorldToWindow( GetvwPos() );
+	auto vsDst = GetpWndWorld()->GetPosWorldToWindow( vwDst, nullptr );
+	auto vsThis = GetpWndWorld()->GetPosWorldToWindow( GetvwPos(), nullptr );
 //	if( vwDst.x > GetvwPos().x )
 	if( vsDst.x > vsThis.x )
 		SetDir( XE::HDIR_RIGHT );

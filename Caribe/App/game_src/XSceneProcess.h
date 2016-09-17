@@ -39,6 +39,7 @@ public:
 	int Process( float dt );
 	void Draw() override;
 };
+
 ////////////////////////////////////////////////////////////////
 class XSceneProcessBattle : public XSceneProcess
 {
@@ -48,7 +49,8 @@ class XSceneProcessBattle : public XSceneProcess
 
 	void Destroy();
 public:
-	XSceneProcessBattle( XSceneBattle *pScene, XBattleField *pWorld );
+	XSceneProcessBattle( XSceneBattle *pScene, 
+											 std::shared_ptr<XBattleField> spWorld );
 	virtual ~XSceneProcessBattle() { Destroy(); }
 	;
 	int Process( float dt );

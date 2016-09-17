@@ -7,6 +7,8 @@
 #ifdef _XASYNC_SPR
 #include "Sprite/SprMng.h"
 #endif // _XASYNC_SPR
+#include "OpenGL2/XRenderCmd.h"
+#include "OpenGL2/XTextureAtlas.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -20,10 +22,13 @@ XEContent* XEContent::s_pInstance = nullptr;
 
 XEContent::XEContent() 
 	: XWnd( 0, 0, (int)XE::GetGameWidth(), (int)XE::GetGameHeight() ) 
+	, m_pRenderer( new XRenderCmdMng( __FUNCTION__ ) )
+	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
 {
 	s_pInstance = this;
 	Init();
 	SetbTouchable( FALSE );	// 게임 윈도우 자체는 터치이벤트를 발생시키지 않는다.
+	XTextureAtlas::_sSetpCurrMng( m_pAtlas );
 }
 XWnd* XEContent::GetpRootScene()
 {
@@ -54,7 +59,7 @@ BOOL XEContent::RestoreDevice()
 {
 //   m_pfdSystem->RestoreDevice();
 //   m_pfdSystemSmall->RestoreDevice();
-  return XWnd::RestoreDevice();
+	return XWnd::RestoreDevice();
 }
 
 void XEContent::DestroySystemFont()
@@ -150,3 +155,22 @@ int XEContent::Process( float dt )
 	return XWnd::Process( dt );
 }
 
+// void XEContent::SetCurrRenderer()
+// {
+// 	XRenderCmdMng::sSetpCurrRenderer( m_pRenderer );
+// }
+// 
+// void XEContent::ClearCurrRenderer()
+// {
+// 	XRenderCmdMng::sSetpCurrRenderer( nullptr );
+// }
+// 
+// void XEContent::SetCurrAtlas()
+// {
+// 	XTextureAtlas::sSetpCurrMng( m_pAtlas );
+// }
+// 
+// void XEContent::ClearCurrAtlas()
+// {
+// 	XTextureAtlas::sSetpCurrMng( nullptr );
+// }

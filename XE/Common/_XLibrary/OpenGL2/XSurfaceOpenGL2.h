@@ -122,16 +122,17 @@ public:
 	void DrawCore( void );
 	//	void DrawCoreAlpha( void );
 	void DrawCoreSub( float x, float y, const RECT *src );
-	inline void Draw( float x, float y ) {
+	void Draw( float x, float y ) override {
 		MATRIX m;
 		MatrixIdentity( m );
 		Draw( x, y, m );
 	}
-	void Draw( float x, float y, const MATRIX &mParent );
+	void Draw( float x, float y, const MATRIX &mParent ) override;
 	void DrawLocal( float x, float y, float lx, float ly );
-	inline void Draw( const XE::VEC2& vPos ) {
-		Draw( vPos.x, vPos.y );
-	}
+// 	void Draw( const XE::VEC2& vPos ) {
+// 		XBREAK( 1 );
+// 		// 		Draw( vPos.x, vPos.y );
+// 	}
 	void DrawSub( float x, float y, const XE::xRECTi *src ) override;
 	void Fill( XCOLOR col );
 	void SetTexture( void ) override;

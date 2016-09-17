@@ -302,6 +302,7 @@ public:
 //	virtual XSurface* CreateSurface( BOOL bHighReso );
 	XSurface* CreateSurface() override;
 	XSurface* CreateSurface2() override;
+//	XSurface* CreateSurface2( BOOL bHighReso, int srcx, int srcy, int srcw, int srch, float dstw, float dsth, float adjx, float adjy, DWORD *pSrcImg, BOOL bSrcKeep ) override;
 	// 이미지의 일부분만 서피스로 만드는 버전
 	virtual BOOL LoadImg( LPCTSTR szFilename, int *pWidth, int *pHeight, DWORD **ppImage );
 	virtual XSurface*	CreateSurface( BOOL bHighReso, int srcx, int srcy, int srcw, int srch, float dstw, float dsth, float adjx, float adjy, DWORD *pSrcImg, BOOL bSrcKeep );

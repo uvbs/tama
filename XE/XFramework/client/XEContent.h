@@ -4,6 +4,7 @@
 #include "_Wnd2/XWnd.h"
 #include "XClientMain.h"
 #include "XFramework/XReceiverCallbackH.h"
+// #include "XFramework/client/XWndBatchRender.h"
 
 #define XGAME_SIZE		XE::GetGameSize()
 
@@ -14,6 +15,9 @@ class XEBaseScene;
 class XEContent;
 class XWndView;
 class XWndDarkBg;
+class XRenderCmdMng;
+class XTextureAtlas;
+//
 class XEContent : public XWnd
 {
 public:
@@ -26,11 +30,14 @@ private:
 	XBaseFontDat *m_pfdSystemSmall = nullptr;		// 기본 시스템 폰트(작은거)
 	bool m_bTouched = false;		// 터치가 되어있는 상태인가
 	bool m_bDraging = false;		// 드래깅중인가.
+	XRenderCmdMng* m_pRenderer = nullptr;
+	XTextureAtlas* m_pAtlas = nullptr;
 	void Init() {
 		m_pfdSystem = NULL;
 		m_pfoSystem = NULL;
 	}
 	void Destroy();
+protected:
 public:
 	XEContent();
 	virtual ~XEContent() {
@@ -41,6 +48,8 @@ public:
 	GET_ACCESSOR( XBaseFontDat*, pfdSystemSmall );
 	GET_BOOL_ACCESSOR( bDraging );
 	GET_BOOL_ACCESSOR( bTouched );
+	GET_ACCESSOR( XTextureAtlas*, pAtlas );
+	GET_ACCESSOR( XRenderCmdMng*, pRenderer );
 	//
 	BOOL OnCreate();
 	virtual void DidFinishCreated() = 0;
@@ -80,6 +89,10 @@ public:
 	int __OnClickTooltip( XWnd* pWnd, DWORD p1, DWORD p2 );
 	virtual void OnClickTooltip( XWnd* pWnd ) {}
 	virtual int Process( float dt ) override;
+// 	void SetCurrRenderer();
+// 	void ClearCurrRenderer();
+// 	void SetCurrAtlas();
+// 	void ClearCurrAtlas();
 	virtual void OnLButtonDown( float lx, float ly ) override;
 	virtual void OnLButtonUp( float lx, float ly ) override;
 	virtual void OnMouseMove( float lx, float ly ) override;

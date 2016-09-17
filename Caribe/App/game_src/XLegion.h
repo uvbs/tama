@@ -66,7 +66,7 @@ public:
 private:
 	ID m_snLegion;
 	XHero *m_pLeader = nullptr;		// 널이 될수 있음.
-	XArrayN< XSquadron*, XGAME::MAX_SQUAD > m_arySquadrons;	// 중대 리스트
+	XVector< XSquadron*> m_arySquadrons;	// 중대 리스트
 	XList4<XSquadron*> m_listFogs;
 	XGAME::xtGradeLegion m_gradeLegion = XGAME::xGL_NORMAL;
 	float m_RateHp = 1.f;	// 인게임전투시 유닛들에게 곱해질 hp배율
@@ -75,34 +75,23 @@ private:
 	void Init() {
 		m_snLegion = 0;
 		m_snLegion = XE::GenerateID();
-		XARRAYN_LOOP_IDX( m_arySquadrons, XSquadron*, i, pSquad ) {
-			m_arySquadrons[ i ] = NULL;
-		} END_LOOP;
 	}
 	void Destroy();
 public:
 	XLegion();
-	XLegion( ID snLegion ) { 
+	XLegion( ID snLegion )
+		: m_arySquadrons( XGAME::MAX_SQUAD ) {
 		Init();
 		m_snLegion = snLegion;
 	}
-	virtual ~XLegion() { Destroy(); }
+	~XLegion() { Destroy(); }
 	//
-	XArrayN< XSquadron*, XGAME::MAX_SQUAD >& GetarySquadrons( void ) {
-		return m_arySquadrons;
-	}
-	int GetSquadronToAry( XVector<XSquadron*>* pOut ) const {
-		pOut->clear();
-		const int num = m_arySquadrons.GetMax();
-		for( int i = 0; i < num; ++i ) {
-			pOut->Add( m_arySquadrons.At(i) );
-		}
-		return pOut->Size();
-	}
-	GET_ACCESSOR( ID, snLegion );
+	GET_ACCESSOR( const XVector<XSquadron*>&, arySquadrons );
+//	int GetSquadronToAry( XVector<XSquadron*>* pOut ) const;
+	GET_ACCESSOR_CONST( ID, snLegion );
 	GET_SET_ACCESSOR( XHero*, pLeader );
-	GET_ACCESSOR( XGAME::xtGradeLegion, gradeLegion );
-	GET_ACCESSOR( const std::vector<ID>&, aryResourceHero );
+	GET_ACCESSOR_CONST( XGAME::xtGradeLegion, gradeLegion );
+	GET_ACCESSOR_CONST( const std::vector<ID>&, aryResourceHero );
 	int GetPower() const;
 	void SetAryResource( std::vector<ID>& arySrc ) {
 		m_aryResourceHero = arySrc;
@@ -116,8 +105,8 @@ public:
 // 		else if( gradeLegion == XGAME::xGL_RAID )
 // 			m_RateHp = 100.f;
 	}
-	GET_SET_ACCESSOR( float, RateHp );
-	GET_SET_ACCESSOR( float, RateAtk );
+	GET_SET_ACCESSOR_CONST( float, RateHp );
+	GET_SET_ACCESSOR_CONST( float, RateAtk );
 	void Serialize( XArchive& ar );
 	void SerializeFull( XArchive& ar );
 	BOOL DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion );
@@ -145,8 +134,8 @@ public:
 		return SetSquadron( idx, pSq, xboolToBOOL(bCreateHero) ) != FALSE;
 	}
 	XSquadron* GetSquadronByHeroSN( ID snHero ) const;
-	int GetSquadronIdxByHeroSN( ID snHero );
-	inline int GetIdxSquadByHeroSN( ID snHero ) {
+	int GetSquadronIdxByHeroSN( ID snHero ) const;
+	inline int GetIdxSquadByHeroSN( ID snHero ) const {
 		return GetSquadronIdxByHeroSN( snHero );
 	}
 	BOOL SwapSlotSquad( XHero *pHeroSrc, XHero *pHeroDst );
@@ -166,9 +155,9 @@ public:
 	void ClearResourceSquad();
 	int GetNumDeadSquadByResourceSquad();
 	bool IsSettedResourceSquad();
-	bool IsResourceSquad( ID snHeroSrc );
+	bool IsResourceSquad( ID snHeroSrc ) const;
 	void MakeFogs( int numVisible = 3 );
-	bool IsFog( ID snHero );
+	bool IsFog( ID snHero ) const;
 	void ClearFogs() {
 		m_listFogs.clear();
 	}
@@ -188,7 +177,7 @@ public:
 	inline int GetMaxSquadSlot() const {
 		return m_arySquadrons.GetMax();
 	}
-	float GethpMaxEach( ID snSquadHero, bool bHero );
+	float GethpMaxEach( ID snSquadHero, bool bHero ) const;
 //	bool IsValid() const;
 	bool IsNpc() const;
 };

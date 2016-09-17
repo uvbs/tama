@@ -4,6 +4,7 @@
 #include "XWndBattleField.h"
 #include "XSquadObj.h"
 #include "XFramework/XEProfile.h"
+#include "XFramework/Game/XEWndWorld.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

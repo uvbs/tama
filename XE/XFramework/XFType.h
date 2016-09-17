@@ -8,6 +8,7 @@
 #pragma once
 
 class XEBaseWorldObj;
+class XEWorld;
 
 typedef std::shared_ptr<XEBaseWorldObj> XSPWorldObj;
 typedef std::weak_ptr<XEBaseWorldObj> XSPWorldObjW;
@@ -17,5 +18,6 @@ struct xDat;
 typedef std::shared_ptr<xDat> XSPDat;
 typedef std::shared_ptr<const xDat> XSPDatConst;
 }
-
+typedef std::shared_ptr<XEWorld> XSPWorld;
+typedef std::shared_ptr<const XEWorld> XSPWorldConst;
 //#define XSPWorldObj WorldObjPtr

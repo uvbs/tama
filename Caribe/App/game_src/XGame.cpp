@@ -290,7 +290,7 @@ void XGame::DidFinishCreated()
 	CreateGameResource();
 #endif 
 	// 디폴트 프로핈하진 읽음.
-	m_psfcProfile = IMAGE_MNG->Load( true, PATH_UI("fb_empty.png"), XE::xPF_RGB565 );
+	m_psfcProfile = IMAGE_MNG->Load( PATH_UI("fb_empty.png"), XE::xPF_RGB565 );
 	//
 	m_timerSec.Set( 3.f );
 	m_timerMin.Set( xMIN_TO_SEC(1) );
@@ -837,11 +837,11 @@ void XGame::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat* pFontDat 
 {
 	XEContent::DrawDebugInfo( x, y, col, pFontDat );
 #ifdef _CHEAT
-	if( XAPP->m_idxViewAtlas >= 0 ) {
-		auto idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
-		if( idTex )
-			GRAPHICS_GL->DrawTexture( idTex, 0, 0, 356.f, 356.f, FALSE );
-	}
+// 	if( XAPP->m_idxViewAtlas >= 0 ) {
+// 		auto idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
+// 		if( idTex )
+// 			GRAPHICS_GL->DrawTexture( idTex, 0, 0, 356.f, 356.f, FALSE );
+// 	}
 #endif // _CHEAT
 }
 
@@ -2461,27 +2461,27 @@ int XGame::OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 )
 #ifdef _CHEAT
 	CONSOLE("%s", __TFUNC__);
 	//
-	auto fmtAtlas = XE::xPF_NONE;
-	ID idTex = 0;
-	if( p1 == 0 ) {
-		if( XAPP->m_idxViewAtlas >= 0 )
-			--XAPP->m_idxViewAtlas;
-		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
-		idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas  );
-	} else
-		if( p1 == 1 ) {
-			if( XAPP->m_idxViewAtlas < XTextureAtlas::sGet()->GetnumAtlas() - 1 )
-				++XAPP->m_idxViewAtlas;
-			fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
-			idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
-		}
-	if( p1 == 0 || p1 == 1 ) {
-		CONSOLE( "Atlas=(%d/%d), fmt=%s idTex=%d",
-						 XAPP->m_idxViewAtlas,
-						 XTextureAtlas::sGet()->GetnumAtlas(),
-						 XE::GetstrPixelformat( fmtAtlas ),
-						 idTex );
-	}
+// 	auto fmtAtlas = XE::xPF_NONE;
+// 	ID idTex = 0;
+// 	if( p1 == 0 ) {
+// 		if( XAPP->m_idxViewAtlas >= 0 )
+// 			--XAPP->m_idxViewAtlas;
+// 		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
+// 		idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas  );
+// 	} else
+// 		if( p1 == 1 ) {
+// 			if( XAPP->m_idxViewAtlas < XTextureAtlas::sGet()->GetnumAtlas() - 1 )
+// 				++XAPP->m_idxViewAtlas;
+// 			fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
+// 			idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
+// 		}
+// 	if( p1 == 0 || p1 == 1 ) {
+// 		CONSOLE( "Atlas=(%d/%d), fmt=%s idTex=%d",
+// 						 XAPP->m_idxViewAtlas,
+// 						 XTextureAtlas::sGet()->GetnumAtlas(),
+// 						 XE::GetstrPixelformat( fmtAtlas ),
+// 						 idTex );
+// 	}
 
 #endif // _CHEAT
 	return 1;

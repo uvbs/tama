@@ -173,6 +173,7 @@ XSurface* XImageMng::_Load( bool bHighReso
 													, bool bMakeMask
 													, bool bAsync )
 {
+	bAsync = false;		// 일단 버그수정을 위해 동기로딩만.
 	const _tstring strRes = _szRes;
 	// 이미 로딩한것인지 이미지풀에서 szRes로 찾아봄
 	{
@@ -187,7 +188,7 @@ XSurface* XImageMng::_Load( bool bHighReso
 	}
 //	AXLOGXN("XImageMng::Load(%s)", szRes);
 	if( bAsync ) {
-		auto pSurface = GRAPHICS->CreateSurface();
+		auto pSurface = GRAPHICS->CreateSurface2();
 		if( XASSERT(pSurface) ) {		// 이건 빈 객체만 만드는거기땜에 반드시 있어야 함.
 			xImage img;
 			img.m_strRes = strRes;
@@ -216,7 +217,7 @@ XSurface* XImageMng::_Load( bool bHighReso
 		auto pSurface = GRAPHICS->CreateSurface( bHighReso, 
 																						 szLangPath, 
 																						 format, 
-																						 false,			// ui는 일단 아틀라스를 사용하지 않기로
+																						 true,		// atlas
 																						 bSrcKeep, 
 																						 bMakeMask,
 																						 bAsync );			// async
@@ -229,7 +230,7 @@ XSurface* XImageMng::_Load( bool bHighReso
 			pSurface = GRAPHICS->CreateSurface( bHighReso, 
 																					strRes.c_str(), 
 																					format, 
-																					false,
+																					true,
 																					bSrcKeep, 
 																					bMakeMask,
 																					bAsync );
@@ -402,7 +403,6 @@ void XImageMng::DoFlushCache()
  .한 프로세스에 하나의 파일만 읽는다.
  @param bTouching 현재 터치중인지
 */
-
 void XImageMng::Process( bool bTouching )
 {
 	if( bTouching )
@@ -420,7 +420,7 @@ void XImageMng::Process( bool bTouching )
 			auto _pSurface = GRAPHICS->CreateSurface( pFirst->m_bHighReso, 
 																								szLangPath, 
 																								pFirst->m_Format, 
-																								false, 
+																								true,		// atlas
 																								pFirst->m_bSrcKeep, 
 																								pFirst->m_bMakeMask,
 																								false );	// 비동기로 생성중이므로 false로 넘겨야 지금즉시 로딩함.
@@ -432,7 +432,7 @@ void XImageMng::Process( bool bTouching )
 				_pSurface = GRAPHICS->CreateSurface( pFirst->m_bHighReso, 
 																						 strRes.c_str(), 
 																						 pFirst->m_Format, 
-																						 false, 
+																						 true, 
 																						 pFirst->m_bSrcKeep, 
 																						 pFirst->m_bMakeMask,
 																						 false );

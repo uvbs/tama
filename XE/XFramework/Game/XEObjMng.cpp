@@ -134,7 +134,7 @@ void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 		if( dt > 0 )
 			pObj->FrameMove( dt );
 		//
-		XE::VEC2 vlPos = pWndWorld->GetPosWorldToWindow( pObj->GetvwPos() );
+		XE::VEC2 vlPos = pWndWorld->GetPosWorldToWindow( pObj->GetvwPos(), nullptr );
 		// 화면에서 벗어나서 삭제됨을 체크해줄것을 요청한다.
 		if( pObj->DelegateOutOfBoundary( vlPos ) )
 			pObj->SetDestroy( 1 );
@@ -142,8 +142,8 @@ void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 			pObj->Release();
 			// 하위상속 객체에 파괴됨을 알린다.
 			OnDestroyObj( pObj );		// virtual
-			if( pWndWorld->GetpWorld() )
-				pWndWorld->GetpWorld()->OnDestroyObj( pObj );
+			if( pWndWorld->GetspWorld() )
+				pWndWorld->GetspWorld()->OnDestroyObj( pObj );
 			{
 				auto itorMap = m_mapObj.find( pObj->GetsnObj() );
 				if( XASSERT(itorMap != m_mapObj.end()) ) {

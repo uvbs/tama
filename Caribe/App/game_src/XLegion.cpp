@@ -1058,6 +1058,7 @@ XLegion* XLegion::sCreateDeserializeFull( XArchive& ar )
 // }
 //////////////////////////////////////////////////////////////////////////
 XLegion::XLegion() 
+	: m_arySquadrons( XGAME::MAX_SQUAD )
 { 
 	Init(); 
 }
@@ -1353,11 +1354,11 @@ XSquadron* XLegion::GetSquadronByHeroSN( ID snHero ) const
 {
 	int size = m_arySquadrons.GetMax();
 	for( int i = 0; i < size; ++i ) {
-		const auto pSquad = m_arySquadrons.At(i);
+		const auto pSquad = m_arySquadrons[i];
 		if( pSquad ) {
 			auto pHero = pSquad->GetpHero();
 			if( pHero->GetsnHero() == snHero )
-				return m_arySquadrons.At(i);
+				return m_arySquadrons.at(i);
 		}
 	}
 	return nullptr;
@@ -1366,7 +1367,7 @@ XSquadron* XLegion::GetSquadronByHeroSN( ID snHero ) const
 /**
  @brief 영웅sn번호로 슬롯 인덱스를 얻는다.
 */
-int XLegion::GetSquadronIdxByHeroSN( ID snHero )
+int XLegion::GetSquadronIdxByHeroSN( ID snHero ) const
 {
 	int size = m_arySquadrons.GetMax();
 	for( int i = 0; i < size; ++i )
@@ -1838,7 +1839,7 @@ bool XLegion::IsSettedResourceSquad()
 	return m_aryResourceHero.size() > 0;
 }
 
-bool XLegion::IsResourceSquad( ID snHeroSrc )
+bool XLegion::IsResourceSquad( ID snHeroSrc ) const
 {
 	for( auto snHero : m_aryResourceHero )
 		if( snHero == snHeroSrc )
@@ -1875,7 +1876,7 @@ int XLegion::GetMaxFogs( int numVisible )
 /**
  @brief snHero부대가 현재 안개로 덮혀있는가.
 */
-bool XLegion::IsFog( ID snHero )
+bool XLegion::IsFog( ID snHero ) const
 {
 	for( auto pSquad : m_listFogs ) {
 		if( XASSERT(pSquad) )
@@ -1952,7 +1953,7 @@ bool XLegion::ChangeHeroInSquad( XHero *pHeroFrom, XHero *pHeroTo )
  @brief snSquadHero가 영웅으로 있는 부대의 유닛 개별 hp를 얻는다. 
  @param bHero 그 부대의 영웅유닛의 hp를 얻는다.
 */
-float XLegion::GethpMaxEach( ID snSquadHero, bool bHero )
+float XLegion::GethpMaxEach( ID snSquadHero, bool bHero ) const
 {
 	auto pHero = GetpHeroBySN( snSquadHero );
 	if( XBREAK( pHero == nullptr) )
@@ -2010,7 +2011,7 @@ float XLegion::GethpMaxEach( ID snSquadHero, bool bHero )
 bool XLegion::IsNpc() const
 {
 	for( int i = 0; i < m_arySquadrons.GetMax(); ++i ) {
-		const auto pSquad = m_arySquadrons.At(i);
+		const auto pSquad = m_arySquadrons.at(i);
 		if( pSquad ) {
 			if( !pSquad->IsNpc() )
 				return false;
@@ -2018,3 +2019,16 @@ bool XLegion::IsNpc() const
 	}
 	return true;
 }
+
+// int XLegion::GetSquadronToAry( XVector<XSquadron*>* pOut ) const 
+// {
+// 	pOut->clear();
+// 	for( auto pSquadron : m_arySquadrons ) {
+// 		pOut->Add()
+// 	}
+// 	const int num = m_arySquadrons.GetMax();
+// 	for( int i = 0; i < num; ++i ) {
+// 		pOut->Add( m_arySquadrons[i] );
+// 	}
+// 	return pOut->Size();
+// }

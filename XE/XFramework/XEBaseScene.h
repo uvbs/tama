@@ -8,7 +8,7 @@
  @brief 
  브릿지 씬의 정의
 	다이나믹 브릿지씬.
-   병영씬에서 월드씬으로 넘어간다고 했을때 직관적인 설계는 로딩씬을 제외하면 편하다.
+	 병영씬에서 월드씬으로 넘어간다고 했을때 직관적인 설계는 로딩씬을 제외하면 편하다.
 	 그래서 이벤트에 의해 씬과 씬사이를 이동할때는 로딩씬을 신경쓰지 않고 할수 있도록 지원해주고
 	 로딩씬이 필요한씬만 별도로 플래그를 줘서 시스템이 자동으로 브릿지씬을 삽입시켜주고 브릿지씬이
 	 끝나면 다음으로 갈 씬과 파라메터를 그대로 토스 해주는 방식으로 한다.
@@ -21,6 +21,9 @@
 class XEBaseScene;
 class XEContent;
 class XESceneMng;
+class XRenderCmdMng;
+class XTextureAtlas;
+//
 class XEBaseScene : public XWnd
 {
 private:
@@ -35,6 +38,8 @@ private:
 	XLua *m_pLua;
 	bool m_bBridge = false;			/// 브릿지씬(로딩씬같은)속성이냐(위 설명참조)
 	ID m_idBridgeNextScene = 0;		/// 이 씬이 끝날때 불리게 될 씬의 아이디
+	XRenderCmdMng* m_pRenderer = nullptr;
+	XTextureAtlas* m_pAtlas = nullptr;
 #ifdef _DEBUG
 	XE::VEC2 m_vMouse;
 #endif

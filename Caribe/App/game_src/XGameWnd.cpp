@@ -1142,7 +1142,8 @@ void XWndStatistic::CreateHerosUI( XWnd *pRoot, XSPLegionObj spLegionObj, float 
 	for( auto pSquad : spLegionObj->GetpStatObj()->GetlistSquads() )
 	{
 		auto pHero = pSquad->pHero;
-		auto pWndHero = new XWndInvenHeroElem( pHero, spLegionObj->GetspLegion().get() );
+		auto pWndHero = new XWndInvenHeroElem( pHero, 
+																					 spLegionObj->GetspLegionMutable().get() );
 		pWndHero->SetUnitFace();
 		if( side == XGAME::xSIDE_PLAYER )
 			pWndHero->SetPosLocal( XE::VEC2( 0, y ) );

@@ -81,7 +81,6 @@ private:
 		XSprObj* m_pSprObj = nullptr;
 	};
 	DWORD m_dwID;												// 이 오브젝트만의고유한 아이디
-//	xSpr::XSPDatConst m_spDat;
 	xSpr::XSPDat m_spDat;
 	XSprObj *m_pParentSprObj;		// this가 자식이면 부모포인터를 가리킨다
 	XDelegateSprObj *m_pDelegate;		// 델리게이트

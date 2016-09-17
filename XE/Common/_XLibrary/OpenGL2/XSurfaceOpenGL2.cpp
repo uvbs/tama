@@ -49,16 +49,16 @@ XSurfaceOpenGL2::XSurfaceOpenGL2( BOOL bHighReso
 		: XSurface( bHighReso )	{
 	Init();
 	auto sizeDstMem = XE::POINT( dstw, dsth ) * 2;
-	XSurface::CreateSub( XE::POINT(srcx, srcy)
-				, sizeDstMem // XE::POINT(memDstw, memDsth)
-				, XE::POINT(srcw,srch)
-				, _pSrcImg
-				, XE::xPF_ARGB8888
-				, XE::VEC2(dstw, dsth)
-				, XE::VEC2(adjx, adjy)
-				, XE::xPF_ARGB4444
-				, bSrcKeep != FALSE
-				, false );
+	XSurface::CreateSub( XE::POINT( srcx, srcy )
+											 , sizeDstMem // XE::POINT(memDstw, memDsth)
+											 , XE::POINT( srcw, srch )
+											 , _pSrcImg
+											 , XE::xPF_ARGB8888
+											 , XE::VEC2( dstw, dsth )
+											 , XE::VEC2( adjx, adjy )
+											 , XE::xPF_ARGB4444
+											 , bSrcKeep != FALSE
+											 , false );
 }
 
 void XSurfaceOpenGL2::Init()
@@ -127,13 +127,15 @@ bool XSurfaceOpenGL2::Create( const XE::POINT& sizeSurfaceOrig
 		// 텍스쳐 아틀라스에 pImgSrc를 삽입하고(혹은 아틀라스를 생성) 아틀라스의 아이디를 얻는다. 또한 rect에는 삽입된 위치를 얻는다.
 		// pImgSrc를 아틀라스에 배치하고 텍스쳐아이디와 위치를 얻는다.
 		XE::VEC2 sizeAtlas;
-		m_glTexture = XTextureAtlas::sGet()->ArrangeImg( 0,				// auto glTex id
-																										 &rcInAtlas, 
-																										 pImgSrc, 
-																										 _sizeMemSrc, 
-																										 formatImgSrc, 
-																										 formatSurface,
-																										 &sizeAtlas );
+		XBREAK( XTextureAtlas::sGetpCurrMng() == nullptr );
+		auto pAtlasMng = XTextureAtlas::sGetpCurrMng();
+		m_glTexture = pAtlasMng->ArrangeImg( 0,				// auto glTex id
+																				 &rcInAtlas,
+																				 pImgSrc,
+																				 _sizeMemSrc,
+																				 formatImgSrc,
+																				 formatSurface,
+																				 &sizeAtlas );
 		if( XBREAK( m_glTexture == 0 ) )
 			return false;
 		// 버텍스버퍼생성.
@@ -330,7 +332,9 @@ void XSurfaceOpenGL2::DestroyDevice()
 	}
 	// 홈으로 나갈때 자동으로 디바이스 자원은 파괴되지만 m_glTexture등도 클리어 시켜주지 않으면 돌아왔을때 새로 할당한 번호가 겹쳐서 다시 지워버릴 수 있다.
 	if( IsbAtlas() ) {
-		XTextureAtlas::sGet()->Release( m_glTexture );
+		auto pAtlasMng = XTextureAtlas::sGetpCurrMng();	// 현재 아틀라스와 실제 m_glTexture가 있는 텍스쳐가 일치하지 않을 수 있음.
+		XBREAK( pAtlasMng == nullptr );
+		pAtlasMng->Release( m_glTexture );
 	} else {
 		if( m_glTexture ) {
 			glDeleteTextures( 1, &m_glTexture );
@@ -484,6 +488,8 @@ void XSurfaceOpenGL2::sSetglBlendFunc( XE::xtBlendFunc funcBlend,
 void XSurfaceOpenGL2::DrawByParam( const MATRIX &mParent,
 																	 const XE::xRenderParam& paramRender ) const
 {
+	if( XBREAK( XRenderCmdMng::sGetpCurrRenderer() == nullptr ) )
+		return;
 	if( GetsizeMem().w == 0 || GetsizeMem().h == 0 ) {
 		// 비동기상태로 로딩을 기다리고 있는 중.
 		return;
@@ -535,10 +541,12 @@ void XSurfaceOpenGL2::DrawByParam( const MATRIX &mParent,
 					cmd.m_pShader = GRAPHICS_GL->GetpShaderColTex();
 				}
 			}
+			cmd.m_ltViewport = GRAPHICS->GetViewportLT().ToPoint();
+			cmd.m_sizeViewport = GRAPHICS->GetViewportSize().ToPoint();
 			//			cmd.m_bAlphaTest = paramRender.m_bAlphaTest;
 //			cmd.m_bAlphaTest = GRAPHICS->IsbAlphaTest();
 			//Batch명령 push
-			XRenderCmdMng::sGet()->PushCmd( cmd );
+			XRenderCmdMng::sGetpCurrRenderer()->PushCmd( cmd );
 		}
 	} while( 0 );
 }

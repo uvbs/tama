@@ -377,7 +377,7 @@ XSPSquad XBattleField::GetSquadBySN( XGAME::xtLegionIdx idxLegion, ID snSquad )
 //	return m_aryLegion[idxLegion]->GetSquadBySN( snSquad );
 }
 
-void XBattleField::DrawLegionBar( const XE::VEC2& vPos, int idxLegion )
+void XBattleField::DrawLegionBar( const XE::VEC2& vPos, int idxLegion ) const
 {
 	auto spLegionObj = GetLegionObj( idxLegion );
 	if( spLegionObj )
