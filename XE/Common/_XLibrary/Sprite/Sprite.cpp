@@ -22,7 +22,7 @@ XSprite::XSprite( int idx ) {
 	Init();
 	m_idxSprite = idx;
 	// 배치렌더버전으로 바뀜
-	m_pSurface = GRAPHICS->CreateSurface2();
+	m_pSurface = GRAPHICS->CreateSurfaceAtlasBatch();
 }
 
 void XSprite::Destroy( void )

@@ -7,6 +7,7 @@
 #include "XSoundMng.h"
 #include "XFramework/client/XEContent.h"
 #include "XFramework/XEProfile.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

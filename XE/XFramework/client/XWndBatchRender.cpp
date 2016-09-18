@@ -21,9 +21,9 @@ static char THIS_FILE[] = __FILE__;
 // }
 
 ////////////////////////////////////////////////////////////////
-XWndBatchRender::XWndBatchRender( const char* cTag )
-	: m_pRenderer( new XRenderCmdMng( cTag ) )
-	, m_pAtlas( new XTextureAtlas( cTag ) )
+XWndBatchRender::XWndBatchRender( const char* cTag, bool bBatchRender )
+	: m_pAtlas( new XTextureAtlas( cTag ) )
+	, m_pRenderer( (bBatchRender)? new XRenderCmdMng( cTag ) : nullptr )
 {
 	Init();
 }
@@ -35,12 +35,19 @@ BOOL XWndBatchRender::OnCreate()
 
 void XWndBatchRender::Destroy()
 {
+	SAFE_DELETE( m_pAtlas );
 	SAFE_DELETE( m_pRenderer );
 }
+
+// void XWndBatchRender::AttatchBatchRenderer()
+// {
+// 	m_pRenderer = new XRenderCmdMng( )
+// }
 
 int XWndBatchRender::Process( float dt )
 {
 	int ret = 0;
+	XBREAK( m_pAtlas == nullptr );
 	SET_ATLASES( m_pAtlas )	{
 		ret = XWnd::Process( dt );
 	} END_ATLASES;
@@ -50,9 +57,13 @@ int XWndBatchRender::Process( float dt )
 void XWndBatchRender::Draw()
 {
 	// 이 레이어에 속한 모든 UI는 일괄렌더링을 한다.
-	SET_RENDERER( m_pRenderer )	{
+	if( m_pRenderer ) {
+		SET_RENDERER( m_pRenderer ) {
+			XWnd::Draw();
+		} END_RENDERER;
+	} else {
 		XWnd::Draw();
-	} END_RENDERER;
+	}
 }
 
 // void XWndBatchRender::SetCurrAtlas()

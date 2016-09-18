@@ -11,6 +11,7 @@
 #include "skill/XSkillDat.h"
 #include "skill/XESkillMng.h"
 #include "_Wnd2/XWndSprObj.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

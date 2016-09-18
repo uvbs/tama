@@ -28,6 +28,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+using namespace XE;
 //#define _XDEBUG_SURFACE
 
 #ifdef _XDEBUG_SURFACE
@@ -60,7 +61,7 @@ XSurfaceOpenGL::XSurfaceOpenGL( BOOL bHighReso
 				, false );
 }
 
-void XSurfaceOpenGL::Init( void )
+void XSurfaceOpenGL::Init()
 {
 	m_glTexture = 0;
 	m_format = xPIXELFORMAT_NONE;
@@ -71,7 +72,7 @@ void XSurfaceOpenGL::Init( void )
 #endif
 }
 
-void XSurfaceOpenGL::Destroy( void )
+void XSurfaceOpenGL::Destroy()
 {
 	S_TRACE("destroy Surface: %d,%d,%d - %.1f x %.1f", m_glTexture,
 																										m_glVertexBuffer,
@@ -80,7 +81,7 @@ void XSurfaceOpenGL::Destroy( void )
 	DestroyDevice();
 }
 
-void XSurfaceOpenGL::ClearDevice( void )
+void XSurfaceOpenGL::ClearDevice()
 {
 	m_glTexture = 0;
 	m_glVertexBuffer = 0;
@@ -198,13 +199,13 @@ typedef struct tagSTRUCT_VERTEX_SURFACE{
 	GLfloat x[2];//, y;
 	GLfloat t[2];//u, tv;
 	GLfloat c[4];// r,g,b,a;
-} STRUCT_VERTEX_SURFACE;
+} xVertexNoBatch;
 
 // 인수는 2^정렬에 비율 리사이징까지된것.
 /**
  @brief this에 디바이스 버텍스버퍼 객체를 생성한다.
 */
-xRESULT XSurfaceOpenGL::CreateVertexBuffer( float surfaceW, float surfaceH
+bool XSurfaceOpenGL::CreateVertexBuffer( float surfaceW, float surfaceH
 																					, const float _adjx, const float _adjy
 																					, int memw, int memh
 																					, int alignW, int alignH )
@@ -218,7 +219,7 @@ xRESULT XSurfaceOpenGL::CreateVertexBuffer( float surfaceW, float surfaceH
 	float v = (float)memh / alignH;
 	XBREAK( u < 0 || u > 1.0f );
 	XBREAK( v < 0 || v > 1.0f );
-	const STRUCT_VERTEX_SURFACE vertices[4] = {
+	const xVertexNoBatch vertices[4] = {
 		adjx, surfaceH + adjy,		0, v,  1.0f, 1.0f, 1.0f, 1.0f,	// left/bottom
 		surfaceW + adjx, surfaceH + adjy,u, v,  1.0f, 1.0f, 1.0f, 1.0f,  // right/bottom
 		adjx, adjy,					0, 0,  1.0f, 1.0f, 1.0f, 1.0f,		// left/top
@@ -235,9 +236,9 @@ xRESULT XSurfaceOpenGL::CreateVertexBuffer( float surfaceW, float surfaceH
 	glGenBuffers( 1, &m_glVertexBuffer );
 	glGenBuffers( 1, &m_glIndexBuffer );
 	if( XBREAK( m_glVertexBuffer == 0 ) )
-		return xFAIL;
+		return false;
 	if( XBREAK( m_glIndexBuffer == 0 ) )
-		return xFAIL;
+		return false;
 
 	glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
 	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
@@ -249,54 +250,54 @@ xRESULT XSurfaceOpenGL::CreateVertexBuffer( float surfaceW, float surfaceH
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }
 
-	return xSUCCESS;
+	return true;
 } // CreateVertexBuffer
 
-bool XSurfaceOpenGL::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
-																					const XE::VEC2& vAdj,
-																					const XE::VEC2& uvlt,
-																					const XE::VEC2& uvrb ) {
-	
-	const float u = uvlt.x;		// 아틀라스내 좌상귀
-	const float v = uvlt.y;
-	const float u2 = uvrb.x;		// 아틀라스내 우하귀
-	const float v2 = uvrb.y;
-	XBREAK( u < 0 || u > 1.0f );
-	XBREAK( v < 0 || v > 1.0f );
-	XBREAK( u2 < 0 || u2 > 1.0f );
-	XBREAK( v2 < 0 || v2 > 1.0f );
-	const STRUCT_VERTEX_SURFACE vertices[4] =	{
-		vAdj.x, sizeSurface.h + vAdj.y,		u, v2,  1.0f, 1.0f, 1.0f, 1.0f,	// left/bottom
-		sizeSurface.w + vAdj.x, sizeSurface.h + vAdj.y, u2, v2,  1.0f, 1.0f, 1.0f, 1.0f,  // right/bottom
-		vAdj.x, vAdj.y,					u, v,  1.0f, 1.0f, 1.0f, 1.0f,		// left/top
-		sizeSurface.w + vAdj.x, vAdj.y,		u2, v,  1.0f, 1.0f, 1.0f, 1.0f	// right/top
-	};
-	static GLubyte indices[4] = { 0, 1, 2, 3 };
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
-
-#ifdef _XVAO
-	glGenVertexArraysOES( 1, &m_idVertexArray );
-	glBindVertexArrayOES( m_idVertexArray );
-#endif
-	glGenBuffers( 1, &m_glVertexBuffer );
-	glGenBuffers( 1, &m_glIndexBuffer );
-	if( XBREAK( m_glVertexBuffer == 0 ) )
-		return xFAIL;
-	if( XBREAK( m_glIndexBuffer == 0 ) )
-		return xFAIL;
-	glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
-	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
-	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( indices ), indices, GL_STATIC_DRAW );
-
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-	glBindBuffer( GL_ARRAY_BUFFER, 0 );
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
-
-	return xSUCCESS;
-} // CreateVertexBuffer2
+// bool XSurfaceOpenGL::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
+// 																					const XE::VEC2& vAdj,
+// 																					const XE::VEC2& uvlt,
+// 																					const XE::VEC2& uvrb ) {
+// 	
+// 	const float u = uvlt.x;		// 아틀라스내 좌상귀
+// 	const float v = uvlt.y;
+// 	const float u2 = uvrb.x;		// 아틀라스내 우하귀
+// 	const float v2 = uvrb.y;
+// 	XBREAK( u < 0 || u > 1.0f );
+// 	XBREAK( v < 0 || v > 1.0f );
+// 	XBREAK( u2 < 0 || u2 > 1.0f );
+// 	XBREAK( v2 < 0 || v2 > 1.0f );
+// 	const STRUCT_VERTEX_SURFACE vertices[4] =	{
+// 		vAdj.x, sizeSurface.h + vAdj.y,		u, v2,  1.0f, 1.0f, 1.0f, 1.0f,	// left/bottom
+// 		sizeSurface.w + vAdj.x, sizeSurface.h + vAdj.y, u2, v2,  1.0f, 1.0f, 1.0f, 1.0f,  // right/bottom
+// 		vAdj.x, vAdj.y,					u, v,  1.0f, 1.0f, 1.0f, 1.0f,		// left/top
+// 		sizeSurface.w + vAdj.x, vAdj.y,		u2, v,  1.0f, 1.0f, 1.0f, 1.0f	// right/top
+// 	};
+// 	static GLubyte indices[4] = { 0, 1, 2, 3 };
+// 	{ auto glErr = glGetError();
+// 	XASSERT( glErr == GL_NO_ERROR ); }
+// 
+// #ifdef _XVAO
+// 	glGenVertexArraysOES( 1, &m_idVertexArray );
+// 	glBindVertexArrayOES( m_idVertexArray );
+// #endif
+// 	glGenBuffers( 1, &m_glVertexBuffer );
+// 	glGenBuffers( 1, &m_glIndexBuffer );
+// 	if( XBREAK( m_glVertexBuffer == 0 ) )
+// 		return bool;
+// 	if( XBREAK( m_glIndexBuffer == 0 ) )
+// 		return xFAIL;
+// 	glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
+// 	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+// 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
+// 	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( indices ), indices, GL_STATIC_DRAW );
+// 
+// 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+// 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+// 	{ auto glErr = glGetError();
+// 	XASSERT( glErr == GL_NO_ERROR ); }
+// 
+// 	return xSUCCESS;
+// } // CreateVertexBuffer2
 
 void XSurfaceOpenGL::DestroyDevice()
 {
@@ -343,7 +344,7 @@ void XSurfaceOpenGL::DestroyDevice()
  파일로 로딩한게 아니었다면 pSrcImg로 복원하고
  그것마저 없다면 에러를 낸다.
  */
-void XSurfaceOpenGL::RestoreDevice( void )
+void XSurfaceOpenGL::RestoreDevice()
 {
 	
 	XE::VEC2 vSize;
@@ -383,7 +384,7 @@ void XSurfaceOpenGL::RestoreDevice( void )
  최초 이 서피스가 png로부터 생성된것이라 해도 소스이미지와 png파일은 같다는 가정하에
  png를 다시 읽지 않기위해 소스이미지로만 읽는다.
 */
-void XSurfaceOpenGL::RestoreDeviceFromSrcImg( void )
+void XSurfaceOpenGL::RestoreDeviceFromSrcImg()
 {
 	XE::POINT sizeMem;
 	DWORD *pSrcImg = GetSrcImg( &sizeMem );
@@ -433,6 +434,49 @@ void XSurfaceOpenGL::CopySurface( XSurface *src )
 
 
 #pragma mark Draw
+void XSurfaceOpenGL::DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const
+{
+	if( GetsizeMem().w == 0 || GetsizeMem().h == 0 ) {
+		// 비동기상태로 로딩을 기다리고 있는 중.
+		return;
+	}
+	//	XBREAK( GetsizeMem().IsZero() );
+	CHECK_GL_ERROR();
+	do {
+		const auto blend = paramRender.m_funcBlend;
+		if( blend != xBF_NO_DRAW ) {
+			glEnable( GL_BLEND );
+			const auto funcBlend = paramRender.m_funcBlend;
+			GLenum glsFactor, gldFactor;
+			sSetglBlendFunc( funcBlend, (GLenum*)&glsFactor, (GLenum*)&gldFactor );
+			glBlendFunc( glsFactor, gldFactor );
+			if( blend == xBF_SUBTRACT ) {
+				glBlendEquation( GL_FUNC_REVERSE_SUBTRACT );
+			} else {
+				glBlendEquation( GL_FUNC_ADD );
+			}
+			CHECK_GL_ERROR();
+			MATRIX mWorld;
+			paramRender.GetmTransform( &mWorld );
+			MatrixMultiply( mWorld, mWorld, mParent );
+			MATRIX mMVP;
+			MatrixMultiply( mMVP, mWorld, XE::x_mViewProjection );
+			if( XSurface::IsInViewport( 0, 0, mWorld ) == FALSE )
+				break;
+			// 현재 쉐이더를 얻어온다
+			XShader *pShader = XGraphicsOpenGL::sGetShader();
+			if( blend == xBF_GRAY )
+				pShader = GRAPHICS_GL->GetpGrayShader();
+			const auto vColor = paramRender.m_vColor;
+			pShader->SetShader( mMVP, vColor );
+			CHECK_GL_ERROR();
+			DrawCore();
+		}
+	} while( 0 );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	CHECK_GL_ERROR();
+}
+
 /**
  @brief 
 */
@@ -461,7 +505,6 @@ void XSurfaceOpenGL::Draw( float x, float y, const MATRIX &mParent )
 			else
 			if( GetDrawMode() == xDM_SUBTRACT ) {
 				glBlendFunc (GL_ONE, GL_ONE);
-				//glBlendEquation (GL_FUNC_SUBTRACT);
 				glBlendEquation (GL_FUNC_REVERSE_SUBTRACT);
 			}
 			{ auto glErr = glGetError();
@@ -480,26 +523,19 @@ void XSurfaceOpenGL::Draw( float x, float y, const MATRIX &mParent )
 			const auto vColor = Getv4Color();
 //			pShader->SetShader( mMVP,  m_ColorR, m_ColorG, m_ColorB, m_fAlpha );
 			pShader->SetShader( mMVP, vColor );
-			{ auto glErr = glGetError();
-			XASSERT( glErr == GL_NO_ERROR ); }
 
-// 			if( m_fAlpha < 1.0f ) {
-// 				DrawCoreAlpha();
-// 			} else {		
-				DrawCore();		
-// 			}
+			DrawCore();		
 		}
 	} while(0);
 	XSurface::ClearAttr();
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
 }
 
 /*
 매트릭스 변환이 없는 코어버전.
 */
-void XSurfaceOpenGL::DrawCore( void )
+void XSurfaceOpenGL::DrawCore() const
 {
 #ifdef _XPROFILE
 	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
@@ -518,33 +554,33 @@ void XSurfaceOpenGL::DrawCore( void )
 	XBREAK( m_idVertexArray == 0 );
     glBindVertexArrayOES( m_idVertexArray );
 #endif
-		{ auto glErr = glGetError();
-		XASSERT( glErr == GL_NO_ERROR ); }
+		CHECK_GL_ERROR();
 		// bind vertex/index buffer
 		glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
 		glEnableVertexAttribArray( XE::ATTRIB_POS );
-		glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, x ) );
+		glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, sizeof( xVertexNoBatch ), (void*)offsetof( xVertexNoBatch, x ) );
 		glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
-		glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, t ) );
+		glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, sizeof( xVertexNoBatch ), (void*)offsetof( xVertexNoBatch, t ) );
 		glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, c ) );
+		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof( xVertexNoBatch ), (void*)offsetof( xVertexNoBatch, c ) );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
-		{ auto glErr = glGetError();
-		XASSERT( glErr == GL_NO_ERROR ); }
+		CHECK_GL_ERROR();
 		// bind texture
 #ifdef _XPROFILE
 		if( !(XGraphics::s_dwDraw & XE::xeBitNoTexture) )
 #endif // _XPROFILE
+		{
 			XGraphicsOpenGL::sBindTexture( m_glTexture );
-		{ auto glErr = glGetError();
-		XASSERT( glErr == GL_NO_ERROR ); }
+		}
+		CHECK_GL_ERROR();
 
 #ifdef _XPROFILE
 		if( !(XGraphics::s_dwDraw & XE::xeBitNoDP) )
 #endif // _XPROFILE
+		{
 			glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
-		{ auto glErr = glGetError();
-		XASSERT( glErr == GL_NO_ERROR ); }
+		}
+		CHECK_GL_ERROR();
 
 }
 
@@ -738,7 +774,7 @@ void*	XSurfaceOpenGL::Lock( int *pMemW, BOOL bReadOnly)
 	return GetSrcImg( &w, &h );
 }
 
-void XSurfaceOpenGL::SetTexture( void )
+void XSurfaceOpenGL::SetTexture()
 {
 	XGraphicsOpenGL::sBindTexture( m_glTexture );
 }
@@ -901,12 +937,12 @@ void XSurfaceOpenGL::DrawBlur( float x, float y, const MATRIX &mParent )
 #endif
 	glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
 	glEnableVertexAttribArray( XE::ATTRIB_POS );
-	glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, x ) );
+	glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, sizeof( xVertexNoBatch ), (void*)offsetof( xVertexNoBatch, x ) );
 	glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
-	glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, t ) );
+	glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, sizeof( xVertexNoBatch ), (void*)offsetof( xVertexNoBatch, t ) );
 
 	glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-	glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, c ) );
+	glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof( xVertexNoBatch ), (void*)offsetof( xVertexNoBatch, c ) );
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
 
 	{

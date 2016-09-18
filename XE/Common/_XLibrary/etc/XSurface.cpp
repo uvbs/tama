@@ -316,7 +316,7 @@ void XSurface::CopyRectTo( DWORD *pDst, int wDst, int hDst, int xSrc, int ySrc )
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef _CLIENT
 
-BOOL XSurface::IsInViewport( float x, float y, const MATRIX &mTM )
+BOOL XSurface::IsInViewport( float x, float y, const MATRIX &mTM ) const
 {
 	XE::VEC2 vLT = XE::VEC2( x, y ) + XE::VEC2(m_AdjustX, m_AdjustY);
 	XE::VEC2 vRB = XE::VEC2( x+GetWidth(), y+GetHeight() );
@@ -350,7 +350,7 @@ BOOL XSurface::IsInViewport( float x, float y, const MATRIX &mTM )
 	return TRUE;
 }
 
-BOOL XSurface::IsInViewport( float x, float y, float w, float h )
+BOOL XSurface::IsInViewport( float x, float y, float w, float h ) const
 {
 	XE::VEC2 vLT = XE::VEC2( x, y );
 	XE::VEC2 vRB = XE::VEC2( x + w * m_fScaleX, y + h * m_fScaleY );
@@ -485,4 +485,32 @@ void XSurface::SetDrawMode( xDM_TYPE drawMode )
 // 	default:
 // 		break;
 // 	}
+}
+void XSurface::sSetglBlendFunc( XE::xtBlendFunc funcBlend,
+																GLenum *pOutsfactor,
+																GLenum *pOutdfactor )
+{
+	switch( funcBlend ) {
+	case XE::xBF_NONE:
+		XBREAK( 1 );
+		*pOutsfactor = 0;
+		*pOutdfactor = 0;
+		break;
+	case XE::xBF_NO_DRAW:
+	case XE::xBF_GRAY:
+	case XE::xBF_MULTIPLY:
+		*pOutsfactor = GL_SRC_ALPHA;
+		*pOutdfactor = GL_ONE_MINUS_SRC_ALPHA;
+		break;
+	case XE::xBF_ADD:
+		*pOutsfactor = GL_SRC_ALPHA;
+		*pOutdfactor = GL_ONE;
+		break;
+	case XE::xBF_SUBTRACT:
+		*pOutsfactor = GL_ONE;
+		*pOutdfactor = GL_ONE;
+		break;
+	default:
+		break;
+	}
 }

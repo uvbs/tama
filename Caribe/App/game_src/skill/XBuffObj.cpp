@@ -2,6 +2,7 @@
 #include "xSkill.h"
 #include "XEffect.h"
 #include "XESkillMng.h"
+#include "XImageMng.h"
 
 
 #ifdef WIN32

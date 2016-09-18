@@ -82,19 +82,7 @@ private:
 		m_vScaleItemImg.Set( 1.f );
 	}
 
-	void Destory() {
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcBgGradation );
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcNameBg );
-		SAFE_RELEASE2(IMAGE_MNG, m_pBG);
-		SAFE_RELEASE2(IMAGE_MNG, m_pItemImg);
-		XARRAYLINEARN_LOOP_AUTO( m_aryStar, pImg ) {
-			SAFE_RELEASE2( IMAGE_MNG, pImg );
-		} END_LOOP;
-		SAFE_RELEASE2(IMAGE_MNG, m_psfcSelected);
-//		SAFE_RELEASE2(IMAGE_MNG, m_pNumImg);
-//		SAFE_RELEASE2(IMAGE_MNG, m_slotLock);
-		SAFE_RELEASE2(IMAGE_MNG, m_pSoulStone);
-	}
+	void Destory();
 
 public:
 	XWndStoragyItemElem( const XE::VEC2& vPos );

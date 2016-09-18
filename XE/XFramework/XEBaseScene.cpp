@@ -19,7 +19,7 @@ static char THIS_FILE[] = __FILE__;
 
 XEBaseScene::XEBaseScene( XEContent *pGame, ID idScene, BOOL bTransition ) 
 	: XWnd( 0.f, 0.f, XE::GetGameWidth(), XE::GetGameHeight() )
-	, m_pRenderer( new XRenderCmdMng(__FUNCTION__) )
+// 	, m_pRenderer( new XRenderCmdMng(__FUNCTION__) )
 	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
 { 
 	Init(); 
@@ -36,7 +36,7 @@ XEBaseScene::XEBaseScene( XEContent *pGame, ID idScene, BOOL bTransition )
 */
 XEBaseScene::XEBaseScene( XEContent *pGame, const std::string& idsScene, bool bTransition )
 	: XWnd( 0.f, 0.f, XE::GetGameWidth(), XE::GetGameHeight() )
-	, m_pRenderer( new XRenderCmdMng( __FUNCTION__ ) )
+// 	, m_pRenderer( new XRenderCmdMng( __FUNCTION__ ) )
 	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
 {
 	Init();
@@ -63,7 +63,6 @@ void XEBaseScene::Destroy()
 */
 int XEBaseScene::Process( float dt ) 
 { 
-// 	auto pPrev = XTextureAtlas::sSetpCurrMng( m_pAtlas );
 	SET_ATLASES( m_pAtlas ) {
 		if( m_pTransition && m_pTransition->GetbDestroy() )
 			SAFE_DELETE( m_pTransition );
@@ -149,11 +148,11 @@ void XEBaseScene::DoExit( ID idSceneNext, SceneParamPtr spParam/*=NULL*/ )
 //
 void XEBaseScene::Draw( void ) 
 {
-	SET_RENDERER( m_pRenderer ) {
+//  	SET_RENDERER( m_pRenderer ) {
 		XWnd::Draw();
 		if( m_pTransition )
 			m_pTransition->Draw();
-	} END_RENDERER;
+// 	} END_RENDERER;
 }
 void XEBaseScene::DrawTransition( void )
 {

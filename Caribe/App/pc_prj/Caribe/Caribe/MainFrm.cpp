@@ -45,6 +45,7 @@
 #include "XSceneBattle.h"
 #include "XFramework/XEProfile.h"
 #endif // _XPROFILE
+#include "XImageMng.h"
 
 
 // #ifdef _DEBUG

@@ -76,12 +76,18 @@ public:
 		}
 		s_bCaptureBackBuffer = FALSE;
 	}
+	// 배치렌더 서피스로 생성하도록 활성화 한다.
+	static bool sSetEnableBatchLoading( bool bFlag ) {
+		auto bPrev = s_bBatchLoading;
+		s_bBatchLoading = bFlag;
+		return bPrev;
+	}
+	static bool sIsEnableBatchLoading() {
+		return s_bBatchLoading;
+	}
 	static DWORD s_dwDraw;
-	// 	static XSPLock GetspLock() {
-	// 		return s_spLock;
-	// 	}
-	//	static XSPLock s_spLock;
 private:
+	static bool s_bBatchLoading;			// 배치렌더 서피스로 로딩하도록 활성화
 	bool m_bEnableZBuff = false;
 	bool m_bAlphaTest = false;		// 알파테스트 쉐이더 사용
 	int m_Priority = 0;			// 다음 draw의 찍기 우선순위. 값이 클수록 먼저 찍는다.
@@ -438,7 +444,8 @@ public:
 	// 	friend class XSprite;
 	//	virtual XSurface* CreateSurface( BOOL bHighReso ) = 0;
 	virtual XSurface* CreateSurface() = 0;
-	virtual XSurface* CreateSurface2() = 0;
+	virtual XSurface* CreateSurfaceAtlasBatch() = 0;
+	virtual XSurface* CreateSurfaceAtlasNoBatch() = 0;
 	virtual XSurface* CreateSurface( BOOL bHighReso
 																	 , float w, float h
 																	 , float adjx, float adjy

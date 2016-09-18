@@ -38,7 +38,7 @@ private:
 	XLua *m_pLua;
 	bool m_bBridge = false;			/// 브릿지씬(로딩씬같은)속성이냐(위 설명참조)
 	ID m_idBridgeNextScene = 0;		/// 이 씬이 끝날때 불리게 될 씬의 아이디
-	XRenderCmdMng* m_pRenderer = nullptr;
+// 	XRenderCmdMng* m_pRenderer = nullptr;
 	XTextureAtlas* m_pAtlas = nullptr;
 #ifdef _DEBUG
 	XE::VEC2 m_vMouse;

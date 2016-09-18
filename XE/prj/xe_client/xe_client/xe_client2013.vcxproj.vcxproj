@@ -666,7 +666,8 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\xShader.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL.h" />
-    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL2.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasBatch.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasNoBatch.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XTextureAtlas.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
@@ -955,7 +956,8 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\xShader.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL.cpp" />
-    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL2.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasBatch.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasNoBatch.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XTextureAtlas.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>

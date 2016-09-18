@@ -14,6 +14,7 @@
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -272,6 +273,11 @@ int XWndProfileForSpot::Process( float dt )
 	}
 
 	return XWnd::Process( dt );
+}
+
+void XWndProfileForSpot::Destroy()
+{
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcProfile );
 }
 
 ////////////////////////////////////////////////////////////////

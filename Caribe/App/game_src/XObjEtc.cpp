@@ -15,6 +15,7 @@
 #if defined(_CHEAT) && defined(WIN32)
 #include "client/XAppMain.h"
 #endif
+#include "XImageMng.h"
 
 
 #ifdef WIN32

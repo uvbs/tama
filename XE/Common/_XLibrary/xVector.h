@@ -232,6 +232,9 @@ namespace XE
 #ifdef _VER_DX
 		VEC2( D3DXVECTOR2 vd3d ) { x = vd3d.x; y = vd3d.y; }
 #endif
+		VEC2( const Vec2& vec2 ) {
+			x = vec2.x;		y = vec2.y;
+		}
 		
 		template<typename T>
 		void Set( T _x, T _y ) { x = (float)_x; y = (float)_y; }

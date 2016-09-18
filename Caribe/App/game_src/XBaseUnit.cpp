@@ -30,7 +30,7 @@
 #include "XFramework/XEProfile.h"
 #include "XFramework/Game/XEWndWorld.h"
 #include "sprite/SprObj.h"
-
+#include "XImageMng.h"
 
 using namespace XSKILL;
 using namespace XGAME;

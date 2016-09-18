@@ -9,7 +9,7 @@
 #include "XLua.h"
 #include "../XInterpolationObj.h"
 //#include "XFramework/client/XLayout.h"
-#include "XImageMng.h"
+//#include "XImageMng.h"
 //#include "../XDrawGraph.h"
 #include "XBaseDelegate.h"
 #include "XWndH.h"

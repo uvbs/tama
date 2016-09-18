@@ -12,39 +12,34 @@
 #include "etc/XSurface.h"
 #include "etc/xMath.h"
 
-class XSurfaceOpenGL : public XSurface {
+class XSurfaceGLAtlasNoBatch : public XSurface {
+	struct xVertexNoBatch {
+		GLfloat xy[2];//, y;
+		GLfloat uv[2];//u, tv;
+		GLfloat rgba[4];// r,g,b,a;
+	};
 private:
 	GLuint	m_glTexture;
 	GLint	m_format;
 	GLenum	m_type;
 #ifdef _XVAO
-	GLuint  m_idVertexArray;
+	GLuint  m_idVertexArray = 0;
 #endif
-	GLuint  m_glVertexBuffer;
-	GLuint	m_glIndexBuffer;
-	//	int m_sizeByte = 0;			// vram에 로딩된 텍스쳐의 크기
-
-	bool CreateVertexBuffer( float surfaceW, float surfaceH, const float _adjx, const float _adjy, int memw, int memh, int alignW, int alignH );
-	inline bool CreateVertexBuffer( const XE::VEC2& sizeSurface
-																	, const XE::VEC2& vAdj
-																	, const XE::POINT& sizeTexture
-																	, const XE::POINT& sizeTextureAligned ) {
-		auto result = CreateVertexBuffer( sizeSurface.w, sizeSurface.h, vAdj.x, vAdj.y, sizeTexture.w, sizeTexture.h, sizeTextureAligned.w, sizeTextureAligned.h );
-		return result == ::xSUCCESS;
-	}
-//	bool CreateVertexBuffer2( const XE::VEC2& sizeSurface, const XE::VEC2& vAdj, const XE::VEC2& uvlt, const XE::VEC2& uvrb );
+	GLuint  m_glVertexBuffer = 0;
+	GLuint	m_glIndexBuffer = 0;
+	XVector<xVertexNoBatch> m_Vertices;
 	void Init();
 	void Destroy();
 	bool CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMask );
 protected:
 public:
-	XSurfaceOpenGL() : XSurface( true ) {
+	XSurfaceGLAtlasNoBatch() : XSurface( true ), m_Vertices(4) {
 		Init();
 	}
-	XSurfaceOpenGL( BOOL bHighReso ) : XSurface( bHighReso ) {
+	XSurfaceGLAtlasNoBatch( BOOL bHighReso ) : XSurface( bHighReso ), m_Vertices( 4 ) {
 		Init();
 	}
-	XSurfaceOpenGL( BOOL bHighReso
+	XSurfaceGLAtlasNoBatch( BOOL bHighReso
 									, const int srcx, const int srcy
 									, const int srcw, const int srch
 									, const int dstw, const int dsth
@@ -53,17 +48,19 @@ public:
 									, const int bpp
 									, BOOL bSrcKeep = FALSE );
 
-	~XSurfaceOpenGL() {
+	~XSurfaceGLAtlasNoBatch() {
 		Destroy();
 	}
 
+private:
 	GLuint	GetTextureID() {
 		return m_glTexture;
 	}
 	GET_ACCESSOR_CONST( GLuint, glTexture );
 	GET_ACCESSOR( GLuint, glVertexBuffer );
 	GET_ACCESSOR( GLuint, glIndexBuffer );
-	GLint	GetFormat() {
+public:
+	GLint	GetFormat() const {
 		return m_format;
 	}
 	// surface출력시 외부지정 매트릭스 설정.
@@ -107,39 +104,48 @@ public:
 
 	//	RESULT	LoadTexture( LPCTSTR szFilename, XCOLOR dwColorKey );
 	void*	Lock( int *pWidth, BOOL bReadOnly = TRUE );
-
-	void CopySurface( XSurface *src );
-
-	//	void DrawCoreAlpha();
+	void CopySurface( XSurface *src ) override;
+	// 배치모드로 호출되어선 안됨.
+	void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override { 
+		XBREAK(1); 
+	}
+	void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const;
+	void DrawCore() const;
 	void DrawCoreSub( float x, float y, const RECT *src );
-	void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override { XBREAK(1); }
-	void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override;
-	inline void Draw( float x, float y ) {
+	void Draw( float x, float y ) override {
 		MATRIX m;
 		MatrixIdentity( m );
 		Draw( x, y, m );
 	}
-	void Draw( float x, float y, const MATRIX &mParent );
-#ifdef _XBLUR
-	void DrawBlur( float x, float y, const MATRIX &mParent );
-#endif // _XBLUR
+	void Draw( float x, float y, const MATRIX &mParent ) override;
 	void DrawLocal( float x, float y, float lx, float ly );
-	inline void Draw( const XE::VEC2& vPos ) {
-		Draw( vPos.x, vPos.y );
+	void Draw( const XE::VEC2& vPos ) {
+ 		Draw( vPos.x, vPos.y );
 	}
 	void DrawSub( float x, float y, const XE::xRECTi *src ) override;
 	void Fill( XCOLOR col );
-	//	DWORD GetPixel( float x, float y );			
 	void SetTexture() override;
 	inline bool IsEmpty() override {
-		if( !m_glVertexBuffer || !m_glIndexBuffer || !m_glTexture ) {
+// 		if( !m_glVertexBuffer || !m_glIndexBuffer || !m_glTexture ) {
+		if( !m_glTexture ) {
 			DestroyDevice();
 			return true;
 		}
 		return false;
 	}
 private:
-	void DrawCore() const;
+	void DrawNoBatch( float x, float y, const MATRIX &mParent ) const;
+	inline void DrawNoBatch( const XE::VEC2& vPos, const MATRIX &mParent ) const {
+		DrawNoBatch( vPos.x, vPos.y, mParent );
+	}
+// 	bool CreateVertexBuffer( const XE::POINT& sizeSurface,
+// 													 const XE::VEC2& vAdj,
+// 													 const XE::POINT& sizeMem,
+// 													 const XE::POINT& sizeAlign );
+	bool CreateVertexBuffer2( const XE::VEC2& sizeSurface, 
+														const XE::VEC2& vAdj, 
+														const XE::VEC2& uvlt, 
+														const XE::VEC2& uvrb );
 };
 
 

@@ -22,6 +22,7 @@
 #ifdef _SERVER
 #include "server/XGuildMgr.h"
 #endif // _SERVER
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

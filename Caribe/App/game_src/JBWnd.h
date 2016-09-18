@@ -112,25 +112,7 @@ private:
 		m_pParty = nullptr;
 		m_pLegion = nullptr;
 	}
-	void Destory() {
-		SAFE_RELEASE2( IMAGE_MNG, m_pBG );
-		SAFE_RELEASE2( IMAGE_MNG, m_pFace );
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcBgGradation );
-		SAFE_RELEASE2( IMAGE_MNG, m_pNameCard );
-// 		for( int i = 0; i < 4; ++i ) {
-// 			SAFE_RELEASE2( IMAGE_MNG, m_pStar[ i ] );
-// 			SAFE_RELEASE2( IMAGE_MNG, m_aryStarEmpty[ i ] );
-// 		}
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcStar );
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcStarEmpty );
-		SAFE_RELEASE2( IMAGE_MNG, m_pSelect );
-		SAFE_RELEASE2( IMAGE_MNG, m_pUnitFace );
-		SAFE_RELEASE2( IMAGE_MNG, m_pUnitBg );
-		SAFE_RELEASE2(IMAGE_MNG, m_pParty);
-		SAFE_RELEASE2(IMAGE_MNG, m_pSoulStone);
-		SAFE_DELETE(m_pName);
-		//SAFE_DELETE(m_pSoulCount);
-	}
+	void Destory();
 
 public:
 	XWndInvenHeroElem(XHero* pHero, XLegion *pLegion = nullptr);
@@ -170,12 +152,7 @@ class XWndInvenLegionElem : public XWnd
 		m_pFace = NULL;
 		m_pSelect = NULL;
 	}
-	void Destroy()
-	{
-		SAFE_RELEASE2( IMAGE_MNG, m_pBG );
-		SAFE_RELEASE2( IMAGE_MNG, m_pFace );
-		SAFE_RELEASE2( IMAGE_MNG, m_pSelect );
-	}
+	void Destroy();
 public:
 	XWndInvenLegionElem( XPropUnit::xPROP* pPropUnit );
 	virtual ~XWndInvenLegionElem(){ Destroy(); }

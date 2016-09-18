@@ -12,18 +12,7 @@
 #include "etc/XSurface.h"
 #include "etc/xMath.h"
 
-XE_NAMESPACE_START( XE )
-//
-struct xVertex {
-	Vec3 pos;//, y;
-	Vec2 uv;//u, tv;
-	Vec4 rgba;// r,g,b,a;
-};
-//
-XE_NAMESPACE_END; // XE
-
-
-class XSurfaceOpenGL2 : public XSurface {
+class XSurfaceGLAtlasBatch : public XSurface {
 private:
 	GLuint	m_glTexture;
 	GLint	m_format;
@@ -31,9 +20,8 @@ private:
 #ifdef _XVAO
 	GLuint  m_idVertexArray;
 #endif
-// 	GLuint  m_glVertexBuffer;
-// 	GLuint	m_glIndexBuffer;
-	static void sSetglBlendFunc( XE::xtBlendFunc funcBlend, GLenum *pOutsfactor, GLenum *pOutdfactor );
+	GLuint  m_glVertexBuffer;
+	GLuint	m_glIndexBuffer;
 	XE::xVertex m_Vertices[4];
 	bool CreateVertexBuffer( float surfaceW, float surfaceH, const float _adjx, const float _adjy, int memw, int memh, int alignW, int alignH );
 	inline bool CreateVertexBuffer( const XE::VEC2& sizeSurface
@@ -48,13 +36,13 @@ private:
 	bool CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMask );
 protected:
 public:
-	XSurfaceOpenGL2() : XSurface( true ) {
+	XSurfaceGLAtlasBatch() : XSurface( true ) {
 		Init();
 	}
-	XSurfaceOpenGL2( BOOL bHighReso ) : XSurface( bHighReso ) {
+	XSurfaceGLAtlasBatch( BOOL bHighReso ) : XSurface( bHighReso ) {
 		Init();
 	}
-	XSurfaceOpenGL2( BOOL bHighReso
+	XSurfaceGLAtlasBatch( BOOL bHighReso
 									, const int srcx, const int srcy
 									, const int srcw, const int srch
 									, const int dstw, const int dsth
@@ -63,17 +51,17 @@ public:
 									, const int bpp
 									, BOOL bSrcKeep = FALSE );
 
-	~XSurfaceOpenGL2() {
+	~XSurfaceGLAtlasBatch() {
 		Destroy();
 	}
 
-	GLuint	GetTextureID( void ) {
+	GLuint	GetTextureID() {
 		return m_glTexture;
 	}
 	GET_ACCESSOR_CONST( GLuint, glTexture );
 // 	GET_ACCESSOR( GLuint, glVertexBuffer );
 // 	GET_ACCESSOR( GLuint, glIndexBuffer );
-	GLint	GetFormat( void ) const {
+	GLint	GetFormat() const {
 		return m_format;
 	}
 	// surface출력시 외부지정 매트릭스 설정.
@@ -113,14 +101,15 @@ public:
 	void RestoreDevice() override;
 	void DestroyDevice() override;
 	void ClearDevice() override;
-	void RestoreDeviceFromSrcImg( void );
+	void RestoreDeviceFromSrcImg();
 
 	//	RESULT	LoadTexture( LPCTSTR szFilename, XCOLOR dwColorKey );
 	void*	Lock( int *pWidth, BOOL bReadOnly = TRUE );
 	void CopySurface( XSurface *src ) override;
+	void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override;
 	void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override;
-	void DrawCore( void );
-	//	void DrawCoreAlpha( void );
+	void DrawCore();
+	//	void DrawCoreAlpha();
 	void DrawCoreSub( float x, float y, const RECT *src );
 	void Draw( float x, float y ) override {
 		MATRIX m;
@@ -135,7 +124,7 @@ public:
 // 	}
 	void DrawSub( float x, float y, const XE::xRECTi *src ) override;
 	void Fill( XCOLOR col );
-	void SetTexture( void ) override;
+	void SetTexture() override;
 	inline bool IsEmpty() override {
 // 		if( !m_glVertexBuffer || !m_glIndexBuffer || !m_glTexture ) {
 		if( !m_glTexture ) {
@@ -143,6 +132,11 @@ public:
 			return true;
 		}
 		return false;
+	}
+private:
+	void DrawNoBatch( float x, float y, const MATRIX &mParent ) const;
+	inline void DrawNoBatch( const XE::VEC2& vPos, const MATRIX &mParent ) const {
+		DrawNoBatch( vPos.x, vPos.y, mParent );
 	}
 };
 

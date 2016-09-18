@@ -10,6 +10,7 @@
 #include "XTransition.h"
 #include "etc/xGraphics.h"
 #include "etc/Timer.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -18,6 +19,12 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 #endif
+
+XTransition::~XTransition() 
+{
+	SAFE_RELEASE2( IMAGE_MNG, m_pSurface1 );
+	SAFE_RELEASE2( IMAGE_MNG, m_pSurface2 );
+}
 
 BOOL XTransition::Process( float dt )
 {

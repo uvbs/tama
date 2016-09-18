@@ -2,6 +2,7 @@
 #include "XWndPageSlide.h"
 #include "XFramework/client/XEContent.h"
 #include "XFramework/XEProfile.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -39,6 +40,12 @@ XWndPageSlideWithXML::XWndPageSlideWithXML( const XE::VEC2& vPos,
 	}
 	//
 	m_posPagePoint.y = vSize.h - 13.f;	// 디폴트 페이지포인트 위치
+}
+
+void XWndPageSlideWithXML::Destroy() 
+{
+	SAFE_RELEASE2( IMAGE_MNG, m_sfcPointOn );
+	SAFE_RELEASE2( IMAGE_MNG, m_sfcPointOff );
 }
 
 // idxBase페이지를 기준으로 다음페이지의 인덱스를 얻는다. 없으면 -1을 리턴한다.

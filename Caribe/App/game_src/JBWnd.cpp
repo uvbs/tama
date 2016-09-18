@@ -251,9 +251,6 @@ XWndInvenHeroElem::XWndInvenHeroElem( XHero* pHero, XLegion *pLegion )
 // 	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ), 0, 0 );
 	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ), XE::xPF_ARGB4444 );
 
- 	왜 8888로 하면 읽혀지고 4444로 읽으면 안나오는가 와이어프레임이 그려진걸로봐선 가려진것 같다.
-
-
 	m_pNameCard = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "corps_heroname_bg.png" ) ) );
 	SetSizeLocal( m_pBG->GetWidth() + 4, m_pBG->GetHeight() + m_pNameCard->GetHeight() / 2 );
 	//m_pNameCard->SetScale(0.7f);
@@ -313,6 +310,23 @@ XWndInvenHeroElem::XWndInvenHeroElem( XPropHero::xPROP *pProp )
 	m_pParty = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "legion_hero_battle.png" ) ) );
 	m_pSoulStone = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "hero_piece.png" ) ) );
 	m_strName = XE::Format( _T( "%s" ), pProp->GetstrName().c_str() );
+}
+
+void XWndInvenHeroElem::Destory() 
+{
+	SAFE_RELEASE2( IMAGE_MNG, m_pBG );
+	SAFE_RELEASE2( IMAGE_MNG, m_pFace );
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcBgGradation );
+	SAFE_RELEASE2( IMAGE_MNG, m_pNameCard );
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcStar );
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcStarEmpty );
+	SAFE_RELEASE2( IMAGE_MNG, m_pSelect );
+	SAFE_RELEASE2( IMAGE_MNG, m_pUnitFace );
+	SAFE_RELEASE2( IMAGE_MNG, m_pUnitBg );
+	SAFE_RELEASE2( IMAGE_MNG, m_pParty );
+	SAFE_RELEASE2( IMAGE_MNG, m_pSoulStone );
+	SAFE_DELETE( m_pName );
+	//SAFE_DELETE(m_pSoulCount);
 }
 
 void XWndInvenHeroElem::SetUnitFace( void )
@@ -452,6 +466,13 @@ void XWndInvenHeroElem::DrawDrag( const XE::VEC2& vMouse )
 		m_pFace->SetfAlpha( 0.5f );
 		m_pFace->Draw( vMouse - vSize / 2.f );
 	}
+}
+
+void XWndInvenLegionElem::Destroy()
+{
+	SAFE_RELEASE2( IMAGE_MNG, m_pBG );
+	SAFE_RELEASE2( IMAGE_MNG, m_pFace );
+	SAFE_RELEASE2( IMAGE_MNG, m_pSelect );
 }
 
 //////////////////////////////////////////////////////////////////////////

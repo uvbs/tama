@@ -2,7 +2,8 @@
 #include "etc/XGraphicsDef.h"
 
 #define SET_ATLASES( ATLASES ) \
-{	auto pPrev = XTextureAtlas::_sSetpCurrMng( ATLASES );
+{	XBREAK( ATLASES == nullptr); \
+ auto pPrev = XTextureAtlas::_sSetpCurrMng( ATLASES );
 
 #define END_ATLASES \
 	XTextureAtlas::_sSetpCurrMng( pPrev ); }

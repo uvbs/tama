@@ -70,6 +70,7 @@
 #include "client/XAppDelegate.h"
 #include "XDefNetwork.h"
 #include "XFramework/XEProfile.h"
+#include "XImageMng.h"
 #ifdef _CHEAT
 #include "OpenGL2/XTextureAtlas.h"
 #endif // _CHEAT

@@ -11,7 +11,8 @@
 #include "XGraphicsOpenGL.h"
 #include "XOpenGL.h"
 #include "XSurfaceOpenGL.h"
-#include "XSurfaceOpenGL2.h"
+#include "XSurfaceGLAtlasBatch.h"
+#include "XSurfaceGLAtlasNoBatch.h"
 #include "XImage.h"
 #include "etc/xMath.h"
 #include "xShader.h"
@@ -580,9 +581,14 @@ XSurface* XGraphicsOpenGL::CreateSurface()
 /**
  @brief 배치렌더 버전
 */
-XSurface* XGraphicsOpenGL::CreateSurface2()
+XSurface* XGraphicsOpenGL::CreateSurfaceAtlasBatch()
 {
-	return new XSurfaceOpenGL2();
+	return new XSurfaceGLAtlasBatch();
+}
+
+XSurface* XGraphicsOpenGL::CreateSurfaceAtlasNoBatch()
+{
+	return new XSurfaceGLAtlasNoBatch();
 }
 
 BOOL XGraphicsOpenGL::LoadImg( LPCTSTR szFilename, int *pWidth, int *pHeight, DWORD **ppImage )

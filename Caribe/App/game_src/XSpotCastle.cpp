@@ -23,6 +23,7 @@
 #include "server/XGuildMgr.h"
 #include "XFramework/XFacebook.h"
 #include "XGlobalConst.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -44,6 +45,12 @@ XSpotCastle::XSpotCastle( XWorld *pWorld, XPropWorld::xCASTLE* pProp, XDelegateS
 	XBREAK( pProp->m_aryProduce.size() == 0 );
 	Init(); 
 	SetMaxLocalStorage();
+}
+
+void XSpotCastle::Destroy() {
+#ifdef _CLIENT
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcProfile );
+#endif // _CLIENT
 }
 
 void XSpotCastle::OnCreateNewOnServer( XSPAcc spAcc )

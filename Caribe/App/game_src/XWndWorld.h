@@ -158,9 +158,7 @@ private:
 private:
 	// private method
 	void Init() {}
-	void Destroy() {
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcProfile );
-	}
+	void Destroy();
 }; // class XWndProfilePicture
 
 /****************************************************************

@@ -7,6 +7,7 @@
 #include "XFramework/client/XEContent.h"
 #include "XFramework/XEProfile.h"
 #include "sprite/SprObj.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

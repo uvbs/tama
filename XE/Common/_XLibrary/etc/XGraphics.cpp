@@ -24,6 +24,7 @@ XGraphics* XGraphics::s_pGraphics = NULL;
 BOOL		XGraphics::s_bCaptureBackBuffer = FALSE;			// Present전에 현재 백버퍼를 카피해둬야 함
 XSurface* XGraphics::s_pLastBackBuffer = NULL;			// 마지막으로 캡쳐된 백버퍼 화면
 DWORD XGraphics::s_dwDraw = 0;
+bool XGraphics::s_bBatchLoading = false;
 
 #pragma mark Init
 
@@ -612,7 +613,15 @@ XSurface* XGraphics::CreateSurface( bool bHighReso,
 		XBREAK( sizeImgMem.h <= 0 );
 		// bHighReso의 잔재. 이 파일이 고해상도로 지정되어 있으면 실제 서피스 크기는 절반이 된다
 		const auto sizeSurface = (bHighReso)? sizeImgMem / 2 : sizeImgMem; 
-		auto pSurface = (bUseAtlas)? CreateSurface2() : CreateSurface();
+		XSurface* pSurface = nullptr;
+		if( bUseAtlas ) {
+			if(XGraphics::sIsEnableBatchLoading())
+				pSurface = GRAPHICS->CreateSurfaceAtlasBatch();
+			else
+				pSurface = GRAPHICS->CreateSurfaceAtlasNoBatch();
+		} else {
+			pSurface = CreateSurface();;
+		}
 		if( pSurface ) {
 			bool bOk = pSurface->Create( sizeSurface
 																, XE::VEC2(0)

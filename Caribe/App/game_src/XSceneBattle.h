@@ -201,6 +201,7 @@ private:
 	void CreateHeroesFace();
 	int OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 );
 	XWndBatchRender* GetpLayerUI();
+	XWndBatchRender* GetpLayerFaces();
 };
 
 extern XSceneBattle *SCENE_BATTLE;

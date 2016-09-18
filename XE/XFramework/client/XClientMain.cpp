@@ -512,9 +512,9 @@ void XClientMain::Draw( void )
 	GRAPHICS->ClearScreen( XCOLOR_RGBA( 128, 128, 128, 255 ) );
 #endif
 	if( m_pGame ) {
-		SET_RENDERER( m_pGame->GetpRenderer() ) {
+// 		SET_RENDERER( m_pGame->GetpRenderer() ) {
 			m_pGame->Draw();
-		} END_RENDERER;		// RenderBatch();
+// 		} END_RENDERER;		// RenderBatch();
 		// 큐에 쌓인 모든 배치렌더러를 한꺼번에 렌더링 한다.
 		XRenderCmdMng::sRenderBatchs();
 	}

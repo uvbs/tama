@@ -28,7 +28,7 @@ xAtlas::xAtlas( const XE::VEC2& size, xtPixelFormat formatSurface )
 xAtlas::~xAtlas() {
 	SAFE_DELETE( m_pRoot );
 	const GLuint glTex = (GLuint)m_idTex;
-//	::glDeleteTextures( 1, &glTex );
+	::glDeleteTextures( 1, &glTex );
 	const int bpp = XE::GetBpp( m_FormatSurface );
 	XSurface::sAddSizeTotalVMem( (int)(-m_Size.Size() * bpp) );
 #ifdef WIN32

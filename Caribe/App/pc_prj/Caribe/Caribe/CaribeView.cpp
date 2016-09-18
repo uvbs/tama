@@ -1,9 +1,4 @@
-﻿// CaribeView.cpp : CaribeView Ŭ������ ����
-//
-
-#include "stdafx.h"
-// SHARED_HANDLERS�� �̸� ����, ������ �׸� �� �˻� ���� ó���⸦ �����ϴ� ATL ������Ʈ���� ������ �� ������
-// �ش� ������Ʈ�� ���� �ڵ带 �����ϵ��� �� �ݴϴ�.
+﻿#include "stdafx.h"
 #ifndef SHARED_HANDLERS
 #include "Caribe.h"
 #endif
@@ -38,6 +33,7 @@
 #include "XPropBgObj.h"
 #include "DlgSelectConnect.h"
 #include "XWndObj.h"
+#include "XImageMng.h"
 
 // #ifdef _DEBUG
 // #define new DEBUG_NEW

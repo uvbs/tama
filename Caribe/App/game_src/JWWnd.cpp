@@ -84,6 +84,22 @@ XWndStoragyItemElem* XWndStoragyItemElem::sUpdateCtrlToList( XWndList *pWndList,
 	}
 	return pWndElem;
 }
+
+void XWndStoragyItemElem::Destory()
+{
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcBgGradation );
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcNameBg );
+	SAFE_RELEASE2( IMAGE_MNG, m_pBG );
+	SAFE_RELEASE2( IMAGE_MNG, m_pItemImg );
+	XARRAYLINEARN_LOOP_AUTO( m_aryStar, pImg ) {
+		SAFE_RELEASE2( IMAGE_MNG, pImg );
+	} END_LOOP;
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcSelected );
+	//		SAFE_RELEASE2(IMAGE_MNG, m_pNumImg);
+	//		SAFE_RELEASE2(IMAGE_MNG, m_slotLock);
+	SAFE_RELEASE2( IMAGE_MNG, m_pSoulStone );
+}
+
 /**
  @brief 빈칸만 있는 버전
 */
@@ -159,10 +175,10 @@ void XWndStoragyItemElem::SetHero( ID idProp )
 			const _tstring resFace = XE::MakePath( DIR_IMG, pProp->strFace );
 			XBREAK( resFace.empty() );
 			SAFE_RELEASE2( IMAGE_MNG, m_pItemImg );
-			m_pItemImg = IMAGE_MNG->Load( resFace, 
-																		XE::xPF_ARGB8888, 
-																		false, 
-																		false, 
+			m_pItemImg = IMAGE_MNG->Load( resFace,
+																		XE::xPF_ARGB8888,
+																		true,
+																		false, false,
 																		false ); // async
 			SetvScaleItemImg( XE::VEC2( 0.789f, 0.781f ) );
 			SetbUpdate( true );

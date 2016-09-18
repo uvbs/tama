@@ -21,6 +21,7 @@
 #ifdef _XSINGLE
 #include "XPropLegion.h"
 #endif // _XSINGLE
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

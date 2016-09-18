@@ -401,9 +401,6 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.cpp">
       <Filter>source\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL2.cpp">
-      <Filter>source\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\XBaseDelegate.cpp">
       <Filter>source\Framework\game</Filter>
     </ClCompile>
@@ -514,6 +511,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\XFramework\Game\XEWorldCamera.cpp">
       <Filter>source\Framework\client\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasNoBatch.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasBatch.cpp">
+      <Filter>source\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1151,9 +1154,6 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.h">
       <Filter>source\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL2.h">
-      <Filter>header</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\XFramework\Game\XFLevelH.h">
       <Filter>source\Framework\game</Filter>
     </ClInclude>
@@ -1171,6 +1171,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\XFramework\Game\XEWorldCamera.h">
       <Filter>source\Framework\client\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasNoBatch.h">
+      <Filter>source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasBatch.h">
+      <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -105,7 +105,7 @@ void XImageMng::DestroyOlderFile()
 	}
 }
 
-XImageMng::xImage* XImageMng::Find( XUINT64 idRes )
+XImageMng::xImage* XImageMng::FindExist( XUINT64 idRes )
 {
 	for( auto& img : m_listSurface ) {
 		if( img.m_pSurface->Getid64Res() == idRes )
@@ -114,11 +114,15 @@ XImageMng::xImage* XImageMng::Find( XUINT64 idRes )
 	return nullptr;
 }
 
-XImageMng::xImage* XImageMng::Find( LPCTSTR szRes )	// 로컬패스명으로 갖고있게 바뀜
+/**
+ @brief szRes가 이미 생성된 서피스인지 검색
+ @param bBatch 로딩요청받은 szRes의 로딩모드가 배치모드인지.
+*/
+XImageMng::xImage* XImageMng::FindExist( LPCTSTR szRes, bool bBatch )	// 로컬패스명으로 갖고있게 바뀜
 {
 	for( auto& img : m_listSurface ) {
-// 		if( XE::IsSame( img.m_pSurface->GetstrRes().c_str(), szRes ) )
-		if( XE::IsSame( img.m_strRes.c_str(), szRes ) )
+		if( XE::IsSame( img.m_strRes.c_str(), szRes ) 
+				&& img.m_bBatch == bBatch )
 			return &img;
 	}
 	return nullptr;
@@ -126,7 +130,7 @@ XImageMng::xImage* XImageMng::Find( LPCTSTR szRes )	// 로컬패스명으로 갖
 /**
  @brief 내부에서만 쓰는 버전
 */
-XImageMng::xImage* XImageMng::Find( XSurface *pSurface )	
+XImageMng::xImage* XImageMng::FindExist( XSurface *pSurface )	
 {
 	for( auto& img : m_listSurface ) {
 //		if( img.m_pSurface->GetstrRes() == pSurface->GetstrRes() )
@@ -138,46 +142,47 @@ XImageMng::xImage* XImageMng::Find( XSurface *pSurface )
 /**
  @brief 기존코드 호환용
 */
-XSurface* XImageMng::Load( BOOL bHighReso
-												, LPCTSTR szRes
-												, BOOL bSrcKeep/*=FALSE*/
-												, BOOL bMakeMask/*=FALSE*/
-												, bool bAsync /*= false*/ )
+XSurface* XImageMng::Load( BOOL bHighReso, LPCTSTR szRes, BOOL bSrcKeep, BOOL bMakeMask, bool bAsync )
 {
 //	XBREAK( bHighReso == FALSE );		// 이제 이건 지원안함.
 	// 전투배경같은건 bHighReso를 FALSE로 놓고 쓰는 편법을 쓰기 때문에 일단 bHighReso는 없애지 못함. 장차 bHighReso자체를 없애는 방향으로 가야할듯.
-	return _Load( bHighReso != FALSE, szRes, XE::xPF_ARGB4444, xBOOLToBool(bSrcKeep), xBOOLToBool(bMakeMask), bAsync );
+	return _Load( bHighReso != FALSE, szRes, XE::xPF_ARGB4444, true, xBOOLToBool(bSrcKeep), xBOOLToBool(bMakeMask), bAsync );
 
 }
 /**
  @brief 기존에 bHighReso를 FALSE로 해서 크게 렌더링하는 편법을 쓰고 있어서 bHighReso가 그대로 살아있음.
 */
-XSurface* XImageMng::Load( bool bHighReso
-													, LPCTSTR szRes
-													, XE::xtPixelFormat format
-													, bool bSrcKeep/*=false*/
-													, bool bMakeMask/*=false*/
-													, bool bAsync /*= false*/ )
+XSurface* XImageMng::Load( bool bHighReso, 
+													 LPCTSTR szRes, 
+													 XE::xtPixelFormat format, 
+													 bool bUseAtlas, 
+													 bool bSrcKeep/*=false*/, 
+													 bool bMakeMask/*=false*/, 
+													 bool bAsync /*= false*/ )
 {
 	const bool bKeepSrc = (bMakeMask == true);
-	return _Load( bHighReso, szRes, format, bKeepSrc, bMakeMask, bAsync );
+	return _Load( bHighReso, szRes, format, bUseAtlas, bKeepSrc, bMakeMask, bAsync );
 }
 
 /**
  @brief 내부용 로딩모듈
+ @param bUseAtlas 아틀라스를 사용하는 서피스인지
+ @param bBatch 일괄렌더용 서피스인지
+ @param bAsync 비동기 로딩
 */
-XSurface* XImageMng::_Load( bool bHighReso
-													, LPCTSTR _szRes
-													, XE::xtPixelFormat format
-													, bool bSrcKeep
-													, bool bMakeMask
-													, bool bAsync )
+XSurface* XImageMng::_Load( bool bHighReso, 
+														LPCTSTR _szRes, 
+														XE::xtPixelFormat format, 
+														bool bUseAtlas, 
+														bool bSrcKeep, bool bMakeMask, 
+														bool bAsync )
 {
 	bAsync = false;		// 일단 버그수정을 위해 동기로딩만.
 	const _tstring strRes = _szRes;
+	//////////////////////////////////////////////////////////////////////////
 	// 이미 로딩한것인지 이미지풀에서 szRes로 찾아봄
 	{
-		auto pImg = Find( strRes.c_str() );
+		auto pImg = FindExist( strRes.c_str(), XGraphics::sIsEnableBatchLoading() );
 		if( pImg ) {
 			// 재로딩이 되었다면 로딩한 시간을 다시 갱신시킴
 			pImg->m_secLoaded = XTimer2::sGetTime();
@@ -186,15 +191,20 @@ XSurface* XImageMng::_Load( bool bHighReso
 			return pImg->m_pSurface;
 		}
 	}
-//	AXLOGXN("XImageMng::Load(%s)", szRes);
+	const bool bBatch = XGraphics::sIsEnableBatchLoading();
 	if( bAsync ) {
-		auto pSurface = GRAPHICS->CreateSurface2();
+		// 현재 배치로딩 활성화 여부에 따라 맞는 서피스를 생성해준다.
+		auto pSurface = (bBatch)
+			? GRAPHICS->CreateSurfaceAtlasBatch() 
+			: GRAPHICS->CreateSurfaceAtlasNoBatch();
 		if( XASSERT(pSurface) ) {		// 이건 빈 객체만 만드는거기땜에 반드시 있어야 함.
 			xImage img;
 			img.m_strRes = strRes;
 			img.m_secLoaded = XTimer2::sGetTime();		// 비동기 미로딩상태라도 시간은 넣어야 한다. 로딩되기전에 다시 모두 해제되어 필요가 없는상태면 로딩하지 말아야 하기 때문.
 			img.m_pSurface = pSurface;
 			img.m_bAsyncLoad = true;
+			img.m_bUseAtlas = bUseAtlas;
+			img.m_bBatch = bBatch;
 			m_listSurface.Add( img );
 			xAsyncLoad asyncLoad;
 			asyncLoad.m_strRes = strRes;
@@ -202,25 +212,23 @@ XSurface* XImageMng::_Load( bool bHighReso
 			asyncLoad.m_Format = format;
 			asyncLoad.m_bSrcKeep = bSrcKeep;
 			asyncLoad.m_bMakeMask = bMakeMask;
+			asyncLoad.m_bUseAtlas = bUseAtlas;
+			asyncLoad.m_bBatch = bBatch;
 			m_listAsync.Add( asyncLoad );		// 비동기 대기열에 등록.
 			pSurface->IncRefCnt();
 //			s_sizeTotalVMem += pSurface->GetSizeByte();
 		}
 		return pSurface;
 	} else {
+		//////////////////////////////////////////////////////////////////////////
 		// 국가별 폴더에서 우선적으로 찾는다.
 		_tstring strLoadTry;			// 로딩을 시도한 패스
 		TCHAR szLangPath[1024];
 		XE::LANG.ChangeToLangDir( strRes.c_str(), szLangPath );
 		strLoadTry = szLangPath;
 		auto llTime = XE::GetFreqTime();
-		auto pSurface = GRAPHICS->CreateSurface( bHighReso, 
-																						 szLangPath, 
-																						 format, 
-																						 true,		// atlas
-																						 bSrcKeep, 
-																						 bMakeMask,
-																						 bAsync );			// async
+		auto pSurface = GRAPHICS->CreateSurface( bHighReso, szLangPath, format, 
+																						 bUseAtlas, bSrcKeep, bMakeMask, bAsync );
 		auto llPass = XE::GetFreqTime() - llTime;
 		if( pSurface == nullptr ) {
 			llPass = 0;
@@ -230,7 +238,7 @@ XSurface* XImageMng::_Load( bool bHighReso
 			pSurface = GRAPHICS->CreateSurface( bHighReso, 
 																					strRes.c_str(), 
 																					format, 
-																					true,
+																					bUseAtlas,
 																					bSrcKeep, 
 																					bMakeMask,
 																					bAsync );
@@ -244,14 +252,14 @@ XSurface* XImageMng::_Load( bool bHighReso
 			pSurface->SetstrRes( szLangPath );
 		}
 		if( pSurface ) {
-//		XLOGP( "%s, %llu", XE::GetFileName( szRes ), llPass );
 			XBREAK( pSurface->IsHavestrRes() == FALSE );
-//		_IMLOGXN( "%s...loading", pSurface->GetstrRes().c_str() );
 			xImage img;
 			img.m_strRes = strRes;		// 국가패스가 아닌 루트패스로 들어가고 검색시에도 루트패스로 찾아야함.
 			img.m_secLoaded = XTimer2::sGetTime();
 			img.m_pSurface = pSurface;
 			img.m_bAsyncLoad = false;
+			img.m_bUseAtlas = bUseAtlas;
+			img.m_bBatch = bBatch;
 			m_listSurface.Add( img );
 			pSurface->IncRefCnt();
 			s_sizeTotalVMem += pSurface->GetSizeByte();
@@ -278,7 +286,7 @@ XSurface* XImageMng::CreateSurface( const char* cKey
 	DestroyOlderFile();
 	// 이미 로딩한것인지 이미지풀에서 szRes로 찾아봄
 	XUINT64 idRes = XE::GetCheckSum( cKey );
-	auto pImg = Find( idRes );
+	auto pImg = FindExist( idRes );
 	if( pImg ) {
 		// 재로딩이 되었다면 로딩한 시간을 다시 갱신시킴
 		pImg->m_secLoaded = XTimer2::sGetTime();
@@ -407,72 +415,75 @@ void XImageMng::Process( bool bTouching )
 {
 	if( bTouching )
 		return;
-	if( m_listAsync.size() /*&& m_Cnt > 5*/ ) {		// 너무 빠르게 로딩하지 않기 위해.
-		// 대기열이 있을때만.
-		auto pFirst =  m_listAsync.GetpFirst();
-		if( XASSERT(pFirst) ) {
-			// 첫번째 대기열을 꺼냄
-			const auto strRes = pFirst->m_strRes;
-			// 국가별 폴더에서 우선적으로 찾는다.
-			TCHAR szLangPath[1024];
-			XE::LANG.ChangeToLangDir( strRes.c_str(), szLangPath );
-			auto llTime = XE::GetFreqTime();
-			auto _pSurface = GRAPHICS->CreateSurface( pFirst->m_bHighReso, 
-																								szLangPath, 
-																								pFirst->m_Format, 
-																								true,		// atlas
-																								pFirst->m_bSrcKeep, 
-																								pFirst->m_bMakeMask,
-																								false );	// 비동기로 생성중이므로 false로 넘겨야 지금즉시 로딩함.
-			auto llPass = XE::GetFreqTime() - llTime;
-			if( _pSurface == nullptr ) {
-				llPass = 0;
-				// 없으면 루트 폴더에서 찾는다.
-				llTime = XE::GetFreqTime();
-				_pSurface = GRAPHICS->CreateSurface( pFirst->m_bHighReso, 
-																						 strRes.c_str(), 
-																						 pFirst->m_Format, 
-																						 true, 
-																						 pFirst->m_bSrcKeep, 
-																						 pFirst->m_bMakeMask,
-																						 false );
-				if( _pSurface ) {
-					llPass = XE::GetFreqTime() - llTime;
-					_pSurface->SetstrRes( strRes.c_str() );
-				} else {
-					CONSOLE_TAG( "img", "(async)file open failed:%s", strRes.c_str() );
-				}
-			} else {
-				_pSurface->SetstrRes( szLangPath );
-			}
-			if( _pSurface ) {
-//		XLOGP( "%s, %llu", XE::GetFileName( szRes ), llPass );
-				XBREAK( _pSurface->IsHavestrRes() == FALSE );
-//		_IMLOGXN( "%s...loading", pSurface->GetstrRes().c_str() );
-				auto pImg = Find( pFirst->m_strRes );
-				if( XASSERT(pImg) ) {
-					pImg->m_secLoaded = XTimer2::sGetTime();
-					//pImg->m_pSurface = pSurface;  여기서 새로 할당한걸로 넣으면 안되고 기존 서피스에 내용만 채워야 한다.
-					const auto refCnt = pImg->m_pSurface->GetnRefCnt();		// 편법. 레퍼런스 카운터는 바뀌면 안되므로 백업.
-					GRAPHICS->CopyValueSurface( pImg->m_pSurface, _pSurface );		// 서피스 값 복사.
-//					*(pImg->m_pSurface) = *_pSurface;		// 값 복사
-					pImg->m_pSurface->_SetrefCnt( refCnt );		// 레퍼런스 카운트 복구.
-					_pSurface->ClearCreated();
-//				pSurface->IncRefCnt();		// _Load()때 이미 레퍼런스 카운트를 증가시켰으므로 여기서 올리면 안됨.
-					s_sizeTotalVMem += _pSurface->GetSizeByte();
-					SAFE_DELETE( _pSurface );		// 임시객체인 복사 원본은 삭제.
-					m_Cnt = 0;		// 하나로딩하면 카운터 초기화
-				}
-			} else {// _pSurface
-				// 로딩에 실패하면 대기열뒤로 보내야함.
-				XBREAK(1);
-			}
-			// 로딩에 성공하면 대기열에서 삭제.
-			m_listAsync.pop_front();
-			pFirst = nullptr;
-		}
-
-	}
+	// 비동기로딩 프로세스
+	if( m_listAsync.size() )
+		AsyncLoadProcess();
 	++m_Cnt;
 }
 
+/**
+ @brief 비동기 로딩이 필요하면 주스레드에서 매 프레임마다 로딩
+*/
+void XImageMng::AsyncLoadProcess()
+{
+	XBREAK( m_listAsync.empty() );
+	// 대기열이 있을때만.
+	auto pFirst = m_listAsync.GetpFirst();
+	if( XASSERT( pFirst ) ) {
+		// 첫번째 대기열을 꺼냄
+		const auto strRes = pFirst->m_strRes;
+		// 국가별 폴더에서 우선적으로 찾는다.
+		TCHAR szLangPath[1024];
+		XE::LANG.ChangeToLangDir( strRes.c_str(), szLangPath );
+		auto llTime = XE::GetFreqTime();
+		auto _pSurface = GRAPHICS->CreateSurface( pFirst->m_bHighReso,
+																							szLangPath,
+																							pFirst->m_Format,
+																							pFirst->m_bUseAtlas,		// atlas
+																							pFirst->m_bSrcKeep,
+																							pFirst->m_bMakeMask,
+																							false );	// 비동기로 생성중이므로 false로 넘겨야 지금즉시 로딩함.
+		auto llPass = XE::GetFreqTime() - llTime;
+		if( _pSurface == nullptr ) {
+			llPass = 0;
+			// 없으면 루트 폴더에서 찾는다.
+			llTime = XE::GetFreqTime();
+			_pSurface = GRAPHICS->CreateSurface( pFirst->m_bHighReso,
+																						strRes.c_str(),
+																						pFirst->m_Format,
+																						pFirst->m_bUseAtlas,
+																						pFirst->m_bSrcKeep,
+																						pFirst->m_bMakeMask,
+																						false );
+			if( _pSurface ) {
+				llPass = XE::GetFreqTime() - llTime;
+				_pSurface->SetstrRes( strRes.c_str() );
+			} else {
+				CONSOLE_TAG( "img", "(async)file open failed:%s", strRes.c_str() );
+			}
+		} else {
+			_pSurface->SetstrRes( szLangPath );
+		}
+		if( _pSurface ) {
+			XBREAK( _pSurface->IsHavestrRes() == FALSE );
+			auto pImg = FindExist( pFirst->m_strRes, pFirst->m_bBatch );
+			if( XASSERT( pImg ) ) {
+				pImg->m_secLoaded = XTimer2::sGetTime();
+				const auto refCnt = pImg->m_pSurface->GetnRefCnt();		// 편법. 레퍼런스 카운터는 바뀌면 안되므로 백업.
+				// Load()시점에서 Surface객체는 이미 생성되었으므로 비동기로 로딩한 값만 채워넣어야 한다.
+				GRAPHICS->CopyValueSurface( pImg->m_pSurface, _pSurface );		// 서피스 값 복사.(XSurface*로 복사하면 하위클래스값이 복사안되서 이렇게 함.)
+				pImg->m_pSurface->_SetrefCnt( refCnt );		// 레퍼런스 카운트 복구.
+				_pSurface->ClearCreated();		// 내부에서 메모리 삭제 방지.
+				s_sizeTotalVMem += _pSurface->GetSizeByte();
+				SAFE_DELETE( _pSurface );		// 임시객체인 원본은 삭제.
+				m_Cnt = 0;		// 하나로딩하면 카운터 초기화
+			}
+		} else {// _pSurface
+						// 로딩에 실패하면 대기열뒤로 보내야함.
+			XBREAK( 1 );
+		}
+		// 로딩에 성공하면 대기열에서 삭제.
+		m_listAsync.pop_front();
+		pFirst = nullptr;
+	}
+}

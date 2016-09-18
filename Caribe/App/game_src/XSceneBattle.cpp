@@ -50,7 +50,9 @@
 #include "sprite/SprObj.h"
 #endif // _XTEST
 #include "OpenGL2/XTextureAtlas.h"
+//#include "OpenGL2/XRenderCmd.h"
 #include "XFramework/client/XWndBatchRender.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -187,15 +189,11 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 #endif
 	// XBattleField(XWorld)객체 생성
 	// 배경 레이어
-// 	m_pWndWorld = XWndBattleField::sGet();
-	// 배경레이어 + 오브젝트 레이어
-// 	m_pWndWorld = new XWndBattleField();
-//		m_pWndWorld->LoadImg( XE::MakePath( DIR_IMG, strBg ) );
-// 	Add( m_pWndWorld );
 	// 배경레이어용 이미지 로딩
 	auto psfcBG = IMAGE_MNG->Load( false, 
 																 XE::MakePath( DIR_IMG, strBg ),
 																 XE::xPF_RGB565,
+																 false,
 																 false, false, 
 																 false );		// no async
 	XBREAK( psfcBG == nullptr );
@@ -217,35 +215,18 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 	m_pWndWorld->SetspCamera( spCamera );
 	// 배경레이어 추가
 	auto pLayerBg = m_pWndWorld->AddBgLayer( psfcBG, spWorld );
-	// 		auto pLayerBg = new XEWndWorldImage( XE::MakePath( DIR_IMG, strBg ) );
-	// 		m_pWndWorld->Add( pLayerBg );
-	//		pLayerBg->LoadImg( XE::MakePath( DIR_IMG, strBg ) );
-// 	pLayerBg->SetscaleMin( 0.4f );
-// 	pLayerBg->SetscaleMax( 2.f );
-	// 		vwSize = pLayerBg->GetvwSizeWorld();
 	// 오브젝트 레이어 추가
 	auto pLayerObj = m_pWndWorld->AddObjLayer( spWorld );
-// 	pLayerBg->SetscaleMin( 0.4f );
-// 	pLayerBg->SetscaleMax( 2.f );
 	spCamera->SetScaleCamera( 0.5f );
 	spCamera->SetFocus( XE::VEC2( 956, 450 ) );
-
-	// 레이어들에 카메라객체 바인딩
-// 	pLayerBg->SetspCamera( spCamera );
-// 	pLayerObj->SetspCamera( spCamera );
-	// 		auto pWorld = new XBattleField( vwSize );
-		// 		auto pLayerObj = new XEWndWorld( pWorld );
-		// 		m_pWndWorld->Add( pLayerObj );
-
-
-	// UI레이어
-//	m_pWndWorld->SetScaleCamera(0.5f);	// ( 0.5f );
-// 	m_pWndWorld->SetFocus( XE::VEC2( 956, 450 ) );
+	// 초상화리스트 레이어
+	auto pWnd = new XWndBatchRender( "layer.faces", true );
+	pWnd->SetstrIdentifier( "wnd.faces" );
+	Add( pWnd );
 	// 전투타입을 지정한다.
 	XBattleField::sGet()->SettypeBattle( s_BattleStart.m_typeBattle );
 	// ui메인
-// 	auto pWnd = new XWndBatchRender();
-	auto pWnd = new XWndBatchRender( "layer.ui" );
+ 	pWnd = new XWndBatchRender( "layer.ui", false );
 	pWnd->SetstrIdentifier("wnd.ui");
 	Add( pWnd );
 	SetbUpdate( true );
@@ -453,104 +434,116 @@ XWndBatchRender* XSceneBattle::GetpLayerUI()
 	return SafeCast<XWndBatchRender*>( Find( "wnd.ui" ) );
 }
 
+XWndBatchRender* XSceneBattle::GetpLayerFaces()
+{
+	return SafeCast<XWndBatchRender*>( Find( "wnd.faces" ) );
+}
+
 void XSceneBattle::CreateBattleUI()
 {
 	auto pWndUI = GetpLayerUI();
-	// 전투 화면 UI
-	m_Layout.CreateLayout( "battle", pWndUI );
+	SET_ATLASES( pWndUI->GetpAtlas() ) {
+		// 전투 화면 UI
+		m_Layout.CreateLayout( "battle", pWndUI );
 
-	auto pRootTop = pWndUI->Find( "wnd.bars" );
-	for( int side = 0; side < 2; ++side ) {
-		auto& camp = m_aryCamp[side];
-		auto pRootName = pRootTop->Findf( "mod.name.%d", side );
-		if( pRootName ) {
-			_tstring strName = camp.m_strName;
+		auto pRootTop = pWndUI->Find( "wnd.bars" );
+		for( int side = 0; side < 2; ++side ) {
+			auto& camp = m_aryCamp[side];
+			auto pRootName = pRootTop->Findf( "mod.name.%d", side );
+			if( pRootName ) {
+				_tstring strName = camp.m_strName;
 #ifdef _CHEAT
-			if( XAPP->m_bDebugMode && camp.m_idAcc ) {
-				strName += XFORMAT( "(%d)", camp.m_idAcc );
-			}
+				if( XAPP->m_bDebugMode && camp.m_idAcc ) {
+					strName += XFORMAT( "(%d)", camp.m_idAcc );
+				}
 #endif
-			xSET_TEXT( pRootName, "text.level", XFORMAT( "%d", camp.m_Level ) );
-			xSET_TEXT( pRootName, "text.name", XFORMAT( "%s", strName.c_str() ) );
-			auto pImgBg = pRootTop->Findf( "img.bar.%d", side );
-			if( pImgBg ) {
-				m_aryBar[ side ] = XLayout::sGetCtrl<XWndProgressBar2*>( pImgBg, "pbar.hp" );
+				xSET_TEXT( pRootName, "text.level", XFORMAT( "%d", camp.m_Level ) );
+				xSET_TEXT( pRootName, "text.name", XFORMAT( "%s", strName.c_str() ) );
+				auto pImgBg = pRootTop->Findf( "img.bar.%d", side );
+				if( pImgBg ) {
+					m_aryBar[side] = XLayout::sGetCtrl<XWndProgressBar2*>( pImgBg, "pbar.hp" );
+				}
 			}
-		}
-		// 프로필 이미지
-		if( camp.m_psfcProfile ) {
-			auto pImg = xGET_IMAGE_CTRLF( pRootTop, "img.profile.%d", side );
-			if( pImg ) {
-				pImg->SetSurfaceWithpSurface( camp.m_psfcProfile );
+			// 프로필 이미지
+			if( camp.m_psfcProfile ) {
+				auto pImg = xGET_IMAGE_CTRLF( pRootTop, "img.profile.%d", side );
+				if( pImg ) {
+					pImg->SetSurfaceWithpSurface( camp.m_psfcProfile );
+				}
 			}
-		}
-	} // for
-	xSET_ACTIVE( pWndUI, "wnd.bars", FALSE );		// UI 터치 안되게
-	auto pButt = 
-	xSET_BUTT_HANDLER( pWndUI, "butt.battle.surrrender", &XSceneBattle::OnSurrrender );		// 항복 버튼
+		} // for
+		xSET_ACTIVE( pWndUI, "wnd.bars", FALSE );		// UI 터치 안되게
+		auto pButt =
+			xSET_BUTT_HANDLER( pWndUI, "butt.battle.surrrender", &XSceneBattle::OnSurrrender );		// 항복 버튼
 #ifdef _XSINGLE
-	if( pButt ) {
-		pButt->SetbShow( false );
-	}
+		if( pButt ) {
+			pButt->SetbShow( false );
+		}
 #endif
+	} END_ATLASES;
 }
 
 void XSceneBattle::CreateHeroesFace()
 {
-	auto pLayerUI = GetpLayerUI();		// ui batch renderer layer
-	SET_ATLASES( pLayerUI->GetpAtlas() ) {
-		// 좌우 영웅리스트
-		for( int i = 0; i < 2; ++i ) {
-			auto pLegionObj = XBattleField::sGet()->GetLegionObj( i );
-			if( pLegionObj ) {
-				XWnd* pWndLayer = new XWnd();
-				pWndLayer->SetstrIdentifierf( "wnd.layer.faces%d", i );
-				pLayerUI->Add( pWndLayer );
-				XWnd* pFirst = nullptr;
-				//
-				for( auto spSquadObj : pLegionObj->GetlistSquad() ) {
-					auto pHero = spSquadObj->GetpHero();
-					if( pHero ) {
-						//					auto pWnd = new XWndStoragyItemElem( XE::VEC2( i * 600, 0 ), pHero );
-						auto pWnd = new XWndFaceInBattle( spSquadObj, i + 1 );
-						pWnd->SetstrIdentifierf( "face.%8x", pHero->GetsnHero() );
-						pWnd->SetPosLocal( i * 609, 0 );
-#if !defined(_DEBUG)
-						if( i == 0 )		// 디버깅모드일때는 제한없이 양쪽편을 다 누를 수 있음.
-#endif
-						{
-							pWnd->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnTouchHeroFace, spSquadObj->GetsnSquadObj() );
+	// 여기서 생성되는 모든 서피스는 배치렌더용으로 생성.
+	auto bPrevBatch = XGraphics::sSetEnableBatchLoading( true );
+	do 
+	{
+		auto pLayerFaces = GetpLayerFaces();		// ui batch renderer layer
+		SET_ATLASES( pLayerFaces->GetpAtlas() ) {
+			// 좌우 영웅리스트
+			for( int i = 0; i < 2; ++i ) {
+				auto pLegionObj = XBattleField::sGet()->GetLegionObj( i );
+				if( pLegionObj ) {
+					XWnd* pWndLayer = new XWnd();
+					pWndLayer->SetstrIdentifierf( "wnd.layer.faces%d", i );
+					pLayerFaces->Add( pWndLayer );
+					XWnd* pFirst = nullptr;
+					//
+					for( auto spSquadObj : pLegionObj->GetlistSquad() ) {
+						auto pHero = spSquadObj->GetpHero();
+						if( pHero ) {
+							auto pWnd = new XWndFaceInBattle( spSquadObj, i + 1 );
+							pWnd->SetstrIdentifierf( "face.%8x", pHero->GetsnHero() );
+							pWnd->SetPosLocal( i * 609, 0 );
+	#if !defined(_DEBUG)
+							if( i == 0 )		// 디버깅모드일때는 제한없이 양쪽편을 다 누를 수 있음.
+	#endif
+							{
+								pWnd->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnTouchHeroFace, spSquadObj->GetsnSquadObj() );
+							}
+							pWndLayer->Add( pWnd );
+							if( !pFirst )
+								pFirst = pWnd;
 						}
-						pWndLayer->Add( pWnd );
-						if( !pFirst )
-							pFirst = pWnd;
 					}
-				}
-				const float marginTB = 5.f;	// 위아래 마진
-				if( pFirst ) {
-					const float hDist = 2.f;
-					const float hElem = pFirst->GetSizeNoTransLayout().h * pFirst->GetScaleLocal().y;	// elem하나의 크기
-					const float hScene = GetSizeLocal().h - (marginTB * 2.f);	// 마진을 뺀 씬 높이
-					float hSector = hScene / pWndLayer->GetNumChild();		// 각 elem당 섹터 크기
-					float scale = 0.65f;
-					if( hElem + hDist > hSector ) {
-						scale = hSector / (hElem + hDist);
-					}
-					float y = marginTB;
-					for( auto pWnd : pWndLayer->GetlistItems() ) {
-						pWnd->SetScaleLocal( scale );
-						if( scale == 0.65f ) {
-							pWnd->SetY( y );
-							y += (hElem * scale) + hDist;
+					const float marginTB = 5.f;	// 위아래 마진
+					if( pFirst ) {
+						const float hDist = 2.f;
+						const float hElem = pFirst->GetSizeNoTransLayout().h * pFirst->GetScaleLocal().y;	// elem하나의 크기
+						const float hScene = GetSizeLocal().h - (marginTB * 2.f);	// 마진을 뺀 씬 높이
+						float hSector = hScene / pWndLayer->GetNumChild();		// 각 elem당 섹터 크기
+						float scale = 0.65f;
+						if( hElem + hDist > hSector ) {
+							scale = hSector / (hElem + hDist);
 						}
-						pWnd->SetbUpdate( true );
+						float y = marginTB;
+						for( auto pWnd : pWndLayer->GetlistItems() ) {
+							pWnd->SetScaleLocal( scale );
+							if( scale == 0.65f ) {
+								pWnd->SetY( y );
+								y += (hElem * scale) + hDist;
+							}
+							pWnd->SetbUpdate( true );
+						}
+						if( scale != 0.65f )
+							pWndLayer->AutoLayoutVCenterByChilds( marginTB );
 					}
-					if( scale != 0.65f )
-						pWndLayer->AutoLayoutVCenterByChilds( marginTB );
-				}
-			} // if( pLegionObj ) {
-		}
-	} END_ATLASES;
+				} // if( pLegionObj ) {
+			}
+		} END_ATLASES;
+	} while (0);
+	XGraphics::sSetEnableBatchLoading( bPrevBatch );
 }
 
 
@@ -1003,7 +996,6 @@ void XSceneBattle::OnFinishBattle( XGAME::xtSide bitCampWin, bool bRetreatSulfur
 		m_bFinish = true;
 		XBattleField::sGet()->SetAI( false );
 	}
-
 
 #if defined(_XSINGLE)
 	SET_ATLASES(GetpLayerUI()->GetpAtlas()) {

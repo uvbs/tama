@@ -7,6 +7,7 @@
 #include "XFramework/client/XEContent.h"
 #include "OpenGL2/XRenderCmd.h"
 #include "OpenGL2/XTextureAtlas.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -19,10 +20,9 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////////////////////////////////////////////
 XEWndWorldImage::XEWndWorldImage( XSurface* psfcBG, 
 																	std::shared_ptr<XEWorld> spWorld )
-//	: XEWndWorld( spWorld )
-	: m_pRenderer( new XRenderCmdMng( __FUNCTION__ ) )
-	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
-	, m_spWorld( spWorld )
+	: m_spWorld( spWorld )
+// 	, m_pRenderer( new XRenderCmdMng( __FUNCTION__ ) )
+// 	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
 {
 	Init();
 //	m_strResBg = resBg;
@@ -43,12 +43,12 @@ void XEWndWorldImage::Destroy()
 
 XSurface* XEWndWorldImage::LoadImg( LPCTSTR resImg )
 {
-	SET_ATLASES( m_pAtlas ) {
+// 	SET_ATLASES( m_pAtlas ) {
 		XBREAK( XE::IsEmpty( resImg ) );
 		SAFE_RELEASE2( IMAGE_MNG, m_psfcBg );
 //		m_strResBg = resImg;
 		m_psfcBg = IMAGE_MNG->Load( false, resImg, XE::xPF_RGB565 );
-	} END_ATLASES;
+// 	} END_ATLASES;
 	return m_psfcBg;
 }
 
@@ -97,12 +97,12 @@ void XEWndWorldImage::Draw()
 		XBREAK( vsWinCenter.IsZero() );
 		XE::VEC2 vsLT = vsWinCenter + (-vwCamera * scaleBg);		// 그림이 찍혀야할 화면 좌표
 
-		SET_RENDERER( m_pRenderer ) {
+// 		SET_RENDERER( m_pRenderer ) {
 			m_psfcBg->SetScale( scaleBg );
 // 			GRAPHICS->SetPriority( 1000 );
 			m_psfcBg->Draw( vsLT );
 // 			GRAPHICS->SetPriority( 0 );
-		} END_RENDERER;
+// 		} END_RENDERER;
 	}
 // 	GRAPHICS->SetPriority( 500 );
 	XWnd::Draw();

@@ -2,6 +2,7 @@
 #include "XWndImage.h"
 #include "XFramework/XEProfile.h"
 #include "XFramework/Game/XEComponents.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

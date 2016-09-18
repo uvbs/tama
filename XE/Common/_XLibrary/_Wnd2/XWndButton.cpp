@@ -11,6 +11,7 @@
 #include "XFramework/client/XEContent.h"
 #include "XSoundMng.h"
 #include "XFramework/XEProfile.h"
+#include "XImageMng.h"
 
 using namespace XE;
 

@@ -326,8 +326,8 @@ public:
 	void SetKeyColor( DWORD dwColor ) { m_dwKeyColor = dwColor; }
 	GET_SET_ACCESSOR( float, fAlpha );
 #ifdef _CLIENT
-	BOOL IsInViewport( float x, float y, const MATRIX &mParent );
-	BOOL IsInViewport( float x, float y, float w, float h );
+	BOOL IsInViewport( float x, float y, const MATRIX &mParent ) const;
+	BOOL IsInViewport( float x, float y, float w, float h ) const;
 #endif
 //	void SetAlpha( float fAlpha ) { m_fAlpha = fAlpha; }
 	// GetstrRes()로 바뀜.
@@ -351,6 +351,7 @@ public:
 	GET_ACCESSOR_CONST( float, fScaleY );
 	GET_ACCESSOR_CONST( xDM_TYPE, DrawMode );
 	void SetDrawMode( xDM_TYPE drawMode );
+	static void sSetglBlendFunc( XE::xtBlendFunc funcBlend, GLenum *pOutsfactor, GLenum *pOutdfactor );
 	inline void SetBlendFunc( XE::xtBlendFunc blendFunc ) {
 		m__funcBlend = blendFunc;
 		m_DrawMode = XE::ConvertBlendFuncDMTypeDmType( blendFunc );
@@ -496,6 +497,7 @@ public:
 	/**
 	 @brief 서피스를 x.y를 좌상귀로 하는 지점에 그린다.
 	*/
+	virtual void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const = 0;
 	virtual void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const = 0;
 	virtual void Draw( float x, float y ) = 0; //{ XBREAKF(1, "구현되지않음"); }
 	virtual void Draw( float x, float y, const MATRIX &mParent ) = 0;
@@ -521,6 +523,16 @@ public:
 	void LuaDraw( float x, float y ) { Draw( x, y ); }
 	void GetMatrix( const XE::VEC2& vPos, MATRIX* pOut ) const;
 }; // XSurface
+
+XE_NAMESPACE_START( XE )
+//
+struct xVertex {
+	Vec3 pos;//, y;
+	Vec2 uv;//u, tv;
+	Vec4 rgba;// r,g,b,a;
+};
+//
+XE_NAMESPACE_END; // XE
 
 
 

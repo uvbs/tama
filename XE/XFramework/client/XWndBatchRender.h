@@ -37,18 +37,17 @@ class XWndBatchRender : public XWnd
 {
 friend class XAutoCurrAtlas;
 public:
-	XWndBatchRender( const char* cTag );
+	XWndBatchRender( const char* cTag, bool bBatchRender );
 	~XWndBatchRender() {
 		Destroy();
 	}
 	// get/setter
 	GET_ACCESSOR( XTextureAtlas*, pAtlas );
 	// public member
+// 	void AttatchBatchRenderer();
 protected:
 	void Draw() override;
 	int Process( float dt ) override;
-// 	void SetCurrAtlas();
-// 	void ClearCurrAtlas();
 private:
 	// private member
 	XRenderCmdMng* m_pRenderer = nullptr;

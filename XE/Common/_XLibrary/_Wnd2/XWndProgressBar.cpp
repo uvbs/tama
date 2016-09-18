@@ -4,6 +4,7 @@
 #include "sprite/SprObj.h"
 #include "../XDrawGraph.h"
 #include "XFramework/XEProfile.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
