@@ -449,6 +449,12 @@ void XSurfaceGLAtlasNoBatch::DrawByParam(
 	CHECK_GL_ERROR();
 }
 
+Restore코드
+DrawLocal코드
+아틀라스에 줄생기는거 해결
+
+
+
 /*
 매트릭스 변환이 없는 코어버전.
 */
