@@ -23,7 +23,7 @@ enum xDM_TYPE {
 
 namespace XE {
 // 블렌딩 함수(xDM_TYPE을 쓰지말고 이걸쓸것)
-enum xtBlendFunc {
+enum xtBlendFunc : int {
 	xBF_NONE = 0,		
 	xBF_NO_DRAW,		// 그림을 찍지 않음
 	xBF_MULTIPLY,

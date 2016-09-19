@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Caribe2013", "Caribe\Caribe2013.vcxproj.vcxproj", "{1565A2CB-DB14-4F22-8545-F51B7C11C502}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -37,54 +37,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoginServer_2013", "..\Logi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinOolong", "..\..\..\..\XE\prj\WinOolong\WinOolong.vcxproj", "{0C4742A0-4FF6-402D-A432-1AC7C1CED902}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{19EE91C8-77BB-4F05-A90D-6350E25E4F88}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
+		Performance2.psess = Performance2.psess
+	EndProjectSection
+EndProject
 Global
-	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 9
-		SccProjectUniqueName0 = Caribe\\Caribe2013.vcxproj.vcxproj
-		SccProjectName0 = Perforce\u0020Project
-		SccLocalPath0 = ..\\..\\..\\..
-		SccProvider0 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection0 = Caribe\\App\\pc_prj\\Caribe\\Caribe\\
-		SccProjectUniqueName1 = ..\\..\\..\\..\\XE\\prj\\xe_client\\xe_client\\xe_client2013.vcxproj.vcxproj
-		SccProjectName1 = Perforce\u0020Project
-		SccLocalPath1 = ..\\..\\..\\..
-		SccProvider1 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection1 = XE\\prj\\xe_client\\xe_client\\
-		SccProjectUniqueName2 = ..\\..\\..\\..\\XE\\prj\\xe_console\\xe_console\\xe_console.vcxproj
-		SccProjectName2 = Perforce\u0020Project
-		SccLocalPath2 = ..\\..\\..\\..
-		SccProvider2 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection2 = XE\\prj\\xe_console\\xe_console\\
-		SccProjectUniqueName3 = ..\\DBAgentServer\\DBAgentServer\\DBAgentServer2013.vcxproj.vcxproj
-		SccProjectName3 = Perforce\u0020Project
-		SccLocalPath3 = ..\\..\\..\\..
-		SccProvider3 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection3 = Caribe\\App\\pc_prj\\DBAgentServer\\DBAgentServer\\
-		SccProjectUniqueName4 = ..\\..\\..\\..\\XE\\prj\\xe_server\\xe_server\\xe_server2013.vcxproj.vcxproj
-		SccProjectName4 = Perforce\u0020Project
-		SccLocalPath4 = ..\\..\\..\\..
-		SccProvider4 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection4 = XE\\prj\\xe_server\\xe_server\\
-		SccProjectUniqueName5 = ..\\GameServer\\GameServer\\GameServer2013.vcxproj.vcxproj
-		SccProjectName5 = Perforce\u0020Project
-		SccLocalPath5 = ..\\..\\..\\..
-		SccProvider5 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection5 = Caribe\\App\\pc_prj\\GameServer\\GameServer\\
-		SccProjectUniqueName6 = ..\\LoginServer\\LoginServer\\LoginServer2013.vcxproj.vcxproj
-		SccProjectName6 = Perforce\u0020Project
-		SccLocalPath6 = ..\\..\\..\\..
-		SccProvider6 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection6 = Caribe\\App\\pc_prj\\LoginServer\\LoginServer\\
-		SccProjectUniqueName7 = ..\\ExtractList\\ExtractList\\ExtractList.vcxproj
-		SccProjectName7 = Perforce\u0020Project
-		SccLocalPath7 = ..
-		SccProvider7 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection7 = ExtractList\\ExtractList\\
-		SccProjectUniqueName8 = ..\\MakePackage2\\MakePackage2\\MakePackage2.vcxproj
-		SccProjectName8 = Perforce\u0020Project
-		SccLocalPath8 = ..
-		SccProvider8 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection8 = MakePackage2\\MakePackage2\\
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		_DebugGoogle|Win32 = _DebugGoogle|Win32
@@ -111,6 +72,8 @@ Global
 		RelGMO|x64 = RelGMO|x64
 		RelSingle|Win32 = RelSingle|Win32
 		RelSingle|x64 = RelSingle|x64
+		RelSingleHome|Win32 = RelSingleHome|Win32
+		RelSingleHome|x64 = RelSingleHome|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}._DebugGoogle|Win32.ActiveCfg = Debug_GLES2|Win32
@@ -149,6 +112,9 @@ Global
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelSingle|Win32.ActiveCfg = Release_single|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelSingle|Win32.Build.0 = Release_single|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelSingle|x64.ActiveCfg = Release_single|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelSingleHome|Win32.ActiveCfg = RelSingleHome|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelSingleHome|Win32.Build.0 = RelSingleHome|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.RelSingleHome|x64.ActiveCfg = RelSingleHome|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}._DebugGoogle|Win32.ActiveCfg = Debug_GLES2|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}._DebugGoogle|Win32.Build.0 = Debug_GLES2|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}._DebugGoogle|x64.ActiveCfg = Release_Bot2|Win32
@@ -185,6 +151,10 @@ Global
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelSingle|Win32.Build.0 = Release|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelSingle|x64.ActiveCfg = Release_Bot2|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelSingleHome|Win32.ActiveCfg = RelHome|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelSingleHome|Win32.Build.0 = RelHome|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelSingleHome|x64.ActiveCfg = RelHome|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.RelSingleHome|x64.Build.0 = RelHome|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}._DebugGoogle|Win32.ActiveCfg = Debug|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}._DebugGoogle|Win32.Build.0 = Debug|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}._DebugGoogle|x64.ActiveCfg = Debug|Win32
@@ -219,6 +189,8 @@ Global
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelGMO|x64.ActiveCfg = Release_Bot|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelSingle|x64.ActiveCfg = Release_Bot|Win32
+		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelSingleHome|Win32.ActiveCfg = Release|Win32
+		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelSingleHome|x64.ActiveCfg = RelSingleHome|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}._DebugGoogle|Win32.ActiveCfg = Debug|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}._DebugGoogle|Win32.Build.0 = Debug|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}._DebugGoogle|x64.ActiveCfg = Debug|Win32
@@ -252,6 +224,8 @@ Global
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.RelGMO|x64.ActiveCfg = Release_GMO|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.RelSingle|x64.ActiveCfg = Release|Win32
+		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.RelSingleHome|Win32.ActiveCfg = Release|Win32
+		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.RelSingleHome|x64.ActiveCfg = RelSingleHome|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}._DebugGoogle|Win32.ActiveCfg = Debug|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}._DebugGoogle|Win32.Build.0 = Debug|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}._DebugGoogle|x64.ActiveCfg = Debug|Win32
@@ -285,6 +259,8 @@ Global
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.RelGMO|x64.ActiveCfg = Release_GMO|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.RelSingle|x64.ActiveCfg = Release|Win32
+		{1C96D25D-2617-4DE0-817B-729714BA1321}.RelSingleHome|Win32.ActiveCfg = Release|Win32
+		{1C96D25D-2617-4DE0-817B-729714BA1321}.RelSingleHome|x64.ActiveCfg = RelSingleHome|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}._DebugGoogle|Win32.ActiveCfg = Debug|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}._DebugGoogle|x64.ActiveCfg = Debug|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.Debug_DX|Win32.ActiveCfg = Debug_DummyGenerator|Win32
@@ -310,6 +286,8 @@ Global
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.RelGMO|x64.ActiveCfg = Release_GMO|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.RelSingle|x64.ActiveCfg = Release|Win32
+		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.RelSingleHome|Win32.ActiveCfg = Release|Win32
+		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.RelSingleHome|x64.ActiveCfg = RelSingleHome|Win32
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}._DebugGoogle|Win32.ActiveCfg = Debug|Win32
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}._DebugGoogle|x64.ActiveCfg = Debug|x64
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.Debug_DX|Win32.ActiveCfg = Debug_DummyGenerator|Win32
@@ -343,6 +321,8 @@ Global
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.RelSingle|x64.ActiveCfg = Release|x64
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.RelSingle|x64.Build.0 = Release|x64
+		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.RelSingleHome|Win32.ActiveCfg = Release|Win32
+		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.RelSingleHome|x64.ActiveCfg = RelSingleHome|x64
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}._DebugGoogle|Win32.ActiveCfg = Debug|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}._DebugGoogle|x64.ActiveCfg = Debug|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.Debug_DX|Win32.ActiveCfg = Debug_DummyGenerator|Win32
@@ -368,6 +348,8 @@ Global
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.RelGMO|x64.ActiveCfg = Release_GMO|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.RelSingle|x64.ActiveCfg = Release|Win32
+		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.RelSingleHome|Win32.ActiveCfg = Release|Win32
+		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.RelSingleHome|x64.ActiveCfg = RelSingleHome|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}._DebugGoogle|Win32.ActiveCfg = Debug|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}._DebugGoogle|x64.ActiveCfg = Debug|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.Debug_DX|Win32.ActiveCfg = Debug_DummyGenerator|Win32
@@ -393,6 +375,8 @@ Global
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.RelGMO|x64.ActiveCfg = Release_GMO|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.RelSingle|x64.ActiveCfg = Release|Win32
+		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.RelSingleHome|Win32.ActiveCfg = Release|Win32
+		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.RelSingleHome|x64.ActiveCfg = RelSingleHome|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}._DebugGoogle|Win32.ActiveCfg = Debug|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}._DebugGoogle|Win32.Build.0 = Debug|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}._DebugGoogle|x64.ActiveCfg = Debug|Win32
@@ -428,6 +412,9 @@ Global
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelSingle|Win32.Build.0 = Release|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelSingle|x64.ActiveCfg = Release|Win32
+		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelSingleHome|Win32.ActiveCfg = RelHome|Win32
+		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelSingleHome|x64.ActiveCfg = RelHome|Win32
+		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelSingleHome|x64.Build.0 = RelHome|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -67,6 +67,7 @@
 #include "XWndTemplate.h"
 #include "client/XAppDelegate.h"
 #include "XDefNetwork.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

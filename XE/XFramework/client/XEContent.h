@@ -3,11 +3,13 @@
 //#include "XWindow.h"
 #include "_Wnd2/XWnd.h"
 #include "XClientMain.h"
-#include "XFramework/XEProfile.h"
 #include "XFramework/XReceiverCallbackH.h"
 
 #define XGAME_SIZE		XE::GetGameSize()
 
+namespace xnProfile {
+struct xRESULT;
+}
 class XEBaseScene;
 class XEContent;
 class XWndView;
@@ -62,7 +64,7 @@ public:
 		CONSOLE( "OnReload" );
 	}
 	virtual void OnResultLoginAuthen( XE::xRESULT_AUTHEN *pResultAuthen ) {}
-	virtual void OnFinishProfiling( XArrayLinear<XEProfile::xRESULT>& aryResult ) {}
+	virtual void OnFinishProfiling( XArrayLinear<xnProfile::xRESULT>& aryResult ) {}
 	/// 모든 버튼UI는 눌리면 이게 호출된다.
 	virtual void OnClickWnd( XWnd *pWnd ) {}
 	BOOL RestoreDevice() override;

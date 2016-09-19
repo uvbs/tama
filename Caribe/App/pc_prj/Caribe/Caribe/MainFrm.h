@@ -287,6 +287,22 @@ public:
 	afx_msg void OnUpdateReloadWhenRetryPropUnit( CCmdUI *pCmdUI );
 	afx_msg void OnUpdateReloadWhenRetryPropSkill( CCmdUI *pCmdUI );
 	afx_msg void OnUpdateReloadWhenRetryPropLegion( CCmdUI *pCmdUI );
+	afx_msg void OnProfileTestNoDraw();
+	afx_msg void OnUpdateProfileTestNoDraw( CCmdUI *pCmdUI );
+	afx_msg void OnProfileTestNoDP();
+	afx_msg void OnUpdateProfileTestNoDP( CCmdUI *pCmdUI );
+	afx_msg void OnProfileTestNoTexture();
+	afx_msg void OnUpdateProfileTestNoTexture( CCmdUI *pCmdUI );
+	afx_msg void OnProfileTestSmallTex();
+	afx_msg void OnUpdateProfileTestSmallTex( CCmdUI *pCmdUI );
+	afx_msg void OnProfileTestNoDrawBar();
+	afx_msg void OnUpdateProfileTestNoDrawBar( CCmdUI *pCmdUI );
+	afx_msg void OnProfileTestNoFontDraw();
+	afx_msg void OnUpdateProfileTestNoFontDraw( CCmdUI *pCmdUI );
+	afx_msg void OnProfileTestNoProcess();
+	afx_msg void OnUpdateProfileTestNoProcess( CCmdUI *pCmdUI );
+	void OnProfiling();
+	void OnUpdateProfiling( CCmdUI *pCmdUI );
 };
 
 extern CMainFrame *g_pMainFrm;

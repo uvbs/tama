@@ -5,6 +5,7 @@
 #include "etc/XTimer2.h"
 #include "etc/xLang.h"
 #include "XFramework/client/XClientMain.h"
+#include "XImage.h"
 
 
 #ifdef WIN32
@@ -51,6 +52,13 @@ void XImageMng::Destroy()
 XImageMng::XImageMng( int max )
 {
 	Init();
+}
+
+bool XImageMng::DoForceDestroy( XSurface *pSurface ) 
+{
+	if( !pSurface )
+		return false;
+	return DoForceDestroy( pSurface->GetstrRes() );
 }
 
 void XImageMng::CheckRelease( void )

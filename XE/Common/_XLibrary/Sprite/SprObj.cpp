@@ -12,6 +12,8 @@
 #include "SprMng.h"
 #include "XArchive.h"
 #include "XDelegateSprObj.h"
+#include "XFramework/client/XApp.h"
+#include "XFramework/client/XClientMain.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

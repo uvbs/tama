@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "_Wnd2/XWndSprObj.h"
 #include "sprite/SprDat.h"
-//#include "XWindow.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

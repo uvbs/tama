@@ -58,7 +58,7 @@ namespace XE
 			return *this;
 		}
   #endif
-  #ifdef DIRECT3D_VERSION
+  #ifdef _VER_DX
 		operator D3DXVECTOR2 () const {
 			D3DXVECTOR2 v( (float)x, (float)y );
 			return v;
@@ -231,7 +231,7 @@ namespace XE
 		VEC2( CPoint point ) { x = (float)point.x; y = (float)point.y; }
 #endif
 		VEC2( POINT point ) { x = (float)point.x; y = (float)point.y; }
-#ifdef DIRECT3D_VERSION
+#ifdef _VER_DX
 		VEC2( D3DXVECTOR2 vd3d ) { x = vd3d.x; y = vd3d.y; }
 #endif
 		
@@ -253,7 +253,7 @@ namespace XE
 			return *this;
 		}
   #endif
-  #ifdef DIRECT3D_VERSION
+  #ifdef _VER_DX
 		operator D3DXVECTOR2 () const {
 			D3DXVECTOR2 v( x, y );
 			return v;
@@ -506,7 +506,7 @@ namespace XE
 #ifdef WIN32
   #ifdef _AFX
   #endif
-  #ifdef DIRECT3D_VERSION
+  #ifdef _VER_DX
 		operator D3DXVECTOR3 () const {
 			return D3DXVECTOR3( x, y, z );
 		}

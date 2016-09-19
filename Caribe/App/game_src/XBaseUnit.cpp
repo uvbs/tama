@@ -27,6 +27,7 @@
 #include "XSystem.h"
 #include "XMsgUnit.h"
 #include "XFramework/XFType.h"
+#include "XFramework/XEProfile.h"
 
 
 using namespace XSKILL;
@@ -697,7 +698,7 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		const XE::VEC3 _vSize = vSizeUnit * scale;
 		vDrawHp.x -= sizeBar.w / 2.f;
 		vDrawHp.y -= _vSize.h + ( 2.f * scaleFactor );
-		if( (m_timerDamage.IsOn() && !m_timerDamage.IsOver()) || IsHero() )	{// 영웅은 항상 표시
+		if( (m_timerDamage.IsOn() && !m_timerDamage.IsOver()) || IsHero() )	{
 			XPROF_OBJ( "draw bar" );
 			float lerp = (float)GetHp() / GetMaxHp();
 			XCOLOR col = XCOLOR_RGBA( 210, 31, 1, 255 );
@@ -714,10 +715,12 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 	auto vDrawName = vDrawHp;
 	// draw name
 	if( IsHero() && IsLive() ) {
+		XPROF_OBJ( "draw name" );
 		vDrawName = DrawName( vPos, scaleFactor, scale, vDrawHp );
 	}
 	if( /*IsHero() &&*/ IsLive() ) {
 		// 버프 디버프 아이콘 표시
+		XPROF_OBJ( "draw buff" );
 		{
 			int idx = 1;
 			for( auto pBuffObj : GetlistSkillRecvObj() ) {

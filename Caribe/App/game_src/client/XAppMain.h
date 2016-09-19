@@ -7,6 +7,7 @@
 #define XRESO_HEIGHT	360
 
 namespace XGAME {
+	// m_dwFilter
 	enum {
 		xBIT_PLAYER_HERO = 0x01,
 		xBIT_PLAYER_UNIT= 0x02,
@@ -25,6 +26,11 @@ namespace XGAME {
 		xBIT_NO_CREATE_HIT_SFX		= 0x02000000,
 		xBIT_NO_CREATE_SKILL_SFX	= 0x04000000,
 		xBIT_NO_CREATE_BUFF_ICON	= 0x08000000,
+	};
+	// m_dwDraw
+	enum {
+		xBD_NO_FONT = 0x01,
+		xBD_NO_DRAW_PRIM_UP = 0x02,
 	};
 }
 
@@ -90,23 +96,11 @@ public:
 	bool m_bReloadWhenRetryPropUnit = FALSE;
 	bool m_bReloadWhenRetryPropSkill = FALSE;
 	bool m_bReloadWhenRetryPropLegion = FALSE;
+	DWORD m_dwDraw = 0;
 #else
 	bool m_bViewMemoryInfo = false;
 #endif
-//	bool m_bViewFrameRate = true;
-// 	BOOL IsGameMode() {
-// 		return (m_ToolMode == xTM_NONE);
-// 	}
-// 	BOOL IsToolCloudMode() {
-// 		return ( m_ToolMode == xTM_CLOUD );
-// 	}
-// 	BOOL IsToolTechMode() {
-// 		return ( m_ToolMode == xTM_TECH );
-// 	}
-// 	BOOL IsToolSpotMode() {
-// 		return ( m_ToolMode == xTM_SPOT );
-// 	}
-#endif
+#endif // cheat
 private:
 //	_tstring m_strUUIDFile;				// uuid파일명
 

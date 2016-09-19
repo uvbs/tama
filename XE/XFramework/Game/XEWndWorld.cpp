@@ -89,11 +89,11 @@ XE::VEC2 XEWndWorld::GetPosWorldToWindow( const XE::VEC3& vwPos, float *pOutScal
 
 	// 평행투영 머전
 	XE::VEC2 sizeWin = GetSizeLocal();
-	XE::VEC2 vwLT = m_vwCamera - ((sizeWin / 2.f) / m_scaleCamera);		// 현재 윈도우뷰의 좌상귀 월드좌표
+	XE::VEC2 vwLT = m_vwCamera - ((sizeWin * 0.5f) / m_scaleCamera);		// 현재 윈도우뷰의 좌상귀 월드좌표
 	XE::VEC2 v2wPos = XE::VEC2( vwPos.x, vwPos.y );
 	v2wPos.y += vwPos.z;		// z축은 마이너스가 위쪽.
 	XE::VEC2 vlsPos = (v2wPos - vwLT) * m_scaleCamera;		// 로컬스크린(윈도우)좌표계로 변환
-	vlsPos.x += ((vwPos.y - 525.f) / 2.f) * m_scaleCamera;		// 쿼터뷰로 표시할때..
+	vlsPos.x += ((vwPos.y - 525.f) * 0.5f) * m_scaleCamera;		// 쿼터뷰로 표시할때..
 	if( pOutScale )
 		*pOutScale = m_scaleCamera;
 	return vlsPos;

@@ -3,6 +3,7 @@
 #include "XBaseUnit.h"
 #include "XWndBattleField.h"
 #include "XSquadObj.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -617,89 +618,98 @@ XSPUnit XEObjMngWithType::GetPickUnit( XWndBattleField *pWndWorld,
 }
 
 void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible )
-//void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XList4<XEBaseWorldObj*>& aryVisible )
 {
 	XPROF_OBJ_AUTO();
-	for( auto pObj : aryVisible ) {
-		if( pWndWorld ) {	// 바닥에 찍히는 오브젝트먼저 찍는다.
-			if( pObj->GetType() == XGAME::xOT_FLOOR_OBJ ) {
-				// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
-				float scale = 1.f;
-				// 투영함수에서 카메라 스케일값을 받아온다.
-				XE::VEC2 vsPos;
-				{
-					XPROF_OBJ( "projection" );
-					vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
-				} {
-					XPROF_OBJ( "draw each" );
-					pObj->Draw( vsPos, scale );
-				}
-			} else
-			// 유닛의 경우는 그림자를 먼저 찍어주도록 한다.
-			if( pObj->GetType() == XGAME::xOT_UNIT ) {
-				XPROF_OBJ( "draw shadow" );
-				XBaseUnit *pUnit = SafeCast<XBaseUnit*, XEBaseWorldObj*>( pObj );
-				if( XASSERT( pUnit ) ) {
+	{
+		XPROF_OBJ( "draw floor/shadow" );
+		for( auto pObj : aryVisible ) {
+			if( pWndWorld ) {	// 바닥에 찍히는 오브젝트먼저 찍는다.
+				if( pObj->GetType() == XGAME::xOT_FLOOR_OBJ ) {
 					// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
 					float scale = 1.f;
 					// 투영함수에서 카메라 스케일값을 받아온다.
 					XE::VEC2 vsPos;
 					{
-						//						XPROF_OBJ( "projection" );
+						//					XPROF_OBJ( "projection floorObj" );
 						vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
+					} {
+						//					XPROF_OBJ( "draw each floorObj" );
+						pObj->Draw( vsPos, scale );
 					}
-					pUnit->DrawShadow( vsPos, scale );
-				}
+				} else
+					// 유닛의 경우는 그림자를 먼저 찍어주도록 한다.
+					if( pObj->GetType() == XGAME::xOT_UNIT ) {
+						//				XPROF_OBJ( "draw shadow" );
+						auto pUnit = SafeCast<XBaseUnit*>( pObj );
+						if( XASSERT( pUnit ) ) {
+							// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
+							float scale = 1.f;
+							// 투영함수에서 카메라 스케일값을 받아온다.
+							XE::VEC2 vsPos;
+							vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
+							pUnit->DrawShadow( vsPos, scale );
+						}
+					}
+			} else {
+				//			XPROF_OBJ( "draw each etc(no world)" );
+				XE::VEC2 vs = pObj->GetvwPos().ToVec2();
+				pObj->Draw( vs );
 			}
-		} else {
-			XE::VEC2 vs = pObj->GetvwPos().ToVec2();
-			pObj->Draw( vs );
 		}
 	}
 	// 일반 오브젝트들을 찍는다.
-	for( auto pObj : aryVisible ) {
-		if( pWndWorld ) {	
-			// 바닥오브젝트가 아닌것만 찍는다.
-			if( pObj->GetType() != XGAME::xOT_FLOOR_OBJ && pObj->GetType() != XGAME::xOT_UI ) {
-				// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
-				float scale = 1.f;
-				// 투영함수에서 카메라 스케일값을 받아온다.
-				XE::VEC2 vsPos;
-				{
-					XPROF_OBJ( "projection" );
-					vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
+	{
+		XPROF_OBJ( "draw normal" );
+		for( auto pObj : aryVisible ) {
+			if( pWndWorld ) {
+				// 바닥오브젝트가 아닌것만 찍는다.
+				if( pObj->GetType() != XGAME::xOT_FLOOR_OBJ 
+						&& pObj->GetType() != XGAME::xOT_UI ) {
+					// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
+					float scale = 1.f;
+					// 투영함수에서 카메라 스케일값을 받아온다.
+					XE::VEC2 vsPos;
+					{
+						XPROF_OBJ( "projection obj" );
+						vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
+					}
+					{
+						XPROF_OBJ( "draw each obj" );
+						pObj->Draw( vsPos, scale );
+					}
 				}
-				{
-					XPROF_OBJ( "draw each" );
-					pObj->Draw( vsPos, scale );
-				}
+			} else {
+				XPROF_OBJ( "draw each obj(no world)" );
+				XE::VEC2 vs = pObj->GetvwPos().ToVec2();
+				pObj->Draw( vs );
 			}
-		} else {
-			XE::VEC2 vs = pObj->GetvwPos().ToVec2();
-			pObj->Draw( vs );
 		}
 	}
 	// UI오브젝트를 찍는다.
-	for( auto pObj : aryVisible ) {
-		if( pWndWorld ) {
-			// 바닥오브젝트가 아닌것만 찍는다.
-			if( pObj->GetType() == XGAME::xOT_UI ) {
-				// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
-				float scale = 1.f;
-				// 투영함수에서 카메라 스케일값을 받아온다.
-				XE::VEC2 vsPos;
-				{
-					XPROF_OBJ( "projection" );
-					vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
+	{
+		XPROF_OBJ( "draw ui_obj" );
+		for( auto pObj : aryVisible ) {
+			if( pWndWorld ) {
+				// 바닥오브젝트가 아닌것만 찍는다.
+				if( pObj->GetType() == XGAME::xOT_UI ) {
+					// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
+					float scale = 1.f;
+					// 투영함수에서 카메라 스케일값을 받아온다.
+					XE::VEC2 vsPos;
+					{
+						//XPROF_OBJ( "projection ui" );
+						vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
+					}
+					{
+						//XPROF_OBJ( "draw each ui" );
+						pObj->Draw( vsPos, scale );
+					}
 				}
-				{
-					XPROF_OBJ( "draw each" );
-					pObj->Draw( vsPos, scale );
-				}
+			} else {
+				//XPROF_OBJ( "draw each ui(no world)" );
+				XE::VEC2 vs = pObj->GetvwPos().ToVec2();
+				pObj->Draw( vs );
 			}
-		} else {
-			XE::VEC2 vs = pObj->GetvwPos().ToVec2();
-			pObj->Draw( vs );
 		}
 	}
 }

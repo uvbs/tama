@@ -20,21 +20,28 @@ static char THIS_FILE[] = __FILE__;
 */
 
 XEProfile* XEProfile::PROFILE = NULL;
-XArrayLinear<XEProfile::xRESULT> XEProfile::s_aryResult;
+XArrayLinear<xnProfile::xRESULT> XEProfile::s_aryResult;
+int XEProfile::s_depthCurr = -1;
 
 //////////////////////////////////////////////////////////////////////////
-void XEProfile::sCreateSingleton( void ) 
+void XEProfile::sCreateSingleton() 
 {
 	PROFILE = new XEProfile;
 }
 
-void XEProfile::sDoStart( void ) 
+void XEProfile::sDestroy() 
 {
-	PROFILE->SetState( xACTIVE );
+	SAFE_DELETE( PROFILE );
+}
+
+void XEProfile::sDoStart() 
+{
+	XEProfile::sGet()->sDestroy();	// 프로파일링을 시작할땐 이전꺼 초기화.
+	XEProfile::sGet()->SetState( xACTIVE );
 	CONSOLE("profiling start");
 }
 // 프로파일링 끝!
-void XEProfile::sDoFinish( void ) {
+void XEProfile::sDoFinish() {
 	CONSOLE( "profiling end" );
 	PROFILE->SetState( xFINISH );
 }
@@ -47,38 +54,47 @@ void XEProfile::Destroy()
   }
 }
 
+/**
+ @brief 게임 업데이트 한프레임처리가 끝나면 초기화.
+*/
+void XEProfile::ClearDepth() 
+{
+	for( auto itorFunc : m_mapFuncs ) {
+		auto pFunc = itorFunc.second;
+		pFunc->m_depthLast = 0;
+	}
+}
+
 // 프로파일링 객체가 생성될때 호출해야함.
 XEProfile::xFUNC* XEProfile::RegisterObj( LPCTSTR szFunc )
 {
 	xFUNC *pFunc = NULL;
 	_tstring strFunc = szFunc;
-	std::map<_tstring, xFUNC*>::iterator itor;
-	itor = m_mapFuncs.find( strFunc );
-	if( itor == m_mapFuncs.end() )
-	{
+	auto itor = m_mapFuncs.find( strFunc );
+	if( itor == m_mapFuncs.end() ) {
 		pFunc = new xFUNC;
-		_tcscpy_s( pFunc->szFunc, szFunc );
-		pFunc->cntExec = 1;			// 실행된 횟수 초기화
+		_tcscpy_s( pFunc->m_szFunc, szFunc );
+		pFunc->m_cntExec = 1;			// 실행된 횟수 초기화
 		m_mapFuncs[ strFunc ] = pFunc;
 	//	pFunc->cntCall = ++m_cntCall;	// 최초 불려진 순서대로 콜 카운터가 기록된다.
 		// 최초 만들어진 노드는 트리에 등록
-		if( m_pCurrCall )
-		{
-			m_pCurrCall->listChild.Add( pFunc );
-			pFunc->pParent = m_pCurrCall;
-			pFunc->depth = m_pCurrCall->depth + 1;
-		} else
-		{
+		if( m_pCurrCall )	{
+			m_pCurrCall->m_listChild.Add( pFunc );
+			pFunc->m_pParent = m_pCurrCall;
+			pFunc->m_depth = m_pCurrCall->m_depth + 1;
+		} else	{
 			XBREAK( m_pTreeCall != NULL );	// 보통 최상위 루트노드가 2개일때 발생
 			m_pTreeCall = pFunc;
-			pFunc->pParent = NULL;	// this is top
-			pFunc->depth = 0;
+			pFunc->m_pParent = nullptr;	// this is top
+			pFunc->m_depth = 0;
 		}
-	} else
-	{
+	} else	{
 		pFunc = (*itor).second;
 		XBREAK( pFunc == NULL );
 	}
+	// 루프내에 있는 프로파일러 객체는 다시 카운팅을 하지 않고 시간누적만 한다.
+	pFunc->m_bAddMode = (pFunc->m_depthLast == pFunc->m_depth);
+	pFunc->m_depthLast = pFunc->m_depth;
 	// 콜스택이 현재 함수로 바뀜
 	m_pCurrCall = pFunc;
 	return pFunc;
@@ -104,39 +120,37 @@ void XEProfile::Process()
 void XEProfile::Update( xFUNC *pFunc, unsigned long long llExec )
 {
 	// 실행된 시간을 누적시킨다.
-	pFunc->llTotalExec += llExec;
+	pFunc->m_llTotalExec += llExec;
 	// 실행된 횟수를 기록한다.
-	++pFunc->cntExec;
+	if( !pFunc->m_bAddMode )
+		++pFunc->m_cntExec;
 	// 현재 콜스택의 깊이를 넣는다.
-	//	pFunc->cntDepth = PROFILE->GetcntCurrCallStackDepth();
+//	pFunc->cntDepth = PROFILE->GetcntCurrCallStackDepth();
 	// 콜스택 복귀
-	m_pCurrCall = pFunc->pParent;
+	m_pCurrCall = pFunc->m_pParent;
 }
 
 
 void XEProfile::AddChild( xFUNC *pFunc )
 {
-	if( m_pTreeCall )
-	{
-		m_pCurrCall->listChild.Add( pFunc );
-		pFunc->pParent = m_pCurrCall;
-	} else
-	{
+	if( m_pTreeCall )	{
+		m_pCurrCall->m_listChild.Add( pFunc );
+		pFunc->m_pParent = m_pCurrCall;
+	} else	{
 		m_pTreeCall = pFunc;
 		m_pCurrCall = pFunc;
-		pFunc->pParent = NULL;	// this is top
+		pFunc->m_pParent = NULL;	// this is top
 	}
 }
 
 // 이제까지 쌓인 프로파일 데이타를 평가해서 목록으로 만들어라
-void XEProfile::DoEvaluation( void )
+void XEProfile::DoEvaluation()
 {
 	if( m_pTreeCall == NULL )
 		return;
 	int size = m_mapFuncs.size();
 	// 이전 어레이크기와 달라졌다면 재활용 못하므로 삭제하고 다시 만듬.
-	if( s_aryResult.size() != size )
-	{
+	if( s_aryResult.size() != size )	{
 		s_aryResult.DestroyAll();	// 
 		s_aryResult.Create( size );
 	}
@@ -145,30 +159,29 @@ void XEProfile::DoEvaluation( void )
 	m_State = xOFF;
 }
 
-BOOL XEProfile::RecursiveEvaluation( XArrayLinear<xRESULT> *pOut, 
+BOOL XEProfile::RecursiveEvaluation( XArrayLinear<xnProfile::xRESULT> *pOut, 
 									xFUNC *pFunc,
 									unsigned long long llExecAvgParent )
 {
 
 	// 현재 노드의 평균 실행속도
-	unsigned long long llExecAvg = (unsigned long long)(pFunc->llTotalExec / pFunc->cntExec);
-	if( pFunc->pParent )
+	unsigned long long llExecAvg = (unsigned long long)(pFunc->m_llTotalExec / pFunc->m_cntExec);
+	if( pFunc->m_pParent )
 	{
 		// 탑노드는 목록을 만들지 않는다.
-		xRESULT result;
-		result.strFunc = pFunc->szFunc;
+		xnProfile::xRESULT result;
+		result.strFunc = pFunc->m_szFunc;
 		// 부모노드의 전체 실행속도에서 현재노드의 실행속도가 차지하는 비율
 		result.ratioShare = (float)((double)llExecAvg / llExecAvgParent);
 		result.mcsExecAvg = (int)llExecAvg;
-		result.depth = pFunc->depth;
-		result.cntExec = pFunc->cntExec;
+		result.depth = pFunc->m_depth;
+		result.cntExec = pFunc->m_cntExec;
 		pOut->Add( result );
 
 	}
-	XLIST_LOOP( pFunc->listChild, xFUNC*, pChild )
-	{
+	for( auto pChild : pFunc->m_listChild )	{
 		RecursiveEvaluation( pOut, pChild, llExecAvg );
-	} END_LOOP;
+	}
 	return TRUE;
 }
 
@@ -182,6 +195,7 @@ XProfileObj::XProfileObj( LPCTSTR szFunc )
 	_tcscpy_s( m_szFunc, szFunc );
 	m_pFunc = XEProfile::sGet()->RegisterObj( szFunc );
 	XBREAK( m_pFunc == NULL );
+	++XEProfile::s_depthCurr;
 	// 콜스택 푸쉬
 //	PROFILE->PushCallStack();
 	// 타이머 시작
@@ -198,7 +212,12 @@ void XProfileObj::Destroy()
 	// 프로파일 관리자에 함수명을 키로해서 실행시간을 업데이트 한다.
 	XEProfile::sGet()->Update( m_pFunc, llPass );
 //	PROFILE->PopCallStack();
+	m_pFunc->m_bAddMode = false;
+	--XEProfile::s_depthCurr;
 }
 
 
-
+/*
+ProfObj가 생성될때 depth가 변하지 않은채 같은게 다시 불렸으면 
+카운팅은 하지 않고 누적만 시킨다.
+*/

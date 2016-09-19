@@ -2,7 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD
     android:keepScreenOn="true"
+=======
+>>>>>>> a0ed401913e2273227457e089b4100928406b35c
     tools:context=".MyMainActivity" >
 
     <TextView

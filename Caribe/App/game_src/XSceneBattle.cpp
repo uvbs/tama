@@ -42,6 +42,7 @@
 #endif // _XSINGLE
 #include "XSoundMng.h"
 #include "XMsgUnit.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -592,6 +593,7 @@ void XSceneBattle::Update()
 	xSET_SHOW( this, "butt.debug.allkill", XAPP->m_bDebugMode );
 	xSET_SHOW( this, "butt.debug.tech", XAPP->m_bDebugMode );
 	xSET_SHOW( this, "butt.debug.show.damage", XAPP->m_bDebugMode );
+	xSET_SHOW( this, "butt.debug.suicide", XAPP->m_bDebugMode );
 #endif
 	XEBaseScene::Update();
 }
@@ -1140,7 +1142,7 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 	return 1;
 }
 
-int XSceneBattle::OnDebugProfile( XWnd* pWnd, DWORD p1, DWORD p2 )
+int XSceneBattle::OnDebugProfile( XWnd*, DWORD, DWORD )
 {
 	if( XEProfile::sIsActive() == FALSE ) {
 		CONSOLE( "profiler start!" );
@@ -1148,14 +1150,17 @@ int XSceneBattle::OnDebugProfile( XWnd* pWnd, DWORD p1, DWORD p2 )
 	} else {
 		XEProfile::sGet()->sDoFinish();
 		XEProfile::sGet()->DoEvaluation();
-		XARRAYLINEAR_LOOP( XEProfile::sGetResult(), XEProfile::xRESULT, result )
-		{
-			CONSOLE( "%s %.2f %d %d %d %d", result.strFunc.c_str(),
-				result.ratioShare,
-				result.mcsExecAvg,
-				result.mcsExecMin,
-				result.mcsExecMax,
-				result.depth );
+		CONSOLE( "depth(*)\tfunc\tshare\tavg\tmin\tmax\tdepth" );
+		XARRAYLINEAR_LOOP( XEProfile::sGetResult(), xnProfile::xRESULT, result ) {
+			_tstring str = _T(" ");
+			for( int i = 0; i < result.depth; ++i )
+				str += _T("+");
+			CONSOLE( "%s %s\t%.1f%%\t%d\t%d",
+							 str.c_str(),
+							 result.strFunc.c_str(),
+							 result.ratioShare * 100.f,
+							 result.mcsExecAvg,
+							 result.cntExec );
 		} END_LOOP;
 	}
 	return 1;

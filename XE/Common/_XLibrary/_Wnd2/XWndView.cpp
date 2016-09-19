@@ -5,6 +5,7 @@
 #include "XFramework/client/XLayout.h"
 #include "XFramework/client/XLayoutObj.h"
 #include "XFramework/client/XEContent.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

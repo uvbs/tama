@@ -2,6 +2,7 @@
 #include "XEObjMng.h"
 #include "XEWorld.h"
 #include "XEWndWorld.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -128,7 +129,8 @@ void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 	XPROF_OBJ_AUTO();
 	for( auto itor = m_listObj.begin(); itor != m_listObj.end(); ) {
 		XEBaseWorldObj *pObj = itor->get();
-		pObj->FrameMove( dt );
+		if( dt > 0 )
+			pObj->FrameMove( dt );
 		//
 		XE::VEC2 vlPos = pWndWorld->GetPosWorldToWindow( pObj->GetvwPos() );
 		// 화면에서 벗어나서 삭제됨을 체크해줄것을 요청한다.
@@ -170,40 +172,31 @@ void XEObjMng::Draw( XEWndWorld *pWndWorld )
 {
 	XPROF_OBJ_AUTO();
 	if( pWndWorld )	{
-		XPROF_OBJ("select");
 		// 화면에 보이는 만큼 추려냄
 		m_aryVisible.Clear();
-		for( auto spObj : m_listObj ) {
-			XPROF_OBJ( "select-sel" );
- 			XEBaseWorldObj *pObj = spObj.get();
-			XE::xRECT rectBB = pObj->GetBoundBoxWindow();
-			if( pWndWorld->IsOutBoundary( rectBB ) == FALSE )
-				m_aryVisible.Add( pObj );
-
+		{
+			XPROF_OBJ( "select" );
+			//XPROF_OBJ( "other" );
+			//XPROF_OBJ( "select" );
+			for( auto spObj : m_listObj ) {
+				XEBaseWorldObj *pObj = spObj.get();
+				XE::xRECT rectBB = pObj->GetBoundBoxWindow();
+				if( pWndWorld->IsOutBoundary( rectBB ) == FALSE )
+					m_aryVisible.Add( pObj );
+			}
 		}
-		// y좌표 소트함
-// 		if( m_timerSort.IsOff() )
-// 			m_timerSort.Set( 1.f );
-// 		if( m_timerSort.IsOver() || m_timerSort.IsOff() || m_bAdded )
-// 		{
-// 			m_aryVisible.sort( compY );
-// 			m_timerSort.Reset();
-// 		} 
 		{
 			XPROF_OBJ( "select-sort" );
 			std::sort( m_aryVisible.begin(), m_aryVisible.end(), compY );
 		}
+		// 소트한 오브젝트들 찍음.
+		DrawVisible( pWndWorld, m_aryVisible );
 	}
 	
-	// 소트한 오브젝트들 찍음.
-	DrawVisible( pWndWorld, m_aryVisible );
-	{
-	}
 	m_bAdded = FALSE;
 }
 
 void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible )
-//void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XList4<XEBaseWorldObj*>& aryVisible )
 {
 	XPROF_OBJ_AUTO();
 	for( auto pObj : aryVisible ) {
@@ -226,34 +219,6 @@ void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*
 		}
 	};
 }
-
-// void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, XArrayLinear<XEBaseWorldObj*>& aryVisible )
-// {
-// 	XPROF_OBJ_AUTO();
-// 	XARRAYLINEAR_LOOP( aryVisible, XEBaseWorldObj*, pObj )
-// 	{
-// 		if( pWndWorld )
-// 		{
-// 			// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
-// 			float scale = 1.f;
-// 			// 투영함수에서 카메라 스케일값을 받아온다.
-// 			XE::VEC2 vsPos;
-// 			{
-// 				XPROF_OBJ( "projection" );
-// 				vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
-// 			}
-// 				{
-// 					XPROF_OBJ( "draw each" );
-// 					pObj->Draw( vsPos, scale );
-// 				}
-// 		}
-// 		else
-// 		{
-// 			XE::VEC2 vs = pObj->GetvwPos().ToVec2();
-// 			pObj->Draw( vs );
-// 		}
-// 	} END_LOOP;
-// }
 
 void XEObjMng::OnLButtonUp( float lx, float ly )
 {

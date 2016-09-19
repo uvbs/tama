@@ -4,6 +4,7 @@
 #include "XFramework/client/XEContent.h"
 #include "XFramework/Game/XEComponentMng.h"
 #include "XFramework/Game/XEComponents.h"
+#include "XFramework/XEProfile.h"
 
 //using namespace XE;
 

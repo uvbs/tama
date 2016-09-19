@@ -112,6 +112,9 @@ public:
 	}
 	//
 	virtual void FrameMove( float dt );
+#ifdef _XPROFILE
+	virtual void Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ ) override;
+#endif // _XPROFILE
 	virtual void OnArriveBullet( DWORD dwParam );
 	virtual XE::VEC3 OnInterpolation( const XE::VEC3& vSrc, const XE::VEC3& vDst, float lerpTime );
 	int AddInvokeSkill( const _tstring& strInvokeSkill );
@@ -176,7 +179,7 @@ public:
 	///< 
 	GET_SET_ACCESSOR_CONST( XSKILL::xtMoving, MoveType );
 	virtual void FrameMove( float dt );
-	virtual void Draw( const XE::VEC2& vPos, float scale = 1.f, float alpha=1.f );
+	virtual void Draw( const XE::VEC2& vPos, float scale = 1.f, float alpha=1.f ) override;
 	XE::VEC3 OnInterpolation( const XE::VEC3& vSrc, const XE::VEC3& vDst, float lerpTime ) override;
 	void OnArriveBullet( DWORD dwParam ) override;
 	template<typename F>
@@ -218,7 +221,7 @@ public:
 									float damage,
 									LPCTSTR szSpr, ID idAct,
 									float factorSpeed = 8.f );
-	virtual ~XSkillShootObj() { Destroy(); }
+	~XSkillShootObj() { Destroy(); }
 	//
 	template<typename F, typename T1, typename T2, typename T3/*, typename T4, typename T5*/>
 	void RegisterCallback( XBaseUnit* pOwner, F func, T1 p1, T2 p2, T3 p3/*, T4 p4, T5 p5*/ ) {
@@ -228,7 +231,10 @@ public:
 																				 std::placeholders::_2,
 																				 p1, p2, p3/*, p4, p5*/ );
 	}
-	virtual void CallCallbackFunc();
+	void CallCallbackFunc() override;
+#ifdef _XPROFILE
+	void Draw( const XE::VEC2& vPos, float scale /* = 1.f */, float alpha/* =1.f */ ) override;
+#endif // _XPROFILE
 //	XE::VEC3 OnInterpolation( const XE::VEC3& vSrc, const XE::VEC3& vDst, float lerpTime ) override;
 }; // class XSkillShootObj
 /**
@@ -380,6 +386,9 @@ public:
 	}
 	void AddAdjParamMsg( int adjParam, XSKILL::xtValType valType, float adj ) override { XBREAK(1); }
 	void FrameMove( float dt ) override;
+#ifdef _XPROFILE
+	virtual void Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ );
+#endif // _XPROFILE
 private:
 	XE::VEC2 GetvPosFromSkill() const override {
 		return GetvwPos().GetXY();

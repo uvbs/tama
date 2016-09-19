@@ -2,6 +2,7 @@ eclipse.preferences.version=1
 environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1212006187=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true" appendContributed\="true">\r\n<variable delimiter\=";" name\="NDK_MODULE_PATH" operation\="replace" value\="..\\..\\MirrorWar;..\\..\\MirrorWar\\T3\\game_src;..\\..\\XE\\Common\\_XLibrary\\android\\prebuilt"/>\r\n</environment>\r\n
 environment/project/cdt.managedbuild.config.gnu.cross.exe.release.69361495=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true" appendContributed\="true">\r\n<variable delimiter\=";" name\="NDK_MODULE_PATH" operation\="append" value\="..\\..\\MirrorWar;..\\..\\MirrorWar\\T3\\game_src;..\\..\\XE\\Common\\_XLibrary\\android\\prebuilt"/>\r\n</environment>\r\n
 environment/project/com.android.toolchain.gcc.948211711=
+<<<<<<< HEAD
 environment/project/com.android.toolchain.gcc.948211711.1462829115/NDK_MODULE_PATH/delimiter=;
 environment/project/com.android.toolchain.gcc.948211711.1462829115/NDK_MODULE_PATH/operation=replace
 environment/project/com.android.toolchain.gcc.948211711.1462829115/NDK_MODULE_PATH/value=..\\..\\Caribe;..\\..\\Caribe\\App\\game_src;..\\..\\XE\\Common\\_XLibrary\\android_xe\\prebuilt
@@ -20,5 +21,10 @@ environment/project/com.android.toolchain.gcc.948211711.1930979534/appendContrib
 environment/project/com.android.toolchain.gcc.948211711/NDK_MODULE_PATH/delimiter=;
 environment/project/com.android.toolchain.gcc.948211711/NDK_MODULE_PATH/operation=replace
 environment/project/com.android.toolchain.gcc.948211711/NDK_MODULE_PATH/value=..\\..\\Caribe;..\\..\\Caribe\\App\\game_src;..\\..\\XE\\Common\\_XLibrary\\android_xe\\prebuilt
+=======
+environment/project/com.android.toolchain.gcc.948211711/NDK_MODULE_PATH/delimiter=;
+environment/project/com.android.toolchain.gcc.948211711/NDK_MODULE_PATH/operation=replace
+environment/project/com.android.toolchain.gcc.948211711/NDK_MODULE_PATH/value=..\\..\\Caribe;..\\..\\Caribe\\App\\game_src;..\\..\\XE\\Common\\_XLibrary\\android\\prebuilt
+>>>>>>> a0ed401913e2273227457e089b4100928406b35c
 environment/project/com.android.toolchain.gcc.948211711/append=true
 environment/project/com.android.toolchain.gcc.948211711/appendContributed=true

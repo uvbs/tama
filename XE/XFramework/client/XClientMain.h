@@ -16,6 +16,19 @@ class XBaseFontObj;
 
 // 게임윈도우의 좌표계 영역
 //#define XGAME_SIZE		XE::GetGameSize()
+namespace XE {
+// s_dwDraw용 비트
+enum {
+	xeBitNone = 0,
+	xeBitNoDraw = 0x01,
+	xeBitNoDP = 0x02, // no draw primitive
+	xeBitNoTexture = 0x04, // SetTexture생략
+	xeBitSmallTex = 0x08,		// 작은 텍스쳐 사용
+	xeBitNoDrawBar = 0x10,	// DrawProgressBar생략
+	xeBitNoFont = 0x20,			// 폰트그리기 생략
+	xeBitNoProcess = 0x40,	// ObjMng의 객체들 frameMove생략
+};
+}
 
 class XELibrary : public XLibrary
 {

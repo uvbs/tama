@@ -1,9 +1,6 @@
 ﻿#include "stdafx.h"
 #include "XWndScrollView.h"
-// #include "XWndText.h"
-// #include "XWndButton.h"
-// #include "XFramework/client/XLayout.h"
-// #include "XFramework/client/XEContent.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

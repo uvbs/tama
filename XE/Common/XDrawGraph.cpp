@@ -2,6 +2,7 @@
 #include "XDrawGraph.h"
 #include "etc/xGraphics.h"
 #include "XImageMng.h"
+#include "XFramework/client/XClientMain.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -16,6 +17,10 @@ namespace XUTIL
 // 간단하게 녹색바탕의 진행바를 그림
 void DrawProgressBar( const XE::VEC2& vPos, float lerp, XE::VEC2 vSize, XCOLOR col, XCOLOR _colBack )
 {
+#ifdef _XPROFILE
+	if( XGraphics::s_dwDraw & XE::xeBitNoDrawBar )
+		return;
+#endif // _XPROFILE
 	XCOLOR colBack = _colBack;
 	if( colBack == 0 )
 		colBack = XCOLOR_RGBA( XCOLOR_RGB_R(col), XCOLOR_RGB_G(col), XCOLOR_RGB_B(col), 64 );
@@ -27,6 +32,10 @@ void DrawProgressBar( const XE::VEC2& vPos, float lerp, XE::VEC2 vSize, XCOLOR c
 // 진행바 그리는 서피스 버전(자르는 버전)
 void DrawBarHoriz( const XE::VEC2& vPos, float lerp, XSurface *pSurface, bool bReverse )
 {
+#ifdef _XPROFILE
+	if( XGraphics::s_dwDraw & XE::xeBitNoDrawBar )
+		return;
+#endif // _XPROFILE
 	const auto vScale = pSurface->GetScalev2();
 	XE::xRECTi rect;
 	rect.Top() = 0;
@@ -49,6 +58,10 @@ void DrawBarHoriz( const XE::VEC2& vPos, float lerp, XSurface *pSurface, bool bR
 // 확축으로 하는 버전
 void DrawBarHoriz2( const XE::VEC2& vPos, float lerp, XSurface *pSurface, const XE::VEC2& vScale, bool bReverse )
 {
+#ifdef _XPROFILE
+	if( XGraphics::s_dwDraw & XE::xeBitNoDrawBar )
+		return;
+#endif // _XPROFILE
 	float x = vPos.x;
 	XE::VEC2 vScaleLerp = vScale;
 	vScaleLerp.x *= lerp;
@@ -68,6 +81,10 @@ void DrawBarHoriz2( const XE::VEC2& vPos, float lerp, XSurface *pSurface, const 
 // 진행바 그리는 서피스 버전
 void DrawBarVert( const XE::VEC2& vPos, float lerp, XSurface *pSurface, bool bReverse )
 {
+#ifdef _XPROFILE
+	if( XGraphics::s_dwDraw & XE::xeBitNoDrawBar )
+		return;
+#endif // _XPROFILE
 	XE::xRECTi rect;
 	rect.Right() = (int)pSurface->GetWidth();
 	rect.Bottom() = (int)pSurface->GetHeight();

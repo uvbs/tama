@@ -5,6 +5,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="call_jni">call</string>
+<<<<<<< HEAD
     <string name="app_id">1683521715235823</string>
+=======
+    <string name="app_id">599830756743952</string>
+>>>>>>> a0ed401913e2273227457e089b4100928406b35c
 
 </resources>
