@@ -109,8 +109,10 @@ void XGameCommon::CreateCommon()
 	XBREAK( CONSTANT != nullptr );
 	LoadConstant();
 	// 안드로이드는 여기 읽으면 안됨
+#ifndef _XSINGLE
 #ifdef _VER_ANDROID
 #error "Do add _XPROP_SERIALIZE"
+#endif
 #endif
 #endif // not _XPROP_SERIALIZE
 	// 루아 생성

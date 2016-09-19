@@ -196,16 +196,16 @@ ID XSoundMngAndroid::PlaySound(ID idSound, bool bRepeat )
 				const float volFinal = stream.m_VolLocal * volMaster;
 				SimpleAudioEngine::sharedEngine()
 					->setEffectsVolumeByStream( idStream, volFinal );
-				XTRACE( "play sound:idStream=%d, volfinal=%.1f, (id=%d)%s", idStream
-																											, volFinal
-																											, idSound
-																											, sound.strFile.c_str() );
+// 				XTRACE( "play sound:idStream=%d, volfinal=%.1f, (id=%d)%s", idStream
+// 																											, volFinal
+// 																											, idSound
+// 																											, sound.strFile.c_str() );
 			} else {
 				// 플레이에 실패하면 큐에 넣는다.
 				//m_qReplay.push( xReplay( idSound, sound.strFile, bRepeat ) );
 				AddReplayToQ( idSound, bRepeat );
 				// idStream이 0이 나올때가 있다. 이유는 확실히 모르지만 파일을 로딩하자마자 플레이를 시도했을때 나는느낌이다.
-				XTRACE( "play sound:idStream=%d, %s", idStream, sound.strFile.c_str() );
+//				XTRACE( "play sound:idStream=%d, %s", idStream, sound.strFile.c_str() );
 			}
 			return idStream;
 		} // if (sound.idSound == idSound)

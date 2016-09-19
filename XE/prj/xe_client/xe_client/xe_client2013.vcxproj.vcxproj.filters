@@ -1256,6 +1256,7 @@
     <None Include="..\..\..\XFramework\android\com_mtricks_xe_XRenderer.h">
       <Filter>android</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="source">

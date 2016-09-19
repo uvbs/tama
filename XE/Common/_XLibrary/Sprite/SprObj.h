@@ -9,6 +9,9 @@
 #ifdef _SPR_USE_LUA
 #include "XLua.h"
 #endif
+#ifdef _VER_ANDROID
+#include "XActObj2.h"		// GetpLayerByidLocalInLayerT 템플릿의 안드로이드 빌드에러로 인해 추가함.
+#endif // _VER_ANDROID
 
 class XSprObj;
 class XBaseKey;
@@ -19,8 +22,8 @@ class XLayerImage;
 class XLayerObject;
 class XSprDat;
 class XActDat;
-class XSprite;
 class XActObj;
+class XSprite;
 
 struct LAYER_INFO;
 struct XEFFECT_PARAM;
@@ -176,7 +179,7 @@ public:
 	GET_ACCESSOR_CONST( DWORD, dwID );
 	inline ID GetidSprObj() const { return m_dwID; }
   GET_SET_ACCESSOR_CONST( bool, bCallHandler );
-	inline XActObj* GetpObjActCurr() const;
+	XActObj* GetpObjActCurr() const;
 	XActObj* GetpObjAct( ID idAct ) const;
 	bool IsError() const;
 	// 현재 비동기 로딩중인가?
@@ -381,7 +384,9 @@ private:
 //	BOOL Load( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, BOOL bKeepSrc, bool bAsyncLoad );
 	void OnFinishLoad( XSprDat* pSprDat );
 //	void OnCompleteAsyncLoad( XSprDat* pSprDat );
+#ifdef WIN32
 	xSpr::XSPDat LoadInternal( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, ID* pOutidAsync ) const;
+#endif // WIN32
 	xSpr::XSPDat LoadInternal( const char* cFilename, const XE::xHSL& hsl, bool bUseAtlas, ID* pOutidAsync ) const;
 #endif // _XASYNC_SPR
 };

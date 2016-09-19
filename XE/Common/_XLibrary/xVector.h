@@ -11,7 +11,7 @@
 #include <math.h>
 #include <stdlib.h>
 #if defined(_XOOLONG)
-#include "oolong_engine2/Include/Mathematics.h"
+#include "Oolong_Engine2/Include/Mathematics.h"
 #endif // defined(_XOOLONG)
 #ifdef WIN32
 // 서버에서도 DirectX의 헤더를 사용함. 벡터의 사용을 위해.

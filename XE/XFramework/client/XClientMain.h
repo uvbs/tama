@@ -75,6 +75,11 @@ public:
 	XE::VEC2 m_vTouchStart;		// 우클릭 영역표시를 위해 최초 찍은 좌표
 	XE::VEC2 m_vTouchCurr;
 	BOOL m_bDebugDrawArea;
+#ifdef WIN32
+	bool m_bViewFrameRate = false;
+#else
+	bool m_bViewFrameRate = false;
+#endif
 #endif
 private:
 	XEContent *m_pGame;
@@ -88,11 +93,6 @@ private:
 	XE::xRESULT_AUTHEN *m_pResultAuthen;
 // 	XE::xResult_FacebookProfileImage m_resultFacebookProfileImage;
 	bool m_bFrameSkipReset = false;
-#ifdef WIN32
-	bool m_bViewFrameRate = false;
-#else
-	bool m_bViewFrameRate = false;
-#endif
 	void Init() {
 		m_pGame = NULL;
 		m_fAccel = 1.0f;

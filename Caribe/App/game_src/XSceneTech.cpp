@@ -43,7 +43,7 @@ XSceneTech *SCENE_TECH = NULL;
 //////////////////////////////////////////////////////////////////////////
 void XSceneTech::Destroy() 
 {	
-#ifdef _XSINGLE
+#if defined(_XSINGLE) && defined(_xIN_TOOL)
 	if( m_bUpdated ) {
 		XPropLegion::sGet()->UpdatePropWithAcc( "single1_player", ACCOUNT );
 		XPropLegion::sGet()->Save( _T( "propLegion_s.xml" ) );

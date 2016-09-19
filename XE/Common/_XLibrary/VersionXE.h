@@ -79,6 +79,7 @@
 #ifdef _VER_ANDROID
 	#define _LOG_ALERT			// 로그가 발생할때 UIAlertView로 보여줄지 말지
 	#define _XFTGL
+	#define _XOOLONG
 //	#define _XPATCH				// 패치서버버전으로 빌드하려면 주석을 해제하시오
 #endif // android
 

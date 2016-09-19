@@ -1,4 +1,5 @@
 ﻿#pragma once
+#error "아직 사용안함"
 // #include "etc/xColor.h"
 // #include "Layer.h"
 // #include "Key.h"

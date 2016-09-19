@@ -4,6 +4,7 @@
 #include "VersionXE.h"
 #include "SprDat.h"
 #include "XHSLMap.h"
+#include "XSystem.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -18,6 +19,7 @@ using namespace xSpr;
 XSprMng *SPRMNG = NULL;
 int XSprMng::s_sizeTotalVM = 0;
 xSec XSprMng::s_secCache = 180;
+static volatile bool s_bThread = true;
 
 inline ID xSpr::xDat::getid() {
 	return ( m_pSprDat ) ? m_pSprDat->GetsnDat() : 0;
@@ -60,6 +62,11 @@ XSprMng::xAsync::xAsync() {
 }
 
 //////////////////////////////////////////////////////////////////////////
+static void _WorkThread( void *param )
+{
+	SPRMNG->WorkThread();
+}
+
 XSprMng* XSprMng::s_pInstance = nullptr;
 XSprMng::XSprMng()
 {
@@ -72,6 +79,7 @@ XSprMng::XSprMng()
 void XSprMng::Destroy( void )
 {
 	XAUTO_LOCK2( m_spLock );
+	s_bThread = false;
 	// 캐시에 있는거 다 날림.
 	DoFlushCache();
 	// 실제 삭제
@@ -89,6 +97,7 @@ void XSprMng::Destroy( void )
 	}
 #endif // _XDEBUG
 	m_mapDat.clear();		// 최종삭제
+	m_spThread->join();
 	s_pInstance = nullptr;
 }
 
@@ -115,13 +124,16 @@ void XSprMng::OnCreate()
 {
 	m_spLock = std::make_shared<XLock>();
 	//
-	m_hThread = _beginthreadex( nullptr
-															, 0
-															, _WorkThread
-															, nullptr
-															, 0
-															, (unsigned*)&m_idThread );
-	CONSOLE( "spr thread: hThread=%d, idThread=%d", (DWORD)m_hThread, m_idThread );
+
+	m_spThread = std::make_shared<std::thread>( _WorkThread, nullptr );
+
+// 	m_hThread = _beginthreadex( nullptr
+// 															, 0
+// 															, _WorkThread
+// 															, nullptr
+// 															, 0
+// 															, (unsigned*)&m_idThread );
+// 	CONSOLE( "spr thread: hThread=%d, idThread=%d", (DWORD)m_hThread, m_idThread );
 }
 
 /**
@@ -433,17 +445,24 @@ void XSprMng::Process()
 	}
 }
 
-unsigned int __stdcall XSprMng::_WorkThread( void *param )
-{
-	SPRMNG->WorkThread();
-	return 0;
-}
+// #ifdef WIN32
+// unsigned int __stdcall XSprMng::_WorkThread( void *param )
+// {
+// 	SPRMNG->WorkThread();
+// 	return 0;
+// }
+// #else
+// void _WorkThread( void *param )
+// {
+// 	SPRMNG->WorkThread();
+// }
+// #endif // WIN32
 //////////////////////////////////////////////////////////////////////////
 void XSprMng::WorkThread()
 {
-	while( 1 ) {
+	while( s_bThread ) {
 		xAsync asyncLoad;
-		while( 1 ) {
+		while( s_bThread ) {
 			{
 				XAUTO_LOCK2( m_spLock );
 				if( m_listAsync.size() > 0 ) {
@@ -453,7 +472,10 @@ void XSprMng::WorkThread()
 					break;
 				}
 			}
-			Sleep( 1 );
+//			XSYSTEM::xSleep( 0.001f );		// Sleep(1)
+			std::this_thread::sleep_for( std::chrono::milliseconds(1) );
+			if( !s_bThread )
+				return;
 		} // while
 			//
 		{
@@ -481,7 +503,7 @@ void XSprMng::WorkThread()
 				SAFE_DELETE( pSprDat );
 			}
 		}
-		Sleep( 1 );
+		std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 	} // while
 
 }

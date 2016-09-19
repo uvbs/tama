@@ -1197,6 +1197,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Bot2|Win32'">true</ExcludedFromBuild>
     </None>
     <None Include="app.ico" />
+    <None Include="ClassDiagram.cd" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,7 @@ static char THIS_FILE[] = __FILE__;
 XFontDatSpr::XFontDatSpr( LPCTSTR szFontSpr ) 
 	: XBaseFontDat( szFontSpr, 0 ) {
 	Init();
-	m_spDat = SPRMNG->Load( szFontSpr, XE::xHSL(), false, TRUE, FALSE, false );
+	m_spDat = SPRMNG->Load( szFontSpr, XE::xHSL(), true, TRUE, false, nullptr );
 	if( m_spDat == nullptr ) {
 		XALERT( "%s읽기 실패", szFontSpr );
 	}

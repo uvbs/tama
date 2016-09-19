@@ -15,9 +15,13 @@ class XNode;
 // 벽(?)과 공간을 나타내는 노드
 class XNode {
 public:
-	XNode() {}
+	XNode() {
+		memset( m_Child, 0, sizeof( m_Child ) );
+	}
 	XNode( const XE::VEC2& size ) 
-		: m_Rect( XE::VEC2(0), size ) {}
+		: m_Rect( XE::VEC2(0), size ) {
+		memset( m_Child, 0, sizeof( m_Child ) );
+	}
 	~XNode() { Destroy(); }
 	//
 	void Destroy();
@@ -39,7 +43,7 @@ public:
 			&& (int)m_Rect.GetHeight() == (int)sizeImg.h;
 	}
 private:
-	XNode* m_Child[2] = {nullptr, nullptr};
+	XNode* m_Child[2];
 	XE::xRECT m_Rect;			// 분할전 전체 공간의 위치와 크기
 	ID m_idImg = 0;
 };

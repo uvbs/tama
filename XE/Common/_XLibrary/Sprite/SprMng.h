@@ -2,6 +2,7 @@
 #ifdef _XASYNC_SPR
 #include "VersionXE.h"
 #include "etc/XGraphicsDef.h"
+#include <thread>
 class XSprDat;
 class XSprObj;
 class XActDat;
@@ -71,8 +72,9 @@ private:
 	XList4<xAsync> m_listAsync;		// 비동기로 로딩이 예약된 스프라이트들
 	XList4<xAsync> m_listAsyncComplete;		// 비동기 로딩이 완료된 스프라이트
 	XSPLock m_spLock;
-	uintptr_t m_hThread = 0;
-	ID m_idThread = 0;
+//	uintptr_t m_hThread = 0;
+	std::shared_ptr<std::thread> m_spThread;
+//	ID m_idThread = 0;
 	void Init( void ) {
 	}
 	void Destroy( void );
@@ -82,7 +84,11 @@ public:
 		XTRACE( "destroy sprmng" ); Destroy();
 	}
 	GET_ACCESSOR( XSPLock, spLock );
-	static unsigned int __stdcall _WorkThread( void *param );
+// #ifdef WIN32
+// 	static unsigned int __stdcall _WorkThread( void *param );
+// #else
+//  	static void _WorkThread( void *param );
+// #endif // WIN32
 	void WorkThread();
 	void OnCreate();
 	void Process();

@@ -47,6 +47,9 @@ void XAppMain::Destroy()
 
 void XAppMain::DidFinishCreate( void )
 {
+#if defined(_XSINGLE) && !defined(WIN32)
+	m_bViewFrameRate = true;
+#endif 
 }
 
 // 엔진 초기화 완료.

@@ -2,7 +2,7 @@
 #ifdef _VER_OPENGL
 #include "XBaseFontDat.h"
 #include "etc/xGraphics.h"
-#include "FTGL\ftgles.h"
+#include "FTGL/ftgles.h"
 
 
 class XFontDatFTGL;
