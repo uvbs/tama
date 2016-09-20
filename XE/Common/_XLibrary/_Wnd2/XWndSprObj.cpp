@@ -1,9 +1,10 @@
 ﻿#include "stdafx.h"
-#include "_Wnd2/XWndSprObj.h"
-#include "sprite/SprDat.h"
+//#include "sprite/SprDat.h"
 #include "XFramework/XEProfile.h"
 #include "sprite/SprObj.h"
 #include "sprite/XActObj2.h"
+#include "Sprite/XActDat.h"
+#include "_Wnd2/XWndSprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -72,7 +73,7 @@ XSprObj* XWndSprObj::CreateSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, 
 	}
 //	XSprObj *pSprObj = new XSprObj( szSpr );
 	const bool bUseAtlas = false;
-	auto pSprObj = new XSprObj( szSpr, XE::xHSL(), bUseAtlas );
+	auto pSprObj = new XSprObj( szSpr, XE::xHSL(), bUseAtlas, false, nullptr );
 //	pSprObj->Load( szSpr, XE::xHSL(), bUseAtlas, FALSE, false );
 	pSprObj->SetAction( idAct, loopType );
 	m_idAct = idAct;

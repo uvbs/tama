@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
-#include "XSurfaceOpenGL.h"
+#include "etc/xGraphics.h"
+#include "etc/XSurface.h"
+#include "etc/xMath.h"
 #include "etc/xGraphics.h"
 #include "XGraphicsOpenGL.h"
 #include "etc/Debug.h"
@@ -19,6 +21,7 @@
 #include "etc/xMath.h"
 #include "XFramework/client/XClientMain.h"
 #include "XTextureAtlas.h"
+#include "XSurfaceOpenGL.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

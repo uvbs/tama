@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "Sprite.h"
 #ifdef _XASYNC_SPR
 #include "SprMng.h"
 #include "VersionXE.h"
@@ -97,7 +98,8 @@ void XSprMng::Destroy( void )
 	}
 #endif // _XDEBUG
 	m_mapDat.clear();		// 최종삭제
-	m_spThread->join();
+	for( auto& spThread : m_aryThread )
+		spThread->join();
 	s_pInstance = nullptr;
 }
 
@@ -124,16 +126,8 @@ void XSprMng::OnCreate()
 {
 	m_spLock = std::make_shared<XLock>();
 	//
-
-	m_spThread = std::make_shared<std::thread>( _WorkThread, nullptr );
-
-// 	m_hThread = _beginthreadex( nullptr
-// 															, 0
-// 															, _WorkThread
-// 															, nullptr
-// 															, 0
-// 															, (unsigned*)&m_idThread );
-// 	CONSOLE( "spr thread: hThread=%d, idThread=%d", (DWORD)m_hThread, m_idThread );
+	for( int i = 0; i < 2; ++i )
+		m_aryThread.push_back( std::make_shared<std::thread>( _WorkThread, nullptr ) );
 }
 
 /**
@@ -230,7 +224,7 @@ void XSprMng::DoFlushCache()
 
 /**
  @brief spr을 로딩하기전에 이미 참조되고 있다면 그것을 사용한다.
-
+ @note 키이름은 같지만 아틀라스 여부가 다를수 있다. 하지만 이제 비 아틀라스 spr은 쓰지 않을 예정이므로 아틀라스는 모두 true라고 가정한다.
 */
 xSpr::XSPDat XSprMng::FindByKey( LPCTSTR szFilename )
 {
@@ -297,8 +291,10 @@ XSPDat XSprMng::Load( LPCTSTR szFileKey,
 											bool bUseAtlas,
 											BOOL bSrcKeep,
 											bool bAsyncLoad,
+											bool bBatch,
 											ID* pOutidAsync )
 {
+	XBREAK( bUseAtlas == false );		// 이제 가급적 비 아틀라스 spr은 쓰지 않을것이다.
 	XAUTO_LOCK2( m_spLock );
 	XE::xHSL hsl;
 	_tstring strFile = szFileKey;
@@ -337,14 +333,16 @@ XSPDat XSprMng::Load( LPCTSTR szFileKey,
 	asyncSpr.m_strLoadFile = strFile;	// 실제 파일명(treant2.spr)
 	asyncSpr.m_HSL = hsl;
 	asyncSpr.m_bSrcKeep = bSrcKeep;
+	asyncSpr.m_bRestore = FALSE;
 	asyncSpr.m_bUseAtlas = bUseAtlas;
+	asyncSpr.m_bBatch = bBatch;
 	{
 		XAUTO_LOCK2( m_spLock );
 		// 스레드에서 하나씩 로딩을 시킴.
 		m_listAsync.Add( asyncSpr );
 		XBREAK( pOutidAsync == nullptr );
 		*pOutidAsync = asyncSpr.m_idAsync;
-		auto spDat = AddNew( szFileKey, strFile, nullptr, hsl );
+		auto spDat = AddNew( szFileKey, strFile, nullptr, hsl, bBatch );
 		if( spDat ) {
 			spDat->m_idAsync = asyncSpr.m_idAsync;
 		}
@@ -355,12 +353,13 @@ XSPDat XSprMng::Load( LPCTSTR szFileKey,
 xSpr::XSPDat XSprMng::AddNew( const _tstring& strKey, 
 															const _tstring& strFile, 
 															XSprDat *pSprDat, 
-															const XE::xHSL& hsl )
+															const XE::xHSL& hsl,
+															bool bBatch )
 {
 	TCHAR szLwrKey[256];
 	_tcscpy_s( szLwrKey, strKey.c_str() );
 	_tcslwr_s( szLwrKey );
-	auto spDat = std::make_shared<xDat>( strKey, strFile, pSprDat, hsl );
+	auto spDat = std::make_shared<xDat>( strKey, strFile, pSprDat, hsl, bBatch );
 	spDat->m_secLoaded = XTimer2::sGetTime();
 #ifdef _DEBUG
 	XBREAK( (FindByKey( szLwrKey ) != nullptr) );
@@ -484,11 +483,13 @@ void XSprMng::WorkThread()
 			const bool bAsyncLoad = true;
 			// 비동기로딩모드로 읽어서 파일데이터를 메모리에만 올린다.
 			XTrace( _T( "load %s........" ), asyncLoad.m_strFilename.c_str() );
-			auto bOk = pSprDat->Load( asyncLoad.m_strLoadFile.c_str(),
+ 			auto bOk = pSprDat->Load( asyncLoad.m_strLoadFile.c_str(),
 																asyncLoad.m_bUseAtlas,
 																bAsyncLoad,
 																asyncLoad.m_HSL,
-																asyncLoad.m_bSrcKeep );
+																asyncLoad.m_bSrcKeep,
+																asyncLoad.m_bRestore,
+																asyncLoad.m_bBatch );
 			if( bOk ) {
 				XAUTO_LOCK2( m_spLock );
 				XTRACE( "complete\n", asyncLoad.m_strFilename.c_str() );

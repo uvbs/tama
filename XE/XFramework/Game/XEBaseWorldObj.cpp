@@ -1,12 +1,13 @@
 ﻿#include "stdafx.h"
-#include "XEBaseWorldObj.h"
 #include "XFramework/Game/XEWorld.h"
 #include "XFramework/Game/XEWndWorld.h"
 #include "XImageMng.h"
 #include "XArchive.h"
 #include "Sprite/SprObj.h"
 #include "Sprite/SprDat.h"
-#include "OpenGL2/XRenderCmd.h"
+#include "OpenGL2/XBatchRenderer.h"
+#include "Sprite/XActDat.h"
+#include "XEBaseWorldObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -40,7 +41,7 @@ XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld,
 	m_Type = type;
 	m_pWndWorld = pWndWorld;
 	if( XE::IsHave(szSpr) )
-		LoadSpr( szSpr, idAct );
+		LoadSpr( szSpr, idAct, true, xRPT_LOOP );
 }
 
 XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, 
@@ -54,7 +55,7 @@ XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld,
 	m_vwPos = vPos;
 	m_pWndWorld = pWndWorld;
 	if( XE::IsHave( szSpr ) )
-		LoadSpr( szSpr, idAct );;
+		LoadSpr( szSpr, idAct, true, xRPT_LOOP );;
 }
 
 void XEBaseWorldObj::Destroy() 
@@ -73,6 +74,7 @@ void XEBaseWorldObj::Destroy()
 bool XEBaseWorldObj::LoadSpr( LPCTSTR szSpr, 
 															const XE::xHSL& hsl, 
 															ID idAct, 
+															bool bBatch,
 															xRPT_TYPE typeLoop )
 {
 	if( XBREAK( XE::IsEmpty( szSpr ) == TRUE ) )
@@ -80,8 +82,7 @@ bool XEBaseWorldObj::LoadSpr( LPCTSTR szSpr,
 	m_strSpr = szSpr;
 	// 이 객체는 전투때만 쓰므로 곧바로 2버전으로 호출시킴
 	const bool bUseAtlas = true;
-	m_pSprObj = new XSprObj( szSpr, hsl, bUseAtlas, this );
-	//	XTRACE( "new XSprObj(%s)", szSpr );
+	m_pSprObj = new XSprObj( szSpr, hsl, bUseAtlas, bBatch, this );
 	if( XBREAK( m_pSprObj == NULL ) )
 		return false;
 	// 비동기 로딩땜에 assert를 내지 않는게 맞지만 현재 그 기능이 없으므로 assert를 냄
@@ -131,8 +132,9 @@ void XEBaseWorldObj::LoadImage( LPCTSTR szImg )
 
 void XEBaseWorldObj::FrameMove( float dt )
 {
-	if( m_pSprObj )
+	if( m_pSprObj ) {
 		m_pSprObj->FrameMove( dt );
+	}
 }
 /**
  @param vPos 스크린 좌표

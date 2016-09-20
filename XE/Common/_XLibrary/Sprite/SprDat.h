@@ -1,16 +1,14 @@
 ﻿#pragma once
 #include "etc/xColor.h"
-//#include "Layer.h"
-#include "Key.h"
-#include "Sprite.h"
-#include "XActDat.h"
+#include "etc/XGraphicsDef.h"
 
 #include <list>
 
 class XSprDat;
 class XActObj;
 class XBaseRes;
-
+class XActDat;
+class XSurface;
 /**
  ver32: KeyEvent의 idObj파라메터가 2바이트에서 4바이트로 변경
 */
@@ -37,6 +35,7 @@ private:
 	char *m_pcLuaAll;							// .spr파일 안에서 쓰는 모든 루아코드를 여기에 합친다
 	int m_SizeByte;			///< 스프라이트 이미지들의 총용량
 	bool m_bUseAtlas = false;
+	bool m_bBatch = false;
 	XE::xHSL m_HSL;
 //	bool m_bLoadComplete = false;			// spr파일로딩및 디바이스 텍스쳐생성까지 모두 끝남.
 	void Init() {
@@ -89,14 +88,15 @@ public:
 						 bool bUseAtlas, 
 						 bool bAsyncLoad, 
 						 const XE::xHSL& hsl,
-						 BOOL bSrcKeep=FALSE, 
-						 BOOL bRestore=FALSE );
+						 BOOL bSrcKeep, 
+						 BOOL bRestore,
+						 bool bBatch );
 	void CreateDevice();
 	BOOL RestoreDevice() {
 #ifdef _XASYNC_SPR
-		return Load( nullptr, m_bUseAtlas, true, m_HSL, FALSE, TRUE );
+		return Load( nullptr, m_bUseAtlas, true, m_HSL, FALSE, TRUE, m_bBatch );
 #else
-		return Load( nullptr, m_bUseAtlas, false, m_HSL, FALSE, TRUE );
+		return Load( nullptr, m_bUseAtlas, false, m_HSL, FALSE, TRUE, m_bBatch );
 #endif // _XASYNC_SPR
 	}
 	//key
@@ -139,17 +139,7 @@ public:
 		return m_arySprite[nSpr];
 	}
 #ifdef _XSPRITE2
-	XSurface* GetSpriteSurface( int idxSpr ) { 
-		if( XBREAK( idxSpr >= GetnNumSprites() || idxSpr < 0 ) ) {
-			return nullptr;
-		}
-//		XSprite *pSpr = m_ppSprites[ nSpr ];
-		auto pSpr = m_arySprite[ idxSpr ];
-		XBREAK( pSpr == nullptr );
-		if( pSpr )
-			return pSpr->GetpSurface();
-		return nullptr; 
-	}
+	XSurface* GetSpriteSurface( int idxSpr );
 #endif
 	void AddSprite( /*int idx, */XSprite *pSpr );
 	XSprite* AddSprite( int nWidth, int nHeight, int nAdjustX, int nAdjustY, DWORD *pImg );

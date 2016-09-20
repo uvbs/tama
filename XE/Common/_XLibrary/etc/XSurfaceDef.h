@@ -11,7 +11,7 @@
 #define _XSURFACEDEF_H__
 
 // draw mode
-enum xDM_TYPE {
+enum xDM_TYPE : int {
 	xDM_ERROR = -1,
 	xDM_NONE = 0,		// 그림을 찍지 않음
 	xDM_NORMAL,

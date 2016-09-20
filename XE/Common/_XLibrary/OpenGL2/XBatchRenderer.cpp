@@ -1,5 +1,8 @@
 ﻿#include "stdafx.h"
-#include "XRenderCmd.h"
+#include "etc/XSurface.h"
+#include "opengl2/XGraphicsOpenGL.h"
+#include "OpenGL2/XSurfaceGLAtlasBatch.h"
+#include "XBatchRenderer.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -13,8 +16,8 @@ using namespace xRenderCmd;
 
 int xRenderCmd::xCmd::s_idGenerator = 0;
 
-XRenderCmdMng* XRenderCmdMng::s_pCurrRenderer = nullptr;
-XVector<XRenderCmdMng*> XRenderCmdMng::s_aryRenderer;
+XBatchRenderer* XBatchRenderer::s_pCurrRenderer = nullptr;
+XVector<XBatchRenderer*> XBatchRenderer::s_aryRenderer;
 																	// std::shared_ptr<XRenderCmdMng> XRenderCmdMng::s_spInstance;
 // int XRenderCmdMng::s_numDPCall = 0;
 // int XRenderCmdMng::s_avgDPCall = 0;
@@ -24,7 +27,7 @@ XVector<XRenderCmdMng*> XRenderCmdMng::s_aryRenderer;
 // 	s_spInstance.reset();
 // }
 ////////////////////////////////////////////////////////////////
-XRenderCmdMng::XRenderCmdMng( const char* cTag )
+XBatchRenderer::XBatchRenderer( const char* cTag )
 	: m_idRenderer( XE::GenerateID() )
 	, m_strTag( cTag )
 	, m_aryDPCall( 256 )
@@ -33,7 +36,7 @@ XRenderCmdMng::XRenderCmdMng( const char* cTag )
 	Init();
 }
 
-void XRenderCmdMng::Destroy()
+void XBatchRenderer::Destroy()
 {
 	for( const auto& dpcall : m_aryDPCall ) {
 		const GLuint glBuffer = (GLuint)dpcall.m_idVertexBuffer;
@@ -44,7 +47,7 @@ void XRenderCmdMng::Destroy()
 /**
  @brief 메인의 draw()에서 호출됨
 */
-void XRenderCmdMng::RenderBatch()
+void XBatchRenderer::RenderBatch()
 {
 	m_idTexPrev = 0;
 	m_numDPCall = 0;
@@ -195,7 +198,7 @@ void XRenderCmdMng::RenderBatch()
 	m_qCmds.clear();
 }
 
-void XRenderCmdMng::ExtendBuffer( int idx, 
+void XBatchRenderer::ExtendBuffer( int idx, 
 																	int cnt2X, 
 																	std::vector<int>* pOutAryNumBatch,
 																	int *pOutMaxRect, 
@@ -221,7 +224,7 @@ void XRenderCmdMng::ExtendBuffer( int idx,
 	*pOutMaxRect = maxRect;
 	*ppOutVertices = pVertices;
 }
-void XRenderCmdMng::VertexAttribPointer( GLuint indx,
+void XBatchRenderer::VertexAttribPointer( GLuint indx,
 																				 GLint size,
 																				 const void* ptr )
 {
@@ -233,7 +236,7 @@ void XRenderCmdMng::VertexAttribPointer( GLuint indx,
 	CHECK_GL_ERROR();
 }
 
-void XRenderCmdMng::Render( const xCmd& cmd, 
+void XBatchRenderer::Render( const xCmd& cmd, 
 														int idx, 
 														const XE::xVertex* pVertices )
 {
@@ -308,9 +311,10 @@ void XRenderCmdMng::Render( const xCmd& cmd,
 	GRAPHICS->SetViewport( vpLT.ToPoint(), vpSize.ToPoint() );		// 백업받았던 뷰포트 복구.
 	XE::SetProjection( vpSize.w, vpSize.h );
 	++m_numDPCall;
+	m_fpsDPCall.Process();
 }
 
-ID XRenderCmdMng::GetidVertexBuffer( int idxDPCall )
+ID XBatchRenderer::GetidVertexBuffer( int idxDPCall )
 {
 	const int sizeAry = m_aryDPCall.size();
 	if( sizeAry < idxDPCall + 1 ) {

@@ -65,9 +65,7 @@ public:
 		XList4<xNodeAbil*> listChild;	///< 차일드 노드 리스트
 #ifdef _CLIENT
 		XSurface *psfcIcon;				///< 아이콘 서피스
-		inline void DrawIcon( const XE::VEC2& vAdj = XE::VEC2()) {
-			psfcIcon->Draw( vPos + vAdj );
-		}
+		void DrawIcon( const XE::VEC2& vAdj = XE::VEC2());
 #endif
 		xNodeAbil() {
 			idNode = 0; //sGenerateID();

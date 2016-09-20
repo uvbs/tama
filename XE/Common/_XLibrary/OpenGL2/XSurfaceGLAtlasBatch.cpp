@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
+#include "etc/xGraphics.h"
+#include "etc/XSurface.h"
 #include "XSurfaceGLAtlasBatch.h"
 #include "etc/xGraphics.h"
 #include "XGraphicsOpenGL.h"
@@ -18,7 +20,7 @@
 #include "etc/xMath.h"
 #include "XFramework/client/XClientMain.h"
 #include "XTextureAtlas.h"
-#include "XRenderCmd.h"
+#include "XBatchRenderer.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -392,18 +394,18 @@ void XSurfaceGLAtlasBatch::CopySurface( XSurface *src )
 
 #pragma mark Draw
 
-void XSurfaceGLAtlasBatch::DrawBatch( const MATRIX &mParent,
-																	 const XE::xRenderParam& paramRender ) const
-{
-	DrawByParam( mParent, paramRender );
-}
+// void XSurfaceGLAtlasBatch::DrawBatch( const MATRIX &mParent,
+// 																	 const XE::xRenderParam& paramRender ) const
+// {
+// 	DrawByParam( mParent, paramRender );
+// }
 
 void XSurfaceGLAtlasBatch::DrawByParam( const MATRIX &mParent, 
 																						const XE::xRenderParam& paramRender ) const
 {
 	// 	if( XBREAK( XRenderCmdMng::sGetpCurrRenderer() == nullptr ) )
 	// 		return;
-	if( XRenderCmdMng::sGetpCurrRenderer() == nullptr ) {
+	if( XBatchRenderer::sGetpCurrRenderer() == nullptr ) {
 		DrawNoBatch( paramRender.m_vPos.ToVec2(), mParent );
 		return;
 	}
@@ -437,17 +439,18 @@ void XSurfaceGLAtlasBatch::DrawByParam( const MATRIX &mParent,
 			cmd.m_glBlendEquation = (funcBlend == xBF_SUBTRACT) ?
 				GL_FUNC_REVERSE_SUBTRACT
 				: GL_FUNC_ADD;
-			//			cmd.m_v4Color = XE::VEC4( GetColorR(), GetColorG(), GetColorB(), 1.f ); //Getv4Color();
-			// 			cmd.m_pShader = (funcBlend == xBF_GRAY) ?
-			// 				cmd.m_pShader = GRAPHICS_GL->GetpGrayShader()
-			// 				: cmd.m_pShader = GRAPHICS_GL->GetpShaderColTex();
+//			cmd.m_v4Color = XE::VEC4( GetColorR(), GetColorG(), GetColorB(), 1.f ); //Getv4Color();
+// 			cmd.m_pShader = (funcBlend == xBF_GRAY) ?
+// 				cmd.m_pShader = GRAPHICS_GL->GetpGrayShader()
+// 				: cmd.m_pShader = GRAPHICS_GL->GetpShaderColTex();
 			cmd.m_glTex = m_glTexture;
-			cmd.m_bZBuffer = GRAPHICS->IsbEnableZBuff();
-			bool bAlphaTest = GRAPHICS->IsbAlphaTest();
-			if( funcBlend == XE::xBF_ADD || funcBlend == XE::xBF_SUBTRACT ) {
-				cmd.m_bZBuffer = false;
-				bAlphaTest = false;
-			}
+			cmd.m_bZBuffer = paramRender.m_bZBuff;		// 배치서피스라도 UI등에서 이미지가 겹치지 않는 범위내에서 false로 사용할 수 있다.
+			bool bAlphaTest = true;
+			// 영웅은 검기가 있기때문에 배치모드로 생성되었다해도 검기등이 add 블렌딩으로 들어올수 있음. 하지만 zbuff가 꺼지기때문에 정확하게 그려지진 않을 수 있음.
+ 			if( funcBlend == XE::xBF_ADD || funcBlend == XE::xBF_SUBTRACT ) {
+ 				cmd.m_bZBuffer = false;
+ 				bAlphaTest = false;
+ 			}
 			cmd.m_Priority = GRAPHICS->GetPriority();
 			if( funcBlend == xBF_GRAY ) {
 				cmd.m_pShader = GRAPHICS_GL->GetpGrayShader();
@@ -460,10 +463,8 @@ void XSurfaceGLAtlasBatch::DrawByParam( const MATRIX &mParent,
 			}
 			cmd.m_ltViewport = GRAPHICS->GetViewportLT().ToPoint();
 			cmd.m_sizeViewport = GRAPHICS->GetViewportSize().ToPoint();
-			//			cmd.m_bAlphaTest = paramRender.m_bAlphaTest;
-			//			cmd.m_bAlphaTest = GRAPHICS->IsbAlphaTest();
 			//Batch명령 push
-			XRenderCmdMng::sGetpCurrRenderer()->PushCmd( cmd );
+			XBatchRenderer::sGetpCurrRenderer()->PushCmd( cmd );
 		}
 	} while( 0 );
 } // DrawByParam
@@ -482,7 +483,7 @@ void XSurfaceGLAtlasBatch::Draw( float x, float y, const MATRIX &mParent )
 	paramRender.m_funcBlend = GetfuncBlend();
 	paramRender.m_adjZ = GetadjZ();
 	//
-	DrawBatch( mParent, paramRender );
+	DrawByParam( mParent, paramRender );
 	XSurface::ClearAttr();		// 이건 장차 없어질 예정
 }
 
@@ -490,6 +491,7 @@ void XSurfaceGLAtlasBatch::DrawNoBatch( float x,
 																	float y, 
 																	const MATRIX &mParent ) const
 {
+	XBREAK(1);
 // 	if( GetsizeMem().w == 0 || GetsizeMem().h == 0 ) {
 // 		// 비동기상태로 로딩을 기다리고 있는 중.
 // 		return;

@@ -8,9 +8,6 @@
 *
 */
 #include "XOpenGL.h"
-#include "etc/xGraphics.h"
-#include "etc/XSurface.h"
-#include "etc/xMath.h"
 
 class XSurfaceGLAtlasNoBatch : public XSurface {
 	struct xVertexNoBatch {
@@ -106,9 +103,9 @@ public:
 	void*	Lock( int *pWidth, BOOL bReadOnly = TRUE );
 	void CopySurface( XSurface *src ) override;
 	// 배치모드로 호출되어선 안됨.
-	void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override { 
-		XBREAK(1); 
-	}
+// 	void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override { 
+// 		XBREAK(1); 
+// 	}
 	void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const;
 	void DrawCore() const;
 	void DrawCoreSub( float x, float y, const RECT *src );
@@ -131,6 +128,9 @@ public:
 			DestroyDevice();
 			return true;
 		}
+		return false;
+	}
+	bool IsBatch() const override {
 		return false;
 	}
 private:

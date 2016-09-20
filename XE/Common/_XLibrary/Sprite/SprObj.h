@@ -2,6 +2,7 @@
 
 #include "etc/xMath.h"
 #include "etc/xGraphics.h"
+#include "etc/XSurfaceDef.h"
 #include "Sprdef.h"
 #ifdef _SPR_USE_LUA
 #undef  _SPR_USE_LUA
@@ -27,6 +28,8 @@ class XSprite;
 
 struct LAYER_INFO;
 struct XEFFECT_PARAM;
+enum xDM_TYPE : int;
+	
 XE_NAMESPACE_START( xSpr )
 struct xDat;
 // KeyEvent 델리게이트시 넘겨주는 파라메터
@@ -159,13 +162,13 @@ public:
 	XSprObj() { Init(); }		// 툴에서 필요해서 살림. new XSprObj;로만 생성해서 sprObj->Load()로 읽어서 에러검출 할수 있도록.
 	XSprObj( DWORD dwID );
 	XSprObj( LPCTSTR szFilename, XDelegateSprObj *pDelegate = nullptr );
-	XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, XDelegateSprObj *pDelegate = nullptr );
-	XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, XDelegateSprObj *pDelegate = nullptr );
+//	XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, XDelegateSprObj *pDelegate = nullptr );
+	XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, bool bBatch, XDelegateSprObj *pDelegate = nullptr );
 	// for lua
-	XSprObj( BOOL bKeepSrc, const char *cFilename );
-#ifdef WIN32
-	XSprObj( BOOL bKeepSrc, LPCTSTR szFilename );
-#endif // WIN32
+// 	XSprObj( BOOL bKeepSrc, const char *cFilename );
+// #ifdef WIN32
+// 	XSprObj( BOOL bKeepSrc, LPCTSTR szFilename );
+// #endif // WIN32
 	XSprObj( const _tstring& strSpr, XDelegateSprObj *pDelegate = nullptr ) 
 		: XSprObj( strSpr.c_str(), pDelegate ) {}
 
@@ -377,17 +380,17 @@ public:
 //	friend class XKeyCreateObj;
 	int Serialize( XArchive& ar );
 	int DeSerialize( XArchive& ar );
+	bool IsBatchRender() const;
 #ifdef _XASYNC_SPR
 	GET_SET_ACCESSOR_CONST( const struct tagAsync&, Async );
 	inline bool IsAsyncLoading() const;
 private:
-//	BOOL Load( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, BOOL bKeepSrc, bool bAsyncLoad );
 	void OnFinishLoad( XSprDat* pSprDat );
-//	void OnCompleteAsyncLoad( XSprDat* pSprDat );
 #ifdef WIN32
-	xSpr::XSPDat LoadInternal( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, ID* pOutidAsync ) const;
+	xSpr::XSPDat LoadInternal( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, bool bBatch, ID* pOutidAsync ) const;
 #endif // WIN32
-	xSpr::XSPDat LoadInternal( const char* cFilename, const XE::xHSL& hsl, bool bUseAtlas, ID* pOutidAsync ) const;
+	xSpr::XSPDat LoadInternal( const char* cFilename, const XE::xHSL& hsl, bool bUseAtlas, bool bBatch, ID* pOutidAsync ) const;
 #endif // _XASYNC_SPR
+private:
 };
 

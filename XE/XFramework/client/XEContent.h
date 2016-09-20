@@ -15,7 +15,7 @@ class XEBaseScene;
 class XEContent;
 class XWndView;
 class XWndDarkBg;
-class XRenderCmdMng;
+class XBatchRenderer;
 class XTextureAtlas;
 //
 class XEContent : public XWnd
@@ -30,7 +30,7 @@ private:
 	XBaseFontDat *m_pfdSystemSmall = nullptr;		// 기본 시스템 폰트(작은거)
 	bool m_bTouched = false;		// 터치가 되어있는 상태인가
 	bool m_bDraging = false;		// 드래깅중인가.
-	XRenderCmdMng* m_pRenderer = nullptr;
+	XBatchRenderer* m_pRenderer = nullptr;
 	XTextureAtlas* m_pAtlas = nullptr;
 	void Init() {
 		m_pfdSystem = NULL;
@@ -49,7 +49,7 @@ public:
 	GET_BOOL_ACCESSOR( bDraging );
 	GET_BOOL_ACCESSOR( bTouched );
 	GET_ACCESSOR( XTextureAtlas*, pAtlas );
-	GET_ACCESSOR( XRenderCmdMng*, pRenderer );
+	GET_ACCESSOR( XBatchRenderer*, pRenderer );
 	//
 	BOOL OnCreate();
 	virtual void DidFinishCreated() = 0;

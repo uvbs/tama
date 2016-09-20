@@ -31,6 +31,7 @@ public:
 		_tstring strSpr;			///< 스프라이트 파일명
 		int movSpeedNormal;		///< 1배속일때 이동속도
 		float scale;			///< 크기조절
+		float scale_factor = 1.f;		// 유닛에 붙는 이펙트등의 상대적 크기
 		XE::VEC3 vHSL;				///< HSL조절값.(float형이지만 소수점 사용하지 않음)
 		xPROP() {
 			idProp = 0;

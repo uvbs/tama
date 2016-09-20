@@ -239,25 +239,12 @@ void XBaseUnit::OnCreate()
 	_tstring strSpr = GetszSpr();
 	_tstring strTitle = XE::GetFileTitle( GetszSpr() );	// 파일명만 떼넴
 
-#ifdef _XUNIT_HSL
 	const bool bUnit = (GetidProp() <= XGAME::xUNIT_FALLEN_ANGEL);
-		if( m_Camp == XGAME::xSIDE_OTHER && bUnit ) {
-			// 적 유닛의 경우만 2버전을 쓴다. 영웅은 2버전이 없다.
-			strSpr = strTitle + _T( "2.spr" );
-		}
-	LoadSpr( strSpr.c_str(), 
-					 hsl, 
-					 ACT_IDLE1 );
-#else
-	if( m_Camp == XGAME::xSIDE_OTHER &&	// 상대편만 해당
-		GetidProp() <= XGAME::xUNIT_FALLEN_ANGEL ) {	// 유닛만 해당
-			strSpr = strTitle + _T( "2.spr" );
+	if( m_Camp == XGAME::xSIDE_OTHER && bUnit ) {
+		// 적 유닛의 경우만 2버전을 쓴다. 영웅은 2버전이 없다.
+		strSpr = strTitle + _T( "2.spr" );
 	}
-// 	else {
-// 		LoadSpr( GetszSpr(), vHSL, ACT_IDLE1 );
-// 	}
-	LoadSpr( strSpr.c_str(), vHSL, ACT_IDLE1, xRPT_1PLAY );
-#endif // not _XUNIT_HSL
+	LoadSpr( strSpr.c_str(), hsl, ACT_IDLE1, true, xRPT_LOOP );
 	XBREAK( GetpSprObj() == nullptr );
 	XE::VEC2 vScale( GetScaleObj().x, GetScaleObj().z );
 	GetpSprObj()->SetScale( vScale );		// 꼼수로 GetBoundBoxLocal()을 위해 확대시켜둠
@@ -265,13 +252,13 @@ void XBaseUnit::OnCreate()
 #else
 	XBREAK( GetpSprObj()->GetAction() == nullptr );
 	OnFinishLoad( GetpSprObj()->GetpSprDat() );
-// 	// IDLE상태크기의 바운딩박스를 미리 구해둠
-// 	m_bbLocal = GetBoundBoxLocal();	// propUnit의 vScale이 반영된 결과
-// 	if( GetUnitType() == xUNIT_GOLEM ) {
-// 		m_bbLocal.vLT.Set( -36.f, -106.f );			// spr파일에 바운딩박스 값이 잘못돼서 직접 넣음.
-// 		m_bbLocal.vRB.Set( 36, 10 );
-// 	}
+ 	// IDLE상태크기의 바운딩박스를 미리 구해둠
+	m_bbLocal = GetBoundBoxLocal();	// propUnit의 vScale이 반영된 결과
 #endif // _XASYNC_SPR
+	if( GetUnitType() == xUNIT_GOLEM ) {
+		m_bbLocal.vLT.Set( -36.f, -106.f );			// spr파일에 바운딩박스 값이 잘못돼서 직접 넣음.
+		m_bbLocal.vRB.Set( 36, 10 );
+}
 	m_HP = GetMaxHp();
 // 	if( IsPlayer() )
 // 		SetRotateY( 180.f );
@@ -429,6 +416,13 @@ void XBaseUnit::FrameMove( float dt )
 	}
 	++m_Count;
 	XEBaseWorldObj::FrameMove( dt );
+#ifdef _XASYNC_SPR
+	if( GetpSprObjConst()->GetAction() ) {
+		// 로딩이 완료되면 IDLE상태크기의 바운딩박스를 미리 구해둠
+		if( m_bbLocal.vLT.IsZero() && m_bbLocal.vRB.IsZero() )
+			m_bbLocal = GetBoundBoxLocal();	// propUnit의 vScale이 반영된 결과
+	}
+#endif // _XASYNC_SPR
 	auto pWorld = GetpWndWorld()->GetspWorld();
 	if( pWorld ) {
 		auto size = pWorld->GetvwSize();
@@ -635,24 +629,29 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 */
 float XBaseUnit::GetScaleFactor() const
 {
-	float scaleFactor = 1.f;
 	if( IsHero() ) {
-		scaleFactor = 2.0f;
+		return 1.5f;
 	} else {
-		switch( GetUnitSize() ) {
-		case XGAME::xSIZE_SMALL:
-		if( m_pSquadObj->GetUnit() == XGAME::xUNIT_PALADIN )
-			scaleFactor = 1.5f;
-		break;
-		case XGAME::xSIZE_MIDDLE:
-			scaleFactor = 1.5f;
-			break;
-		case XGAME::xSIZE_BIG:
-			scaleFactor = 2.0f;
-			break;
-		}
+		return GetpPropUnit()->scale_factor;
 	}
-	return scaleFactor;
+// 	float scaleFactor = 1.f;
+// 	if( IsHero() ) {
+// 		scaleFactor = 2.0f;
+// 	} else {
+// 		switch( GetUnitSize() ) {
+// 		case XGAME::xSIZE_SMALL:
+// 		if( m_pSquadObj->GetUnit() == XGAME::xUNIT_PALADIN )
+// 			scaleFactor = 1.5f;
+// 		break;
+// 		case XGAME::xSIZE_MIDDLE:
+// 			scaleFactor = 1.5f;
+// 			break;
+// 		case XGAME::xSIZE_BIG:
+// 			scaleFactor = 2.0f;
+// 			break;
+// 		}
+// 	}
+// 	return scaleFactor;
 }
 
 /**
@@ -699,6 +698,15 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 			XEBaseWorldObj::Draw( vPos, scale, alpha );
 		}
 	}
+	float scaleSize = 1.f;		// 유닛 크기별로 고정된 크기 상수값
+	if( IsHero() ) {
+		scaleSize = 1.5f;
+	} else {
+		switch( GetUnitSize() ) {
+		case xSIZE_MIDDLE: scaleSize = 1.5f; break;
+		case xSIZE_BIG: scaleSize = 2.f; break;
+		}
+	}
 	// 이부분도 느림 피격이펙이 안나오고 있을때도 draw하는지 검사
 //#ifndef _XUZHU_HOME
 	if( m_psoHit && m_psoHit->IsFinish() == FALSE )	  {
@@ -706,7 +714,8 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		XE::VEC2 v = GetvsCenter();
 		v += m_vHitOffset * scale;
 		// 맞는측의 크기에 비례해서 타격이펙트도 커진다.
-		m_psoHit->SetScale( scaleFactor * scaleProp * scale /* * 0.5f*/ );
+		m_psoHit->SetScale( scaleFactor * scale );
+// 		m_psoHit->SetScale( scaleFactor * scaleProp * scale );
 #if defined(_CHEAT) && defined(WIN32)
 		if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_HIT_SFX) )
 #endif // defined(_CHEAT) && defined(WIN32)
@@ -716,14 +725,15 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 	XE::VEC2 vDrawHp = vPos;
 	// drawhp
 	if( IsLive() ) {
-		XE::VEC2 sizeBar = XE::VEC2( 35 * scaleFactor * scale, 5 * scale );
+		XE::VEC2 sizeBar = XE::VEC2( 35 * scaleSize * scale, 5 * scale );
 		if( sizeBar.w < 1.f )
 			sizeBar.w = 1.f;
 		if( sizeBar.h < 1.f )
 			sizeBar.h = 1.f;
 		const XE::VEC3 _vSize = vSizeUnit * scale;
 		vDrawHp.x -= sizeBar.w / 2.f;
-		vDrawHp.y -= _vSize.h + ( 2.f * scaleFactor );
+		vDrawHp.y -= _vSize.h + ( 2.f * scaleSize );
+// 		vDrawHp.y -= _vSize.h + ( 2.f * scaleFactor );
 		if( (m_timerDamage.IsOn() && !m_timerDamage.IsOver()) || IsHero() )	{
 			XPROF_OBJ( "draw bar" );
 			float lerp = (float)GetHp() / GetMaxHp();
@@ -742,7 +752,7 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 	// draw name
 	if( IsHero() && IsLive() ) {
 		XPROF_OBJ( "draw name" );
-		vDrawName = DrawName( vPos, scaleFactor, scale, vDrawHp );
+		vDrawName = DrawName( vPos, scaleSize, scale, vDrawHp );
 	}
 	if( /*IsHero() &&*/ IsLive() ) {
 		// 버프 디버프 아이콘 표시

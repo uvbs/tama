@@ -8,8 +8,6 @@
 *
 */
 #include "XOpenGL.h"
-#include "etc/xGraphics.h"
-#include "etc/XSurface.h"
 #include "etc/xMath.h"
 
 class XSurfaceGLAtlasBatch : public XSurface {
@@ -106,7 +104,7 @@ public:
 	//	RESULT	LoadTexture( LPCTSTR szFilename, XCOLOR dwColorKey );
 	void*	Lock( int *pWidth, BOOL bReadOnly = TRUE );
 	void CopySurface( XSurface *src ) override;
-	void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override;
+// 	void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override;
 	void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override;
 	void DrawCore();
 	//	void DrawCoreAlpha();
@@ -132,6 +130,9 @@ public:
 			return true;
 		}
 		return false;
+	}
+	bool IsBatch() const override {
+		return true;
 	}
 private:
 	void DrawNoBatch( float x, float y, const MATRIX &mParent ) const;

@@ -9,7 +9,7 @@
 #include "_Wnd2/XWnd.h"
 #include "_Wnd2/XWndButton.h"
 #include "_Wnd2/XWndPopup.h"
-#include "etc/XSurface.h"
+//#include "etc/XSurface.h"
 #include "XPropTech.h"
 
 class XHero;

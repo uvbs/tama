@@ -3,7 +3,7 @@
 #include "XFramework/Game/XEWorld.h"
 #include "XFramework/Game/XEWorldCamera.h"
 #include "xFont.h"
-#include "OpenGL2/XRenderCmd.h"
+#include "OpenGL2/XBatchRenderer.h"
 #include "OpenGL2/XTextureAtlas.h"
 #include "XFramework/XEProfile.h"
 
@@ -26,7 +26,7 @@ static char THIS_FILE[] = __FILE__;
 // }
 
 XEWndWorld::XEWndWorld( std::shared_ptr<XEWorld> spWorld )
-	: m_pRenderer( new XRenderCmdMng( __FUNCTION__ ) )
+	: m_pRenderer( new XBatchRenderer( __FUNCTION__ ) )
 	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
 {
 	Init();
@@ -231,4 +231,9 @@ BOOL XEWndWorld::IsOutBoundary( const XE::xRECT& rectBB )
 ID XEWndWorld::AddObj( const XSPWorldObj& spObj ) 
 {
 	return m_spWorld->AddObj( spObj );
+}
+
+int XEWndWorld::GetavgDPCall() const
+{
+	return (m_pRenderer)? m_pRenderer->GetfpsDPCall().GetFps() : 0;
 }

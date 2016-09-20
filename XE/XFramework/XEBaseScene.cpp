@@ -3,7 +3,7 @@
 #include "XFramework/client/XEContent.h"
 #include "XFramework/XESceneMng.h"
 #include "XSoundMng.h"
-#include "OpenGL2/XRenderCmd.h"
+#include "OpenGL2/XBatchRenderer.h"
 #include "OpenGL2/XTextureAtlas.h"
 
 

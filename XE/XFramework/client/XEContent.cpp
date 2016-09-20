@@ -7,7 +7,7 @@
 #ifdef _XASYNC_SPR
 #include "Sprite/SprMng.h"
 #endif // _XASYNC_SPR
-#include "OpenGL2/XRenderCmd.h"
+#include "OpenGL2/XBatchRenderer.h"
 #include "OpenGL2/XTextureAtlas.h"
 
 #ifdef WIN32
@@ -22,7 +22,7 @@ XEContent* XEContent::s_pInstance = nullptr;
 
 XEContent::XEContent() 
 	: XWnd( 0, 0, (int)XE::GetGameWidth(), (int)XE::GetGameHeight() ) 
-	, m_pRenderer( new XRenderCmdMng( __FUNCTION__ ) )
+	, m_pRenderer( new XBatchRenderer( __FUNCTION__ ) )
 	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
 {
 	s_pInstance = this;

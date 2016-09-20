@@ -1,8 +1,9 @@
 ﻿#include "stdafx.h"
-#include "XParticleMng.h"
+#include "etc/XGraphicsDef.h"
 #include "etc/xGraphics.h"
 #include "XFramework/client/XPropParticle.h"
 #include "Sprite/SprObj.h"
+#include "XParticleMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -18,6 +19,7 @@ using namespace xParticle;
 
 XPointSpriteParticleMng::XPointSpriteParticleMng( XParticleDelegate *pDelegate, int maxParticle ) 
 	: XBaseParticleMng( pDelegate, maxParticle ) 
+	, m_DrawMode( xDM_SCREEN )
 { 
 	Init(); 
 	m_pBuffer = new XPointSpriteParticle::xOUT[ maxParticle ];		// 포인트 스프라이트용 draw버퍼
@@ -142,6 +144,7 @@ XParticleMng* XParticleMng::sCreate()
  @brief 
 */
 XParticleMng::XParticleMng()
+	: m_BlendFunc( XE::xBF_MULTIPLY )
 {
 	Init();
 	// 기본 1000로 시작해서 포인트파티클 개수가 1000개를 넘어가면 실시간으로 다시 재할당 받는다.

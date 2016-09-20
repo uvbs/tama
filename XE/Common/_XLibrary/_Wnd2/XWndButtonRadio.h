@@ -19,11 +19,11 @@ class XWndButtonRadio : /*virtual */public XWndButton
 	void Destroy() {
 	}
 public:
-	XWndButtonRadio( float x, float y, LPCTSTR szSpr, ID idUp, ID idDown, ID idDisable=0 ) 
-		: XWnd( x, y ),
-		XWndButton( x, y, szSpr, idUp, idDown, idDisable ) {
-		Init();
-	}
+// 	XWndButtonRadio( float x, float y, LPCTSTR szSpr, ID idUp, ID idDown, ID idDisable=0 ) 
+// 		: XWnd( x, y ),
+// 		XWndButton( x, y, szSpr, idUp, idDown, idDisable ) {
+// 		Init();
+// 	}
 	XWndButtonRadio( float x, float y, LPCTSTR szImgUp, LPCTSTR szImgDown, LPCTSTR szImgDisable=NULL ) 
 		: XWnd( x, y ),
 		XWndButton( x, y, szImgUp, szImgDown, szImgDisable ) {

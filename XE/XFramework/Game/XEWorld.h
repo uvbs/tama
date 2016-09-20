@@ -3,7 +3,7 @@
 
 class XEObjMng;
 class XEWndWorld;
-class XRenderCmdMng;
+class XBatchRenderer;
 
 // 게임프레임워크에서 오브젝트들이 들어갈 월드전체를 표현하는 추상화 객체
 class XEWorld

@@ -18,7 +18,7 @@
 #include "xColor.h"
 #include "XE.h"
 #include "XGraphicsDef.h"
-#include "XSurface.h"
+//#include "XSurface.h"
 
 class XSurface;
 namespace XE {
@@ -69,13 +69,7 @@ public:
 	static XGraphics *s_pGraphics;
 	static BOOL s_bCaptureBackBuffer;			// Present전에 현재 백버퍼를 카피해둬야 함
 	static XSurface* s_pLastBackBuffer;			// 마지막으로 캡쳐된 백버퍼 화면
-	static void CaptureBackBuffer( BOOL bHighReso ) {		// 
-		if( s_bCaptureBackBuffer ) {	// 캡쳐가 예약이 됐으면 
-			SAFE_DELETE( s_pLastBackBuffer );
-			s_pLastBackBuffer = GRAPHICS->CreateScreenToSurface( bHighReso );		// 백버퍼를 캡쳐해서 보관
-		}
-		s_bCaptureBackBuffer = FALSE;
-	}
+	static void CaptureBackBuffer( BOOL bHighReso );
 	// 배치렌더 서피스로 생성하도록 활성화 한다.
 	static bool sSetEnableBatchLoading( bool bFlag ) {
 		auto bPrev = s_bBatchLoading;
@@ -151,8 +145,8 @@ public:
 	기기가 16:9비율이라면 가로해상도를 기준으로 잡았을때 논리적인 해상도는 320x568이 된다.
 
 	*/
-	GET_SET_BOOL_ACCESSOR( bEnableZBuff );
-	GET_SET_BOOL_ACCESSOR( bAlphaTest );
+// 	GET_SET_BOOL_ACCESSOR( bEnableZBuff );
+// 	GET_SET_BOOL_ACCESSOR( bAlphaTest );
 	GET_SET_ACCESSOR_CONST( int, Priority );
 	inline XE::VEC2 GetLogicalScreenSize() {
 		return XE::VEC2( m_nWidth, m_nHeight );
@@ -444,6 +438,7 @@ public:
 	// 	friend class XSprite;
 	//	virtual XSurface* CreateSurface( BOOL bHighReso ) = 0;
 	virtual XSurface* CreateSurface() = 0;
+	virtual XSurface* CreateSurfaceByType( bool bAtlas, bool bBatch ) = 0;
 	virtual XSurface* CreateSurfaceAtlasBatch() = 0;
 	virtual XSurface* CreateSurfaceAtlasNoBatch() = 0;
 	virtual XSurface* CreateSurface( BOOL bHighReso

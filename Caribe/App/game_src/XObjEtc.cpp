@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "XObjEtc.h"
+#include "etc/XSurface.h"
 #include "XWndBattleField.h"
 #include "XBattleField.h"
 #include "XBaseUnit.h"
@@ -16,6 +16,7 @@
 #include "client/XAppMain.h"
 #endif
 #include "XImageMng.h"
+#include "XObjEtc.h"
 
 
 #ifdef WIN32

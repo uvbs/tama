@@ -8,10 +8,12 @@
 *
 */
 #include "XOpenGL.h"
-#include "etc/xGraphics.h"
 #include "etc/XSurface.h"
-#include "etc/xMath.h"
 
+/**
+ @brief 
+ no atlas, no batch
+*/
 class XSurfaceOpenGL : public XSurface {
 private:
 	GLuint	m_glTexture;
@@ -112,7 +114,7 @@ public:
 
 	//	void DrawCoreAlpha();
 	void DrawCoreSub( float x, float y, const RECT *src );
-	void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override { XBREAK(1); }
+//	void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override { XBREAK(1); }
 	void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const override;
 	inline void Draw( float x, float y ) {
 		MATRIX m;
@@ -136,6 +138,9 @@ public:
 			DestroyDevice();
 			return true;
 		}
+		return false;
+	}
+	bool IsBatch() const override {
 		return false;
 	}
 private:

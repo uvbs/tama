@@ -186,14 +186,16 @@ ID XTextureAtlas::ArrangeImg( ID idTex,
 	}
 	if( XASSERT( spAtlas ) ) {
 		if( XASSERT( pNewNode ) ) {
-			XE::xRECT rect = pNewNode->GetRect();
+			const XE::xRECT rect = pNewNode->GetRectTex();
 			pOut->vLT = rect.vLT;
 			pOut->vRB = rect.vRB + XE::VEC2( 1, 1 );
 			++spAtlas->m_refCnt;
 			// 실제 디바이스 텍스쳐에 갱신.
 			spAtlas->UpdateSubToDevice( pImgSrc,
-																	pNewNode->GetRect().vLT,
-																	pNewNode->GetRect().GetSize(),
+																	rect.vLT,
+																	rect.GetSize(),
+// 																	pNewNode->GetRectTex().vLT,
+// 																	pNewNode->GetRectTex().GetSize(),
 																	fmtImgSrc );
 			*pOutSizeAtlas = spAtlas->m_Size;
 			return spAtlas->m_idTex;
@@ -209,10 +211,10 @@ xSplit::XNode* XTextureAtlas::InsertElem( XSPAtlas spAtlas,
 	if( pNewNode ) {
 		// 배치성공
 		pNewNode->SetidImg( spAtlas->m_idTex );
-		if( pNewNode->GetRect().vRB.x > spAtlas->m_maxFill.x )
-			spAtlas->m_maxFill.x = pNewNode->GetRect().vRB.x;
-		if( pNewNode->GetRect().vRB.y > spAtlas->m_maxFill.y )
-			spAtlas->m_maxFill.y = pNewNode->GetRect().vRB.y;
+		if( pNewNode->GetRectTex().vRB.x > spAtlas->m_maxFill.x )
+			spAtlas->m_maxFill.x = pNewNode->GetRectTex().vRB.x;
+		if( pNewNode->GetRectTex().vRB.y > spAtlas->m_maxFill.y )
+			spAtlas->m_maxFill.y = pNewNode->GetRectTex().vRB.y;
 	}
 	return pNewNode;
 }

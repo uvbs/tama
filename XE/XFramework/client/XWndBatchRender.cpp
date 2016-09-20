@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "XWndBatchRender.h"
-#include "OpenGL2/XRenderCmd.h"
+#include "OpenGL2/XBatchRenderer.h"
 #include "XFramework/XEProfile.h"
 #include "OpenGL2/XTextureAtlas.h"
 
@@ -23,7 +23,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////////////////////////////////////////////
 XWndBatchRender::XWndBatchRender( const char* cTag, bool bBatchRender )
 	: m_pAtlas( new XTextureAtlas( cTag ) )
-	, m_pRenderer( (bBatchRender)? new XRenderCmdMng( cTag ) : nullptr )
+	, m_pRenderer( (bBatchRender)? new XBatchRenderer( cTag ) : nullptr )
 {
 	Init();
 }

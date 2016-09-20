@@ -1,16 +1,18 @@
 ﻿#pragma once
+#include "etc/XSurface.h"
 
-#include "opengl2/XGraphicsOpenGL.h"
-#include "OpenGL2/XSurfaceGLAtlasBatch.h"
+#ifdef XSPR_LOAD
+#error "스프라이트 비동기 로딩중(멀티스레드)에 RenderCmd못쓰게 하려고 막아둠. 로딩중에 XRenderCmd::sGetpCurrRenderer()가 의미가 없다."
+#endif // XSPR_LOAD
 
 #define SET_RENDERER( RENDERER ) \
 {	XBREAK( RENDERER == nullptr ); \
 	auto __pCurrRenderer = RENDERER; \
-	auto pPrev = XRenderCmdMng::_sSetpCurrRenderer( __pCurrRenderer );
+	auto pPrev = XBatchRenderer::_sSetpCurrRenderer( __pCurrRenderer );
 
 #define END_RENDERER \
 	__pCurrRenderer->RenderBatch(); \
-	XRenderCmdMng::_sSetpCurrRenderer( pPrev ); }
+	XBatchRenderer::_sSetpCurrRenderer( pPrev ); }
 
 // #define END_RENDERER \
 // 	XRenderCmdMng::sAddRenderer( __pCurrRenderer ); \
@@ -18,7 +20,10 @@
 
 
 class XShader;
-class XRenderCmdMng;
+class XBatchRenderer;
+namespace XE {
+struct xVertex;
+}
 
 XE_NAMESPACE_START( xRenderCmd )
 //
@@ -57,15 +62,15 @@ XE_NAMESPACE_END; // xRenderCmd
 * @author xuzhu
 * @date	2016/09/09 14:10
 *****************************************************************/
-class XRenderCmdMng 
+class XBatchRenderer 
 {
 public:
-	static std::shared_ptr<XRenderCmdMng>& sGet();
+	static std::shared_ptr<XBatchRenderer>& sGet();
 	static void sDestroyInstance();
-	static XRenderCmdMng* sGetpCurrRenderer() {
+	static XBatchRenderer* sGetpCurrRenderer() {
 		return s_pCurrRenderer;
 	}
-	static XRenderCmdMng* _sSetpCurrRenderer( XRenderCmdMng* pRenderer ) {
+	static XBatchRenderer* _sSetpCurrRenderer( XBatchRenderer* pRenderer ) {
 		auto pPrev = s_pCurrRenderer;
 		s_pCurrRenderer = pRenderer;
 		return pPrev;
@@ -81,11 +86,12 @@ public:
 		s_aryRenderer.clear();
 	}
 public:
-	XRenderCmdMng( const char* cTag );
-	~XRenderCmdMng() { Destroy(); }
+	XBatchRenderer( const char* cTag );
+	~XBatchRenderer() { Destroy(); }
 	//
 	//GET_ACCESSOR_CONST( int, avgDPCall );
 	GET_ACCESSOR_CONST( int, numDPCall );
+	GET_ACCESSOR_CONST( const XFps&, fpsDPCall );
 	inline void PushCmd( const xRenderCmd::xCmd& cmd ) {
 		m_qCmds.push_back( cmd );
 	}
@@ -95,13 +101,14 @@ public:
 	void RenderBatch();
 private:
 // 	static std::shared_ptr<XRenderCmdMng> s_spInstance;
-	static XRenderCmdMng* s_pCurrRenderer;
-	static XVector<XRenderCmdMng*> s_aryRenderer;
+	static XBatchRenderer* s_pCurrRenderer;
+	static XVector<XBatchRenderer*> s_aryRenderer;
 	ID m_idRenderer = 0;
 	std::string m_strTag;			// 식별용 태그
 	int m_avgDPCall = 0;		// 초당 평균 DP횟수
 	int m_numDPCall = 0;
 	ID m_idTexPrev = 0;
+	XFps m_fpsDPCall;
 	void Init() {}
 	void Destroy();
 	void VertexAttribPointer( GLuint indx, GLint size, const void* ptr );

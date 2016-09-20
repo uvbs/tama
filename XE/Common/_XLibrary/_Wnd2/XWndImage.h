@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "etc/XSurface.h"
 #include "XWnd.h"
 #include "etc/xMath.h"
 #include "XImage.h"

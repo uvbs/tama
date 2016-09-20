@@ -301,6 +301,7 @@ public:
 	// craete surface
 //	virtual XSurface* CreateSurface( BOOL bHighReso );
 	XSurface* CreateSurface() override;
+	XSurface* CreateSurfaceByType( bool bAtlas, bool bBatch ) override;
 	XSurface* CreateSurfaceAtlasBatch() override;
 	XSurface* CreateSurfaceAtlasNoBatch() override;
 	//	XSurface* CreateSurface2( BOOL bHighReso, int srcx, int srcy, int srcw, int srch, float dstw, float dsth, float adjx, float adjy, DWORD *pSrcImg, BOOL bSrcKeep ) override;

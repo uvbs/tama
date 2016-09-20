@@ -157,7 +157,7 @@ public:
  	GET_ACCESSOR( XSPUnit, spTarget );
  	SET_ACCESSOR( const XSPUnit, spTarget );
 	GET_ACCESSOR_CONST( const XE::VEC2&, vsPos );
-	GET_ACCESSOR( XPropUnit::xPROP*, pPropUnit );
+	GET_ACCESSOR_PTR( XPropUnit::xPROP*, pPropUnit );
 	GET_SET_ACCESSOR_CONST( const std::string&, strcIds );
 	GET_ACCESSOR_CONST( const XHero*, pHero );
 	inline XHero* GetpHeroMutable() {

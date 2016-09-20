@@ -25,7 +25,12 @@ public:
 	~XNode() { Destroy(); }
 	//
 	void Destroy();
-	GET_ACCESSOR_CONST( const XE::xRECT&, Rect );
+//	GET_ACCESSOR_CONST( const XE::xRECT&, Rect );
+	// 실제 텍스쳐의 크기
+	const XE::xRECT GetRectTex() const {
+		const auto vSize = m_Rect.GetSize() - 1.f;		// 1픽셀 여유를 줬으므로 실제 텍스쳐의 크기는 -1을 해야한다.
+		return XE::xRECT( m_Rect.vLT, vSize);	// 텍스쳐간에 1픽셀씩 거리를 둠.
+	}
 	GET_SET_ACCESSOR_CONST( ID, idImg );
 	inline void SetRect( const XE::VEC2& vLT, const XE::VEC2& vRB ) {
 		m_Rect.vLT = vLT;
@@ -39,9 +44,11 @@ public:
 	}
 	// 삽입하려는 이미지가 공간에 딱맞아서 분할할게 없는지.
 	inline bool IsFitPerfectly( const XE::VEC2& sizeImg ) const {
-		return (int)m_Rect.GetWidth() == (int)sizeImg.w 
+		return (int)m_Rect.GetWidth() == (int)sizeImg.w
 			&& (int)m_Rect.GetHeight() == (int)sizeImg.h;
 	}
+private:
+	GET_ACCESSOR_CONST( const XE::xRECT&, Rect );
 private:
 	XNode* m_Child[2];
 	XE::xRECT m_Rect;			// 분할전 전체 공간의 위치와 크기

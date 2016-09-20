@@ -7,8 +7,6 @@
  *  Copyright 2010 __MyCompanyName__. All rights reserved.
  *
  */
-#include "etc/XSurface.h"
-#include "etc/Timer.h"
 //--------------------------------------------------------------------------------------------------------- 
 class XTransition
 {

@@ -184,15 +184,7 @@ public:
 		m_pFontDat = FONTMNG->Load( szFont, 20.f );
 		m_pFont = m_pFontDat->CreateFontObj();
 	}
-	XWndDialog( LPCTSTR szImg )
-		: XWndView( (float)0, (float)0, (LPCTSTR)szImg ) {
-		Init();
-		float w = m_psfcFrame->GetWidth();
-		float h = m_psfcFrame->GetHeight();
-		SetSizeLocal( w, h );
-		SetPosLocal( XE::GetGameWidth() / 2 - (int)w / 2, XE::GetGameHeight() / 2 - (int)h / 2 );
-	}
-
+	XWndDialog( LPCTSTR szImg );
 	virtual ~XWndDialog() { Destroy(); }
 	// get/set
 	template<typename T>
@@ -210,7 +202,7 @@ public:
 	//    BOOL LoadRes( LPCTSTR szRes );
 	//	XWndButton* AddButton( ID id, float x, float y, LPCTSTR szText, LPCTSTR szSpr, ID idActUp, ID idActDown=0 );
 	//	XWndButton* AddButton( ID id, const XE::VEC2& vPos, const XE::VEC2& size, LPCTSTR szText );
-	XWndButton* AddButton( ID id, float x, float y, LPCTSTR szSpr, ID idActUp, ID idActDown );
+//	XWndButton* AddButton( ID id, float x, float y, LPCTSTR szSpr, ID idActUp, ID idActDown );
 	XWnd* AddStaticText( ID id, float x, float y, float w, float h, LPCTSTR szText, XBaseFontDat *pFontDat, XE::xAlign align, XCOLOR col = XCOLOR_WHITE, xFONT::xtStyle style = xFONT::xSTYLE_NORMAL );
 	XWnd* AddStaticText( float x, float y, LPCTSTR szText, XBaseFontDat *pFontDat, XE::xAlign align, XCOLOR col = XCOLOR_WHITE, xFONT::xtStyle style = xFONT::xSTYLE_NORMAL ) {
 		return AddStaticText( XE::GenerateID(), x, y, 0, 0, szText, pFontDat, align, col, style );

@@ -10,14 +10,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
-#include "XSurfaceGLAtlasNoBatch.h"
 #include "etc/xGraphics.h"
+#include "etc/XSurface.h"
+#include "etc/xMath.h"
 #include "XGraphicsOpenGL.h"
 #include "etc/Debug.h"
 #include "XImage.h"
-#include "etc/xMath.h"
 #include "XFramework/client/XClientMain.h"
 #include "XTextureAtlas.h"
+#include "XSurfaceGLAtlasNoBatch.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -404,9 +405,8 @@ void XSurfaceGLAtlasNoBatch::Draw( float x, float y, const MATRIX &mParent )
 	XSurface::ClearAttr();		// 이건 장차 없어질 예정
 }
 
-void XSurfaceGLAtlasNoBatch::DrawByParam(
-	const MATRIX &mParent,
-	const XE::xRenderParam& paramRender ) const
+void XSurfaceGLAtlasNoBatch::DrawByParam( const MATRIX &mParent,
+																					const XE::xRenderParam& paramRender ) const
 {
 	if( GetsizeMem().w == 0 || GetsizeMem().h == 0 ) {
 		// 비동기상태로 로딩을 기다리고 있는 중.
@@ -435,7 +435,7 @@ void XSurfaceGLAtlasNoBatch::DrawByParam(
 			MatrixMultiply( mMVP, mWorld, XE::x_mViewProjection );
 			if( XSurface::IsInViewport( 0, 0, mWorld ) == FALSE )
 				break;
-			// 현재 쉐이더를 얻어온다
+			// 현재 쉐이더를 얻어온다(아직 여기선 zbuff와 alphatest는 지원하지 않는다.)
 			XShader *pShader = XGraphicsOpenGL::sGetShader();
 			if( blend == xBF_GRAY )
 				pShader = GRAPHICS_GL->GetpGrayShader();

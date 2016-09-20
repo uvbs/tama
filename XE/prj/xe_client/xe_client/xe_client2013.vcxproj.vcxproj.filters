@@ -398,9 +398,6 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\Sprite\SprMng_old.cpp">
       <Filter>source\sprite</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.cpp">
-      <Filter>source\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\XBaseDelegate.cpp">
       <Filter>source\Framework\game</Filter>
     </ClCompile>
@@ -516,6 +513,9 @@
       <Filter>source\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasBatch.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XBatchRenderer.cpp">
       <Filter>source\graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1151,9 +1151,6 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\Sprite\SprMng_old.h">
       <Filter>source\sprite</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.h">
-      <Filter>source\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\XFramework\Game\XFLevelH.h">
       <Filter>source\Framework\game</Filter>
     </ClInclude>
@@ -1177,6 +1174,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasBatch.h">
       <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XBatchRenderer.h">
+      <Filter>source\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1257,6 +1257,7 @@
       <Filter>android</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="source">

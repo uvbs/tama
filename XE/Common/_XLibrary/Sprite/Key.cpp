@@ -15,6 +15,7 @@
 #include "XResObj.h"
 #include "XResMng.h"
 #include "XActObj2.h"
+#include "XActDat.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

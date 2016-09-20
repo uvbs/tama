@@ -1,8 +1,7 @@
 ﻿#include "stdafx.h"
-//#include "XWindow.h"
+#include "etc/XSurfaceDef.h"
+#include "etc/XSurface.h"
 #include "etc/xUtil.h"
-//#include "XWndMng.h"
-//#include "sprite/SprObj.h"
 #include "XFontSpr.h"
 #include "XFramework/XEToolTip.h"		
 #ifdef WIN32
@@ -44,6 +43,11 @@ int XWnd::s_depthMouseMove = 0;	// 마우스오버된 윈도우의 뎁스
 bool XWnd::s_bDrawOutline = false;		// 디버깅 모드. 모든 윈도우들의 외곽선을 그린다.
 bool XWnd::s_bDrawMouseOverWins = false;		// 디버깅 모드. 현재 마우스위치에 오버된 모든윈도우들의 리스트를 출력한다.
 #endif // _DEBUG
+
+void XWND_RES_FRAME::Destroy() {
+	for( int i = 0; i < 9; i++ )
+		SAFE_DELETE( psfcFrame[i] );
+}
 
 XList<std::string>	XWnd::s_listAllowClick;		// 이게 세팅되어 있으면 이 윈도우들외에 다른 윈도우는 입력을 막아야 한다.
 // SetCapture한 윈도우 리스트

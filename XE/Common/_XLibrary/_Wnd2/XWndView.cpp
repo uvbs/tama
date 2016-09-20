@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "XWndView.h"
+#include "etc/XSurface.h"
 #include "XWndText.h"
 #include "XWndButton.h"
 #include "XFramework/client/XLayout.h"
@@ -8,6 +8,7 @@
 #include "XFramework/XEProfile.h"
 #include "sprite/SprObj.h"
 #include "XImageMng.h"
+#include "XWndView.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -285,12 +286,15 @@ void XWndView::Update()
 
 ////////////////////////////////////////////////////////////////
 // dialog
-XWndButton* XWndDialog::AddButton( ID id, float x, float y, LPCTSTR szSpr, ID idActUp, ID idActDown  )
-{
-	XWndButton *pButton = new XWndButton( x, y, szSpr, idActUp, idActDown );
-	Add( id, pButton );
-	return pButton;
+XWndDialog::XWndDialog( LPCTSTR szImg )
+	: XWndView( (float)0, (float)0, (LPCTSTR)szImg ) {
+	Init();
+	float w = m_psfcFrame->GetWidth();
+	float h = m_psfcFrame->GetHeight();
+	SetSizeLocal( w, h );
+	SetPosLocal( XE::GetGameWidth() / 2 - (int)w / 2, XE::GetGameHeight() / 2 - (int)h / 2 );
 }
+
 // static text
 XWnd* XWndDialog::AddStaticText( ID id, float x, float y, float w, float h, LPCTSTR szText, XBaseFontDat *pFontDat, XE::xAlign align, XCOLOR col, xFONT::xtStyle style )
 {

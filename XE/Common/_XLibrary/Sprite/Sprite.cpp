@@ -1,4 +1,7 @@
 ﻿#include "stdafx.h"
+#define XSPR_LOAD
+#include "etc/XGraphics.h"
+#include "etc/XSurface.h"
 #include "Sprite.h"
 #include "SprDat.h"
 #include "XResObj.h"
@@ -22,7 +25,8 @@ XSprite::XSprite( int idx ) {
 	Init();
 	m_idxSprite = idx;
 	// 배치렌더버전으로 바뀜
-	m_pSurface = GRAPHICS->CreateSurfaceAtlasBatch();
+//	m_pSurface = GRAPHICS->CreateSurface();
+	//m_pSurface = GRAPHICS->CreateSurfaceAtlasBatch();
 }
 
 void XSprite::Destroy( void )
@@ -35,8 +39,12 @@ void XSprite::Load( XSprDat *pSprDat,
 										bool bAsyncLoad,
 										const XE::xHSL& hsl,
 										BOOL _bSrcKeep, 
+										bool bBatch,
 										BOOL bRestore )
 {
+	if( !m_pSurface ) {
+		m_pSurface = GRAPHICS->CreateSurfaceByType( bUseAtlas, bBatch );
+	}
 	if( bRestore ) {
 		m_pSurface->ClearDevice();
 	}
@@ -346,3 +354,83 @@ void XSprite::Draw( const XE::VEC2& v )
 	Draw( v.x, v.y );
 }
 
+bool XSprite::IsBatch() const
+{
+	return (m_pSurface)? m_pSurface->IsBatch() : false;
+}
+
+void XSprite::SetScale( float sx, float sy ) {
+	m_pSurface->SetScale( sx, sy );
+}	// 여기는 GRAPHICS->GetfGScale과 곱하지 않는다 XLayerImage::Draw에서 이걸 계속 호출하기 때문이다
+
+void XSprite::SetScale( const XE::VEC2& vScale ) {
+	m_pSurface->SetScale( vScale );
+}
+void XSprite::SetScale( float scalexy ) {
+	m_pSurface->SetScale( scalexy );
+}
+
+float XSprite::GetWidth() const {
+	return m_pSurface->GetWidth();
+}
+float XSprite::GetHeight() const {
+	return m_pSurface->GetHeight();
+}
+XE::VEC2 XSprite::GetSize() const {
+	return m_pSurface->GetSize();
+}
+XE::VEC2 XSprite::GetMemSize() const {
+	return m_pSurface->GetMemSize();
+}
+XE::VEC2 XSprite::GetAdjust() const {
+	return m_pSurface->GetAdjust();
+}
+float XSprite::GetAdjustX() const {
+	return m_pSurface->GetAdjustX();
+}
+float XSprite::GetAdjustY() const {
+	return m_pSurface->GetAdjustY();
+}
+XE::VEC2 XSprite::GetsizeMemAligned() const {
+	return m_pSurface->GetsizeMemAlignedVec2();
+}
+// 스프라이트 이미지데이타(메모리/VRAM)의 바이트크기
+int XSprite::GetbytesMemAligned() const {
+	return m_pSurface->GetbytesMemAligned();
+}
+void XSprite::SetfAlpha( float alpha ) {
+	m_pSurface->SetfAlpha( alpha );
+}
+void XSprite::SetColor( XCOLOR col ) {
+	m_pSurface->SetColor( col );
+}
+void XSprite::SetColor( float r, float g, float b ) {
+	m_pSurface->SetColor( r, g, b );
+}
+void XSprite::SetAdjustAxis( float ax, float ay ) {
+	m_pSurface->SetAdjustAxis( ax, ay );
+}
+void XSprite::SetAdjustAxis( const XE::VEC2& vAdjAxis ) {
+	m_pSurface->SetAdjustAxis( vAdjAxis );
+}
+void XSprite::SetRotate( float dX, float dY, float dZ ) {
+	m_pSurface->SetRotate( dX, dY, dZ );
+}
+void XSprite::SetRotateZ( float dAng ) {
+	m_pSurface->SetRotateZ( dAng );
+}
+void XSprite::SetFlipHoriz( BOOL bFlag ) {
+	m_pSurface->SetFlipHoriz( bFlag );
+}
+void XSprite::SetFlipVert( BOOL bFlag ) {
+	m_pSurface->SetFlipVert( bFlag );
+}
+void XSprite::SetDrawMode( xDM_TYPE t ) {
+	m_pSurface->SetDrawMode( t );
+}
+DWORD XSprite::GetPixel( float lx, float ly, BYTE *pa, BYTE *pr, BYTE *pg, BYTE *pb ) {
+	return m_pSurface->GetPixel( lx, ly, pa, pr, pg, pb );
+}
+void XSprite::DestroyDevice() {
+	m_pSurface->DestroyDevice();
+}

@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "etc/XSurface.h"
 #include "XDrawGraph.h"
 #include "etc/xGraphics.h"
 #include "XImageMng.h"

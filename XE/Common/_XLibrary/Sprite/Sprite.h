@@ -10,9 +10,15 @@
 
 class XSprDat;
 class XBaseRes;
-//////////////////////////////////////////////////////////////////////////
-#include "etc/XGraphics.h"
-#include "etc/XSurface.h"
+class XSurface;
+namespace XE {
+struct xSurfaceInfo;
+struct xHSL;
+}
+enum xDM_TYPE : int;
+	//////////////////////////////////////////////////////////////////////////
+// #include "etc/XGraphics.h"
+// #include "etc/XSurface.h"
 class XSprite
 {
 public:
@@ -38,47 +44,40 @@ public:
 						 bool bUseAtlas, 
 						 bool bAsyncLoad,
 						 const XE::xHSL& hsl,
-						 BOOL bSrcKeep=FALSE, 
-						 BOOL bRestore=FALSE );
+						 BOOL bSrcKeep, 
+						 bool bBatch,
+						 BOOL bRestore );
 	void CreateDevice( const XE::xSurfaceInfo& infoSurface );
 	void CreateDevice();
-	void SetScale( float sx, float sy ) {
-		m_pSurface->SetScale( sx, sy );
-	}	// 여기는 GRAPHICS->GetfGScale과 곱하지 않는다 XLayerImage::Draw에서 이걸 계속 호출하기 때문이다
-	void SetScale( const XE::VEC2& vScale ) { m_pSurface->SetScale( vScale ); }
-	void SetScale( float scalexy ) { m_pSurface->SetScale( scalexy ); }
+	void SetScale( float sx, float sy );	// 여기는 GRAPHICS->GetfGScale과 곱하지 않는다 XLayerImage::Draw에서 이걸 계속 호출하기 때문이다
+	void SetScale( const XE::VEC2& vScale );
+	void SetScale( float scalexy );
 	MATRIX* GetMatrix( MATRIX *pOut, float lx, float ly );
-	float GetWidth() const { return m_pSurface->GetWidth(); }
-	float GetHeight() const { return m_pSurface->GetHeight(); }
-	XE::VEC2 GetSize() const { return m_pSurface->GetSize(); }
-	XE::VEC2 GetMemSize() const { return m_pSurface->GetMemSize(); }
-	XE::VEC2 GetAdjust() const { return m_pSurface->GetAdjust(); }
-	float GetAdjustX() const { return m_pSurface->GetAdjustX(); }
-	float GetAdjustY() const { return m_pSurface->GetAdjustY(); }
-	inline XE::VEC2 GetsizeMemAligned() const {
-		return m_pSurface->GetsizeMemAlignedVec2();
-	}
+	float GetWidth() const;
+	float GetHeight() const;
+	XE::VEC2 GetSize() const;
+	XE::VEC2 GetMemSize() const;
+	XE::VEC2 GetAdjust() const;
+	float GetAdjustX() const;
+	float GetAdjustY() const;
+	XE::VEC2 GetsizeMemAligned() const;
 	// 스프라이트 이미지데이타(메모리/VRAM)의 바이트크기
-	inline int GetbytesMemAligned() const {
-		m_pSurface->GetbytesMemAligned();
-	}
-	void SetfAlpha( float alpha ) { m_pSurface->SetfAlpha( alpha ); }	
-	void SetColor( XCOLOR col ) { m_pSurface->SetColor( col ); }
-	void SetColor( float r, float g, float b ) { m_pSurface->SetColor( r, g, b); }
+	int GetbytesMemAligned() const;
+	void SetfAlpha( float alpha );
+	void SetColor( XCOLOR col );
+	void SetColor( float r, float g, float b );
 	void Draw( float x, float y );
 	void Draw( float x, float y, const MATRIX &mParent );
 	void Draw( const XE::VEC2& vPos, const MATRIX &mParent );
 	void Draw( const XE::VEC2& v );
-	void SetAdjustAxis( float ax, float ay ) { m_pSurface->SetAdjustAxis( ax, ay ); }
-	void SetAdjustAxis( const XE::VEC2& vAdjAxis ) { m_pSurface->SetAdjustAxis( vAdjAxis ); }
-	void SetRotate( float dX, float dY, float dZ ) { m_pSurface->SetRotate( dX, dY, dZ ); }
-	void SetRotateZ( float dAng ) { m_pSurface->SetRotateZ( dAng ); }
-	void SetFlipHoriz( BOOL bFlag ) { m_pSurface->SetFlipHoriz( bFlag ); }
-	void SetFlipVert( BOOL bFlag ) { m_pSurface->SetFlipVert( bFlag ); }
-	void SetDrawMode( xDM_TYPE t ) { m_pSurface->SetDrawMode( t ); }
-	DWORD GetPixel( float lx, float ly, BYTE *pa = NULL, BYTE *pr = NULL, BYTE *pg = NULL, BYTE *pb = NULL  ) {
-		return m_pSurface->GetPixel( lx, ly, pa, pr, pg, pb );
-	}
+	void SetAdjustAxis( float ax, float ay ); // m_pSurface->SetAdjustAxis( ax, ay ); }
+	void SetAdjustAxis( const XE::VEC2& vAdjAxis ); // m_pSurface->SetAdjustAxis( vAdjAxis ); }
+	void SetRotate( float dX, float dY, float dZ ); // m_pSurface->SetRotate( dX, dY, dZ ); }
+	void SetRotateZ( float dAng ); // m_pSurface->SetRotateZ( dAng ); }
+	void SetFlipHoriz( BOOL bFlag ); // m_pSurface->SetFlipHoriz( bFlag ); }
+	void SetFlipVert( BOOL bFlag ); // m_pSurface->SetFlipVert( bFlag ); }
+	void SetDrawMode( xDM_TYPE t ); // m_pSurface->SetDrawMode( t ); }
+	DWORD GetPixel( float lx, float ly, BYTE *pa = NULL, BYTE *pr = NULL, BYTE *pg = NULL, BYTE *pb = NULL  );
 #ifdef WIN32
 	void ConvertMemBGR2RGB( DWORD *pImg, int sizeBytes );
 #endif // WIN32
@@ -87,4 +86,6 @@ public:
 		, const XE::VEC2& range1 = XE::VEC2()
 		, const XE::VEC2& range2 = XE::VEC2() );
 	void ApplyHSLNormal( DWORD *pImg, const int sizeBytes, const float ah, const float as, const float al );
+	bool IsBatch() const;
+	void DestroyDevice();
 };

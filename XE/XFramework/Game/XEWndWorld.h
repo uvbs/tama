@@ -8,7 +8,7 @@
 class XEWorld;
 class XBaseFontDat;
 class XEBaseWorldObj;
-class XRenderCmdMng;
+class XBatchRenderer;
 class XTextureAtlas;
 class XEWorldCamera;
 /**
@@ -24,7 +24,7 @@ private:
 // 	XE::VEC2 m_vwCamera;		// 카메라 위치. z는 카메라와 월드판과의 거리. -1이 100% 상태 -2는 줌아웃50%
 // 	float m_scaleCamera;		// 카메라 배율
 // 	float m_scaleMin, m_scaleMax;	// 카메라 배율 최소/최대
-	XRenderCmdMng* m_pRenderer = nullptr;
+	XBatchRenderer* m_pRenderer = nullptr;
 	XTextureAtlas* m_pAtlas = nullptr;
 	void Init() {
 // 		m_scaleCamera = 1.0f;
@@ -45,8 +45,9 @@ public:
 	GET_ACCESSOR( XSPWorld, spWorld );
 // 	GET_ACCESSOR( const XE::VEC2&, vwCamera );
 // 	GET_ACCESSOR( float, scaleCamera );
-	//GET_ACCESSOR( XRenderCmdMng*, pBatchRenderer );
+//	GET_ACCESSOR_PTR( XRenderCmdMng*, pRenderer );
 	GET_ACCESSOR( XTextureAtlas*, pAtlas );
+	int GetavgDPCall() const;
 // 	GET_SET_ACCESSOR_CONST( float, scaleMin );
 // 	GET_SET_ACCESSOR_CONST( float, scaleMax );
 // 	void SetScaleCamera( float scale ) {

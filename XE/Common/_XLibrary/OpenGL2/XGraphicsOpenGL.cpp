@@ -17,6 +17,8 @@
 #include "etc/xMath.h"
 #include "xShader.h"
 #include "etc/Debug.h"
+#include "XTextureAtlas.h"
+#include "XBatchRenderer.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -589,6 +591,18 @@ XSurface* XGraphicsOpenGL::CreateSurfaceAtlasBatch()
 XSurface* XGraphicsOpenGL::CreateSurfaceAtlasNoBatch()
 {
 	return new XSurfaceGLAtlasNoBatch();
+}
+
+XSurface* XGraphicsOpenGL::CreateSurfaceByType( bool bAtlas, bool bBatch )
+{
+	if( bAtlas ) {
+		if( bBatch )
+			return new XSurfaceGLAtlasBatch();
+		else
+			return new XSurfaceGLAtlasNoBatch();
+	} else {
+		return new XSurfaceOpenGL();
+	}
 }
 
 BOOL XGraphicsOpenGL::LoadImg( LPCTSTR szFilename, int *pWidth, int *pHeight, DWORD **ppImage )

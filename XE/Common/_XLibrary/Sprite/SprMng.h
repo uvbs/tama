@@ -19,18 +19,15 @@ struct xDat {
 	XE::xHSL m_HSL;
 	xSec m_secLoaded = 0;			// 파일을 로드한 시간
 	ID m_idAsync = 0;					// 비동기로딩중이면 아이디가 있다.
-// 	ID m_idAct = 0;
-// 	xRPT_TYPE m_playType = xRPT_LOOP;
-// 	bool m_bComplete = false;		// 비동기 로딩이 완료됨.
+	bool m_bBatch = false;		// 배치모드로 서피스가 생성된것인지
 	xDat() : m_idDat( XE::GenerateID() ) {}
-	xDat( const _tstring& strKey, const _tstring& strFile, XSprDat* _pSprDat, const XE::xHSL& hsl )
+	xDat( const _tstring& strKey, const _tstring& strFile, XSprDat* _pSprDat, const XE::xHSL& hsl, bool bBatch )
 		: m_idDat(XE::GenerateID())
 		, m_strKey( strKey )
 		, m_strLoadFile( strFile )
 		, m_pSprDat( _pSprDat )
-		, m_HSL( hsl ) { }
-// 	xDat( const _tstring& strKey, XSprDat* _pSprDat )
-// 		: m_idDat(XE::GenerateID()), m_strKey( strKey ), m_pSprDat( _pSprDat ) { }
+		, m_HSL( hsl )
+		, m_bBatch( bBatch ) { }
 	~xDat();
 	inline ID getid();
 	bool IsOverTime() const;
@@ -63,7 +60,9 @@ private:
 		_tstring m_strLoadFile;		// 실제 읽어야 하는 파일
 		XE::xHSL m_HSL;
 		BOOL m_bSrcKeep = FALSE;
+		BOOL m_bRestore = FALSE;
 		bool m_bUseAtlas = false;
+		bool m_bBatch = false;			// 배치모드로 서피스 생성
 		XSprDat* m_pSprDat = nullptr;		// 비동기로딩이 완료되었을때 그 sprdat
 		xAsync();
 	};
@@ -73,7 +72,7 @@ private:
 	XList4<xAsync> m_listAsyncComplete;		// 비동기 로딩이 완료된 스프라이트
 	XSPLock m_spLock;
 //	uintptr_t m_hThread = 0;
-	std::shared_ptr<std::thread> m_spThread;
+	XVector<std::shared_ptr<std::thread>> m_aryThread;
 //	ID m_idThread = 0;
 	void Init( void ) {
 	}
@@ -93,12 +92,12 @@ public:
 	void OnCreate();
 	void Process();
 	xSpr::XSPDat Load( LPCTSTR szFilename,
-								 const XE::xHSL& hsl/* = XE::xHSL()*/,
-								 bool bUseAtlas,
-//								 BOOL bAddRefCnt = TRUE,
-								 BOOL bSrcKeep = FALSE,
-								 bool bAsyncLoad = false,
-								 ID* pOutidAsync =nullptr	);
+										 const XE::xHSL& hsl/* = XE::xHSL()*/,
+										 bool bUseAtlas,
+										 BOOL bSrcKeep, // = FALSE,
+										 bool bAsyncLoad, // = false,
+										 bool bBatch,
+										 ID* pOutidAsync ); // = nullptr );
 	void RestoreDevice();
 	void Release( xSpr::XSPDat spDatRelease );
 	void DoFlushCache();
@@ -114,7 +113,7 @@ public:
 	}
 private:
 //	void CheckRelease( void );
-	xSpr::XSPDat AddNew( const _tstring& strKey, const _tstring& strFile, XSprDat *pSprDat, const XE::xHSL& hsl );
+	xSpr::XSPDat AddNew( const _tstring& strKey, const _tstring& strFile, XSprDat *pSprDat, const XE::xHSL& hsl, bool bBatch );
 	void MoveCacheToRefMap( const xSpr::XSPDat& spDat );
 	xSpr::XSPDat FindByKey( LPCTSTR szFilename );
 	xSpr::XSPDat FindByKeyAtCache( LPCTSTR szFilename );

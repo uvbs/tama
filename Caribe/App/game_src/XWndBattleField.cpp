@@ -13,7 +13,7 @@
 #include "XFramework/Game/XEWndWorld.h"
 #include "XFramework/Game/XEWorldCamera.h"
 #include "XSystem.h"
-// #include "opengl2/XRenderCmd.h"
+// #include "opengl2/XBatchRenderer.h"
 // #include "XFramework/XEProfile.h"
 
 using namespace XSKILL;

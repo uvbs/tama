@@ -5,7 +5,7 @@
 #include "XFramework/client/XApp.h"
 #include "XFramework/client/XClientMain.h"
 #include "XFramework/client/XEContent.h"
-#include "OpenGL2/XRenderCmd.h"
+#include "OpenGL2/XBatchRenderer.h"
 #include "OpenGL2/XTextureAtlas.h"
 #include "XImageMng.h"
 

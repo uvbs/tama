@@ -1,8 +1,9 @@
 ﻿#include "stdafx.h"
-#include "XWndPageSlide.h"
+#include "etc/XSurface.h"
 #include "XFramework/client/XEContent.h"
 #include "XFramework/XEProfile.h"
 #include "XImageMng.h"
+#include "XWndPageSlide.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -11,6 +12,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 #endif
+
+
+알림창 띄워서 drawLocal 구현
+Restore 구현
+
+
+
+
 
 //////////////////////////////////////////////////////////////////////////
 XWndPageSlideWithXML::XWndPageSlideWithXML( const XE::VEC2& vPos, 

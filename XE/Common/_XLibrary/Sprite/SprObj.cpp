@@ -7,7 +7,8 @@
  *
  */
 #include "stdafx.h"
-#include "SprObj.h"
+#include "etc/XGraphicsDef.h"
+#include "Sprite.h"
 #include "SprDat.h"
 #include "XActDat.h"
 #include "SprMng.h"
@@ -17,6 +18,7 @@
 #include "XFramework/client/XClientMain.h"
 #include "etc/Debug.h"
 #include "XActObj2.h"
+#include "SprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -59,39 +61,52 @@ XSprObj::XSprObj( DWORD dwID )
 	Init();
 	m_dwID = dwID;
 }
-//#ifdef WIN32
-XSprObj::XSprObj( LPCTSTR szFilename, XDelegateSprObj *pDelegate/* = nullptr*/ ) 
+
+/**
+ @brief 
+*/
+XSprObj::XSprObj( LPCTSTR szFilename, 
+									XDelegateSprObj *pDelegate/* = nullptr*/ ) 
 { 
 	Init(); 
-// 	m_spDat = std::const_pointer_cast<const xSpr::xDat>(LoadInternal( szFilename,
-// 																																			XE::xHSL(),
-// 																																			true,
-// 																																			&m_Async.m_idAsyncLoad ));
+	const bool bBatch = false;		// 이 생성자는 모두 UI쓰는걸로 가정하고 일단 false
 	m_spDat = LoadInternal( szFilename,
 													XE::xHSL(),
 													true,
+													bBatch,
 													&m_Async.m_idAsyncLoad );
 	// 	Load( szFilename, XE::xHSL(), false, FALSE, false );
 	if( m_spDat->m_pSprDat )
 		OnFinishLoad( m_spDat->m_pSprDat );
 	m_pDelegate = pDelegate; 
 }
-XSprObj::XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, XDelegateSprObj *pDelegate/* = nullptr*/ ) 
-{
-	Init();
-	m_spDat = LoadInternal( szFilename, hsl, true, &m_Async.m_idAsyncLoad );
-// 	Load( szFilename, hsl, false, FALSE, false );
-	if( m_spDat->m_pSprDat )
-		OnFinishLoad( m_spDat->m_pSprDat );
-	m_pDelegate = pDelegate;
-}
+
+/**
+ @brief 
+*/
+// XSprObj::XSprObj( LPCTSTR szFilename, 
+// 									const XE::xHSL& hsl, 
+// 									XDelegateSprObj *pDelegate/* = nullptr*/ ) 
+// {
+// 	Init();
+// 	m_spDat = LoadInternal( szFilename, hsl, true, &m_Async.m_idAsyncLoad );
+// // 	Load( szFilename, hsl, false, FALSE, false );
+// 	if( m_spDat->m_pSprDat )
+// 		OnFinishLoad( m_spDat->m_pSprDat );
+// 	m_pDelegate = pDelegate;
+// }
+
+/**
+ @brief 
+*/
 XSprObj::XSprObj( LPCTSTR szFilename, 
 									const XE::xHSL& hsl, 
 									bool bUseAtlas, 
+									bool bBatch,
 									XDelegateSprObj *pDelegate/* = nullptr*/ )
 {
 	Init();
-	m_spDat = LoadInternal( szFilename, hsl, bUseAtlas, &m_Async.m_idAsyncLoad );
+	m_spDat = LoadInternal( szFilename, hsl, bUseAtlas, bBatch, &m_Async.m_idAsyncLoad );
 // 	Load( szFilename, hsl, bUseAtlas, FALSE, false );
 	if( m_spDat->m_pSprDat )
 		OnFinishLoad( m_spDat->m_pSprDat );
@@ -99,23 +114,23 @@ XSprObj::XSprObj( LPCTSTR szFilename,
 }
 
 // for lua
-XSprObj::XSprObj( BOOL bKeepSrc, const char *cFilename ) 
-{
-	Init();
-	m_spDat = LoadInternal( cFilename, XE::xHSL(), true, &m_Async.m_idAsyncLoad );
-// 	Load( C2SZ(cFilename), XE::xHSL(), false, bKeepSrc, false );
-	if( m_spDat->m_pSprDat )
-		OnFinishLoad( m_spDat->m_pSprDat );
-}
+// XSprObj::XSprObj( BOOL bKeepSrc, const char *cFilename ) 
+// {
+// 	Init();
+// 	m_spDat = LoadInternal( cFilename, XE::xHSL(), true, &m_Async.m_idAsyncLoad );
+// // 	Load( C2SZ(cFilename), XE::xHSL(), false, bKeepSrc, false );
+// 	if( m_spDat->m_pSprDat )
+// 		OnFinishLoad( m_spDat->m_pSprDat );
+// }
 #ifdef WIN32
-XSprObj::XSprObj( BOOL bKeepSrc, LPCTSTR szFilename ) 
-{
-	Init();
-	m_spDat = LoadInternal( szFilename, XE::xHSL(), true, &m_Async.m_idAsyncLoad );
-//	Load( szFilename, XE::xHSL(), false, bKeepSrc, false );
-	if( m_spDat->m_pSprDat )
-		OnFinishLoad( m_spDat->m_pSprDat );
-}
+// XSprObj::XSprObj( BOOL bKeepSrc, LPCTSTR szFilename ) 
+// {
+// 	Init();
+// 	m_spDat = LoadInternal( szFilename, XE::xHSL(), true, &m_Async.m_idAsyncLoad );
+// //	Load( szFilename, XE::xHSL(), false, bKeepSrc, false );
+// 	if( m_spDat->m_pSprDat )
+// 		OnFinishLoad( m_spDat->m_pSprDat );
+// }
 #endif // WIN32
 
 void XSprObj::Destroy( void )
@@ -482,7 +497,11 @@ void XSprObj::JumpKeyPos( XActDat *pAction, float fJumpFrame )
 // 	return TRUE;
 // } // Load
 
-XSPDat XSprObj::LoadInternal( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, ID* pOutidAsync ) const
+XSPDat XSprObj::LoadInternal( LPCTSTR szFilename, 
+															const XE::xHSL& hsl, 
+															bool bUseAtlas, 
+															bool bBatch, 
+															ID* pOutidAsync ) const
 {
 	// 비동기로딩시에는 파일I/O만 예약한다.
 	return SPRMNG->Load( szFilename,
@@ -490,14 +509,19 @@ XSPDat XSprObj::LoadInternal( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUse
 											 bUseAtlas,
 											 FALSE,
 											 true,
+											 bBatch,
 											 pOutidAsync );
 } // Load
 
 #ifdef WIN32
-XSPDat XSprObj::LoadInternal( const char* cFilename, const XE::xHSL& hsl, bool bUseAtlas, ID* pOutidAsync ) const
+XSPDat XSprObj::LoadInternal( const char* cFilename, 
+															const XE::xHSL& hsl, 
+															bool bUseAtlas, 
+															bool bBatch,
+															ID* pOutidAsync ) const
 {
 	const _tstring strFile = C2SZ(cFilename);
-	return LoadInternal( strFile.c_str(), hsl, bUseAtlas, pOutidAsync );
+	return LoadInternal( strFile.c_str(), hsl, bUseAtlas, bBatch, pOutidAsync );
 }
 #endif // WIN32
 
@@ -995,4 +1019,9 @@ XSprDat* XSprObj::GetpSprDat()
 ID XSprObj::GetidActByRandom() const 
 {
 	return (m_spDat->m_pSprDat) ? m_spDat->m_pSprDat->GetidActByRandom() : 0;
+}
+
+bool XSprObj::IsBatchRender() const
+{
+	return m_spDat->m_bBatch;
 }

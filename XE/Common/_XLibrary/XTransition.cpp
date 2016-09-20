@@ -7,10 +7,11 @@
  *
  */
 #include "stdafx.h"
-#include "XTransition.h"
-#include "etc/xGraphics.h"
+#include "etc/XSurface.h"
 #include "etc/Timer.h"
+#include "etc/xGraphics.h"
 #include "XImageMng.h"
+#include "XTransition.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

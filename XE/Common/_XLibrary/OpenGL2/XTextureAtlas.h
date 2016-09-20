@@ -1,6 +1,10 @@
 ﻿#pragma once
 #include "etc/XGraphicsDef.h"
 
+#ifdef XSPR_LOAD
+#error "스프라이트 비동기 로딩중(멀티스레드)에 못쓰게 하려고 막아둠. 로딩중에 sGetCurrMng()가 의미가 없다."
+#endif // XSPR_LOAD
+
 #define SET_ATLASES( ATLASES ) \
 {	XBREAK( ATLASES == nullptr); \
  auto pPrev = XTextureAtlas::_sSetpCurrMng( ATLASES );
@@ -41,8 +45,6 @@ typedef std::shared_ptr<xnTexAtlas::xAtlas const> XSPAtlasConst;
 class XTextureAtlas
 {
 public:
-// 	static std::shared_ptr<XTextureAtlas>& sGet();
-// 	static void sDestroyInstance();
 	static XTextureAtlas* _sSetpCurrMng( XTextureAtlas* pMng ) {
 		auto pPrev = s_pCurrAtlasMng;
 		s_pCurrAtlasMng = pMng;
@@ -73,7 +75,6 @@ public:
 		return (spAtlas)? spAtlas->m_FormatSurface : XE::xPF_NONE;
 	}
 private:
-// 	static std::shared_ptr<XTextureAtlas> s_spInstance;
 	static XTextureAtlas* s_pCurrAtlasMng;
 	void Init() {}
 	void Destroy() {}

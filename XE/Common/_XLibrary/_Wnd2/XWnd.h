@@ -1,5 +1,6 @@
 ﻿#pragma once 
 
+#include "etc/XSurfaceDef.h"
 #include "etc/xGraphics.h"
 #include "etc/InputMng.h"
 #include "etc/Timer.h"
@@ -90,10 +91,7 @@ struct XWND_RES_FRAME
 		XCLEAR_ARRAY( psfcFrame );
 	}
 	~XWND_RES_FRAME() { Destroy(); }
-	void Destroy() {
-		for( int i = 0; i < 9; i++ )
-			SAFE_DELETE( psfcFrame[ i ] );
-	}
+	void Destroy();
 };
 
 //{

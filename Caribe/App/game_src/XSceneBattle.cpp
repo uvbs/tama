@@ -50,7 +50,7 @@
 #include "sprite/SprObj.h"
 #endif // _XTEST
 #include "OpenGL2/XTextureAtlas.h"
-//#include "OpenGL2/XRenderCmd.h"
+//#include "OpenGL2/XBatchRenderer.h"
 #include "XFramework/client/XWndBatchRender.h"
 #include "XImageMng.h"
 
@@ -304,6 +304,10 @@ void XSceneBattle::CreateCamps()
 }
 BOOL XSceneBattle::OnCreate()
 {
+#ifdef _XASYNC_SPR
+	// 비동기로딩에서는 3,2,1을 먼저 시작한다.
+	CreateProcessReady();
+#endif // _XASYNC_SPR
 #ifdef _XSINGLE
 	sSetAbilHeroes();
 #endif // _XSINGLE
@@ -766,7 +770,10 @@ bool XSceneBattle::IsDialogMsg( DWORD idSeqPopup )
 void XSceneBattle::OnEnterBattle()
 {
 	// 3,2,1,씬
+#ifndef _XASYNC_SPR
 	CreateProcessReady();
+#endif // not _XASYNC_SPR
+
 }
 /**
  @brief 
@@ -887,6 +894,10 @@ void XSceneBattle::Draw( void )
 			spBattleField->DrawLegionBar( XE::VEC2( 10, 10 ), 0 );
 			spBattleField->DrawLegionBar( XE::VEC2( (int)XE::GetGameWidth()-(48+10), 10 ), 1 );
 		}
+	}
+	if( m_pWndWorld && m_pWndWorld->GetpObjLayer() ) {
+		int fpsDpCall = m_pWndWorld->GetpObjLayer()->GetavgDPCall();
+		PUT_STRINGF( 0, 10, XCOLOR_WHITE, "dpcall:%d", fpsDpCall );
 	}
 #endif
 

@@ -56,8 +56,8 @@ struct xRenderParam {
 	XE::VEC4 m_vColor;
 	DWORD m_dwDrawFlag = 0;
 	xtBlendFunc m_funcBlend;
-//	bool m_bAlphaTest;
-// 	bool m_bZBuff;
+	bool m_bAlphaTest;
+	bool m_bZBuff;
 	float m_adjZ;
 // 	int m_Priority;
 	xRenderParam()
@@ -66,8 +66,8 @@ struct xRenderParam {
 		, m_dwDrawFlag( 0 )
 		, m_funcBlend( xBF_MULTIPLY )
 		, m_adjZ( 0 ) 
-//		, m_bAlphaTest( false )
-// 		, m_bZBuff( false )
+		, m_bAlphaTest( false )
+		, m_bZBuff( false )
 // 		, m_Priority( 0 )
 		{	}
 	void GetmTransform( MATRIX* pOut ) const;
@@ -497,7 +497,7 @@ public:
 	/**
 	 @brief 서피스를 x.y를 좌상귀로 하는 지점에 그린다.
 	*/
-	virtual void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const = 0;
+//	virtual void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const = 0;
 	virtual void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const = 0;
 	virtual void Draw( float x, float y ) = 0; //{ XBREAKF(1, "구현되지않음"); }
 	virtual void Draw( float x, float y, const MATRIX &mParent ) = 0;
@@ -522,6 +522,7 @@ public:
 	// lua
 	void LuaDraw( float x, float y ) { Draw( x, y ); }
 	void GetMatrix( const XE::VEC2& vPos, MATRIX* pOut ) const;
+	virtual bool IsBatch() const = 0;
 }; // XSurface
 
 XE_NAMESPACE_START( XE )

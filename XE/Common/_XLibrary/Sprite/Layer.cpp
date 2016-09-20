@@ -8,12 +8,13 @@
  */
 
 #include "stdafx.h"
-#include "Layer.h"
+#include "etc/XSurface.h"
 #include "SprObj.h"
 #include "XBaseObj.h"
 #include "etc/xMath.h"
 #include "XArchive.h"
 #include "Sprite.h"
+#include "Layer.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -186,21 +187,25 @@ void XLayerMove::FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr )
 // }
 
 
-void XLayerImage::Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam )
+void XLayerImage::Draw( XSprObj *pSprObj, 
+												float x, float y, 
+												const MATRIX &m, 
+												XEFFECT_PARAM *pEffectParam )
 {
 	const XE::VEC2 vPos(x, y);
 	XSprite *pSpr = m_pSpriteCurr;
 	if( pSpr ) {
 		auto vLocal = GetPos();
-// 		float lx = Getx();
-// 		float ly = Gety();
+		auto funcBlend = XE::xBF_MULTIPLY;
 		if( GetcnEffect().DrawMode != xDM_NONE ) {
 			//
 			BOOL bDelegateDraw = FALSE;
 			XDelegateSprObj *pDelegate = pSprObj->GetpDelegate();
 			XEFFECT_PARAM effParam;
-			if( pEffectParam ) {
+				if( pEffectParam ) {
 				effParam = *pEffectParam;
+				if( effParam.drawMode != xDM_ERROR )
+					funcBlend = effParam.GetfuncBlend();
 				// 외부이펙트와 내부이펙트를 곱함(둘중 하나라도 스크린이면 스크린으로 찍힘)
 				if( effParam.drawMode == xDM_SCREEN || GetcnEffect().DrawMode == xDM_SCREEN )
 					effParam.drawMode = xDM_SCREEN;
@@ -233,11 +238,15 @@ void XLayerImage::Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEF
 				param.SetFlipVert( GetcnEffect().IsFlipVert() );
 				param.m_funcBlend = effParam.GetfuncBlend();
 				param.m_adjZ = effParam.m_adjZ;
+				param.m_bZBuff = pSpr->IsBatch();
+				if( funcBlend == XE::xBF_ADD || funcBlend == XE::xBF_SUBTRACT ) {
+					param.m_bZBuff = false;
+					param.m_bAlphaTest = false;
+				}
 //				SetDrawInfoToSpr( pSprObj, pSpr, effParam, &paramRender );
 				if( pSpr->GetpSurface() ) {
 					// 전용 배치렌더러에 렌더명령을 전달한다.
-					pSpr->GetpSurface()->DrawBatch( m, 
-																						param );
+					pSpr->GetpSurface()->DrawByParam( m, param );
 // 				pSpr->Draw( vPos + vLocal, m );
 //				pSpr->Draw( x + lx, y + ly, m );
 				}

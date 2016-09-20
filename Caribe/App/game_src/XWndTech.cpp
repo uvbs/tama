@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "etc/XSurface.h"
 #include "XWndTech.h"
 #include "XHero.h"
 #include "_Wnd2/XWndImage.h"

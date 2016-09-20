@@ -25,11 +25,14 @@ void XSceneProcess::Destroy()
 }
 
 ////////////////////////////////////////////////////////////////
+/**
+ @brief 3,2,1을 하는 Ready씬
+*/
 XSceneProcessReady::XSceneProcessReady( XSceneBattle *pScene )
 	: XSceneProcess( pScene )
 {
 	Init();
-	m_pso321 = new XSprObj(_T("321go.spr") );
+	m_pso321 = new XSprObj(_T("321go.spr") ); 
 	m_pso321->SetAction( 1, xRPT_1PLAY );
 //	m_timerCount.Set(3.f);		// 3초를 넣어야함.
 // 	// 대기상태에선 프레임 스키핑 끔.

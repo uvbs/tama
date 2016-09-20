@@ -85,6 +85,9 @@ BOOL XPropUnit::ReadProp( CToken& token, DWORD dwParam )
 		CONSOLE( "warning: identifier=%s, szSpr is empty", pProp->strIdentifier.c_str() );
 	pProp->movSpeedNormal = token.GetNumber();
 	pProp->scale = token.GetNumberF();
+	if( GetVer() >= 2 ) {
+		pProp->scale_factor = token.GetNumberF();
+	}
 	// HSL값은 포토샵값을 기준으로 하므로 소수점을 사용하지 않아서 일부러 int로 읽음.
 	pProp->vHSL.x = (float)token.GetNumber();
 	pProp->vHSL.y = (float)token.GetNumber();

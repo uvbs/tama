@@ -43,7 +43,7 @@
 #include "XFramework/XReceiverCallback.h"
 #include "XHSLMap.h"
 #include "XFramework/XEProfile.h"
-#include "OpenGL2/XRenderCmd.h"
+#include "OpenGL2/XBatchRenderer.h"
 #include "OpenGL2/XTextureAtlas.h"
 
 //#define _SOUND_TEST
@@ -516,7 +516,7 @@ void XClientMain::Draw( void )
 			m_pGame->Draw();
 // 		} END_RENDERER;		// RenderBatch();
 		// 큐에 쌓인 모든 배치렌더러를 한꺼번에 렌더링 한다.
-		XRenderCmdMng::sRenderBatchs();
+		XBatchRenderer::sRenderBatchs();
 	}
 	//
 // 	{

@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "etc/XSurface.h"
 #include "XWndProgressBar.h"
 #include "XWndImage.h"
 #include "sprite/SprObj.h"

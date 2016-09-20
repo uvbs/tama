@@ -658,12 +658,12 @@
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_point_sprite.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\Shader\vshader_texture.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\glesView.h" />
+    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XBatchRenderer.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XFontDatFTGL.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XFontObjFTGL.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XGraphicsOpenGL.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XOpenGL.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XParticleOpenGL.h" />
-    <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\xShader.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL.h" />
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasBatch.h" />
@@ -949,11 +949,11 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\Network\XPacket.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\Network\XSocket.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\glesView.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XBatchRenderer.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XFontDatFTGL.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XFontObjFTGL.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XGraphicsOpenGL.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XParticleOpenGL.cpp" />
-    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XRenderCmd.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\xShader.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceOpenGL.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasBatch.cpp" />
@@ -1198,6 +1198,7 @@
     </None>
     <None Include="app.ico" />
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

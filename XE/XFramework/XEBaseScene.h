@@ -21,7 +21,7 @@
 class XEBaseScene;
 class XEContent;
 class XESceneMng;
-class XRenderCmdMng;
+class XBatchRenderer;
 class XTextureAtlas;
 //
 class XEBaseScene : public XWnd

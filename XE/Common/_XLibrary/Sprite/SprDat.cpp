@@ -1,5 +1,7 @@
 ﻿#include "stdafx.h"
-#include "SprDat.h"
+#include "Key.h"
+#include "Sprite.h"
+#include "XActDat.h"
 #include "XActDat.h"
 #include "SprObj.h"
 #include "etc/types.h"
@@ -11,6 +13,7 @@
 #include "XFramework/client/XApp.h"
 #include "XFramework/client/XClientMain.h"
 #include "Sprite/SprMng.h"
+#include "SprDat.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -73,11 +76,12 @@ BOOL XSprDat::Load( LPCTSTR _szFilename,
 										bool bAsyncLoad,
 										const XE::xHSL& hsl,
 										BOOL bSrcKeep, 
-										BOOL bRestore )
+										BOOL bRestore,
+										bool bBatch )
 {
 	XLOAD_PROFILE1;
-// 	XAUTO_LOCK3( SPRMNG );
 	m_HSL = hsl;
+	m_bBatch = bBatch;
 	LPCTSTR szFilename = _T("");
 	if( bRestore )	{
 		szFilename = m_strFile.c_str();
@@ -150,13 +154,6 @@ BOOL XSprDat::Load( LPCTSTR _szFilename,
 	if( bRestore ) {
 		XBREAK( m_arySprite.empty() );
 	}
-// 	if( bRestore == FALSE ) {
-// 		m_nNumSprites = numSpr;
-// 		m_ppSprites = new XSprite*[ numSpr ];
-// 	} else {
-// 		XBREAKF( numSpr != m_nNumSprites, "numSpr(%d) != m_nNumSprites(%d)", numSpr, m_nNumSprites );
-// 		XBREAK( m_ppSprites == nullptr );
-// 	}
 	XSPR_TRACE("SprDat: num sprites:%d", GetnNumSprites() );
 	int i;
 	// sprite list load
@@ -165,7 +162,7 @@ BOOL XSprDat::Load( LPCTSTR _szFilename,
 		XSprite *pSpr = nullptr;
 		if( bRestore == FALSE ) {
 			pSpr = new XSprite( i );
-			pSpr->Load( this, spRes.get(), bUseAtlas, bAsyncLoad, m_HSL, bSrcKeep, FALSE );
+			pSpr->Load( this, spRes.get(), bUseAtlas, bAsyncLoad, m_HSL, bSrcKeep, bBatch, FALSE );
 			AddSprite( /*i, */pSpr );
 			if( !bAsyncLoad ) {
 				XE::VEC2 vSize = pSpr->GetsizeMemAligned();
@@ -176,10 +173,9 @@ BOOL XSprDat::Load( LPCTSTR _szFilename,
 			}
 		} else {
 			// restore device mode
-//			pSpr = m_ppSprites[ i ];
 			pSpr = m_arySprite[ i ];
 			XBREAK( pSpr == nullptr );
-			pSpr->Load( this, spRes.get(), bUseAtlas, bUseAtlas, hsl, bSrcKeep, TRUE );
+			pSpr->Load( this, spRes.get(), bUseAtlas, bUseAtlas, hsl, bSrcKeep, bBatch, TRUE );
 		}
 	}
 	if( bRestore == FALSE )	{
@@ -225,9 +221,9 @@ void XSprDat::Reload()
 	Destroy();
 	if( !m_strFile.empty() )
 #ifdef _XASYNC_SPR
-		Load( m_strFile.c_str(), m_bUseAtlas, true, m_HSL, m_bKeepSrc, FALSE );
+		Load( m_strFile.c_str(), m_bUseAtlas, true, m_HSL, m_bKeepSrc, FALSE, m_bBatch );
 #else
-		Load( m_szFilename, m_bUseAtlas, false, m_HSL, m_bKeepSrc, FALSE );
+		Load( m_szFilename, m_bUseAtlas, false, m_HSL, m_bKeepSrc, FALSE, m_bBatch );
 #endif // _XASYNC_SPR
 }
 
@@ -241,7 +237,7 @@ void XSprDat::DestroyDevice()
 	for( auto pSpr : m_arySprite ) {
 		if( pSpr ) {
 			if( pSpr->GetpSurface() )
-				pSpr->GetpSurface()->DestroyDevice();
+				pSpr->DestroyDevice();
 		}
 	}
 }
@@ -251,4 +247,16 @@ ID XSprDat::GetidActByRandom() const
 	ID idxAct = xRandom( m_nNumActions );
 	const auto pActDat = m_ppActions[ idxAct ];
 	return (pActDat)? pActDat->GetID() : 0;
+}
+
+XSurface* XSprDat::GetSpriteSurface( int idxSpr ) {
+	if( XBREAK( idxSpr >= GetnNumSprites() || idxSpr < 0 ) ) {
+		return nullptr;
+	}
+	//		XSprite *pSpr = m_ppSprites[ nSpr ];
+	auto pSpr = m_arySprite[idxSpr];
+	XBREAK( pSpr == nullptr );
+	if( pSpr )
+		return pSpr->GetpSurface();
+	return nullptr;
 }

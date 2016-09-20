@@ -11,6 +11,7 @@
 #include "xUtil.h"
 #include "xMath.h"
 #include "XImage.h"
+#include "XSurface.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -25,6 +26,13 @@ BOOL		XGraphics::s_bCaptureBackBuffer = FALSE;			// Present전에 현재 백버�
 XSurface* XGraphics::s_pLastBackBuffer = NULL;			// 마지막으로 캡쳐된 백버퍼 화면
 DWORD XGraphics::s_dwDraw = 0;
 bool XGraphics::s_bBatchLoading = false;
+void XGraphics::CaptureBackBuffer( BOOL bHighReso ) {		// 
+	if( s_bCaptureBackBuffer ) {	// 캡쳐가 예약이 됐으면 
+		SAFE_DELETE( s_pLastBackBuffer );
+		s_pLastBackBuffer = GRAPHICS->CreateScreenToSurface( bHighReso );		// 백버퍼를 캡쳐해서 보관
+	}
+	s_bCaptureBackBuffer = FALSE;
+}
 
 #pragma mark Init
 

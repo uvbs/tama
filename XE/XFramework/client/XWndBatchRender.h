@@ -8,7 +8,7 @@
 #pragma once
 #include "_Wnd2/XWnd.h"
 
-class XRenderCmdMng;
+class XBatchRenderer;
 class XTextureAtlas;
 class XWndBatchRender;
 /****************************************************************
@@ -50,11 +50,11 @@ protected:
 	int Process( float dt ) override;
 private:
 	// private member
-	XRenderCmdMng* m_pRenderer = nullptr;
+	XBatchRenderer* m_pRenderer = nullptr;
 	XTextureAtlas* m_pAtlas = nullptr;
 private:
 	// private method
-	GET_ACCESSOR( XRenderCmdMng*, pRenderer );
+	GET_ACCESSOR( XBatchRenderer*, pRenderer );
 	void Init() {}
 	void Destroy();
 	BOOL OnCreate() override;

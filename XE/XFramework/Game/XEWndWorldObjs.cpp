@@ -3,7 +3,7 @@
 // #include "XEWndWorld.h"
 // #include "XFramework/Game/XEWorld.h"
 // #include "xFont.h"
-// #include "OpenGL2/XRenderCmd.h"
+// #include "OpenGL2/XBatchRenderer.h"
 // #include "OpenGL2/XTextureAtlas.h"
 // #include "XFramework/XEProfile.h"
 // 
