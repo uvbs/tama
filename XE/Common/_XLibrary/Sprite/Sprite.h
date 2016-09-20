@@ -49,6 +49,7 @@ public:
 						 BOOL bRestore );
 	void CreateDevice( const XE::xSurfaceInfo& infoSurface );
 	void CreateDevice();
+	void UpdateUV( ID idTex, const XE::POINT& sizePrev, const XE::POINT& sizeNew );
 	void SetScale( float sx, float sy );	// 여기는 GRAPHICS->GetfGScale과 곱하지 않는다 XLayerImage::Draw에서 이걸 계속 호출하기 때문이다
 	void SetScale( const XE::VEC2& vScale );
 	void SetScale( float scalexy );

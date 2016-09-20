@@ -17,6 +17,13 @@
 
 XE_NAMESPACE_START( XE )
 //
+struct xVertex {
+	Vec3 pos;//, y;
+	Vec2 uv;//u, tv;
+	Vec4 rgba;// r,g,b,a;
+// 	xVertex();
+};
+//
 struct xSurfaceInfo {
 	XE::POINT m_ptSizeSurface;
 	XE::POINT m_ptSizeMem;
@@ -108,6 +115,7 @@ private:
 		m_DrawMode = xDM_NORMAL;
 		m_dwDrawFlag = 0;
 		m_pMask = NULL;
+		memset( m_Vertices, 0, sizeof(XE::xVertex) );
 	}
 	void Destroy( void );
 	BOOL m_bHighReso;				// 아이폰용 고해상도 리소스
@@ -167,6 +175,7 @@ private:
 	DWORD m_dwDrawFlag;		// EFF_****
 	xDM_TYPE m_DrawMode;
 	XE::xtBlendFunc m__funcBlend = XE::xBF_MULTIPLY;	// 장차 m_DrawMode는 blendfunc으로 바꾼다.
+	XE::xVertex m_Vertices[4];			// 원본 백업용
 	// 만약 외부에서 사용하는 SetSrcImg를 만들거라면 고해상도플래그도 받고, 버텍스버퍼/텍스쳐서피스까지 교체하는 함수를 만들어야 한다. 근데 가급적이면 그런식으로 사용하지 말고 필요하다면 걍 XSurface를 새로 생성하는게 나을듯
 	// 장차 private으로 들어가야함.
 private:
@@ -214,6 +223,14 @@ protected:
 public:
 	XE::xtBlendFunc GetfuncBlend() const {
 		return m__funcBlend;
+	}
+	inline const XE::xVertex& GetVertex( int idx ) const {
+		XBREAK( idx < 0 || idx >= 4 );
+		return m_Vertices[ idx ];
+	}
+	inline void SetVertex( int idx, const XE::xVertex& vertex ) {
+		XBREAK( idx < 0 || idx >= 4 );
+		m_Vertices[ idx ] = vertex;
 	}
 	GET_SET_BOOL_ACCESSOR( bAtlas );
 	GET_SET_ACCESSOR_CONST( float, adjZ );
@@ -523,15 +540,10 @@ public:
 	void LuaDraw( float x, float y ) { Draw( x, y ); }
 	void GetMatrix( const XE::VEC2& vPos, MATRIX* pOut ) const;
 	virtual bool IsBatch() const = 0;
+	virtual void UpdateUV( ID idTex, const XE::POINT& sizePrev, const XE::POINT& sizeNew ) {};
 }; // XSurface
 
 XE_NAMESPACE_START( XE )
-//
-struct xVertex {
-	Vec3 pos;//, y;
-	Vec2 uv;//u, tv;
-	Vec4 rgba;// r,g,b,a;
-};
 //
 XE_NAMESPACE_END; // XE
 

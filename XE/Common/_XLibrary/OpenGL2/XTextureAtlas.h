@@ -7,10 +7,10 @@
 
 #define SET_ATLASES( ATLASES ) \
 {	XBREAK( ATLASES == nullptr); \
- auto pPrev = XTextureAtlas::_sSetpCurrMng( ATLASES );
+ auto __pPrev = XTextureAtlas::_sSetpCurrMng( ATLASES );
 
 #define END_ATLASES \
-	XTextureAtlas::_sSetpCurrMng( pPrev ); }
+	XTextureAtlas::_sSetpCurrMng( __pPrev ); }
 
 namespace xSplit {
 class XNode;
@@ -25,6 +25,9 @@ struct xAtlas {
 	int m_refCnt = 0;						// 이 아틀라스를 가리키는 객체수.
 	int m_glFmt = 0;
 	int m_glType = 0;
+#ifdef _CHEAT
+	std::string m_strTag;
+#endif // _CHEAT
 	//
 	xAtlas( const XE::VEC2& size, XE::xtPixelFormat formatSurface );
 	~xAtlas();
@@ -32,6 +35,7 @@ struct xAtlas {
 		return m_idTex == 0;
 	}
 	void UpdateSubToDevice( const void* pImg, const XE::VEC2& vLT, const XE::VEC2& sizeImg, XE::xtPixelFormat fmtImg );
+	bool ResizeAtlas();
 };
 }
 
@@ -53,6 +57,7 @@ public:
 	static XTextureAtlas* sGetpCurrMng() {
 		return s_pCurrAtlasMng;
 	}
+	static XList4<XSPAtlas> s_lists;
 public:
 	XTextureAtlas( const char* cTag );
 	~XTextureAtlas() {		Destroy();	}
@@ -79,6 +84,7 @@ private:
 	void Init() {}
 	void Destroy() {}
 	XSPAtlas AddAtlas( const XE::VEC2& size, XE::xtPixelFormat formatSurface );
+	bool ResizeAtlas( XSPAtlas spAtlas );
 	xSplit::XNode* InsertElem( XSPAtlas spAtlas,
 														 const XE::VEC2& sizeElem ) const;
 	XSPAtlas GetspAtlas( ID idTex );

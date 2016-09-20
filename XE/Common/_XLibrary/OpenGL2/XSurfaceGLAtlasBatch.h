@@ -20,7 +20,7 @@ private:
 #endif
 	GLuint  m_glVertexBuffer;
 	GLuint	m_glIndexBuffer;
-	XE::xVertex m_Vertices[4];
+// 	XE::xVertex m_Vertices[4];
 	bool CreateVertexBuffer( float surfaceW, float surfaceH, const float _adjx, const float _adjy, int memw, int memh, int alignW, int alignH );
 	inline bool CreateVertexBuffer( const XE::VEC2& sizeSurface
 																	, const XE::VEC2& vAdj
@@ -123,6 +123,7 @@ public:
 	void DrawSub( float x, float y, const XE::xRECTi *src ) override;
 	void Fill( XCOLOR col );
 	void SetTexture() override;
+	void UpdateUV( ID idTex, const XE::POINT& sizePrev, const XE::POINT& sizeNew );
 	inline bool IsEmpty() override {
 // 		if( !m_glVertexBuffer || !m_glIndexBuffer || !m_glTexture ) {
 		if( !m_glTexture ) {

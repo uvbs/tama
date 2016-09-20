@@ -6,6 +6,7 @@
 #include "OpenGL2/XTextureAtlas.h"
 #include "Sprite/SprObj.h"
 #include "etc/XSurfaceDef.h"
+#include "Opengl2/XBatchRenderer.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -225,7 +226,7 @@ void XSceneTest::Create( void )
 	for( int i = 0; i < MAX_SPR1 * MAX_SPR2; ++i ) {
 		const int maxFiles = XNUM_ARRAY( s_files );
 		const _tstring strFile = C2SZ( s_files[xRandom(maxFiles)] );
- 		m_psoTest[i] = new XSprObj( _T( "eff_eye1.spr" ) );
+		m_psoTest[i] = new XSprObj( _T( "unit_minotaur.spr" ), XE::xHSL(), true, true );
 // 		m_psoTest[i] = new XSprObj( strFile );
 		auto pso = m_psoTest[i];
 //		pso->SetAction( 4 );
@@ -296,13 +297,15 @@ void XSceneTest::Draw()
 // 		}
 //		vPos = INPUTMNG->GetMousePos();
 		//		MatrixTranslation( mWorld, 100.f, 100.f, 0 );
-		for( int i = 0; i < MAX_SPR2; ++i ) {
-			for( int k = 0; k < MAX_SPR1; ++k ) {
-				MatrixTranslation( mWorld, vPos.x + k * 40.f, vPos.y + i * 60.f, 0 );
-				int idx = i * MAX_SPR1 + k;
-				m_psoTest[idx]->Draw( 0, 0, mWorld );
+		SET_RENDERER( XEContent::sGet()->GetpRenderer() ) {
+			for( int i = 0; i < MAX_SPR2; ++i ) {
+				for( int k = 0; k < MAX_SPR1; ++k ) {
+					MatrixTranslation( mWorld, vPos.x + k * 40.f, vPos.y + i * 60.f, 0 );
+					int idx = i * MAX_SPR1 + k;
+					m_psoTest[idx]->Draw( 0, 0, mWorld );
+				}
 			}
-		}
+		} END_RENDERER;
 	}
 #endif // _XTEST
 }

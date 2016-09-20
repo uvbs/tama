@@ -188,6 +188,13 @@ void XSprite::CreateDevice( const XE::xSurfaceInfo& infoSurface )
 	}
 }
 
+void XSprite::UpdateUV( ID idTex,
+												const XE::POINT& sizePrev,
+												const XE::POINT& sizeNew )
+{
+	if( m_pSurface )
+		m_pSurface->UpdateUV( idTex, sizePrev, sizeNew );
+}
 /**
  @brief ABGR포맷으로 저장되어있는 pImg블럭의 픽셀데이타를 ARGB포맷으로 변환해서 pImg에 다시 넣는다.
 */

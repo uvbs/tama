@@ -2,6 +2,8 @@
 #include "XTextureAtlas.h"
 #include "XFramework/XSplitNode.h"
 #include "XGraphicsOpenGL.h"
+#include "Sprite/SprMng.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -13,6 +15,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace XE;
 
+XList4<XSPAtlas> XTextureAtlas::s_lists;
 
 XE_NAMESPACE_START( xnTexAtlas )
 //
@@ -169,8 +172,8 @@ ID XTextureAtlas::ArrangeImg( ID idTex,
 		// 루프를 다 돌았는데도 삽입을 못했다면 모든 아틀라스에 공간이 없다는것임.
 		if( !spAtlas ) {
 			// 공간이 더이상 없음. 새 아틀라스 추가
-			spAtlas = AddAtlas( /*XTextureAtlas::s_sizeDefault*/XE::VEC2( 0 ), fmtSurface );
-			if( XASSERT( spAtlas ) ) {
+			spAtlas = AddAtlas( XE::VEC2( 0 ), fmtSurface );
+			if( spAtlas ) {
 				pNewNode = InsertElem( spAtlas, sizeMemSrc );
 				XBREAK( pNewNode == nullptr );
 			}
@@ -204,17 +207,39 @@ ID XTextureAtlas::ArrangeImg( ID idTex,
 	return 0;
 }
 
+/**
+ @brief spAtlas에 sizeElem크기의 공간을 확보한다.
+*/
 xSplit::XNode* XTextureAtlas::InsertElem( XSPAtlas spAtlas,
 																					const XE::VEC2& sizeElem ) const
 {
-	auto pNewNode = spAtlas->m_pRoot->Insert( sizeElem );
-	if( pNewNode ) {
-		// 배치성공
-		pNewNode->SetidImg( spAtlas->m_idTex );
-		if( pNewNode->GetRectTex().vRB.x > spAtlas->m_maxFill.x )
-			spAtlas->m_maxFill.x = pNewNode->GetRectTex().vRB.x;
-		if( pNewNode->GetRectTex().vRB.y > spAtlas->m_maxFill.y )
-			spAtlas->m_maxFill.y = pNewNode->GetRectTex().vRB.y;
+	const auto sizePrev = spAtlas->m_Size;
+	bool bResized = false;
+	xSplit::XNode* pNewNode = nullptr;
+	do {
+		pNewNode = spAtlas->m_pRoot->Insert( sizeElem );
+		if( pNewNode ) {
+			// 배치성공
+			pNewNode->SetidImg( spAtlas->m_idTex );
+			if( pNewNode->GetRectTex().vRB.x > spAtlas->m_maxFill.x )
+				spAtlas->m_maxFill.x = pNewNode->GetRectTex().vRB.x;
+			if( pNewNode->GetRectTex().vRB.y > spAtlas->m_maxFill.y )
+				spAtlas->m_maxFill.y = pNewNode->GetRectTex().vRB.y;
+		} else {
+			bResized = spAtlas->ResizeAtlas();
+			if( bResized) {
+				spAtlas->m_pRoot->ResizeRoot( spAtlas->m_Size );
+				SPRMNG->UpdateUV( spAtlas->m_idTex, sizePrev.ToPoint(), spAtlas->m_Size.ToPoint() );
+				IMAGE_MNG->UpdateUV( spAtlas->m_idTex, sizePrev.ToPoint(), spAtlas->m_Size.ToPoint() );
+			} else {
+				break;			// 더이상 사이즈를 늘일수 없음. 새 아틀라스에 넣어야 함.
+			}
+		}
+	} while( pNewNode == nullptr );
+	if( bResized ) {
+#pragma message("옵저버 패턴으로 바꿔야 할듯.")
+		//XEventMng::sGet()->SendEvent( pEvent );
+// 		SPRMNG->UpdateUV( spAtlas->m_idTex, sizePrev.ToPoint(), spAtlas->m_Size.ToPoint() );
 	}
 	return pNewNode;
 }
@@ -256,20 +281,14 @@ XSPAtlasConst XTextureAtlas::GetspAtlasConst( ID idTex ) const
 XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& _size, XE::xtPixelFormat formatSurface )
 {
 	auto size = _size;
-// 	if( formatSurface == XE::xPF_ARGB8888 )
-		size.Set( 2048, 2048 );
-// 	else
-// 		size.Set( 512, 512 );
+#ifdef _XTEST
+	size.Set( 256, 256 );
+#else
+	size.Set( 256, 256 );
+#endif // _XTEST
 	XSPAtlas spAtlas = std::make_shared<xAtlas>( size, formatSurface );
 	// PBO버퍼와 텍스쳐를 만든다.
-// 	DWORD* pImg = new DWORD[(int)(spAtlas->m_Size.Size()) ];		// 일단이걸로 테스트후 null로 바꿔봄
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
-// 	spAtlas->m_idTex = GRAPHICS_GL->CreateTextureGL( pImg,
-// 																									 spAtlas->m_Size,
-// 																									 XE::xPF_ARGB8888,
-// 																									 spAtlas->m_Size,	// aligned
-// 																									 formatSurface );
+	CHECK_GL_ERROR();
 	spAtlas->m_idTex = GRAPHICS_GL->CreateTextureGL( nullptr,
 																									 spAtlas->m_Size,
 																									 XE::xPF_ARGB8888,
@@ -278,10 +297,33 @@ XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& _size, XE::xtPixelFormat forma
 	extern int s_glFmt, s_glType;
 	spAtlas->m_glFmt = s_glFmt;
 	spAtlas->m_glType = s_glType;
+	spAtlas->m_strTag = m_strTag;
 	XBREAK( spAtlas->m_idTex == 0 );
 	m_listAtlas.push_back( spAtlas );
-//  	SAFE_DELETE_ARRAY( pImg );
+	s_lists.push_back( spAtlas );
 	return spAtlas;
+}
+
+/**
+ @brief this 아틀라스의 크기를 두배로 늘인다.
+ @return 성공하면 true, false는 더이상 크기를 늘일수 없다.
+*/
+bool xnTexAtlas::xAtlas::ResizeAtlas()
+{
+	const int maxTex = XSurface::GetMaxSurfaceWidth();
+	XBREAK( maxTex == 0 );
+	const auto sizePrev = m_Size;
+	if( m_Size.w < maxTex && m_Size.h < maxTex ) {
+		m_Size *= 2.f;
+	} else {
+		return false;
+	}
+	GRAPHICS_GL->ResizeTexture( m_idTex,
+															sizePrev.ToPoint(),
+															m_Size.ToPoint(),
+															m_glType,
+															m_glFmt );
+	return true;
 }
 
 ID XTextureAtlas::GetidTex( int idxAtlas )

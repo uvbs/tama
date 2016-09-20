@@ -138,11 +138,10 @@ public:
 		XBREAK( m_arySprite[nSpr] == nullptr );
 		return m_arySprite[nSpr];
 	}
-#ifdef _XSPRITE2
 	XSurface* GetSpriteSurface( int idxSpr );
-#endif
 	void AddSprite( /*int idx, */XSprite *pSpr );
 	XSprite* AddSprite( int nWidth, int nHeight, int nAdjustX, int nAdjustY, DWORD *pImg );
+	void UpdateUV( ID idTex, const XE::POINT& sizePrev, const XE::POINT& sizeNew );
 #ifdef WIN32
 	void Reload();
 #endif // WIN32

@@ -487,3 +487,17 @@ void XImageMng::AsyncLoadProcess()
 		pFirst = nullptr;
 	}
 }
+
+/**
+@brief 아틀라스 idTex의 크기변경으로 이 텍스쳐를 사용하는 모든 서피스의 uv를 갱신한다.
+*/
+void XImageMng::UpdateUV( ID idTex,
+												const XE::POINT& sizePrev,
+												const XE::POINT& sizeNew )
+{
+	for( auto img : m_listSurface ) {
+		if( img.m_pSurface ) {
+			img.m_pSurface->UpdateUV( idTex, sizePrev, sizeNew );
+		}
+	}
+}

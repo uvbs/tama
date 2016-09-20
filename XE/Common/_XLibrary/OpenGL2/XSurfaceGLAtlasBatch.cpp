@@ -239,10 +239,13 @@ bool XSurfaceGLAtlasBatch::CreateVertexBuffer( float surfaceW, float surfaceH
 	XBREAK( u < 0 || u > 1.0f );
 	XBREAK( v < 0 || v > 1.0f );
 	// 좌우로뒤집힌Z모양
-	m_Vertices[0] = { { adjx, surfaceH + adjy, 0 },{ 0, v },{ 1.0f, 1.0f, 1.0f, 1.0f } }; // left/bottom
-	m_Vertices[1] = {{surfaceW + adjx, surfaceH + adjy, 0 }, {u, v},  {1.0f, 1.0f, 1.0f, 1.0f}};  // right/bottom
-	m_Vertices[2] = {{adjx, adjy, 0},					{0, 0},  {1.0f, 1.0f, 1.0f, 1.0f}};		// left/top
-	m_Vertices[3] = {{surfaceW + adjx, adjy, 0 },		{u, 0},  {1.0f, 1.0f, 1.0f, 1.0f}};	// right/top
+	XE::xVertex vertices[4];
+	vertices[0] = { { adjx, surfaceH + adjy, 0.f },{ 0, v },{ 1.0f, 1.0f, 1.0f, 1.0f } }; // left/bottom
+	vertices[1] = {{surfaceW + adjx, surfaceH + adjy, 0 }, {u, v},  {1.0f, 1.0f, 1.0f, 1.0f}};  // right/bottom
+	vertices[2] = {{adjx, adjy, 0},					{0, 0},  {1.0f, 1.0f, 1.0f, 1.0f}};		// left/top
+	vertices[3] = {{surfaceW + adjx, adjy, 0 },		{u, 0},  {1.0f, 1.0f, 1.0f, 1.0f}};	// right/top
+	for( int i = 0; i < 4; ++i )
+		SetVertex( i, vertices[i] );
 
 	return true;
 } // CreateVertexBuffer
@@ -260,10 +263,13 @@ bool XSurfaceGLAtlasBatch::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 	XBREAK( v < 0 || v > 1.0f );
 	XBREAK( u2 < 0 || u2 > 1.0f );
 	XBREAK( v2 < 0 || v2 > 1.0f );
-	m_Vertices[0] = { {vAdj.x, sizeSurface.h + vAdj.y, 0},		{u, v2},  {1.0f, 1.0f, 1.0f, 1.0f} };
-	m_Vertices[1] = { {sizeSurface.w + vAdj.x, sizeSurface.h + vAdj.y, 0}, {u2, v2},  {1.0f, 1.0f, 1.0f, 1.0f} };  // right/bottom
-	m_Vertices[2] = { {vAdj.x, vAdj.y, 0},					{u, v},  {1.0f, 1.0f, 1.0f, 1.0f} };		// left/top
-	m_Vertices[3] = { {sizeSurface.w + vAdj.x, vAdj.y, 0},		{u2, v},  {1.0f, 1.0f, 1.0f, 1.0f} };	// right/top
+	XE::xVertex vertices[4];
+	vertices[0] = { {vAdj.x, sizeSurface.h + vAdj.y, 0},		{u, v2},  {1.0f, 1.0f, 1.0f, 1.0f} };
+	vertices[1] = { {sizeSurface.w + vAdj.x, sizeSurface.h + vAdj.y, 0}, {u2, v2},  {1.0f, 1.0f, 1.0f, 1.0f} };  // right/bottom
+	vertices[2] = { {vAdj.x, vAdj.y, 0},					{u, v},  {1.0f, 1.0f, 1.0f, 1.0f} };		// left/top
+	vertices[3] = { {sizeSurface.w + vAdj.x, vAdj.y, 0},		{u2, v},  {1.0f, 1.0f, 1.0f, 1.0f} };	// right/top
+	for( int i = 0; i < 4; ++i )
+		SetVertex( i, vertices[i] );
 
 	return true;
 } // CreateVertexBuffer2
@@ -405,10 +411,7 @@ void XSurfaceGLAtlasBatch::DrawByParam( const MATRIX &mParent,
 {
 	// 	if( XBREAK( XRenderCmdMng::sGetpCurrRenderer() == nullptr ) )
 	// 		return;
-	if( XBatchRenderer::sGetpCurrRenderer() == nullptr ) {
-		DrawNoBatch( paramRender.m_vPos.ToVec2(), mParent );
-		return;
-	}
+	XBREAK(XBatchRenderer::sGetpCurrRenderer() == nullptr);
 	if( GetsizeMem().w == 0 || GetsizeMem().h == 0 ) {
 		// 비동기상태로 로딩을 기다리고 있는 중.
 		return;
@@ -422,11 +425,11 @@ void XSurfaceGLAtlasBatch::DrawByParam( const MATRIX &mParent,
 			paramRender.GetmTransform( &mWorld );
 			MatrixMultiply( mWorld, mWorld, mParent );
 			for( int i = 0; i < 4; ++i ) {
-				cmd.m_aryVertices[i] = m_Vertices[i];
+				cmd.m_aryVertices[i] = GetVertex( i );
 			}
 			for( int i = 0; i < 4; ++i ) {
 				Vec4 v4d;
-				MatrixVec4Multiply( v4d, m_Vertices[i].pos, mWorld );
+				MatrixVec4Multiply( v4d, GetVertex( i ).pos, mWorld );
 				cmd.m_aryVertices[i].pos.x = v4d.x;
 				cmd.m_aryVertices[i].pos.y = v4d.y;
 				cmd.m_aryVertices[i].pos.z = v4d.z + paramRender.m_adjZ;
@@ -772,5 +775,23 @@ void XSurfaceGLAtlasBatch::SetTexture()
 {
 	XGraphicsOpenGL::sBindTexture( m_glTexture );
 }
+
+void XSurfaceGLAtlasBatch::UpdateUV( ID idTex,
+																		 const XE::POINT& sizePrev,
+																		 const XE::POINT& sizeNew )
+{
+	if( m_glTexture != idTex )
+		return;
+	for( int i = 0; i < 4; ++i ) {
+		auto vertex = GetVertex( i );
+		// 새 크기 기준으로 uv를 다시 계산
+		float xPrev = sizePrev.w * vertex.uv.x;
+		float yPrev = sizePrev.h * vertex.uv.y;
+		vertex.uv.x = xPrev / sizeNew.w;
+		vertex.uv.y = yPrev / sizeNew.h;
+		SetVertex( i, vertex );
+	}
+}
+
 
 #endif // gl

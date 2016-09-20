@@ -14,6 +14,16 @@ static char THIS_FILE[] = __FILE__;
 DWORD XSurface::s_dwMaxSurfaceWidth = 0;
 int XSurface::s_sizeTotalVMem = 0;
 
+XE_NAMESPACE_START( XE )
+//
+// xVertex::xVertex() 
+// {
+// 	pos.z = 0;
+// }
+//
+XE_NAMESPACE_END; // XE
+
+
 void XE::xRenderParam::GetmTransform( MATRIX* pOut ) const {
 	MATRIX& mWorld = (*pOut);
 	MATRIX m;

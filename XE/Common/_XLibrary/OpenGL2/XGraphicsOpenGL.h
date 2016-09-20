@@ -17,9 +17,12 @@
 #include "XSurfaceOpenGL.h"
 #include "etc/xMath.h"
 
-#define CHECK_GL_ERROR() \
+
+#define _CHECK_GL_ERROR() \
 		{ volatile auto glErr = glGetError(); \
 			XASSERT( glErr == GL_NO_ERROR ); }
+//#define CHECK_GL_ERROR() _CHECK_GL_ERROR()
+#define CHECK_GL_ERROR() (0)
 
 namespace XE {
 	enum xtAttib {
@@ -252,6 +255,7 @@ public:
 																 XE::xtPixelFormat formatSurface ) {
 		return CreateTextureGL( pSrc, (int)sizeSrc.w, (int)sizeSrc.h, formatImgSrc, (int)sizeSrcAligned.w, (int)sizeSrcAligned.h, formatSurface );
 	}
+	void ResizeTexture( ID idTex, const XE::POINT& sizeTexPrev, const XE::POINT& sizeTexNew, GLenum glType, GLenum glFormatSurface );
 	GLuint CreateTextureSubGL( void* const pImgSrc
 													, const XE::POINT& sizeSrc			// pImgSrc의 크기
 													, const XE::xRECTi& rectSrc			// pImgSrc에서 잘라낼 영역

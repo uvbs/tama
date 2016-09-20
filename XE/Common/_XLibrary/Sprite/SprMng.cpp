@@ -6,6 +6,7 @@
 #include "SprDat.h"
 #include "XHSLMap.h"
 #include "XSystem.h"
+#include "opengl2/XTextureAtlas.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -336,6 +337,7 @@ XSPDat XSprMng::Load( LPCTSTR szFileKey,
 	asyncSpr.m_bRestore = FALSE;
 	asyncSpr.m_bUseAtlas = bUseAtlas;
 	asyncSpr.m_bBatch = bBatch;
+	asyncSpr.m_pAtlasMng = XTextureAtlas::sGetpCurrMng();
 	{
 		XAUTO_LOCK2( m_spLock );
 		// 스레드에서 하나씩 로딩을 시킴.
@@ -433,29 +435,44 @@ void XSprMng::Process()
 	for( auto itor = m_listAsyncComplete.begin(); itor != m_listAsyncComplete.end(); ) {
 		const auto& async = (*itor);
 		XBREAK( async.m_pSprDat == nullptr );
-		async.m_pSprDat->CreateDevice();		// 버텍스버퍼, 텍스쳐등을 생성시킨다.
+// 		SET_ATLASES( async.m_pAtlasMng ) {
+// 			async.m_pSprDat->CreateDevice();		// 버텍스버퍼, 텍스쳐등을 생성시킨다.
+// 		} END_ATLASES;
 		auto spDat = FindByidAsync( async.m_idAsync );
 		if( spDat ) {
 			spDat->m_pSprDat = async.m_pSprDat;
 			spDat->m_idAsync = 0;
+			SET_ATLASES( async.m_pAtlasMng ) {
+				async.m_pSprDat->CreateDevice();		// 버텍스버퍼, 텍스쳐등을 생성시킨다.
+			} END_ATLASES;
 		}
 		m_listAsyncComplete.erase( itor++ );
 		break;		// 한프레임에 하나씩만 처리하도록.
 	}
 }
 
-// #ifdef WIN32
-// unsigned int __stdcall XSprMng::_WorkThread( void *param )
-// {
-// 	SPRMNG->WorkThread();
-// 	return 0;
-// }
-// #else
-// void _WorkThread( void *param )
-// {
-// 	SPRMNG->WorkThread();
-// }
-// #endif // WIN32
+/**
+ @brief 아틀라스 idTex의 크기변경으로 이 텍스쳐를 사용하는 모든 서피스의 uv를 갱신한다.
+*/
+void XSprMng::UpdateUV( ID idTex, 
+												const XE::POINT& sizePrev, 
+												const XE::POINT& sizeNew )
+{
+	for( auto itor : m_mapDat ) {
+		xSpr::XSPDat spDat = itor.second;
+		if( spDat->m_pSprDat ) {
+			spDat->m_pSprDat->UpdateUV( idTex, sizePrev, sizeNew );
+		}
+	}
+	for( auto itor : m_mapCache ) {
+		xSpr::XSPDat spDat = itor.second;
+		if( spDat->m_pSprDat ) {
+			spDat->m_pSprDat->UpdateUV( idTex, sizePrev, sizeNew );
+		}
+	}
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 void XSprMng::WorkThread()
 {

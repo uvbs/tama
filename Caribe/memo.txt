@@ -13,9 +13,10 @@ base: 소스
 해결해야할 문제{
 }
 
-Restore코드
+아틀라스 뷰어 구현
+알림창 띄워서 drawLocal 구현
+Restore 구현
 DrawLocal코드
-아틀라스에 줄생기는거 해결
 
 ui_batch_opt 목표 {
   .ui도 아틀라스를 사용해서 메모리를 최적화 한다.

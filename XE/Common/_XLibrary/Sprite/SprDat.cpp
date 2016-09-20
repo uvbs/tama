@@ -260,3 +260,12 @@ XSurface* XSprDat::GetSpriteSurface( int idxSpr ) {
 		return pSpr->GetpSurface();
 	return nullptr;
 }
+
+void XSprDat::UpdateUV( ID idTex,
+												const XE::POINT& sizePrev,
+												const XE::POINT& sizeNew )
+{
+	for( auto pSpr : m_arySprite ) {
+		pSpr->UpdateUV( idTex, sizePrev, sizeNew );
+	}
+}

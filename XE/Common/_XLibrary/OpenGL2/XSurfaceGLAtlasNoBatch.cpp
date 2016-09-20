@@ -47,7 +47,7 @@ XSurfaceGLAtlasNoBatch::XSurfaceGLAtlasNoBatch( BOOL bHighReso
 																								, const int bpp
 																								, BOOL bSrcKeep )
 	: XSurface( bHighReso )
-	, m_Vertices( 4 )
+	//, m_Vertices( 4 )
 {
 	Init();
 	auto sizeDstMem = XE::POINT( dstw, dsth ) * 2;
@@ -226,8 +226,13 @@ bool XSurfaceGLAtlasNoBatch::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 		vAdj.x, vAdj.y,																	u, v,			1.0f, 1.0f, 1.0f, 1.0f,		// left/top
 		sizeSurface.w + vAdj.x, vAdj.y,									u2, v,		1.0f, 1.0f, 1.0f, 1.0f	// right/top
 	};
-	for( int i = 0; i < 4; ++i )
-		m_Vertices[i] = vertices[i];
+	
+	for( int i = 0; i < 4; ++i ) {
+		xVertex vtx;
+		vertices[i].ToxVertex( &vtx );
+		SetVertex( i, vtx );
+	}
+
 	static const GLubyte indices[4] = { 0, 1, 2, 3 };
 #ifdef _XVAO
 	glGenVertexArraysOES( 1, &m_idVertexArray );
@@ -520,8 +525,8 @@ void XSurfaceGLAtlasNoBatch::DrawSub( float x, float y,
 		memRect.SetBottom( src->GetBottom() * 2 );
 		memw = ( memRect.Right() - memRect.Left() );
 		memh = ( memRect.Bottom() - memRect.Top() );
-		XE::VEC2 uvLT( m_Vertices[2].uv );		// left-top
-		XE::VEC2 uvRB( m_Vertices[1].uv );		// right-bottom
+		XE::VEC2 uvLT( GetVertex(2).uv );		// left-top
+		XE::VEC2 uvRB( GetVertex(1).uv );		// right-bottom
 		const auto sizeMem = GetsizeMem();
 		const auto sizeUV = (uvRB - uvLT);
 		uvlt = uvLT + sizeUV * (memRect.ptLT.ToVec2() / sizeMem);
@@ -687,6 +692,51 @@ void*	XSurfaceGLAtlasNoBatch::Lock( int *pMemW, BOOL bReadOnly)
 void XSurfaceGLAtlasNoBatch::SetTexture()
 {
 	XGraphicsOpenGL::sBindTexture( m_glTexture );
+}
+
+void XSurfaceGLAtlasNoBatch::UpdateUV( ID idTex,
+																		 const XE::POINT& sizePrev,
+																		 const XE::POINT& sizeNew )
+{
+	if( m_glTexture != idTex )
+		return;
+
+	const auto sizeSurface = GetsizeSurface();
+	const auto vAdj = GetAdjust();
+	xVertexNoBatch vertices[4] = {
+		0 + vAdj.x, sizeSurface.h + vAdj.y,							0, 0,		1.0f, 1.0f, 1.0f, 1.0f,	// left/bottom
+		sizeSurface.w + vAdj.x, sizeSurface.h + vAdj.y, 0, 0,		1.0f, 1.0f, 1.0f, 1.0f,  // right/bottom
+		vAdj.x, vAdj.y,																	0, 0,			1.0f, 1.0f, 1.0f, 1.0f,		// left/top
+		sizeSurface.w + vAdj.x, vAdj.y,									0, 0,		1.0f, 1.0f, 1.0f, 1.0f	// right/top
+	};
+	static const GLubyte indices[4] = { 0, 1, 2, 3 };
+	for( int i = 0; i < 4; ++i ) {
+		auto& vertex = vertices[i];
+		// 새 크기 기준으로 uv를 다시 계산
+		// 새 크기 기준으로 uv를 다시 계산
+		const auto& vv = GetVertex( i );
+		float xPrev = sizePrev.w * vv.uv.x;
+		float yPrev = sizePrev.h * vv.uv.y;
+		vertex.uv[0] = xPrev / sizeNew.w;
+		vertex.uv[1] = yPrev / sizeNew.h;
+		xVertex v2;
+		vertex.ToxVertex( &v2 );
+// 		v2.pos.x = vertex.xy[0];	v2.pos.y = vertex.xy[1];
+// 		v2.uv.x = vertex.uv[0];		v2.uv.y = vertex.uv[1];
+// 		v2.rgba.x = vertex.rgba[0];		v2.rgba.y = vertex.rgba[1];
+// 		v2.rgba.z = vertex.rgba[2];		v2.rgba.w = vertex.rgba[3];
+		SetVertex( i, v2 );
+	}
+
+	// 버퍼데이타를 다시 전송.
+	glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
+	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
+	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( indices ), indices, GL_STATIC_DRAW );
+
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	CHECK_GL_ERROR();
 }
 
 #endif // gl

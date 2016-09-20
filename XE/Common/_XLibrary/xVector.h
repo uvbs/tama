@@ -240,7 +240,10 @@ namespace XE
 		void Set( T _x, T _y ) { x = (float)_x; y = (float)_y; }
 		template<typename T>
 		void Set( T xy ) { x = (float)xy; y = (float)xy; }
-		
+		void Set( const Vec2& v ) {
+			x = v.x;	y = v.y;
+		}
+
 		// casting
 		//		operator float* ();
 		//		operator const float* () const;

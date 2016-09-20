@@ -14,10 +14,6 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-알림창 띄워서 drawLocal 구현
-Restore 구현
-
-
 
 
 

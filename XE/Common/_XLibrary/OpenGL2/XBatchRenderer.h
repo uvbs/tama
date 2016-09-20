@@ -8,11 +8,11 @@
 #define SET_RENDERER( RENDERER ) \
 {	XBREAK( RENDERER == nullptr ); \
 	auto __pCurrRenderer = RENDERER; \
-	auto pPrev = XBatchRenderer::_sSetpCurrRenderer( __pCurrRenderer );
+	auto __pPrev = XBatchRenderer::_sSetpCurrRenderer( __pCurrRenderer );
 
 #define END_RENDERER \
 	__pCurrRenderer->RenderBatch(); \
-	XBatchRenderer::_sSetpCurrRenderer( pPrev ); }
+	XBatchRenderer::_sSetpCurrRenderer( __pPrev ); }
 
 // #define END_RENDERER \
 // 	XRenderCmdMng::sAddRenderer( __pCurrRenderer ); \

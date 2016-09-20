@@ -377,10 +377,14 @@ void XGraphicsOpenGL::RestoreDevice()
 {
 	
 	XTRACE("restore device resource");
-	GLint sizeMax = 512;
+	GLint sizeMax = 2048;
 	CHECK_GL_ERROR();
 	
 	glGetIntegerv( GL_MAX_TEXTURE_SIZE, (GLint*)&sizeMax );
+#if defined(WIN32) && defined(_DEBUG)
+	if( sizeMax > 2048 )
+		sizeMax = 2048;			// 최저사양폰을 위한.
+#endif // 
 	XSurface::SetMaxSurfaceWidth( sizeMax );
 	XTRACE( "max texture size:%d", sizeMax );
 	// 여기서 에러나면 그것은 OpenGL ES 2.0으로 초기화했기때문이다. 2.0에는 glMatrixMode라는게 없다.
@@ -1340,6 +1344,100 @@ GLuint XGraphicsOpenGL::CreateTextureGL( void* const pImgSrc
 	return idTexture;
 } // CreateTextureGL
 
+/**
+ @brief 
+ @param sizeTex 목표 크기
+*/
+void XGraphicsOpenGL::ResizeTexture( ID idTex, 
+																		 const XE::POINT& sizeTexPrev,
+																		 const XE::POINT& sizeTexNew, 
+																		 GLenum glType, 
+																		 GLenum glFormatSurface )
+{
+	// FBO생성
+	GLuint fbo;
+	glGenFramebuffers( 1, &fbo );
+	glBindFramebuffer( GL_FRAMEBUFFER, fbo );
+	// idTex를 어태치
+	glFramebufferTexture2D( GL_FRAMEBUFFER, 
+													GL_COLOR_ATTACHMENT0, 
+													GL_TEXTURE_2D, 
+													idTex, 
+													0 );
+	_CHECK_GL_ERROR();
+	GLenum status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
+	if( status != GL_FRAMEBUFFER_COMPLETE ) {
+		XTRACE( "fbo status=%d", status );
+		return;
+	}
+	// 임시 텍스쳐버퍼 생성
+	GLuint glTexTemp;
+	glGenTextures( 1, &glTexTemp );
+	_CHECK_GL_ERROR();
+	glBindTexture( GL_TEXTURE_2D, glTexTemp );
+	_CHECK_GL_ERROR();
+	glTexImage2D( GL_TEXTURE_2D,
+								0,
+								glFormatSurface,		// internal format
+								sizeTexPrev.w,
+								sizeTexPrev.h,
+								0,
+								GL_RGBA,	// pImgSrc의 포맷
+								glType,
+								nullptr );
+	// 어태치된 소스측 텍스쳐로부터 임시버퍼로 카피
+	glCopyTexSubImage2D( GL_TEXTURE_2D, 
+											 0, 
+											 0, 0, 
+											 0, 0, 
+											 sizeTexPrev.w, sizeTexPrev.h );
+	_CHECK_GL_ERROR();
+	// 소스측 어태치 해제
+	glFramebufferTexture2D( GL_FRAMEBUFFER,
+													GL_COLOR_ATTACHMENT0,
+													GL_TEXTURE_2D,
+													0,
+													0 );
+	_CHECK_GL_ERROR();
+	// 임시버퍼를 FBO에 어태치
+	glFramebufferTexture2D( GL_FRAMEBUFFER,
+													GL_COLOR_ATTACHMENT0,
+													GL_TEXTURE_2D,
+													glTexTemp,
+													0 );
+	_CHECK_GL_ERROR();
+	status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
+	if( status != GL_FRAMEBUFFER_COMPLETE ) {
+		XTRACE( "fbo status=%d", status );
+		return;
+	}
+
+	// 리사이징
+	XGraphicsOpenGL::sBindTexture( idTex );
+	_CHECK_GL_ERROR();
+	glTexImage2D( GL_TEXTURE_2D,
+								0,
+								glFormatSurface,		// internal format
+								sizeTexNew.w,
+								sizeTexNew.h,
+								0,
+								GL_RGBA,	// pImgSrc의 포맷
+								glType,
+								nullptr );
+	_CHECK_GL_ERROR();
+	// 어태치된 임시버퍼 텍스쳐로부터 리사이징된 원래텍스쳐로 카피
+	glCopyTexSubImage2D( GL_TEXTURE_2D,
+											 0,
+											 0, 0,
+											 0, 0,
+											 sizeTexPrev.w, sizeTexPrev.h );
+	_CHECK_GL_ERROR();
+	// 임시버퍼 삭제
+	glDeleteTextures( 1, &glTexTemp );		glTexTemp = 0;
+	_CHECK_GL_ERROR();
+	glDeleteFramebuffers( 1, &fbo );
+	_CHECK_GL_ERROR();
+}
 
 /**
  @brief 이미지의 일부분을 gl텍스쳐로 만든다.

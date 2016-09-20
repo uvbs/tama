@@ -7,6 +7,7 @@ class XSprDat;
 class XSprObj;
 class XActDat;
 class XSprite;
+class XTextureAtlas;
 enum xRPT_TYPE : int;
 
 XE_NAMESPACE_START( xSpr )
@@ -64,6 +65,7 @@ private:
 		bool m_bUseAtlas = false;
 		bool m_bBatch = false;			// 배치모드로 서피스 생성
 		XSprDat* m_pSprDat = nullptr;		// 비동기로딩이 완료되었을때 그 sprdat
+		XTextureAtlas* m_pAtlasMng = nullptr;
 		xAsync();
 	};
 	std::map<_tstring, xSpr::XSPDat> m_mapDat;		// 현재 참조되고 있는 자원
@@ -91,6 +93,7 @@ public:
 	void WorkThread();
 	void OnCreate();
 	void Process();
+	void UpdateUV( ID idTex, const XE::POINT& sizePrev, const XE::POINT& sizeNew );
 	xSpr::XSPDat Load( LPCTSTR szFilename,
 										 const XE::xHSL& hsl/* = XE::xHSL()*/,
 										 bool bUseAtlas,

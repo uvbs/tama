@@ -62,4 +62,28 @@ XNode* XNode::Insert( const XE::VEC2& sizeImg )
 	}
 }
 
+void XNode::ResizeRoot( const XE::VEC2& sizeNew )
+{
+	const auto sizePrev = m_Rect.GetSize();
+	m_Rect.SetSize( sizeNew );		// 일단 루트의 크기를 바꾸고
+	RecusiveResize( sizeNew, sizePrev );
+}
+
+void XNode::RecusiveResize( const XE::VEC2& sizeNewRoot,
+														const XE::VEC2& sizePrevRoot )
+{
+	// 자식들의 분할공간 크기 변경
+	for( int i = 0; i < 2; ++i ) {
+		auto pChild = m_Child[i];
+		if( pChild ) {
+			//XBREAK( vrbPrev > )
+			// 차일드 분할공간의 우측좌표가 이전 맥스치였다면 새 맥스치값으로 변경
+			if( (int)pChild->m_Rect.vRB.x == (int)sizePrevRoot.w - 1 )
+				pChild->m_Rect.vRB.x = sizeNewRoot.w - 1.f;
+			if( (int)pChild->m_Rect.vRB.y == (int)sizePrevRoot.h - 1 )
+				pChild->m_Rect.vRB.y = sizeNewRoot.h - 1.f;
+			pChild->RecusiveResize( sizeNewRoot, sizePrevRoot );
+		}
+	}
+}
 XE_NAMESPACE_END;	// xSplit

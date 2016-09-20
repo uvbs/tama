@@ -14,6 +14,12 @@ class XSurfaceGLAtlasNoBatch : public XSurface {
 		GLfloat xy[2];//, y;
 		GLfloat uv[2];//u, tv;
 		GLfloat rgba[4];// r,g,b,a;
+		void ToxVertex( XE::xVertex* pOut ) const {
+			pOut->pos.x = xy[0];	pOut->pos.y = xy[1];	pOut->pos.z = 0;
+			pOut->uv.x = uv[0];		pOut->uv.y = uv[1];
+			pOut->rgba.x = rgba[0];		pOut->rgba.y = rgba[1];
+			pOut->rgba.z = rgba[2];		pOut->rgba.w = rgba[3];
+		}
 	};
 private:
 	GLuint	m_glTexture;
@@ -24,16 +30,16 @@ private:
 #endif
 	GLuint  m_glVertexBuffer = 0;
 	GLuint	m_glIndexBuffer = 0;
-	XVector<xVertexNoBatch> m_Vertices;
+// 	XVector<xVertexNoBatch> m_Vertices;
 	void Init();
 	void Destroy();
 	bool CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMask );
 protected:
 public:
-	XSurfaceGLAtlasNoBatch() : XSurface( true ), m_Vertices(4) {
+	XSurfaceGLAtlasNoBatch() : XSurface( true )/*, m_Vertices(4) */{
 		Init();
 	}
-	XSurfaceGLAtlasNoBatch( BOOL bHighReso ) : XSurface( bHighReso ), m_Vertices( 4 ) {
+	XSurfaceGLAtlasNoBatch( BOOL bHighReso ) : XSurface( bHighReso )/*, m_Vertices( 4 )*/ {
 		Init();
 	}
 	XSurfaceGLAtlasNoBatch( BOOL bHighReso
@@ -146,6 +152,7 @@ private:
 														const XE::VEC2& vAdj, 
 														const XE::VEC2& uvlt, 
 														const XE::VEC2& uvrb );
+	void UpdateUV( ID idTex, const XE::POINT& sizePrev, const XE::POINT& sizeNew ) override;
 };
 
 

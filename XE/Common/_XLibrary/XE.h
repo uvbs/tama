@@ -167,6 +167,9 @@ namespace XE
 		inline void SetTop( float top ) {
 			vLT.y = top;
 		}
+		inline void SetSize( const XE::VEC2& size ) {
+			vRB = vLT + size - XE::VEC2(1);
+		}
 		inline void SetBottom( float bottom ) {
 			vRB.y = bottom;
 		}

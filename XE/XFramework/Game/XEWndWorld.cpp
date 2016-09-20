@@ -86,9 +86,11 @@ int XEWndWorld::Process( float dt )
 void XEWndWorld::Draw()
 {
 	if( m_spWorld ) {
-		SET_RENDERER( m_pRenderer ) {
-			m_spWorld->Draw( this );
-		} END_RENDERER;
+		SET_ATLASES( m_pAtlas ) {
+			SET_RENDERER( m_pRenderer ) {
+				m_spWorld->Draw( this );
+			} END_RENDERER;
+		} END_ATLASES;
 	}
 
 	XWnd::Draw();		// 현재 차일드가 없으면 이부분 삭제

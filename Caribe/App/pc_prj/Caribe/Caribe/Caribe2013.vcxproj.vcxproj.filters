@@ -528,7 +528,7 @@
       <Filter>source\battle</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XSceneTest.cpp">
-      <Filter>source\main</Filter>
+      <Filter>source\battle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

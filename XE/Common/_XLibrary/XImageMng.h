@@ -144,6 +144,7 @@ public:
 // #endif // WIN32
 	void OnPause();
 	void Process( bool bTouching );
+	void UpdateUV( ID idTex, const XE::POINT& sizePrev, const XE::POINT& sizeNew );
 private:
 	xImage* FindExist( XSurface *pSurface );
 	void DestroyOlderFile();

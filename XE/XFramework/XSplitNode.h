@@ -36,6 +36,7 @@ public:
 		m_Rect.vLT = vLT;
 		m_Rect.vRB = vRB;
 	}
+	void ResizeRoot( const XE::VEC2& sizeNew );
 	//
 	XNode* Insert( const XE::VEC2& sizeImg );
 	// 더이상 차일드가 없는지(잎사귀)
@@ -49,6 +50,7 @@ public:
 	}
 private:
 	GET_ACCESSOR_CONST( const XE::xRECT&, Rect );
+	void RecusiveResize( const XE::VEC2& sizeNewRoot, const XE::VEC2& sizePrevRoot );
 private:
 	XNode* m_Child[2];
 	XE::xRECT m_Rect;			// 분할전 전체 공간의 위치와 크기
