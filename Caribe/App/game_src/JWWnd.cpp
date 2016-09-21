@@ -254,23 +254,23 @@ BOOL XWndStoragyItemElem::OnCreate()
 	if( m_pProp && m_pProp->maxStack <= 1 )
 		m_Reward.num = 0;
 	m_psfcBgGradation = IMAGE_MNG->Load( PATH_UI( "bg_hero.png" ), XE::xPF_ARGB8888 );
-// 	m_pBG = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_bg_item.png" ) ) );
-	m_pBG = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_bg_frame.png" ) ) );
+// 	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_bg_item.png" ) ) );
+	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_bg_frame.png" ) ) );
 	SetSizeLocal( m_pBG->GetWidth(), m_pBG->GetHeight() );
-// 	m_pSelect = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_bg_item_sel.png" ) ) );
-//	m_pNumImg = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_namecard_s.png" ) ) );
+// 	m_pSelect = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_bg_item_sel.png" ) ) );
+//	m_pNumImg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_namecard_s.png" ) ) );
 	// 아이템일경우 별등급표시
 	if( m_Reward.GetidItem() ) {
 		XBREAK( m_pProp == nullptr );
 		if( m_pProp->IsSoul() ) {
-			m_pSoulStone = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "frame_soul.png" ) ) );
+			m_pSoulStone = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "frame_soul.png" ) ) );
 		} else {
 			// 영혼석이 아닌경우에만 별 그림
 			auto numStar = m_pProp->grade;
 			for( int i = 0; i < numStar; ++i )
-				m_aryStar.Add( IMAGE_MNG->Load( TRUE, PATH_UI( "common_etc_smallstar.png" ) ) );
+				m_aryStar.Add( IMAGE_MNG->Load( PATH_UI( "common_etc_smallstar.png" ) ) );
 		}
-		m_pItemImg = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_IMG, m_pProp->strIcon.c_str() ) );
+		m_pItemImg = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, m_pProp->strIcon.c_str() ) );
 	}
 // 	if( m_Reward.GetidHero() ) {
 // //		m_psfcNameBg = IMAGE_MNG->Load( PATH_UI("bg_name.png") );
@@ -284,7 +284,7 @@ void XWndStoragyItemElem::Update()
 {
 	if( m_bSelected && m_psfcSelected == nullptr ) {
 		if( m_psfcSelected == nullptr )
-			m_psfcSelected = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_bg_item_glow.png" ) ) );
+			m_psfcSelected = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_bg_item_glow.png" ) ) );
 	}
 	int num = m_Reward.num;
 	if( m_Reward.GetidItem() ) {
@@ -472,12 +472,12 @@ void XWndStoragyItemElem::Draw()
 // }
 void XWndStoragyItemElem::SetItemImg(LPCTSTR imgPath)
 {
-	m_pItemImg = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, imgPath));
+	m_pItemImg = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, imgPath));
 }
 
 void XWndStoragyItemElem::SetSlotLock()
 {
-//	m_slotLock = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("storage_lock2.png")));
+//	m_slotLock = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("storage_lock2.png")));
 	m_bNotUse = true;
 }
 
@@ -499,7 +499,7 @@ XWndSliderOption::XWndSliderOption(float x, float y, float w, float h, float min
 {
 	Init();
 
-	m_psfcSlider = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("trader_slider_point.png")));
+	m_psfcSlider = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("trader_slider_point.png")));
 };
 
 void XWndSliderOption::Destroy()

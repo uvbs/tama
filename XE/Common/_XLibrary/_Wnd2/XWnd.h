@@ -764,6 +764,8 @@ public:
 	}
 	virtual void Draw();
 	virtual void Draw( const XE::VEC2& vParent );
+	virtual void DrawBefore() {}
+	virtual void DrawAfter() {}
 	virtual void OnDestroy() {}
 	virtual void CallEvent( const char *cFunc );
 	void DrawFrame( const XWND_RES_FRAME& frame );

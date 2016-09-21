@@ -1376,15 +1376,17 @@ void XGraphicsOpenGL::ResizeTexture( ID idTex,
 	_CHECK_GL_ERROR();
 	glBindTexture( GL_TEXTURE_2D, glTexTemp );
 	_CHECK_GL_ERROR();
+	auto glFormatMem = glFormatSurface; // 둘은 반드시 일치해야한다.,
 	glTexImage2D( GL_TEXTURE_2D,
 								0,
 								glFormatSurface,		// internal format
 								sizeTexPrev.w,
 								sizeTexPrev.h,
 								0,
-								GL_RGBA,	// pImgSrc의 포맷
+								glFormatMem,	// pImgSrc의 포맷
 								glType,
 								nullptr );
+	_CHECK_GL_ERROR();
 	// 어태치된 소스측 텍스쳐로부터 임시버퍼로 카피
 	glCopyTexSubImage2D( GL_TEXTURE_2D, 
 											 0, 
@@ -1421,7 +1423,7 @@ void XGraphicsOpenGL::ResizeTexture( ID idTex,
 								sizeTexNew.w,
 								sizeTexNew.h,
 								0,
-								GL_RGBA,	// pImgSrc의 포맷
+								glFormatMem,	// pImgSrc의 포맷
 								glType,
 								nullptr );
 	_CHECK_GL_ERROR();

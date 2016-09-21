@@ -164,7 +164,7 @@ BOOL XOverlap::Create( void )
 	if( XE::IsEmpty( m_szImgTo ) )		// 이미지파일이 없으면 이전화면 프레임버퍼에서 새화면 프레임버퍼로 오버랩되는것이다.
 		SetpSurface2( GRAPHICS->CreateScreenToSurface( GetbHighReso() ) );	// to	현재 백버퍼에 새화면이 그려져있어야 한다
 	else
-		SetpSurface2( IMAGE_MNG->Load( GetbHighReso(), m_szImgTo ) );	
+		SetpSurface2( IMAGE_MNG->Load( /*GetbHighReso(), */m_szImgTo ) );	
 	return 1;
 }
 

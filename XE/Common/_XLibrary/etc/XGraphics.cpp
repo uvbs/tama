@@ -622,14 +622,21 @@ XSurface* XGraphics::CreateSurface( bool bHighReso,
 		// bHighReso의 잔재. 이 파일이 고해상도로 지정되어 있으면 실제 서피스 크기는 절반이 된다
 		const auto sizeSurface = (bHighReso)? sizeImgMem / 2 : sizeImgMem; 
 		XSurface* pSurface = nullptr;
-		if( bUseAtlas ) {
+		const bool bTooBig = (sizeImgMem.w > 2048 || sizeImgMem.h > 2048 );
+		if( bUseAtlas && !bTooBig ) {
 			if(XGraphics::sIsEnableBatchLoading())
 				pSurface = GRAPHICS->CreateSurfaceAtlasBatch();
 			else
 				pSurface = GRAPHICS->CreateSurfaceAtlasNoBatch();
 		} else {
 			pSurface = CreateSurface();;
+			bUseAtlas = false;
 		}
+
+// 		ui크기 변경된것 기준으로 모두 수정
+// 		Restore 구현;
+
+
 		if( pSurface ) {
 			bool bOk = pSurface->Create( sizeSurface
 																, XE::VEC2(0)

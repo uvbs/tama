@@ -268,7 +268,7 @@ void XClientMain::Create( XE::xtDevice device,
 // 	srand( timeGetTime() );
 	CTimer::Initialize();		// pause가능한 가상타이머를 초기화한다
 
-	IMAGE_MNG = new XImageMng( 100 );
+	IMAGE_MNG = new XImageMng();
 	SPRMNG = new XSprMng;
 	SPRMNG->OnCreate();
 	FONTMNG = CreateFontMng();		// virtual
@@ -509,7 +509,7 @@ void XClientMain::Draw( void )
 		return;
 	}
 #if defined(_VER_ANDROID) || (defined(WIN32) && defined(_VER_OPENGL))
-	GRAPHICS->ClearScreen( XCOLOR_RGBA( 128, 128, 128, 255 ) );
+	GRAPHICS->ClearScreen( XCOLOR_RGBA( 0, 0, 0, 255 ) );
 #endif
 	if( m_pGame ) {
 // 		SET_RENDERER( m_pGame->GetpRenderer() ) {

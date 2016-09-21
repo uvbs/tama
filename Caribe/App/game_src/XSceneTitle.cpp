@@ -298,7 +298,7 @@ int XSceneTitle::Process( float dt )
 #endif 
 	if( m_pScrollView ) {
 		m_pScrollView->SetFocusView( m_vFocus );
-		m_vFocus += m_deltaScroll;
+		m_vFocus += m_deltaScroll * dt;
 		const auto vViewSize = XE::GetGameSize();
 		if( m_vFocus.x + vViewSize.w * 0.5f >= m_sizeMap.w  )
 			m_deltaScroll.x = -m_deltaScroll.x;

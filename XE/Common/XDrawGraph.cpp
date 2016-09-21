@@ -111,18 +111,18 @@ XProgressBar::XProgressBar( LPCTSTR szImg, LPCTSTR szImgBg, BOOL bHoriz )
 	Init();
 	XBREAK( XE::IsEmpty( szImg ) == TRUE );
 	m_bHoriz = bHoriz;
-	m_pSurface = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szImg ) );
+	m_pSurface = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ) );
 	if( szImgBg )
-		m_psfcBg = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szImgBg ) );
+		m_psfcBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImgBg ) );
 }
 
 XProgressBar::XProgressBar( const XE::VEC2& vPos, LPCTSTR szImg, LPCTSTR szImgBg, BOOL bHoriz )
 {
 	Init();
 	m_bHoriz = bHoriz;
-	m_pSurface = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szImg ) );
+	m_pSurface = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ) );
 	if( XE::IsHave(szImgBg) )
-		m_psfcBg = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szImgBg ) );
+		m_psfcBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImgBg ) );
 	m_vPos = vPos;
 }
 

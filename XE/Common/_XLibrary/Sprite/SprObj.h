@@ -163,7 +163,12 @@ public:
 	XSprObj( DWORD dwID );
 	XSprObj( LPCTSTR szFilename, XDelegateSprObj *pDelegate = nullptr );
 //	XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, XDelegateSprObj *pDelegate = nullptr );
-	XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, bool bBatch, XDelegateSprObj *pDelegate = nullptr );
+	XSprObj( LPCTSTR szFilename, 
+					 const XE::xHSL& hsl, 
+					 bool bUseAtlas, 
+					 bool bBatch, 
+					 bool bAsync,
+					 XDelegateSprObj *pDelegate = nullptr );
 	// for lua
 // 	XSprObj( BOOL bKeepSrc, const char *cFilename );
 // #ifdef WIN32
@@ -387,9 +392,9 @@ public:
 private:
 	void OnFinishLoad( XSprDat* pSprDat );
 #ifdef WIN32
-	xSpr::XSPDat LoadInternal( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, bool bBatch, ID* pOutidAsync ) const;
+	xSpr::XSPDat LoadInternal( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, bool bBatch, bool bAsync, ID* pOutidAsync ) const;
 #endif // WIN32
-	xSpr::XSPDat LoadInternal( const char* cFilename, const XE::xHSL& hsl, bool bUseAtlas, bool bBatch, ID* pOutidAsync ) const;
+	xSpr::XSPDat LoadInternal( const char* cFilename, const XE::xHSL& hsl, bool bUseAtlas, bool bBatch, bool bAsync, ID* pOutidAsync ) const;
 #endif // _XASYNC_SPR
 private:
 };

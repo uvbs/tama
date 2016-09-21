@@ -60,7 +60,8 @@ void XPropWorld::xCASTLE::Serialize( XArchive& ar ) const {
 void XPropWorld::xCASTLE::DeSerialize( XArchive& ar, int ver ) {
 	xBASESPOT::DeSerialize( ar, ver );
 #if _DEV_LEVEL <= DLV_DEV_CREW
-	ar >> m_aryProduceOrig;
+#pragma message("======================임시 삭제=====================")
+//	ar >> m_aryProduceOrig;
 #endif
 	ar >> m_aryProduce;
 }

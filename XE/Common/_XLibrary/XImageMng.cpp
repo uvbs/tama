@@ -36,24 +36,23 @@ static char THIS_FILE[] = __FILE__;
 XImageMng *IMAGE_MNG = NULL;
 int XImageMng::s_sizeTotalVMem = 0;
 
+XImageMng::XImageMng()
+{
+	Init();
+}
+
 void XImageMng::Destroy()
 {
 	DoFlushCache();
 	//
 	CheckRelease();
-//	XLIST4_DESTROY(m_listSurface );
+	//	XLIST4_DESTROY(m_listSurface );
 	for( auto img : m_listSurface ) {
 		if( img.m_pSurface )
 			s_sizeTotalVMem -= img.m_pSurface->GetSizeByte();
 		SAFE_DELETE( img.m_pSurface );
 	}
 }
-
-XImageMng::XImageMng( int max )
-{
-	Init();
-}
-
 bool XImageMng::DoForceDestroy( XSurface *pSurface ) 
 {
 	if( !pSurface )
@@ -83,6 +82,43 @@ void XImageMng::Release( XSurface* pSurface )
 	// 어떤이미지를 릴리즈 할때 오래된파일삭제루틴을 한번 돌려준다.
 	DestroyOlderFile();
 }
+
+bool XImageMng::LoadMap( const _tstring& strFile )
+{
+	XBREAK( CONSTANT == nullptr );
+	CToken token;
+	if( token.LoadFile( XE::MakePath( DIR_PROP, strFile ), XE::TXT_UTF16 ) == xFAIL )
+		return false;
+	while( 1 ) {
+		token.GetToken();
+		if( token.IsEof() )
+			break;
+		const _tstring strKey = token.m_Token;
+		xImgMap imgMap;
+		imgMap.m_strRes = strKey;
+		const _tstring strFormat = token.GetToken();
+		XE::xtPixelFormat format = XE::xPF_NONE;
+		if( strFormat == _T("xPF_NONE") )
+			format = XE::xPF_NONE;
+		else if( strFormat == _T( "xPF_ARGB8888" ) )
+			format = XE::xPF_ARGB8888;
+		else if( strFormat == _T( "xPF_ARGB4444" ) )
+			format = XE::xPF_ARGB4444;
+		else if( strFormat == _T( "xPF_ARGB1555" ) )
+			format = XE::xPF_ARGB1555;
+		else if( strFormat == _T( "xPF_RGB565" ) )
+			format = XE::xPF_RGB565;
+		else if( strFormat == _T( "xPF_RGB555" ) )
+			format = XE::xPF_RGB555;
+		else {
+			XBREAKF( 1, "%s: unknown pixelformat: %s", strFile.c_str(), strFormat.c_str() );
+		}
+		imgMap.m_Format = format;;
+		m_mapImgInfo[ strKey ] = imgMap;
+	}
+	return true;
+}
+
 
 /**
  @brief 레퍼런스카운트가 0이된것들중 시간이 오래된건 삭제시킨다.
@@ -142,27 +178,27 @@ XImageMng::xImage* XImageMng::FindExist( XSurface *pSurface )
 /**
  @brief 기존코드 호환용
 */
-XSurface* XImageMng::Load( BOOL bHighReso, LPCTSTR szRes, BOOL bSrcKeep, BOOL bMakeMask, bool bAsync )
-{
-//	XBREAK( bHighReso == FALSE );		// 이제 이건 지원안함.
-	// 전투배경같은건 bHighReso를 FALSE로 놓고 쓰는 편법을 쓰기 때문에 일단 bHighReso는 없애지 못함. 장차 bHighReso자체를 없애는 방향으로 가야할듯.
-	return _Load( bHighReso != FALSE, szRes, XE::xPF_ARGB4444, true, xBOOLToBool(bSrcKeep), xBOOLToBool(bMakeMask), bAsync );
-
-}
+// XSurface* XImageMng::Load( BOOL bHighReso, LPCTSTR szRes, BOOL bSrcKeep, BOOL bMakeMask, bool bAsync )
+// {
+// //	XBREAK( bHighReso == FALSE );		// 이제 이건 지원안함.
+// 	// 전투배경같은건 bHighReso를 FALSE로 놓고 쓰는 편법을 쓰기 때문에 일단 bHighReso는 없애지 못함. 장차 bHighReso자체를 없애는 방향으로 가야할듯.
+// // 	return _Load( bHighReso != FALSE, szRes, XE::xPF_ARGB4444, true, xBOOLToBool(bSrcKeep), xBOOLToBool(bMakeMask), bAsync );
+// 	return _Load( bHighReso != FALSE, szRes, XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
+// }
 /**
  @brief 기존에 bHighReso를 FALSE로 해서 크게 렌더링하는 편법을 쓰고 있어서 bHighReso가 그대로 살아있음.
 */
-XSurface* XImageMng::Load( bool bHighReso, 
-													 LPCTSTR szRes, 
-													 XE::xtPixelFormat format, 
-													 bool bUseAtlas, 
-													 bool bSrcKeep/*=false*/, 
-													 bool bMakeMask/*=false*/, 
-													 bool bAsync /*= false*/ )
-{
-	const bool bKeepSrc = (bMakeMask == true);
-	return _Load( bHighReso, szRes, format, bUseAtlas, bKeepSrc, bMakeMask, bAsync );
-}
+// XSurface* XImageMng::Load( bool bHighReso, 
+// 													 LPCTSTR szRes, 
+// 													 XE::xtPixelFormat format, 
+// 													 bool bUseAtlas, 
+// 													 bool bSrcKeep/*=false*/, 
+// 													 bool bMakeMask/*=false*/, 
+// 													 bool bAsync /*= false*/ )
+// {
+// 	const bool bKeepSrc = (bMakeMask == true);
+// 	return _Load( bHighReso, szRes, format, bUseAtlas, bKeepSrc, bMakeMask, bAsync );
+// }
 
 /**
  @brief 내부용 로딩모듈
@@ -177,6 +213,15 @@ XSurface* XImageMng::_Load( bool bHighReso,
 														bool bSrcKeep, bool bMakeMask, 
 														bool bAsync )
 {
+	if( !format ) {
+		auto itor = m_mapImgInfo.find( _szRes );
+		if( itor != m_mapImgInfo.end() ) {
+			auto& imgInfo = itor->second;
+			format = imgInfo.m_Format;
+		} else {
+			format = XE::xPF_ARGB4444;
+		}
+	}
 	bAsync = false;		// 일단 버그수정을 위해 동기로딩만.
 	const _tstring strRes = _szRes;
 	//////////////////////////////////////////////////////////////////////////

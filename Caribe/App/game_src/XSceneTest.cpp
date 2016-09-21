@@ -7,6 +7,7 @@
 #include "Sprite/SprObj.h"
 #include "etc/XSurfaceDef.h"
 #include "Opengl2/XBatchRenderer.h"
+#include "XGameWnd.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -219,6 +220,9 @@ XSceneTest::XSceneTest( XGame *pGame, SceneParamPtr& spParam )
 	SetbUpdate( true );
 }
 
+/**
+ @brief 
+*/
 void XSceneTest::Create( void )
 {
 	XSceneBase::Create();
@@ -226,7 +230,7 @@ void XSceneTest::Create( void )
 	for( int i = 0; i < MAX_SPR1 * MAX_SPR2; ++i ) {
 		const int maxFiles = XNUM_ARRAY( s_files );
 		const _tstring strFile = C2SZ( s_files[xRandom(maxFiles)] );
-		m_psoTest[i] = new XSprObj( _T( "unit_minotaur.spr" ), XE::xHSL(), true, true );
+		m_psoTest[i] = new XSprObj( _T( "title.spr" ), XE::xHSL(), true, false, false, nullptr );
 // 		m_psoTest[i] = new XSprObj( strFile );
 		auto pso = m_psoTest[i];
 //		pso->SetAction( 4 );
@@ -374,7 +378,8 @@ void XSceneTest::OnMouseMove( float lx, float ly ) {
 
 void XSceneTest::OnRButtonUp( float lx, float ly ) {
  	XSceneBase::OnRButtonUp( lx, ly );
-// 	::memset( m_pAtlas, 0, (int)c_sizeAtlas.Size() * sizeof( DWORD ) );
+	XWND_ALERT( "%s", _T( "test" ) );
+	// 	::memset( m_pAtlas, 0, (int)c_sizeAtlas.Size() * sizeof( DWORD ) );
 // 	m_idCurr = 0;
 // 	::glDeleteTextures( 1, &m_glTexture );
 // 	m_glTexture = 0;

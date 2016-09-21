@@ -59,10 +59,10 @@ void XE::xRenderParam::GetmTransform( MATRIX* pOut ) const {
 void XE::xRenderParam::SetFlipHoriz( bool bFlag ) {
 	if( bFlag ) {
 		m_dwDrawFlag |= EFF_FLIP_HORIZ;
-		m_vRot.x += 180.f;
+		m_vRot.y += 180.f;
 	} else {
 		m_dwDrawFlag &= ~EFF_FLIP_HORIZ;
-		m_vRot.x += 0.f;
+		m_vRot.y += 0.f;
 	}
 }
 void XE::xRenderParam::SetFlipVert( bool bFlag ) {

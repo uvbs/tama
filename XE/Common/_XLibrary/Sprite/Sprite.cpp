@@ -133,18 +133,34 @@ void XSprite::Load( XSprDat *pSprDat,
 
 #ifdef _XASYNC_SPR
 	// 주 스레드에서 읽을수 있도록 파일에서 읽은 내용을 서피스쪽에다 담아둠.
-	auto spInfoSurface 
-		= std::make_shared<XE::xSurfaceInfo>( ptSizeSurface,
-																					XE::VEC2( adjX, adjY ),
-																					formatSurface,
-																					(void*)pImg,
-																					sizeMem,
-																					XE::xPF_ARGB8888,
-																					bSrcKeep,
-																					false,
-																					bUseAtlas );
-	// 비동기로딩을 하기위해 메모리 데이터를 받아둠.
-	m_pSurface->SetspSurfaceInfo( spInfoSurface );
+	if( bAsyncLoad ) {
+		auto spInfoSurface
+			= std::make_shared<XE::xSurfaceInfo>( ptSizeSurface,
+																						XE::VEC2( adjX, adjY ),
+																						formatSurface,
+																						(void*)pImg,
+																						sizeMem,
+																						XE::xPF_ARGB8888,
+																						bSrcKeep,
+																						false,
+																						bUseAtlas );
+		// 비동기로딩을 하기위해 메모리 데이터를 받아둠.
+		m_pSurface->SetspSurfaceInfo( spInfoSurface );
+	} else {
+		// 동기로딩
+		XE::xSurfaceInfo infoSurface( ptSizeSurface,
+																	XE::VEC2( adjX, adjY ),
+																	formatSurface,
+																	pImg,
+																	sizeMem,
+																	XE::xPF_ARGB8888,
+																	bSrcKeep,
+																	false,
+																	bUseAtlas );
+		CreateDevice( infoSurface );
+		// d3d쪽도 Create()안에서 메모리를 삭제하는 방식은 피해야 할듯
+		SAFE_DELETE_ARRAY( pImg );    // 뭐야 이거 -_-;;;  조낸 일관성 없네.
+	}
 #else
 	XE::xSurfaceInfo infoSurface( ptSizeSurface,
 																XE::VEC2( adjX, adjY ),

@@ -698,7 +698,7 @@ void XWndTab::AddTab( ID idTab, LPCTSTR szLabel, LPCTSTR szImg, float x, float y
 	if( szLabel )
 		pTab->strLabel = szLabel;
 //	pTab->psfcImg = GRAPHICS->CreateSurfaceFromFile( XE::MakePath( DIR_UI, szImg ), 281, 414 );
-	pTab->psfcImg = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szImg ) );
+	pTab->psfcImg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ) );
 	m_listTab.Add( pTab );
 	if( m_pSelectedTab == NULL )
 		m_pSelectedTab = pTab;
@@ -761,7 +761,7 @@ XWndTab2::XWndTab2( float x, float y, LPCTSTR szImg, LPCTSTR szFont, XLayout *pL
 	// 뒷배경
 	if( szImg )
 	{
-		m_psfcBg = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szImg ) );
+		m_psfcBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ) );
 		SetSizeLocal( m_psfcBg->GetWidth(), m_psfcBg->GetHeight() );
 	}
 	// 폰트
@@ -818,9 +818,9 @@ void XWndTab2::AddTab( ID idTab,
 	SetSizeLocal( vSize );
 	if( szLabel )
 		pTab->strLabel = szLabel;
-	pTab->psfcImgOn = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szImgOn ) );
+	pTab->psfcImgOn = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImgOn ) );
 	if( szImgOff )
-		pTab->psfcImgOff = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szImgOff ) );
+		pTab->psfcImgOff = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImgOff ) );
 
 	m_listTab.Add( pTab );
 	// 아직 선택된 탭이 없다면 시작탭아이디가 들어왔을때 자동으로 선택시킨다.

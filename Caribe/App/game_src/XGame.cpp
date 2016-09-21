@@ -241,11 +241,11 @@ void XGame::DidFinishCreated()
 #else
 	CONNECT_INI.Load( _T( "connect.ini" ) );
 	if( CONNECT_INI.GetstrcIPLogin().empty() ) {
-		XALERT("%s", "로긴서버 아이피 지정되지 않음.");
+		XALERT("%s", "Unspecified login server IP.");
 	}
 #ifdef _XPATCH
 	if( CONNECT_INI.GetstrcIPPatch().empty() ) {
-		XALERT( "%s", "패치서버 아이피 지정되지 않음." );
+		XALERT( "%s", "Unspecified patch server IP." );
 	}
 #endif // _XPATCH
 	#ifdef WIN32

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Caribe2013", "Caribe\Caribe2013.vcxproj.vcxproj", "{1565A2CB-DB14-4F22-8545-F51B7C11C502}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -44,54 +44,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 9
-		SccProjectUniqueName0 = Caribe\\Caribe2013.vcxproj.vcxproj
-		SccProjectName0 = Perforce\u0020Project
-		SccLocalPath0 = ..\\..\\..\\..
-		SccProvider0 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection0 = Caribe\\App\\pc_prj\\Caribe\\Caribe\\
-		SccProjectUniqueName1 = ..\\..\\..\\..\\XE\\prj\\xe_client\\xe_client\\xe_client2013.vcxproj.vcxproj
-		SccProjectName1 = Perforce\u0020Project
-		SccLocalPath1 = ..\\..\\..\\..
-		SccProvider1 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection1 = XE\\prj\\xe_client\\xe_client\\
-		SccProjectUniqueName2 = ..\\..\\..\\..\\XE\\prj\\xe_console\\xe_console\\xe_console.vcxproj
-		SccProjectName2 = Perforce\u0020Project
-		SccLocalPath2 = ..\\..\\..\\..
-		SccProvider2 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection2 = XE\\prj\\xe_console\\xe_console\\
-		SccProjectUniqueName3 = ..\\ExtractList\\ExtractList\\ExtractList.vcxproj
-		SccProjectName3 = Perforce\u0020Project
-		SccLocalPath3 = ..
-		SccProvider3 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection3 = ExtractList\\ExtractList\\
-		SccProjectUniqueName4 = ..\\MakePackage2\\MakePackage2\\MakePackage2.vcxproj
-		SccProjectName4 = Perforce\u0020Project
-		SccLocalPath4 = ..
-		SccProvider4 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection4 = MakePackage2\\MakePackage2\\
-		SccProjectUniqueName5 = ..\\DBAgentServer\\DBAgentServer\\DBAgentServer2013.vcxproj.vcxproj
-		SccProjectName5 = Perforce\u0020Project
-		SccLocalPath5 = ..\\..\\..\\..
-		SccProvider5 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection5 = Caribe\\App\\pc_prj\\DBAgentServer\\DBAgentServer\\
-		SccProjectUniqueName6 = ..\\..\\..\\..\\XE\\prj\\xe_server\\xe_server\\xe_server2013.vcxproj.vcxproj
-		SccProjectName6 = Perforce\u0020Project
-		SccLocalPath6 = ..\\..\\..\\..
-		SccProvider6 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection6 = XE\\prj\\xe_server\\xe_server\\
-		SccProjectUniqueName7 = ..\\GameServer\\GameServer\\GameServer2013.vcxproj.vcxproj
-		SccProjectName7 = Perforce\u0020Project
-		SccLocalPath7 = ..\\..\\..\\..
-		SccProvider7 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection7 = Caribe\\App\\pc_prj\\GameServer\\GameServer\\
-		SccProjectUniqueName8 = ..\\LoginServer\\LoginServer\\LoginServer2013.vcxproj.vcxproj
-		SccProjectName8 = Perforce\u0020Project
-		SccLocalPath8 = ..\\..\\..\\..
-		SccProvider8 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection8 = Caribe\\App\\pc_prj\\LoginServer\\LoginServer\\
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		_DebugGoogle|Win32 = _DebugGoogle|Win32
 		_DebugGoogle|x64 = _DebugGoogle|x64
@@ -105,6 +57,8 @@ Global
 		Debug_single|x64 = Debug_single|x64
 		Debug_Softnyx|Win32 = Debug_Softnyx|Win32
 		Debug_Softnyx|x64 = Debug_Softnyx|x64
+		DebugHome(Google)|Win32 = DebugHome(Google)|Win32
+		DebugHome(Google)|x64 = DebugHome(Google)|x64
 		DebugSingleHome|Win32 = DebugSingleHome|Win32
 		DebugSingleHome|x64 = DebugSingleHome|x64
 		DebugTestMode|Win32 = DebugTestMode|Win32
@@ -143,6 +97,9 @@ Global
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Softnyx|Win32.ActiveCfg = Debug_GLES2|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Softnyx|Win32.Build.0 = Debug_GLES2|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_Softnyx|x64.ActiveCfg = Debug_Softnyx|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugHome(Google)|Win32.ActiveCfg = DebugHome(Google)|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugHome(Google)|Win32.Build.0 = DebugHome(Google)|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugHome(Google)|x64.ActiveCfg = Release_single|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugSingleHome|Win32.ActiveCfg = DebugSingleHome|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugSingleHome|Win32.Build.0 = DebugSingleHome|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
@@ -188,6 +145,9 @@ Global
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Softnyx|Win32.ActiveCfg = Debug_single|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Softnyx|Win32.Build.0 = Debug_single|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_Softnyx|x64.ActiveCfg = Debug_single|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugHome(Google)|Win32.ActiveCfg = DebugHome(Google)|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugHome(Google)|Win32.Build.0 = DebugHome(Google)|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugHome(Google)|x64.ActiveCfg = Release_Bot2|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugSingleHome|Win32.ActiveCfg = DebugSingleHome|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugSingleHome|Win32.Build.0 = DebugSingleHome|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
@@ -234,6 +194,8 @@ Global
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.Debug_Softnyx|Win32.ActiveCfg = Debug_Bot|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.Debug_Softnyx|Win32.Build.0 = Debug_Bot|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.Debug_Softnyx|x64.ActiveCfg = Debug_Bot|Win32
+		{63B59066-E735-4F48-A82F-CFF9EE611212}.DebugHome(Google)|Win32.ActiveCfg = Debug|Win32
+		{63B59066-E735-4F48-A82F-CFF9EE611212}.DebugHome(Google)|x64.ActiveCfg = Debug|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.DebugSingleHome|Win32.ActiveCfg = Debug|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.DebugTestMode|Win32.ActiveCfg = DebugTestMode|Win32
@@ -248,7 +210,6 @@ Global
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.Release|Win32.Build.0 = Release|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.Release|x64.ActiveCfg = Release|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelGMO|Win32.ActiveCfg = Release|Win32
-		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelGMO|Win32.Build.0 = Release|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelGMO|x64.ActiveCfg = Release_Bot|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{63B59066-E735-4F48-A82F-CFF9EE611212}.RelSingle|x64.ActiveCfg = Release_Bot|Win32
@@ -272,6 +233,8 @@ Global
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.Debug_Softnyx|Win32.ActiveCfg = Debug|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.Debug_Softnyx|Win32.Build.0 = Debug|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.Debug_Softnyx|x64.ActiveCfg = Debug_Softnyx|Win32
+		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.DebugHome(Google)|Win32.ActiveCfg = Debug|Win32
+		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.DebugHome(Google)|x64.ActiveCfg = Debug|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.DebugSingleHome|Win32.ActiveCfg = Debug|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.DebugTestMode|Win32.ActiveCfg = DebugTestMode|Win32
@@ -286,7 +249,6 @@ Global
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.Release|Win32.Build.0 = Release|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.Release|x64.ActiveCfg = Release|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.RelGMO|Win32.ActiveCfg = Release_GMO|Win32
-		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.RelGMO|Win32.Build.0 = Release_GMO|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.RelGMO|x64.ActiveCfg = Release_GMO|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{34C374D5-01E8-480D-AF18-581CE9A42CA0}.RelSingle|x64.ActiveCfg = Release|Win32
@@ -310,6 +272,8 @@ Global
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.Debug_Softnyx|Win32.ActiveCfg = Debug|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.Debug_Softnyx|Win32.Build.0 = Debug|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.Debug_Softnyx|x64.ActiveCfg = Debug_Softnyx|Win32
+		{1C96D25D-2617-4DE0-817B-729714BA1321}.DebugHome(Google)|Win32.ActiveCfg = Debug|Win32
+		{1C96D25D-2617-4DE0-817B-729714BA1321}.DebugHome(Google)|x64.ActiveCfg = Debug|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.DebugSingleHome|Win32.ActiveCfg = Debug|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.DebugTestMode|Win32.ActiveCfg = DebugTestMode|Win32
@@ -324,7 +288,6 @@ Global
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.Release|Win32.Build.0 = Release|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.Release|x64.ActiveCfg = Release|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.RelGMO|Win32.ActiveCfg = Release_GMO|Win32
-		{1C96D25D-2617-4DE0-817B-729714BA1321}.RelGMO|Win32.Build.0 = Release_GMO|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.RelGMO|x64.ActiveCfg = Release_GMO|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{1C96D25D-2617-4DE0-817B-729714BA1321}.RelSingle|x64.ActiveCfg = Release|Win32
@@ -345,6 +308,8 @@ Global
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.Debug_single|x64.ActiveCfg = Debug_bot|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.Debug_Softnyx|Win32.ActiveCfg = Debug|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.Debug_Softnyx|x64.ActiveCfg = Debug_bot|Win32
+		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugHome(Google)|Win32.ActiveCfg = Debug|Win32
+		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugHome(Google)|x64.ActiveCfg = Debug|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugSingleHome|Win32.ActiveCfg = Debug|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugTestMode|Win32.ActiveCfg = DebugTestMode|Win32
@@ -380,6 +345,8 @@ Global
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.Debug_Softnyx|Win32.ActiveCfg = Debug|Win32
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.Debug_Softnyx|x64.ActiveCfg = Debug_bot|x64
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.Debug_Softnyx|x64.Build.0 = Debug_bot|x64
+		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugHome(Google)|Win32.ActiveCfg = Debug|Win32
+		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugHome(Google)|x64.ActiveCfg = Debug|x64
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugSingleHome|Win32.ActiveCfg = Debug|Win32
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|x64
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugTestMode|Win32.ActiveCfg = DebugTestMode|Win32
@@ -415,6 +382,8 @@ Global
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.Debug_single|x64.ActiveCfg = Debug_bot|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.Debug_Softnyx|Win32.ActiveCfg = Debug|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.Debug_Softnyx|x64.ActiveCfg = Debug_bot|Win32
+		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugHome(Google)|Win32.ActiveCfg = Debug|Win32
+		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugHome(Google)|x64.ActiveCfg = Debug|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugSingleHome|Win32.ActiveCfg = Debug|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugTestMode|Win32.ActiveCfg = DebugTestMode|Win32
@@ -446,6 +415,8 @@ Global
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.Debug_single|x64.ActiveCfg = Debug_bot|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.Debug_Softnyx|Win32.ActiveCfg = Debug|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.Debug_Softnyx|x64.ActiveCfg = Debug_bot|Win32
+		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugHome(Google)|Win32.ActiveCfg = Debug|Win32
+		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugHome(Google)|x64.ActiveCfg = Debug|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugSingleHome|Win32.ActiveCfg = Debug|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugTestMode|Win32.ActiveCfg = DebugTestMode|Win32
@@ -481,6 +452,8 @@ Global
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Debug_Softnyx|Win32.ActiveCfg = Debug|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Debug_Softnyx|Win32.Build.0 = Debug|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Debug_Softnyx|x64.ActiveCfg = Debug_Softnyx|Win32
+		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.DebugHome(Google)|Win32.ActiveCfg = Debug|Win32
+		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.DebugHome(Google)|x64.ActiveCfg = Debug|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.DebugSingleHome|Win32.ActiveCfg = Debug|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.DebugSingleHome|x64.ActiveCfg = DebugSingleHome|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.DebugTestMode|Win32.ActiveCfg = DebugTestMode|Win32
@@ -495,7 +468,6 @@ Global
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Release|Win32.Build.0 = Release|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.Release|x64.ActiveCfg = Release|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelGMO|Win32.ActiveCfg = Release|Win32
-		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelGMO|Win32.Build.0 = Release|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelGMO|x64.ActiveCfg = Release_GMO|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelSingle|Win32.ActiveCfg = Release|Win32
 		{0C4742A0-4FF6-402D-A432-1AC7C1CED902}.RelSingle|Win32.Build.0 = Release|Win32

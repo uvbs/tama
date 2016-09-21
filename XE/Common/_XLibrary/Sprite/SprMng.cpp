@@ -307,27 +307,110 @@ XSPDat XSprMng::Load( LPCTSTR szFileKey,
 		strFile = pHslFile->m_strFile;
 		hsl = pHslFile->m_HSL;
 	}
-	bool bExistAtCache = false;
-	{
-		// 리스트에 szFilename으로 생성된게 있는지 찾는다.
-		auto spDat = FindByKey( szFileKey );
-		if( spDat == nullptr ) {
-			spDat = FindByKeyAtCache( szFileKey );
-			if( spDat ) {
-				bExistAtCache = true;
-			}
-		}
-		if( spDat ) {
-			auto pSprDat = spDat->m_pSprDat;
-			if( pSprDat == nullptr && spDat->m_idAsync )
-				*pOutidAsync = spDat->m_idAsync;
-			spDat->m_secLoaded = XTimer2::sGetTime();
-			if( bExistAtCache )
-				// 캐시에 있는것을 참조맵으로 옮긴다.
-				MoveCacheToRefMap( spDat );
-			return spDat;
-		}
+	// 이미 로딩된것이 있는지 찾는다.
+	auto spDat = FindExist( szFileKey, pOutidAsync );
+	if( spDat ) {
+		return spDat;
 	}
+
+// 	bool bExistAtCache = false;
+// 	{
+// 		// 리스트에 szFilename으로 생성된게 있는지 찾는다.
+// 		auto spDat = FindByKey( szFileKey );
+// 		if( spDat == nullptr ) {
+// 			spDat = FindByKeyAtCache( szFileKey );
+// 			if( spDat ) {
+// 				bExistAtCache = true;
+// 			}
+// 		}
+// 		if( spDat ) {
+// 			auto pSprDat = spDat->m_pSprDat;
+// 			if( pSprDat == nullptr && spDat->m_idAsync )
+// 				*pOutidAsync = spDat->m_idAsync;
+// 			spDat->m_secLoaded = XTimer2::sGetTime();
+// 			if( bExistAtCache )
+// 				// 캐시에 있는것을 참조맵으로 옮긴다.
+// 				MoveCacheToRefMap( spDat );
+// 			return spDat;
+// 		}
+// 	}
+	if( bAsyncLoad ) {
+		// 이미 로딩된게 없으면 비동기 로딩을 준비한다
+		return LoadAsync( szFileKey, strFile, hsl, bUseAtlas, 
+											bSrcKeep, bBatch, pOutidAsync );
+// 		xAsync asyncSpr;
+// 		asyncSpr.m_strFilename = szFileKey;		// 가상 파일명(treant.spr)
+// 		asyncSpr.m_strLoadFile = strFile;	// 실제 파일명(treant2.spr)
+// 		asyncSpr.m_HSL = hsl;
+// 		asyncSpr.m_bSrcKeep = bSrcKeep;
+// 		asyncSpr.m_bRestore = FALSE;
+// 		asyncSpr.m_bUseAtlas = bUseAtlas;
+// 		asyncSpr.m_bBatch = bBatch;
+// 		asyncSpr.m_pAtlasMng = XTextureAtlas::sGetpCurrMng();
+// 		{
+// 			XAUTO_LOCK2( m_spLock );
+// 			// 스레드에서 하나씩 로딩을 시킴.
+// 			m_listAsync.Add( asyncSpr );
+// 			XBREAK( pOutidAsync == nullptr );
+// 			*pOutidAsync = asyncSpr.m_idAsync;
+// 			auto spDat = AddNew( szFileKey, strFile, nullptr, hsl, bBatch );
+// 			if( spDat ) {
+// 				spDat->m_idAsync = asyncSpr.m_idAsync;
+// 			}
+// 			return spDat;
+// 		}
+	} else {
+		const bool bRestore = false;
+		return LoadSync( szFileKey, strFile, hsl, bUseAtlas, 
+										 bSrcKeep, bBatch, bRestore );
+	}
+} // Load
+
+/**
+ @brief 동기 로딩
+*/
+xSpr::XSPDat XSprMng::LoadSync( LPCTSTR szFileKey,
+																const _tstring& strFile,
+																const XE::xHSL& hsl,
+																bool bUseAtlas,
+																BOOL bSrcKeep,
+																bool bBatch,
+																bool bRestore )
+{
+	auto pSprDat = new XSprDat;
+	m_pNowLoad = pSprDat;
+	XTrace( _T( "loadSync %s........" ), szFileKey );
+	auto bOk = pSprDat->Load( strFile.c_str(),
+														bUseAtlas,
+														false,		// bAsync
+														hsl,
+														bSrcKeep,
+														bRestore,
+														bBatch );
+	m_pNowLoad = nullptr;
+	if( bOk ) {
+		XAUTO_LOCK2( m_spLock );
+		XTRACE( "completed\n" );
+		return AddNew( szFileKey, strFile, pSprDat, hsl, bBatch );
+	} else {
+		XTrace( _T( "failed\n" ) );
+		// failed
+		SAFE_DELETE( pSprDat );
+	}
+	return nullptr;
+}
+
+/**
+ @brief 비동기 로딩
+*/
+xSpr::XSPDat XSprMng::LoadAsync( LPCTSTR szFileKey, 
+																 const _tstring& strFile,
+																 const XE::xHSL& hsl,
+																 bool bUseAtlas,
+																 BOOL bSrcKeep,
+																 bool bBatch,
+																 ID* pOutidAsync )
+{
 	// 이미 로딩된게 없으면 비동기 로딩을 준비한다
 	xAsync asyncSpr;
 	asyncSpr.m_strFilename = szFileKey;		// 가상 파일명(treant.spr)
@@ -338,19 +421,41 @@ XSPDat XSprMng::Load( LPCTSTR szFileKey,
 	asyncSpr.m_bUseAtlas = bUseAtlas;
 	asyncSpr.m_bBatch = bBatch;
 	asyncSpr.m_pAtlasMng = XTextureAtlas::sGetpCurrMng();
-	{
-		XAUTO_LOCK2( m_spLock );
-		// 스레드에서 하나씩 로딩을 시킴.
-		m_listAsync.Add( asyncSpr );
-		XBREAK( pOutidAsync == nullptr );
-		*pOutidAsync = asyncSpr.m_idAsync;
-		auto spDat = AddNew( szFileKey, strFile, nullptr, hsl, bBatch );
-		if( spDat ) {
-			spDat->m_idAsync = asyncSpr.m_idAsync;
-		}
-		return spDat;
+	//
+	XAUTO_LOCK2( m_spLock );
+	// 스레드에서 하나씩 로딩을 시킴.
+	m_listAsync.Add( asyncSpr );
+	XBREAK( pOutidAsync == nullptr );
+	*pOutidAsync = asyncSpr.m_idAsync;
+	auto spDat = AddNew( szFileKey, strFile, nullptr, hsl, bBatch );
+	if( spDat ) {
+		spDat->m_idAsync = asyncSpr.m_idAsync;
 	}
-} // Load
+	return spDat;
+}
+
+xSpr::XSPDat XSprMng::FindExist( const _tstring& strFileKey, ID* pOutidAsync )
+{
+	bool bExistAtCache = false;
+	// 리스트에 szFilename으로 생성된게 있는지 찾는다.
+	auto spDat = FindByKey( strFileKey.c_str() );
+	if( spDat == nullptr ) {
+		spDat = FindByKeyAtCache( strFileKey.c_str() );
+		if( spDat ) {
+			bExistAtCache = true;
+		}
+	}
+	if( spDat ) {
+		auto pSprDat = spDat->m_pSprDat;
+		if( pSprDat == nullptr && spDat->m_idAsync )
+			*pOutidAsync = spDat->m_idAsync;
+		spDat->m_secLoaded = XTimer2::sGetTime();
+		if( bExistAtCache )
+			// 캐시에 있는것을 참조맵으로 옮긴다.
+			MoveCacheToRefMap( spDat );
+	}
+	return spDat;
+}
 
 xSpr::XSPDat XSprMng::AddNew( const _tstring& strKey, 
 															const _tstring& strFile, 
@@ -470,6 +575,9 @@ void XSprMng::UpdateUV( ID idTex,
 			spDat->m_pSprDat->UpdateUV( idTex, sizePrev, sizeNew );
 		}
 	}
+	if( m_pNowLoad ) {
+		m_pNowLoad->UpdateUV( idTex, sizePrev, sizeNew );
+	}
 }
 
 
@@ -496,7 +604,6 @@ void XSprMng::WorkThread()
 			//
 		{
 			auto pSprDat = new XSprDat;
-			//			XSprite::sSetHSL( asyncLoad.m_HSL );
 			const bool bAsyncLoad = true;
 			// 비동기로딩모드로 읽어서 파일데이터를 메모리에만 올린다.
 			XTrace( _T( "load %s........" ), asyncLoad.m_strFilename.c_str() );

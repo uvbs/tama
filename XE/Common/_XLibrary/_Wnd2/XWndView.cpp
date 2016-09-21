@@ -59,7 +59,7 @@ XWndView::XWndView( LPCTSTR szImg )
 	: XWnd( 0, 0 ) 
 {
 	Init();
-	m_psfcFrame = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szImg ) );
+	m_psfcFrame = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ) );
 	XBREAK( m_psfcFrame == NULL );
 	SetSizeLocal( m_psfcFrame->GetSize() );
 	AutoLayoutCenter( XE::GetMain()->GetpGame() );
@@ -245,7 +245,7 @@ void XWndView::OnFinishAppear()
 
 void XWndView::SetBgImg( LPCTSTR szImg, XE::xtPixelFormat formatSurface )
 {
-	m_psfcFrame = IMAGE_MNG->Load( true, XE::MakePath( DIR_UI, szImg ), formatSurface );
+	m_psfcFrame = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ), formatSurface );
 	if( XASSERT( m_psfcFrame ) ) {
 		SetSizeLocal( m_psfcFrame->GetSize() );
 	} else {

@@ -33,10 +33,12 @@ using namespace XGAME;
 ////////////////////////////////////////////////////////////////
 XWndCloudLayer::XWndCloudLayer( const XE::VEC2& vPos, 
 								const XE::VEC2& vSize )
-	: XWnd( vPos.x, vPos.y, vSize.w, vSize.h )
+// 	: XWnd( vPos.x, vPos.y, vSize.w, vSize.h )
+	: XWndBatchRender( "cloud", true, XE::xRECT( vPos, vSize ) )
 {
 	Init();
-	m_spDatCloud = SPRMNG->Load( _T("cloud.spr"), XE::xHSL(), false, FALSE, true, true, nullptr );
+	ID idAsync = 0;
+	m_spDatCloud = SPRMNG->Load( _T("cloud.spr"), XE::xHSL(), true, FALSE, true, true, &idAsync );
 //	SetbTouchable( FALSE );
 	m_objMove[0].SetState1();
 	m_objMove[1].SetState2();
@@ -117,7 +119,7 @@ int XWndCloudLayer::Process( float dt )
 	}// END_LOOP;
 	m_objMove[0].Process( dt );
 	m_objMove[1].Process( dt );
-	return XWnd::Process( dt );
+	return XWndBatchRender::Process( dt );
 }
 
 
@@ -214,7 +216,7 @@ void XWndCloudLayer::Draw()
 #ifdef _xIN_TOOL
 	if( bToolMode == false )
 #endif // _xIN_TOOL
-		XWnd::Draw();
+		XWndBatchRender::Draw();
 }
 
 
@@ -333,9 +335,18 @@ void XWndCloudLayer::DrawHexaElem( const XE::VEC2& vt
 		alpha *= slerp;
 	}
 	alpha *= 0.875f;//alpha *= 0.75f;		// 이제 항상 구름은 이 값으로 찍는다. 이게 더 보기가 좋더라.
-	psfcCloud->SetfAlpha( alpha );
-	psfcCloud->SetScale( scaleCloud );
-	psfcCloud->Draw( vt );
+// 	psfcCloud->SetfAlpha( alpha );
+// 	psfcCloud->SetScale( scaleCloud );
+// 	psfcCloud->Draw( vt );
+	XE::xRenderParam param;
+	param.m_vPos = vt;
+	param.m_vScale = scaleCloud;
+	param.m_vColor = XE::VEC4(1.f, 1.f, 1.f, alpha );
+	param.m_bAlphaTest = false;
+	param.m_bZBuff = false;
+	MATRIX mWorld;
+	MatrixIdentity( mWorld );
+	psfcCloud->GetpSurface()->DrawByParam( mWorld, param );
 }
 
 /**
@@ -601,7 +612,6 @@ int XWndAreaBanner::Process( float dt )
 			m_State = 2;
 		}
 	}
-
-	return XWnd::Process( dt );
+	return XWnd::Process(dt);
 }
 

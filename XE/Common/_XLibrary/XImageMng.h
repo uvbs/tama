@@ -28,14 +28,20 @@ private:
 		bool m_bUseAtlas = false;
 		bool m_bBatch = false;
 	};
+	// 각 png파일들을 어떤 포맷으로 읽어야 할지 정보가 들어있다.
+	struct xImgMap {
+		_tstring m_strRes;
+		XE::xtPixelFormat m_Format = XE::xPF_ARGB4444;
+	};
 private:
 	XList4<xImage> m_listSurface;
 	XList4<xAsyncLoad> m_listAsync;		// 비동기로딩 대기열
+	std::map<_tstring, xImgMap> m_mapImgInfo;
 	int m_Cnt = 0;
 	void Init() {}
 	void Destroy();
 public:
-	XImageMng( int max );
+	XImageMng();
 	virtual ~XImageMng() { Destroy(); }
 	//
 	void CheckRelease( void );
@@ -53,38 +59,40 @@ private:
 									 bool bAsync );
 public:
 	// 구코드 호환용
-	XSurface* Load( BOOL bHighReso, LPCTSTR szRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask=FALSE, bool bAsync = false );
+// 	XSurface* Load( BOOL bHighReso, LPCTSTR szRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask=FALSE, bool bAsync = false );
 	inline XSurface* Load( LPCTSTR szRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
-		return Load( TRUE, szRes, bSrcKeep, bMakeMask, bAsync );
+		return _Load( true, szRes, XE::xPF_NONE, true, xBOOLToBool(bSrcKeep), xBOOLToBool(bMakeMask), bAsync );
 	}
 	inline XSurface* Load( const _tstring& strRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
-		return Load( TRUE, strRes.c_str(), bSrcKeep, bMakeMask, bAsync );
+// 		return Load( TRUE, strRes.c_str(), bSrcKeep, bMakeMask, bAsync );
+		return _Load( true, strRes.c_str(), XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
 	}
 	inline XSurface* Load( const _tstring&& strRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
-		return Load( TRUE, strRes.c_str(), bSrcKeep, bMakeMask, bAsync );
+//		return Load( TRUE, strRes.c_str(), bSrcKeep, bMakeMask, bAsync );
+		return _Load( true, strRes.c_str(), XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
 	}
-	XSurface* Load( bool bHighReso, LPCTSTR szRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
-		return _Load( bHighReso, szRes, XE::xPF_ARGB4444, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
-	}
-	XSurface* Load( bool bHighReso, const _tstring& strRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
-		return _Load( bHighReso, strRes.c_str(), XE::xPF_ARGB4444, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
-// 		return Load( bHighReso, strRes.c_str(), bSrcKeep, bMakeMask );
-	}
+// 	XSurface* Load( bool bHighReso, LPCTSTR szRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
+// 		return _Load( bHighReso, szRes, XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
+// 	}
+// 	XSurface* Load( bool bHighReso, const _tstring& strRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
+// 		return _Load( bHighReso, strRes.c_str(), XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
+// // 		return Load( bHighReso, strRes.c_str(), bSrcKeep, bMakeMask );
+// 	}
 	// 신코드
-	XSurface* Load( bool bHighReso, 
-									LPCTSTR szRes, 
-									XE::xtPixelFormat format, 
-									bool bUseAtlas, 
-									bool bSrcKeep, bool bMakeMask, 
-									bool bAsync );
-	inline XSurface* Load( bool bHighReso, 
-												 const _tstring& strRes, 
-												 XE::xtPixelFormat format, 
-												 bool bUseAtlas, 
-												 bool bSrcKeep, bool bMakeMask, bool
-												 bAsync ) {
-		return Load( bHighReso, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
-	}
+// 	XSurface* Load( bool bHighReso, 
+// 									LPCTSTR szRes, 
+// 									XE::xtPixelFormat format, 
+// 									bool bUseAtlas, 
+// 									bool bSrcKeep, bool bMakeMask, 
+// 									bool bAsync );
+// 	inline XSurface* Load( bool bHighReso, 
+// 												 const _tstring& strRes, 
+// 												 XE::xtPixelFormat format, 
+// 												 bool bUseAtlas, 
+// 												 bool bSrcKeep, bool bMakeMask, bool
+// 												 bAsync ) {
+// 		return Load( bHighReso, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+// 	}
 	inline XSurface* Load( const _tstring& strRes, 
 												 XE::xtPixelFormat format, 
 												 bool bUseAtlas, 
@@ -107,11 +115,21 @@ public:
 		return _Load( true, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
 	}
 	inline XSurface* Load( LPCTSTR szRes,
+												 XE::xtPixelFormat format ) {
+		return Load( szRes, format, true, false, false, false );
+	}
+	inline XSurface* Load( LPCTSTR szRes,
 												 XE::xtPixelFormat format, 
 												 bool bUseAtlas, 
 												 bool bSrcKeep, bool bMakeMask,
 												 bool bAsync ) {
 		return _Load( true, szRes, format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+	}
+	inline XSurface* LoadByRetina( LPCTSTR szRes,
+																 XE::xtPixelFormat format,
+																 bool bUseAtlas,
+																 bool bAsync ) {
+		return _Load( false, szRes, format, bUseAtlas, false, false, bAsync );
 	}
 	XSurface* CreateSurface( const char* cKey
 													, const XE::POINT& sizeSurfaceOrig
@@ -127,6 +145,7 @@ public:
 	void RestoreDevice();
 	void DestroyDevice();
 	void Release( XSurface* pSurface );
+	bool LoadMap( const _tstring& strFile );
 	template<int N>
 	int GetArySurfaces( XArrayLinearN<XSurface*, N>& ary ) {
 		int num = 0;

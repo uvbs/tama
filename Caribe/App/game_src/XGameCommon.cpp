@@ -21,6 +21,7 @@
 #include "XPropLegion.h"
 #include "XGlobalConst.h"
 #include "XResMng.h"
+#include "XImageMng.h"
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 #include "XPropUser.h"
 #endif // #if defined(_CLIENT) || defined(_GAME_SERVER)
@@ -108,6 +109,7 @@ void XGameCommon::CreateCommon()
 #if (!defined(_XPROP_SERIALIZE) && defined(_CLIENT)) || defined(_SERVER)
 	XBREAK( CONSTANT != nullptr );
 	LoadConstant();
+	IMAGE_MNG->LoadMap( _T( "img_map.txt" ) );
 	// 안드로이드는 여기 읽으면 안됨
 #ifndef _XSINGLE
 #ifdef _VER_ANDROID
@@ -119,6 +121,7 @@ void XGameCommon::CreateCommon()
 // 	CONSOLE( "Load game.lua..." );
 // 	m_pLua = new XGameLua("game.lua");
 // 	m_pLua->Initialize();
+//
 	CONSOLE( "Create global constant..." );
 	// xml로딩
 	XGlobalConst::sGetMutable()->Load( XE::MakePath( DIR_SCRIPTW, _T("global.xml") ) );

@@ -273,7 +273,7 @@ XObjRock::XObjRock( XEWndWorld *pWndWorld,
 	float distsq = vDist.Length();
 	float secFly = distsq / ( ( 10.f * XFPS ) );
 	SetSecFly( secFly );
-	m_psfcShadow = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_IMG, _T( "shadow.png" ) ) );
+	m_psfcShadow = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, _T( "shadow.png" ) ) );
 	SetScaleObj( 2.0f );
 	SetArriveSfx( _T("eff_ravfire_rava.spr"), 1 );
 }
@@ -953,7 +953,7 @@ XObjRes::XObjRes( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct
 	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos, szSpr, idAct )
 //	, m_spCompMove( 20.f, XE::VEC2( 270.f, 290.f ) )
 {
-	m_psfcShadow = IMAGE_MNG->Load( TRUE, PATH_IMG( "shadow.png" ) );
+	m_psfcShadow = IMAGE_MNG->Load( PATH_IMG( "shadow.png" ) );
 	m_aryLoots = aryLoots;
 	m_spCompFont = std::make_shared<XCompObjFont>();
 	m_spCompFont->Load( FONT_RESNUM, 18.f );

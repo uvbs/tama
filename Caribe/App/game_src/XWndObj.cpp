@@ -249,7 +249,7 @@ void XWndBgObjLayer::UpdateCurrFocus( const XE::VEC2& vFocus, const XE::VEC2& si
 // 		}
 	}
 #ifdef _DEBUG
-	CONSOLE("created bgObj: %d", cntCreated );
+//	CONSOLE("created bgObj: %d", cntCreated );
 #endif // _DEBUG
 }
 

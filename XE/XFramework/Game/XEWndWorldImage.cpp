@@ -47,7 +47,7 @@ XSurface* XEWndWorldImage::LoadImg( LPCTSTR resImg )
 		XBREAK( XE::IsEmpty( resImg ) );
 		SAFE_RELEASE2( IMAGE_MNG, m_psfcBg );
 //		m_strResBg = resImg;
-		m_psfcBg = IMAGE_MNG->Load( false, resImg, XE::xPF_RGB565 );
+		m_psfcBg = IMAGE_MNG->LoadByRetina( resImg, XE::xPF_RGB565, false, false );
 // 	} END_ATLASES;
 	return m_psfcBg;
 }

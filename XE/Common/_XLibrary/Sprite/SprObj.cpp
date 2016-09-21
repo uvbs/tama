@@ -74,6 +74,7 @@ XSprObj::XSprObj( LPCTSTR szFilename,
 													XE::xHSL(),
 													true,
 													bBatch,
+													false,		// bAsync
 													&m_Async.m_idAsyncLoad );
 	// 	Load( szFilename, XE::xHSL(), false, FALSE, false );
 	if( m_spDat->m_pSprDat )
@@ -103,11 +104,11 @@ XSprObj::XSprObj( LPCTSTR szFilename,
 									const XE::xHSL& hsl, 
 									bool bUseAtlas, 
 									bool bBatch,
+									bool bAsync,
 									XDelegateSprObj *pDelegate/* = nullptr*/ )
 {
 	Init();
-	m_spDat = LoadInternal( szFilename, hsl, bUseAtlas, bBatch, &m_Async.m_idAsyncLoad );
-// 	Load( szFilename, hsl, bUseAtlas, FALSE, false );
+	m_spDat = LoadInternal( szFilename, hsl, bUseAtlas, bBatch, bAsync, &m_Async.m_idAsyncLoad );
 	if( m_spDat->m_pSprDat )
 		OnFinishLoad( m_spDat->m_pSprDat );
 	m_pDelegate = pDelegate;
@@ -500,7 +501,8 @@ void XSprObj::JumpKeyPos( XActDat *pAction, float fJumpFrame )
 XSPDat XSprObj::LoadInternal( LPCTSTR szFilename, 
 															const XE::xHSL& hsl, 
 															bool bUseAtlas, 
-															bool bBatch, 
+															bool bBatch,
+															bool bAsync,
 															ID* pOutidAsync ) const
 {
 	// 비동기로딩시에는 파일I/O만 예약한다.
@@ -508,7 +510,7 @@ XSPDat XSprObj::LoadInternal( LPCTSTR szFilename,
 											 hsl,
 											 bUseAtlas,
 											 FALSE,
-											 true,
+											 bAsync,
 											 bBatch,
 											 pOutidAsync );
 } // Load
@@ -518,10 +520,11 @@ XSPDat XSprObj::LoadInternal( const char* cFilename,
 															const XE::xHSL& hsl, 
 															bool bUseAtlas, 
 															bool bBatch,
+															bool bAsync,
 															ID* pOutidAsync ) const
 {
 	const _tstring strFile = C2SZ(cFilename);
-	return LoadInternal( strFile.c_str(), hsl, bUseAtlas, bBatch, pOutidAsync );
+	return LoadInternal( strFile.c_str(), hsl, bUseAtlas, bBatch, bAsync, pOutidAsync );
 }
 #endif // WIN32
 

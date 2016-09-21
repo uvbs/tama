@@ -1,6 +1,6 @@
 ﻿#pragma once
 //#include "XWindow.h"
-#include "_Wnd2/XWnd.h"
+#include "XFramework/client/XWndBatchRender.h"
 #include "XPropCloud.h"
 #include "XFramework/Game/XEComponents.h"
 //#include "Sprite/SprDat.h"
@@ -47,7 +47,7 @@ private:
 	void Destroy() {}
 }; // class XCloudMove
 
-class XWndCloudLayer : public XWnd
+class XWndCloudLayer : public XWndBatchRender
 {
 	struct xtDisappear {
 		CTimer timerFade;	///< 구름 사라질때 타이머

@@ -75,6 +75,7 @@ private:
 	XSPLock m_spLock;
 //	uintptr_t m_hThread = 0;
 	XVector<std::shared_ptr<std::thread>> m_aryThread;
+	XSprDat* m_pNowLoad = nullptr;			// 현재 읽고있는 파일의 임시변수
 //	ID m_idThread = 0;
 	void Init( void ) {
 	}
@@ -129,7 +130,10 @@ private:
 	xSpr::XSPDat FindByidAsync( ID idAsync );
 	void CompleteAsyncLoad( ID idAsync );
 	void DestroyOlderFile();
-//	void DeleteAsyncComplete( ID idAsync );
+	xSpr::XSPDat FindExist( const _tstring& strFileKey, ID* pOutidAsync );
+	xSpr::XSPDat LoadAsync( LPCTSTR szFileKey, const _tstring& strFile, const XE::xHSL& hsl, bool bUseAtlas, BOOL bSrcKeep, bool bBatch, ID* pOutidAsync );
+	xSpr::XSPDat LoadSync( LPCTSTR szFileKey, const _tstring& strFile, const XE::xHSL& hsl, bool bUseAtlas, BOOL bSrcKeep, bool bBatch, bool bRestore );
+	//	void DeleteAsyncComplete( ID idAsync );
 };
 
 

@@ -758,7 +758,9 @@ void XWnd::Draw()
 #endif
 			if( pWnd->GetpDelegate() )
 				pWnd->GetpDelegate()->DelegateBeforeDraw( pWnd );
+			pWnd->DrawBefore();
 			pWnd->Draw();
+			pWnd->DrawAfter();
 #ifdef WIN32
 			if( XWnd::s_bDrawOutline ) {
 				const auto vPos = pWnd->GetPosFinal();

@@ -36,13 +36,13 @@
         <!--남은 시간-->
       </text>
     </img>
-    <butt img_up="common_butt_mid.png" key="butt.start" posx="center" posy="118" text="2038" font_size="30" font="font_text_b" font_style="stroke">
+    <butt img_up="common_butt_mid.png" key="butt.start" posx="center" posy="118" text="2038" font_size="30" font="font_text_b" font_style="stroke" format_surface="argb8888">
       <!--전투-->
     </butt>
-    <butt img_up="common_butt_mid.png" key="butt.edit" posx="center" posy="160" text="2244" font_size="30" font="font_text_b" font_style="stroke">
+    <butt img_up="common_butt_mid.png" key="butt.edit" posx="center" posy="160" text="2244" font_size="30" font="font_text_b" font_style="stroke" format_surface="argb8888">
       <!--진형편집-->
     </butt>
-    <butt img_up="common_butt_mid.png" key="butt.cancel" posx="center" posy="203" text="2033" font_size="30" font="font_text_b" font_style="stroke">
+    <butt img_up="common_butt_mid.png" key="butt.cancel" posx="center" posy="203" text="2033" font_size="30" font="font_text_b" font_style="stroke" format_surface="argb8888">
       <!--퇴각-->
     </butt>
     <text font_size="35" font="font_text_b" style="stroke" posx="center" posy="50" text="2039">

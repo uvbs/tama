@@ -240,11 +240,11 @@ XWndInvenHeroElem::XWndInvenHeroElem( XHero* pHero, XLegion *pLegion )
 		return;
 	m_pLegion = pLegion;
 	auto numStar = m_pHero->GetGrade();
-	m_psfcStar = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bicstar.png" ) ) );
-	m_psfcStarEmpty = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
+	m_psfcStar = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bicstar.png" ) ) );
+	m_psfcStarEmpty = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
 	// 	for (int i = 0; i < numStar; ++i) {
-	// 		m_pStar[i] = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
-	// 		m_aryStarEmpty[ i ] = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
+	// 		m_pStar[i] = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
+	// 		m_aryStarEmpty[ i ] = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
 	// 	}
 	m_psfcBgGradation = IMAGE_MNG->Load( PATH_UI( "bg_hero.png" ), XE::xPF_ARGB8888 );
 	m_pFace = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, m_pHero->GetpProp()->strFace.c_str() ), XE::xPF_ARGB8888 );
@@ -269,9 +269,9 @@ XWndInvenHeroElem::XWndInvenHeroElem( XHero* pHero, XLegion *pLegion )
 	m_pName->SetAlign( XE::xALIGN_HCENTER );
 	m_pName->SetStyle( xFONT::xSTYLE_STROKE );
 	m_pName->SetLineLength( 48.f );
-	m_pSelect = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_unit_bg_s_select.png" ) ) );
-	m_pParty = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "legion_hero_battle.png" ) ) );
-	m_pSoulStone = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "gem_small.png" ) ) );
+	m_pSelect = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s_select.png" ) ) );
+	m_pParty = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "legion_hero_battle.png" ) ) );
+	m_pSoulStone = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "gem_small.png" ) ) );
 	m_strName = XE::Format( _T( "%s" ), m_pHero->GetpProp()->GetstrName().c_str() );
 }
 
@@ -284,11 +284,11 @@ XWndInvenHeroElem::XWndInvenHeroElem( XPropHero::xPROP *pProp )
 	m_bSoul = true;
 	//	auto numStar = pProp->GetGrade();
 	auto numStar = XGAME::xGD_COMMON;
-	m_psfcStar = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bicstar.png" ) ) );
-	m_psfcStarEmpty = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
+	m_psfcStar = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bicstar.png" ) ) );
+	m_psfcStarEmpty = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
 	// 	for (int i = 0; i < numStar; ++i) {
-	// 		m_pStar[i] = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
-	// 		m_aryStarEmpty[ i ] = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
+	// 		m_pStar[i] = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
+	// 		m_aryStarEmpty[ i ] = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
 	// 	}
 	m_psfcBgGradation = IMAGE_MNG->Load( PATH_UI( "bg_hero.png" ), XE::xPF_ARGB8888 );
 	m_pFace = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, pProp->strFace.c_str() ), XE::xPF_ARGB8888 );
@@ -306,9 +306,9 @@ XWndInvenHeroElem::XWndInvenHeroElem( XPropHero::xPROP *pProp )
 	m_pName->SetAlign( XE::xALIGN_HCENTER );
 	m_pName->SetStyle( xFONT::xSTYLE_STROKE );
 	m_pName->SetLineLength( 48.f );
-	m_pSelect = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_unit_bg_s_select.png" ) ) );
-	m_pParty = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "legion_hero_battle.png" ) ) );
-	m_pSoulStone = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "hero_piece.png" ) ) );
+	m_pSelect = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s_select.png" ) ) );
+	m_pParty = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "legion_hero_battle.png" ) ) );
+	m_pSoulStone = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "hero_piece.png" ) ) );
 	m_strName = XE::Format( _T( "%s" ), pProp->GetstrName().c_str() );
 }
 
@@ -340,7 +340,7 @@ void XWndInvenHeroElem::SetUnitFace( void )
 	_tstring strFace = XE::Format( _T( "%s02.png" ), strTitle.c_str() );
 	LPCTSTR resImg = XE::MakePath( DIR_IMG, strFace.c_str() );
 	m_pUnitFace = IMAGE_MNG->Load( resImg, XE::xPF_ARGB8888 );
-	m_pUnitBg = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "corps_legionnaire_bg.png" ) ) );
+	m_pUnitBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "corps_legionnaire_bg.png" ) ) );
 	if( m_pName )
 		m_pName->SetLineLength( 50.f );
 	XWnd *pLevel = Find( "img.bg.level" );
@@ -484,9 +484,9 @@ XWndInvenLegionElem::XWndInvenLegionElem(XPropUnit::xPROP* pPropUnit)
 {
 	Init();
 	m_pProp = pPropUnit;
-	m_pBG = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_unit_bg_bb.png")));
+	m_pBG = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("common_unit_bg_bb.png")));
 	SetSizeLocal(m_pBG->GetWidth(), m_pBG->GetHeight());
-	m_pSelect = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_unit_bg_bb_sel.png")));
+	m_pSelect = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("common_unit_bg_bb_sel.png")));
 	m_pFace = IMAGE_MNG->Load(XE::MakePath(DIR_IMG, m_pProp->strFace.c_str()), XE::xPF_ARGB8888);
 }
 

@@ -190,12 +190,10 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 	// XBattleField(XWorld)객체 생성
 	// 배경 레이어
 	// 배경레이어용 이미지 로딩
-	auto psfcBG = IMAGE_MNG->Load( false, 
-																 XE::MakePath( DIR_IMG, strBg ),
-																 XE::xPF_RGB565,
-																 false,
-																 false, false, 
-																 false );		// no async
+	auto psfcBG = IMAGE_MNG->LoadByRetina( XE::MakePath( DIR_IMG, strBg ),
+																				 XE::xPF_RGB565,
+																				 false,			// atlas
+																				 false );		// no async
 	XBREAK( psfcBG == nullptr );
 	const auto sizeBg = psfcBG->GetSize();
 //	const XE::VEC2 sizeBg( 1920, 1024 );

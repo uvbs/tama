@@ -448,7 +448,7 @@ void XSurfaceGLAtlasBatch::DrawByParam( const MATRIX &mParent,
 // 				: cmd.m_pShader = GRAPHICS_GL->GetpShaderColTex();
 			cmd.m_glTex = m_glTexture;
 			cmd.m_bZBuffer = paramRender.m_bZBuff;		// 배치서피스라도 UI등에서 이미지가 겹치지 않는 범위내에서 false로 사용할 수 있다.
-			bool bAlphaTest = true;
+			bool bAlphaTest = paramRender.m_bAlphaTest;
 			// 영웅은 검기가 있기때문에 배치모드로 생성되었다해도 검기등이 add 블렌딩으로 들어올수 있음. 하지만 zbuff가 꺼지기때문에 정확하게 그려지진 않을 수 있음.
  			if( funcBlend == XE::xBF_ADD || funcBlend == XE::xBF_SUBTRACT ) {
  				cmd.m_bZBuffer = false;

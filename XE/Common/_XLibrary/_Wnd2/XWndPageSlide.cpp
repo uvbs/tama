@@ -35,13 +35,13 @@ XWndPageSlideWithXML::XWndPageSlideWithXML( const XE::VEC2& vPos,
 		_tstring strExt = XE::GetFileExt( szImgPoint );
 		strFile += _T("_on.");
 		strFile += strExt;
-		m_sfcPointOn = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, strFile.c_str() ) );
+		m_sfcPointOn = IMAGE_MNG->Load( XE::MakePath( DIR_UI, strFile.c_str() ) );
 		//
 		strFile = XE::GetFileTitle( szImgPoint );
 		strExt = XE::GetFileExt( szImgPoint );
 		strFile += _T("_off.");
 		strFile += strExt;
-		m_sfcPointOff = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, strFile.c_str() ) );
+		m_sfcPointOff = IMAGE_MNG->Load( XE::MakePath( DIR_UI, strFile.c_str() ) );
 	}
 	//
 	m_posPagePoint.y = vSize.h - 13.f;	// 디폴트 페이지포인트 위치

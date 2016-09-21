@@ -82,7 +82,7 @@ bool XEBaseWorldObj::LoadSpr( LPCTSTR szSpr,
 	m_strSpr = szSpr;
 	// 이 객체는 전투때만 쓰므로 곧바로 2버전으로 호출시킴
 	const bool bUseAtlas = true;
-	m_pSprObj = new XSprObj( szSpr, hsl, bUseAtlas, bBatch, this );
+	m_pSprObj = new XSprObj( szSpr, hsl, bUseAtlas, bBatch, true, this );
 	if( XBREAK( m_pSprObj == NULL ) )
 		return false;
 	// 비동기 로딩땜에 assert를 내지 않는게 맞지만 현재 그 기능이 없으므로 assert를 냄
@@ -99,7 +99,7 @@ bool XEBaseWorldObj::LoadSpr( LPCTSTR szSpr,
 void XEBaseWorldObj::LoadImage( LPCTSTR szImg )
 {
 	if( XE::IsHave( szImg ) )	{
-		m_pSurface = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_IMG, szImg ) );
+		m_pSurface = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, szImg ) );
 		XBREAK( m_pSurface == NULL );
 	}
 }

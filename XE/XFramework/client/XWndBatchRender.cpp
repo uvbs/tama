@@ -21,8 +21,9 @@ static char THIS_FILE[] = __FILE__;
 // }
 
 ////////////////////////////////////////////////////////////////
-XWndBatchRender::XWndBatchRender( const char* cTag, bool bBatchRender )
-	: m_pAtlas( new XTextureAtlas( cTag ) )
+XWndBatchRender::XWndBatchRender( const char* cTag, bool bBatchRender, const XE::xRECT& rc )
+	: XWnd( rc.vLT, rc.GetSize() )
+	, m_pAtlas( new XTextureAtlas( cTag ) )
 	, m_pRenderer( (bBatchRender)? new XBatchRenderer( cTag ) : nullptr )
 {
 	Init();
@@ -30,6 +31,13 @@ XWndBatchRender::XWndBatchRender( const char* cTag, bool bBatchRender )
 
 BOOL XWndBatchRender::OnCreate()
 {
+	// 크기가 안정해졌을경우 부모의 크기로 맞춘다.
+	const auto sizeLocal = GetSizeLocal();
+	if( sizeLocal.w < 2 || sizeLocal.h < 2 ) {
+		XBREAK( GetpParent() == nullptr );
+		const auto sizeParent = GetpParent()->GetSizeLocal();
+		SetSizeLocal( sizeParent );
+	}
 	return true;
 }
 
@@ -54,15 +62,29 @@ int XWndBatchRender::Process( float dt )
 	return ret;
 }
 
+void XWndBatchRender::DrawBefore()
+{
+	m_pPrev = XBatchRenderer::_sSetpCurrRenderer( m_pRenderer );
+}
+
 void XWndBatchRender::Draw()
 {
+	XWnd::Draw();
 	// 이 레이어에 속한 모든 UI는 일괄렌더링을 한다.
+// 	if( m_pRenderer ) {
+// 		SET_RENDERER( m_pRenderer ) {
+// 			XWnd::Draw();
+// 		} END_RENDERER;
+// 	} else {
+// 		XWnd::Draw();
+// 	}
+}
+
+void XWndBatchRender::DrawAfter()
+{
 	if( m_pRenderer ) {
-		SET_RENDERER( m_pRenderer ) {
-			XWnd::Draw();
-		} END_RENDERER;
-	} else {
-		XWnd::Draw();
+		m_pRenderer->RenderBatch();
+		XBatchRenderer::_sSetpCurrRenderer( m_pPrev );
 	}
 }
 

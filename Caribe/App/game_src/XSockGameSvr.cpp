@@ -42,6 +42,7 @@
 #include "XPropLegion.h"
 #include "XPropCamp.h"
 #include "XPropHelp.h"
+#include "XImageMng.h"
 
 #define BTRACE		XTRACE
 
@@ -396,17 +397,15 @@ void XSockGameSvr::RecvReconnectTry( XPacket& ar, const xCALLBACK& c )
 void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 {
 	CONSOLE("RecvProp");
-	try
-	{
-		{
-			CONSOLE( "deserialize global.xml" );
+	try {	{
+			XTRACE( "deserialize global.xml" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XGlobalConst::sGetMutable()->DeSerialize( arProp, 0 );
-		}	{
-// 			throw std::exception("xbreak");
-			CONSOLE( "deserialize constant" );
+		} {
+			// 			throw std::exception("xbreak");
+			XTRACE( "deserialize constant" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -414,9 +413,10 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				CONSTANT = new XConstant();
 			}
 			CONSTANT->DeSerialize( arProp, 0 );
-		}	
+			IMAGE_MNG->LoadMap( _T( "img_map.txt" ) );
+	}
 		{
-			CONSOLE( "deserialize propunit" );
+			XTRACE( "deserialize propunit" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -424,8 +424,8 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				PROP_UNIT = new XPropUnit();
 			}
 			PROP_UNIT->DeSerialize( arProp );
-		}	{
-			CONSOLE( "deserialize prophero" );
+		} {
+			XTRACE( "deserialize prophero" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -433,9 +433,9 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				PROP_HERO = new XPropHero();
 			}
 			PROP_HERO->DeSerialize( arProp, 0 );
-		}	
-	{
-			CONSOLE( "deserialize propitem" );
+		}
+		{
+			XTRACE( "deserialize propitem" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -443,16 +443,16 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				PROP_ITEM = new XPropItem();
 			}
 			PROP_ITEM->DeSerialize( arProp, 0 );
-		} 
-			{
-			CONSOLE( "deserialize proplegion" );
+		}
+		{
+			XTRACE( "deserialize proplegion" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XPropLegion::sGet()->DeSerialize( arProp, 0 );
 		}
-	{
-			CONSOLE( "deserialize propworld" );
+		{
+			XTRACE( "deserialize propworld" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -461,8 +461,8 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 			}
 			PROP_WORLD->DeSerialize( arProp, 0 );
 		}
- 		{
-			CONSOLE( "deserialize propcloud" );
+		{
+			XTRACE( "deserialize propcloud" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -470,8 +470,8 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				PROP_CLOUD = new XPropCloud();
 			}
 			PROP_CLOUD->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize skillmng" );
+		} {
+			XTRACE( "deserialize skillmng" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -479,20 +479,20 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				SKILL_MNG = new XSkillMng();
 			}
 			SKILL_MNG->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize proptech" );
+		} {
+			XTRACE( "deserialize proptech" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XPropTech::sGet()->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize propupgrade" );
+		} {
+			XTRACE( "deserialize propupgrade" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XPropUpgrade::sGet()->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize propsquad" );
+		} {
+			XTRACE( "deserialize propsquad" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -500,34 +500,33 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				PROP_SQUAD = new XPropSquad();
 			}
 			PROP_SQUAD->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize propcamp" );
+		} {
+			XTRACE( "deserialize propcamp" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XPropCamp::sGet()->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize propquest" );
+		} {
+			XTRACE( "deserialize propquest" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XQuestProp::sGet()->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize prophelp" );
+		} {
+			XTRACE( "deserialize prophelp" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			xHelp::XPropHelp::sGet()->DeSerialize( arProp, 0 );
 		}
-	
+
 		//
-		CONSOLE( "Recv Deserialize finished" );
+		XTRACE( "Recv Deserialize finished" );
 		GAME->OnAfterPropSerialize();
 		CONSOLE( "RecvProp finished" );
-	}
-	catch( std::exception& e ) {
-		_tstring str = C2SZ(e.what());
+	} catch( std::exception& e ) {
+		_tstring str = C2SZ( e.what() );
 		CONSOLE( "exception: %s ", str.c_str() );
-		exit(1);
+		exit( 1 );
 	}
 }

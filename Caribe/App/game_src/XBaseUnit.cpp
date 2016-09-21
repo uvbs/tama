@@ -175,7 +175,7 @@ XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
 	//
 	CreateFSMObj();
 	//
-	m_psfcShadow = IMAGE_MNG->Load( TRUE, XE::MakePath(DIR_IMG,_T("shadow.png")) );
+	m_psfcShadow = IMAGE_MNG->Load( XE::MakePath(DIR_IMG,_T("shadow.png")) );
 	// 특성스킬 세팅
 #if defined(WIN32) && defined(_CHEAT)
 	if( IsCheatFiltered() )

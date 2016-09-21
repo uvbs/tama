@@ -74,8 +74,10 @@ void XWndImage::Destroy()
 */
 void XWndImage::Create( BOOL bHighReso, LPCTSTR szRes, bool bMakeMask, const XE::VEC2& sizeTexture )
 {
+	XBREAK( bHighReso == FALSE );	// 이제 무조건 TRUE로 바뀜
 	SAFE_RELEASE2(IMAGE_MNG, m_pSurface);
-	m_pSurface = IMAGE_MNG->Load( bHighReso, szRes, FALSE, (BOOL)bMakeMask/*, true*/ );
+	m_pSurface = IMAGE_MNG->Load( szRes );
+	// 	m_pSurface = IMAGE_MNG->Load( szRes, FALSE, bMakeMask/*, true*/ );
 	XBREAKF( m_pSurface == NULL, "create fail. %s", szRes );
 //	m_bCreate = TRUE;
 }
@@ -87,7 +89,7 @@ void XWndImage::Create( LPCTSTR szRes
 											, bool bMakeMask )
 {
 	SAFE_RELEASE2(IMAGE_MNG, m_pSurface);
-	m_pSurface = IMAGE_MNG->Load( true, szRes, format, false, bMakeMask/*, true*/ );
+ 	m_pSurface = IMAGE_MNG->Load( szRes, format, true, false, bMakeMask, false );
 	XBREAKF( m_pSurface == nullptr, "create fail. %s", szRes );
 //	m_bCreate = TRUE;
 }

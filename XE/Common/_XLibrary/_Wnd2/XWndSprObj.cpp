@@ -72,8 +72,10 @@ XSprObj* XWndSprObj::CreateSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, 
 		return nullptr;
 	}
 //	XSprObj *pSprObj = new XSprObj( szSpr );
-	const bool bUseAtlas = false;
-	auto pSprObj = new XSprObj( szSpr, XE::xHSL(), bUseAtlas, false, nullptr );
+	const bool bUseAtlas = true;
+	const bool bAsync = false;
+	// 바로 아래에서 크기를 읽어야 하는것이 있어서 별수없이 비동기로딩으로 함. spr파일에 의존한 크기구하기등은 하지 말아야 할듯.
+	auto pSprObj = new XSprObj( szSpr, XE::xHSL(), bUseAtlas, false, bAsync, nullptr );
 //	pSprObj->Load( szSpr, XE::xHSL(), bUseAtlas, FALSE, false );
 	pSprObj->SetAction( idAct, loopType );
 	m_idAct = idAct;

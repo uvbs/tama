@@ -239,6 +239,7 @@ void XLayerImage::Draw( XSprObj *pSprObj,
 				param.m_funcBlend = effParam.GetfuncBlend();
 				param.m_adjZ = effParam.m_adjZ;
 				param.m_bZBuff = pSpr->IsBatch();
+				param.m_bAlphaTest = (param.m_bZBuff == true);
 				if( funcBlend == XE::xBF_ADD || funcBlend == XE::xBF_SUBTRACT ) {
 					param.m_bZBuff = false;
 					param.m_bAlphaTest = false;

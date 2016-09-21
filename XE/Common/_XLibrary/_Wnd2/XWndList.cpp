@@ -30,7 +30,7 @@ XWndList::XWndList( const XE::VEC2& vPos,
 	SetPosLocal( vPos );
 // 	m_posBg -= vLocalxy;
 // 	if( XE::IsHave( szBg ) )
-// 		m_psfcBg = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szBg ) );
+// 		m_psfcBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szBg ) );
 	// 타입에 따라 스크롤방향을 잠근다.
 	// 스크롤뷰의 크기가 가로 혹은 세로로만 긴 형태라도 당기면 조금 스크롤되는게 있으므로 강제로 스크롤을 막아야 한다.
 }

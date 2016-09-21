@@ -355,13 +355,13 @@ XWndSquadInLegion::XWndSquadInLegion( XHero *pHero, const XE::VEC2& vPos, XLegio
 		SetDropWnd( TRUE );
 	}
 	for (int i = 0; i < 4; ++i)
-		m_pStar[i] = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
+		m_pStar[i] = IMAGE_MNG->Load( XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
 	//
 	m_pName = FONTMNG->CreateFontObj(FONT_NANUM, 18.f);
 	m_pName->SetAlign(XE::xALIGN_HCENTER);
 	m_pName->SetStyle(xFONT::xSTYLE_STROKE);
 	m_pName->SetLineLength(64.f);
-	m_pCrown = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("corps_crown.png")));
+	m_pCrown = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("corps_crown.png")));
 }
 
 XWndSquadInLegion::XWndSquadInLegion( int idxSquad, const XE::VEC2& vPos, XLegion *pLegion, bool bDrawFrame, bool bDragDrop )
@@ -385,13 +385,13 @@ XWndSquadInLegion::XWndSquadInLegion( int idxSquad, const XE::VEC2& vPos, XLegio
 		SetDropWnd( TRUE );
 	}
 	for (int i = 0; i < 4; ++i)
-		m_pStar[i] = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
+		m_pStar[i] = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
 	//
 	m_pName = FONTMNG->CreateFontObj(FONT_NANUM, 18.f);
 	m_pName->SetAlign(XE::xALIGN_HCENTER);
 	m_pName->SetStyle(xFONT::xSTYLE_STROKE);
 	m_pName->SetLineLength(64.f);
-	m_pCrown = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("corps_crown.png")));
+	m_pCrown = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("corps_crown.png")));
 }
 void XWndSquadInLegion::Destroy()
 {
@@ -547,7 +547,7 @@ void XWndSquadInLegion::SetFace( XHero *pHero, bool bQuestion )
 			Add( pText );
 		}
 		// 영웅얼굴 서피스 버전(drag를 위함)
-		m_psfcFace = IMAGE_MNG->Load( TRUE, 
+		m_psfcFace = IMAGE_MNG->Load( 
 								XE::MakePath( DIR_IMG, pHero->GetpProp()->strFace.c_str() ));
 		if( m_bDrawFrame ) {
 			// 알파뚫린 영웅 프레임으로 한번더 덮어준다.

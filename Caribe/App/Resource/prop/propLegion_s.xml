@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <single1_player name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="15" boss="percival" mul_atk="1" mul_hp="1">
+  <single1_player name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="1" boss="percival" mul_atk="1" mul_hp="1">
     <squad_default idx_pos="-1" hero="" type_atk="xAT_NONE" lv_hero="1" grade="xGD_RARE" unit="" size_unit="xSIZE_NONE" lv_squad="16" lv_skill="1" mul_atk="1" mul_hp="1" num_abil="5" />
     <_squad idx_pos="2" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_CYCLOPS" size_unit="xSIZE_NONE" lv_squad="16" lv_skill="10" mul_atk="1" mul_hp="1">
       <abil>
@@ -8,7 +8,7 @@
       </abil>
     </_squad>
   </single1_player>
-  <single1_enemy name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="15" boss="percival" mul_atk="1" mul_hp="1">
+  <single1_enemy name="0" level="50" grade="xGL_NORMAL" lv_limit="0" adj_level="0" num_squad="1" boss="percival" mul_atk="1" mul_hp="1">
     <squad_default idx_pos="-1" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="" size_unit="xSIZE_NONE" lv_squad="16" lv_skill="1" mul_atk="1" mul_hp="1" num_abil="5"></squad_default>
     <_squad idx_pos="2" hero="" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_ARCHER" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" />
     <_squad idx_pos="12" hero="philoni" type_atk="xAT_NONE" lv_hero="50" grade="xGD_RARE" unit="xUNIT_SPEARMAN" size_unit="xSIZE_NONE" lv_squad="1" lv_skill="1" mul_atk="1" mul_hp="1" />

@@ -8,8 +8,8 @@
 #include "XFramework/client/XLayoutObj.h"
 #include "OpenGL2/XGraphicsOpenGL.h"
 
-#define MAX_SPR1  2
-#define MAX_SPR2  2
+#define MAX_SPR1  1
+#define MAX_SPR2  1
 
 class XSprObj;
 namespace xSplit {
