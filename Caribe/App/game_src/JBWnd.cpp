@@ -292,7 +292,7 @@ XWndInvenHeroElem::XWndInvenHeroElem( XPropHero::xPROP *pProp )
 	// 	}
 	m_psfcBgGradation = IMAGE_MNG->Load( PATH_UI( "bg_hero.png" ), XE::xPF_ARGB8888 );
 	m_pFace = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, pProp->strFace.c_str() ), XE::xPF_ARGB8888 );
-	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ), 0, 0 );
+	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ) );
 	m_pNameCard = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "corps_heroname_bg.png" ) ) );
 	SetSizeLocal( m_pBG->GetWidth() + 4, m_pBG->GetHeight() + m_pNameCard->GetHeight() / 2 );
 	auto pImg = new XWndImage( PATH_UI( "bg_level.png" ), 0, 43 );

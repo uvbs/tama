@@ -381,10 +381,11 @@ void XGraphicsOpenGL::RestoreDevice()
 	CHECK_GL_ERROR();
 	
 	glGetIntegerv( GL_MAX_TEXTURE_SIZE, (GLint*)&sizeMax );
-#if defined(WIN32) && defined(_DEBUG)
+//#if defined(WIN32) && defined(_DEBUG)
+	// 사양이 좋은 기기여서 아틀라스가 8096까지 늘어난다고 치면 만약 단한번이라도 텍스쳐 스위칭이 일어나면 스트레스가 매우 심할듯 싶어 안정적인 수치인 2048로 고정함
 	if( sizeMax > 2048 )
 		sizeMax = 2048;			// 최저사양폰을 위한.
-#endif // 
+//#endif // 
 	XSurface::SetMaxSurfaceWidth( sizeMax );
 	XTRACE( "max texture size:%d", sizeMax );
 	// 여기서 에러나면 그것은 OpenGL ES 2.0으로 초기화했기때문이다. 2.0에는 glMatrixMode라는게 없다.
@@ -663,6 +664,11 @@ void XGraphicsOpenGL::ClearScreen( XCOLOR color )
 	b = XCOLOR_RGB_B(color) / 255.f;
 	a = XCOLOR_RGB_A(color) / 255.f;
 	glClearColor( r, g, b, a );
+	CHECK_GL_ERROR();
+	glDepthFunc( GL_GEQUAL );
+	CHECK_GL_ERROR();
+	glClearDepthf( -1000.f );
+	CHECK_GL_ERROR();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	CHECK_GL_ERROR();
 	

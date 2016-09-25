@@ -39,14 +39,12 @@ private:
 	bool m_bMuteSound = false;
 	bool m_bBGMLoop = false;
   float m_BGMVolumeLocal = 1.f;		// 0~1		// 현재 볼륨(페이드인아웃 등에 사용)
-//	float       m_BGMVolumeTemp = 1.f;
-//	float		m_SoundVolume = 1.f;	// 0~1
 	float m_BGMMasterVolume = 1.f;	// 0~1
 	float m_SoundMasterVolume = 1.f;	// 0~1
 	float m_BGMMasterVolumeBackup = 1.f;
 	float m_SoundMasterVolumeBackup = 1.f;	// 0~1
-//	xReplay m_EmptyReplay;
-//	float		m_distListener;		// 리쓰너(플레이어)와 소리나는곳까지의 거리
+	float m_BGMVolPrev = 1.f;
+	float m_SfxVolPrev = 1.f;
 
 	//효과음 중복을 막는용도
 	struct xSoundTimer {
@@ -67,19 +65,7 @@ private:
 	//효과음 중복재생 제한
 	xSoundTimer m_SoundTimer; // = xSoundTimer();
 private:
-	void Init()	{
-//		XCLEAR_ARRAY(m_szBGMFilename);
-//		XCLEAR_ARRAY(m_szBGMBackup);
-// 		m_bMuteBGM = false;
-// 		m_bMuteSound = false;
-// 		m_BGMVolume = 1.f;
-//		m_BGMVolumeTemp = 1.f;
-//		m_SoundVolume = 1.f;
-// 		m_BGMMasterVolume = 1.f;
-// 		m_SoundMasterVolume = 1.f;
-//		m_distListener = 0;
-
-	}
+	void Init()	{	}
 public:
 	XSoundMng();
 	virtual ~XSoundMng();
@@ -87,9 +73,10 @@ public:
 	/// 전체 볼륨을 조절한다. 게임옵션등에서 조절하는 볼륨은 이것이다.
 	GET_ACCESSOR_CONST( float, BGMMasterVolume );
 	GET_ACCESSOR_CONST( float, SoundMasterVolume );
-// 	void PushBGMVolume() {
-// 
-// 	}
+	void PushBGMVol( float vol );
+	void PushSfxVol( float vol );
+	void PopBGMVol();
+	void PopSfxVol();
 	void SetBGMMasterVolume( float vol ) {
 		m_BGMMasterVolume = vol;
 		SetBGMVolumeFinal( m_BGMVolumeLocal * vol );

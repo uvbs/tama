@@ -10,13 +10,35 @@ base: 소스
 장기적으로 해야할것.{
 	에버노트 참조.
 }
-해결해야할 문제{
+
+
+XEClientMain
+{
+	Render();
+	Scene() {
+	XWndBattleField() {
+		XEWndImageWorld() {
+			Render();		// nobatch
+		}
+		XEWndWorld() {
+		Render();		// batch
+		}
+		// 초상화
+		XWndBatchRender() {
+		}
+		// ui
+		XWndBatchRender() {
+		}
+	}
+		Render()
+		Render()
+		RenderBatch();
+	}
+	RenderBatch();
 }
 
-아틀라스 뷰어 구현
-알림창 띄워서 drawLocal 구현
-Restore 구현
-DrawLocal코드
+
+
 
 ui_batch_opt 목표 {
   .ui도 아틀라스를 사용해서 메모리를 최적화 한다.
@@ -25,6 +47,11 @@ ui_batch_opt 목표 {
 	.유닛 hp바 등의 ui도 배치렌더링으로 속도를 올린다.
   .ui전용 레이어를 만들고 여기에 ui레이어만의 아틀라스를 바인딩 시킨다.
   .레이어방식의 배치렌더링을 위해 ui레이어에 배치렌더링 관리자를 바인딩 시킨다.
+  해볼만한시도 {
+	.유닛 hp바 배치로 그리기
+	.유닛 이름등을 렌더타겟으로 그린후 배치렌더 하기
+	.모든 리소스의 비동기 로딩
+  }
 }
 
 // 일반 ui씬

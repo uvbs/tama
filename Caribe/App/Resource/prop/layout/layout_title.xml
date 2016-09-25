@@ -48,26 +48,27 @@
   <popup_first>
     <!--"이미 계정을 가지고 있습니까?"-->
     <popup img="popup_bg.png" nc_close="off" debug="33">
-      <img file="popup_title_bar.png" posx="center" posy="12" scale_x="0.8"></img>
-      <text posx="center" posy="18" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="2270" key="text.title">
-        <!--타이틀-->
-      </text>
+      <img file="popup_title_bar.png" posx="center" posy="-15" scale_x="0.8" format="argb8888">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="2270" key="text.title">
+          <!--타이틀-->
+        </text>
+      </img>
       <text posx="center" posy="107" font="font_text_s" text_col="white" font_size="30" font_style="stroke" text="2116">
         <!--"이미 계정을 가지고...."-->
       </text>
-      <butt posx="59" posy="173" img_up="common_butt_mid.png" key="butt.no">
+      <butt posx="59" posy="173" img_up="common_butt_mid.png" key="butt.no" format="argb8888">
         <!--아니오-->
         <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="5">
           <!--아니오-->
         </text>
       </butt>
-      <butt posx="208" posy="173" img_up="common_butt_mid.png" key="butt.yes">
+      <butt posx="208" posy="173" img_up="common_butt_mid.png" key="butt.yes" format="argb8888">
         <!--예-->
         <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="4">
           <!--예-->
         </text>
       </butt>
-      <butt posx="center" posy="238" img_up="facebook_norm.png" key="butt.facebook">
+      <butt posx="center" posy="238" img_up="facebook_norm.png" key="butt.facebook" format="argb8888">
         <!--페북로그인-->
       </butt>
     </popup>

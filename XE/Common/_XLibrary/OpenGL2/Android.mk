@@ -15,6 +15,7 @@ XFontDatFTGL.cpp \
 XFontObjFTGL.cpp \
 XParticleOpenGL.cpp \
 XTextureAtlas.cpp \
+XTextureAtlasSub.cpp \
 XSurfaceGLAtlasBatch.cpp \
 XSurfaceGLAtlasNoBatch.cpp \
 XRenderCmd.cpp \

@@ -31,7 +31,7 @@ private:
 	bool CreateVertexBuffer2( const XE::VEC2& sizeSurface, const XE::VEC2& vAdj, const XE::VEC2& uvlt, const XE::VEC2& uvrb );
 	void Init();
 	void Destroy();
-	bool CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMask );
+	bool CreatePNG( LPCTSTR szRes, bool bUseAtlas, bool bSrcKeep, bool bMakeMask );
 protected:
 public:
 	XSurfaceGLAtlasBatch() : XSurface( true ) {

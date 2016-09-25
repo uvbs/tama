@@ -75,7 +75,7 @@ namespace XE {
 #define SAFE_FREE(p) { if(p) { free((p));	(p)=NULL; } }
 #endif
 #ifndef SAFE_RELEASE2
-#define SAFE_RELEASE2( MNG, p) { if(p) { MNG->Release(p); (p)=NULL; } }
+#define SAFE_RELEASE2( MNG, p) { if(p && MNG) { MNG->Release(p); (p)=NULL; } }
 #endif
 #ifndef SAFE_CLOSE_HANDLE
 #define SAFE_CLOSE_HANDLE(h)  { \

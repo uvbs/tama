@@ -37,43 +37,14 @@ public:
 		xFG_TOUCHABLE = 0x01,
 		xFG_ERROR=0x80000000,
 	};
-private:
-	int m_Type;					///< 오브젝트의 대분류(유닛인가 or sfx인가 같은...)
-	int m_Destroy;
-	ID m_snObj;					///< 인스턴스의 고유 번호
-	XSprObj *m_pSprObj;
-	XSurface *m_pSurface;		///< 애니메이션 없는 객체의 경우 이걸 써본다.
-	XE::VEC3 m_vwPos;
-	XE::VEC3 m_vScale;			
-	float m_Alpha;				///< 사라지는등의 연출을 위해 사용
-	XEWndWorld *m_pWndWorld;
-	DWORD m_dwFlag;
-	_tstring m_strSpr;		// spr파일 이름.
-	ID m_idAtlas = 0;			
-	void Init() {
-		m_Type = 0;
-		m_snObj = sGenerateID();	// 순차적으로 번호가 생성되므로 나중에 생성된 객체가 먼저생성된 객체보다 위에 찍히게 하고 싶을때 소트용으로 써도 된다.
-		m_pSprObj = NULL;
-		m_pSurface = NULL;
-		m_Destroy = 0;
-		m_pWndWorld = NULL;
-		m_dwFlag = 0;
-		m_vScale.Set(1.f);
-		m_Alpha = 1.f;
-		++s_numObj;
-	}
-	void Destroy();
-	SET_ACCESSOR( ID, snObj );
-protected:
-	SET_ACCESSOR( int, Type );
 public:
 	XEBaseWorldObj( XEWndWorld *pWndWorld ) { 
 		Init(); 
 		m_pWndWorld = pWndWorld;
 	}
-	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, LPCTSTR szSpr, ID idAct );
-	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szSpr, ID idAct );
-	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szImg );
+	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, LPCTSTR szSpr, ID idAct, bool bBatch );
+	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szSpr, ID idAct, bool bBatch );
+	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szImg, bool bBatch );
 	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos ) { 
 		Init(); 
 		m_Type = type;
@@ -299,5 +270,36 @@ public:
 // 	// 비동기 로딩으로 spr로딩과 SetAction까지 끝나면 호출된다.
 // 	virtual void OnFinishLoadSpr( const XSprDat* pSprDat ) {}
 	void GetTransform( MATRIX* pOut ) const;
+//	virtual bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const = 0;
+protected:
+	SET_ACCESSOR( int, Type );
+private:
+	int m_Type;					///< 오브젝트의 대분류(유닛인가 or sfx인가 같은...)
+	int m_Destroy;
+	ID m_snObj;					///< 인스턴스의 고유 번호
+	XSprObj *m_pSprObj;
+	XSurface *m_pSurface;		///< 애니메이션 없는 객체의 경우 이걸 써본다.
+	XE::VEC3 m_vwPos;
+	XE::VEC3 m_vScale;
+	float m_Alpha;				///< 사라지는등의 연출을 위해 사용
+	XEWndWorld *m_pWndWorld;
+	DWORD m_dwFlag;
+	_tstring m_strSpr;		// spr파일 이름.
+	ID m_idAtlas = 0;
+	bool m_bZBuff = false;
+	void Init() {
+		m_Type = 0;
+		m_snObj = sGenerateID();	// 순차적으로 번호가 생성되므로 나중에 생성된 객체가 먼저생성된 객체보다 위에 찍히게 하고 싶을때 소트용으로 써도 된다.
+		m_pSprObj = NULL;
+		m_pSurface = NULL;
+		m_Destroy = 0;
+		m_pWndWorld = NULL;
+		m_dwFlag = 0;
+		m_vScale.Set( 1.f );
+		m_Alpha = 1.f;
+		++s_numObj;
+	}
+	void Destroy();
+	SET_ACCESSOR( ID, snObj );
 };
 

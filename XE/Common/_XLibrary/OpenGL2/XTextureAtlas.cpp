@@ -14,129 +14,146 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 using namespace XE;
+using namespace xnTexAtlas;
 
-XList4<XSPAtlas> XTextureAtlas::s_lists;
+XList4<XSPAtlas> XTextureAtlas::s_listSurfaceAll;
+XList4<XSPAtlasMng> XTextureAtlas::s_listAtlasLayer;
 
-XE_NAMESPACE_START( xnTexAtlas )
-//
-xAtlas::xAtlas( const XE::VEC2& size, xtPixelFormat formatSurface )
-	: m_Size( size )
-	, m_idTex( 0 )
-	, m_pRoot( nullptr )
-	, m_FormatSurface( formatSurface ) {
-	//
-	m_pRoot = new xSplit::XNode( m_Size );
-}
+//////////////////////////////////////////////////////////////////////////
+void XTextureAtlas::sRelease( ID idTex )
+{
+	if( idTex == 0 )
+		return;
 
-xAtlas::~xAtlas() {
-	SAFE_DELETE( m_pRoot );
-	const GLuint glTex = (GLuint)m_idTex;
-	::glDeleteTextures( 1, &glTex );
-	const int bpp = XE::GetBpp( m_FormatSurface );
-	XSurface::sAddSizeTotalVMem( (int)(-m_Size.Size() * bpp) );
-#ifdef WIN32
-	TRACE("destroy atlas: id=%d\n", m_idTex );
-
-
-#endif // WIN32
+	for( auto pLayer : s_listAtlasLayer ) {
+		pLayer->Release( idTex );
+	}
 }
 
 /**
- @brief 실제텍스쳐에 새로 추가된 노드를 부분 갱신
- @fmtImg gl서피스의 포맷이 아니고 pImg의 픽셀포맷.
+ @brief 참조하고 있는것이 없는 아틀라스 매니저를 삭제시킨다.
 */
-void xAtlas::UpdateSubToDevice( const void* _pImg,
-																const XE::VEC2& vLT,
-																const XE::VEC2& sizeImg,
-																xtPixelFormat fmtImg ) {
-	const auto glFmtImg = XGraphicsOpenGL::sToGLFormat( fmtImg );
-	const auto glTypeImg = XGraphicsOpenGL::sToGLType( fmtImg );
-#ifdef _DEBUG
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
-#endif // _DEBUG
-	XGraphicsOpenGL::sBindTexture( m_idTex );
-#ifdef _DEBUG
-	auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR );
-#endif // _DEBUG
-	const void* pImg = _pImg;
-	XBREAK( fmtImg != XE::xPF_ARGB8888 );	// 아직은 이것만 지원.
-	if( fmtImg != m_FormatSurface ) {
-		// 이미지소스가 서피스 포맷과 다르다면 변환해야한다.
-		XE::CreateConvertPixels( _pImg, sizeImg, fmtImg, &pImg, m_FormatSurface );
-	}
-	// formatSurface로 변환시켰으므로.
-	auto _glFmtImg = XGraphicsOpenGL::sToGLFormat( m_FormatSurface );
-	auto _glTypeImg = XGraphicsOpenGL::sToGLType( m_FormatSurface );
-	glTexSubImage2D( GL_TEXTURE_2D,
-									 0,		// mipmap level
-									 (GLint)vLT.x,
-									 (GLint)vLT.y,
-									 (GLsizei)sizeImg.w,
-									 (GLsizei)sizeImg.h,
-									 _glFmtImg,		// gl텍스쳐의 포맷과 픽셀데이타의 포맷이 맞지않으면 내부에서 변환해주는듯 하다.
-									 _glTypeImg,
-									 pImg );
-#ifdef _DEBUG
-	{ auto glErr = glGetError();
-	if( glErr != GL_NO_ERROR ) {
-		XTRACE("%s: idTex=%d", __TFUNC__, m_idTex );
-	}
-//	XASSERTF( glErr == GL_NO_ERROR, "error:idTex=%d", m_idTex ); 
-	}
-#endif // _DEBUG
-	if( fmtImg != m_FormatSurface ) {
-		SAFE_DELETE_ARRAY( pImg );
-	}
-//	XGraphicsOpenGL::sBindTexture( 0 );		// 이거 하면 안됨
+void XTextureAtlas::sFlushAtlasMng()
+{
+// 	for( auto itor = s_listAtlasLayer.begin(); itor != s_listAtlasLayer.end(); ) {
+// 		auto& spMng = (*itor);
+// 		const int useCnt = spMng.use_count();
+// 		if( useCnt == 1 ) {
+// 			s_listAtlasLayer.erase( itor++ );
+// 		} else {
+// 			++itor;
+// 		}
+// 	}
+	
 }
 
-//
-XE_NAMESPACE_END; // xTextureAtlas
+/**
+ @brief 참조하고 있는것이 없는 아틀라스 서피스를 삭제한다.
+*/
+void XTextureAtlas::sFlusAtlasSurface()
+{
+	
+	for( auto itor = s_listSurfaceAll.begin(); itor != s_listSurfaceAll.end(); ) {
+		auto& spAtlas = (*itor);
+		const int useCnt = spAtlas.use_count();
+		if( useCnt == 1 ) {
+			const _tstring strTag = C2SZ( spAtlas->m_strTag );
+			XTRACE( "delete no ref atlas:tag=%s, idTex=%d",
+							strTag.c_str(),
+							spAtlas->m_idTex );
+			s_listSurfaceAll.erase( itor++ );
+		} else {
+			++itor;
+		}
+	}
+}
 
-using namespace xnTexAtlas;
+/**
+ @brief 아틀라스관리자 하나를 생성해주는 팩토리
+*/
+XSPAtlasMng XTextureAtlas::sCreateAtlasMng( const char* cTag )
+{
+	auto spAtlas = std::make_shared<XTextureAtlas>( cTag );
+	s_listAtlasLayer.push_back( spAtlas );
+	return spAtlas;
+}
 
-// std::shared_ptr<XTextureAtlas> XTextureAtlas::s_spInstance;
-// //XE::VEC2 XTextureAtlas::s_sizeDefault = XE::VEC2( 256, 256 );
-// ////////////////////////////////////////////////////////////////
-// std::shared_ptr<XTextureAtlas>& XTextureAtlas::sGet() {	if( s_spInstance == nullptr )		s_spInstance = std::shared_ptr<XTextureAtlas>( new XTextureAtlas );	return s_spInstance;}
-// void XTextureAtlas::sDestroyInstance() {
-// 	s_spInstance.reset();
-// }
+int XTextureAtlas::sGetBytesAll()
+{
+	int bytes = 0;
+	for( auto spAtlas : s_listSurfaceAll ) {
+		bytes += spAtlas->GetBytes();
+	}
+	return bytes;
+}
+
 ////////////////////////////////////////////////////////////////
-XTextureAtlas* XTextureAtlas::s_pCurrAtlasMng = nullptr;
+XSPAtlasMng XTextureAtlas::s_spCurrAtlasMng;
 XTextureAtlas::XTextureAtlas( const char* cTag )
 	: m_idMng( XE::GenerateID() )
 	, m_strTag( cTag )
 {
-//	XBREAK( s_spInstance != nullptr );
 	Init();
 }
 
+void XTextureAtlas::Destroy()
+{
+
+}
+
+/**
+ @brief 텍스쳐(idTex) 한장을 아틀라스 서피스에서 해제시킨다.
+ 텍스쳐 참조카운터가 0이되면 아틀라스 서피스한장을 삭제시킨다.
+*/
 void XTextureAtlas::Release( ID idTex )
 {
-	auto spAtlas = GetspAtlas( idTex );
-	if( spAtlas ) {
-		--spAtlas->m_refCnt;
-		XBREAK( spAtlas->m_refCnt < 0 );
-		if( spAtlas->m_refCnt == 0 ) {
-			DestroyAtlas( spAtlas );
+	if( idTex ) {
+		auto spAtlas = GetspAtlas( idTex );
+		if( spAtlas ) {
+			--spAtlas->m_refCnt;		// 텍스쳐 참조 해제
+			XBREAK( spAtlas->m_refCnt < 0 );
+			if( spAtlas->m_refCnt == 0 ) {
+				DestroyAtlas( spAtlas );		// 아틀라스 서피스 1장 삭제
+			}
 		}
 	}
+	// 참조하고 있는것이 없는 아틀라스 서피스를 삭제
+	sFlusAtlasSurface();
 }
 
 void XTextureAtlas::DestroyAtlas( XSPAtlas spAtlas )
 {
 	const ID idDestroy = spAtlas->m_idTex;
+	// 아틀라스 서피스들의 목록에서 제거
 	for( auto itor = m_listAtlas.begin(); itor != m_listAtlas.end(); ) {
-		if( (*itor)->m_idTex == idDestroy ) {
+		auto pAtlas = (*itor);
+		if( pAtlas->m_idTex == idDestroy ) {
 			m_listAtlas.erase( itor++ );
+//			pAtlas->m_bDestroy = true;
 			break;
 		} else {
 			++itor;
 		}
 	}
+}
+
+/**
+ @brief 디바이스 자원만 날린다.
+*/
+void XTextureAtlas::DestroyDevice()
+{
+	for( auto spAtlas : m_listAtlas ) {
+		spAtlas->DestroyDevice();
+	}
+}
+
+/**
+ @brief 메모리 자원을 날린다.
+ 홈으로가면 모든 자원이 삭제되어서 맵을 새로만들어야 하므로 아틀라스들을 모두 날린다.
+*/
+void XTextureAtlas::OnPause()
+{
+	m_listAtlas.clear();
 }
 
 /**
@@ -213,10 +230,10 @@ ID XTextureAtlas::ArrangeImg( ID idTex,
 xSplit::XNode* XTextureAtlas::InsertElem( XSPAtlas spAtlas,
 																					const XE::VEC2& sizeElem ) const
 {
-	const auto sizePrev = spAtlas->m_Size;
 	bool bResized = false;
 	xSplit::XNode* pNewNode = nullptr;
 	do {
+		auto sizePrev = spAtlas->m_Size;
 		pNewNode = spAtlas->m_pRoot->Insert( sizeElem );
 		if( pNewNode ) {
 			// 배치성공
@@ -284,7 +301,8 @@ XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& _size, XE::xtPixelFormat forma
 #ifdef _XTEST
 	size.Set( 256, 256 );
 #else
-	size.Set( 256, 256 );
+ 	size.Set( 128, 128 ); // 64로 했더니 텍스쳐 확장이 많이 일어나면서 유닛밑에 그림자가 깨지더라
+//	size.Set( 2048, 2048 );
 #endif // _XTEST
 	XSPAtlas spAtlas = std::make_shared<xAtlas>( size, formatSurface );
 	// PBO버퍼와 텍스쳐를 만든다.
@@ -300,7 +318,7 @@ XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& _size, XE::xtPixelFormat forma
 	spAtlas->m_strTag = m_strTag;
 	XBREAK( spAtlas->m_idTex == 0 );
 	m_listAtlas.push_back( spAtlas );
-	s_lists.push_back( spAtlas );
+	s_listSurfaceAll.push_back( spAtlas );
 	return spAtlas;
 }
 
@@ -334,4 +352,20 @@ ID XTextureAtlas::GetidTex( int idxAtlas )
 	if( spAtlas )
 		return spAtlas->m_idTex;
 	return 0;
+}
+
+/**
+ @brief 현재 아틀라스를 this로 선택한다.
+*/
+void XTextureAtlas::PushAtlasMng()
+{
+	m_spMngPrev = XTextureAtlas::_sSetpCurrMng( shared_from_this() );
+}
+
+/**
+ @brief 현재 아틀라스를 이전 아틀라스로 반환한다.
+*/
+void XTextureAtlas::PopAtlasMng()
+{
+	XTextureAtlas::_sSetpCurrMng( m_spMngPrev );
 }

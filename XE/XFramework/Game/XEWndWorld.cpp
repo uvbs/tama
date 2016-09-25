@@ -26,11 +26,12 @@ static char THIS_FILE[] = __FILE__;
 // }
 
 XEWndWorld::XEWndWorld( std::shared_ptr<XEWorld> spWorld )
-	: m_pRenderer( new XBatchRenderer( __FUNCTION__ ) )
-	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
+	: m_pRenderer( new XBatchRenderer( __FUNCTION__, false ) )	// zbuff(디폴트로 끄고 유닛찍을때만 켜자)
+//	, m_spAtlas( std::make_shared<XTextureAtlas>( __FUNCTION__ ) )
 {
 	Init();
 	//
+	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__ );
 	XBREAK( spWorld == nullptr );
 	m_spWorld = spWorld;
 	SetSizeLocal( XE::GetGameSize() );	// 디폴트로 화면에 꽉차는 윈도우
@@ -38,7 +39,7 @@ XEWndWorld::XEWndWorld( std::shared_ptr<XEWorld> spWorld )
 
 void XEWndWorld::Destroy()
 {
-	SAFE_DELETE( m_pAtlas );
+//	SAFE_DELETE( m_pAtlas );
 	SAFE_DELETE( m_pRenderer );
 //	SAFE_DELETE( m_pWorld );
 }
@@ -73,9 +74,7 @@ int XEWndWorld::Process( float dt )
 //	SetvwCamera( XScroll::GetvCenter() );
 	if( m_spWorld ) {
 // 		auto pPrev = XTextureAtlas::sSetpCurrMng( m_pAtlas );
-		SET_ATLASES( m_pAtlas )	{
-			m_spWorld->Process( this, dt );
-		} END_ATLASES;
+		m_spWorld->Process( this, dt );
 // 		XTextureAtlas::sSetpCurrMng( pPrev );
 	}
 	XWnd::Process( dt );
@@ -86,11 +85,12 @@ int XEWndWorld::Process( float dt )
 void XEWndWorld::Draw()
 {
 	if( m_spWorld ) {
-		SET_ATLASES( m_pAtlas ) {
-			SET_RENDERER( m_pRenderer ) {
-				m_spWorld->Draw( this );
-			} END_RENDERER;
-		} END_ATLASES;
+//		SET_RENDERER( m_pRenderer ) {
+		m_pRenderer->PushRenderer();
+			m_spWorld->Draw( this );
+			m_pRenderer->RenderBatch();
+			m_pRenderer->PopRenderer();
+//		} END_RENDERER;
 	}
 
 	XWnd::Draw();		// 현재 차일드가 없으면 이부분 삭제
@@ -235,7 +235,7 @@ ID XEWndWorld::AddObj( const XSPWorldObj& spObj )
 	return m_spWorld->AddObj( spObj );
 }
 
-int XEWndWorld::GetavgDPCall() const
-{
-	return (m_pRenderer)? m_pRenderer->GetfpsDPCall().GetFps() : 0;
-}
+// int XEWndWorld::GetavgDPCall() const
+// {
+// 	return (m_pRenderer)? m_pRenderer->GetfpsDPCall().GetFps() : 0;
+// }

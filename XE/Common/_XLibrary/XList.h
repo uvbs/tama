@@ -1802,6 +1802,14 @@ public:
 		}
 		return m_Empty;
 	}
+	const T& GetByIndexConst( int idx ) {
+		int i = 0;
+		for( auto iter = this->begin(); iter != this->end(); ++iter ) {
+			if( i++ == idx )
+				return (*iter);
+		}
+		return m_Empty;
+	}
 	T GetByIndexNonPtr( int idx ) {
 		int i = 0;
 		for( auto iter = this->begin(); iter != this->end(); ++iter ) {

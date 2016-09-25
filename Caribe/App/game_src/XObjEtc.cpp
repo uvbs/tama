@@ -12,8 +12,9 @@
 #include "XComp.h"
 #include "XFramework/XEProfile.h"
 #include "XFramework/Game/XEWndWorld.h"
-#if defined(_CHEAT) && defined(WIN32)
 #include "client/XAppMain.h"
+#if defined(_CHEAT) && defined(WIN32)
+#include "client/XCheatOption.h"
 #endif
 #include "XImageMng.h"
 #include "XObjEtc.h"
@@ -46,7 +47,8 @@ XObjBullet::XObjBullet( ID idBullet,
 						bool bCritical,
 						LPCTSTR szSpr, ID idAct,
 						float secFly )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwSrc, szSpr, idAct )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), 
+										XGAME::xOT_ETC, vwSrc, szSpr, idAct, true )
 {
 	Init();
 	m_idBullet = idBullet;
@@ -72,6 +74,23 @@ void XObjBullet::Destroy()
 {
 }
 
+// bool XObjBullet::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
+// {
+// 	if( strParam == "atlas" )
+// 		return true;
+// 	else
+// 	if( strParam == "batch" )
+// 		return true;
+// 	else
+// 	if( strParam == "zbuff" )
+// 		return true;
+// 	else
+// 	if( strParam == "alphatest" )
+// 		return true;
+// 	XBREAK(1);
+// 	return false;
+// }
+
 void XObjBullet::FrameMove( float dt )
 {
 	float timeLerp = m_timerLife.GetSlerp();
@@ -88,7 +107,7 @@ void XObjBullet::FrameMove( float dt )
 	GetpSprObj()->SetRotateZ( dAng );
 	if( timeLerp >= 1.0f )	{
 		if( m_sprArrive.empty() == false )		{
-			auto pSfx = new XObjLoop( vDst, m_sprArrive.c_str(), m_idActArrive );
+			auto pSfx = new XObjLoop( vDst, m_sprArrive.c_str(), m_idActArrive, false );
 			XBattleField::sGet()->AddObj( XSPWorldObj(pSfx) );
 			// 도착시 sfx가 지정되어있으면 타겟에게 생성하도록 한다.
 // 			if( m_spTarget != nullptr &&
@@ -237,7 +256,7 @@ void XObjArrow::OnArriveBullet( DWORD dwParam )
 		XE::VEC3 vwDst = GetvDst();
 		vwDst.x += 24 - random( 48 );
 		vwDst.y += 24 - random( 48 );
-		XObjLoop *pStuck = new XObjLoop( vwDst, _T("arrow_stuck.spr"), 1 );
+		XObjLoop *pStuck = new XObjLoop( vwDst, _T("arrow_stuck.spr"), 1, true );
 		XBattleField::sGet()->AddObj( XSPWorldObj(pStuck) );
 	}
 	XObjBullet::OnArriveBullet( dwParam );
@@ -384,6 +403,23 @@ void XObjLaser::Release( void )
 
 }
 
+// bool XObjLaser::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
+// {
+// 	if( strParam == "atlas" )
+// 		return true;
+// 	else
+// 	if( strParam == "batch" )
+// 		return false;
+// 	else
+// 	if( strParam == "zbuff" )
+// 		return false;
+// 	else
+// 	if( strParam == "alphatest" )
+// 		return false;
+// 	XBREAK(1);
+// 	return false;
+// }
+
 void XObjLaser::FrameMove( float dt )
 {
 	if( m_timerLife.IsOver() )
@@ -435,8 +471,8 @@ void XObjLaser::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha )
  @brief 
  @param secLife 0은 한번만 플레이하고 중지. -1은 무한루프,>0 값은 해당 초동안 생존
 */
-XObjLoop::XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos, szSpr, idAct )
+XObjLoop::XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife/*=0.f*/ )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos, szSpr, idAct, bBatch )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -446,8 +482,8 @@ XObjLoop::XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLif
 	XBREAK( GetpSprObj() == nullptr );
 }
 
-XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, vwPos, szSpr, 1 )
+XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife/*=0.f*/ )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, vwPos, szSpr, 1, bBatch )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -457,8 +493,8 @@ XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct,
 	XBREAK( GetpSprObj() == nullptr );
 }
 
-XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, spTrace->GetvwPos(), szSpr, idAct )
+XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife/*=0.f*/ )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, spTrace->GetvwPos(), szSpr, idAct, bBatch )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -475,8 +511,8 @@ XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idA
 /**
  @brief 이펙트 생성은 vwPos에 생성되나 spTrace를 참조해야 하는 버전
 */
-XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, vwPos, szSpr, idAct )
+XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife/*=0.f*/ )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, vwPos, szSpr, idAct, bBatch )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -492,6 +528,33 @@ XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos
 
 void XObjLoop::Destroy() {}
 
+// bool XObjLoop::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
+// {
+// 	if( strParam == "atlas" )
+// 		return true;
+// 	else
+// 	if( strParam == "batch" ) {
+// 		if( strSpr == _T("obj_grave.spr") )
+// 			return true;
+// 		else
+// 			return false;
+// 	} else
+// 	if( strParam == "zbuff" ) {
+// 		if( strSpr == _T( "obj_grave.spr" ) )
+// 			return true;
+// 		else
+// 			return false;
+// 	}
+// 	else
+// 	if( strParam == "alphatest" ) {
+// 		if( strSpr == _T( "obj_grave.spr" ) )
+// 			return true;
+// 		else
+// 			return false;
+// 	}
+// 	XBREAK(1);
+// 	return false;
+// }
 void XObjLoop::SetBounce( float power, float dAngZ, float gravity )
 {
 	auto spCompBounce = std::make_shared<XCompObjMoveBounce>( power, dAngZ );
@@ -557,20 +620,23 @@ void XObjLoop::Draw( const XE::VEC2& vPos, float scale, float alpha )
 {
 	XPROF_OBJ_AUTO();
 #if defined(_CHEAT) && defined(WIN32)
-	if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_SKILL_SFX) )
+	if( !(XAPP->m_dwNoDraw & xBD_NO_DRAW_SKILL_SFX) )
 #endif // defined(_CHEAT) && defined(WIN32)
 	{
 		// 이펙트류는 z버퍼와 알파테스트를 사용하지 않는다.
 // 		auto bAlphaTest = GRAPHICS->GetbAlphaTest();
 // 		auto bZBuffer = GRAPHICS->GetbEnableZBuff();
-//  		GRAPHICS->SetbAlphaTest( false );
-//  		GRAPHICS->SetbEnableZBuff( false );
+// 		auto bPrev1 = GRAPHICS->SetbAlphaTest( m_bAlphaTest );
+//   	auto bPrev2 = GRAPHICS->SetbEnableZBuff( m_bZBuff );
 		XEBaseWorldObj::Draw( vPos, scale, alpha );
-//  		GRAPHICS->SetbEnableZBuff( bZBuffer );
-//  		GRAPHICS->SetbAlphaTest( bAlphaTest );
+// 		GRAPHICS->SetbEnableZBuff( bPrev2 );
+// 		GRAPHICS->SetbAlphaTest( bPrev1 );
 	}
 }
 ////////////////////////////////////////////////////////////////
+/**
+ @brief 바닥에 독자적으로 놓이년 이펙류.(불바다 같은)
+*/
 XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp, 
 																			const XE::VEC3& vwPos, 
 																			const _tstring& strSpr, 
@@ -578,7 +644,7 @@ XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp,
 																			float sec )
 	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(),
 										XGAME::xOT_SKILL_EFFECT, vwPos,
-										strSpr.c_str(), idAct )
+										strSpr.c_str(), idAct, false )
 	, XSkillReceiver( 1, XGAME::xMAX_PARAM, 0 )
 {
 	Init();
@@ -589,6 +655,23 @@ XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp,
 void XSkillSfxReceiver::Destroy()
 {
 }
+
+// bool XSkillSfxReceiver::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
+// {
+// 	if( strParam == "atlas" )
+// 		return true;
+// 	else 
+// 	if( strParam == "batch" )
+// 		return false;
+// 	else
+// 	if( strParam == "zbuff" )
+// 		return false;
+// 	else
+// 	if( strParam == "alphatest" )
+// 		return false;
+// 	XBREAK( 1 );
+// 	return false;
+// }
 
 void XSkillSfxReceiver::FrameMove( float dt )
 {
@@ -603,7 +686,9 @@ void XSkillSfxReceiver::FrameMove( float dt )
 void XSkillSfxReceiver::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/* =1.f */ )
 {
 	XPROF_OBJ_AUTO();
+	auto bPrev2 = GRAPHICS->SetbEnableZBuff( false );
 	XEBaseWorldObj::Draw(vPos,scale, alpha);
+	GRAPHICS->SetbEnableZBuff( bPrev2 );
 }
 #endif // _XPROFILE
 
@@ -625,6 +710,23 @@ XSkillShootObj::XSkillShootObj( XEWndWorld *pWndWorld,
 void XSkillShootObj::Destroy()
 {
 }
+
+// bool XSkillShootObj::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
+// {
+// 	if( strParam == "atlas" )
+// 		return true;
+// 	else 
+// 	if( strParam == "batch" )
+// 		return false;
+// 	else
+// 	if( strParam == "zbuff" )
+// 		return false;
+// 	else
+// 	if( strParam == "alphatest" )
+// 		return false;
+// 	XBREAK( 1 );
+// 	return false;
+// }
 
 void XSkillShootObj::CallCallbackFunc( void ) 
 {
@@ -706,6 +808,23 @@ XObjDmgNum::XObjDmgNum( LPCTSTR szStr
 	InitEffect();
 }
 
+// bool XObjDmgNum::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
+// {
+// 	if( strParam == "atlas" )
+// 		return true;
+// 	else 
+// 	if( strParam == "batch" )
+// 		return true;
+// 	else
+// 	if( strParam == "zbuff" )
+// 		return true;
+// 	else
+// 	if( strParam == "alphatest" )
+// 		return true;
+// 	XBREAK( 1 );
+// 	return false;
+// }
+
 void XObjDmgNum::InitEffect()
 {
 	m_vDelta.Set( 0, 0, -4 );
@@ -773,7 +892,7 @@ void XObjDmgNum::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/
 		col = XCOLOR_RGBA(r,g,b,a);
 	}
 #if defined(_CHEAT) && defined(WIN32)
-	if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_DMG_NUM) )
+	if( !(XAPP->m_dwNoDraw & xBD_NO_DRAW_DMG_NUM) )
 #endif // defined(_CHEAT) && defined(WIN32)
 		m_pfdNumber->DrawStringStyle( vPos.x, vPos.y, col, xFONT::xSTYLE_STROKE, m_strNumber.c_str() );
 //#endif 
@@ -810,6 +929,23 @@ void XObjYellSkill::Destroy()
 	SAFE_DELETE( m_pFontObj );
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcBg );
 }
+
+// bool XObjYellSkill::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
+// {
+// 	if( strParam == "atlas" )
+// 		return true;
+// 	else 
+// 	if( strParam == "batch" )
+// 		return false;
+// 	else
+// 	if( strParam == "zbuff" )
+// 		return false;
+// 	else
+// 	if( strParam == "alphatest" )
+// 		return false;
+// 	XBREAK( 1 );
+// 	return false;
+// }
 
 void XObjYellSkill::FrameMove( float dt )
 {
@@ -892,7 +1028,7 @@ XObjFlame::XObjFlame( const XSPUnit& spAttacker,
 											float secLife,
 											BIT bitCampTarget,
 											LPCTSTR szSpr, ID idAct )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_DAMAGE, vwPos, szSpr, idAct )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_DAMAGE, vwPos, szSpr, idAct, false )
 {
 	Init();
 	m_spAttacker = spAttacker;
@@ -906,6 +1042,22 @@ XObjFlame::XObjFlame( const XSPUnit& spAttacker,
 void XObjFlame::Destroy()
 {
 }
+// bool XObjFlame::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
+// {
+// 	if( strParam == "atlas" )
+// 		return true;
+// 	else 
+// 	if( strParam == "batch" )
+// 		return false;
+// 	else
+// 	if( strParam == "zbuff" )
+// 		return false;
+// 	else
+// 	if( strParam == "alphatest" )
+// 		return false;
+// 	XBREAK( 1 );
+// 	return false;
+// }
 
 void XObjFlame::FrameMove( float dt )
 {
@@ -950,7 +1102,7 @@ void XObjFlame::FrameMove( float dt )
 //////////////////////////////////////////////////////////////////////////
 XObjRes::XObjRes( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct
 									, const XVector<XGAME::xRES_NUM>& aryLoots )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos, szSpr, idAct )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos, szSpr, idAct, true )
 //	, m_spCompMove( 20.f, XE::VEC2( 270.f, 290.f ) )
 {
 	m_psfcShadow = IMAGE_MNG->Load( PATH_IMG( "shadow.png" ) );
@@ -975,6 +1127,23 @@ XObjRes::~XObjRes()
 {
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcShadow );
 }
+
+// bool XObjRes::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
+// {
+// 	if( strParam == "atlas" )
+// 		return true;
+// 	else 
+// 	if( strParam == "batch" )
+// 		return true;
+// 	else
+// 	if( strParam == "zbuff" )
+// 		return true;
+// 	else
+// 	if( strParam == "alphatest" )
+// 		return true;
+// 	XBREAK( 1 );
+// 	return false;
+// }
 
 void XObjRes::SetBounce( float power, float dAngZ, float gravity )
 {
@@ -1035,7 +1204,7 @@ void XObjRes::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 
 ////////////////////////////////////////////////////////////////
 XObjResNum::XObjResNum( const XE::VEC3& vwPos, XGAME::xtResource resType, int num )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), xOT_UI, vwPos, _T("obj_res.spr"), (int)resType+1 )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), xOT_UI, vwPos, _T("obj_res.spr"), (int)resType+1, true )
 
 {
 	Init();
@@ -1045,6 +1214,22 @@ XObjResNum::XObjResNum( const XE::VEC3& vwPos, XGAME::xtResource resType, int nu
 	m_State = 2;
 	m_timerAlpha.Set( 1.5f );
 }
+// bool XObjResNum::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
+// {
+// 	if( strParam == "atlas" )
+// 		return true;
+// 	else 
+// 	if( strParam == "batch" )
+// 		return true;
+// 	else
+// 	if( strParam == "zbuff" )
+// 		return true;
+// 	else
+// 	if( strParam == "alphatest" )
+// 		return true;
+// 	XBREAK( 1 );
+// 	return false;
+// }
 
 void XObjResNum::FrameMove( float dt )
 {

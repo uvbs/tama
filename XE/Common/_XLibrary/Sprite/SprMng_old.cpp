@@ -100,7 +100,7 @@ void XSprMng::OnCreate()
 /**
 @brief 레퍼런스 카운트가 0이된것들중 시간이 오래된건 삭제시킨다.
 */
-void XSprMng::DestroyOlderFile()
+void XSprMng::DestroyOverTimeFile()
 {
 	XAUTO_LOCK2( m_spLock );
 	for( auto itor = m_listSprDat.begin(); itor != m_listSprDat.end(); ) {
@@ -141,7 +141,7 @@ void XSprMng::Release( XSprDat *pSprDat )
 			itor++;
 	}
 	// refCnt==0인것중 오래된파일은 삭제한다.
-	DestroyOlderFile();
+	DestroyOverTimeFile();
 }
 
 /**
@@ -251,7 +251,7 @@ XSprDat *XSprMng::Load( LPCTSTR szFilename,
 			if( pSprDat == nullptr && spDat->m_idAsync )
 				*pOutidAsync = spDat->m_idAsync;
 			spDat->m_secLoaded = XTimer2::sGetTime();
-			DestroyOlderFile();			// 여기다 쓰지말고 씬로딩완료 직후에 한번 불러주는게 더 효율적일듯.
+			DestroyOverTimeFile();			// 여기다 쓰지말고 씬로딩완료 직후에 한번 불러주는게 더 효율적일듯.
 			return pSprDat;
 		}
 	}
@@ -285,7 +285,7 @@ XSprDat *XSprMng::Load( LPCTSTR szFilename,
 		AddNew( _tstring( szFilename ), pSprDat, hsl );
 // 		if( bAddRefCnt )
 // 			pSprDat->AddRefCnt();
-		DestroyOlderFile();
+		DestroyOverTimeFile();
 		return pSprDat;
 	}
 	// failed

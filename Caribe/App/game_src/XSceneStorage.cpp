@@ -173,13 +173,14 @@ int XSceneStorage::OnClickEquipmentSell( XWnd *pWnd, DWORD p1, DWORD p2 )
 		xSET_BUTT_TEXT( this, "butt.ok", XTEXT( 80015 ) );			// "판매"
 
 		//xSET_IMG(this, "img.ask.itemimg", m_pSelectItem->GetpItem()->GetResPathIcon());
-		XWndImage *pImg = SafeCast<XWndImage*, XWnd*>( Find( "img.ask.itemimg" ) );
+
+		auto pImg = SafeCast<XWndImage*>( Find( "img.ask.itemimg" ) );
 		if( pImg ) {
 			pImg->SetSurface( m_pSelectItem->GetpItem()->GetResPathIcon() );
 			if( m_pSelectItem->GetpItem()->GetType() == XGAME::xIT_SOUL ) {
 				pImg->SetScaleLocal( 0.76f );
-				XWndImage *pSoulStone = new XWndImage( TRUE, XE::MakePath( DIR_UI, _T( "gem_small.png" ) ), 241, 129 );
-				pPopup->Add( pSoulStone );
+				auto pSoulStone = new XWndImage( TRUE, XE::MakePath( DIR_UI, _T( "gem_small.png" ) ), 1, 1 );
+				pImg->Add( pSoulStone );
 			} else
 				pImg->SetScaleLocal( 1.f );
 		}

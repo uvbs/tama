@@ -3,10 +3,10 @@
 <layout font_text_m="normal.ttf" font_text_b="bold.ttf">
   <popup_recon>
     <popup img="ingame_bg_popup.png">
-      <butt posx="478" posy="20" img_up="common_butt_x.png" key="butt.close"></butt>
-      <butt posx="105" posy="293" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.attack" font_style="stroke" text="2032"></butt>
-      <text posx="56" posy="180" font="font_text_b" text_col="yellow" font_size="30" font_style="stroke" text="2040" />
-      <img file="hero_parchment_title.png" posx="center" posy="0">
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.close"></butt>
+      <butt posx="105" posy="273" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.attack" font_style="stroke" text="2032"></butt>
+      <text posx="56" posy="160" font="font_text_b" text_col="yellow" font_size="30" font_style="stroke" text="2040" />
+      <img file="popup_title_bar.png" posx="center" posy="-15">
         <text posx="center" posy="11" font="font_res_num" font_size="40" font_style="stroke" key="text.name.enemy" />
       </img>
     </popup>

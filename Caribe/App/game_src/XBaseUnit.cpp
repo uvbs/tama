@@ -16,8 +16,9 @@
 #include "XStatistic.h"
 #include "../XDrawGraph.h"
 #include "XHero.h"
-#ifdef _CHEAT
 #include "client/XAppMain.h"
+#ifdef _CHEAT
+#include "client/XCheatOption.h"
 #endif
 #include "XEObjMngWithType.h"
 #include "XSceneBattle.h"
@@ -31,6 +32,8 @@
 #include "XFramework/Game/XEWndWorld.h"
 #include "sprite/SprObj.h"
 #include "XImageMng.h"
+#include "XFramework/client/XWndBatchRender.h"
+#include "OpenGL2/XBatchRenderer.h"
 
 using namespace XSKILL;
 using namespace XGAME;
@@ -151,13 +154,14 @@ XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
 	, XSkillUser( SKILL_MNG )
 	, m_vLocalFromSquad(vPos - spSquadObj->GetvwPos())
 	, m_aryAttacked(8)
+	, m_spBar( std::make_shared<XProgressBar>( _T("bar_small.png"), _T("bar_small_bg.png") ) )
 {
 	Init();
 	m_idProp = idProp;
 	XEBaseWorldObj::SetType( XGAME::xOT_UNIT );
 	auto pHero = spSquadObj->GetpHero();
 	m_pHero = pHero;
-
+	m_spBar->SetvAdjBar( XE::VEC2(0.5f,0.5f) );
 	m_pSquadObj = spSquadObj.get();
 	m_spMsgQ1 = std::make_shared<XMsgQ>();
 //	m_spMsgQ2 = std::make_shared<XMsgQ>();
@@ -244,6 +248,7 @@ void XBaseUnit::OnCreate()
 		// 적 유닛의 경우만 2버전을 쓴다. 영웅은 2버전이 없다.
 		strSpr = strTitle + _T( "2.spr" );
 	}
+	const bool bBatch = true;
 	LoadSpr( strSpr.c_str(), hsl, ACT_IDLE1, true, xRPT_LOOP );
 	XBREAK( GetpSprObj() == nullptr );
 	XE::VEC2 vScale( GetScaleObj().x, GetScaleObj().z );
@@ -403,7 +408,8 @@ void XBaseUnit::FrameMove( float dt )
 		if( m_timerDisappear.IsOver() ) {
 			// 무덤 객체 생성
 			ID idAct = (ID)xRandom(1, 3);
-			auto pObj = new XObjLoop( GetvwPos(), _T( "obj_grave.spr" ), idAct, 60.f );
+			auto pObj = new XObjLoop( GetvwPos(), _T( "obj_grave.spr" ), idAct, true, 60.f );
+//			pObj->SetbZBuff( true );
 			const auto scaleFactor = GetScaleFactor();
 			pObj->SetScaleObj( scaleFactor );
 			GetpWndWorld()->AddObj( XSPWorldObj( pObj ) );
@@ -717,7 +723,7 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 		m_psoHit->SetScale( scaleFactor * scale );
 // 		m_psoHit->SetScale( scaleFactor * scaleProp * scale );
 #if defined(_CHEAT) && defined(WIN32)
-		if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_HIT_SFX) )
+		if( !(XAPP->m_dwNoDraw & xBD_NO_DRAW_HIT_SFX) )
 #endif // defined(_CHEAT) && defined(WIN32)
 			m_psoHit->Draw( v );
 	}
@@ -725,34 +731,42 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 	XE::VEC2 vDrawHp = vPos;
 	// drawhp
 	if( IsLive() ) {
-		XE::VEC2 sizeBar = XE::VEC2( 35 * scaleSize * scale, 5 * scale );
-		if( sizeBar.w < 1.f )
-			sizeBar.w = 1.f;
-		if( sizeBar.h < 1.f )
-			sizeBar.h = 1.f;
-		const XE::VEC3 _vSize = vSizeUnit * scale;
-		vDrawHp.x -= sizeBar.w / 2.f;
-		vDrawHp.y -= _vSize.h + ( 2.f * scaleSize );
-// 		vDrawHp.y -= _vSize.h + ( 2.f * scaleFactor );
-		if( (m_timerDamage.IsOn() && !m_timerDamage.IsOver()) || IsHero() )	{
-			XPROF_OBJ( "draw bar" );
-			float lerp = (float)GetHp() / GetMaxHp();
-			XCOLOR col = XCOLOR_RGBA( 210, 31, 1, 255 );
-			XCOLOR colBg = XCOLOR_RGBA( 43, 14, 8, 255 );
-			if( IsPlayer() ) {
-				col = XCOLOR_RGBA( 1, 211, 2, 255 );
-				colBg = XCOLOR_RGBA( 9, 43, 10, 255 );
-			}
-// 			XUTIL::DrawProgressBar( vDrawHp, lerp, sizeBar, col, colBg );
-		}
+#ifdef _CHEAT
+		if( !(XAPP->m_dwNoDraw & XGAME::xBD_HIDE_HPBAR) )
+#endif // _CHEAT
+			vDrawHp = DrawBar( vDrawHp, scaleSize, scale, vSizeUnit );
 	}
+// 		XE::VEC2 sizeBar = XE::VEC2( 35 * scaleSize * scale, 5 * scale );
+// 		if( sizeBar.w < 1.f )
+// 			sizeBar.w = 1.f;
+// 		if( sizeBar.h < 1.f )
+// 			sizeBar.h = 1.f;
+// 		const XE::VEC3 _vSize = vSizeUnit * scale;
+// 		vDrawHp.x -= sizeBar.w / 2.f;
+// 		vDrawHp.y -= _vSize.h + ( 2.f * scaleSize );
+// // 		vDrawHp.y -= _vSize.h + ( 2.f * scaleFactor );
+// 		if( (m_timerDamage.IsOn() && !m_timerDamage.IsOver()) || IsHero() )	{
+// 			XPROF_OBJ( "draw bar" );
+// 			float lerp = (float)GetHp() / GetMaxHp();
+// 			XCOLOR col = XCOLOR_RGBA( 210, 31, 1, 255 );
+// 			XCOLOR colBg = XCOLOR_RGBA( 43, 14, 8, 255 );
+// 			if( IsPlayer() ) {
+// 				col = XCOLOR_RGBA( 1, 211, 2, 255 );
+// 				colBg = XCOLOR_RGBA( 9, 43, 10, 255 );
+// 			}
+// // 			XUTIL::DrawProgressBar( vDrawHp, lerp, sizeBar, col, colBg );
+// 		}
+// 	}
 	if( m_timerDamage.IsOver() )
 		m_timerDamage.Off();
 	auto vDrawName = vDrawHp;
 	// draw name
 	if( IsHero() && IsLive() ) {
 		XPROF_OBJ( "draw name" );
-		vDrawName = DrawName( vPos, scaleSize, scale, vDrawHp );
+#ifdef _CHEAT
+		if( !(XAPP->m_dwNoDraw & XGAME::xBD_HIDE_NAME) )
+#endif // _CHEAT
+			vDrawName = DrawName( vPos, scaleSize, scale, vDrawHp );
 	}
 	if( /*IsHero() &&*/ IsLive() ) {
 		// 버프 디버프 아이콘 표시
@@ -809,7 +823,7 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 						vDrawBuffIcon.y = vDrawName.y - ( ( 2.f * scale ) + sizeIcon.h );
 						psfc->SetScale( scaleIcon );
 #if defined(_CHEAT) && defined(WIN32)
-						if( !(XAPP->m_dwFilter & xBIT_NO_DRAW_BUFF_ICON) )
+						if( !(XAPP->m_dwNoDraw & xBD_NO_DRAW_BUFF_ICON) )
 #endif // defined(_CHEAT) && defined(WIN32)
 							psfc->Draw( vDrawBuffIcon );
 						if( pDat->GetstrIdentifier() == _T( "invoke_protect" ) ) {
@@ -907,6 +921,37 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 	} // if( XAPP->GetbDebugMode() )
 #endif // 치트정보를 맨 마지막에 찍을것
 } // Draw
+
+XE::VEC2 XBaseUnit::DrawBar( const XE::VEC2& _vDrawHp, float scaleSize,
+													float scale, const XE::VEC3& vSizeUnit ) const
+{
+//	XWndBattleField::sGet()->GetpUnitUILayer()->GetpRenderer()->PushRenderer();
+	auto vDrawHp = _vDrawHp;
+	XE::VEC2 sizeBar = XE::VEC2( 35 * scaleSize * scale, 5 * scale );
+	if( sizeBar.w < 1.f )
+		sizeBar.w = 1.f;
+	if( sizeBar.h < 1.f )
+		sizeBar.h = 1.f;
+	const XE::VEC3 _vSize = vSizeUnit * scale;
+	vDrawHp.x -= sizeBar.w / 2.f;
+	vDrawHp.y -= _vSize.h + (2.f * scaleSize);
+	// 		vDrawHp.y -= _vSize.h + ( 2.f * scaleFactor );
+	if( (m_timerDamage.IsOn() && !m_timerDamage.IsOver()) || IsHero() ) {
+		XPROF_OBJ( "draw bar" );
+		float lerp = (float)GetHp() / GetMaxHp();
+		XCOLOR col = XCOLOR_RGBA( 210, 31, 1, 255 );
+		XCOLOR colBg = XCOLOR_RGBA( 43, 14, 8, 255 );
+		if( IsPlayer() ) {
+			col = XCOLOR_RGBA( 1, 211, 2, 255 );
+			colBg = XCOLOR_RGBA( 9, 43, 10, 255 );
+		}
+		m_spBar->Draw( vDrawHp, lerp );
+		// 			XUTIL::DrawProgressBar( vDrawHp, lerp, sizeBar, col, colBg );
+	}
+//	XWndBattleField::sGet()->GetpUnitUILayer()->GetpRenderer()->PopRenderer();
+	return vDrawHp;
+}
+
 
 void XBaseUnit::DrawDebugStr( XE::VEC2* pvLT, XCOLOR col, float sizeFont, const _tstring& strDebug )
 {
@@ -1927,7 +1972,7 @@ void XBaseUnit::OnEventCreateSfx( XSprObj *pSprObj,
 	XE::VEC3 vwPos = GetvwPos();
 	vwPos.y += 0.1f;
 	vwPos += vLocal;
-	XObjLoop *pEff = new XObjLoop( vwPos, szSpr, idAct, secLife );
+	XObjLoop *pEff = new XObjLoop( vwPos, szSpr, idAct, false, secLife );
 	pEff->SetDir( m_Dir );
 	pEff->SetScaleObj( scale );
 	GetpWndWorld()->AddObj( XSPWorldObj(pEff) );
@@ -2192,62 +2237,62 @@ XObjLoop* XBaseUnit::sCreateSfxObj( XSPWorldObjConst spObj,
 	XObjLoop *pSfx = NULL;
 	if( !vPos.IsZero() ) {
 		pSfx = new XObjLoop( XGAME::xOT_SFX, XE::VEC3(vPos.x, 0, vPos.y),
-												szSpr, idAct, secPlay );
+												szSpr, idAct, false, secPlay );
 	} else {
 		if( createPoint == xPT_TARGET_CENTER ) {
 			// pTarget를 따라다니지 않음.
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvCenterWorld(),
-													szSpr, idAct, secPlay );
+													szSpr, idAct, false, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_BOTTOM ) {
 			// pTarget를 따라다니지 않음.
 			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, spObj, pObj->GetvwPos(),
-													szSpr, idAct, secPlay );
+													szSpr, idAct, false, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_POS ) {
 			if( secPlay > 0.f )
 				// pTarget를 따라다님
 				pSfx = new XObjLoop( XGAME::xOT_SFX, spObj
-													, szSpr, idAct, secPlay );
+													, szSpr, idAct, false, secPlay );
 			else
 				pSfx = new XObjLoop( XGAME::xOT_SFX, pObj->GetvwPos(),
-														szSpr, idAct, secPlay );
+														szSpr, idAct, false, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_TRACE_CENTER ) {
 			// 타겟의 중심을 따라다님
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
-													szSpr, idAct, secPlay );
+													szSpr, idAct, false, secPlay );
 			pSfx->SetvAdjust( 0.f, 0.f, -pObj->GetSize().h * 0.5f );
 		} else
 		if( createPoint == xPT_TARGET_TRACE_POS ) {
 			// 타겟의 좌표를 따라다님
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
-													szSpr, idAct, secPlay );
+													szSpr, idAct, false, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_TRACE_BOTTOM ) {
 			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, spObj,
-													szSpr, idAct, secPlay );
+													szSpr, idAct, false, secPlay );
 		} else
 		if( createPoint == xPT_ACTION_EVENT ) {
 //			TransformByObj( &m_vlActionEvent );
 			if( pUnit ) {
 				auto vwActionPos = pObj->GetvwPos() + pUnit->GetvlActionEvent();
 				pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, vwActionPos,
-														szSpr, idAct, secPlay );
+														szSpr, idAct, false, secPlay );
 			}
 		} else
 		if( createPoint == xPT_TARGET_TOP ) {
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvwTop( wAdjZ ),
-													szSpr, idAct, secPlay );
+													szSpr, idAct, false, secPlay );
 		} else 
 		if( createPoint == xPT_TARGET_TRACE_TOP ) {
 			// 타겟의 좌표를 따라다님
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
-													szSpr, idAct, secPlay );
+													szSpr, idAct, false, secPlay );
 			pSfx->SetvAdjust( 0.f, 0.f, -pObj->GetSize().h );
 		} else {
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvCenterWorld(),
-													szSpr, idAct, secPlay );
+													szSpr, idAct, false, secPlay );
 		}
 	}
 
@@ -3168,7 +3213,7 @@ float XBaseUnit::GetCriticalRatio()
 	return ratioCri;
 }
 
-int XBaseUnit::GetHp()
+int XBaseUnit::GetHp() const
 {
 	float hp = (float)m_HP;
 	return (int)CalcAdjParam( hp, XGAME::xADJ_MAX_HP );
@@ -3563,10 +3608,10 @@ float XBaseUnit::GetSpeedAttack( XSPUnit spTarget )
 /**
  @brief
 */
-int XBaseUnit::GetMaxHp()
+int XBaseUnit::GetMaxHp() const
 {
 	auto pHero = GetpHero();
-	auto hpMax = GetspLegionObj()->GetspLegion()->GethpMaxEach( pHero->GetsnHero()
+	auto hpMax = GetspLegionObjConst()->GetspLegion()->GethpMaxEach( pHero->GetsnHero()
 																														, IsHero() != FALSE );
 	return (int)CalcAdjParam( hpMax, XGAME::xADJ_MAX_HP );
 }
@@ -3832,3 +3877,4 @@ void XBaseUnit::SetStateMsg( int idxState, bool bFlag )
 	auto spMsg = std::make_shared<XMsgSetState>( (xtState)idxState, bFlag );
 	PushMsg( spMsg );
 }
+

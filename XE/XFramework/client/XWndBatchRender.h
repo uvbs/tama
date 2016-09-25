@@ -37,31 +37,53 @@ class XWndBatchRender : public XWnd
 {
 friend class XAutoCurrAtlas;
 public:
-	XWndBatchRender( const char* cTag, bool bBatchRender, const XE::xRECT& rc );
+	XWndBatchRender( const char* cTag, bool bBatchRender, 
+									 bool bZBuff, bool bAlphaTest, 
+									 const XE::xRECT& rc );
+	XWndBatchRender( const char* cTag, bool bBatchRender, 
+									 bool bZBuff, bool bAlphaTest, 
+									 const XE::VEC2& vPos, const XE::VEC2& vSize )
+		: XWndBatchRender( cTag, bBatchRender, bZBuff, bAlphaTest, 
+											 XE::xRECT( vPos, vSize ) ) {}
 	// 크기를 따로 지정하지 않으면 부모윈도우의 크기를 따른다.
-	XWndBatchRender( const char* cTag, bool bBatchRender )
-		: XWndBatchRender( cTag, bBatchRender, XE::xRECT() ) {	}
-//	: XWndBatchRender( cTag, bBatchRender, XE::xRECT( XE::VEC2( 0, 0 ), XE::GetGameSize() ) ) {	}
+	XWndBatchRender( const char* cTag, bool bBatchRender, 
+									 bool bZBuff, bool bAlphaTest )
+		: XWndBatchRender( cTag, bBatchRender, 
+											 bZBuff, bAlphaTest, XE::xRECT() ) {	}
 	~XWndBatchRender() {
 		Destroy();
 	}
 	// get/setter
-	GET_ACCESSOR( XTextureAtlas*, pAtlas );
+	GET_ACCESSOR( XSPAtlasMng, spAtlas );
+	GET_SET_BOOL_ACCESSOR( bZBuff );
+	GET_SET_BOOL_ACCESSOR( bAlphaTest );
+	GET_ACCESSOR( XBatchRenderer*, pRenderer );
 	// public member
+	
 // 	void AttatchBatchRenderer();
 protected:
 	void Draw() override;
-	void DrawAfter() override;
+	void OnDrawAfter() override;
+	void DestroyDevice();
+	void OnPause();
+	void OnUpdateBefore();
+	void OnUpdateAfter();
+	void OnProcessBefore();
+	void OnProcessAfter();
 	int Process( float dt ) override;
-	void DrawBefore() override;
+	void OnDrawBefore() override;
 private:
 	// private member
 	XBatchRenderer* m_pRenderer = nullptr;
-	XTextureAtlas* m_pAtlas = nullptr;
+	XSPAtlasMng m_spAtlas;
 	XBatchRenderer* m_pPrev = nullptr;
+	bool m_bZBuff = false;
+	bool m_bAlphaTest = false;
+	bool m_bZBuffPrev = false;
+	bool m_bAlphaTestPrev = false;
 private:
 	// private method
-	GET_ACCESSOR( XBatchRenderer*, pRenderer );
+//	GET_ACCESSOR( XBatchRenderer*, pRenderer );
 	void Init() {}
 	void Destroy();
 	BOOL OnCreate() override;

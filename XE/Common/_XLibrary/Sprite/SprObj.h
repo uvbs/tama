@@ -111,6 +111,7 @@ private:
 	float m_multiplySpeed;				// 애니메이션 스피드 배속
   bool m_bCallHandler = false;    // 이벤트키의 콜백이 실행중.
 #ifdef _XASYNC_SPR
+	std::function<void( XSprObj* )> m_funcLoadFinished;			// spr로딩이 완료되면 호출되는 콜백. 파일로딩뿐아니라 캐시로딩도 포함된다.
 	struct tagAsync {
 		ID m_idAsyncLoad = 0;					// 비동기 로딩중.
 		ID m_idAct = 0;			// 비동기 로딩중에 들어온 setAction
@@ -169,7 +170,21 @@ public:
 					 bool bBatch, 
 					 bool bAsync,
 					 XDelegateSprObj *pDelegate = nullptr );
-	// for lua
+	XSprObj( const _tstring& strFile,
+					 const XE::xHSL& hsl,
+					 bool bUseAtlas,
+					 bool bBatch,
+					 bool bAsync,
+					 XDelegateSprObj *pDelegate = nullptr ) 
+	: XSprObj( strFile.c_str(), hsl, bUseAtlas, bBatch, bAsync, pDelegate ) {	}
+	XSprObj( const _tstring& strFile,
+					 const XE::xHSL& hsl,
+					 ID idAct, xRPT_TYPE loop,
+					 bool bUseAtlas,
+					 bool bBatch,
+					 bool bAsync,
+					 std::function<void( XSprObj* )> func );
+		// for lua
 // 	XSprObj( BOOL bKeepSrc, const char *cFilename );
 // #ifdef WIN32
 // 	XSprObj( BOOL bKeepSrc, LPCTSTR szFilename );
@@ -242,6 +257,7 @@ public:
 	}
 //	LPCTSTR GetszFilename() { return m_pSprDat->GetszFilename(); }
 	LPCTSTR GetSprFilename();
+	ID GetsnDat();
 	inline LPCTSTR GetszFilename() {
 		return GetSprFilename();
 	}
@@ -386,6 +402,9 @@ public:
 	int Serialize( XArchive& ar );
 	int DeSerialize( XArchive& ar );
 	bool IsBatchRender() const;
+	inline bool IsLoaded() const {
+		return m_ppObjActs != nullptr;
+	}
 #ifdef _XASYNC_SPR
 	GET_SET_ACCESSOR_CONST( const struct tagAsync&, Async );
 	inline bool IsAsyncLoading() const;

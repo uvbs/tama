@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup>
+    <popup img="popup_bg.png" format="argb8888">
+      <!--타이틀-->
+      <img posx="center" posy="-15" img="popup_title_bar.png">
+        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="hcenter" key="text.title" text="80130" />
+      </img>
+      <img posx="center" posy="center" file="common_blank_b.png">
+        <img posx="center" posy="15" file="common_bg_item.png">
+          <img posx="center" posy="center" key="img.ask.itemimg"></img>
+        </img>
+        <text posx="10" posy="84" key="text.msg" font="font_text_m" font_size="25" font_style="stroke" width="220" />
+        <_ctrl_item ids="item_whistle" posx="center" posy="15" />
+      </img>
+      <butt posx="center" posy="240" img_up="common_butt_mid.png" key="butt.ok">
+        <text posx="center" posy="center" font="font_text_b" font_size="30" font_style="stroke" key="text.label" />
+      </butt>
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.cancel"></butt>
+    </popup>
+  </popup>
+</layout>

@@ -12,7 +12,7 @@
 #include "XAutoPtr.h"
 #include "XFramework/client/XApp.h"
 #include "XFramework/client/XClientMain.h"
-#include "Sprite/SprMng.h"
+//#include "Sprite/SprMng.h"
 #include "SprDat.h"
 
 #ifdef WIN32
@@ -88,8 +88,8 @@ BOOL XSprDat::Load( LPCTSTR _szFilename,
 		XBREAK( m_strFile.empty() );
 	} else {
 		szFilename = _szFilename;
+		m_bUseAtlas = bUseAtlas;
 	}
-	m_bUseAtlas = bUseAtlas;
 	XSPR_TRACE( "%s load start", MakePath2( DIR_SPR, szFilename ) );
 	XSPR_TRACE("XSprDat::Load: try find lang folder");
 	// 국가폴더 우선으로 읽도록 바뀜
@@ -162,20 +162,22 @@ BOOL XSprDat::Load( LPCTSTR _szFilename,
 		XSprite *pSpr = nullptr;
 		if( bRestore == FALSE ) {
 			pSpr = new XSprite( i );
-			pSpr->Load( this, spRes.get(), bUseAtlas, bAsyncLoad, m_HSL, bSrcKeep, bBatch, FALSE );
+			pSpr->Load( this, spRes.get(), bUseAtlas, bAsyncLoad, m_HSL, 
+									bSrcKeep, bBatch, FALSE );
 			AddSprite( /*i, */pSpr );
-			if( !bAsyncLoad ) {
-				XE::VEC2 vSize = pSpr->GetsizeMemAligned();
-				int byteSize = (int)(vSize.w * vSize.h * 2);
-				XSprite::s_sizeTotalMem += byteSize;
-				if( !bUseAtlas )
-					m_SizeByte += byteSize;
-			}
 		} else {
 			// restore device mode
 			pSpr = m_arySprite[ i ];
 			XBREAK( pSpr == nullptr );
-			pSpr->Load( this, spRes.get(), bUseAtlas, bUseAtlas, hsl, bSrcKeep, bBatch, TRUE );
+			pSpr->Load( this, spRes.get(), bUseAtlas, bAsyncLoad, hsl, 
+									bSrcKeep, bBatch, TRUE );
+		}
+		if( !bAsyncLoad ) {
+			XE::VEC2 vSize = pSpr->GetsizeMemAligned();
+			int byteSize = (int)(vSize.w * vSize.h * 2);
+			XSprite::s_sizeTotalMem += byteSize;
+			if( !bUseAtlas )
+				m_SizeByte += byteSize;
 		}
 	}
 	if( bRestore == FALSE )	{

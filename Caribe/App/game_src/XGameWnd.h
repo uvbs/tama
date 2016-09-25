@@ -143,6 +143,16 @@ public:
 		GAME->GetpScene()->WndAlertParam( TITLE, TYPE, COL, F, ##__VA_ARGS__ ) :\
 		GAME->WndAlert( F, ##__VA_ARGS__ );
 
+#define	XWND_ALERT_TYPE( IDS, TYPE, F,...) \
+	( GAME->GetpScene() )? \
+		GAME->GetpScene()->WndAlertWithType( IDS, TYPE, _T(F), ##__VA_ARGS__ ) \
+			: GAME->WndAlertWithType(  IDS, TYPE, _T(F), ##__VA_ARGS__ );
+
+#define	XWND_ALERT_TYPE_T( IDS, TYPE, F,...) \
+	( GAME->GetpScene() )? \
+		GAME->GetpScene()->WndAlertWithType( IDS, TYPE, F, ##__VA_ARGS__ ) \
+			: GAME->WndAlert( F, ##__VA_ARGS__ );
+
 
 class XWndCircleMenu;
 
@@ -389,10 +399,11 @@ class XWndStatistic : public XWndPopup
 	XVector<XSPLegionObj> m_aryLegionObj;
 	xtStatistic m_Type = xST_DEAL;
 	XWndScrollView *m_pView = nullptr;
+	XWndPopup* m_pParent = nullptr;
 	void Init() {}
 	void Destroy();
 public:
-	XWndStatistic( XSPLegionObj spLegionObj1, XSPLegionObj spLegionObj2 );
+	XWndStatistic( XSPLegionObj spLegionObj1, XSPLegionObj spLegionObj2, XWndPopup* pParentPopup );
 	~XWndStatistic() { Destroy(); }
 	//
 	void CreateHerosUI( XWnd *pRoot, XSPLegionObj spLegionObj, float max, xtStatistic type, XGAME::xtSide side );
@@ -569,6 +580,11 @@ public:
 	void SetTime( xSec secLack );
 	void SetAP( int apLack );
 	void SetGold( int goldLack );
+	void SetNum( int num ) {
+		SetAP( num );
+	}
+	void SetItem( const _tstring& strIds, int gem );
+	void SetItem( ID idItem, int gem );
 	void SetResource( XGAME::xtResource resType, int numLack );
 	void SetResource( const std::vector<XGAME::xRES_NUM>& aryLack );
 	void SetFillTryByDailySpot();		// 요일스팟 도전횟수 리필

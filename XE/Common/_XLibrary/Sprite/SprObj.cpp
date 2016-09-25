@@ -114,6 +114,27 @@ XSprObj::XSprObj( LPCTSTR szFilename,
 	m_pDelegate = pDelegate;
 }
 
+XSprObj::XSprObj( const _tstring& strFile,
+									const XE::xHSL& hsl,
+									ID idAct, xRPT_TYPE loop,
+									bool bUseAtlas,
+									bool bBatch,
+									bool bAsync,
+									std::function<void( XSprObj* )> func )
+{
+	Init();
+	XBREAK( idAct == 0 );
+	m_funcLoadFinished = func;
+	m_spDat = LoadInternal( strFile.c_str(), hsl, bUseAtlas, bBatch, bAsync, &m_Async.m_idAsyncLoad );
+	if( m_spDat->m_pSprDat ) {
+		OnFinishLoad( m_spDat->m_pSprDat );
+		if( m_funcLoadFinished ) {
+			m_funcLoadFinished( this );
+		}
+	}
+	SetAction( idAct, loop );
+}
+
 // for lua
 // XSprObj::XSprObj( BOOL bKeepSrc, const char *cFilename ) 
 // {
@@ -140,8 +161,11 @@ void XSprObj::Destroy( void )
 	SAFE_DELETE( m_pLua );
 #endif
 	// m_pSprDat를 삭제한다. 그러나 매니저를 통해 삭제해야한다. 그리고 RefCnt개념을 써야 한다
-	SPRMNG->Release( m_spDat );
-	
+//	SPRMNG->Release( m_spDat );
+	const ID idDat = m_spDat->m_idDat;
+	m_spDat.reset();	// 소유권 해제
+//	SPRMNG->ReleaseByID( idDat );		// sprmng쪽에서 삭제할때 깔끔하게 use_count가 1이 되도록 하려고.
+
 	for( auto& useSpr : m_aryUseSprObj ) {
 		SAFE_DELETE( useSpr.m_pSprObj );
 	}
@@ -156,6 +180,11 @@ void XSprObj::Destroy( void )
 LPCTSTR XSprObj::GetSprFilename() 
 {
 	return ( GetpSprDat() ) ? GetpSprDat()->GetszFilename() : _T( "" );
+}
+
+ID XSprObj::GetsnDat()
+{
+	return m_spDat->m_idDat;
 }
 
 float XSprObj::GetSpeedCurrentAction() 
@@ -402,9 +431,15 @@ void XSprObj::FrameMove( float dt )
 			OnFinishLoad( m_spDat->m_pSprDat );
 			if( m_Async.m_idAct ) {
 				SetAction( m_Async.m_idAct, m_Async.m_playType );
+				// 비동기 로딩 완료
+				m_Async.Clear();
+				if( m_funcLoadFinished ) {
+					m_funcLoadFinished( this );
+				}
+			} else {
+				// 비동기 로딩 완료
+				m_Async.Clear();
 			}
-			// 비동기 로딩 완료
-			m_Async.Clear();
 		}
 	}
 #endif // _XASYNC_SPR
@@ -948,7 +983,6 @@ void XSprObj::OnFinishLoad( XSprDat* pSprDat )
 			pObjAct->CreateLayer( j, pLayerInfo );
 		}
 	}
-
 }
 
 XActObj* XSprObj::GetpObjActCurr() const 

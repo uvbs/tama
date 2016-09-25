@@ -33,7 +33,7 @@ private:
 // 	XVector<xVertexNoBatch> m_Vertices;
 	void Init();
 	void Destroy();
-	bool CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMask );
+	bool CreatePNG( LPCTSTR szRes, bool bUseAtlas, bool bSrcKeep, bool bMakeMask );
 protected:
 public:
 	XSurfaceGLAtlasNoBatch() : XSurface( true )/*, m_Vertices(4) */{

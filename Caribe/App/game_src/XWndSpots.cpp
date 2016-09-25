@@ -117,9 +117,11 @@ void XWndSpot::sUpdateHelloMsg( XSpot *pSpot, const _tstring& strHello )
 ////////////////////////////////////////////////////////////////
 ID XWndSpot::s_idLastTouch = 0;
 XWndSpot::XWndSpot( XSpot *pBaseSpot, LPCTSTR szSpr, ID idAct, const XE::VEC2& vPos )
-	: XWndSprObj( szSpr, idAct, vPos ) 
+	: XWndSprObj( vPos )
+//	: XWndSprObj( szSpr, idAct, vPos ) 
 {
 	Init();
+	CreateSprObj( szSpr, idAct, true, true, true, xRPT_LOOP );
 	m_pBaseSpot = pBaseSpot;
 	m_idSpot = pBaseSpot->GetidSpot();
 	auto pProp = pBaseSpot->GetpBaseProp();
@@ -614,6 +616,8 @@ _tstring XWndCastleSpot::GetstrDebugText()
 	// 디버그용 텍스트 출력
 	if( XAPP->GetbDebugMode() ) {
 //		strText += XE::Format(_T(":(%d)\n"), (int)m_pSpot->GetTimerCalc().GetsecPassTime());
+		strText += XE::Format( _T( "idWnd:%d\n" ), getid() );
+		strText += XE::Format( _T( "id:%d-%s\n" ), m_pSpot->GetidSpot(), m_pSpot->GetpProp()->strIdentifier.c_str() );
 		strText += XE::Format( _T( "(Lv%d)(sc:%d)" ), m_pSpot->GetLevel(), m_pSpot->GetScore() );
 		strText += XE::Format( _T( ":(%d sec)\n" ), (int)m_pSpot->GetTimerCalc().GetsecRemainTime() );
 		strText += XE::Format( _T( "%s" ), m_pSpot->GetStrLocalStorage().c_str() );

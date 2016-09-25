@@ -349,7 +349,6 @@ void XSurfaceOpenGL::DestroyDevice()
  */
 void XSurfaceOpenGL::RestoreDevice()
 {
-	
 	XE::VEC2 vSize;
 	DWORD *pSrcImg = GetSrcImg( &vSize );
 //#ifdef _VER_IOS
@@ -582,6 +581,8 @@ void XSurfaceOpenGL::DrawCore() const
 #endif // _XPROFILE
 		{
 			glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+			++XSurface::s_cntDPCallNormal;
+			XGraphics::s_fpsDPCallNormal.Process();
 		}
 		CHECK_GL_ERROR();
 
@@ -678,9 +679,13 @@ void XSurfaceOpenGL::DrawSub( float x, float y, const XE::xRECTi *src )
 	XASSERT( glErr == GL_NO_ERROR ); }
 
 #ifdef _XPROFILE
-	if( !(XGraphics::s_dwDraw & XE::xeBitNoDP) )
+	if( !(XGraphics::s_dwDraw & XE::xeBitNoDP) ) 
 #endif // _XPROFILE
+	{
 		glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+		++XSurface::s_cntDPCallNormal;
+		XGraphics::s_fpsDPCallNormal.Process();
+	}
 	//
 	{ auto glErr = glGetError();
 	XASSERT( glErr == GL_NO_ERROR ); }

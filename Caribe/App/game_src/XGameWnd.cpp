@@ -1069,18 +1069,24 @@ int XWndBuffElem::OnClickTooltip( XWnd* pWnd, DWORD p1, DWORD p2 )
 /**
  @brief 전투 통계
 */
-XWndStatistic::XWndStatistic( XSPLegionObj spLegionObj1, XSPLegionObj spLegionObj2 )
+XWndStatistic::XWndStatistic( XSPLegionObj spLegionObj1, 
+															XSPLegionObj spLegionObj2,
+															XWndPopup* pParentPopup )
 	: XWndPopup(_T("layout_statistic.xml"), "popup_statistic" )
 {
 	Init();
 	m_aryLegionObj.Add( spLegionObj1 );
 	m_aryLegionObj.Add( spLegionObj2 );
+	m_pParent = pParentPopup;
+	if( pParentPopup )
+		pParentPopup->SetbShow( false );
 	///< 
 	//
-	auto pView = new XWndScrollView( XE::VEC2(27,84), XE::VEC2(469,219) );
+//	auto pView = new XWndScrollView( XE::VEC2(27,84), XE::VEC2(469,219) );
+	auto pView = SafeCast<XWndScrollView*>( Find("scrl.view") );
 //	pView->SetScrollLockVert();
 	pView->SetScrollVertOnly();
-	Add( pView );
+//	Add( pView );
 	m_pView = pView;
 	xSetButtHander( this, this, "butt.left", &XWndStatistic::OnClickPrev );
 	xSetButtHander( this, this, "butt.right", &XWndStatistic::OnClickNext );
@@ -1222,6 +1228,8 @@ void XWndStatistic::CreateHerosUI( XWnd *pRoot, XSPLegionObj spLegionObj, float 
 
 void XWndStatistic::Destroy()
 {
+	if( m_pParent )
+		m_pParent->SetbShow( true );
 }
 
 void XWndStatistic::Update()
@@ -2075,6 +2083,7 @@ void XWndPaymentByCash::Update()
 		case xPR_GOLD:		m_strTitle = XTEXT(80169); break;
 		case xPR_RES:			m_strTitle = XTEXT(2339); break;
 		case xPR_AP:		m_strTitle = XTEXT(2340); break;
+		case xPR_ITEM:	break;
 		case xPR_TIME:		break;
 		case xPR_TRY_DAILY:		m_strTitle = XTEXT(2227); break;		// 도전횟수 부족
 		default:
@@ -2176,6 +2185,30 @@ void XWndPaymentByCash::SetTime( xSec secLack )
 	}
 	m_needCash = ACCOUNT->GetCashResearch( secLack );
 }
+
+void XWndPaymentByCash::SetItem( const _tstring& idsItem, int gem )
+{
+	m_typePayment = xPR_ITEM;
+	auto pWndRoot = Find( "wnd.half.top" );
+	if( XASSERT( pWndRoot ) ) {
+		auto pWndItem = new XWndStoragyItemElem( XE::VEC2(0,11), idsItem );
+		if( pWndItem ) {
+			pWndItem->SetEventItemTooltip();
+			pWndRoot->Add( pWndItem );
+			pWndItem->AutoLayoutHCenter();
+		}
+		SetbUpdate( true );
+	}
+	m_needCash = gem;
+}
+void XWndPaymentByCash::SetItem( ID idItem, int gem )
+{
+	auto pProp = PROP_ITEM->GetpProp( idItem );
+	if( XASSERT(pProp) ) {
+		SetItem( pProp->strIdentifier, gem );
+	}
+}
+
 
 /**
  @brief // 요일스팟 도전횟수 리필

@@ -384,7 +384,7 @@ void XUnitHero::OnAISet( bool bSet )
 
 XE::VEC2 XUnitHero::DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp )
 {
-	return vDrawHp;
+//	return vDrawHp;
 	auto pHero = m_pHero;
 	XE::VEC2 vDrawName; // = vPos;
 	vDrawName.x = vDrawHp.x;

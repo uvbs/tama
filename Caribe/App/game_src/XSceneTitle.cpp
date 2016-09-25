@@ -46,6 +46,7 @@ void XSceneTitle::Destroy()
 	GAME->DestroyWndByIdentifier("butt.ipchange");
 	GAME->DestroyWndByIdentifier("butt.logout");
 	GAME->DestroyWndByIdentifier("butt.appstore");
+	GAME->DestroyWndByIdentifier( "butt.log" );
 	ClearLoginLock();
 	XBREAK( SCENE_TITLE == nullptr );
 	XBREAK( SCENE_TITLE != this );

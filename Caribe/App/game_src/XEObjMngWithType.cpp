@@ -618,9 +618,11 @@ XSPUnit XEObjMngWithType::GetPickUnit( XWndBattleField *pWndWorld,
 	return nullptr;
 }
 
-void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible )
+void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, 
+																		const XVector<XEBaseWorldObj*>& aryVisible )
 {
 	XPROF_OBJ_AUTO();
+	auto prevZ = GRAPHICS->SetbEnableZBuff( false );
 	{
 		XPROF_OBJ( "draw floor/shadow" );
 		for( auto pObj : aryVisible ) {
@@ -660,6 +662,7 @@ void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseW
 	}
 	// 일반 오브젝트들을 찍는다.
 	{
+		GRAPHICS->SetbEnableZBuff( true );
 		XPROF_OBJ( "draw normal" );
 		for( auto pObj : aryVisible ) {
 			if( pWndWorld ) {
@@ -688,6 +691,7 @@ void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseW
 	}
 	// UI오브젝트를 찍는다.
 	{
+		GRAPHICS->SetbEnableZBuff( false );
 		XPROF_OBJ( "draw ui_obj" );
 		for( auto pObj : aryVisible ) {
 			if( pWndWorld ) {
@@ -713,5 +717,6 @@ void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseW
 			}
 		}
 	}
+	GRAPHICS->SetbEnableZBuff( prevZ );
 }
 

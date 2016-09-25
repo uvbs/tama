@@ -759,13 +759,17 @@ protected:
 	virtual void Update();
 public:
 	// 일반사용자 사용금지.
-	void _Update() {
+	inline void _Update() {
 		Update();
 	}
 	virtual void Draw();
 	virtual void Draw( const XE::VEC2& vParent );
-	virtual void DrawBefore() {}
-	virtual void DrawAfter() {}
+	virtual void OnDrawBefore() {}
+	virtual void OnDrawAfter() {}
+	virtual void OnUpdateBefore() {}
+	virtual void OnUpdateAfter() {}
+	virtual void OnProcessBefore() {}
+	virtual void OnProcessAfter() {}
 	virtual void OnDestroy() {}
 	virtual void CallEvent( const char *cFunc );
 	void DrawFrame( const XWND_RES_FRAME& frame );
@@ -883,7 +887,12 @@ public:
 	virtual BOOL OnCreate() { return TRUE; }	/// 윈도우가 생성되고 Add()가 된후 호출된다.
 	virtual void OnStartChangeSizeOfChild( XWnd *pChild, const XE::VEC2& vSize, float secSizing ) {}
 	virtual void PreCalcLayoutSize();
+	// 하드웨어 자원 및 일반 자원을 복구시킨다.
 	virtual BOOL RestoreDevice();
+	// 하드웨어 자원만 날린다.
+	virtual void DestroyDevice();
+	// 홈버튼
+	virtual void OnPause();
 	/**
 	 패치클라이언트 작동으로 게임리소스(프로퍼티,spr,txt등 파일형태로 되어있는 것들)
 	 가 삭제되었다 다시 생성되었다는것을 의미함. 이 메소드를 받은 객체는 자신이 게임리소스의

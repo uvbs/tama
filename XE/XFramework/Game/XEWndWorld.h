@@ -25,7 +25,7 @@ private:
 // 	float m_scaleCamera;		// 카메라 배율
 // 	float m_scaleMin, m_scaleMax;	// 카메라 배율 최소/최대
 	XBatchRenderer* m_pRenderer = nullptr;
-	XTextureAtlas* m_pAtlas = nullptr;
+	XSPAtlasMng m_spAtlas;
 	void Init() {
 // 		m_scaleCamera = 1.0f;
 // 		m_scaleMin = m_scaleMax = 1.0f;
@@ -46,8 +46,9 @@ public:
 // 	GET_ACCESSOR( const XE::VEC2&, vwCamera );
 // 	GET_ACCESSOR( float, scaleCamera );
 //	GET_ACCESSOR_PTR( XRenderCmdMng*, pRenderer );
-	GET_ACCESSOR( XTextureAtlas*, pAtlas );
-	int GetavgDPCall() const;
+	GET_ACCESSOR( XSPAtlasMng, spAtlas );
+	GET_ACCESSOR( XBatchRenderer*, pRenderer );
+//	int GetavgDPCall() const;
 // 	GET_SET_ACCESSOR_CONST( float, scaleMin );
 // 	GET_SET_ACCESSOR_CONST( float, scaleMax );
 // 	void SetScaleCamera( float scale ) {

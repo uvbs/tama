@@ -48,16 +48,18 @@ XWndSprObj* XWndSprObj::sUpdateCtrl( XWnd *pRoot
 	return pCtrl;
 }
 
-XWndSprObj::XWndSprObj( LPCTSTR szSpr, ID idAct, const XE::VEC2& vPos, xRPT_TYPE loopType/*=xRPT_LOOP*/ ) 
+XWndSprObj::XWndSprObj( LPCTSTR szSpr, 
+												ID idAct, 
+												const XE::VEC2& vPos, 
+												xRPT_TYPE loopType/*=xRPT_LOOP*/ ) 
 	: XWnd(vPos.x, vPos.y) 
 {
 	Init();
 	SetPosLocal( vPos );
 	if( XE::IsHave(szSpr) ) {
-		m_pSprObj = CreateSprObj( szSpr, idAct, loopType, false );
+		CreateSprObj( szSpr, idAct, true, false, false, loopType );
 		m_loopType = loopType;
 		m_idAct = idAct;
-// 			m_bCreate = TRUE;
 	}
 }
 void XWndSprObj::Destroy() 
@@ -65,27 +67,44 @@ void XWndSprObj::Destroy()
 	SAFE_DELETE( m_pSprObj );
 }
 
-XSprObj* XWndSprObj::CreateSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, bool bAsyncLoad )
+void XWndSprObj::CreateSprObj( LPCTSTR szSpr, 
+																	 ID idAct, 
+																	 bool bUseAtlas,
+																	 bool bBatch,
+																	 bool bAsyncLoad,
+																	 xRPT_TYPE loopType )
 {
 	if( XE::IsEmpty( szSpr ) ) {
 		SetbDestroy( true );
-		return nullptr;
+		return;
 	}
-//	XSprObj *pSprObj = new XSprObj( szSpr );
-	const bool bUseAtlas = true;
-	const bool bAsync = false;
-	// 바로 아래에서 크기를 읽어야 하는것이 있어서 별수없이 비동기로딩으로 함. spr파일에 의존한 크기구하기등은 하지 말아야 할듯.
-	auto pSprObj = new XSprObj( szSpr, XE::xHSL(), bUseAtlas, false, bAsync, nullptr );
-//	pSprObj->Load( szSpr, XE::xHSL(), bUseAtlas, FALSE, false );
-	pSprObj->SetAction( idAct, loopType );
+	m_pSprObj = new XSprObj( szSpr, XE::xHSL(), idAct, xRPT_LOOP,
+													 bUseAtlas, bBatch, bAsyncLoad,
+													 [this]( XSprObj* pSprObj ) {
+		XBREAK( pSprObj->GetpObjActCurr() == nullptr );
+		if( pSprObj->GetpObjActCurr() ) {
+			// 캐시에 있다가 불려온것이면 데이타가 있다.
+			const XE::VEC2 vSize = pSprObj->GetSize();
+			SetSizeLocal( vSize );
+		} else {
+			const XE::VEC2 vSize( 2, 2 );		// 비동기로 로딩해서 크기를 일단 이렇게 맞춤.
+			SetSizeLocal( vSize );
+		}
+	} );
+	m_pSprObj->SetAction( idAct, loopType );
 	m_idAct = idAct;
 	m_loopType = loopType;
-	if( pSprObj->IsError() )
-		return pSprObj;
+	if( m_pSprObj->IsError() )
+		return;
 	m_strSpr = szSpr;
-	XE::VEC2 vSize = pSprObj->GetSize();
-	SetSizeLocal( vSize );
-	return pSprObj;
+// 	if( m_pSprObj->GetpObjActCurr() ) {
+// 		// 캐시에 있다가 불려온것이면 데이타가 있다.
+// 		const XE::VEC2 vSize = m_pSprObj->GetSize();
+// 		SetSizeLocal( vSize );
+// 	} else {
+// 		const XE::VEC2 vSize( 2, 2 );		// 비동기로 로딩해서 크기를 일단 이렇게 맞춤.
+// 		SetSizeLocal( vSize );
+// 	}
 }
 
 /**
@@ -94,20 +113,30 @@ XSprObj* XWndSprObj::CreateSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, 
 */
 void XWndSprObj::SetSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, bool bASyncLoad ) 
 {
+	SetSprObj( szSpr, idAct, true, false, bASyncLoad, loopType );
+}
+
+void XWndSprObj::SetSprObj( LPCTSTR szSpr, 
+														ID idAct, 
+														bool bUseAtlas,
+														bool bBatch,
+														bool bASyncLoad,
+														xRPT_TYPE loopType )
+{
 	if( XE::IsEmpty( szSpr ) ) {
 		return;
 	}
 	if( idAct )
 		m_idAct = idAct;
 	bool bRecreate = false;
-	if( m_pSprObj == nullptr 
-		|| (m_pSprObj && !XE::IsSame(m_pSprObj->GetszFilename(), szSpr) ) )
+	if( m_pSprObj == nullptr
+			|| (m_pSprObj && !XE::IsSame( m_pSprObj->GetszFilename(), szSpr )) )
 		bRecreate = true;
 	if( bRecreate ) {
 		// 다른파일을 지정해서 객체를 새로 생성해야함.
 		SAFE_DELETE( m_pSprObj );
 		if( XE::IsHave( szSpr ) ) {
-			m_pSprObj = CreateSprObj( szSpr, idAct, loopType, bASyncLoad );
+			CreateSprObj( szSpr, idAct, bUseAtlas, bBatch, bASyncLoad, loopType );
 		}
 	} else {
 		if( m_pSprObj )
@@ -138,7 +167,15 @@ void XWndSprObj::Reload()
 int XWndSprObj::Process( float dt ) 
 {
 	if( m_pSprObj ) {
+		auto bLoaded = m_pSprObj->IsLoaded();
 		m_pSprObj->FrameMove( dt );
+		if( !bLoaded && m_pSprObj->IsLoaded() ) {
+			// 위 FrameMove에서 파일로딩이 완료되었다.
+			if( m_pSprObj->GetpObjActCurr() ) {
+				auto sizeSpr = m_pSprObj->GetSize();
+				SetSizeLocal( sizeSpr );
+			}
+		}
 		if( m_timerLife.IsOn() ) {
 			if( m_timerLife.IsOver() )
 				SetbDestroy( true );

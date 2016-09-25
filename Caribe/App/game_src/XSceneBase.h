@@ -38,6 +38,7 @@ public:
 	XGameWndAlert* WndAlertOkCancel( const char *csid, LPCTSTR format, ... );
 	XGameWndAlert* WndAlertParam( LPCTSTR szTitle, XWnd::xtAlert type, XCOLOR col, LPCTSTR format, ... );
 	XGameWndAlert* WndAlertYesNo( const char *ids, LPCTSTR format, ... );
+	XGameWndAlert* WndAlertWithType( const char *ids, XWnd::xtAlert type, LPCTSTR format, ... );
 	virtual void OnCloseDialog( const std::string& idsWnd ) {}
 	virtual void OnCreateOrderDialog( ID idHero ) {}
 	/**

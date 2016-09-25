@@ -79,7 +79,9 @@ public:
 	static bool sIsEnableBatchLoading() {
 		return s_bBatchLoading;
 	}
+// 	static int sGetTotalDPCall();
 	static DWORD s_dwDraw;
+	static XFps s_fpsDPCallBatch, s_fpsDPCallNoBatch, s_fpsDPCallNormal;
 private:
 	static bool s_bBatchLoading;			// 배치렌더 서피스로 로딩하도록 활성화
 	bool m_bEnableZBuff = false;
@@ -145,8 +147,18 @@ public:
 	기기가 16:9비율이라면 가로해상도를 기준으로 잡았을때 논리적인 해상도는 320x568이 된다.
 
 	*/
-// 	GET_SET_BOOL_ACCESSOR( bEnableZBuff );
-// 	GET_SET_BOOL_ACCESSOR( bAlphaTest );
+	GET_BOOL_ACCESSOR( bEnableZBuff );
+//	GET_BOOL_ACCESSOR( bAlphaTest );
+	inline bool SetbEnableZBuff( bool bFlag ) {
+		auto bPrev = m_bEnableZBuff;
+		m_bEnableZBuff = bFlag;
+		return bPrev;
+	}
+// 	inline bool SetbAlphaTest( bool bFlag ) {
+// 		auto bPrev = m_bAlphaTest;
+// 		m_bAlphaTest = bFlag;
+// 		return bPrev;
+// 	}
 	GET_SET_ACCESSOR_CONST( int, Priority );
 	inline XE::VEC2 GetLogicalScreenSize() {
 		return XE::VEC2( m_nWidth, m_nHeight );

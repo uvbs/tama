@@ -21,8 +21,11 @@
 #define _CHECK_GL_ERROR() \
 		{ volatile auto glErr = glGetError(); \
 			XASSERT( glErr == GL_NO_ERROR ); }
-//#define CHECK_GL_ERROR() _CHECK_GL_ERROR()
+#ifdef _DEBUG
+#define CHECK_GL_ERROR() _CHECK_GL_ERROR()
+#else
 #define CHECK_GL_ERROR() (0)
+#endif
 
 namespace XE {
 	enum xtAttib {

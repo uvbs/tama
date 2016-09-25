@@ -5534,6 +5534,13 @@ int XAccount::ProcessCheatCmd( const _tstring& strCmdLine )
 				return (int)xPS_ACC_LEVEL;
 			}
 		} else
+		if( strCmd == "gold" ) {
+			int num = token.GetNumber( false );
+			if( !token.IsError() ) {
+				SetGold( (DWORD)num );
+				return (int)xPS_ACC_LEVEL;
+			}
+		}
 		if( strCmd == "sec_simul" ) {
 			int num = token.GetNumber( false );
 			if( !token.IsError() ) {

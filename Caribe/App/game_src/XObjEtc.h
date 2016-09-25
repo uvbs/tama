@@ -37,6 +37,7 @@ class XObjBullet : public XEBaseWorldObj
 		m_Damage = 0;
 	}
 	void Destroy();
+	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
 protected:
 	XE::VEC3 m_vDst;
 	XE::VEC3 m_vSrc;
@@ -212,6 +213,7 @@ class XSkillShootObj : public XObjArrow
 	xCALLBACK m_Callback;
 	void Init() {}
 	void Destroy();
+	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
 public:
 	XSkillShootObj( XEWndWorld *pWndWorld,
 									const XSPUnit& spOwner,
@@ -303,6 +305,7 @@ public:
 	void FrameMove( float dt );
 	void Draw( const XE::VEC2& vPos, float scale = 1.f, float alpha=1.f );
 	virtual void Release();
+	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
 };
 
 /****************************************************************
@@ -320,6 +323,8 @@ class XObjLoop : public XEBaseWorldObj, public XSKILL::XSkillSfx
 	BOOL m_bTraceRefObj;		///< 레퍼런스 객체를 따라다녀야 한다면 TRUE
 	XE::VEC3 m_vAdjust;			///< this의 위치 보정치
 	int m_State = 0;
+//	bool m_bZBuff = false;
+	bool m_bAlphaTest = false;
 	std::shared_ptr<XCompObjMove> m_spCompMove;		// 이동을 제어하는 컴포넌트
 	void Init() {
 		m_secLife = 0.f;	// 0은 한번만 플레이하고 중지. -1은 무한루프
@@ -327,13 +332,16 @@ class XObjLoop : public XEBaseWorldObj, public XSKILL::XSkillSfx
 		m_bTraceRefObj = FALSE;
 	}
 	void Destroy();
+	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
 public:
-	XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife=0.f );
-	XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife=0.f );
-	XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, float secLife = 0.f );
-	XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, float secLife = 0.f );
+	XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife=0.f );
+	XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife=0.f );
+	XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife = 0.f );
+	XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife = 0.f );
 	virtual ~XObjLoop() { Destroy(); }
 	///< 
+//	GET_SET_BOOL_ACCESSOR( bZBuff );
+	GET_SET_BOOL_ACCESSOR( bAlphaTest );
 	SET_ACCESSOR( XE::xtHorizDir, Dir );
 	SET_ACCESSOR( const XE::VEC3&, vAdjust );
 	GET_ACCESSOR( std::shared_ptr<XCompObjMove>, spCompMove );
@@ -367,6 +375,7 @@ class XSkillSfxReceiver : public XEBaseWorldObj, public XSKILL::XSkillReceiver
 	CTimer m_timerLife;
 	void Init() {}
 	void Destroy();
+	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
 public:
 	XSkillSfxReceiver( BIT bitCamp,
 										 const XE::VEC3& vwPos,
@@ -459,7 +468,10 @@ public:
 	XObjDmgNum( const _tstring& str
 							, const XE::VEC3& vwPos, XCOLOR col = 0 )
 							: XObjDmgNum( str.c_str(), vwPos, col ) {}
-	~XObjDmgNum() { Destroy(); --s_numObj; }
+	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
+	~XObjDmgNum() {
+		Destroy(); --s_numObj;
+	}
 	//
 	GET_SET_ACCESSOR_CONST( XCOLOR, Col );
 //	GET_ACCESSOR_CONST( std::shared_ptr<XCompObjBounce>, spCompBounce );
@@ -494,6 +506,7 @@ private:
 	void Init() {
 	}
 	void Destroy();
+	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
 public:
 	XObjYellSkill( LPCTSTR szText, 
 								const XSPUnit& spOwner,
@@ -524,6 +537,7 @@ class XObjFlame : public XEBaseWorldObj
 	XSPUnit m_spAttacker;		// 공격자.
 	void Init() {}
 	void Destroy();
+	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
 public:
 	XObjFlame( const XSPUnit& spAttacker, const XE::VEC3& vwPos, float damage, float radius, float secLife, BIT bitCampTarget, LPCTSTR szSpr, ID idAct );
 	~XObjFlame() { Destroy(); }
@@ -556,6 +570,7 @@ public:
 	XObjRes( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, const XVector<XGAME::xRES_NUM>& aryLoots );
 	XObjRes( const XE::VEC3& vwPos, XGAME::xtResource resType, int num );
 	~XObjRes();
+	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
 	//
 	void SetBounce( float power, float dAngZ, float gravity = 1.f );
 	inline void SetBounce( const XE::VEC2& vrPower, const XE::VEC2& vrdAngZ, float gravity = 1.f ) {
@@ -593,7 +608,10 @@ class XObjResNum : public XEBaseWorldObj
 {
 public:
 	XObjResNum( const XE::VEC3& vwPos, XGAME::xtResource resType, int num );
-	~XObjResNum() { Destroy(); }
+	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
+	~XObjResNum() {
+		Destroy();
+	}
 	// get/setter
 	// public member
 private:

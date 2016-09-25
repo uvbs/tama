@@ -26,7 +26,7 @@ XFontDatSpr::XFontDatSpr( LPCTSTR szFontSpr )
 
 void XFontDatSpr::Destroy( void ) 
 {
-	SAFE_RELEASE2( SPRMNG, m_spDat );
+	//SAFE_RELEASE2( SPRMNG, m_spDat );
 }
 
 bool XFontDatSpr::IsError( void ) const 

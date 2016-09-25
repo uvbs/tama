@@ -64,11 +64,7 @@ void XImageMng::CheckRelease( void )
 {
 	for( auto& img : m_listSurface ) {
 		if( img.m_pSurface->GetnRefCnt() > 0 ) {
-#ifdef _DEBUG
-			XALERT( "XImageMng: 해제되지 않은 이미지 발견. %s", img.m_strRes.c_str() );
-#else
-			XLOGXN( "XImageMng: 해제되지 않은 이미지 발견. %s", img.m_strRes.c_str() );
-#endif
+			XTRACE( "XImageMng: 해제되지 않은 이미지 발견. %s", img.m_strRes.c_str() );
 		}
 	}
 }
@@ -199,6 +195,17 @@ XImageMng::xImage* XImageMng::FindExist( XSurface *pSurface )
 // 	const bool bKeepSrc = (bMakeMask == true);
 // 	return _Load( bHighReso, szRes, format, bUseAtlas, bKeepSrc, bMakeMask, bAsync );
 // }
+XSurface* XImageMng::LoadByBatch( const _tstring& strRes,
+																	XE::xtPixelFormat format,
+																	bool bUseAtlas,
+																	bool bSrcKeep, bool bMakeMask,
+																	bool bAsync ) 
+{
+	XGraphics::sSetEnableBatchLoading( true );
+	auto psfc = _Load( true, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+	XGraphics::sSetEnableBatchLoading( false );
+	return psfc;
+}
 
 /**
  @brief 내부용 로딩모듈
@@ -400,6 +407,13 @@ void XImageMng::DestroyDevice()
 		img.m_pSurface->DestroyDevice();
 	}
 }
+
+void XImageMng::OnPause()
+{
+// 	for( auto& img : m_listSurface ) {
+// 		img.m_pSurface->OnPause();
+// 	}
+}
 bool XImageMng::DoForceDestroy( const _tstring& strRes )
 {
 	for( auto itor = m_listSurface.begin(); itor != m_listSurface.end(); ) {
@@ -439,7 +453,7 @@ void XImageMng::DoFlushCache()
 #if defined(_DEBUG) && defined(_CHEAT)
 			if( img.m_pSurface ) {
 // 				CONSOLE( "fush img:[%s]", img.m_pSurface->GetstrRes().c_str() );
-				CONSOLE( "fush img:[%s]", img.m_strRes.c_str() );
+				CONSOLE( "flush img:[%s]", img.m_strRes.c_str() );
 			}
 #endif // _DEBUG
 			SAFE_DELETE( img.m_pSurface );

@@ -13,8 +13,8 @@
 #include "XFramework/Game/XEWndWorld.h"
 #include "XFramework/Game/XEWorldCamera.h"
 #include "XSystem.h"
-// #include "opengl2/XBatchRenderer.h"
-// #include "XFramework/XEProfile.h"
+#include "XFramework/client/XWndBatchRender.h"
+#include "Sprite/SprObj.h"
 
 using namespace XSKILL;
 using namespace XGAME;
@@ -42,6 +42,7 @@ XWndBattleField::XWndBattleField( XSPWorld spWorld )
 	XBREAK( s_pInstance != nullptr );
 	s_pInstance = this;
 	Init();
+	SetSizeLocal( spWorld->GetvwSize() );
 // 	SetscaleMin( 0.4f );
 // 	SetscaleMax( 2.f );
 }
@@ -93,10 +94,29 @@ int XWndBattleField::Process( float dt )
 /**
  
 */
+
+#include "OpenGL2/XBatchRenderer.h"
 void XWndBattleField::Draw( void )
 {
 	XWnd::Draw();
-	//	XParticleMng::sGet()->Draw();
+	static XSprObj* s_psoMouse = new XSprObj( _T("unit_fallen_angel.spr"), 
+																						XE::xHSL(), 
+																						ACT_IDLE1, 
+																						xRPT_LOOP, 
+																						true, 
+																						true, 
+																						true,nullptr ); 
+	s_psoMouse->FrameMove( 1.f );
+	MATRIX mWorld;
+	//	MatrixTranslation( m, vPos.x, vPos.y, z/* / 1000.f*/ );
+	MatrixTranslation( mWorld, m_vsMouse.x, m_vsMouse.y, m_vwMouse.y );
+	if( m_pObjLayer ) {
+		auto prev = GRAPHICS->SetbEnableZBuff( true );
+		SET_RENDERER( m_pObjLayer->GetpRenderer() )	{
+			s_psoMouse->Draw( XE::VEC2(0), mWorld );
+		} END_RENDERER;
+		GRAPHICS->SetbEnableZBuff( prev );
+	}
 }
 
 // void XWndBattleField::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat *pFontDat )
@@ -129,14 +149,14 @@ void XWndBattleField::DrawDebugInfo( float x, float y,
 	x = 2.f;
 	y = 0.f;
 	XE::VEC2 vlsPos = INPUTMNG->GetMousePos() - GetPosLocal();
-	XE::VEC2 vwMouse = GetPosWindowToWorld( vlsPos );
+	m_vwMouse = GetPosWindowToWorld( vlsPos );
 	const auto vwCamera = m_spCamera->GetvwCamera();
 	for( int i = 0; i < 1; ++i ) {
 		pFontDat->DrawString( x, y, col,
 													XE::Format( _T( "vwCamera:%.0f,%.0f scaleCamera:%.1f vwMouse:%.0f,%.0f visibleObj:%d" ),
 													vwCamera.x, vwCamera.y,
 													m_spCamera->GetscaleCamera(),
-													vwMouse.x, vwMouse.y ),
+													m_vwMouse.x, m_vwMouse.y ),
 													m_spWorld->GetpObjMng()->GetNumVisibleObj() );
 	}
 }
@@ -195,6 +215,9 @@ void XWndBattleField::OnLButtonDown( float lx, float ly )
 
 void XWndBattleField::OnMouseMove( float lx, float ly )
 {
+#ifdef _CHEAT
+	m_vsMouse.Set( lx, ly );
+#endif // _CHEAT
 	m_spCamera->OnMouseMove( lx, ly );
 	// 일정픽셀이상 드래깅을 했다면 선택을 취소한다.
 	if( m_vTouch.IsMinus() == FALSE )
@@ -208,6 +231,7 @@ void XWndBattleField::OnMouseMove( float lx, float ly )
 			m_vTouch.Set(-1.f);
 		}
 	}
+
 	XWnd::OnMouseMove( lx, ly );
 }
 
@@ -356,6 +380,7 @@ XWndBattleField::AddBgLayer( XSurface* psfcBg, XSPWorld spWorld )
 	m_pBgLayer = pLayerBg;
 	XBREAK( m_spCamera == nullptr );
 	pLayerBg->SetspCamera( m_spCamera );
+	pLayerBg->SetbTouchable( false );
 	return pLayerBg;
 }
 
@@ -369,7 +394,28 @@ XEWndWorld* XWndBattleField::AddObjLayer( XSPWorld spWorld )
 	Add( pLayerObj );
 	XBREAK( m_spCamera == nullptr );
 	pLayerObj->SetspCamera( m_spCamera );
+	pLayerObj->SetbTouchable( false );
 	return pLayerObj;
+}
+
+/**
+ @brief 유닛에 붙는 ui류
+*/
+XWndBatchRender*
+XWndBattleField::AddUnitUILayer( XSPWorld spWorld )
+{
+	const auto sizeWorld = spWorld->GetvwSize();
+	const bool bBatch = true;
+	const bool bZBuff = false;
+	const bool bAlphaTest = false;
+	auto pLayer = new XWndBatchRender( "layer.unit.ui", bBatch, bZBuff, bAlphaTest );
+	pLayer->SetstrIdentifier( "layer.unit.ui" );
+	Add( pLayer );
+	m_pUnitUILayer = pLayer;
+	XBREAK( m_spCamera == nullptr );
+// 	pLayer->SetspCamera( m_spCamera );
+	pLayer->SetbTouchable( false );
+	return pLayer;
 }
 
 void XWndBattleField::OnZoom( float scale, float lx, float ly )

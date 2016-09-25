@@ -254,6 +254,26 @@ bool XSoundMng::xSoundTimer::IsOver(ID idSound, float sec )
 //}
 //
 
+void XSoundMng::PushBGMVol( float vol )
+{
+	m_BGMVolPrev = GetBGMMasterVolume();
+	SetBGMMasterVolume( vol );
+}
+
+void XSoundMng::PushSfxVol( float vol )
+{
+	m_SfxVolPrev = GetSoundMasterVolume();
+	SetSoundMasterVolume( vol );
+}
+void XSoundMng::PopBGMVol()
+{
+	SetBGMMasterVolume( m_BGMVolPrev );
+}
+void XSoundMng::PopSfxVol()
+{
+	SetSoundMasterVolume( m_SfxVolPrev );
+}
+
 void XSoundMng::SetbMuteBGM( bool bMute ) 
 {
 	m_bMuteBGM = bMute;

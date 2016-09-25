@@ -96,6 +96,11 @@ public:
 	static void sAddSizeTotalVMem( int bytes ) {
 		s_sizeTotalVMem += bytes;
 	}
+	static void sClearCntDPCall() {
+		s_cntDPCallNoBatch = s_cntDPCallNormal = 0;
+	}
+protected:
+	static int s_cntDPCallNoBatch, s_cntDPCallNormal;
 private:
 	static int s_sizeTotalVMem;
 	static DWORD s_dwMaxSurfaceWidth;		// D3DCAPS.MaxTextureWidth같은거임
@@ -115,7 +120,7 @@ private:
 		m_DrawMode = xDM_NORMAL;
 		m_dwDrawFlag = 0;
 		m_pMask = NULL;
-		memset( m_Vertices, 0, sizeof(XE::xVertex) );
+		ClearVertices();
 	}
 	void Destroy( void );
 	BOOL m_bHighReso;				// 아이폰용 고해상도 리소스
@@ -129,6 +134,7 @@ private:
 	int m_sizeByte = 0;			// vram에 로딩된 텍스쳐의 크기
 	bool m_bAtlas = false;		// atlas에 텍스쳐가 있는지.
 	std::shared_ptr<XE::xSurfaceInfo> m_spSurfaceInfo;		// 비동기로 로딩했을경우 파일에서 읽어온 데이터.
+	void ClearVertices();
 	inline void SetsizeSurface( float w, float h ) {
 		m_Width = w;
 		m_Height = h;
@@ -503,6 +509,7 @@ protected:
 	void RestoreDeviceFromSrcImg();
 public:
 	virtual void ClearDevice( void ) {}
+
 	virtual void*	Lock( int *pWidth, BOOL bReadOnly = TRUE ) { return NULL; }
 	virtual void	Unlock( void ) {}
   virtual void SetTexture( void ) {}

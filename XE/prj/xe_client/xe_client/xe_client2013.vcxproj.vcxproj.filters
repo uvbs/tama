@@ -518,6 +518,9 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XBatchRenderer.cpp">
       <Filter>source\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XTextureAtlasSub.cpp">
+      <Filter>source\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stdafx.h" />

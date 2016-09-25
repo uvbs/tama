@@ -20,14 +20,16 @@ public:
 	BOOL m_bCheckPlayerUnit = FALSE;
 	BOOL m_bCheckEnemyHero = FALSE;
 	BOOL m_bCheckEnemyUnit = FALSE;
-	BOOL m_bCheckFlushImg = FALSE;
-	BOOL m_bCheckFlushSpr = FALSE;
-	BOOL m_bNoDraw[16];
+// 	BOOL m_bCheckFlushImg = FALSE;
+// 	BOOL m_bCheckFlushSpr = FALSE;
+	BOOL m_bFilter[16];
+	BOOL m_bOption[32];
+	BOOL m_bNoDraw[32];
 	CString m_strFontDmg;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
 public:
-	BOOL m_bHeroInfoToConsole;
+//	BOOL m_bHeroInfoToConsole;
 };

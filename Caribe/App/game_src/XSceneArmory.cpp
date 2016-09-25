@@ -179,101 +179,87 @@ int XSceneArmory::OnClickSlot(XWnd *_pWnd, DWORD p1, DWORD p2)
 
 int XSceneArmory::OnClickNewItemChange(XWnd *pWnd, DWORD p1, DWORD p2)
 {
-	int ticketItemID = XGC->m_armoryRecallItem;
-	unsigned int gemNum = XGC->m_armoryRecallGem;
-
-	if (ACCOUNT)
-	{
-		XList4<XBaseItem*> itemList;
-		ACCOUNT->GetInvenItem(itemList);		// 인벤토리 얻어오기
-
-		bool bTicket = false;		// 티켓 아이템 유무
-
-		int i = 0;
-		for( auto pItem : itemList )
-		{
-			if (pItem->GetidProp() == ticketItemID)
-			{
-				bTicket = true;
-				break;
-			}
-			++i;
+	const int ticketItemID = XGC->m_armoryRecallItem;
+	const DWORD gemNum = XGC->m_armoryRecallGem;
+	XList4<XBaseItem*> itemList;
+	ACCOUNT->GetInvenItem(itemList);		// 인벤토리 얻어오기
+	bool bTicket = false;		// 티켓 아이템 유무
+	int i = 0;
+	for( auto pItem : itemList ) {
+		if (pItem->GetidProp() == ticketItemID) {
+			bTicket = true;
+			break;
 		}
-
-		if (bTicket)
-		{
-			// 티켓이 있으면
-
-			// 팝업
-			m_Layout.CreateLayout("commonitemtextpopup", this);
-
-			XWnd *pPopup = Find("img.common.popupitemtext");
-			if (pPopup)
-			{
-				pPopup->SetbModal(TRUE);
-
-				xSET_TEXT(this, "text.title", XTEXT(80065));			// "새로배치"
-				xSET_TEXT(this, "text.common.ask", XTEXT(80066));		// "아이템을 사용하여 새로배치하시겠습니까?"
-				xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80065));			// "새로배치"
-
-				xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_IMG, PROP_ITEM->GetpProp(ticketItemID)->strIcon.c_str()));
-
-				xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickNewItemChangeOK, XGAME::xSC_SPENT_ITEM);
-				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-			}
-		}
-		else
-		{
-			// 티켓이 없으면
-
-			if (ACCOUNT->GetCashtem() >= gemNum)		// 캐쉬 검사
-			{
-				m_Layout.CreateLayout("commonitemtextpopup", this);
-
-				XWnd *pPopup = Find("img.common.popupitemtext");
-				if (pPopup)
-				{
-					pPopup->SetbModal(TRUE);
-
-					xSET_TEXT(this, "text.title", XTEXT(80065));			// "새로배치"
-					xSET_TEXT(this, "text.common.ask", XE::Format(XTEXT(80068), gemNum));		// "아이템이 부족합니다. 캐쉬 %d개를 사용하여 새로배치하시겠습니까?"
-					xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80065));			// "새로배치"
-
-					xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_IMG, PROP_ITEM->GetpProp(ticketItemID)->strIcon.c_str()));
-
-					xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickNewItemChangeOK, XGAME::xSC_SPENT_GEM);
-					xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-				}
-			}
-			else
-			{
-				// 티켓 아이템도 없고 캐쉬도 부족
-
-				// 팝업
-				m_Layout.CreateLayout("commontextpopup", this);
-
-				XWnd *pPopup = Find("img.common.popuptext");
-				if (pPopup)
-				{
-					pPopup->SetbModal(TRUE);
-
-					xSET_TEXT(this, "text.title", XTEXT(80130));			// "즉시호출"
-					xSET_TEXT(this, "text.common.ask", XTEXT(80150));		// "아이템과 캐쉬가 부족합니다. 구매해주세요"
-					//xSET_BUTT_TEXT(this, "butt.ok", XTEXT(2));
-
-					xSET_SHOW(this, "butt.ok1", TRUE);
-					xSET_SHOW(this, "butt.ok", FALSE);
-					xSET_SHOW(this, "butt.cancel", FALSE);
-
-					xSET_BUTT_HANDLER(this, "butt.ok1", &XSceneStorage::OnClickPopupCancel);
-
-					//xSET_BUTT_HANDLER(this, "butt.ok", &XSceneArmory::OnClickPopupCancel);
-					//xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-				}
-			}
-		}
+		++i;
 	}
-	
+	if (bTicket) {
+		// 티켓이 있으면
+		// 아이템을 사용해서 리셋을 하시겠습니까?
+		auto pAlert = XGAME::DoAlertWithItem( ticketItemID, XTEXT(80066), XWnd::xYESNO );
+		if( pAlert ) {
+			pAlert->SetEvent( XWM_YES, this, 
+												&XSceneArmory::OnClickNewItemChangeOK, XGAME::xSC_SPENT_ITEM );
+		}
+		// 팝업
+// 		m_Layout.CreateLayout("commonitemtextpopup", this);
+// 		XWnd *pPopup = Find("img.common.popupitemtext");
+// 		if (pPopup) {
+// 			pPopup->SetbModal(TRUE);
+// 			xSET_TEXT(this, "text.title", XTEXT(80065));			// "새로배치"
+// 			xSET_TEXT(this, "text.common.ask", XTEXT(80066));		// "아이템을 사용하여 새로배치하시겠습니까?"
+// 			xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80065));			// "새로배치"
+// 			xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_IMG, PROP_ITEM->GetpProp(ticketItemID)->strIcon.c_str()));
+// 			xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickNewItemChangeOK, XGAME::xSC_SPENT_ITEM);
+// 			xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
+// 		}
+	} else {
+		// 티켓이 없으면 캐시로 구매여부를 물어본다.
+		auto pPopup = new XWndPaymentByCash( XTEXT( 80068 ), XTEXT( 80065 ) );
+		pPopup->SetItem( (ID)ticketItemID, gemNum );
+		Add( pPopup );
+		pPopup->SetEvent( XWM_OK,
+											this,
+											&XSceneArmory::OnClickNewItemChangeOK, 
+											XGAME::xSC_SPENT_GEM );
+		// 			if (ACCOUNT->GetCashtem() >= gemNum) {		// 캐쉬 검사
+// 				m_Layout.CreateLayout("commonitemtextpopup", this);
+// 				XWnd *pPopup = Find("img.common.popupitemtext");
+// 				if (pPopup) {
+// 					pPopup->SetbModal(TRUE);
+// 					xSET_TEXT(this, "text.title", XTEXT(80065));			// "새로배치"
+// 					xSET_TEXT(this, "text.common.ask", XE::Format(XTEXT(80068), gemNum));		// "아이템이 부족합니다. 캐쉬 %d개를 사용하여 새로배치하시겠습니까?"
+// 					xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80065));			// "새로배치"
+// 					xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_IMG, PROP_ITEM->GetpProp(ticketItemID)->strIcon.c_str()));
+// 					xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickNewItemChangeOK, XGAME::xSC_SPENT_GEM);
+// 					xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
+// 				}
+		}
+// 	else {
+// 				// 티켓 아이템도 없고 캐쉬도 부족
+// 				XWND_ALERT_T( _T("%s"), XTEXT(80150) );
+			// 팝업
+// 				m_Layout.CreateLayout("commontextpopup", this);
+// 
+// 				XWnd *pPopup = Find("img.common.popuptext");
+// 				if (pPopup)
+// 				{
+// 					pPopup->SetbModal(TRUE);
+// 
+// 					xSET_TEXT(this, "text.title", XTEXT(80130));			// "즉시호출"
+// 					xSET_TEXT(this, "text.common.ask", XTEXT(80150));		// "아이템과 캐쉬가 부족합니다. 구매해주세요"
+				//xSET_BUTT_TEXT(this, "butt.ok", XTEXT(2));
+
+// 					xSET_SHOW(this, "butt.ok1", TRUE);
+// 					xSET_SHOW(this, "butt.ok", FALSE);
+//					xSET_SHOW(this, "butt.cancel", FALSE);
+
+//					xSET_BUTT_HANDLER(this, "butt.ok1", &XSceneStorage::OnClickPopupCancel);
+
+				//xSET_BUTT_HANDLER(this, "butt.ok", &XSceneArmory::OnClickPopupCancel);
+//					xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
+//				}
+//			}
+//		}
 	return 1;
 }
 
@@ -287,9 +273,6 @@ int XSceneArmory::OnClickNewItemChangeOK(XWnd *pWnd, DWORD p1, DWORD p2)
 		else if ((XGAME::xtSpentCall)p1 == XGAME::xSC_SPENT_GEM)
 			GAMESVR_SOCKET->SendArmoryListCashChange(this, (XGAME::xtSpentCall)p1);
 	}
-
-	OnClickPopupCancel(pWnd, 0, 0);
-
 	return 1;
 }
 
@@ -301,82 +284,95 @@ int XSceneArmory::OnClickBuy(XWnd *pWnd, DWORD p1, DWORD p2)
 	if( pPropItem->IsSoul() ) {
 		int numMedal = ACCOUNT->GetNumItems( IDS_MEDAL );
 		if( numMedal >= COST_SOUL ) {
-			// 팝업
-			m_Layout.CreateLayout( "commontextpopup", this );
-			XWnd *pPopup = Find( "img.common.popuptext" );
-			if( pPopup ) {
-				pPopup->SetbModal( TRUE );
-				xSET_TEXT( this, "text.title", XTEXT( 80043 ) );				// "구입"
-				xSET_TEXT( this, "text.common.ask", XTEXT( 80071 ) );			// "정말로 구매하시겠습니까?"
-				xSET_BUTT_TEXT( this, "butt.ok", XTEXT( 80043 ) );				// "구입"
-				xSET_BUTT_HANDLER_PARAM( this, "butt.ok", this, &XSceneArmory::OnClickBuyOK, XGAME::xCOIN_MEDAL );
-				xSET_BUTT_HANDLER( this, "butt.cancel", &XSceneArmory::OnClickPopupCancel );
+			auto pAlert = XGAME::DoAlertWithItem( IDS_MEDAL, XTEXT( 80071 ), XWnd::xYESNO );
+			if( pAlert ) {
+				pAlert->SetEvent( XWM_YES, this,
+													&XSceneArmory::OnClickBuyOK, XGAME::xCOIN_MEDAL );
 			}
+			// 			// 팝업
+// 			m_Layout.CreateLayout( "commontextpopup", this );
+// 			XWnd *pPopup = Find( "img.common.popuptext" );
+// 			if( pPopup ) {
+// 				pPopup->SetbModal( TRUE );
+// 				xSET_TEXT( this, "text.title", XTEXT( 80043 ) );				// "구입"
+// 				xSET_TEXT( this, "text.common.ask", XTEXT( 80071 ) );			// "정말로 구매하시겠습니까?"
+// 				xSET_BUTT_TEXT( this, "butt.ok", XTEXT( 80043 ) );				// "구입"
+// 				xSET_BUTT_HANDLER_PARAM( this, "butt.ok", this, &XSceneArmory::OnClickBuyOK, XGAME::xCOIN_MEDAL );
+// 				xSET_BUTT_HANDLER( this, "butt.cancel", &XSceneArmory::OnClickPopupCancel );
+// 			}
 		} else {
 			// 캐시로 구입하시겠습니까?
 			XWND_ALERT_T( _T("%s"), XTEXT(2262) );
 		}
 	} else {
 		if (ACCOUNT->GetGold() >= price) {
-			// 팝업
-			m_Layout.CreateLayout("commontextpopup", this);
-			XWnd *pPopup = Find("img.common.popuptext");
-			if (pPopup) {
-				pPopup->SetbModal(TRUE);
-				xSET_TEXT(this, "text.title", XTEXT(80043));				// "구입"
-				xSET_TEXT(this, "text.common.ask", XTEXT(80071));			// "정말로 구매하시겠습니까?"
-				xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80043));				// "구입"
-				xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickBuyOK, XGAME::xCOIN_GOLD );
-				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
+			auto pAlert = XWND_ALERT_YESNO_T( "alert.confirm", XTEXT( 80071 ) );
+			if( pAlert ) {
+				pAlert->SetEvent( XWM_YES, this,
+													&XSceneArmory::OnClickBuyOK, XGAME::xCOIN_GOLD );
 			}
-		} else 
-		// 금화가 없으면 캐시로 구입안내
-		if (ACCOUNT->GetCashtem() >= m_pSelectItem->getpProp()->cashCost) {
-			// 팝업
-			m_Layout.CreateLayout("commonitemtextpopup", this);
-			XWnd *pPopup = Find("img.common.popupitemtext");
-			if (pPopup) {
-				pPopup->SetbModal(TRUE);
-//				auto pProp = m_pSelectItem->getpProp();
-				xSET_TEXT(this, "text.title", XTEXT(80169));				// "금화 부족"
-				_tstring strText = XE::Format( XTEXT( 80069 ),pPropItem->cashCost, price );			// "금화가 부족합니다. 캐쉬 50개를 사용하여 1000금화 아이템을 구매하시겟습니까?"
-				if( XE::LANG.GetstrKey() == _T("english") ) {
-					strText = XE::Format( XTEXT( 80069 ), price, pPropItem->cashCost );
-				}
-				xSET_TEXT( this, "text.common.ask", strText );
-				xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80070));				// "구매"
-			
-				xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_UI, _T("hero_gold.png")));
-
-// 				XWnd *pWnd = Find("img.ask.itemimg");
-// 				if (pWnd)
-// 					pWnd->SetPosLocal(235.f, 117.f);
-// 				XWnd *pImg = Find("img.ask.itemimg");
-// 				if (pImg) {
-// 					pImg->SetPosLocal(pImg->GetPosLocal() + XE::VEC2(16, 17));
-// 				}
-				xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickBuyOK, XGAME::xCOIN_CASH );
-				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-			}
+			// 			// 아이템 가격을 지불가능함.
+// 			m_Layout.CreateLayout("commontextpopup", this);
+// 			XWnd *pPopup = Find("img.common.popuptext");
+// 			if (pPopup) {
+// 				pPopup->SetbModal(TRUE);
+// 				xSET_TEXT(this, "text.title", XTEXT(80043));				// "구입"
+// 				xSET_TEXT(this, "text.common.ask", XTEXT(80071));			// "정말로 구매하시겠습니까?"
+// 				xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80043));				// "구입"
+// 				xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickBuyOK, XGAME::xCOIN_GOLD );
+// 				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
+// 			}
 		} else {
-			// 티켓 아이템도 없고 캐쉬도 부족
+		// 금화가 없으면 캐시로 구입안내
+//		if (ACCOUNT->GetCashtem() >= m_pSelectItem->getpProp()->cashCost) {
 			// 팝업
-			m_Layout.CreateLayout("commontextpopup", this);
-			XWnd *pPopup = Find("img.common.popuptext");
-			if (pPopup) {
-				pPopup->SetbModal(TRUE);
-				xSET_TEXT(this, "text.title", XTEXT(80070));			// "구매"
-				xSET_TEXT(this, "text.common.ask", XTEXT(80150));		// "아이템과 캐쉬가 부족합니다. 구매해주세요"
-				//xSET_BUTT_TEXT(this, "butt.ok", XTEXT(2));
-				xSET_SHOW(this, "butt.ok1", TRUE);
-				xSET_SHOW(this, "butt.ok", FALSE);
-				xSET_SHOW(this, "butt.cancel", FALSE);
-				xSET_BUTT_HANDLER(this, "butt.ok1", &XSceneStorage::OnClickPopupCancel);
-				//xSET_BUTT_HANDLER(this, "butt.ok", &XSceneArmory::OnClickPopupCancel);
-				//xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-			}
+			int goldLack = price - ACCOUNT->GetGold();
+			auto pPopup = new XWndPaymentByCash( XTEXT( 80068 ), XTEXT( 80065 ) );
+			pPopup->SetGold( goldLack );
+			Add( pPopup );
+			pPopup->SetEvent( XWM_OK,
+												this,
+												&XSceneArmory::OnClickNewItemChangeOK, 
+												XGAME::xSC_SPENT_GEM );
 		}
-	} // isItem
+	}
+// 			m_Layout.CreateLayout("commonitemtextpopup", this);
+// 			XWnd *pPopup = Find("img.common.popupitemtext");
+// 			if (pPopup) {
+// 				pPopup->SetbModal(TRUE);
+// //				auto pProp = m_pSelectItem->getpProp();
+// 				xSET_TEXT(this, "text.title", XTEXT(80169));				// "금화 부족"
+// 				_tstring strText = XE::Format( XTEXT( 80069 ),pPropItem->cashCost, price );			// "금화가 부족합니다. 캐쉬 50개를 사용하여 1000금화 아이템을 구매하시겟습니까?"
+// 				if( XE::LANG.GetstrKey() == _T("english") ) {
+// 					strText = XE::Format( XTEXT( 80069 ), price, pPropItem->cashCost );
+// 				}
+// 				xSET_TEXT( this, "text.common.ask", strText );
+// 				xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80070));				// "구매"
+// 			
+// 				xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_UI, _T("hero_gold.png")));
+// 				xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickBuyOK, XGAME::xCOIN_CASH );
+// 				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
+// 			}
+// 		} else {
+// 			// 티켓 아이템도 없고 캐쉬도 부족
+// 			XWND_ALERT_T( _T( "%s" ), XTEXT( 80150 ) );
+// 			// 팝업
+// // 			m_Layout.CreateLayout("commontextpopup", this);
+// // 			XWnd *pPopup = Find("img.common.popuptext");
+// // 			if (pPopup) {
+// // 				pPopup->SetbModal(TRUE);
+// // 				xSET_TEXT(this, "text.title", XTEXT(80070));			// "구매"
+// // 				xSET_TEXT(this, "text.common.ask", XTEXT(80150));		// "아이템과 캐쉬가 부족합니다. 구매해주세요"
+// // 				//xSET_BUTT_TEXT(this, "butt.ok", XTEXT(2));
+// // //				xSET_SHOW(this, "butt.ok1", TRUE);
+// // //				xSET_SHOW(this, "butt.ok", FALSE);
+// // //				xSET_SHOW(this, "butt.cancel", FALSE);
+// // //				xSET_BUTT_HANDLER(this, "butt.ok1", &XSceneStorage::OnClickPopupCancel);
+// // 				//xSET_BUTT_HANDLER(this, "butt.ok", &XSceneArmory::OnClickPopupCancel);
+// // 				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
+// // 			}
+// 		}
+//	}
 	SetbUpdate( true );
 	return 1;
 }
@@ -391,21 +387,20 @@ int XSceneArmory::OnClickBuyOK(XWnd *pWnd, DWORD p1, DWORD p2)
 //		UpdateBuyItemInfo();
 		SetbUpdate( true );
 	}
-	
-	OnClickPopupCancel(pWnd, 0, 0);
+//	OnClickPopupCancel(pWnd, 0, 0);
 	SOUNDMNG->OpenPlaySound(13);
 
 
 	return 1;
 }
 
-int XSceneArmory::OnClickPopupCancel(XWnd *pWnd, DWORD p1, DWORD p2)
-{
-	if (pWnd->GetpParent())
-		pWnd->GetpParent()->SetbDestroy(TRUE);
-
-	return 1;
-}
+// int XSceneArmory::OnClickPopupCancel(XWnd *pWnd, DWORD p1, DWORD p2)
+// {
+// 	if (pWnd->GetpParent())
+// 		pWnd->GetpParent()->SetbDestroy(TRUE);
+// 
+// 	return 1;
+// }
 
 // void XSceneArmory::RecvUpdate()
 // {

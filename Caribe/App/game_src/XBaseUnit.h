@@ -39,6 +39,7 @@ class XSquadObj;
 class XLegionObj;
 class XHero;
 class XStatistic;
+class XProgressBar;
 ////////////////////////////////////////////////////////////////
 /**
  @brief 유닛들의 기본형 객체
@@ -108,6 +109,7 @@ private:
 	BIT m_bitFlags = 0;				///< 각종플래그들(xFL_...)
   int m_Count = 0;          ///< 디버깅용 FrameMove카운터
 	XPropUnit::xPROP *m_pPropUnit = nullptr;	///< 유닛 프로퍼티.(this가 영웅이어도 갖고 있다)
+	std::shared_ptr<XProgressBar> m_spBar;
 	struct xIconBuff {
 		ID m_idSkill = 0;
 		XSurface *m_psfcIcon = nullptr;
@@ -340,7 +342,7 @@ public:
 	inline float GetSizeRadius() {
 		return GetSize().w / 2.f;
 	}
-	int GetHp();
+	int GetHp() const;
 	inline int DoFullHp() {
 		int max = GetMaxHp();
 		m_HP = max;
@@ -363,7 +365,7 @@ public:
 		return m_pPropUnit->atkSpeed;
 	}
 	float GetSpeedAttack( XSPUnit spTarget );
-	int GetMaxHp();
+	int GetMaxHp() const;
 	float GetBaseAtkMeleeDmg();
 	float GetBaseAtkRangeDmg();
 	float GetAttackMeleePower();
@@ -529,8 +531,11 @@ public:
 	void FrameMoveAI( float dt );
 	void FrameMoveLive( float dt );
 	virtual void Draw( const XE::VEC2& vPos, float scale, float alpha=1.f ) override;
-	virtual XE::VEC2 DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp ) { return vPos; }
-	void DrawShadow( const XE::VEC2& vPos, float scale );
+	XE::VEC2 DrawBar( const XE::VEC2& vDrawHp, float scaleSize, float scale, const XE::VEC3& vSizeUnit ) const;
+	virtual XE::VEC2 DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp ) {
+		return vPos;
+	}
+		void DrawShadow( const XE::VEC2& vPos, float scale );
 	virtual void Release() override;
 	void OnEventCreateSfx( XSprObj *pSprObj, XBaseKey *pKey, float lx, float ly, float scale, LPCTSTR szSpr, ID idAct, xRPT_TYPE typeLoop, float secLifeTime, BOOL bTraceParent, float fAngle, float fOverSec );
 //	virtual void OnEventSprObj( XSprObj *pSprObj, XKeyEvent *pKey, float lx, float ly, ID idEvent, float fAngle, float fOverSec ) override;

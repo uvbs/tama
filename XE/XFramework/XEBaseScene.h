@@ -38,8 +38,7 @@ private:
 	XLua *m_pLua;
 	bool m_bBridge = false;			/// 브릿지씬(로딩씬같은)속성이냐(위 설명참조)
 	ID m_idBridgeNextScene = 0;		/// 이 씬이 끝날때 불리게 될 씬의 아이디
-// 	XRenderCmdMng* m_pRenderer = nullptr;
-	XTextureAtlas* m_pAtlas = nullptr;
+	XSPAtlasMng m_spAtlas;
 #ifdef _DEBUG
 	XE::VEC2 m_vMouse;
 #endif
@@ -71,6 +70,7 @@ public:
 	GET_SET_ACCESSOR( XTransition*, pTransition );
 	GET_SET_ACCESSOR( XESceneMng*, pSceneMng );
 	GET_BOOL_ACCESSOR( bBridge );
+	GET_ACCESSOR2( XSPAtlasMng, spAtlas );
 	/// 브릿지 씬으로 설정한다. 브릿지씬은 자신이 끝나고 다음에 부를 씬의 번호를 기억하고 있어야 한다.
 	void SetBridge( bool bBridge, ID idNextScene ) {
 		m_bBridge = bBridge;
@@ -192,5 +192,14 @@ public:
 			pLua->Call<SCENE_TYPE,P1,P2>( cFunc, p1, p2 );
 		}
 	}
+	virtual void DestroyDevice() override;
+	virtual void OnPause() override;
+	virtual void PopAtalsMng();
+	void OnDrawBefore() override;
+	void OnDrawAfter() override;
+	void OnUpdateBefore() override;
+	void OnUpdateAfter() override;
+	void OnProcessBefore() override;
+	void OnProcessAfter() override;
 };
 

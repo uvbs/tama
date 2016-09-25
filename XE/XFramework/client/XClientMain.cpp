@@ -70,7 +70,7 @@ void XELibrary::ConsoleMessage( LPCTSTR szMsg )
 #endif
 }
 
-
+XFps XClientMain::s_fps;
 
 //////////////////////////////////////////////////////////////////////////
 void XClientMain::Destroy()
@@ -298,10 +298,9 @@ void XClientMain::Create( XE::xtDevice device,
 #endif
 	XBREAK( m_pGame->GetID() != 0 );
 	m_pGame->SetID( XE::GenerateID() );
-	SET_ATLASES( m_pGame->GetpAtlas() ) {
-		m_pGame->OnCreate();
-		m_pGame->DidFinishCreated();
-	} END_ATLASES;
+	XTextureAtlas::XAutoPushObj spAuto( m_pGame->GetspAtlas() );
+	m_pGame->OnCreate();
+	m_pGame->DidFinishCreated();
 #endif
 		
 	DidFinishCreate();		// this의 Create가 끝난후 다른 Create가 있다면 하위클래스에 맡긴다.
@@ -476,14 +475,13 @@ void XClientMain::FrameMove( void )
 
 void XClientMain::OnDelegateFrameMove( float dt ) 
 {
-	SET_ATLASES( m_pGame->GetpAtlas() ) {
-		m_pGame->Process( dt );
-	} END_ATLASES;
+	m_pGame->Process( dt );
 }
 
 void XClientMain::Draw( void )
 {
 	XPROF_OBJ_AUTO();
+	XSurface::sClearCntDPCall();
 	if( m_Restore == xRST_FALSE ) {	// 디바이스 자원 잃은 상태에선 더이상 진행 하지 않는다.
 #ifdef WIN32
 		GRAPHICS->ClearScreen( XCOLOR_RGBA( 0, 0, 0, 255 ) );
@@ -513,10 +511,12 @@ void XClientMain::Draw( void )
 #endif
 	if( m_pGame ) {
 // 		SET_RENDERER( m_pGame->GetpRenderer() ) {
-			m_pGame->Draw();
+		m_pGame->OnDrawBefore();
+		m_pGame->Draw();
+		m_pGame->OnDrawAfter();
 // 		} END_RENDERER;		// RenderBatch();
 		// 큐에 쌓인 모든 배치렌더러를 한꺼번에 렌더링 한다.
-		XBatchRenderer::sRenderBatchs();
+//		XBatchRenderer::sRenderBatchs();
 	}
 	//
 // 	{
@@ -551,7 +551,9 @@ void XClientMain::DrawDebugInfo( float x, float y )
 #ifdef _CHEAT
 	XE::VEC2 vMouse = INPUTMNG->GetMousePos();
 	_tstring str;
-	const int fps = CalcFPS();
+//	const int fps = CalcFPS();
+	s_fps.Process();
+	const int fps = s_fps.GetFps();
 	if( m_bViewFrameRate ) {	// 이건 치트모드 안해도 보임.
 		str += XE::Format( _T( "fps:%d  " ), fps );
 	}
@@ -791,23 +793,23 @@ void XClientMain::OnTouchEvent( xtTouchEvent event, int cntTouches, float x, flo
 
 void XClientMain::OnPauseHandler( void )
 {
-	// 모든 애니메이션 갱신을 중단한다.
-//	SOUNDMNG->StopBGMusic();	// stop이 아니라 pause를 해야함 
-	SOUNDMNG->SetbMuteBGM( true );
-	SOUNDMNG->SetbMuteSound( true );
-//	SOUNDMNG->SetBGMMasterVolume( )
-	// 리쥼막기 모드면 홈으로 나갈때 시작으로 돌아가지 않는다.
-// 		SPRMNG->OnPause();
-// 		IMAGE_MNG->DestroyDevice();
-//		return;
-//	}
+// 	SOUNDMNG->SetbMuteBGM( true );
+// 	SOUNDMNG->SetbMuteSound( true );
+	SOUNDMNG->PushBGMVol( 0 );
+	SOUNDMNG->PushSfxVol( 0 );
 	XLOGXN("XClientMain::OnPauseHandler()");
 	// 홈으로 나가기전 Pause핸들러를 한번 불러준다.
-	if( m_pGame )
+	if( m_pGame ) {
+		m_pGame->DestroyDevice();
 		m_pGame->OnPause();
+	}
 	StopAnimation();
+	IMAGE_MNG->DoFlushCache();
+	SPRMNG->DoFlushCache();
+	FONTMNG->DoFlushCache();
 	SPRMNG->OnPause();
 	IMAGE_MNG->DestroyDevice();		// 디바이스 자원 날리고 클리어 함.
+	XTextureAtlas::s_listSurfaceAll.clear();
 	m_Restore = xRST_FALSE;		// 디바이스 자원 잃음.
 // #ifdef WIN32
 // 	SPRMNG->OnPauseForWin32();
@@ -822,8 +824,10 @@ void XClientMain::OnResumeHandler( void )
 	StartAnimatiom();
 	// 플래그만 세팅하고 메인루프에서 Resume핸들러를 호출한다.
 	m_bResume = TRUE;
-	SOUNDMNG->SetbMuteBGM( false );
-	SOUNDMNG->SetbMuteSound( false );
+	SOUNDMNG->PopBGMVol();
+	SOUNDMNG->PopSfxVol();
+	// 	SOUNDMNG->SetbMuteBGM( false );
+// 	SOUNDMNG->SetbMuteSound( false );
 }
 
 void XClientMain::OnKeyDown( int keyCode )

@@ -26,6 +26,12 @@ BOOL		XGraphics::s_bCaptureBackBuffer = FALSE;			// Present전에 현재 백버�
 XSurface* XGraphics::s_pLastBackBuffer = NULL;			// 마지막으로 캡쳐된 백버퍼 화면
 DWORD XGraphics::s_dwDraw = 0;
 bool XGraphics::s_bBatchLoading = false;
+XFps XGraphics::s_fpsDPCallBatch;
+XFps XGraphics::s_fpsDPCallNoBatch;
+XFps XGraphics::s_fpsDPCallNormal;
+
+
+
 void XGraphics::CaptureBackBuffer( BOOL bHighReso ) {		// 
 	if( s_bCaptureBackBuffer ) {	// 캡쳐가 예약이 됐으면 
 		SAFE_DELETE( s_pLastBackBuffer );
@@ -431,6 +437,7 @@ BOOL Clipper( int _xl, int _yt, int _xr, int _yb,
 	return FALSE;
 }
 
+
 // v1 - v2를 잇는 곡선을 그린다
 void XGraphics::DrawSplineCatmullRom( const XE::VEC2& v0, const XE::VEC2& v1, 
 														const XE::VEC2& v2, const XE::VEC2& v3,
@@ -632,10 +639,6 @@ XSurface* XGraphics::CreateSurface( bool bHighReso,
 			pSurface = CreateSurface();;
 			bUseAtlas = false;
 		}
-
-// 		ui크기 변경된것 기준으로 모두 수정
-// 		Restore 구현;
-
 
 		if( pSurface ) {
 			bool bOk = pSurface->Create( sizeSurface

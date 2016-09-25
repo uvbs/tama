@@ -7,6 +7,7 @@ class XEWndWorldImage;
 class XEWndWorld;;
 class XEWorld;
 class XEWorldCamera;
+class XWndBatchRender;
 #define WND_WORLD	XWndBattleField::sGet()
 
 ////////////////////////////////////////////////////////////////
@@ -24,10 +25,15 @@ public:
 private:
 	static XWndBattleField *s_pInstance;
 //	XBattleField *m_prefBattleField;
+#ifdef _CHEAT
+	XE::VEC2 m_vwMouse;		// 마우스 위치 월드좌표
+	XE::VEC2 m_vsMouse;		// 마우스 스크린 좌표
+#endif // _CHEAT
 	XSPWorld m_spWorld;
 	std::shared_ptr<XEWorldCamera> m_spCamera;		// 바인딩된 카메라
 	XEWndWorldImage* m_pBgLayer = nullptr;
 	XEWndWorld* m_pObjLayer = nullptr;
+	XWndBatchRender* m_pUnitUILayer = nullptr;
 	XSPSquad m_spTempSelect;		///< 임시선택
 	XSPSquad m_spSelectSquad;		///< 선택된 아군 부대
 	XSPSquad m_spTempSelectEnemy;	///< 적진영 임시선택
@@ -51,6 +57,7 @@ public:
 	GET_ACCESSOR( XSPSquad, spTempSelect );
 	GET_ACCESSOR( XSPSquad, spTempSelectEnemy );
 	GET_ACCESSOR( XEWndWorld*, pObjLayer );
+	GET_ACCESSOR( XWndBatchRender*, pUnitUILayer );
 	GET_SET_ACCESSOR( std::shared_ptr<XEWorldCamera>, spCamera );
 	GET_SET_ACCESSOR2( XSPWorld, spWorld );
 	ID GetidSelectSquad( void );
@@ -81,6 +88,7 @@ public:
 	XE::VEC2 GetvwCamera() const;
 	XEWndWorldImage* AddBgLayer( XSurface* psfcBg, XSPWorld spWorld );
 	XEWndWorld* AddObjLayer( XSPWorld spWorld );
+	XWndBatchRender* AddUnitUILayer( XSPWorld spWorld );
 	void OnZoom( float scale, float lx, float ly );
 #ifdef _CHEAT
 	void OnReset( bool bReCreate );

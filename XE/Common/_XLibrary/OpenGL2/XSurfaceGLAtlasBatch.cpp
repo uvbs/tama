@@ -80,6 +80,8 @@ void XSurfaceGLAtlasBatch::Destroy()
 																										m_glVertexBuffer,
 																										m_glIndexBuffer,
 																										GetWidth(), GetHeight() );
+	XBREAK( IsbAtlas() == false );
+	XTextureAtlas::sRelease( m_glTexture );
 	DestroyDevice();
 }
 
@@ -129,8 +131,8 @@ bool XSurfaceGLAtlasBatch::Create( const XE::POINT& sizeSurfaceOrig
 		// 텍스쳐 아틀라스에 pImgSrc를 삽입하고(혹은 아틀라스를 생성) 아틀라스의 아이디를 얻는다. 또한 rect에는 삽입된 위치를 얻는다.
 		// pImgSrc를 아틀라스에 배치하고 텍스쳐아이디와 위치를 얻는다.
 		XE::VEC2 sizeAtlas;
-		XBREAK( XTextureAtlas::sGetpCurrMng() == nullptr );
-		auto pAtlasMng = XTextureAtlas::sGetpCurrMng();
+		XBREAK( XTextureAtlas::sGetspCurrMng() == nullptr );
+		auto pAtlasMng = XTextureAtlas::sGetspCurrMng();
 		m_glTexture = pAtlasMng->ArrangeImg( 0,				// auto glTex id
 																				 &rcInAtlas,
 																				 pImgSrc,
@@ -198,7 +200,8 @@ bool XSurfaceGLAtlasBatch::CreateSub( const XE::POINT& posMemSrc
 /**
  @brief 기존코드 호환용.(단 외부에서 쓰는건 막음)
 */
-bool XSurfaceGLAtlasBatch::CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMask )
+bool XSurfaceGLAtlasBatch::CreatePNG( LPCTSTR szRes, bool bUseAtlas, 
+																			bool bSrcKeep, bool bMakeMask )
 {
 	XE::POINT sizeMem;
 	DWORD *pImg = nullptr;
@@ -217,7 +220,7 @@ bool XSurfaceGLAtlasBatch::CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMa
 													, XE::xPF_ARGB8888		// formatImgSrc
 													, sizeMem
 													, bSrcKeep, bMakeMask
-													, false );
+													, bUseAtlas  );
 }
 
 // 인수는 2^정렬에 비율 리사이징까지된것.
@@ -286,7 +289,7 @@ void XSurfaceGLAtlasBatch::DestroyDevice()
 	}
 	// 홈으로 나갈때 자동으로 디바이스 자원은 파괴되지만 m_glTexture등도 클리어 시켜주지 않으면 돌아왔을때 새로 할당한 번호가 겹쳐서 다시 지워버릴 수 있다.
 	if( IsbAtlas() ) {
-		auto pAtlasMng = XTextureAtlas::sGetpCurrMng();	// 현재 아틀라스와 실제 m_glTexture가 있는 텍스쳐가 일치하지 않을 수 있음.
+		auto pAtlasMng = XTextureAtlas::sGetspCurrMng();	// 현재 아틀라스와 실제 m_glTexture가 있는 텍스쳐가 일치하지 않을 수 있음.
 		XBREAK( pAtlasMng == nullptr );
 		pAtlasMng->Release( m_glTexture );
 	} else {
@@ -327,7 +330,7 @@ void XSurfaceGLAtlasBatch::RestoreDevice()
 	} else
 	if( IsHavestrRes() ) {
 //		XTRACE("RestorePNG: %s", GetstrRes().c_str() );
-		BOOL bOk = CreatePNG( GetstrRes().c_str(), FALSE, FALSE );
+		BOOL bOk = CreatePNG( GetstrRes().c_str(), GetbAtlas(), false, false );
 		if( bOk == FALSE ) {
 			// 파일을 못찾았으면 국가별 폴더에서 다시 찾아봄
 			LPCTSTR szRes = GetstrRes().c_str();
@@ -335,7 +338,7 @@ void XSurfaceGLAtlasBatch::RestoreDevice()
 			TCHAR szLangPath[ 1024 ];
 			XE::LANG.ChangeToLangDir( szRes, szLangPath );
 			XTRACE("lang path try agin:%s", szLangPath );
-			bOk = CreatePNG( szLangPath, FALSE, FALSE );
+			bOk = CreatePNG( szLangPath, GetbAtlas(), false, false );
 		}
 		XBREAK( bOk == FALSE );
 	} else {
@@ -495,52 +498,6 @@ void XSurfaceGLAtlasBatch::DrawNoBatch( float x,
 																	const MATRIX &mParent ) const
 {
 	XBREAK(1);
-// 	if( GetsizeMem().w == 0 || GetsizeMem().h == 0 ) {
-// 		// 비동기상태로 로딩을 기다리고 있는 중.
-// 		return;
-// 	}
-// //	XBREAK( GetsizeMem().IsZero() );
-// 	CHECK_GL_ERROR();
-// 	do	{
-// 		if( GetDrawMode() != xDM_NONE )	{
-// 			glEnable( GL_BLEND );
-// 			glBlendEquation (GL_FUNC_ADD);
-// 			if( GetDrawMode() == xDM_NORMAL )
-// 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-// 			else 
-// 			if( GetDrawMode() == xDM_SCREEN )
-// 				glBlendFunc(GL_SRC_ALPHA, GL_ONE );
-// 			else
-// 			if( GetDrawMode() == xDM_MULTIPLY )
-// 				glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-// 			else
-// 			if( GetDrawMode() == xDM_SUBTRACT ) {
-// 				glBlendFunc (GL_ONE, GL_ONE);
-// 				//glBlendEquation (GL_FUNC_SUBTRACT);
-// 				glBlendEquation (GL_FUNC_REVERSE_SUBTRACT);
-// 			}
-// 			{ auto glErr = glGetError();
-// 			XASSERT( glErr == GL_NO_ERROR ); }
-// 			MATRIX mWorld;
-// 			GetMatrix( XE::VEC2(x,y), &mWorld );
-// 			MatrixMultiply( mWorld, mWorld, mParent );
-// 			MATRIX mMVP;
-// 			MatrixMultiply( mMVP, mWorld, XE::x_mViewProjection );
-// 			if( XSurface::IsInViewport( 0, 0, mWorld ) == FALSE )
-// 				break;
-// 			// 현재 쉐이더를 얻어온다
-// 			XShader *pShader = XGraphicsOpenGL::sGetShader();
-// 			if( GetDrawMode() == xDM_GRAY )
-// 				pShader = GRAPHICS_GL->GetpGrayShader();
-// 			const auto vColor = Getv4Color();
-// 			pShader->SetShader( mMVP, vColor );
-// 			CHECK_GL_ERROR();
-// 			DrawCore();		
-// 		}
-// 	} while(0);
-// 	XSurface::ClearAttr();
-// 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-// 	CHECK_GL_ERROR();
 }
 
 /*
@@ -548,146 +505,11 @@ void XSurfaceGLAtlasBatch::DrawNoBatch( float x,
 */
 void XSurfaceGLAtlasBatch::DrawCore()
 {
-// #ifdef _XPROFILE
-// 	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
-// 		return;
-// #endif // _XPROFILE
-// 	
-// 	XBREAK( GetsizeMem().IsZero() );
-// 	// Restore가 아직 안되어 0일수도 있으므로(페북프로필사진같은) 그때는 그냥 그리지만 않게 한다.
-// 	if( m_glVertexBuffer == 0 )
-// 		return;
-// 	if( m_glIndexBuffer == 0 )
-// 		return;
-// 	if( m_glTexture == 0 )
-// 		return;
-// #ifdef _XVAO
-// 	XBREAK( m_idVertexArray == 0 );
-//     glBindVertexArrayOES( m_idVertexArray );
-// #endif
-// 		{ auto glErr = glGetError();
-// 		XASSERT( glErr == GL_NO_ERROR ); }
-// 		// bind vertex/index buffer
-// 		glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
-// 		glEnableVertexAttribArray( XE::ATTRIB_POS );
-// 		glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, x ) );
-// 		glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
-// 		glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, t ) );
-// 		glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-// 		glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof( STRUCT_VERTEX_SURFACE ), (void*)offsetof( STRUCT_VERTEX_SURFACE, c ) );
-// 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
-// 		CHECK_GL_ERROR();
-// 		// bind texture
-// #ifdef _XPROFILE
-// 		if( !(XGraphics::s_dwDraw & XE::xeBitNoTexture) )
-// #endif // _XPROFILE
-// 			XGraphicsOpenGL::sBindTexture( m_glTexture );
-// 		CHECK_GL_ERROR();
-// 
-// #ifdef _XPROFILE
-// 		if( !(XGraphics::s_dwDraw & XE::xeBitNoDP) )
-// #endif // _XPROFILE
-// 			glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
-// 		CHECK_GL_ERROR();
-
 }
 
 // this의 RECT:src영역을 x,y위치에 그린다.
 void XSurfaceGLAtlasBatch::DrawSub( float x, float y, const XE::xRECTi *src )
 {
-// 	CHECK_GL_ERROR();
-// #ifdef _XPROFILE
-// 	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
-// 		return;
-// #endif // _XPROFILE
-// 	XBREAK( GetsizeMem().IsZero() );
-// 	int memw, memh;
-// 	GLfloat l, t, r, b;
-// 	const auto sizeMemAligned = GetsizeMemAlignedVec2();
-// 	if( src ) {
-// 		XE::xRECTi memRect;
-// 		memRect.SetLeft( src->GetLeft() * 2 );
-// 		memRect.SetRight( src->GetRight() * 2 );
-// 		memRect.SetTop( src->GetTop() * 2 );
-// 		memRect.SetBottom( src->GetBottom() * 2 );
-// 		memw = ( memRect.Right() - memRect.Left() );
-// 		memh = ( memRect.Bottom() - memRect.Top() );
-// 		l = memRect.GetLeft() / (GLfloat)sizeMemAligned.w;
-// 		t = memRect.GetTop() / (GLfloat)sizeMemAligned.h;
-// 		r = memRect.GetRight() / (GLfloat)sizeMemAligned.w;
-// 		b = memRect.GetBottom() / (GLfloat)sizeMemAligned.h;
-// 	} else {
-// 		// src가 지정되어 있지 않으면 전체 출력.
-// 		Draw( x, y );
-// 		CHECK_GL_ERROR();
-// 		return;
-// 	}
-// 	GLfloat tex[ 8 ] = {l, b, r, b, l, t, r, t};
-// 	float surfacew = (float)( src->GetRight() - src->GetLeft() );
-// 	float surfaceh = (float)( src->GetBottom() - src->GetTop() );
-// 	GLfloat pos[ 8 ] = {0, surfaceh, surfacew, surfaceh, 0, 0, surfacew, 0};
-// 	const float alpha = GetfAlpha();
-// 	GLfloat col[ 16 ] = {1.0f, 1.0f, 1.0f, alpha,
-// 											1.0f, 1.0f, 1.0f, alpha,
-// 											1.0f, 1.0f, 1.0f, alpha,
-// 											1.0f, 1.0f, 1.0f, alpha};
-// 
-// 	CHECK_GL_ERROR();
-// 	glEnable( GL_BLEND );
-// 	glBlendEquation( GL_FUNC_ADD );
-// 	if( GetDrawMode() == xDM_NORMAL )
-// 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-// 	else
-// 	if( GetDrawMode() == xDM_SCREEN )
-// 		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-// 	else
-// 	if( GetDrawMode() == xDM_MULTIPLY )
-// 		glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA );
-// 	else
-// 	if( GetDrawMode() == xDM_SUBTRACT ) {
-// 		glBlendFunc( GL_ONE, GL_ONE );
-// 		glBlendEquation( GL_FUNC_REVERSE_SUBTRACT );
-// 	}
-// 	//
-// 	MATRIX m, mMVP;
-// 	MatrixTranslation( m, x, y, 0 );
-// 	MatrixMultiply( mMVP, m, XE::x_mViewProjection );
-// 	const auto vColor = Getv4Color();
-// 	GRAPHICS_GL->GetpShaderColTex()->SetShader( mMVP, vColor );
-// 	CHECK_GL_ERROR();
-// #ifdef _XVAO
-// 	glBindVertexArrayOES( 0 );
-// #endif
-// 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
-// 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-// 	glEnableVertexAttribArray( XE::ATTRIB_POS );
-// 	glVertexAttribPointer( XE::ATTRIB_POS, 2, GL_FLOAT, GL_FALSE, 0, pos );
-// 	glEnableVertexAttribArray( XE::ATTRIB_TEXTURE );
-// 	glVertexAttribPointer( XE::ATTRIB_TEXTURE, 2, GL_FLOAT, GL_FALSE, 0, tex );
-// 	glEnableVertexAttribArray( XE::ATTRIB_COLOR );
-// 	glVertexAttribPointer( XE::ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, 0, col );
-// 	CHECK_GL_ERROR();
-// 	// bind texture
-// #ifdef _XPROFILE
-// 	if( !(XGraphics::s_dwDraw & XE::xeBitNoTexture) )
-// #endif // _XPROFILE
-// 	{
-// 		XGraphicsOpenGL::sBindTexture( m_glTexture );
-// 	}
-// 	CHECK_GL_ERROR();
-// 
-// #ifdef _XPROFILE
-// 	if( !(XGraphics::s_dwDraw & XE::xeBitNoDP) )
-// #endif // _XPROFILE
-// 	{
-// 		glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
-// 	}
-// 	//
-// 	{ auto glErr = glGetError();
-// 	XASSERT( glErr == GL_NO_ERROR ); }
-// 	XSurface::ClearAttr();
-// 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-// 	CHECK_GL_ERROR();
 }
 
 //
@@ -695,68 +517,6 @@ void XSurfaceGLAtlasBatch::DrawSub( float x, float y, const XE::xRECTi *src )
 // 가변윈도우 프레임 그릴때 사용
 void XSurfaceGLAtlasBatch::DrawLocal( float x, float y, float lx, float ly )
 {
-// #ifdef _XPROFILE
-// 	if( XGraphics::s_dwDraw & XE::xeBitNoDraw )
-// 		return;
-// #endif // _XPROFILE
-// 	
-// 	XBREAK( GetsizeMem().IsZero() );
-// 	CHECK_GL_ERROR();
-// 	if( GetDrawMode() != xDM_NONE )	{
-// 		glEnable( GL_BLEND );
-// 		glBlendEquation( GL_FUNC_ADD );
-// 		if( GetDrawMode() == xDM_NORMAL )
-// 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-// 		else
-// 		if( GetDrawMode() == xDM_SCREEN )
-// 			glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-// 		else
-// 		if( GetDrawMode() == xDM_MULTIPLY )
-// 			glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA );
-// 		else
-// 		if( GetDrawMode() == xDM_SUBTRACT )	{
-// 			glBlendFunc( GL_ONE, GL_ONE );
-// 			//glBlendEquation (GL_FUNC_SUBTRACT);
-// 			glBlendEquation( GL_FUNC_REVERSE_SUBTRACT );
-// 		}
-// 		CHECK_GL_ERROR();
-// 		MATRIX mWorld, m;
-// 		MatrixIdentity( mWorld );
-// 		MatrixTranslation( m, lx, ly, 0 );
-// 		MatrixMultiply( mWorld, mWorld, m );
-// 		if( !GetAdjustAxis().IsZero() ) {
-// 			MatrixTranslation( m, -GetfAdjustAxisX(), -GetfAdjustAxisY(), 0 );
-// 			MatrixMultiply( mWorld, mWorld, m );
-// 		}
-// 		const auto vScale = GetScale();
-// 		if( vScale.x != 1.0f || vScale.y != 1.0f || vScale.z != 1.0f ) {
-// 			MatrixScaling( m, vScale.x, vScale.y, 1.0f );
-// 			MatrixMultiply( mWorld, mWorld, m );
-// 		}
-// 		if( GetfRotZ() ) {
-// 			MatrixRotationZ( m, D2R( GetfRotZ() ) );
-// 			MatrixMultiply( mWorld, mWorld, m );
-// 		}
-// 		if( GetfRotY() ) {
-// 			MatrixRotationY( m, D2R(GetfRotY()) );
-// 			MatrixMultiply( mWorld, mWorld, m );
-// 		}
-// 		if( !GetAdjustAxis().IsZero() ) {
-// 			MatrixTranslation( m, GetfAdjustAxisX(), GetfAdjustAxisY(), 0 );
-// 			MatrixMultiply( mWorld, mWorld, m );
-// 		}
-// 		MATRIX mMVP;
-// 		MatrixTranslation( m, x, y, 0 );
-// 		MatrixMultiply( mWorld, mWorld, m );
-// 		MatrixMultiply( mMVP, mWorld, XE::x_mViewProjection );
-// 		const XE::VEC4 vColor = Getv4Color();
-// 		GRAPHICS_GL->GetpShaderColTex()->SetShader( mMVP, vColor );
-// 		CHECK_GL_ERROR();
-// 		DrawCore();
-// 	}
-// 	XSurface::ClearAttr();
-// 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-// 	CHECK_GL_ERROR();
 } // draw local
 
 void XSurfaceGLAtlasBatch::Fill( XCOLOR col )

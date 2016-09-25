@@ -26,7 +26,9 @@ void CreateUpdateTopResource( XWnd *pRoot );
 void CreateUpdateTopGuildCoin( XWnd *pRoot );
 XWnd* GetpRootTopRes( XWnd *pRootFind );
 XWnd* GetpWndTopRes( XGAME::xtResource resType, XWnd *pRootFind );
-XGameWndAlert* DoAlertWithItem( const _tstring& strIdsItem, const _tstring& strText );
+XGameWndAlert* DoAlertWithItem( XPropItem::xPROP* pPropItem, const _tstring& strText, XWnd::xtAlert type );
+XGameWndAlert* DoAlertWithItem( const _tstring& strIdsItem, const _tstring& strText, XWnd::xtAlert type );
+XGameWndAlert* DoAlertWithItem( ID idItem, const _tstring& strText, XWnd::xtAlert type );
 XWndPopup* DoPopupBattleResult( XGAME::xBattleResult& result, XWnd* pParent, XSpot* pBaseSpot );
 //
 XE_NAMESPACE_END; // XGAME

@@ -123,3 +123,21 @@ XGameWndAlert* XSceneBase::WndAlertYesNo( const char *ids, LPCTSTR format, ... )
 	}
 	return pAlert;
 }
+
+XGameWndAlert* XSceneBase::WndAlertWithType( const char *ids, 
+																						 XWnd::xtAlert type, 
+																						 LPCTSTR format, ... )
+{
+	XGameWndAlert *pAlert = nullptr;
+	auto _pWnd = Find( ids );
+	if( _pWnd == nullptr ) {
+		TCHAR _szBuff[1024];
+		va_list vl;
+		va_start( vl, format );
+		_vstprintf_s( _szBuff, format, vl );
+		pAlert = new XGameWndAlert( _szBuff, nullptr, type, XCOLOR_WHITE );
+		pAlert->SetstrIdentifier( ids );
+		Add( pAlert );
+	}
+	return pAlert;
+}

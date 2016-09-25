@@ -19,10 +19,10 @@ static char THIS_FILE[] = __FILE__;
 
 XEBaseScene::XEBaseScene( XEContent *pGame, ID idScene, BOOL bTransition ) 
 	: XWnd( 0.f, 0.f, XE::GetGameWidth(), XE::GetGameHeight() )
-// 	, m_pRenderer( new XRenderCmdMng(__FUNCTION__) )
-	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
 { 
 	Init(); 
+	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__);
+	m_spAtlas->PushAtlasMng();
 	m_idScene = idScene;
 	m_pGame = pGame;
 	if( bTransition )
@@ -36,11 +36,11 @@ XEBaseScene::XEBaseScene( XEContent *pGame, ID idScene, BOOL bTransition )
 */
 XEBaseScene::XEBaseScene( XEContent *pGame, const std::string& idsScene, bool bTransition )
 	: XWnd( 0.f, 0.f, XE::GetGameWidth(), XE::GetGameHeight() )
-// 	, m_pRenderer( new XRenderCmdMng( __FUNCTION__ ) )
-	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
+//	, m_spAtlas( std::make_shared<XTextureAtlas>( __FUNCTION__ ) )
 {
 	Init();
 	m_pGame = pGame;
+	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__ );
 	XBREAK( idsScene.empty() );
 	SetstrIdentifier( idsScene );
 	if( bTransition )
@@ -63,48 +63,47 @@ void XEBaseScene::Destroy()
 */
 int XEBaseScene::Process( float dt ) 
 { 
-	SET_ATLASES( m_pAtlas ) {
-		if( m_pTransition && m_pTransition->GetbDestroy() )
-			SAFE_DELETE( m_pTransition );
-		//
-		XWnd::Process( dt );
-		// 다음씬으로 넘어갈 준비를 함.
-		if( m_pSceneChild ) {
-			// 자식 씬이 파괴되었으면 트랜지션 객체를 생성하고 파괴될 준비를 함.
-			if( GetDestroy() == 0 && m_pSceneChild->GetDestroy() ) {
-				SetpTransition( new XFadeInOut( TRUE, FALSE, SEC_FADEOUT ) );
-				SetDestroy( 2 );
-			}
+	XTextureAtlas::XAutoPushObj _spAuto( m_spAtlas );
+	if( m_pTransition && m_pTransition->GetbDestroy() )
+		SAFE_DELETE( m_pTransition );
+	//
+	XWnd::Process( dt );
+	// 다음씬으로 넘어갈 준비를 함.
+	if( m_pSceneChild ) {
+		// 자식 씬이 파괴되었으면 트랜지션 객체를 생성하고 파괴될 준비를 함.
+		if( GetDestroy() == 0 && m_pSceneChild->GetDestroy() ) {
+			SetpTransition( new XFadeInOut( TRUE, FALSE, SEC_FADEOUT ) );
+			SetDestroy( 2 );
 		}
-		if( m_pTransition ) {
-			// 트랜지션 중.
-			if( m_pTransition->Process( dt ) == 0 ) {
-				// 트랜지션 끝남.
-				OnEndTransition( m_pTransition );
-				m_pTransition->SetbDestroy( TRUE );
-				if( m_pTransition->IsTransIn() == FALSE ) {
-					// fadeOut(어두워짐)이 끝남.
-					OnEndTransitionOut( m_pTransition );
-					OnDestroySceneBefore();
-					SetDestroy( 1 );
-				} else {
-					OnEndTransitionIn( m_pTransition );
-				}
-			}
-			// 브릿지씬만 아니면 페이드아웃될때 음악도 서서히 줄어든다.
-			if( !IsbBridge() ) {
-				float lerp = m_pTransition->GetfSlerp();
-				if( m_pTransition->IsTransIn() )
-					SOUNDMNG->SetBGMVolumeLocal( lerp );
-				else
-					SOUNDMNG->SetBGMVolumeLocal( 1.f - lerp );
-			}
-			//			SOUNDMNG->FadeOutBGM( 0.1f );	// 시간
-		} else {
-			if( m_idNextScene )	// 넥스트신이 지정됐는데 트랜지션이 없으면 그냥 나감.
+	}
+	if( m_pTransition ) {
+		// 트랜지션 중.
+		if( m_pTransition->Process( dt ) == 0 ) {
+			// 트랜지션 끝남.
+			OnEndTransition( m_pTransition );
+			m_pTransition->SetbDestroy( TRUE );
+			if( m_pTransition->IsTransIn() == FALSE ) {
+				// fadeOut(어두워짐)이 끝남.
+				OnEndTransitionOut( m_pTransition );
+				OnDestroySceneBefore();
 				SetDestroy( 1 );
+			} else {
+				OnEndTransitionIn( m_pTransition );
+			}
 		}
-	} END_ATLASES;
+		// 브릿지씬만 아니면 페이드아웃될때 음악도 서서히 줄어든다.
+		if( !IsbBridge() ) {
+			float lerp = m_pTransition->GetfSlerp();
+			if( m_pTransition->IsTransIn() )
+				SOUNDMNG->SetBGMVolumeLocal( lerp );
+			else
+				SOUNDMNG->SetBGMVolumeLocal( 1.f - lerp );
+		}
+		//			SOUNDMNG->FadeOutBGM( 0.1f );	// 시간
+	} else {
+		if( m_idNextScene )	// 넥스트신이 지정됐는데 트랜지션이 없으면 그냥 나감.
+			SetDestroy( 1 );
+	}
 // 	XTextureAtlas::sSetpCurrMng( pPrev );
 	return 1;
 }
@@ -212,3 +211,57 @@ void XEBaseScene::OnExitBridge()
 	SAFE_DELETE( m_pTransition );
 	SetpTransition( new XFadeInOut( TRUE, FALSE, SEC_FADEOUT ) );
 }
+
+void XEBaseScene::DestroyDevice()
+{
+	XWnd::DestroyDevice();
+	if( m_spAtlas )
+		m_spAtlas->DestroyDevice();
+}
+
+void XEBaseScene::OnPause()
+{
+	XWnd::OnPause();
+	if( m_spAtlas )
+		m_spAtlas->OnPause();
+}
+
+void XEBaseScene::PopAtalsMng()
+{
+	m_spAtlas->PopAtlasMng();
+}
+
+void XEBaseScene::OnDrawBefore()
+{
+	
+}
+
+void XEBaseScene::OnDrawAfter()
+{
+
+}
+
+void XEBaseScene::OnUpdateBefore()
+{
+	if( m_spAtlas )
+		m_spAtlas->PushAtlasMng();
+}
+
+void XEBaseScene::OnUpdateAfter()
+{
+	if( m_spAtlas )
+		m_spAtlas->PopAtlasMng();
+}
+
+void XEBaseScene::OnProcessBefore()
+{
+	if( m_spAtlas )
+		m_spAtlas->PushAtlasMng();
+}
+
+void XEBaseScene::OnProcessAfter()
+{
+	if( m_spAtlas )
+		m_spAtlas->PopAtlasMng();
+}
+

@@ -21,12 +21,18 @@ static char THIS_FILE[] = __FILE__;
 // }
 
 ////////////////////////////////////////////////////////////////
-XWndBatchRender::XWndBatchRender( const char* cTag, bool bBatchRender, const XE::xRECT& rc )
+XWndBatchRender::XWndBatchRender( const char* cTag, 
+																	bool bBatchRender, 
+																	bool bZBuff, 
+																	bool bAlphaTest, 
+																	const XE::xRECT& rc )
 	: XWnd( rc.vLT, rc.GetSize() )
-	, m_pAtlas( new XTextureAtlas( cTag ) )
-	, m_pRenderer( (bBatchRender)? new XBatchRenderer( cTag ) : nullptr )
+//	, m_spAtlas( new XTextureAtlas( cTag ) )
+	, m_pRenderer( (bBatchRender)? new XBatchRenderer( cTag, bZBuff ) : nullptr )
 {
 	Init();
+	m_spAtlas = XTextureAtlas::sCreateAtlasMng( cTag );
+	SetbTouchable( false );
 }
 
 BOOL XWndBatchRender::OnCreate()
@@ -43,7 +49,7 @@ BOOL XWndBatchRender::OnCreate()
 
 void XWndBatchRender::Destroy()
 {
-	SAFE_DELETE( m_pAtlas );
+// 	SAFE_DELETE( m_pAtlas );
 	SAFE_DELETE( m_pRenderer );
 }
 
@@ -55,44 +61,69 @@ void XWndBatchRender::Destroy()
 int XWndBatchRender::Process( float dt )
 {
 	int ret = 0;
-	XBREAK( m_pAtlas == nullptr );
-	SET_ATLASES( m_pAtlas )	{
-		ret = XWnd::Process( dt );
-	} END_ATLASES;
+	XBREAK( m_spAtlas == nullptr );
+	XTextureAtlas::XAutoPushObj _spAuto( m_spAtlas );
+	ret = XWnd::Process( dt );
 	return ret;
 }
 
-void XWndBatchRender::DrawBefore()
+void XWndBatchRender::OnDrawBefore()
 {
 	m_pPrev = XBatchRenderer::_sSetpCurrRenderer( m_pRenderer );
+	m_bZBuffPrev = GRAPHICS->SetbEnableZBuff( m_bZBuff );
+//	m_bAlphaTestPrev = GRAPHICS->SetbAlphaTest( m_bAlphaTest );
 }
 
 void XWndBatchRender::Draw()
 {
 	XWnd::Draw();
-	// 이 레이어에 속한 모든 UI는 일괄렌더링을 한다.
-// 	if( m_pRenderer ) {
-// 		SET_RENDERER( m_pRenderer ) {
-// 			XWnd::Draw();
-// 		} END_RENDERER;
-// 	} else {
-// 		XWnd::Draw();
-// 	}
 }
 
-void XWndBatchRender::DrawAfter()
+void XWndBatchRender::OnDrawAfter()
 {
 	if( m_pRenderer ) {
 		m_pRenderer->RenderBatch();
-		XBatchRenderer::_sSetpCurrRenderer( m_pPrev );
 	}
+	XBatchRenderer::_sSetpCurrRenderer( m_pPrev );
+	GRAPHICS->SetbEnableZBuff( m_bZBuffPrev );
+//	GRAPHICS->SetbAlphaTest( m_bAlphaTestPrev );
 }
 
-// void XWndBatchRender::SetCurrAtlas()
-// {
-// 	XTextureAtlas::sSetpCurrMng( m_pAtlas );
-// }
-// void XWndBatchRender::ClearCurrAtlas()
-// {
-// 	XTextureAtlas::sSetpCurrMng( nullptr );
-// }
+void XWndBatchRender::DestroyDevice()
+{
+	XWnd::DestroyDevice();
+	if( m_spAtlas )
+		m_spAtlas->DestroyDevice();
+}
+
+void XWndBatchRender::OnPause()
+{
+	XWnd::OnPause();
+	if( m_spAtlas )
+		m_spAtlas->OnPause();
+}
+
+void XWndBatchRender::OnUpdateBefore()
+{
+	if( m_spAtlas )
+		m_spAtlas->PushAtlasMng();
+}
+
+void XWndBatchRender::OnUpdateAfter()
+{
+	if( m_spAtlas )
+		m_spAtlas->PopAtlasMng();
+}
+
+void XWndBatchRender::OnProcessBefore()
+{
+	if( m_spAtlas )
+		m_spAtlas->PushAtlasMng();
+}
+
+void XWndBatchRender::OnProcessAfter()
+{
+	if( m_spAtlas )
+		m_spAtlas->PopAtlasMng();
+}
+

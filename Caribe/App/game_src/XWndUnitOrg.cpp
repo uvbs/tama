@@ -54,9 +54,9 @@ XWndLevelupHero::XWndLevelupHero( XHero *pHero, XGAME::xtTrain typeTrain )
 	case XGAME::xTR_SQUAD_UP: {
 		GetpLayout()->CreateLayout( "sub_levelup", this );
 		xSET_TEXT( this, "text.title", XTEXT( 2250 ) );
-		auto pWndUnit = new XWndCircleUnit( pHero->GetUnit(), XE::VEC2(105,20), pHero );
+		auto pWndUnit = new XWndCircleUnit( pHero->GetUnit(), XE::VEC2(55,-10), pHero );
 		pWndUnit->SetbShowLevelSquad( false );
-		Add( pWndUnit );
+		pRoot->Add( pWndUnit );
 		auto pText = xGET_TEXT_CTRL( this, "text.name.hero");
 		if( pText ) {
 			auto v = pText->GetPosLocal();
@@ -70,9 +70,9 @@ XWndLevelupHero::XWndLevelupHero( XHero *pHero, XGAME::xtTrain typeTrain )
 		GetpLayout()->CreateLayout( "sub_skillup", this );
 		auto pDat = pHero->GetSkillDat( m_typeTrain );
 		xSET_TEXT( this, "text.title", XTEXT( 2251 ) );
-		auto pWndSkill = new XWndCircleSkill( pDat, XE::VEC2(105,20), nullptr );
+		auto pWndSkill = new XWndCircleSkill( pDat, XE::VEC2(55,-10), nullptr );
 		pWndSkill->SetScaleLocal( 0.6f );
-		Add( pWndSkill );
+		pRoot->Add( pWndSkill );
 		auto pText = xGET_TEXT_CTRL( this, "text.name.hero");
 		if( pText ) {
 			auto v = pText->GetPosLocal();

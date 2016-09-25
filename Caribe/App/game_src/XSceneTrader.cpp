@@ -106,16 +106,21 @@ int XSceneTrader::OnClickTrade(XWnd *pWnd, DWORD p1, DWORD p2)
 	if (m_totalGold <= 0)
 		return 1;
 	// 팝업
-	m_Layout.CreateLayout("commontextpopup", this);
-	XWnd *pPopup = Find("img.common.popuptext");
-	if (pPopup) {
-		pPopup->SetbModal(TRUE);
-		xSET_TEXT(this, "text.title", XTEXT(80151));			// "자원거래"
-		xSET_TEXT(this, "text.common.ask", XTEXT(80135));		// "자원을 거래하시겠습니까?"
-		xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80028));			// "거래"
-		xSET_BUTT_HANDLER(this, "butt.ok", &XSceneTrader::OnClickTradeOK);
-		xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneTrader::OnClickPopupCancel);
+	auto pAlert = XWND_ALERT_OKCANCEL_T("wnd.trade.confirm", _T("%s"), XTEXT(80135) );
+	if( pAlert ) {
+		pAlert->SetEvent( XWM_OK, this, &XSceneTrader::OnClickTradeOK );
+		pAlert->SetEvent( XWM_CANCEL, this, &XSceneTrader::OnClickTradeCancel );
 	}
+// 	m_Layout.CreateLayout("commontextpopup", this);
+// 	XWnd *pPopup = Find("img.common.popuptext");
+// 	if (pPopup) {
+// 		pPopup->SetbModal(TRUE);
+// 		xSET_TEXT(this, "text.title", XTEXT(80151));			// "자원거래"
+// 		xSET_TEXT(this, "text.common.ask", XTEXT(80135));		// "자원을 거래하시겠습니까?"
+// 		xSET_BUTT_TEXT(this, "butt.confirm", XTEXT(80028));			// "거래"
+// 		xSET_BUTT_HANDLER(this, "butt.confirm", &XSceneTrader::OnClickTradeOK);
+// 		xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneTrader::OnClickPopupCancel);
+// 	}
 	return 1;
 }
 
@@ -148,7 +153,7 @@ int XSceneTrader::OnClickTradeOK(XWnd *pWnd, DWORD p1, DWORD p2)
 	int mandrake = int(ACCOUNT->GetResource(XGAME::xtResource::xRES_MANDRAKE) * m_slider[XGAME::xtResource::xRES_MANDRAKE]->GetCurr());
 
 	GAMESVR_SOCKET->SendReqTrade(this, wood, iron, jewel, sulfur, mandrake);
-	OnClickPopupCancel(pWnd, 0, 0);
+// 	OnClickPopupCancel(pWnd, 0, 0);
 
 	return 1;
 }
@@ -190,7 +195,7 @@ int XSceneTrader::OnClickResource(XWnd *pWnd, DWORD p1, DWORD p2)
 
 int XSceneTrader::OnClickRecall(XWnd *pWnd, DWORD p1, DWORD p2)
 {
-	int whistleItemID = XGC->m_traderRecallItem;		// 휘슬 아이템 ID
+	int idWhistle = XGC->m_traderRecallItem;		// 휘슬 아이템 ID
 //	unsigned int gemNum = XGC->m_traderRecallGem;		// 소모되는 젬량
 	int gemNum = ACCOUNT->GetCashForTraderRecall();
 
@@ -202,7 +207,7 @@ int XSceneTrader::OnClickRecall(XWnd *pWnd, DWORD p1, DWORD p2)
 	// 휘슬 아이템 있는지 체크
 	int i = 0;
 	for( auto pItem : itemList ) {
-		if( pItem->GetidProp() == whistleItemID ) {
+		if( pItem->GetidProp() == idWhistle ) {
 			bWhistle = true;
 			break;
 		}
@@ -211,67 +216,105 @@ int XSceneTrader::OnClickRecall(XWnd *pWnd, DWORD p1, DWORD p2)
 	if (bWhistle) {
 		// 휘슬 아이템이 있으면
 		// 팝업
-		m_Layout.CreateLayout("commonitemtextpopup", this);
-
-		XWnd *pPopup = Find("img.common.popupitemtext");
-		if (pPopup)
-		{
-			pPopup->SetbModal(TRUE);
-
-			xSET_TEXT(this, "text.title", XTEXT(80130));			// "즉시호출"
-			xSET_TEXT(this, "text.common.ask", XTEXT(80148));		// "아이템을 사용하여 무역상을 즉시 호출하시겠습니까?"
-			xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80132));			// "호출"
-
-			xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_IMG, PROP_ITEM->GetpProp(whistleItemID)->strIcon.c_str()));
-
-			xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneTrader::OnClickRecallOK, XGAME::xSC_SPENT_ITEM);
-			xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneTrader::OnClickPopupCancel);
+		auto pPopup = new XWndPopup( _T("trade_confirm.xml"), "popup", this );
+		if( pPopup ) {
+			pPopup->SetEvent( XWM_OK, 
+												this,
+												&XSceneTrader::OnClickRecallOK,
+												XGAME::xSC_SPENT_ITEM );
+			xSET_TEXT( pPopup, "text.title", XTEXT( 80130 ) );
+			xSET_TEXT( pPopup, "text.msg", XTEXT( 80148 ) );
+			xSET_TEXT( pPopup, "text.label", XTEXT( 80132 ) );
+			auto pProp = PROP_ITEM->GetpProp( idWhistle );
+			if( pProp )
+				xSET_IMG( pPopup, "img.ask.itemimg", XE::MakePath( DIR_IMG, pProp->strIcon ) );
 		}
+		Add( pPopup );
+// 		m_Layout.CreateLayout("commonitemtextpopup", this);
+// 
+// 		XWnd *pPopup = Find("img.common.popupitemtext");
+// 		if (pPopup)
+// 		{
+// 			pPopup->SetbModal(TRUE);
+// 
+// 			xSET_TEXT(this, "text.title", XTEXT(80130));			// "즉시호출"
+// 			xSET_TEXT(this, "text.common.ask", XTEXT(80148));		// "아이템을 사용하여 무역상을 즉시 호출하시겠습니까?"
+// 			xSET_BUTT_TEXT(this, "butt.confirm", XTEXT(80132));			// "호출"
+// 
+// 			xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_IMG, PROP_ITEM->GetpProp(whistleItemID)->strIcon.c_str()));
+// 
+// 			xSET_BUTT_HANDLER_PARAM(this, "butt.confirm", this, &XSceneTrader::OnClickRecallOK, XGAME::xSC_SPENT_ITEM);
+// 			xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneTrader::OnClickPopupCancel);
+// 		}
 	}	else	{
-		// 휘슬 아이템이 없으면
-//			if (ACCOUNT->GetCashtem() >= gemNum)		// 캐쉬 검사
-		if( ACCOUNT->IsEnoughCash( gemNum ) ) {
-			// 팝업
-			m_Layout.CreateLayout("commonitemtextpopup", this);
-			XWnd *pPopup = Find("img.common.popupitemtext");
-			if (pPopup)			{
-				pPopup->SetbModal(TRUE);
-
-				xSET_TEXT(this, "text.title", XTEXT(80130));			// "즉시호출"
-				xSET_TEXT(this, "text.common.ask", XE::Format(XTEXT(80149), gemNum));		// "아이템이 부족합니다. 캐쉬 %d개를 이용하여 즉시 호출하시겠습니까?"
-				xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80132));			// "호출"
-
-				xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_IMG, PROP_ITEM->GetpProp(whistleItemID)->strIcon.c_str()));
-
-				xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneTrader::OnClickRecallOK, XGAME::xSC_SPENT_GEM);
-				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneTrader::OnClickPopupCancel);
-			}
-		} else {
-			// 휘슬 아이템도 업고 캐쉬도 부족
-
-			// 팝업
-			m_Layout.CreateLayout( "commontextpopup", this );
-
-			XWnd *pPopup = Find( "img.common.popuptext" );
-			if( pPopup ) {
-				pPopup->SetbModal( TRUE );
-
-				xSET_TEXT( this, "text.title", XTEXT( 80130 ) );			// "즉시호출"
-				xSET_TEXT( this, "text.common.ask", XTEXT( 80150 ) );		// "아이템과 캐쉬가 부족합니다. 구매해주세요"
-				xSET_BUTT_TEXT( this, "butt.ok", XTEXT( 2 ) );				// "확인"
-
-				xSET_BUTT_HANDLER( this, "butt.ok", &XSceneTrader::OnClickPopupCancel );
-				xSET_BUTT_HANDLER( this, "butt.cancel", &XSceneTrader::OnClickPopupCancel );
-			}
-		}
+	// 휘슬 아이템이 없으면
+	if( ACCOUNT->IsEnoughCash( gemNum ) ) {
+		// 팝업
+		auto pPopup = new XWndPaymentByCash( XTEXT(80149), XTEXT(80130) );
+		pPopup->SetItem( (ID)XGC->m_traderRecallItem, gemNum );
+		Add( pPopup );
+		pPopup->SetEvent( XWM_OK, 
+											this, 
+											&XSceneTrader::OnClickRecallOK, 
+											XGAME::xSC_SPENT_GEM );
+		// 		auto pPopup = new XWndPopup( _T( "trade_confirm.xml" ), "popup", this );
+// 		if( pPopup ) {
+// 			xSET_BUTT_HANDLER_PARAM( pPopup, "butt.ok", 
+// 															 this, 
+// 															 &XSceneTrader::OnClickRecallOK, 
+// 															 XGAME::xSC_SPENT_ITEM );
+// 			xSET_TEXT( pPopup, "text.title", XTEXT( 80130 ) );
+// 			xSET_TEXT( pPopup, "text.msg", XTEXT( 80149 ), gemNum );
+// 			xSET_TEXT( pPopup, "text.label", XTEXT( 80132 ) );
+// 			auto pProp = PROP_ITEM->GetpProp( whistleItemID );
+// 			if( pProp )
+// 				xSET_IMG( pPopup, "img.ask.itemimg", XE::MakePath( DIR_IMG, pProp->strIcon ) );
+// 		}
+// 		Add( pPopup );
+		// 			m_Layout.CreateLayout("commonitemtextpopup", this);
+// 			XWnd *pPopup = Find("img.common.popupitemtext");
+// 			if (pPopup)			{
+// 				pPopup->SetbModal(TRUE);
+// 
+// 				xSET_TEXT(this, "text.title", XTEXT(80130));			// "즉시호출"
+// 				xSET_TEXT(this, "text.common.ask", XE::Format(XTEXT(80149), gemNum));		// "아이템이 부족합니다. 캐쉬 %d개를 이용하여 즉시 호출하시겠습니까?"
+// 				xSET_BUTT_TEXT(this, "butt.confirm", XTEXT(80132));			// "호출"
+// 
+// 				xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_IMG, PROP_ITEM->GetpProp(whistleItemID)->strIcon.c_str()));
+// 
+// 				xSET_BUTT_HANDLER_PARAM(this, "butt.confirm", this, &XSceneTrader::OnClickRecallOK, XGAME::xSC_SPENT_GEM);
+// 				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneTrader::OnClickPopupCancel);
+// 			}
+	} else {
+		// 휘슬 아이템도 업고 캐쉬도 부족
+		// 팝업
+		XWND_ALERT_T( _T("%s"), XTEXT(80150) );
+// 			auto pPopup = new XWndPopup( _T( "trade_confirm.xml" ), "popup" );
+// 			if( pPopup ) {
+// 				xSET_BUTT_HANDLER_PARAM( pPopup, "butt.confirm", this, &XSceneTrader::OnClickRecallOK, XGAME::xSC_SPENT_GEM );
+// 			}
+// 			Add( pPopup );
+// 			m_Layout.CreateLayout( "commontextpopup", this );
+// 
+// 			XWnd *pPopup = Find( "img.common.popuptext" );
+// 			if( pPopup ) {
+// 				pPopup->SetbModal( TRUE );
+// 
+// 				xSET_TEXT( this, "text.title", XTEXT( 80130 ) );			// "즉시호출"
+// 				xSET_TEXT( this, "text.common.ask", XTEXT( 80150 ) );		// "아이템과 캐쉬가 부족합니다. 구매해주세요"
+// 				xSET_BUTT_TEXT( this, "butt.confirm", XTEXT( 2 ) );				// "확인"
+// 
+// 				xSET_BUTT_HANDLER( this, "butt.confirm", &XSceneTrader::OnClickPopupCancel );
+// 				xSET_BUTT_HANDLER( this, "butt.cancel", &XSceneTrader::OnClickPopupCancel );
+// 			}
 	}
+}
 	return 1;
 }
 
 int XSceneTrader::OnClickRecallOK(XWnd *pWnd, DWORD p1, DWORD p2)
 {
-	if (GAMESVR_SOCKET)
-	{
+	if (GAMESVR_SOCKET)	{
 #pragma message("이거 에러처리 클라에서 하지 말고 서버에서 하도록 해서 클라가 패치받지 않아도 수정되게 할것.")
 		// 소비되는 종류에 따라 호출
 		if ((XGAME::xtSpentCall)p1 == XGAME::xSC_SPENT_ITEM) {
@@ -284,18 +327,18 @@ int XSceneTrader::OnClickRecallOK(XWnd *pWnd, DWORD p1, DWORD p2)
 		}
 	}
 
-	OnClickPopupCancel(pWnd, 0, 0);
+//	OnClickPopupCancel(pWnd, 0, 0);
 
 	return 1;
 }
 
-int XSceneTrader::OnClickPopupCancel(XWnd *pWnd, DWORD p1, DWORD p2)
-{
-	if (pWnd->GetpParent())
-		pWnd->GetpParent()->SetbDestroy(TRUE);
-
-	return 1;
-}
+// int XSceneTrader::OnClickPopupCancel(XWnd *pWnd, DWORD p1, DWORD p2)
+// {
+// 	if (pWnd->GetpParent())
+// 		pWnd->GetpParent()->SetbDestroy(TRUE);
+// 
+// 	return 1;
+// }
 
 int XSceneTrader::OnSlidingResource0(XWnd *pWnd, DWORD p1, DWORD p2)
 {

@@ -186,6 +186,7 @@ public:
 	static void sSetAbilHero( XHero *pHero, XGAME::xtUnit unit, LPCTSTR idsAbil, int point );
 	static XSPAcc sCreateAcc();
 	void SaveSingle();
+	void SetAI( bool bFlag );
 #endif // _XSINGLE
 
 private:
@@ -200,7 +201,7 @@ private:
 	void Release() override;
 	void CreateHeroesFace();
 	int OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 );
-	XWndBatchRender* GetpLayerUI();
+	XWnd* GetpLayerUI();
 	XWndBatchRender* GetpLayerFaces();
 };
 

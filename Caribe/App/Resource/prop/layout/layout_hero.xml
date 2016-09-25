@@ -62,26 +62,26 @@
   </hero>
   <!--영웅고용 확인 팝업-->
   <askpopup>
-    <img posx="62" posy="9" file="common_bg_popup.png" key="img.ask" format="argb8888">
+    <img posx="center" posy="center" file="popup_bg.png" key="img.ask" format="argb8888">
       <!--"영웅 고용"-->
-      <img posx="center" posy="18" img="popup_title_bar.png">
+      <img posx="center" posy="-15" img="popup_title_bar.png">
         <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" text="80053" />
       </img>
       <!--설명 bg-->
-      <text posx="170" posy="center" key="text.hero.ask" font="font_text_m" font_size="35" font_style="stroke" align="center" width="205" />
-      <_text posx="144" posy="155" width="228" key="text.hero.ask" align="center" font="font_text_m" font_size="35" font_style="stroke" />
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.cancel"></butt>
+      <text posx="20" posy="center" key="text.hero.ask" font="font_text_m" font_size="35" font_style="stroke" width="300"></text>
       <!--고용 버튼-->
-      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80036"></butt>
+      <butt posx="center" posy="230" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80036"></butt>
       <!--취소 버튼-->
-      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+      <_butt posx="170" posy="240" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3" />
     </img>
   </askpopup>
   <!--영웅고용 결과 팝업-->
   <complate>
     <img posx="62" posy="9" file="common_bg_popup.png" key="img.complate" format="argb8888">
       <!--"고용 성공"-->
-      <img posx="center" posy="18" img="popup_title_bar.png">
-        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80044" />
+      <img posx="center" posy="-15" img="popup_title_bar.png">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="center" text="80044" />
       </img>
       <!--영웅 bg & 영웅 이름 bg-->
       <img posx="191" posy="80" file="common_unit_bg_bb.png" key="img.unit.bg">
@@ -100,11 +100,9 @@
         <text posx="center" posy="center" key="text.hero.name" font="font_text_b" font_size="35" font_style="stroke" adjy="-4"></text>
       </img>
       <!--영웅 이름 텍스트-->
-      <_text posx="176" posy="220" width="164" key="text.hero.name" align="center" font="font_text_b" font_size="35" font_style="stroke" />
       <!--확인 버튼-->
-      <butt posx="470" posy="31" img_up="common_butt_x.png" key="butt.ok"></butt>
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.ok"></butt>
       <!--클랜 이름-->
-      <_text posx="176" posy="86" width="164" key="text.hero.clan" align="center" font="font_text_m" font_size="35" font_style="stroke" text_col_r="0" text_col_g="162" text_col_b="149" />
     </img>
   </complate>
 </layout>

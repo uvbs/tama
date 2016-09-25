@@ -60,17 +60,17 @@ private:
 public:
 	// 구코드 호환용
 // 	XSurface* Load( BOOL bHighReso, LPCTSTR szRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask=FALSE, bool bAsync = false );
-	inline XSurface* Load( LPCTSTR szRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
-		return _Load( true, szRes, XE::xPF_NONE, true, xBOOLToBool(bSrcKeep), xBOOLToBool(bMakeMask), bAsync );
-	}
-	inline XSurface* Load( const _tstring& strRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
-// 		return Load( TRUE, strRes.c_str(), bSrcKeep, bMakeMask, bAsync );
-		return _Load( true, strRes.c_str(), XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
-	}
-	inline XSurface* Load( const _tstring&& strRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
-//		return Load( TRUE, strRes.c_str(), bSrcKeep, bMakeMask, bAsync );
-		return _Load( true, strRes.c_str(), XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
-	}
+// 	inline XSurface* Load( LPCTSTR szRes, bool bAsync, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE ) {
+// 		return _Load( true, szRes, XE::xPF_NONE, true, xBOOLToBool(bSrcKeep), xBOOLToBool(bMakeMask), bAsync );
+// 	}
+// 	inline XSurface* Load( const _tstring& strRes, bool bAsync, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE ) {
+// // 		return Load( TRUE, strRes.c_str(), bSrcKeep, bMakeMask, bAsync );
+// 		return _Load( true, strRes.c_str(), XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
+// 	}
+// 	inline XSurface* Load( const _tstring&& strRes, bool bAsync, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE ) {
+// //		return Load( TRUE, strRes.c_str(), bSrcKeep, bMakeMask, bAsync );
+// 		return _Load( true, strRes.c_str(), XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
+// 	}
 // 	XSurface* Load( bool bHighReso, LPCTSTR szRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
 // 		return _Load( bHighReso, szRes, XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
 // 	}
@@ -107,24 +107,34 @@ public:
 												 bool bAsync ) {
 		return _Load( true, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
 	}
-	inline XSurface* LoadByBatch( const _tstring&& strRes,
+	XSurface* LoadByBatch( const _tstring& strRes,
 												 XE::xtPixelFormat format,
 												 bool bUseAtlas,
 												 bool bSrcKeep, bool bMakeMask,
-												 bool bAsync ) {
-		return _Load( true, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+												 bool bAsync );
+	//
+	inline XSurface* Load( const _tstring& strRes ) {
+		return Load( strRes.c_str(), XE::xPF_NONE, true, false, false, false );
 	}
-	inline XSurface* Load( LPCTSTR szRes,
+// 	inline XSurface* Load( LPCTSTR szRes,
+// 												 XE::xtPixelFormat format ) {
+// 		return Load( szRes, format, true, false, false, false );
+// 	}
+	inline XSurface* Load( const _tstring& strRes,
 												 XE::xtPixelFormat format ) {
-		return Load( szRes, format, true, false, false, false );
+		return Load( strRes.c_str(), format, true, false, false, false );
 	}
-	inline XSurface* Load( LPCTSTR szRes,
-												 XE::xtPixelFormat format, 
-												 bool bUseAtlas, 
-												 bool bSrcKeep, bool bMakeMask,
-												 bool bAsync ) {
-		return _Load( true, szRes, format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+	inline XSurface* Load( const _tstring& strRes,
+												 XE::xtPixelFormat format, bool bSrcKeep ) {
+		return Load( strRes.c_str(), format, true, bSrcKeep, false, false );
 	}
+// 	inline XSurface* Load( const _tstring& strRes,
+// 												 XE::xtPixelFormat format, 
+// 												 bool bUseAtlas, 
+// 												 bool bSrcKeep, bool bMakeMask,
+// 												 bool bAsync ) {
+// 		return _Load( true, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+// 	}
 	inline XSurface* LoadByRetina( LPCTSTR szRes,
 																 XE::xtPixelFormat format,
 																 bool bUseAtlas,

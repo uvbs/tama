@@ -2,15 +2,15 @@
 <layout>
   <popup_mail>
     <popup img="common_bg_popup.png" format="argb8888">
-      <butt posx="470" posy="31" img_up="common_butt_x.png" key="butt.close">
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.close">
         <!--x버튼-->
       </butt>
-      <img posx="center" posy="18" img="popup_title_bar.png" format="argb8888">
-        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="80072">
+      <img posx="center" posy="-15" img="popup_title_bar.png" format="argb8888">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="80072">
           <!--타이틀-->
         </text>
       </img>
-      <list posx="center" posy="64" width="430" height="256" spacew="3" spaceh="-1" type="list" key="list.mail" disty="40" debug="12" />
+      <list posx="center" posy="34" width="430" height="256" spacew="3" spaceh="-1" type="list" key="list.mail" disty="40" debug="12" />
       <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="80091" key="text.no.mail">
         <!--받은 메일이 없습니다.-->
       </text>

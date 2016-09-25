@@ -99,6 +99,7 @@ int XESceneMng::Process( float dt )
 		if( m_pDelegate ) {
 			m_pScene = m_pDelegate->DelegateCreateScene( this, m_idNextScene, m_spParam );
 			if( m_pScene ) {
+				m_pScene->PopAtalsMng();
 				m_pScene->SetpSceneMng( this );
 				m_pGame->GetpRootScene()->Add( m_pScene );
 				m_pScene->Create();		// 앞으로 이거 사용하지 말고 OnCreate를 사용할 것.

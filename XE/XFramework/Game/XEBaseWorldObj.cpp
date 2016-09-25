@@ -23,39 +23,43 @@ int XEBaseWorldObj::s_numObj = 0;		// 메모리 릭 추적용
 XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld,
 																int type,
 																const XE::VEC3& vPos,
-																LPCTSTR szImg )
+																LPCTSTR szImg,
+																bool bBatch )
 {
 	Init(); 
 	m_Type = type;
 	LoadImage( szImg );
 	m_vwPos = vPos;
 	m_pWndWorld = pWndWorld;
+	m_bZBuff = bBatch;		// 배치모드면 무조건 zbuff를 써야 찍기우선순위가 해결됨.
 }
 
 XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, 
 																int type, 
 																LPCTSTR szSpr, 
-																ID idAct ) 
+																ID idAct,
+																bool bBatch )
 {
 	Init();
 	m_Type = type;
 	m_pWndWorld = pWndWorld;
 	if( XE::IsHave(szSpr) )
-		LoadSpr( szSpr, idAct, true, xRPT_LOOP );
+		LoadSpr( szSpr, idAct, bBatch, xRPT_LOOP );
 }
 
 XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, 
 																int type, 
 																const XE::VEC3& vPos, 
 																LPCTSTR szSpr, 
-																ID idAct ) 
+																ID idAct,
+																bool bBatch )
 {
 	Init();
 	m_Type = type;
 	m_vwPos = vPos;
 	m_pWndWorld = pWndWorld;
 	if( XE::IsHave( szSpr ) )
-		LoadSpr( szSpr, idAct, true, xRPT_LOOP );;
+		LoadSpr( szSpr, idAct, bBatch, xRPT_LOOP );;
 }
 
 void XEBaseWorldObj::Destroy() 
@@ -79,10 +83,17 @@ bool XEBaseWorldObj::LoadSpr( LPCTSTR szSpr,
 {
 	if( XBREAK( XE::IsEmpty( szSpr ) == TRUE ) )
 		return false;
+	XBREAK( szSpr == nullptr );
+	m_bZBuff = bBatch;		// 배치모드면 무조건 zbuff를 써야 찍기우선순위가 해결됨.
 	m_strSpr = szSpr;
 	// 이 객체는 전투때만 쓰므로 곧바로 2버전으로 호출시킴
-	const bool bUseAtlas = true;
-	m_pSprObj = new XSprObj( szSpr, hsl, bUseAtlas, bBatch, true, this );
+ 	const bool bUseAtlas = true;
+ 	m_pSprObj = new XSprObj( szSpr, hsl, bUseAtlas, bBatch, true, this );
+// 	const bool bUseAtlas = GetRenderFlag( m_strSpr, "atlas" );
+// 	const bool bBatch = GetRenderFlag( m_strSpr, "batch" );
+// 	m_bZBuff = GetRenderFlag( m_strSpr, "zbuff" );
+// 	const bool bAlphaTest= GetRenderFlag( m_strSpr, "alphatest" );
+//	m_pSprObj = new XSprObj( szSpr, hsl, bUseAtlas, bBatch, true, this );
 	if( XBREAK( m_pSprObj == NULL ) )
 		return false;
 	// 비동기 로딩땜에 assert를 내지 않는게 맞지만 현재 그 기능이 없으므로 assert를 냄
@@ -157,7 +168,9 @@ void XEBaseWorldObj::Draw( const XE::VEC2& vPos, float scale/*=1.f*/, float alph
 //	MatrixTranslation( m, vPos.x, vPos.y, z/* / 1000.f*/ );
 		MatrixTranslation( m, vPos.x, vPos.y, z);
 		MatrixMultiply( mWorld, mWorld, m );
+ 		auto bPrev = GRAPHICS->SetbEnableZBuff( m_bZBuff );
 		m_pSprObj->Draw( 0, 0, mWorld );
+ 		GRAPHICS->SetbEnableZBuff( bPrev );
 // 	m_pSprObj->Draw( vPos, mWorld );
 	}
 	if( m_pSurface )

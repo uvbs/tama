@@ -344,6 +344,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -358,11 +359,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\prj\xe_client\xe_client;..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -377,12 +379,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\prj\xe_client\xe_client;..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
-      <TreatSpecificWarningsAsErrors>4800</TreatSpecificWarningsAsErrors>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -397,11 +399,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\prj\xe_client\xe_client;..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -416,11 +419,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\prj\xe_client\xe_client;.\;..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -435,11 +439,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_XTEST;XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XTEST;XE_GLES2;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\prj\xe_client\xe_client;.\;..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -454,11 +459,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_XPATCH;XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XPATCH;XE_GLES2;_USE_MATH_DEFINES;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\prj\xe_client\xe_client;..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -491,13 +497,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\prj\xe_client\xe_client;..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessToFile>false</PreprocessToFile>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -512,7 +519,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelHome|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\prj\xe_client\xe_client;..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessToFile>false</PreprocessToFile>
@@ -533,13 +540,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelTestMode|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_XTEST;XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XTEST;XE_GLES2;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\prj\xe_client\xe_client;..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessToFile>false</PreprocessToFile>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -554,13 +562,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_XCREW;_XGOOGLE;XE_GLES2;_VER_OPENGL;_XACCOUNT_REF;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XCREW;_XGOOGLE;XE_GLES2;_USE_MATH_DEFINES;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\..\..\prj\xe_client\xe_client;..\..\..\;..\..\..\Common\_XLibrary;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\OpenAL 1.1 SDK\include;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\Third_Party_lib\ftgles\ftgles2\ftgles\src;..\..\..\Third_Party_lib\ftgles\freetype2\include;..\..\..\Third_Party_lib\bugslayer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessToFile>false</PreprocessToFile>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -582,6 +591,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -603,6 +613,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -1013,6 +1024,7 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasBatch.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XSurfaceGLAtlasNoBatch.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XTextureAtlas.cpp" />
+    <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XTextureAtlasSub.cpp" />
     <ClCompile Include="..\..\..\Common\_XLibrary\Sound\Android\XSoundMngAndroid.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Bot2|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">true</ExcludedFromBuild>

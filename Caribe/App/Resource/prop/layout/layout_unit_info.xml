@@ -2,13 +2,13 @@
 <layout>
   <popup_unit>
     <popup img="common_bg_popup.png" format="argb8888">
-      <img posx="center" posy="18" img="popup_title_bar.png" format="argb8888">
+      <img posx="center" posy="-15" img="popup_title_bar.png" format="argb8888">
         <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.popup.title" />
       </img>
-      <butt posx="470" posy="31" img_up="common_butt_x.png" key="butt.close"></butt>
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.close"></butt>
       <butt posx="68" posy="279" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.unlock" font_style="stroke" text="2023" show="off"></butt>
       <butt posx="185" posy="279" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="8" show="off"></butt>
-      <wnd posx="32" posy="96">
+      <wnd posx="32" posy="61">
         <img posx="19" posy="4" key="img.icon.complate.legion" scale="1.9"></img>
         <img posx="15" posy="0" file="common_unit_bg_bb.png"></img>
         <img posx="0" posy="133" file="legion_unit_blank_b.png">
@@ -24,7 +24,7 @@
           <!--스텟 아이콘들-->
         </img>
       </wnd>
-      <scroll_view posx="289" posy="96" width="188" height="212" dir="vert">
+      <scroll_view posx="289" posy="61" width="188" height="212" dir="vert">
         <text posx="0" posy="0" width="188" font="font_text_s" font_size="22" key="text.desc" />
       </scroll_view>
     </popup>

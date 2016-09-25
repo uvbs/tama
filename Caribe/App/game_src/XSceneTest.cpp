@@ -230,7 +230,7 @@ void XSceneTest::Create( void )
 	for( int i = 0; i < MAX_SPR1 * MAX_SPR2; ++i ) {
 		const int maxFiles = XNUM_ARRAY( s_files );
 		const _tstring strFile = C2SZ( s_files[xRandom(maxFiles)] );
-		m_psoTest[i] = new XSprObj( _T( "title.spr" ), XE::xHSL(), true, false, false, nullptr );
+		m_psoTest[i] = new XSprObj( _T( "particle_star.spr" ), XE::xHSL(), false, false, false, nullptr );
 // 		m_psoTest[i] = new XSprObj( strFile );
 		auto pso = m_psoTest[i];
 //		pso->SetAction( 4 );
@@ -301,7 +301,7 @@ void XSceneTest::Draw()
 // 		}
 //		vPos = INPUTMNG->GetMousePos();
 		//		MatrixTranslation( mWorld, 100.f, 100.f, 0 );
-		SET_RENDERER( XEContent::sGet()->GetpRenderer() ) {
+//		SET_RENDERER( XEContent::sGet()->GetpRenderer() ) {
 			for( int i = 0; i < MAX_SPR2; ++i ) {
 				for( int k = 0; k < MAX_SPR1; ++k ) {
 					MatrixTranslation( mWorld, vPos.x + k * 40.f, vPos.y + i * 60.f, 0 );
@@ -309,7 +309,7 @@ void XSceneTest::Draw()
 					m_psoTest[idx]->Draw( 0, 0, mWorld );
 				}
 			}
-		} END_RENDERER;
+//		} END_RENDERER;
 	}
 #endif // _XTEST
 }

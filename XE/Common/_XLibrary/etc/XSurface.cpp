@@ -13,6 +13,8 @@ static char THIS_FILE[] = __FILE__;
 
 DWORD XSurface::s_dwMaxSurfaceWidth = 0;
 int XSurface::s_sizeTotalVMem = 0;
+int XSurface::s_cntDPCallNoBatch = 0;
+int XSurface::s_cntDPCallNormal = 0;
 
 XE_NAMESPACE_START( XE )
 //
@@ -84,12 +86,27 @@ void XSurface::Destroy()
 	SAFE_DELETE_ARRAY( m_pMask );
 }
 
+void XSurface::ClearVertices() 
+{
+	memset( m_Vertices, 0, sizeof( m_Vertices ) );
+	m_Vertices[0].uv.x = 0.f;		m_Vertices[0].uv.y = 1.f;
+	m_Vertices[1].uv.x = 1.f;		m_Vertices[1].uv.y = 1.f;
+	m_Vertices[2].uv.x = 0.f;		m_Vertices[2].uv.y = 0.f;
+	m_Vertices[3].uv.x = 1.f;		m_Vertices[3].uv.y = 0.f;
+	m_Vertices[0].rgba.w = 1.f;
+	m_Vertices[1].rgba.w = 1.f;
+	m_Vertices[2].rgba.w = 1.f;
+	m_Vertices[3].rgba.w = 1.f;
+}
+
 void XSurface::DestroyDevice()
 {
 	if( !m_bAtlas ) {
 		AddSizeByte( -GetbytesMemAligned() );
 		XSurface::s_sizeTotalVMem -= GetbytesMemAligned();
 	}
+	//memset( m_Vertices, 0, sizeof( m_Vertices ) );
+	ClearVertices();
 }
 
 void XSurface::RestoreDeviceFromSrcImg()

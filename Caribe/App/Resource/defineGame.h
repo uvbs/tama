@@ -570,6 +570,7 @@ namespace XGAME
 		xPR_RES,
 		xPR_TIME,
 		xPR_AP,
+		xPR_ITEM,
 		xPR_GEM,
 		xPR_TRY_DAILY,		// 요일스팟 도전횟수
 	};

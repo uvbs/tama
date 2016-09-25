@@ -70,11 +70,16 @@ private:
 		m_bDraw = TRUE;
 	}
 	void Destroy();
-	XSprObj* CreateSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, bool bAsyncLoad );
 protected:
 	XSprObj *m_pSprObj;
 	ID m_idAct;
 	xRPT_TYPE m_loopType;
+	void CreateSprObj( LPCTSTR szSpr, 
+												 ID idAct, 
+												 bool bUseAtlas,
+												 bool bBatch,
+												 bool bAsyncLoad, 
+												 xRPT_TYPE loopType );
 public:
 	// 빈 객체를 만든다.
 	XWndSprObj( float x, float y ) : XWnd( x, y ) { Init(); }
@@ -146,7 +151,8 @@ public:
 	void SetSprObj( const _tstring& strSpr, ID idAct, xRPT_TYPE loopType ) {
 		SetSprObj( strSpr.c_str(), idAct, loopType, false );
 	}
-// 	void SetSprObj( LPCTSTR szSpr, ID idAct=0, xRPT_TYPE loopType = xRPT_LOOP, bool ASyncLoad );
+	void SetSprObj( LPCTSTR szSpr, ID idAct, bool bUseAtlas, bool bBatch, bool bASyncLoad, xRPT_TYPE loopType );
+	// 	void SetSprObj( LPCTSTR szSpr, ID idAct=0, xRPT_TYPE loopType = xRPT_LOOP, bool ASyncLoad );
 // 	void SetSprObj( const _tstring& strSpr, ID idAct=0, xRPT_TYPE loopType = xRPT_LOOP) {
 // 		SetSprObj( strSpr.c_str(), idAct, loopType );
 // 	}

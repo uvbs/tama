@@ -143,6 +143,7 @@ void XGame::Destroy()
 	GAME = nullptr;
 	s_pInstance = nullptr;
 	XTRACE("XGame::Destroy\n");
+	XAccount::sDestroyPlayer();
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcProfile );
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcBgPopup );
 	SAFE_DELETE(m_pGuild);
@@ -825,6 +826,14 @@ void XGame::Draw()
 		}
 // 		PUT_STRING_STROKE( vMouse.x + 100.f, vMouse.y, XCOLOR_YELLOW, strt.c_str() );
 	}
+	{
+		const int cnt1 = XGraphics::s_fpsDPCallBatch.GetFps();
+		const int cnt2 = XGraphics::s_fpsDPCallNoBatch.GetFps();
+		const int cnt3 = XGraphics::s_fpsDPCallNormal.GetFps();
+		const int fps = XClientMain::s_fps.GetFps();
+		const int avgSum = (int)(((cnt1 + cnt2 + cnt3) / 3) / (float)fps);
+		PUT_STRINGF( 31, 32, XCOLOR_WHITE, "dpcall:%d(%d+%d+%d)", avgSum, cnt1, cnt2, cnt3 );
+	}
 #endif // WIN32
 #endif // _CHEAT
 // 	if( m_psoTest ) {
@@ -839,7 +848,7 @@ void XGame::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat* pFontDat 
 	XEContent::DrawDebugInfo( x, y, col, pFontDat );
 #ifdef _CHEAT
 	if( XAPP->m_idxViewAtlas >= 0 ) {
-		auto spAtlas = XTextureAtlas::s_lists.GetByIndexNonPtr( XAPP->m_idxViewAtlas );
+		auto spAtlas = XTextureAtlas::sGetspAtlasByIdx( XAPP->m_idxViewAtlas );
 		if( spAtlas ) {
 			auto idTex = spAtlas->m_idTex;
 //			auto idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
@@ -1002,6 +1011,8 @@ void XGame::OnCheatMode()
 {
 	if( m_pSceneMng )
 		m_pSceneMng->OnCheatMode();
+	xSET_SHOW( this, "butt.debug.plus", XAPP->m_bDebugMode != 0 );
+	xSET_SHOW( this, "butt.debug.minus", XAPP->m_bDebugMode != 0 );
 }
 
 int XGame::OnIpConfig( XWnd *pWnd, DWORD, DWORD )
@@ -1135,9 +1146,9 @@ void XGame::OnResume()
 				*/
 //				m_pSceneMng->DoForceDestroyCurrScene();
 				// img,spr,font등 현재 안쓰고 있는것들 모두 해제하여 다음 restore때 필요없는것들을 restore하지 않도록 한다. 이것은 resume시간을 빠르게 하기 위해서다.
-				IMAGE_MNG->DoFlushCache();
-				SPRMNG->DoFlushCache();
-				FONTMNG->DoFlushCache();
+// 				IMAGE_MNG->DoFlushCache();
+// 				SPRMNG->DoFlushCache();
+// 				FONTMNG->DoFlushCache();
 			}
 		} else  {
 			XConnector::sGet()->SetidNextFSM( xConnector::xFID_ONLINE );
@@ -1151,9 +1162,9 @@ void XGame::OnResume()
 			if( sGetpWorld() ) {
 				sGetpWorld()->Restore();
 			}
-			IMAGE_MNG->DoFlushCache();
-			SPRMNG->DoFlushCache();
-			FONTMNG->DoFlushCache();
+// 			IMAGE_MNG->DoFlushCache();
+// 			SPRMNG->DoFlushCache();
+// 			FONTMNG->DoFlushCache();
 		}
 	}
 	CONSOLE("OnResume: finished");
@@ -1170,8 +1181,9 @@ void XGame::OnPause()
 	if( GAMESVR_SOCKET->IsConnected() ) {
 		GAMESVR_SOCKET->SendGotoHome( 10 );	// xx초 이내 다시 돌아오면 끊기지않음.
 	}
+	// 모든 하드웨어 자원을 날린다.
+	XEContent::OnPause();
 }		
-
 
 // 구글/iOS의 인앱결제로 szSku상품을 사라. 이것의 결과는 비동기로 돌아온다.
 int XGame::DoAsyncBuyIAP( LPCTSTR szSku, const std::string& strcPayload, int price )
@@ -1368,7 +1380,7 @@ void XGame::DelegateBeforeDraw( XWnd *pWnd )
 
 void XGame::Update()
 {
-	XEContent::Update();	
+	XEContent::Update();
 }
 
 void XGame::sPushMasterMessage(_tstring& str)
@@ -2050,6 +2062,8 @@ void XGame::OnRecvProfileImageByFacebook( const std::string& strcFbUserId, DWORD
 
 void XGame::DoRequestPlayerProfileImg( XSPAcc spAcc )
 {
+	if( !spAcc )
+		return;
 	if( spAcc->GetstrFbUserId().empty() )
 		return;
 	XFacebook::sGet()->SetstrcFbUserId( SZ2C( spAcc->GetstrFbUserId() ) );
@@ -2468,7 +2482,6 @@ int XGame::OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 )
 #ifdef _CHEAT
 //	CONSOLE("%s", __TFUNC__);
 	//
-	XSPAtlas spAtlas;
 	auto fmtAtlas = XE::xPF_NONE;
 	ID idTex = 0;
 	if( p1 == 0 ) {
@@ -2478,23 +2491,26 @@ int XGame::OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 )
 // 		idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas  );
 	} else
 	if( p1 == 1 ) {
-		if( XAPP->m_idxViewAtlas < (int)XTextureAtlas::s_lists.size() - 1 )
+		if( XAPP->m_idxViewAtlas < (int)XTextureAtlas::sGetNumAtlas() - 1 )
 			++XAPP->m_idxViewAtlas;
 // 		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
 // 		idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
 	}
 	if( p1 == 0 || p1 == 1 ) {
-		spAtlas = XTextureAtlas::s_lists.GetByIndexNonPtr( XAPP->m_idxViewAtlas );
+		auto spAtlas = XTextureAtlas::sGetspAtlasByIdx( XAPP->m_idxViewAtlas );
 		if( spAtlas ) {
 			fmtAtlas = spAtlas->m_FormatSurface;
 			idTex = spAtlas->m_idTex;
-			CONSOLE( "tag:%s Atlas=(%d/%d), fmt=%s idTex=%d, size=%.0fx%.0f",
+			int byteAll = XTextureAtlas::sGetBytesAll();
+			CONSOLE( "tag:%s Atlas=(%d/%d), fmt=%s idTex=%d, size=%.0fx%.0f, refCnt=%d, byteAll=%s",
 							 C2SZ( spAtlas->m_strTag ),
 							 XAPP->m_idxViewAtlas,
-							 XTextureAtlas::s_lists.size(),
+							 XTextureAtlas::sGetNumAtlas(),
 							 XE::GetstrPixelformat( fmtAtlas ),
 							 idTex,
-							 spAtlas->m_Size.x, spAtlas->m_Size.y );
+							 spAtlas->m_Size.x, spAtlas->m_Size.y,
+							 spAtlas->m_refCnt,
+							 XE::NtS( byteAll ));
 		}
 	}
 

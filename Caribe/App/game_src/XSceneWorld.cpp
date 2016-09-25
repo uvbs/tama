@@ -35,6 +35,7 @@
 #include "XSystem.h"
 #include "XCampObj.h"
 #include "XWndPopupDaily.h"
+#include "opengl2/XTextureAtlas.h"
 //#include "Sprite/SprMng.h"
 #ifdef _xIN_TOOL
 #include "XDlgPropCloud.h"
@@ -132,19 +133,41 @@ BOOL XSceneWorld::OnCreate()
 // 		pView->Add( pImg );
 		// 오브젝트 레이어 바닥용
 		{
-			XWnd *pLayer = new XWndBgObjLayer();
+			XWnd *pLayer = new XWndBgObjLayer( sizeWorld );
 			pLayer->SetstrIdentifier( "root.world.obj.under" );
 			pView->Add( pLayer );
 		}
+		// 스팟밑에깔리는 빛 레이어
+// 		{
+// 			XWnd *pRoot = new XWndBatchRender( "spot_light", true,
+// 																				 XE::VEC2( 0, 0 ),
+// 																				 sizeWorld );
+// 			pRoot->SetstrIdentifier( "root.spot.light" );
+// 			pView->Add( pRoot );
+// 		}
 		// 스팟들의 루트
 		{
-			XWnd *pRoot = new XWnd;
+			XWnd *pRoot = new XWndBatchRender( "spot", true,
+																				 false, false,
+																				 XE::VEC2( 0, 0 ),
+																				 sizeWorld );
 			pRoot->SetstrIdentifier( "root.spot" );
 			pView->Add( pRoot );
 		}
+		// 자원풍선
+// 		{
+// 			XWnd *pRoot = new XWndBatchRender( "spot_res", true,
+// 																				 XE::VEC2( 0, 0 ),
+// 																				 sizeWorld );
+// 			pRoot->SetstrIdentifier( "root.spot.res" );
+// 			pView->Add( pRoot );
+// 		}
 		// 오브젝트 레이어
 		{
-			XWnd *pBirdLayer = new XWnd;
+			XWnd *pBirdLayer = new XWndBatchRender( "bird", true, 
+																							false, false,
+																							XE::VEC2(0,0),
+																							sizeWorld );
 			pBirdLayer->SetstrIdentifier( "root.world.obj" );
 			pView->Add( pBirdLayer );
 		}
@@ -704,7 +727,7 @@ void XSceneWorld::UpdateResIcon( XSpot *pSpot, XWnd *pRoot )
 
 void XSceneWorld::Update( void )
 {
- #ifdef _CHEAT
+#ifdef _CHEAT
 	UpdateDebugButtons();
  #endif // cheat
 #ifdef _CHEAT
@@ -715,6 +738,7 @@ void XSceneWorld::Update( void )
 	if( pLayerBird ) {
 		pLayerBird->SetbShow( XAPP->m_bViewBgObj );
 	}
+	auto pLayerSpot = SafeCast<XWndBatchRender*>( Find("root.spot") );
 #else
 #endif // _CHEAT
 	UpdateUI();
@@ -1725,7 +1749,7 @@ int XSceneWorld::OnClickKill( XWnd* pWnd, DWORD p1, DWORD p2 )
 			XWND_ALERT( "%s", XTEXT(2337) );		// 3별로 클리어해야함.
 			break;
 		case xE_NOT_ENOUGH_ITEM:
-			XGAME::DoAlertWithItem( _T("item_kill"), XTEXT(2002) );
+			XGAME::DoAlertWithItem( _T("item_kill"), XTEXT(2002), XWnd::xOK );
 			break;
 		case xE_NOT_ENOUGH_AUTHORITY:
 			XWND_ALERT( "%s", XTEXT( 2338 ) );		// 녹색이하여야함
@@ -2733,7 +2757,7 @@ int XSceneWorld::OnClickCloudLabel( XWnd* pWnd, DWORD p1, DWORD p2 )
 		}
 		break;
 	case XGAME::xE_MUST_NEED_KEY_ITEM: {
-		XGAME::DoAlertWithItem( pProp->idsItem, XTEXT(2002) );		// 필요아이템 부족
+		XGAME::DoAlertWithItem( pProp->idsItem, XTEXT(2002), XWnd::xOK );		// 필요아이템 부족
 	}	break;
 	case XGAME::xE_OK:
 		GAMESVR_SOCKET->SendReqOpenCloud( this, idCloud, xTP_GOLD );

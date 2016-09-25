@@ -248,8 +248,7 @@ void XWnd::SetRotateLocal( float dRotZ )
 void XWnd::SetSizeLocal( const XE::VEC2& vSize )
 { 
 	m_vSize.x = vSize.x; m_vSize.y = vSize.y; 
-	// 디버그모드일땐 부모의 사이즈가 0인지 체크한다.
-	// 자식의 사이즈가 정해졌는데 부모의 사이즈가 0이면 뭔가 이상한것이라 판단한다.
+	// 아젠장 이걸왜 여기다 넣었을까. 
 	if( m_vSize.IsZero() == FALSE )
 		SetbTouchable( TRUE );
 	else
@@ -302,12 +301,14 @@ XWnd *XWnd::Add( int id, XWnd *pChild, bool bFront )
 {
 	AddOnly( id, pChild );
 	//
+	pChild->OnUpdateBefore();
 	pChild->OnCreate();
 	// add되면 최초한번 업데이트는 무조건 불러준다.
 	pChild->SetbUpdate( false );
 	pChild->Update();
 	// Add를 하면서 Update를 최초 한번 하고 시작하는 방식이므로 일반적으로 이때 대부분의 파일들은 로딩이 끝났을거라고 가정함.
 	pChild->CallEventHandler( XWM_FINISH_LOADED );
+	pChild->OnUpdateAfter();
 	return pChild;
 }
 
@@ -516,7 +517,9 @@ int XWnd::Process( float dt )
 			// 방금 애니메이션이 끝난경우. 업데이트가 있었다면 바로 업데이트 하고 시작.
 			if( m_bUpdate ) {
 				m_bUpdate = false;
+				OnUpdateBefore();
 				Update();
+				OnUpdateAfter();
 			}
 		}
 	}
@@ -534,15 +537,16 @@ int XWnd::Process( float dt )
 		}
 		m_timerPush.Off();
 	}
-//	LIST_MANUAL_LOOP( m_listItems, XWnd*, itor, pWnd ) {
-	
+
 	for( auto itor = m_listItems.begin(); itor != m_listItems.end(); ) {
 		XWnd* pWnd = (*itor);	
 		if( pWnd->GetDestroyFinal() != TRUE && pWnd->GetbProcess() ) {
 			if( pWnd->GetbUpdate() ) {		// 업데이트 요청이있었으면 Update()를 호출한다.
 				if( !pWnd->IsDestroy() && !pWnd->IsAnimation() ) {
 					pWnd->SetbUpdate( FALSE );
+					pWnd->OnUpdateBefore();
 					pWnd->Update();
+					pWnd->OnUpdateAfter();
 				}
 			}
 			if( pWnd->m_timerAutoUpdate.IsOver() ) {
@@ -550,7 +554,9 @@ int XWnd::Process( float dt )
 				pWnd->OnAutoUpdate();		// 이벤트 핸들러
 				pWnd->m_timerAutoUpdate.Reset();
 			}
+			pWnd->OnProcessBefore();
 			pWnd->Process(dt);
+			pWnd->OnProcessAfter();
 		}
 		if( pWnd->GetDestroyFinal() ) {
 			if( pWnd->CallEventHandler( XWM_DESTROY ) )	{	// 파괴 이벤트 핸들러가 있다면 호출
@@ -604,7 +610,9 @@ void XWnd::Update()
 		if( pWnd->GetDestroy() == FALSE )
 			if( !pWnd->IsAnimation() && pWnd->GetbShow() ) {
 				pWnd->SetbUpdate( false );		// 상위부모의 업데이트로 인해 하위윈도우들이 중복으로 업데이트하는걸 방지.
+				pWnd->OnUpdateBefore();
 				pWnd->Update();
+				pWnd->OnUpdateAfter();
 			}
 	}
 }
@@ -758,9 +766,9 @@ void XWnd::Draw()
 #endif
 			if( pWnd->GetpDelegate() )
 				pWnd->GetpDelegate()->DelegateBeforeDraw( pWnd );
-			pWnd->DrawBefore();
+			pWnd->OnDrawBefore();
 			pWnd->Draw();
-			pWnd->DrawAfter();
+			pWnd->OnDrawAfter();
 #ifdef WIN32
 			if( XWnd::s_bDrawOutline ) {
 				const auto vPos = pWnd->GetPosFinal();
@@ -1507,6 +1515,20 @@ BOOL XWnd::RestoreDevice()
 	return TRUE;
 }
 
+void XWnd::DestroyDevice()
+{
+	for( auto pWnd : m_listItems ) {
+		pWnd->DestroyDevice();
+	}
+}
+
+void XWnd::OnPause()
+{
+	for( auto pWnd : m_listItems ) {
+		pWnd->OnPause();
+	}
+}
+
 /**
  @brief 각 객체가 보유한 shared_ptr을 반납해야 한다.
 */
@@ -2016,14 +2038,6 @@ void XWnd::AutoLayoutHCenter( XWnd *pParent )
 	const float wLocalLayout = GetSizeNoTransLayout().w * m_vScale.x;
 	const float left = wParent * 0.5f - wLocalLayout * 0.5f;
 	SetX( left );
-// 	if( pParent )
-// 		pParent = (pParent->IsValidSize())? pParent : pParent->GetpParentValid();
-// 	const XE::VEC2 vSizeParent = (pParent)? pParent->GetSizeValidNoTrans() : XE::GetGameSize();
-// // 	const auto rectBB = pParent->GetBoundBoxByVisibleNoTrans();
-// 	const XE::VEC2 sizeLocalLayout = GetSizeNoTransLayout() * m_vScale;
-// 	const XE::VEC2 vPosLT = vSizeParent * 0.5f - sizeLocalLayout * 0.5f;
-// 	const XE::VEC2 vPosLocal = GetPosLocal();
-// 	SetX( vPosLT.x );
 }
 
 /**
@@ -2037,13 +2051,6 @@ void XWnd::AutoLayoutVCenter( XWnd *pParent )
 	const float hLocalLayout = GetSizeNoTransLayout().h * m_vScale.y;
 	const float top = hParent * 0.5f - hLocalLayout * 0.5f;
 	SetY( top );
-// 	if( pParent )
-// 		pParent = ( pParent->IsValidSize() ) ? pParent : pParent->GetpParentValid();
-// 	const XE::VEC2 vSizeParent = ( pParent ) ? pParent->GetSizeValidNoTrans() : XE::GetGameSize();
-// 	const XE::VEC2 sizeLocalLayout = GetSizeNoTransLayout();
-// 	const XE::VEC2 vPosLT = vSizeParent / 2.f - sizeLocalLayout / 2.f;
-// 	const XE::VEC2 vPosLocal = GetPosLocal();
-// 	SetY( vPosLT.y );
 }
 
 /**
@@ -2054,12 +2061,6 @@ void XWnd::AutoLayoutCenter( XWnd *pParent )
 	// 가로,세로값중 하나만 유효한 윈도우도 있어서 따로 함.
 	AutoLayoutHCenter( pParent );
 	AutoLayoutVCenter( pParent );
-// 	if( pParent )
-// 		pParent = ( pParent->IsValidSize() ) ? pParent : pParent->GetpParentValid();
-// 	const XE::VEC2 vSizeParent = (pParent)? pParent->GetSizeValidNoTrans() : XE::GetGameSize();
-// 	const XE::VEC2 sizeLocalLayout = GetSizeNoTransLayout();
-// 	const XE::VEC2 vPosLT = vSizeParent / 2.f - sizeLocalLayout / 2.f;
-// 	SetPosLocal( vPosLT );
 }
 
 void XWnd::AutoLayoutRight( XWnd *pParent )
@@ -2070,15 +2071,6 @@ void XWnd::AutoLayoutRight( XWnd *pParent )
 	const float wLocalLayout = GetSizeNoTransLayout().w * m_vScale.x;
 	const float left = wParent - wLocalLayout;
 	SetX( left );
-// 	if( pParent )
-// 		pParent = ( pParent->IsValidSize() ) ? pParent : pParent->GetpParentValid();
-// 	XE::VEC2 vSizeParent = ( pParent ) ? pParent->GetSizeValidNoTrans() : XE::GetGameSize();
-// // 	const auto rectBB = pParent->GetBoundBoxByVisibleNoTrans();
-// 	XE::VEC2 sizeLocalLayout = GetSizeNoTransLayout();
-// 	XE::VEC2 vPosLT = vSizeParent - sizeLocalLayout;
-// 	XE::VEC2 vPosLocal = GetPosLocal();
-// 	vPosLocal.x = vPosLT.x;
-// 	SetPosLocal( vPosLocal );
 }
 
 void XWnd::AutoLayoutBottom( XWnd *pParent )
@@ -2089,15 +2081,6 @@ void XWnd::AutoLayoutBottom( XWnd *pParent )
 	const float hLocalLayout = GetSizeNoTransLayout().h * m_vScale.y;
 	const float top = hParent - hLocalLayout;
 	SetY( top );
-// 	if( pParent )
-// 		pParent = ( pParent->IsValidSize() ) ? pParent : pParent->GetpParentValid();
-// 	XE::VEC2 vSizeParent = ( pParent ) ? pParent->GetSizeValidNoTrans() : XE::GetGameSize();
-// // 	const auto rectBB = pParent->GetBoundBoxByVisibleNoTrans();
-// 	XE::VEC2 sizeLocalLayout = GetSizeNoTransLayout();
-// 	XE::VEC2 vPosLT = vSizeParent - sizeLocalLayout;
-// 	XE::VEC2 vPosLocal = GetPosLocal();
-// 	vPosLocal.y = vPosLT.y;
-// 	SetPosLocal( vPosLocal );
 }
 
 /**

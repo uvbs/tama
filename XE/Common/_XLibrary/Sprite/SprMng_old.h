@@ -115,7 +115,7 @@ private:
 	xSpr::XSPDat FindByKeyAtCache( LPCTSTR szFilename, BOOL bSrcKeep, const XE::xHSL& hsl );
 	xSpr::XSPDat FindByidAsync( ID idAsync );
 	void CompleteAsyncLoad( ID idAsync );
-	void DestroyOlderFile();
+	void DestroyOverTimeFile();
 //	void DeleteAsyncComplete( ID idAsync );
 };
 

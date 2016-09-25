@@ -76,6 +76,8 @@ void XSurfaceGLAtlasNoBatch::Destroy()
 																										m_glVertexBuffer,
 																										m_glIndexBuffer,
 																										GetWidth(), GetHeight() );
+	XBREAK( IsbAtlas() == false );
+	XTextureAtlas::sRelease( m_glTexture );
 	DestroyDevice();
 }
 
@@ -124,8 +126,8 @@ bool XSurfaceGLAtlasNoBatch::Create( const XE::POINT& sizeSurfaceOrig
 		// 텍스쳐 아틀라스에 pImgSrc를 삽입하고(혹은 아틀라스를 생성) 아틀라스의 아이디를 얻는다. 또한 rect에는 삽입된 위치를 얻는다.
 		// pImgSrc를 아틀라스에 배치하고 텍스쳐아이디와 위치를 얻는다.
 		XE::VEC2 sizeAtlas;
-		XBREAK( XTextureAtlas::sGetpCurrMng() == nullptr );
-		auto pAtlasMng = XTextureAtlas::sGetpCurrMng();
+		XBREAK( XTextureAtlas::sGetspCurrMng() == nullptr );
+		auto pAtlasMng = XTextureAtlas::sGetspCurrMng();
 		m_glTexture = pAtlasMng->ArrangeImg( 0,				// auto glTex id
 																				 &rcInAtlas,
 																				 pImgSrc,
@@ -185,7 +187,7 @@ bool XSurfaceGLAtlasNoBatch::CreateSub( const XE::POINT& posMemSrc
 /**
  @brief 기존코드 호환용.(단 외부에서 쓰는건 막음)
 */
-bool XSurfaceGLAtlasNoBatch::CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMakeMask )
+bool XSurfaceGLAtlasNoBatch::CreatePNG( LPCTSTR szRes, bool bUseAtlas, bool bSrcKeep, bool bMakeMask )
 {
 	XE::POINT sizeMem;
 	DWORD *pImg = nullptr;
@@ -204,7 +206,7 @@ bool XSurfaceGLAtlasNoBatch::CreatePNG( LPCTSTR szRes, bool bSrcKeep, bool bMake
 													, XE::xPF_ARGB8888		// formatImgSrc
 													, sizeMem
 													, bSrcKeep, bMakeMask
-													, false );
+													, bUseAtlas );
 }
 
 bool XSurfaceGLAtlasNoBatch::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
@@ -260,21 +262,12 @@ bool XSurfaceGLAtlasNoBatch::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 void XSurfaceGLAtlasNoBatch::DestroyDevice()
 {
 	CHECK_GL_ERROR();
-	if( m_glTexture )
-		XSurface::DestroyDevice();
+//	if( m_glTexture )
+	XSurface::DestroyDevice();
 	if( GetstrRes().empty() == false ) {
 		S_TRACE("destroy Surface: %s", GetstrRes().c_str() );
 	}
-	// 홈으로 나갈때 자동으로 디바이스 자원은 파괴되지만 m_glTexture등도 클리어 시켜주지 않으면 돌아왔을때 새로 할당한 번호가 겹쳐서 다시 지워버릴 수 있다.
-	if( IsbAtlas() ) {
-		auto pAtlasMng = XTextureAtlas::sGetpCurrMng();	// 현재 아틀라스와 실제 m_glTexture가 있는 텍스쳐가 일치하지 않을 수 있음.
-		XBREAK( pAtlasMng == nullptr );
-		pAtlasMng->Release( m_glTexture );
-	} else {
-// 		if( m_glTexture ) {
-// 			glDeleteTextures( 1, &m_glTexture );
-// 		}
-	}
+	// 여긴 아틀라스이므로 텍스쳐를 직접 삭제해선 안된다.
 	m_glTexture = 0;
 	if( m_glVertexBuffer ) {
 		glDeleteBuffers(1, &m_glVertexBuffer);
@@ -291,7 +284,7 @@ void XSurfaceGLAtlasNoBatch::DestroyDevice()
 	}
 #endif
 	CHECK_GL_ERROR();
-	}
+}
 
 
 /**
@@ -304,30 +297,23 @@ void XSurfaceGLAtlasNoBatch::RestoreDevice()
 {
 	XE::VEC2 vSize;
 	DWORD *pSrcImg = GetSrcImg( &vSize );
-//#ifdef _VER_IOS
-	// iSO에서 리스토어의 시뮬레이션을 위해 파괴시킴.
-	DestroyDevice();
-//#endif	// 혹시 파괴해야되나 싶어서 지워봄.
 	ClearDevice();
 	if( pSrcImg )	{
 		// 소스이미지가 보관되어 있느냐
-		RestoreDeviceFromSrcImg();
-		XTRACE("RestoreDeviceFromSrcImg");
+		RestoreDeviceFromSrcImg();		XTRACE("RestoreDeviceFromSrcImg");
 		return;
 	} else
 	if( IsHavestrRes() ) {
 //		XTRACE("RestorePNG: %s", GetstrRes().c_str() );
-		BOOL bOk = CreatePNG( GetstrRes().c_str(), FALSE, FALSE );
-		if( bOk == FALSE ) {
-			// 파일을 못찾았으면 국가별 폴더에서 다시 찾아봄
-			LPCTSTR szRes = GetstrRes().c_str();
-			XTRACE("restore file not found:%s...", szRes);
-			TCHAR szLangPath[ 1024 ];
-			XE::LANG.ChangeToLangDir( szRes, szLangPath );
-			XTRACE("lang path try agin:%s", szLangPath );
-			bOk = CreatePNG( szLangPath, FALSE, FALSE );
+		// 국가별 폴더에서 먼저 찾는다.
+		LPCTSTR szRes = GetstrRes().c_str();			XTRACE("restore file not found:%s...", szRes);
+		TCHAR szLangPath[ 1024 ];
+		XE::LANG.ChangeToLangDir( szRes, szLangPath );			XTRACE("lang path try agin:%s", szLangPath );
+		bool bOk = CreatePNG( szLangPath, GetbAtlas(), false, false );
+		if( !bOk ) {
+			bOk = CreatePNG( GetstrRes().c_str(), GetbAtlas(), false, false );
 		}
-		XBREAK( bOk == FALSE );
+		XBREAK( bOk == false );
 	} else {
 		// XImageMng::CreateSurface()로 만든 서피스는 여기에 걸림.
 //		XBREAKF(1, "have not strRes or SrcImg" );
@@ -499,6 +485,8 @@ void XSurfaceGLAtlasNoBatch::DrawCore() const
 		if( !(XGraphics::s_dwDraw & XE::xeBitNoDP) )
 #endif // _XPROFILE
 			glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+		++XSurface::s_cntDPCallNoBatch;
+		XGraphics::s_fpsDPCallNoBatch.Process();
 		CHECK_GL_ERROR();
 
 }
@@ -600,6 +588,8 @@ void XSurfaceGLAtlasNoBatch::DrawSub( float x, float y,
 #endif // _XPROFILE
 	{
 		glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+		++XSurface::s_cntDPCallNoBatch;
+		XGraphics::s_fpsDPCallNoBatch.Process();
 	}
 	//
 	CHECK_GL_ERROR();
@@ -710,6 +700,7 @@ void XSurfaceGLAtlasNoBatch::UpdateUV( ID idTex,
 		sizeSurface.w + vAdj.x, vAdj.y,									0, 0,		1.0f, 1.0f, 1.0f, 1.0f	// right/top
 	};
 	static const GLubyte indices[4] = { 0, 1, 2, 3 };
+	XBREAK( GetVertex(1).uv.x == 0 || GetVertex( 1 ).uv.y == 0 );
 	for( int i = 0; i < 4; ++i ) {
 		auto& vertex = vertices[i];
 		// 새 크기 기준으로 uv를 다시 계산
@@ -730,12 +721,18 @@ void XSurfaceGLAtlasNoBatch::UpdateUV( ID idTex,
 
 	// 버퍼데이타를 다시 전송.
 	glBindBuffer( GL_ARRAY_BUFFER, m_glVertexBuffer );
+	_CHECK_GL_ERROR();
 	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+	_CHECK_GL_ERROR();
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glIndexBuffer );
+	_CHECK_GL_ERROR();
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( indices ), indices, GL_STATIC_DRAW );
+	_CHECK_GL_ERROR();
 
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+	_CHECK_GL_ERROR();
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	_CHECK_GL_ERROR();
 	CHECK_GL_ERROR();
 }
 

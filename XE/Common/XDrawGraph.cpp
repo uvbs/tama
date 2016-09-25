@@ -111,18 +111,26 @@ XProgressBar::XProgressBar( LPCTSTR szImg, LPCTSTR szImgBg, BOOL bHoriz )
 	Init();
 	XBREAK( XE::IsEmpty( szImg ) == TRUE );
 	m_bHoriz = bHoriz;
-	m_pSurface = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ) );
+	m_pSurface = IMAGE_MNG->LoadByBatch( XE::MakePath( DIR_UI, szImg ),
+																			 XE::xPF_ARGB4444,
+																			 true, false, false, false );
 	if( szImgBg )
-		m_psfcBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImgBg ) );
+		m_psfcBg = IMAGE_MNG->LoadByBatch( XE::MakePath( DIR_UI, szImgBg ),
+																			 XE::xPF_ARGB4444,
+																			 true, false, false, false );
 }
 
 XProgressBar::XProgressBar( const XE::VEC2& vPos, LPCTSTR szImg, LPCTSTR szImgBg, BOOL bHoriz )
 {
 	Init();
 	m_bHoriz = bHoriz;
-	m_pSurface = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ) );
+	m_pSurface = IMAGE_MNG->LoadByBatch( XE::MakePath( DIR_UI, szImg ),
+																			 XE::xPF_ARGB4444,
+																			 true, false, false, false );
 	if( XE::IsHave(szImgBg) )
-		m_psfcBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImgBg ) );
+		m_psfcBg = IMAGE_MNG->LoadByBatch( XE::MakePath( DIR_UI, szImgBg ),
+																			 XE::xPF_ARGB4444,
+																			 true, false, false, false );
 	m_vPos = vPos;
 }
 
@@ -142,7 +150,7 @@ void XProgressBar::Draw( const XE::VEC2& vPos, float lerp )
 	if( m_pSurface )
 	{
 		if( m_bHoriz )
-			XUTIL::DrawBarHoriz( vPos + m_vAdjBar, lerp, m_pSurface, m_bReverse );
+			XUTIL::DrawBarHoriz2( vPos + m_vAdjBar, lerp, m_pSurface, XE::VEC2(1.f,1.f), m_bReverse );
 		else
 			XUTIL::DrawBarVert( vPos + m_vAdjBar, lerp, m_pSurface, m_bReverse );
 	}

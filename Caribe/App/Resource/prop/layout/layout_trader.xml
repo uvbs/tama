@@ -47,11 +47,11 @@
       <!--아이템 리스트 백판-->
       <img posx="133" posy="13" file="trader_bg_list.png" />
       <!--자원 슬롯 백판 1 ~ 5-->
-      <img posx="142" posy="23" file="trader_bg_itemslot.png" />
-      <img posx="142" posy="77" file="trader_bg_itemslot.png" />
-      <img posx="142" posy="131" file="trader_bg_itemslot.png" />
-      <img posx="142" posy="185" file="trader_bg_itemslot.png" />
-      <img posx="142" posy="239" file="trader_bg_itemslot.png" />
+      <img posx="142" posy="23" file="trader_bg_itemslot.png" format="argb8888" />
+      <img posx="142" posy="77" file="trader_bg_itemslot.png" format="argb8888" />
+      <img posx="142" posy="131" file="trader_bg_itemslot.png" format="argb8888" />
+      <img posx="142" posy="185" file="trader_bg_itemslot.png" format="argb8888" />
+      <img posx="142" posy="239" file="trader_bg_itemslot.png" format="argb8888" />
       <!--자원 이미지 1 ~ 5-->
       <img posx="150" posy="30" file="icon/icon_res_wood.png" scale="0.8" key="img.trader.wood" />
       <img posx="150" posy="83" file="icon/icon_res_iron.png" scale="0.8" key="img.trader.iron" />
@@ -81,7 +81,7 @@
   <resourcetab>
     <wnd posx="410" posy="60" width="640" height="360" key="wnd.trader.resource">
       <!--양피지 백판-->
-      <img posx="0" posy="0" file="trader_bg_magnifier.png">
+      <img posx="0" posy="0" file="trader_bg_magnifier.png" format="argb8888">
         <text posx="center" posy="7" font="font_text_b" font_size="30" font_style="stroke" text="80048" key="text.trader.resource" text_col="white"></text>
       </img>
       <!--"자원시세"-->
@@ -110,44 +110,46 @@
     </wnd>
   </resourcetab>
   <!--텍스트 팝업-->
-  <commontextpopup>
-    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popuptext" format="argb8888">
+  <_commontextpopup>
+    <img posx="center" posy="center" file="popup_bg.png" key="img.common.popuptext" format="argb8888">
       <!--타이틀-->
-      <img posx="center" posy="18" img="popup_title_bar.png">
+      <img posx="center" posy="-15" img="popup_title_bar.png">
         <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" align="hcenter" key="text.title" />
       </img>
       <!--설명 bg-->
-      <img posx="144" posy="100" file="common_blank_b.png">
+      <img posx="center" posy="center" file="common_blank_b.png">
         <text posx="center" posy="center" key="text.common.ask" font="font_text_m" font_size="30" font_style="stroke" />
       </img>
       <!--메세지-->
       <!--왼쪽 버튼-->
-      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+      <_butt posx="center" posy="240" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2" />
       <!--오른쪽 버튼-->
-      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+      <_butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3" />
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.cancel"></butt>
     </img>
-  </commontextpopup>
+  </_commontextpopup>
   <!--아이템 슬롯 텍스트 팝업-->
-  <commonitemtextpopup>
-    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popupitemtext" format="argb8888">
+  <_commonitemtextpopup>
+    <img posx="center" posy="center" file="popup_bg.png" key="img.common.popupitemtext" format="argb8888">
       <!--타이틀-->
-      <img posx="center" posy="18" img="popup_title_bar.png">
-        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.title" />
+      <img posx="center" posy="-15" img="popup_title_bar.png">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.title" />
       </img>
       <!--설명 bg-->
-      <img posx="center" posy="100" file="common_blank_b.png">
+      <img posx="center" posy="center" file="common_blank_b.png">
         <text posx="center" posy="80" key="text.common.ask" font="font_text_m" font_size="30" font_style="stroke" width="235" />
+        <img posx="center" posy="15" file="common_bg_item.png">
+          <img posx="center" posy="center" key="img.ask.itemimg"></img>
+        </img>
       </img>
       <!--아이템 슬롯-->
-      <img posx="237" posy="120" file="common_bg_item.png">
-        <img posx="center" posy="center" key="img.ask.itemimg"></img>
-      </img>
       <!--아이템 이미지-->
       <!--메세지-->
       <!--왼쪽 버튼-->
-      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
+      <butt posx="center" posy="240" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="2"></butt>
       <!--오른쪽 버튼-->
-      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+      <_butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3" />
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.cancel"></butt>
     </img>
-  </commonitemtextpopup>
+  </_commonitemtextpopup>
 </layout>

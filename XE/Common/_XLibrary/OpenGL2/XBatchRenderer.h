@@ -10,6 +10,11 @@
 	auto __pCurrRenderer = RENDERER; \
 	auto __pPrev = XBatchRenderer::_sSetpCurrRenderer( __pCurrRenderer );
 
+#define SET_RENDERER2() \
+{	XBREAK( GetpRenderer() == nullptr ); \
+	auto __pCurrRenderer = GetpRenderer(); \
+	auto __pPrev = XBatchRenderer::_sSetpCurrRenderer( __pCurrRenderer );
+
 #define END_RENDERER \
 	__pCurrRenderer->RenderBatch(); \
 	XBatchRenderer::_sSetpCurrRenderer( __pPrev ); }
@@ -71,6 +76,8 @@ public:
 		return s_pCurrRenderer;
 	}
 	static XBatchRenderer* _sSetpCurrRenderer( XBatchRenderer* pRenderer ) {
+		if( pRenderer == nullptr )		// 렌더러가 널인경우는 없어야 함.
+			return s_pCurrRenderer;
 		auto pPrev = s_pCurrRenderer;
 		s_pCurrRenderer = pRenderer;
 		return pPrev;
@@ -79,19 +86,22 @@ public:
 // 		s_aryRenderer.push_back( pRenderer );
 // 	}
 	// 각 윈도우 스택에서 쌓인 렌더러들을 한번에 렌더링 한다.
-	static void sRenderBatchs() {
-// 		for( auto pRenderer : s_aryRenderer ) {
-// 			pRenderer->RenderBatch();
-// 		}
-		s_aryRenderer.clear();
+// 	static void sRenderBatchs() {
+// // 		for( auto pRenderer : s_aryRenderer ) {
+// // 			pRenderer->RenderBatch();
+// // 		}
+// 		s_aryRenderer.clear();
+// 	}
+	static int sGetcntDPCall() {
+		return s_cntDPCall;
 	}
 public:
-	XBatchRenderer( const char* cTag );
+	XBatchRenderer( const char* cTag, bool bZBuff );
 	~XBatchRenderer() { Destroy(); }
 	//
 	//GET_ACCESSOR_CONST( int, avgDPCall );
 	GET_ACCESSOR_CONST( int, numDPCall );
-	GET_ACCESSOR_CONST( const XFps&, fpsDPCall );
+//	GET_ACCESSOR_CONST( const XFps&, fpsDPCall );
 	inline void PushCmd( const xRenderCmd::xCmd& cmd ) {
 		m_qCmds.push_back( cmd );
 	}
@@ -99,16 +109,22 @@ public:
 		return m_qCmds.size();
 	}
 	void RenderBatch();
+	void PushRenderer();
+	void PopRenderer();
 private:
 // 	static std::shared_ptr<XRenderCmdMng> s_spInstance;
 	static XBatchRenderer* s_pCurrRenderer;
-	static XVector<XBatchRenderer*> s_aryRenderer;
+//	static XVector<XBatchRenderer*> s_aryRenderer;
+	static int s_cntDPCall;
 	ID m_idRenderer = 0;
 	std::string m_strTag;			// 식별용 태그
 	int m_avgDPCall = 0;		// 초당 평균 DP횟수
 	int m_numDPCall = 0;
 	ID m_idTexPrev = 0;
-	XFps m_fpsDPCall;
+	//XFps m_fpsDPCall;
+	XBatchRenderer* m_pPrev = nullptr;
+	bool m_bZbuffPrev = false;
+	bool m_bZbuff = false;
 	void Init() {}
 	void Destroy();
 	void VertexAttribPointer( GLuint indx, GLint size, const void* ptr );
@@ -118,5 +134,5 @@ private:
 private:
 	std::vector<xRenderCmd::xCmd> m_qCmds;
 	std::vector<xRenderCmd::xDPCall> m_aryDPCall;
-}; // class XRenderCmdMng
+}; // class XBatchRenderer
 

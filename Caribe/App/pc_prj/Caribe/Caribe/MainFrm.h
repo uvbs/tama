@@ -304,6 +304,10 @@ public:
 	afx_msg void OnProfiling();
 	afx_msg void OnUpdateProfiling( CCmdUI *pCmdUI );
 	afx_msg void OnGotoTestScene();
+	afx_msg void OnHideHpbar();
+	afx_msg void OnHideName();
+	afx_msg void OnUpdateHideHpbar( CCmdUI *pCmdUI );
+	afx_msg void OnUpdateHideName( CCmdUI *pCmdUI );
 };
 
 extern CMainFrame *g_pMainFrm;

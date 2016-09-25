@@ -189,7 +189,7 @@ void XLayerMove::FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr )
 
 void XLayerImage::Draw( XSprObj *pSprObj, 
 												float x, float y, 
-												const MATRIX &m, 
+												const MATRIX &mParent, 
 												XEFFECT_PARAM *pEffectParam )
 {
 	const XE::VEC2 vPos(x, y);
@@ -224,7 +224,7 @@ void XLayerImage::Draw( XSprObj *pSprObj,
 																	&effParam, // pEffectParam, 
 																	vPos.x + vLocal.x, 
 																	vPos.y + vLocal.y, 
-																	m );
+																	mParent );
 			// 델리게이트에서 드로우를 하지 않았다면 자체드로우를 함.
 			if( bDelegateDraw == FALSE ) {
 				XE::xRenderParam param;
@@ -238,7 +238,8 @@ void XLayerImage::Draw( XSprObj *pSprObj,
 				param.SetFlipVert( GetcnEffect().IsFlipVert() );
 				param.m_funcBlend = effParam.GetfuncBlend();
 				param.m_adjZ = effParam.m_adjZ;
-				param.m_bZBuff = pSpr->IsBatch();
+				param.m_bZBuff = GRAPHICS->IsbEnableZBuff();
+//				param.m_bZBuff = pSpr->IsBatch();
 				param.m_bAlphaTest = (param.m_bZBuff == true);
 				if( funcBlend == XE::xBF_ADD || funcBlend == XE::xBF_SUBTRACT ) {
 					param.m_bZBuff = false;
@@ -247,7 +248,7 @@ void XLayerImage::Draw( XSprObj *pSprObj,
 //				SetDrawInfoToSpr( pSprObj, pSpr, effParam, &paramRender );
 				if( pSpr->GetpSurface() ) {
 					// 전용 배치렌더러에 렌더명령을 전달한다.
-					pSpr->GetpSurface()->DrawByParam( m, param );
+					pSpr->GetpSurface()->DrawByParam( mParent, param );
 // 				pSpr->Draw( vPos + vLocal, m );
 //				pSpr->Draw( x + lx, y + ly, m );
 				}
@@ -259,7 +260,7 @@ void XLayerImage::Draw( XSprObj *pSprObj,
 																										this,
 																										&effParam, // pEffectParam, 
 																										vPos + vLocal,
-																										m );
+																										mParent );
 		}
 	}
 }

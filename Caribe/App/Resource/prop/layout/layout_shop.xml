@@ -26,20 +26,21 @@
   </shop>
   <!--텍스트 팝업-->
   <commontextpopup>
-    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popup" format="argb8888">
+    <img posx="center" posy="center" file="popup_bg.png" key="img.common.popup" format="argb8888">
       <!--타이틀-->
-      <img posx="center" posy="18" img="popup_title_bar.png">
+      <img posx="center" posy="-15" img="popup_title_bar.png">
         <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.title" />
       </img>
       <!--설명 bg-->
-      <img posx="144" posy="100" file="common_blank_b.png">
+      <img posx="center" posy="center" file="common_blank_b.png">
         <text posx="center" posy="center" width="228" key="text.common.ask" align="center" font="font_text_m" font_size="30" font_style="stroke" />
       </img>
       <!--메세지-->
       <!--왼쪽 버튼-->
-      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80065"></butt>
+      <butt posx="center" posy="240" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80065"></butt>
       <!--오른쪽 버튼-->
-      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
+      <_butt posx="280" posy="240" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3" />
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.cancel"></butt>
     </img>
   </commontextpopup>
 </layout>

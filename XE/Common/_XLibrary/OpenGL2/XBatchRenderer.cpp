@@ -17,7 +17,8 @@ using namespace xRenderCmd;
 int xRenderCmd::xCmd::s_idGenerator = 0;
 
 XBatchRenderer* XBatchRenderer::s_pCurrRenderer = nullptr;
-XVector<XBatchRenderer*> XBatchRenderer::s_aryRenderer;
+//XVector<XBatchRenderer*> XBatchRenderer::s_aryRenderer;
+int XBatchRenderer::s_cntDPCall = 0;
 																	// std::shared_ptr<XRenderCmdMng> XRenderCmdMng::s_spInstance;
 // int XRenderCmdMng::s_numDPCall = 0;
 // int XRenderCmdMng::s_avgDPCall = 0;
@@ -27,10 +28,11 @@ XVector<XBatchRenderer*> XBatchRenderer::s_aryRenderer;
 // 	s_spInstance.reset();
 // }
 ////////////////////////////////////////////////////////////////
-XBatchRenderer::XBatchRenderer( const char* cTag )
+XBatchRenderer::XBatchRenderer( const char* cTag, bool bZBuff )
 	: m_idRenderer( XE::GenerateID() )
 	, m_strTag( cTag )
 	, m_aryDPCall( 256 )
+	, m_bZbuff( bZBuff )
 {
 // 	XBREAK( s_spInstance != nullptr );
 	Init();
@@ -144,10 +146,6 @@ void XBatchRenderer::RenderBatch()
 					bDiffAttr = true;
 					break;
 				}
-				if( cmd.m_gldFactor != pPrev->m_gldFactor ) {
-					bDiffAttr = true;
-					break;
-				}
 				if( cmd.m_bZBuffer != pPrev->m_bZBuffer ) {
 					bDiffAttr = true;
 					break;
@@ -186,7 +184,7 @@ void XBatchRenderer::RenderBatch()
 			pVertices[idx++] = cmd.m_aryVertices[3];
 
 			pPrev = &cmd;
-		}
+		} // for( const auto& cmd : m_qCmds ) {
 		if( pPrev && idx > 0 ) {
 			Render( *pPrev, idx, pVertices );
 			// 다시 초기화
@@ -274,11 +272,15 @@ void XBatchRenderer::Render( const xCmd& cmd,
 // 	if( XBREAK( glIndexBuffer == 0 ) )
 // 		return;0
 	const bool bEff = (cmd.m_glsFactor == GL_SRC_ALPHA && cmd.m_gldFactor == GL_ONE);
-	if( cmd.m_bZBuffer )	// zbuff가 사용되어야 하는것이고 이펙트류가 아니어야 한다.
+	if( cmd.m_bZBuffer || 1)	// zbuff가 사용되어야 하는것이고 이펙트류가 아니어야 한다.
 		glEnable( GL_DEPTH_TEST );
 	else
 		glDisable( GL_DEPTH_TEST );
 	CHECK_GL_ERROR();
+// 	glDepthFunc( GL_GEQUAL );
+// 	CHECK_GL_ERROR();
+// 	glClearDepthf( -1000.f );
+// 	CHECK_GL_ERROR();
 	// bind vertex buffer
 	glBindBuffer( GL_ARRAY_BUFFER, glVertexBuffer );
 	CHECK_GL_ERROR();
@@ -310,8 +312,10 @@ void XBatchRenderer::Render( const xCmd& cmd,
 	//	glDeleteBuffers( 1, &glVertexBuffer );
 	GRAPHICS->SetViewport( vpLT.ToPoint(), vpSize.ToPoint() );		// 백업받았던 뷰포트 복구.
 	XE::SetProjection( vpSize.w, vpSize.h );
+	//
 	++m_numDPCall;
-	m_fpsDPCall.Process();
+	++s_cntDPCall;
+	XGraphics::s_fpsDPCallBatch.Process();
 }
 
 ID XBatchRenderer::GetidVertexBuffer( int idxDPCall )
@@ -329,3 +333,16 @@ ID XBatchRenderer::GetidVertexBuffer( int idxDPCall )
 	}
 	return idBuffer;
 }
+
+void XBatchRenderer::PushRenderer()
+{
+	m_pPrev = _sSetpCurrRenderer( this );
+	m_bZbuffPrev = GRAPHICS->SetbEnableZBuff( m_bZbuff );
+}
+
+void XBatchRenderer::PopRenderer()
+{
+	_sSetpCurrRenderer( m_pPrev );
+	GRAPHICS->SetbEnableZBuff( m_bZbuffPrev );
+}
+

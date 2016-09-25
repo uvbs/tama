@@ -120,6 +120,7 @@ public:
 	BOOL m_bPause;		// 이건 UI와 시간까지 모두 멈춰버리니 잠시 게임멈춰두고 UI처리하는거엔 쓰지 말것.
 	BOOL m_bNextFrame;
 	xtRestore m_Restore;
+	static XFps s_fps;
 public:
 	XClientMain();
 	virtual ~XClientMain() { Destroy(); }

@@ -126,7 +126,7 @@ public:
 		XE::xtBlendFunc m_funcBlend = XE::xBF_MULTIPLY;
 		bool m_bFlipX = false;
 		bool m_bFlipY = false;
-		XE::xtPixelFormat m_Format = XE::xPF_ARGB4444;
+		XE::xtPixelFormat m_Format = XE::xPF_NONE;
 		xATTR_ALL() {
 			xfFlag = 0;
 			idText = 0;

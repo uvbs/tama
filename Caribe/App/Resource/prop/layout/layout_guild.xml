@@ -152,12 +152,11 @@
   </popup_member>
   <popup_desc>
     <img file="guild_popup_bg.png" posx="0" posy="0" key="img.popup.adjust.desc">
-      <img file="guild_popup_box.png" posx="54" posy="78" key="img.box.desc">
+      <img file="guild_popup_box.png" posx="center" posy="50" key="img.box.desc">
         <text posx="4" posy="8" width="303" font_style="stroke" font_size="30" align="hcenter" font="font_text_b" key="text.desc" />
       </img>
     </img>
-    <butt posx="364" posy="19" img_up="common_butt_x.png" key="butt.popup.cancel" adjx="-3" />
-    <butt posx="80" posy="184" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.desc.adjust" font_style="stroke" text="80108" font_text_b="bold.ttf" />
-    <_butt posx="240" posy="184" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.popup.cancel" font_style="stroke" text="80143" font_text_b="bold.ttf" />
+    <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.popup.cancel" adjx="-3" />
+    <butt posx="center" posy="164" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.desc.adjust" font_style="stroke" text="80108" font_text_b="bold.ttf" />
   </popup_desc>
 </layout>

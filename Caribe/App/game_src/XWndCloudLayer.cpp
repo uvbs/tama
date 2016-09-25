@@ -34,7 +34,7 @@ using namespace XGAME;
 XWndCloudLayer::XWndCloudLayer( const XE::VEC2& vPos, 
 								const XE::VEC2& vSize )
 // 	: XWnd( vPos.x, vPos.y, vSize.w, vSize.h )
-	: XWndBatchRender( "cloud", true, XE::xRECT( vPos, vSize ) )
+	: XWndBatchRender( "cloud", true, false, false, XE::xRECT( vPos, vSize ) )
 {
 	Init();
 	ID idAsync = 0;
@@ -46,7 +46,7 @@ XWndCloudLayer::XWndCloudLayer( const XE::VEC2& vPos,
 
 void XWndCloudLayer::Destroy()
 {
-	SPRMNG->Release( m_spDatCloud );
+	//SPRMNG->Release( m_spDatCloud );
 }
 
 void XWndCloudLayer::UpdateClouds( XArrayLinearN<ID, 512>& ary )

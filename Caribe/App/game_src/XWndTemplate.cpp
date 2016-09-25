@@ -220,7 +220,6 @@ void CreateUpdateTopGuildCoin( XWnd *pRoot )
 	}
 	pBar->AutoLayoutHCenterByChilds( 200.f );
 }
-
 //
 XE_NAMESPACE_END; // XGAME
 
@@ -473,21 +472,23 @@ void XWndCircleSkill::Update()
 /**
  @brief 아이템 아이콘을 함께 보여주는 알림창
 */
-XGameWndAlert* XGAME::DoAlertWithItem( const _tstring& strIdsItem, const _tstring& strText )
+XGameWndAlert* XGAME::DoAlertWithItem( XPropItem::xPROP* pPropItem, 
+																			 const _tstring& strText,
+																			 XWnd::xtAlert type )
 {
-	auto pPropItem = PROP_ITEM->GetpProp( strIdsItem );
 	if( XASSERT( pPropItem ) ) {
 		TCHAR szBuff[1024];
-// 		_tstring str = XE::Format( szFormat, strText );
-		XE::ConvertJosaStr( szBuff, strText );	
-		auto pAlert = XWND_ALERT( "%s", szBuff );
+		// 		_tstring str = XE::Format( szFormat, strText );
+		XE::ConvertJosaStr( szBuff, strText );
+		auto pAlert = XWND_ALERT_TYPE_T( "__alert.with.item", type, 
+																		 _T("%s"), szBuff );
 		if( pAlert ) {
 			auto pWndText = pAlert->GetpWndTextDesc();
 			if( pWndText ) {
 				pWndText->SetY( pWndText->GetPosLocal().y - 36.f );
 			}
-			auto pWndItem = new XWndStoragyItemElem( XE::VEC2( 0, 50 )
-																						, strIdsItem );
+			auto pWndItem = new XWndStoragyItemElem( XE::VEC2( 0, 50 ), 
+																							 pPropItem->strIdentifier );
 			pWndItem->SetEventItemTooltip();
 			pAlert->Add( pWndItem );
 			pWndItem->AutoLayoutHCenter();
@@ -496,6 +497,28 @@ XGameWndAlert* XGAME::DoAlertWithItem( const _tstring& strIdsItem, const _tstrin
 	}
 	return nullptr;
 }
+XGameWndAlert* XGAME::DoAlertWithItem( const _tstring& strIdsItem, 
+																			 const _tstring& strText,
+																			 XWnd::xtAlert type )
+{
+	auto pPropItem = PROP_ITEM->GetpProp( strIdsItem );
+	if( XASSERT( pPropItem ) ) {
+		return DoAlertWithItem( pPropItem, strText, type );
+	}
+	return nullptr;
+}
+
+XGameWndAlert* XGAME::DoAlertWithItem( ID idItem, 
+																			 const _tstring& strText,
+																			 XWnd::xtAlert type )
+{
+	auto pPropItem = PROP_ITEM->GetpProp( idItem );
+	if( XASSERT( pPropItem ) ) {
+		return DoAlertWithItem( pPropItem, strText, type );
+	}
+	return nullptr;
+}
+
 
 XWndPopup* XGAME::DoPopupBattleResult( XGAME::xBattleResult& result, XWnd* pParent, XSpot* pBaseSpot )
 {

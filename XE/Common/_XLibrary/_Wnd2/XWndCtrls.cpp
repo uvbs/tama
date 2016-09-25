@@ -8,6 +8,7 @@
 #include "XFramework/client/XEContent.h"
 #include "XFramework/XEProfile.h"
 #include "XImageMng.h"
+#include "opengl2/XTextureAtlas.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -1111,13 +1112,16 @@ XWndParticleLayer::XWndParticleLayer( const char *cKeyParticle
 																		, const XE::VEC2& vPos
 																		, float secLife
 																		, XParticleDelegate *pDelegate )
+//	: XWndBatchRender( "particle_layer", true )
 {
 	Init();
 	m_pMng = XParticleMng::sCreate();
 	XBREAK( m_pMng == nullptr );
 	m_pMng->SetpDelegate( pDelegate );
-	if( XE::IsHave(cKeyParticle) )
-		m_pMng->CreateSfx( cKeyParticle, vPos );
+// 		SET_ATLASES( GetpAtlas() )	{
+			if( XE::IsHave( cKeyParticle ) )
+				m_pMng->CreateSfx( cKeyParticle, vPos );
+// 		} END_ATLASES;
 	SetsecLife( secLife );
 }
 

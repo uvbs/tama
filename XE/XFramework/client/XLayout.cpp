@@ -125,7 +125,7 @@ BOOL XLayout::Reload( void )
 BOOL XLayout::CreateLayout( const char *cKeyWnd, XWnd *pParent, const char *cKeyGroup )
 {
 	XLOAD_PROFILE1;
-//	CONSOLE("layout create: key=%s", C2SZ(cKeyWnd) );
+	CONSOLE("layout create: key=%s", C2SZ(cKeyWnd) );
 	TiXmlNode *nodeWnd = NULL;
 	if( XE::IsHave( cKeyGroup ) ) {
 		// 그룹명이 있을경우 그룹에서 cKeyWnd를 찾음.
@@ -1078,57 +1078,7 @@ XWnd* XLayout::CreateButtonCtrl( const char *cCtrlName, TiXmlElement* /*elemCtrl
 	if( idxMulti > 0 )
 		vPos += attrAll.vDist * (float)idxMulti;
 	XWndButton* pBaseButt = nullptr;
-	// sprite button
-///< spr버튼은 당분간 지원하지 않는다. 버튼의 이미지파일을 "file"로 쓰는경우가 많아 spr과 구분이 안됨.
-// 	if( attrAll.strSpr.empty() == false ) {	
-// 		_tstring strSpr = attrAll.strSpr;
-// 		{
-// 			ID idActUp = attrAll.idActUp;
-// 			ID idActDown = attrAll.idActDown;
-// 			ID idActDisable = attrAll.idActDisable;
-// 			if( idActUp == 0 ) {
-// 				XALERT( "node:%s, act_up is 0", C2SZ( m_nodeWnd->Value() ) );
-// 				return 0;
-// 			}
-// 			// layout-"butt"에서 "text" 를 아예 넣지 않은 경우 idText=-1이 된다.
-// 			// "text 0"과 구분하기 위해 만들었다. 
-// 			// 이런 쓰임은 XWndbuttString타입으로 생성을 시키고 싶으나 일단 텍스트는 없을때 이렇게 사용한다.
-// 			// 사용자가 불편할수 있으니 버튼은 모두 TextString타입으로 생성시키는게 좋을듯 하다.
-// 			if( attrAll.idText >= 0 && attrAll.idText != (ID)-1 ) {
-// 				ID idText = attrAll.idText;
-// 				XWndButtonString *pButt = NULL;
-// 				if( attrAll.strFont.empty() ) {
-// 					// 폰트가 지정되지 않았다면 시스템 폰트를 사용
-// 					pButt = new XWndButtonString( vPos.x, vPos.y,
-// 																				XTEXT( idText ),
-// 																				attrAll.colText,
-// 																				XE::GetMain()->GetSystemFontDat(),
-// 																				strSpr.c_str(),
-// 																				idActUp, idActDown, idActDisable );
-// 					pBaseButt = pButt;
-// 				} else {
-// 					pButt = new XWndButtonString( vPos.x, vPos.y,
-// 																				XTEXT( idText ),
-// 																				attrAll.colText,
-// 																				attrAll.strFont.c_str(),
-// 																				attrAll.sizeFont,
-// 																				attrAll.strSpr.c_str(),
-// 																				idActUp, idActDown, idActDisable );
-// 				}
-// 				pButt->SetStyle( attrAll.style );
-// 				pAddWnd = pButt;
-// 				pBaseButt = pButt;
-// 			} else {
-// 				// 텍스트가 지정되지 않았다면 일반 이미지버튼.
-// 				auto pButt = new XWndButton( vPos.x, vPos.y,
-// 																			attrAll.strSpr.c_str(),
-// 																			idActUp, idActDown, idActDisable );
-// 				pAddWnd = pButt;
-// 				pBaseButt = pButt;
-// 			}
-// 		} // not null spr
-// 	} // strSpr
-// 	else
+
 	// image button
 	if( attrAll.strImgUp.empty() == false ) {
 		{
@@ -1792,7 +1742,7 @@ int XLayout::GetAttrCommon( TiXmlElement *elemCtrl, xATTR_ALL *pOut )
 			strFormatSurface = elemCtrl->Attribute( "format" );
 		if( strFormatSurface.empty() )
 			strFormatSurface = elemCtrl->Attribute( "surface_format" );
-		auto formatSurface = XE::xPF_ARGB4444;
+		auto formatSurface = XE::xPF_NONE;
 		if( !strFormatSurface.empty() ) {
 			if( strFormatSurface == "argb8888" )
 				formatSurface = XE::xPF_ARGB8888;
