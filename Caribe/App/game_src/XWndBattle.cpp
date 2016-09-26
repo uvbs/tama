@@ -267,6 +267,9 @@ void XWndFaceInBattle::Draw()
 	}
 }
 
+/**
+ @brief 스킬쓸때 초상화에서 튀어나는거.
+*/
 BOOL XWndFaceInBattle::OnDelegateDrawImageLayerBefore( XSprObj *pSprObj
 																								 , XSprite *pSprSrc
 																								 , XLayerImage *pImageLayer

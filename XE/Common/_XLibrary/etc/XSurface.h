@@ -52,7 +52,7 @@ struct xSurfaceInfo {
 		, m_bSrcKeep( bSrcKeep )
 		, m_bMakeMask( bMakeMask )
 		, m_bUseAtlas( bUseAtlas ) {	}
-	~xSurfaceInfo() {	}
+	~xSurfaceInfo() {}
 };
 
 struct xRenderParam {
@@ -246,6 +246,7 @@ public:
 	GET_ACCESSOR_CONST( const XE::POINT&, sizeMemAligned );
 	GET_ACCESSOR_CONST( XE::xtPixelFormat, formatSurface );
 	GET_SET_ACCESSOR_CONST( std::shared_ptr<XE::xSurfaceInfo>, spSurfaceInfo );
+	void DestroySurfaceInfo();
 	XE::POINT GetsizeMemToPoint() const {
 		return XE::POINT( (int)m_sizeMem.w, (int)m_sizeMem.h );
 	}

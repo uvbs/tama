@@ -147,7 +147,7 @@ BOOL XSceneWorld::OnCreate()
 // 		}
 		// 스팟들의 루트
 		{
-			XWnd *pRoot = new XWndBatchRender( "spot", true,
+			XWnd *pRoot = new XWndBatchRender( "spot", false, true,
 																				 false, false,
 																				 XE::VEC2( 0, 0 ),
 																				 sizeWorld );
@@ -164,7 +164,7 @@ BOOL XSceneWorld::OnCreate()
 // 		}
 		// 오브젝트 레이어
 		{
-			XWnd *pBirdLayer = new XWndBatchRender( "bird", true, 
+			XWnd *pBirdLayer = new XWndBatchRender( "bird", false, true, 
 																							false, false,
 																							XE::VEC2(0,0),
 																							sizeWorld );

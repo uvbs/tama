@@ -81,7 +81,7 @@ void XSurfaceGLAtlasBatch::Destroy()
 																										m_glIndexBuffer,
 																										GetWidth(), GetHeight() );
 	XBREAK( IsbAtlas() == false );
-	XTextureAtlas::sRelease( m_glTexture );
+	XTextureAtlas::sRelease( m_glTexture, m_idAtlasNode );
 	m_glTexture = 0;
 	DestroyDevice();
 }
@@ -134,8 +134,10 @@ bool XSurfaceGLAtlasBatch::Create( const XE::POINT& sizeSurfaceOrig
 		XE::VEC2 sizeAtlas;
 		XBREAK( XTextureAtlas::sGetspCurrMng() == nullptr );
 		auto pAtlasMng = XTextureAtlas::sGetspCurrMng();
+		ID idNode = 0;
 		m_glTexture = pAtlasMng->ArrangeImg( 0,				// auto glTex id
 																				 &rcInAtlas,
+																				 &idNode,
 																				 pImgSrc,
 																				 _sizeMemSrc,
 																				 formatImgSrc,
@@ -143,6 +145,7 @@ bool XSurfaceGLAtlasBatch::Create( const XE::POINT& sizeSurfaceOrig
 																				 &sizeAtlas );
 		if( XBREAK( m_glTexture == 0 ) )
 			return false;
+		m_idAtlasNode = idNode;
 		// 버텍스버퍼생성.
 		XE::VEC2 uvlt = rcInAtlas.vLT / sizeAtlas;
 		XE::VEC2 uvrb = rcInAtlas.vRB / sizeAtlas;
@@ -281,20 +284,17 @@ bool XSurfaceGLAtlasBatch::CreateVertexBuffer2( const XE::VEC2& sizeSurface,
 void XSurfaceGLAtlasBatch::DestroyDevice()
 {
 	
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
 	if( m_glTexture )
 		XSurface::DestroyDevice();
 	if( GetstrRes().empty() == false ) {
 		S_TRACE("destroy Surface: %s", GetstrRes().c_str() );
 	}
 	// 홈으로 나갈때 자동으로 디바이스 자원은 파괴되지만 m_glTexture등도 클리어 시켜주지 않으면 돌아왔을때 새로 할당한 번호가 겹쳐서 다시 지워버릴 수 있다.
-	if( IsbAtlas() ) {
-		auto pAtlasMng = XTextureAtlas::sGetspCurrMng();	// 현재 아틀라스와 실제 m_glTexture가 있는 텍스쳐가 일치하지 않을 수 있음.
-		XBREAK( pAtlasMng == nullptr );
-		pAtlasMng->Release( m_glTexture );
-	} else {
-	}
+	auto pAtlasMng = XTextureAtlas::sGetspCurrMng();	// 현재 아틀라스와 실제 m_glTexture가 있는 텍스쳐가 일치하지 않을 수 있음.
+	XBREAK( pAtlasMng == nullptr );
+// 		pAtlasMng->Release( m_glTexture );
+	XTextureAtlas::sRelease( m_glTexture, m_idAtlasNode );
 	m_glTexture = 0;
 #ifdef _XVAO
 	if( m_idVertexArray ) {
@@ -302,8 +302,7 @@ void XSurfaceGLAtlasBatch::DestroyDevice()
 		m_idVertexArray = 0;
 	}
 #endif
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
+	CHECK_GL_ERROR();
 }
 
 

@@ -37,24 +37,25 @@ class XWndBatchRender : public XWnd
 {
 friend class XAutoCurrAtlas;
 public:
-	XWndBatchRender( const char* cTag, bool bBatchRender, 
+	XWndBatchRender( const char* cTag, bool bUseAtlas, bool bBatchRender, 
 									 bool bZBuff, bool bAlphaTest, 
 									 const XE::xRECT& rc );
-	XWndBatchRender( const char* cTag, bool bBatchRender, 
+	XWndBatchRender( const char* cTag, bool bUseAtlas, bool bBatchRender,
 									 bool bZBuff, bool bAlphaTest, 
 									 const XE::VEC2& vPos, const XE::VEC2& vSize )
-		: XWndBatchRender( cTag, bBatchRender, bZBuff, bAlphaTest, 
+		: XWndBatchRender( cTag, bUseAtlas, bBatchRender, bZBuff, bAlphaTest, 
 											 XE::xRECT( vPos, vSize ) ) {}
 	// 크기를 따로 지정하지 않으면 부모윈도우의 크기를 따른다.
-	XWndBatchRender( const char* cTag, bool bBatchRender, 
+	XWndBatchRender( const char* cTag, bool bUseAtlas, bool bBatchRender,
 									 bool bZBuff, bool bAlphaTest )
-		: XWndBatchRender( cTag, bBatchRender, 
+		: XWndBatchRender( cTag, bUseAtlas, bBatchRender, 
 											 bZBuff, bAlphaTest, XE::xRECT() ) {	}
 	~XWndBatchRender() {
 		Destroy();
 	}
 	// get/setter
-	GET_ACCESSOR( XSPAtlasMng, spAtlas );
+//	GET_ACCESSOR( XSPAtlasMng, spAtlas );
+	XSPAtlasMng GetspAtlas();
 	GET_SET_BOOL_ACCESSOR( bZBuff );
 	GET_SET_BOOL_ACCESSOR( bAlphaTest );
 	GET_ACCESSOR( XBatchRenderer*, pRenderer );

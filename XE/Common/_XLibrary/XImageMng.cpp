@@ -453,7 +453,9 @@ void XImageMng::DoFlushCache()
 #if defined(_DEBUG) && defined(_CHEAT)
 			if( img.m_pSurface ) {
 // 				CONSOLE( "fush img:[%s]", img.m_pSurface->GetstrRes().c_str() );
+#ifdef _DEBUG
 				CONSOLE( "flush img:[%s]", img.m_strRes.c_str() );
+#endif // _DEBUG
 			}
 #endif // _DEBUG
 			SAFE_DELETE( img.m_pSurface );

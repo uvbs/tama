@@ -84,9 +84,9 @@ public:
 	static XSPAtlasMng sGetspCurrMng() {
 		return s_spCurrAtlasMng;
 	}
-	static void sRelease( ID idTex );
+	static void sRelease( ID idTex, ID idNode );
 	static void sFlushAtlasMng();
-	static void sFlusAtlasSurface();
+	static void sFlushAtlasSurface();
 	static XSPAtlasMng sCreateAtlasMng( const char* cTag );
 	static int sGetBytesAll();
 	static XList4<XSPAtlas> s_listSurfaceAll;
@@ -105,12 +105,13 @@ public:
 	inline ID getid() const {
 		return m_idMng;
 	}
-	void Release( ID idTex );
+	void Release( ID idTex, ID idNode );
 	void DestroyDevice();
 	void OnPause();
 	//
 	ID ArrangeImg( ID idTex,
 								 XE::xRect2* pOut,
+								 ID* pOutID,
 								 const void* pImgSrc,
 								 const XE::VEC2& sizeMemSrc,
 								 XE::xtPixelFormat formatImgSrc,

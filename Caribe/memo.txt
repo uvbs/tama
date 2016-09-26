@@ -11,30 +11,21 @@ base: 소스
 	에버노트 참조.
 }
 
-
-XEClientMain
-{
-	Render();
-	Scene() {
-	XWndBattleField() {
-		XEWndImageWorld() {
-			Render();		// nobatch
-		}
-		XEWndWorld() {
-		Render();		// batch
-		}
-		// 초상화
-		XWndBatchRender() {
-		}
-		// ui
-		XWndBatchRender() {
-		}
+아틀라스 공간분할 알고리즘
+이미지 = 삽입할 이미지
+if( 더이상 child가 없는가(잎) ) {
+	if( 이미지크기가 현재노드보다 큼 )
+		return null;
+	if( 이미지가 가로/세로 딱 맞음 ) {
+		return this;		// 분할 할필요 없음.
 	}
-		Render()
-		Render()
-		RenderBatch();
+	자식1 생성;
+	자식2 생성;
+	if( 남은 영역이 가로가 더큰 직사각형인가 ) {
+		
+	} else {
 	}
-	RenderBatch();
+} else {
 }
 
 

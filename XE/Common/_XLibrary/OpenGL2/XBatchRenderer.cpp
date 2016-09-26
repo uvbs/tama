@@ -17,16 +17,7 @@ using namespace xRenderCmd;
 int xRenderCmd::xCmd::s_idGenerator = 0;
 
 XBatchRenderer* XBatchRenderer::s_pCurrRenderer = nullptr;
-//XVector<XBatchRenderer*> XBatchRenderer::s_aryRenderer;
 int XBatchRenderer::s_cntDPCall = 0;
-																	// std::shared_ptr<XRenderCmdMng> XRenderCmdMng::s_spInstance;
-// int XRenderCmdMng::s_numDPCall = 0;
-// int XRenderCmdMng::s_avgDPCall = 0;
-// ///////////////////////////////////////////////////////////////
-// std::shared_ptr<XRenderCmdMng>& XRenderCmdMng::sGet() {	if( s_spInstance == nullptr )		s_spInstance = std::shared_ptr<XRenderCmdMng>( new XRenderCmdMng );	return s_spInstance;}
-// void XRenderCmdMng::sDestroyInstance() {
-// 	s_spInstance.reset();
-// }
 ////////////////////////////////////////////////////////////////
 XBatchRenderer::XBatchRenderer( const char* cTag, bool bZBuff )
 	: m_idRenderer( XE::GenerateID() )
@@ -34,7 +25,6 @@ XBatchRenderer::XBatchRenderer( const char* cTag, bool bZBuff )
 	, m_aryDPCall( 256 )
 	, m_bZbuff( bZBuff )
 {
-// 	XBREAK( s_spInstance != nullptr );
 	Init();
 }
 
@@ -109,8 +99,7 @@ void XBatchRenderer::RenderBatch()
 	// 디버그모드에선 클리어를 하지 않아서 에러가 났을때 보이도록 함.
 //	memset( aryVertices, 0, sizeof(XE::xVertex)* maxRect );
 #endif // not _DEBUG
-// 	XE::xVertex* pVertices = aryVertices;
-	XE::xVertex* pVertices = new XE::xVertex[ maxRect ];
+	auto pVertices = new XE::xVertex[ maxRect ];
 	const xCmd* pPrev = nullptr;
 	int cndDPCall = 0;
 	do {
@@ -122,36 +111,16 @@ void XBatchRenderer::RenderBatch()
 			}
 			bool bDiffAttr = false;
 			do {
-				if( cmd.m_bBlend != pPrev->m_bBlend ) {		// 이전명령과 비교해서 속성이 달라짐ㄴ
-					bDiffAttr = true;
-					break;
-				}
-				if( cmd.m_glTex != pPrev->m_glTex ) {
-					bDiffAttr = true;
-					break;
-				}
-				if( cmd.m_glsFactor != pPrev->m_glsFactor ) {
-					bDiffAttr = true;
-					break;
-				}
-				if( cmd.m_gldFactor != pPrev->m_gldFactor ) {
-					bDiffAttr = true;
-					break;
-				}
-				if( cmd.m_glBlendEquation != pPrev->m_glBlendEquation ) {
-					bDiffAttr = true;
-					break;
-				}
-				if( cmd.m_pShader != pPrev->m_pShader ) {
-					bDiffAttr = true;
-					break;
-				}
-				if( cmd.m_bZBuffer != pPrev->m_bZBuffer ) {
-					bDiffAttr = true;
-					break;
-				}
-				if( (cmd.m_ltViewport != pPrev->m_ltViewport)
-						|| (cmd.m_sizeViewport != pPrev->m_sizeViewport) ) {
+				// 이전명령과 비교해서 속성이 달라짐ㄴ
+				if( cmd.m_bBlend != pPrev->m_bBlend 
+						|| cmd.m_glTex != pPrev->m_glTex 
+						|| cmd.m_glsFactor != pPrev->m_glsFactor 
+						|| cmd.m_gldFactor != pPrev->m_gldFactor 
+						|| cmd.m_glBlendEquation != pPrev->m_glBlendEquation 
+						|| cmd.m_pShader != pPrev->m_pShader 
+						|| cmd.m_bZBuffer != pPrev->m_bZBuffer 
+						|| (cmd.m_ltViewport != pPrev->m_ltViewport)
+						|| (cmd.m_sizeViewport != pPrev->m_sizeViewport) ) {		
 					bDiffAttr = true;
 					break;
 				}
@@ -159,14 +128,12 @@ void XBatchRenderer::RenderBatch()
 			if( bDiffAttr ) {
 				Render( *pPrev, idx, pVertices );
 				// 다시 초기화
-//				if( cnt2X > 0 )
-					SAFE_DELETE_ARRAY( pVertices );
+				SAFE_DELETE_ARRAY( pVertices );
 				idx = 0;
 #ifndef _DEBUG
 				// 디버그모드에선 클리어를 하지 않아서 에러가 났을때 보이도록 함.
 //				memset( aryVertices, 0, sizeof( XE::xVertex )* maxRect );
 #endif // not _DEBUG
-//				pVertices = aryVertices;
 				maxRect = 6 * 64;
 				pVertices = new XE::xVertex[maxRect];
 				cnt2X = 0;
@@ -188,11 +155,10 @@ void XBatchRenderer::RenderBatch()
 		if( pPrev && idx > 0 ) {
 			Render( *pPrev, idx, pVertices );
 			// 다시 초기화
-//			if( cnt2X > 0 ) {
-				SAFE_DELETE_ARRAY( pVertices );
-//			}
+			SAFE_DELETE_ARRAY( pVertices );
 		}
 	} while( 0 );
+	SAFE_DELETE_ARRAY( pVertices );
 	m_qCmds.clear();
 }
 
@@ -211,12 +177,7 @@ void XBatchRenderer::ExtendBuffer( int idx,
 	auto pNew = new XE::xVertex[sizeNew];
 	memcpy_s( pNew, sizeNew * sizeof(XE::xVertex)
 						, pVertices, sizeof(XE::xVertex) * maxRect );
-//	*pNew = *pVertices;
-	// 				memcpy_s( pNew, sizeNew * sizeof( XE::xVertex )
-	// 									, pVertices, (int)maxRect * sizeof( XE::xVertex ) );
-// 	if( cnt2X > 0 ) {
-		SAFE_DELETE_ARRAY( pVertices );
-// 	}
+	SAFE_DELETE_ARRAY( pVertices );
 	pVertices = pNew;
 	maxRect = sizeNew;
 	*pOutMaxRect = maxRect;
@@ -242,7 +203,6 @@ void XBatchRenderer::Render( const xCmd& cmd,
 	const auto vpSize = GRAPHICS->GetViewportSize();
 	GRAPHICS->SetViewport( cmd.m_ltViewport, cmd.m_sizeViewport );
 	XE::SetProjection( cmd.m_sizeViewport );
-	//	idx = (idx / 2);
 	// blend
 	(cmd.m_bBlend) ? glEnable( GL_BLEND ) : glDisable( GL_BLEND );
 	glBlendEquation( (GLenum)cmd.m_glBlendEquation );
@@ -265,7 +225,6 @@ void XBatchRenderer::Render( const xCmd& cmd,
 #endif // _XVAO
 	// create vertex/idex buffer
 	const GLuint glVertexBuffer = (GLuint)GetidVertexBuffer( m_numDPCall );
-//	glGenBuffers( 1, &glVertexBuffer );
 // 	glGenBuffers( 1, &glIndexBuffer );
 	if( XBREAK( glVertexBuffer == 0 ) )
 		return;
@@ -277,10 +236,6 @@ void XBatchRenderer::Render( const xCmd& cmd,
 	else
 		glDisable( GL_DEPTH_TEST );
 	CHECK_GL_ERROR();
-// 	glDepthFunc( GL_GEQUAL );
-// 	CHECK_GL_ERROR();
-// 	glClearDepthf( -1000.f );
-// 	CHECK_GL_ERROR();
 	// bind vertex buffer
 	glBindBuffer( GL_ARRAY_BUFFER, glVertexBuffer );
 	CHECK_GL_ERROR();
@@ -309,7 +264,6 @@ void XBatchRenderer::Render( const xCmd& cmd,
 	CHECK_GL_ERROR();
 	glDisable( GL_DEPTH_TEST );
 	CHECK_GL_ERROR();
-	//	glDeleteBuffers( 1, &glVertexBuffer );
 	GRAPHICS->SetViewport( vpLT.ToPoint(), vpSize.ToPoint() );		// 백업받았던 뷰포트 복구.
 	XE::SetProjection( vpSize.w, vpSize.h );
 	//

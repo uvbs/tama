@@ -34,7 +34,7 @@ using namespace XGAME;
 XWndCloudLayer::XWndCloudLayer( const XE::VEC2& vPos, 
 								const XE::VEC2& vSize )
 // 	: XWnd( vPos.x, vPos.y, vSize.w, vSize.h )
-	: XWndBatchRender( "cloud", true, false, false, XE::xRECT( vPos, vSize ) )
+	: XWndBatchRender( "cloud", false, true, false, false, XE::xRECT( vPos, vSize ) )
 {
 	Init();
 	ID idAsync = 0;

@@ -77,7 +77,7 @@ void XSurfaceGLAtlasNoBatch::Destroy()
 																										m_glIndexBuffer,
 																										GetWidth(), GetHeight() );
 	XBREAK( IsbAtlas() == false );
-	XTextureAtlas::sRelease( m_glTexture );
+	XTextureAtlas::sRelease( m_glTexture, m_idAtlasNode );
 	m_glTexture = 0;
 	DestroyDevice();
 }
@@ -129,8 +129,10 @@ bool XSurfaceGLAtlasNoBatch::Create( const XE::POINT& sizeSurfaceOrig
 		XE::VEC2 sizeAtlas;
 		XBREAK( XTextureAtlas::sGetspCurrMng() == nullptr );
 		auto pAtlasMng = XTextureAtlas::sGetspCurrMng();
+		ID idNode = 0;
 		m_glTexture = pAtlasMng->ArrangeImg( 0,				// auto glTex id
 																				 &rcInAtlas,
+																				 &idNode,
 																				 pImgSrc,
 																				 _sizeMemSrc,
 																				 formatImgSrc,
@@ -138,6 +140,7 @@ bool XSurfaceGLAtlasNoBatch::Create( const XE::POINT& sizeSurfaceOrig
 																				 &sizeAtlas );
 		if( XBREAK( m_glTexture == 0 ) )
 			return false;
+		m_idAtlasNode = idNode;
 		// 버텍스버퍼생성.
 		XE::VEC2 uvlt = rcInAtlas.vLT / sizeAtlas;
 		XE::VEC2 uvrb = rcInAtlas.vRB / sizeAtlas;

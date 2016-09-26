@@ -27,6 +27,7 @@ XNode* XNode::Insert( const XE::VEC2& sizeImg )
 		// 방이 없으면 두번째 방에 삽입한다.
 		return m_Child[1]->Insert( sizeImg );
 	} else {
+		// 이미 채워진 공간.
 		if( m_idImg ) {
 			return nullptr;
 		}
@@ -38,7 +39,7 @@ XNode* XNode::Insert( const XE::VEC2& sizeImg )
 		if( (wImg > wRect || hImg > hRect) ) {
 			return nullptr;
 		}
-		// ??
+		// 크기에 딱 들어맞는지.
 		if( IsFitPerfectly( XE::VEC2(wImg, hImg) ) ) {
 			return this;
 		}
@@ -85,5 +86,32 @@ void XNode::RecusiveResize( const XE::VEC2& sizeNewRoot,
 			pChild->RecusiveResize( sizeNewRoot, sizePrevRoot );
 		}
 	}
+}
+
+XNode* XNode::ReleaseNode( ID idNode )
+{
+	if( m_idNode == idNode ) {
+		return this;
+	}
+	for( int i = 0; i < 2; ++i ) {
+		auto pChild = m_Child[i];
+		if( pChild ) {
+			auto pRelease = pChild->ReleaseNode( idNode );
+			if( pRelease ) {
+				return pRelease;
+			}
+		}
+	}
+	return nullptr;
+}
+
+void XNode::Clear()
+{
+	SAFE_DELETE( m_Child[0] );
+	SAFE_DELETE( m_Child[1] );
+	m_idImg = 0;
+	m_idNode = 0;
+	m_Rect.vLT.Set(0,0);
+	m_Rect.vRB.Set(0,0);
 }
 XE_NAMESPACE_END;	// xSplit

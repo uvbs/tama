@@ -200,7 +200,8 @@ void XSprite::CreateDevice( const XE::xSurfaceInfo& infoSurface )
 												infoSurface.m_bSrcKeep,
 												infoSurface.m_bMakeMask,
 												infoSurface.m_bUseAtlas );
-		m_pSurface->SetspSurfaceInfo( nullptr );		// 메모리 삭제
+		m_pSurface->DestroySurfaceInfo();
+//		m_pSurface->SetspSurfaceInfo( nullptr );		// 메모리 삭제
 	}
 }
 

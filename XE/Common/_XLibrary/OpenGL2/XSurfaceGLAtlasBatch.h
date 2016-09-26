@@ -21,6 +21,7 @@ private:
 	GLuint  m_glVertexBuffer;
 	GLuint	m_glIndexBuffer;
 // 	XE::xVertex m_Vertices[4];
+	ID m_idAtlasNode = 0;
 	bool CreateVertexBuffer( float surfaceW, float surfaceH, const float _adjx, const float _adjy, int memw, int memh, int alignW, int alignH );
 	inline bool CreateVertexBuffer( const XE::VEC2& sizeSurface
 																	, const XE::VEC2& vAdj

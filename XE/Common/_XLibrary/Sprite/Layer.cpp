@@ -267,6 +267,9 @@ void XLayerImage::Draw( XSprObj *pSprObj,
 	}
 }
 
+/**
+ @brief 신버전. 가급적 이걸로 사용할것.
+*/
 void XLayerImage::DrawByParam( const XSprObj *pSprObj,
 															 const XE::xRenderParam& _param ) const
 {

@@ -479,6 +479,7 @@ namespace XGAME
 		xSC_PATCH,
 		xSC_LOADING,		///< ·Îµù¾À
 		xSC_TEST,				///< °¢Á¾Å×½ºÆ®¿ë empty ¾À
+		xSC_TEST2,				///< °¢Á¾Å×½ºÆ®¿ë empty ¾À
 		xSCENE_MAX,
 	};
 	// ÄÆ¾À ÀÌº¥Æ® ÆÄ¶ó¸ÞÅÍ

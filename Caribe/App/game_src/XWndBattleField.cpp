@@ -99,21 +99,21 @@ int XWndBattleField::Process( float dt )
 void XWndBattleField::Draw( void )
 {
 	XWnd::Draw();
-	static auto s_psoMouse = std::make_shared<XSprObj>( _T( "unit_fallen_angel.spr" ),
-																											XE::xHSL(),
-																											ACT_IDLE1,
-																											xRPT_LOOP,
-																											true,
-																											true,
-																											true, nullptr );
-	s_psoMouse->FrameMove( 1.f );
+	m_spsoMouse = std::make_shared<XSprObj>( _T( "unit_fallen_angel.spr" ),
+																					 XE::xHSL(),
+																					 ACT_IDLE1,
+																					 xRPT_LOOP,
+																					 true,
+																					 true,
+																					 true, nullptr );
+	m_spsoMouse->FrameMove( 1.f );
 	MATRIX mWorld;
 	//	MatrixTranslation( m, vPos.x, vPos.y, z/* / 1000.f*/ );
 	MatrixTranslation( mWorld, m_vsMouse.x, m_vsMouse.y, m_vwMouse.y );
 	if( m_pObjLayer ) {
 		auto prev = GRAPHICS->SetbEnableZBuff( true );
 		SET_RENDERER( m_pObjLayer->GetpRenderer() )	{
-			s_psoMouse->Draw( XE::VEC2(0), mWorld );
+			m_spsoMouse->Draw( XE::VEC2(0), mWorld );
 		} END_RENDERER;
 		GRAPHICS->SetbEnableZBuff( prev );
 	}
@@ -408,7 +408,7 @@ XWndBattleField::AddUnitUILayer( XSPWorld spWorld )
 	const bool bBatch = true;
 	const bool bZBuff = false;
 	const bool bAlphaTest = false;
-	auto pLayer = new XWndBatchRender( "layer.unit.ui", bBatch, bZBuff, bAlphaTest );
+	auto pLayer = new XWndBatchRender( "layer.unit.ui", false, bBatch, bZBuff, bAlphaTest );
 	pLayer->SetstrIdentifier( "layer.unit.ui" );
 	Add( pLayer );
 	m_pUnitUILayer = pLayer;

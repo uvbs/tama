@@ -8,6 +8,7 @@ class XEWndWorld;;
 class XEWorld;
 class XEWorldCamera;
 class XWndBatchRender;
+class XSprObj;
 #define WND_WORLD	XWndBattleField::sGet()
 
 ////////////////////////////////////////////////////////////////
@@ -28,6 +29,7 @@ private:
 #ifdef _CHEAT
 	XE::VEC2 m_vwMouse;		// 마우스 위치 월드좌표
 	XE::VEC2 m_vsMouse;		// 마우스 스크린 좌표
+	std::shared_ptr<XSprObj> m_spsoMouse;			// 마우스 위치를 따라다니는 테스트용
 #endif // _CHEAT
 	XSPWorld m_spWorld;
 	std::shared_ptr<XEWorldCamera> m_spCamera;		// 바인딩된 카메라

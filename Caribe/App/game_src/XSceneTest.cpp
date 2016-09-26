@@ -346,8 +346,6 @@ void XSceneTest::OnLButtonUp( float lx, float ly )
 // 																											XE::xPF_ARGB8888,
 // 																											XE::xPF_ARGB8888,
 // 																											&sizeAtlas );
-// 	{ auto glErr = glGetError();
-// 	XASSERT( glErr == GL_NO_ERROR ); }
 // 	if( glTexture ) {
 // 		m_glTexture = glTexture;
 // 		CONSOLE( "%.1fx%.1f, addNode=%.1fx%.1f-%.1fx%.1f", 

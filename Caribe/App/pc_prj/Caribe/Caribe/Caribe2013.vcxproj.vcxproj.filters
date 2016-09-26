@@ -528,7 +528,10 @@
       <Filter>source\battle</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XSceneTest.cpp">
-      <Filter>source\battle</Filter>
+      <Filter>source\_test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneTest2.cpp">
+      <Filter>source\_test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1136,6 +1139,9 @@
     <ClInclude Include="..\..\..\game_src\client\XCheatOption.h">
       <Filter>source\main</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSceneTest2.h">
+      <Filter>source\_test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\daily_work.txt" />
@@ -1246,6 +1252,9 @@
     </Filter>
     <Filter Include="source\battle\skill">
       <UniqueIdentifier>{33075e7d-422d-4b5c-8dfc-665283c46d5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\_test">
+      <UniqueIdentifier>{2c4123a0-8518-4d00-8d8c-a02bc959f8b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

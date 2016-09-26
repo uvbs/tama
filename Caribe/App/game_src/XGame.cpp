@@ -853,7 +853,7 @@ void XGame::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat* pFontDat 
 			auto idTex = spAtlas->m_idTex;
 //			auto idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
 			if( idTex ) {
-				GRAPHICS_GL->FillRectSize( XE::VEC2(0,0), XE::VEC2(356,356), XCOLOR_RGBA(128,128,128,255) );
+				GRAPHICS_GL->FillRectSize( XE::VEC2(0,0), XE::VEC2(356,356), XCOLOR_RGBA(128,128,128,200) );
 				GRAPHICS_GL->DrawTexture( idTex, 0, 0, 356.f, 356.f, FALSE );
 			}
 		}

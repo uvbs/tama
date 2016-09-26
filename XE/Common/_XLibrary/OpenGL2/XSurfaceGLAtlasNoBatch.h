@@ -30,6 +30,7 @@ private:
 #endif
 	GLuint  m_glVertexBuffer = 0;
 	GLuint	m_glIndexBuffer = 0;
+	ID m_idAtlasNode = 0;			// 아틀라스 트리노드의 고유번호.
 // 	XVector<xVertexNoBatch> m_Vertices;
 	void Init();
 	void Destroy();

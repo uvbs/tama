@@ -194,7 +194,7 @@ int XWndBgObj::Process( float dt )
  @brief 월드 배경에 배치되는 오브젝트들의 루트레이어 객체
 */
 XWndBgObjLayer::XWndBgObjLayer( const XE::VEC2& sizeWorld )
-	: XWndBatchRender( "bgObj", true, false, false, XE::VEC2(0,0), sizeWorld )
+	: XWndBatchRender( "bgObj", false, true, false, false, XE::VEC2(0,0), sizeWorld )
 {
 	Init();
 }

@@ -17,6 +17,9 @@ int XSurface::s_cntDPCallNoBatch = 0;
 int XSurface::s_cntDPCallNormal = 0;
 
 XE_NAMESPACE_START( XE )
+// xSurfaceInfo::~xSurfaceInfo() {	
+// 	SAFE_DELETE_ARRAY( m_pImg );
+// }
 //
 // xVertex::xVertex() 
 // {
@@ -541,3 +544,12 @@ void XSurface::sSetglBlendFunc( XE::xtBlendFunc funcBlend,
 		break;
 	}
 }
+
+void XSurface::DestroySurfaceInfo()
+{
+	if( m_spSurfaceInfo ) {
+		SAFE_DELETE_ARRAY( m_spSurfaceInfo->m_pImg );
+		m_spSurfaceInfo.reset();
+	}
+}
+

@@ -20,37 +20,20 @@ XList4<XSPAtlas> XTextureAtlas::s_listSurfaceAll;
 XList4<XSPAtlasMng> XTextureAtlas::s_listAtlasLayer;
 
 //////////////////////////////////////////////////////////////////////////
-void XTextureAtlas::sRelease( ID idTex )
+void XTextureAtlas::sRelease( ID idTex, ID idNode )
 {
 	if( idTex == 0 )
 		return;
-
+	XBREAK( idNode == 0 );
 	for( auto pLayer : s_listAtlasLayer ) {
-		pLayer->Release( idTex );
+		pLayer->Release( idTex, idNode );
 	}
-}
-
-/**
- @brief 참조하고 있는것이 없는 아틀라스 매니저를 삭제시킨다.
-*/
-void XTextureAtlas::sFlushAtlasMng()
-{
-// 	for( auto itor = s_listAtlasLayer.begin(); itor != s_listAtlasLayer.end(); ) {
-// 		auto& spMng = (*itor);
-// 		const int useCnt = spMng.use_count();
-// 		if( useCnt == 1 ) {
-// 			s_listAtlasLayer.erase( itor++ );
-// 		} else {
-// 			++itor;
-// 		}
-// 	}
-	
 }
 
 /**
  @brief 참조하고 있는것이 없는 아틀라스 서피스를 삭제한다.
 */
-void XTextureAtlas::sFlusAtlasSurface()
+void XTextureAtlas::sFlushAtlasSurface()
 {
 	
 	for( auto itor = s_listSurfaceAll.begin(); itor != s_listSurfaceAll.end(); ) {
@@ -105,11 +88,32 @@ void XTextureAtlas::Destroy()
  @brief 텍스쳐(idTex) 한장을 아틀라스 서피스에서 해제시킨다.
  텍스쳐 참조카운터가 0이되면 아틀라스 서피스한장을 삭제시킨다.
 */
-void XTextureAtlas::Release( ID idTex )
+void XTextureAtlas::Release( ID idTex, ID idNode )
 {
 	if( idTex ) {
 		auto spAtlas = GetspAtlas( idTex );
 		if( spAtlas ) {
+			auto pReleaseNode = spAtlas->m_pRoot->ReleaseNode( idNode );
+			if( pReleaseNode ) {
+				const XE::xRECT rect = pReleaseNode->GetRectTex();
+				// 실제 디바이스 텍스쳐에 갱신.
+				void* pImgSrc = nullptr;
+				const int size = rect.GetSize().ToPoint().Size();
+// 				const int bpp = XE::GetBpp( spAtlas->m_FormatSurface );
+// 				if( bpp == 2 ) {
+// 					pImgSrc = new WORD[ size ];
+// 					memset( pImgSrc, 0, sizeof(WORD) * size );
+// 				} else {
+					pImgSrc = new DWORD[ size ];
+					memset( pImgSrc, 0, sizeof( DWORD ) * size );
+// 				}
+				spAtlas->UpdateSubToDevice( pImgSrc,
+																		rect.vLT,
+																		rect.GetSize(),
+																		XE::xPF_ARGB8888 );
+				SAFE_DELETE_ARRAY( pImgSrc );
+				pReleaseNode->Clear();
+			}
 			--spAtlas->m_refCnt;		// 텍스쳐 참조 해제
 			XBREAK( spAtlas->m_refCnt < 0 );
 			if( spAtlas->m_refCnt == 0 ) {
@@ -118,7 +122,7 @@ void XTextureAtlas::Release( ID idTex )
 		}
 	}
 	// 참조하고 있는것이 없는 아틀라스 서피스를 삭제
-	sFlusAtlasSurface();
+	sFlushAtlasSurface();
 }
 
 void XTextureAtlas::DestroyAtlas( XSPAtlas spAtlas )
@@ -162,6 +166,7 @@ void XTextureAtlas::OnPause()
 */
 ID XTextureAtlas::ArrangeImg( ID idTex,
 															XE::xRect2* pOut,
+															ID* pOutID,					// 아틀라스내 각 서피스의 고유아이디
 															const void* pImgSrc,
 															const XE::VEC2& sizeMemSrc,
 															XE::xtPixelFormat fmtImgSrc,
@@ -172,7 +177,7 @@ ID XTextureAtlas::ArrangeImg( ID idTex,
 	XSPAtlas spAtlas;
 	if( idTex == 0 ) {
 		if( m_listAtlas.empty() ) {
-			AddAtlas( /*XTextureAtlas::s_sizeDefault*/XE::VEC2(0), fmtSurface );
+			AddAtlas( XE::VEC2(0), fmtSurface );
 		}
 		//
 		for( auto _spAtlas : m_listAtlas ) {
@@ -209,13 +214,12 @@ ID XTextureAtlas::ArrangeImg( ID idTex,
 			const XE::xRECT rect = pNewNode->GetRectTex();
 			pOut->vLT = rect.vLT;
 			pOut->vRB = rect.vRB + XE::VEC2( 1, 1 );
+			*pOutID = pNewNode->GetidNode();
 			++spAtlas->m_refCnt;
 			// 실제 디바이스 텍스쳐에 갱신.
 			spAtlas->UpdateSubToDevice( pImgSrc,
 																	rect.vLT,
 																	rect.GetSize(),
-// 																	pNewNode->GetRectTex().vLT,
-// 																	pNewNode->GetRectTex().GetSize(),
 																	fmtImgSrc );
 			*pOutSizeAtlas = spAtlas->m_Size;
 			return spAtlas->m_idTex;
@@ -238,6 +242,7 @@ xSplit::XNode* XTextureAtlas::InsertElem( XSPAtlas spAtlas,
 		if( pNewNode ) {
 			// 배치성공
 			pNewNode->SetidImg( spAtlas->m_idTex );
+			pNewNode->SetidNode( XE::GenerateID() );
 			if( pNewNode->GetRectTex().vRB.x > spAtlas->m_maxFill.x )
 				spAtlas->m_maxFill.x = pNewNode->GetRectTex().vRB.x;
 			if( pNewNode->GetRectTex().vRB.y > spAtlas->m_maxFill.y )
@@ -253,11 +258,6 @@ xSplit::XNode* XTextureAtlas::InsertElem( XSPAtlas spAtlas,
 			}
 		}
 	} while( pNewNode == nullptr );
-	if( bResized ) {
-#pragma message("옵저버 패턴으로 바꿔야 할듯.")
-		//XEventMng::sGet()->SendEvent( pEvent );
-// 		SPRMNG->UpdateUV( spAtlas->m_idTex, sizePrev.ToPoint(), spAtlas->m_Size.ToPoint() );
-	}
 	return pNewNode;
 }
 
@@ -281,18 +281,6 @@ XSPAtlasConst XTextureAtlas::GetspAtlasConst( ID idTex ) const
 	return nullptr;
 }
 /**
- @brief pbo버퍼에 pImg를 갱신하고 텍스쳐로 전송
-*/
-// xSplit::XNode* XTextureAtlas::UpdateSub( XSPAtlas spAtlas,
-// 															 const DWORD* pImg, 
-// 															 const XE::VEC2& vLT, 
-// 															 const XE::VEC2& sizeImg, 
-// 															XE::xtPixelFormat fmtImgSrc,
-// 															XE::xtPixelFormat fmtSurface )
-// {
-// }
-// 
-/**
  @brief 새 아틀라스를 생성하고 그 아틀라스를 리턴한다.
 */
 XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& _size, XE::xtPixelFormat formatSurface )
@@ -301,6 +289,7 @@ XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& _size, XE::xtPixelFormat forma
 #ifdef _XTEST
 	size.Set( 256, 256 );
 #else
+//#pragma message("===================size.Set( 2048, 2048 )=======================")
  	size.Set( 128, 128 ); // 64로 했더니 텍스쳐 확장이 많이 일어나면서 유닛밑에 그림자가 깨지더라
 //	size.Set( 2048, 2048 );
 #endif // _XTEST

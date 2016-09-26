@@ -5,6 +5,8 @@
 #include "XSoundMng.h"
 #include "OpenGL2/XBatchRenderer.h"
 #include "OpenGL2/XTextureAtlas.h"
+#include "XImageMng.h"
+#include "Sprite/SprMng.h"
 
 
 #ifdef WIN32
@@ -21,8 +23,8 @@ XEBaseScene::XEBaseScene( XEContent *pGame, ID idScene, BOOL bTransition )
 	: XWnd( 0.f, 0.f, XE::GetGameWidth(), XE::GetGameHeight() )
 { 
 	Init(); 
-	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__);
-	m_spAtlas->PushAtlasMng();
+//	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__);
+//	m_spAtlas->PushAtlasMng();
 	m_idScene = idScene;
 	m_pGame = pGame;
 	if( bTransition )
@@ -36,11 +38,10 @@ XEBaseScene::XEBaseScene( XEContent *pGame, ID idScene, BOOL bTransition )
 */
 XEBaseScene::XEBaseScene( XEContent *pGame, const std::string& idsScene, bool bTransition )
 	: XWnd( 0.f, 0.f, XE::GetGameWidth(), XE::GetGameHeight() )
-//	, m_spAtlas( std::make_shared<XTextureAtlas>( __FUNCTION__ ) )
 {
 	Init();
 	m_pGame = pGame;
-	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__ );
+//	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__ );
 	XBREAK( idsScene.empty() );
 	SetstrIdentifier( idsScene );
 	if( bTransition )
@@ -55,6 +56,8 @@ void XEBaseScene::Destroy()
 	DestroyWnd( m_pSceneChild );		// 여기서 이걸 먼저 해줘야 XT3::Destroy()때 SPRMNG해제할때 남는게 생기지 않는다.
 	if( !IsbBridge() )
 		SOUNDMNG->StopBGMusic();
+	IMAGE_MNG->DoFlushCache();
+	SPRMNG->DoFlushCache();
 }
 
 
@@ -63,7 +66,7 @@ void XEBaseScene::Destroy()
 */
 int XEBaseScene::Process( float dt ) 
 { 
-	XTextureAtlas::XAutoPushObj _spAuto( m_spAtlas );
+//	XTextureAtlas::XAutoPushObj _spAuto( m_spAtlas );
 	if( m_pTransition && m_pTransition->GetbDestroy() )
 		SAFE_DELETE( m_pTransition );
 	//
@@ -228,7 +231,8 @@ void XEBaseScene::OnPause()
 
 void XEBaseScene::PopAtalsMng()
 {
-	m_spAtlas->PopAtlasMng();
+	if( m_spAtlas )
+		m_spAtlas->PopAtlasMng();
 }
 
 void XEBaseScene::OnDrawBefore()

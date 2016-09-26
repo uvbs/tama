@@ -1,8 +1,6 @@
 ﻿#include "stdafx.h"
 #include "XFramework/XSplitNode.h"
 #include "XGraphicsOpenGL.h"
-// #include "Sprite/SprMng.h"
-// #include "XImageMng.h"
 #include "etc/XSurface.h"
 #include "XTextureAtlas.h"
 
@@ -35,7 +33,7 @@ xAtlas::~xAtlas() {
 	const int bpp = XE::GetBpp( m_FormatSurface );
 	XSurface::sAddSizeTotalVMem( (int)(-m_Size.Size() * bpp) );
 #ifdef WIN32
-	TRACE("destroy atlas: id=%d\n", m_idTex );
+	CONSOLE("destroy atlas: id=%d\n", m_idTex );
 #endif // WIN32
 }
 
@@ -58,18 +56,13 @@ void xAtlas::UpdateSubToDevice( const void* _pImg,
 																xtPixelFormat fmtImg ) {
 	const auto glFmtImg = XGraphicsOpenGL::sToGLFormat( fmtImg );
 	const auto glTypeImg = XGraphicsOpenGL::sToGLType( fmtImg );
-#ifdef _DEBUG
-	{ auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR ); }
-#endif // _DEBUG
+	CHECK_GL_ERROR();
 	XGraphicsOpenGL::sBindTexture( m_idTex );
-#ifdef _DEBUG
-	auto glErr = glGetError();
-	XASSERT( glErr == GL_NO_ERROR );
-#endif // _DEBUG
+	CHECK_GL_ERROR();
 	const void* pImg = _pImg;
 	XBREAK( fmtImg != XE::xPF_ARGB8888 );	// 아직은 이것만 지원.
-	if( fmtImg != m_FormatSurface ) {
+
+	if( fmtImg && fmtImg != m_FormatSurface ) {
 		// 이미지소스가 서피스 포맷과 다르다면 변환해야한다.
 		XE::CreateConvertPixels( _pImg, sizeImg, fmtImg, &pImg, m_FormatSurface );
 	}
@@ -85,18 +78,10 @@ void xAtlas::UpdateSubToDevice( const void* _pImg,
 									 _glFmtImg,		// gl텍스쳐의 포맷과 픽셀데이타의 포맷이 맞지않으면 내부에서 변환해주는듯 하다.
 									 _glTypeImg,
 									 pImg );
-#ifdef _DEBUG
-	{ auto glErr = glGetError();
-	if( glErr != GL_NO_ERROR ) {
-		XTRACE("%s: idTex=%d", __TFUNC__, m_idTex );
-	}
-//	XASSERTF( glErr == GL_NO_ERROR, "error:idTex=%d", m_idTex ); 
-	}
-#endif // _DEBUG
-	if( fmtImg != m_FormatSurface ) {
+	CHECK_GL_ERROR();
+	if( fmtImg && fmtImg != m_FormatSurface ) {
 		SAFE_DELETE_ARRAY( pImg );
 	}
-//	XGraphicsOpenGL::sBindTexture( 0 );		// 이거 하면 안됨
 }
 
 int xAtlas::GetBytes() const

@@ -228,7 +228,7 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 		const bool bBatch = true;
 		const bool bZBuff = false;
 		const bool bAlphaTest = false;
-		auto pWnd = new XWndBatchRender( "layer.faces", bBatch, bZBuff, bAlphaTest );
+		auto pWnd = new XWndBatchRender( "layer.faces", false, bBatch, bZBuff, bAlphaTest );
 		pWnd->SetstrIdentifier( "wnd.faces" );
 		Add( pWnd );
 		pWnd->SetbTouchable( false );
@@ -237,7 +237,7 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 	XBattleField::sGet()->SettypeBattle( s_BattleStart.m_typeBattle );
 	// ui메인
 	{
-		auto pWnd = new XWndBatchRender( "layer.ui", false, false, false );
+		auto pWnd = new XWndBatchRender( "layer.ui", false, false, false, false );
 //	auto pWnd = new XWnd();
 		pWnd->SetstrIdentifier( "wnd.ui" );
 		Add( pWnd );

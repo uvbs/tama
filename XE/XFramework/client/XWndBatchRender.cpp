@@ -3,6 +3,7 @@
 #include "OpenGL2/XBatchRenderer.h"
 #include "XFramework/XEProfile.h"
 #include "OpenGL2/XTextureAtlas.h"
+#include "XFramework/client/XEContent.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -22,6 +23,7 @@ static char THIS_FILE[] = __FILE__;
 
 ////////////////////////////////////////////////////////////////
 XWndBatchRender::XWndBatchRender( const char* cTag, 
+																	bool bUseAtlas,
 																	bool bBatchRender, 
 																	bool bZBuff, 
 																	bool bAlphaTest, 
@@ -31,7 +33,9 @@ XWndBatchRender::XWndBatchRender( const char* cTag,
 	, m_pRenderer( (bBatchRender)? new XBatchRenderer( cTag, bZBuff ) : nullptr )
 {
 	Init();
-	m_spAtlas = XTextureAtlas::sCreateAtlasMng( cTag );
+	if( bUseAtlas ) {
+		m_spAtlas = XTextureAtlas::sCreateAtlasMng( cTag );
+	}
 	SetbTouchable( false );
 }
 
@@ -61,8 +65,10 @@ void XWndBatchRender::Destroy()
 int XWndBatchRender::Process( float dt )
 {
 	int ret = 0;
-	XBREAK( m_spAtlas == nullptr );
-	XTextureAtlas::XAutoPushObj _spAuto( m_spAtlas );
+	if( m_spAtlas ) {
+		XBREAK( m_spAtlas == nullptr );
+		XTextureAtlas::XAutoPushObj _spAuto( m_spAtlas );
+	}
 	ret = XWnd::Process( dt );
 	return ret;
 }
@@ -125,5 +131,10 @@ void XWndBatchRender::OnProcessAfter()
 {
 	if( m_spAtlas )
 		m_spAtlas->PopAtlasMng();
+}
+
+XSPAtlasMng XWndBatchRender::GetspAtlas()
+{
+	return XEContent::sGet()->GetspAtlas();
 }
 
