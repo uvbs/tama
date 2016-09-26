@@ -2,6 +2,7 @@
 #include "XActObj2.h"
 #include "XActDat.h"
 #include "SprObj.h"
+#include "etc/XSurface.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -69,6 +70,17 @@ void XActObj::Draw( float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectPar
 		eff.m_adjZ += 0.1f; // z fighting 방지용
 	} LOOP_END
 }
+
+void XActObj::DrawByParam( const XSprObj *pSprObj,
+													 const XE::xRenderParam& _param )
+{
+	XE::xRenderParam param = _param;
+	LAYER_LOOP( pLayer ) {
+		pLayer->DrawByParam( m_pSprObj, param );
+		param.m_adjZ += 0.1f; // z fighting 방지용
+	} LOOP_END
+}
+
 #else
 void XActObj::Draw( float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam )
 {

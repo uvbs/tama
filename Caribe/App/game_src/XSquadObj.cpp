@@ -1545,7 +1545,7 @@ void XSquadObj::DoTeleport()
 // 	else
 // 		m_vwPos.Set( 300, 700, 0 );
 // 	s_bFlag = !s_bFlag;
-	auto pSfx = new XObjLoop( XGAME::xOT_SFX, vOld, _T("sfx_heal2.spr"), 1, false );
+	auto pSfx = new XObjLoop( XGAME::xOT_SFX, vOld, _T("sfx_heal2.spr"), 1, true, false );
 	pSfx->SetDir( m_spHeroUnit->GetDir() );
 	XBattleField::sGet()->AddObj( XSPWorldObj(pSfx) );
 	// 유닛들의 좌표와 상태도 그에 맞춰 변환시킨다.

@@ -185,7 +185,7 @@ void XEObjMng::Draw( XEWndWorld *pWndWorld )
 				XEBaseWorldObj *pObj = spObj.get();
 				auto pSprObj = pObj->GetpSprObj();
 				if( pSprObj && pSprObj->GetAction() ) {
-					XE::xRECT rectBB = pObj->GetBoundBoxWindow();
+					auto rectBB = pObj->GetBoundBoxWindow( pSprObj, pSprObj->GetAction() );
 					if( pWndWorld->IsOutBoundary( rectBB ) == FALSE )
 						m_aryVisible.Add( pObj );
 				}

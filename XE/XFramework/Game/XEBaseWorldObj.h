@@ -12,6 +12,7 @@ class XEBaseWorldObj;
 class XSprObj;
 class XSprDat;
 class XSurface;
+class XActDat;
 namespace XE {
 struct xHSL;
 }
@@ -42,9 +43,9 @@ public:
 		Init(); 
 		m_pWndWorld = pWndWorld;
 	}
-	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, LPCTSTR szSpr, ID idAct, bool bBatch );
-	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szSpr, ID idAct, bool bBatch );
-	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szImg, bool bBatch );
+	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, LPCTSTR szSpr, ID idAct, bool bBatch, bool bZBuff );
+	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szSpr, ID idAct, bool bBatch, bool bZBuff );
+	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szImg, bool bBatch, bool bZBuff );
 	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos ) { 
 		Init(); 
 		m_Type = type;
@@ -148,15 +149,15 @@ public:
 	virtual int Serialize( XArchive& ar );
 	virtual int DeSerialize( XArchive& ar );
 	//
-	bool LoadSpr( LPCTSTR szSpr, const XE::xHSL& hsl, ID idAct, bool bBatch, xRPT_TYPE typeLoop=xRPT_LOOP );
-	inline bool LoadSpr( LPCTSTR szSpr, ID idAct, bool bBatch, xRPT_TYPE typeLoop = xRPT_LOOP ) {
-		return LoadSpr( szSpr, XE::xHSL(), idAct, bBatch, typeLoop );
+	bool LoadSpr( LPCTSTR szSpr, const XE::xHSL& hsl, ID idAct, bool bBatch, bool bZBuff, xRPT_TYPE typeLoop );
+	inline bool LoadSpr( LPCTSTR szSpr, ID idAct, bool bBatch, bool bZBuff, xRPT_TYPE typeLoop ) {
+		return LoadSpr( szSpr, XE::xHSL(), idAct, bBatch, bZBuff, typeLoop );
 	}
-	inline bool LoadSpr( const _tstring& strSpr, ID idAct, bool bBatch, xRPT_TYPE typeLoop = xRPT_LOOP ) {
-		return LoadSpr( strSpr.c_str(), XE::xHSL(), idAct, bBatch, typeLoop );
+	inline bool LoadSpr( const _tstring& strSpr, ID idAct, bool bBatch, bool bZBuff, xRPT_TYPE typeLoop ) {
+		return LoadSpr( strSpr.c_str(), XE::xHSL(), idAct, bBatch, bZBuff, typeLoop );
 	}
-	inline bool LoadSpr( const _tstring& strSpr, const XE::xHSL& hsl, ID idAct, bool bBatch, xRPT_TYPE typeLoop = xRPT_LOOP ) {
-		return LoadSpr( strSpr.c_str(), hsl, idAct, bBatch,typeLoop );
+	inline bool LoadSpr( const _tstring& strSpr, const XE::xHSL& hsl, ID idAct, bool bBatch, bool bZBuff, xRPT_TYPE typeLoop ) {
+		return LoadSpr( strSpr.c_str(), hsl, idAct, bBatch, bZBuff, typeLoop );
 	}
 	void LoadImage( LPCTSTR szImg );
 	//	
@@ -224,12 +225,15 @@ public:
 	/**
 	 @brief 오브젝트 중심기준 좌표계로 바운딩박스를 만든다.
 	*/
-	virtual XE::xRECT GetBoundBoxLocal();
+//	virtual XE::xRECT GetBoundBoxLocal();
+	virtual XE::xRECT GetBoundBoxLocal( const XSprObj* pso, 
+																			const XActDat* pActDat ) const;
 	/**
 	 @brief 오브젝트의 바운딩 영역을 월드좌표로 만들어 돌려준다.
 	*/
-	XE::xRECT GetBoundBoxWorld() {
-		XE::xRECT rect = GetBoundBoxLocal();
+	XE::xRECT GetBoundBoxWorld( const XSprObj* pso, 
+															const XActDat* pActDat ) const {
+		XE::xRECT rect = GetBoundBoxLocal( pso, pActDat );
 		XE::VEC2 vwPos = m_vwPos.ToVec2();
 		vwPos.y += m_vwPos.z;
 		rect.vLT += vwPos;
@@ -239,8 +243,8 @@ public:
 	/**
 	 @brief 오브젝트의 바운딩 영역을 스크린좌표로 만들어 돌려준다.
 	*/
-	XE::xRECT GetBoundBoxScreen();
-	XE::xRECT GetBoundBoxWindow();
+	XE::xRECT GetBoundBoxScreen( const XSprObj* pso, const XActDat* pActDat ) const;
+	XE::xRECT GetBoundBoxWindow( const XSprObj* pso, const XActDat* pActDat ) const;
 	//
 	virtual void OnLButtonUp( float lx, float ly );
 	virtual void OnTouch( const XE::xRECT& bbWindow, const XE::VEC2& vlTouch ) {}

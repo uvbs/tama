@@ -236,9 +236,9 @@ XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ )
 	// 전투타입을 지정한다.
 	XBattleField::sGet()->SettypeBattle( s_BattleStart.m_typeBattle );
 	// ui메인
-//  	pWnd = new XWndBatchRender( "layer.ui", false, false, false );
 	{
-		auto pWnd = new XWnd();
+		auto pWnd = new XWndBatchRender( "layer.ui", false, false, false );
+//	auto pWnd = new XWnd();
 		pWnd->SetstrIdentifier( "wnd.ui" );
 		Add( pWnd );
 		pWnd->SetbTouchable( false );
@@ -448,9 +448,9 @@ void XSceneBattle::SaveSingle()
 
 #endif // _XSINGLE
 
-XWnd* XSceneBattle::GetpLayerUI()
+XWndBatchRender* XSceneBattle::GetpLayerUI()
 {
-	return SafeCast<XWnd*>( Find( "wnd.ui" ) );
+	return SafeCast<XWndBatchRender*>( Find( "wnd.ui" ) );
 }
 
 XWndBatchRender* XSceneBattle::GetpLayerFaces()
@@ -1644,7 +1644,7 @@ void XSceneBattle::OnCreateOrderDialog( ID idHero )
 	// idHero를 객체중에 찾을수 있으면 그 객체의 머리위해 말풍선애니메이션을 띄운다.
 	auto spUnit = XBattleField::sGet()->GetHeroUnit( idHero );
 	if( spUnit ) {
-		auto pObj = new XObjLoop( spUnit->GetvwTop(), _T("ui_speech.spr"), 1, true );
+		auto pObj = new XObjLoop( spUnit->GetvwTop(), _T("ui_speech.spr"), 1, true, true );
 		XBattleField::sGet()->AddpObj( pObj );
 	}
 }

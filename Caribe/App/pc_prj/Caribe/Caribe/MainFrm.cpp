@@ -2634,9 +2634,11 @@ void CMainFrame::OnBattleOption()
 		}
 		XObjDmgNum::s_strFont = (LPCTSTR)dlg.m_strFontDmg;
 		//
+#ifdef _XSINGLE
 		if( SCENE_BATTLE ) {
 			SCENE_BATTLE->SetAI( !(XAPP->m_dwOption & xBIT_STOP_AI) );
 		}
+#endif // 
 
 		GAME->GetpScene()->SetbUpdate( true );
 		XAPP->XClientMain::SaveCheat();

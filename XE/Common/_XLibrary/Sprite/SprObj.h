@@ -29,7 +29,10 @@ class XSprite;
 struct LAYER_INFO;
 struct XEFFECT_PARAM;
 enum xDM_TYPE : int;
-	
+namespace XE {
+struct xRenderParam;
+}
+
 XE_NAMESPACE_START( xSpr )
 struct xDat;
 // KeyEvent 델리게이트시 넘겨주는 파라메터
@@ -285,7 +288,7 @@ public:
 	BOOL IsFlipHoriz() {
 		return (m_dwDrawFlag & EFF_FLIP_HORIZ);
 	}
-	GET_SET_ACCESSOR( XDelegateSprObj*, pDelegate );
+	GET_SET_ACCESSOR_CONST( XDelegateSprObj*, pDelegate );
 	GET_SET_ACCESSOR( XSprObj*, pParentSprObj );
 	void AddRotate( float ax, float ay, float az ) { m_fRotX += ax; m_fRotY += ay; m_fRotZ += az; }
 	float GetSpeedCurrentAction();
@@ -329,6 +332,7 @@ public:
 	inline void Draw( const XE::VEC2& vPos, const MATRIX &m ) {
 		Draw( vPos.x, vPos.y, m );
 	}
+	void DrawByParam( const XE::xRenderParam& param ) const;
 	// action
 	bool IsHaveAction( ID idAct );
 	void ResetAction();

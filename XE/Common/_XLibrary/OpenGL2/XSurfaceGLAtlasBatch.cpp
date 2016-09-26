@@ -82,6 +82,7 @@ void XSurfaceGLAtlasBatch::Destroy()
 																										GetWidth(), GetHeight() );
 	XBREAK( IsbAtlas() == false );
 	XTextureAtlas::sRelease( m_glTexture );
+	m_glTexture = 0;
 	DestroyDevice();
 }
 
@@ -457,7 +458,8 @@ void XSurfaceGLAtlasBatch::DrawByParam( const MATRIX &mParent,
  				cmd.m_bZBuffer = false;
  				bAlphaTest = false;
  			}
-			cmd.m_Priority = GRAPHICS->GetPriority();
+//			cmd.m_Priority = GRAPHICS->GetPriority();
+			cmd.m_Priority = paramRender.m_Priority;
 			if( funcBlend == xBF_GRAY ) {
 				cmd.m_pShader = GRAPHICS_GL->GetpGrayShader();
 			} else {

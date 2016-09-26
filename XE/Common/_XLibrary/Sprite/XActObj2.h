@@ -9,6 +9,9 @@ class XActDat;
 
 struct LAYER_INFO;
 struct XEFFECT_PARAM;
+namespace XE {
+struct xRenderParam;
+}
 
 //////////////////////////////////////////////////////////////////////////
 // XSprObj에서 쓰는 액션정보
@@ -43,6 +46,7 @@ public:
 	void FrameMove( float dt, float fFrmCurr );
 #ifdef _VER_OPENGL
 	void Draw( float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam );
+	void DrawByParam( const XSprObj *pSprObj, const XE::xRenderParam& _param );
 #else
 	void Draw( float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam );
 #endif

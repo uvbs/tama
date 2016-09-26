@@ -24,27 +24,30 @@ XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld,
 																int type,
 																const XE::VEC3& vPos,
 																LPCTSTR szImg,
-																bool bBatch )
+																bool bBatch,
+																bool bZBuff )
 {
 	Init(); 
 	m_Type = type;
 	LoadImage( szImg );
 	m_vwPos = vPos;
 	m_pWndWorld = pWndWorld;
-	m_bZBuff = bBatch;		// 배치모드면 무조건 zbuff를 써야 찍기우선순위가 해결됨.
+//	m_bZBuff = bBatch;		// 배치모드면 무조건 zbuff를 써야 찍기우선순위가 해결됨.
+	m_bZBuff = bZBuff;
 }
 
 XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, 
 																int type, 
 																LPCTSTR szSpr, 
 																ID idAct,
-																bool bBatch )
+																bool bBatch,
+																bool bZBuff )
 {
 	Init();
 	m_Type = type;
 	m_pWndWorld = pWndWorld;
 	if( XE::IsHave(szSpr) )
-		LoadSpr( szSpr, idAct, bBatch, xRPT_LOOP );
+		LoadSpr( szSpr, idAct, bBatch, bZBuff, xRPT_LOOP );
 }
 
 XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld, 
@@ -52,14 +55,15 @@ XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld,
 																const XE::VEC3& vPos, 
 																LPCTSTR szSpr, 
 																ID idAct,
-																bool bBatch )
+																bool bBatch,
+																bool bZBuff )
 {
 	Init();
 	m_Type = type;
 	m_vwPos = vPos;
 	m_pWndWorld = pWndWorld;
 	if( XE::IsHave( szSpr ) )
-		LoadSpr( szSpr, idAct, bBatch, xRPT_LOOP );;
+		LoadSpr( szSpr, idAct, bBatch, bZBuff, xRPT_LOOP );;
 }
 
 void XEBaseWorldObj::Destroy() 
@@ -79,12 +83,14 @@ bool XEBaseWorldObj::LoadSpr( LPCTSTR szSpr,
 															const XE::xHSL& hsl, 
 															ID idAct, 
 															bool bBatch,
+															bool bZBuff,
 															xRPT_TYPE typeLoop )
 {
 	if( XBREAK( XE::IsEmpty( szSpr ) == TRUE ) )
 		return false;
 	XBREAK( szSpr == nullptr );
-	m_bZBuff = bBatch;		// 배치모드면 무조건 zbuff를 써야 찍기우선순위가 해결됨.
+// 	m_bZBuff = bBatch;		// 배치모드면 무조건 zbuff를 써야 찍기우선순위가 해결됨.
+	m_bZBuff = bZBuff;
 	m_strSpr = szSpr;
 	// 이 객체는 전투때만 쓰므로 곧바로 2버전으로 호출시킴
  	const bool bUseAtlas = true;
@@ -162,12 +168,12 @@ void XEBaseWorldObj::Draw( const XE::VEC2& vPos, float scale/*=1.f*/, float alph
 		m_pSprObj->SetScale( vScale );
 		m_pSprObj->SetfAlpha( m_Alpha * alpha );
 		MATRIX mWorld;
-		MATRIX m;
+//		MATRIX m;
 		MatrixIdentity( mWorld );
 		float z = GetvwPos().y;
 //	MatrixTranslation( m, vPos.x, vPos.y, z/* / 1000.f*/ );
-		MatrixTranslation( m, vPos.x, vPos.y, z);
-		MatrixMultiply( mWorld, mWorld, m );
+		MatrixTranslation( mWorld, vPos.x, vPos.y, z);
+//		MatrixMultiply( mWorld, mWorld, m );
  		auto bPrev = GRAPHICS->SetbEnableZBuff( m_bZBuff );
 		m_pSprObj->Draw( 0, 0, mWorld );
  		GRAPHICS->SetbEnableZBuff( bPrev );
@@ -192,10 +198,11 @@ void XEBaseWorldObj::SetRotateY( float dAng ) {
 }
 
 // 오브젝트의 바운딩 영역을 스크린좌표로 만들어 돌려준다.
-XE::xRECT XEBaseWorldObj::GetBoundBoxScreen( void ) 
+XE::xRECT XEBaseWorldObj::GetBoundBoxScreen( const XSprObj* pso, 
+																						 const XActDat* pActDat ) const
 {
 	XBREAK( m_pWndWorld == NULL );
-	XE::xRECT rect = GetBoundBoxWorld();
+	XE::xRECT rect = GetBoundBoxWorld( pso, pActDat );
 	XE::VEC3 v3LT( rect.vLT );
 	XE::VEC3 v3RB( rect.vRB );
 	rect.vLT = m_pWndWorld->GetPosWorldToScreen( v3LT );
@@ -204,36 +211,37 @@ XE::xRECT XEBaseWorldObj::GetBoundBoxScreen( void )
 }
 
 // 오브젝트의 바운딩 영역을 스크린좌표로 만들어 돌려준다.
-XE::xRECT XEBaseWorldObj::GetBoundBoxWindow( void ) 
+XE::xRECT XEBaseWorldObj::GetBoundBoxWindow( const XSprObj* pso,
+																						 const XActDat* pActDat ) const
 {
 	XBREAK( m_pWndWorld == NULL );
-	XE::xRECT rect = GetBoundBoxWorld();
+	XE::xRECT rect = GetBoundBoxWorld( pso, pActDat );
 	rect.vLT = m_pWndWorld->GetPosWorldToWindow( rect.vLT, nullptr );
 	rect.vRB = m_pWndWorld->GetPosWorldToWindow( rect.vRB, nullptr );
 	return rect;
 }
 
-void XEBaseWorldObj::OnLButtonUp( float lx, float ly )
-{
-	XE::xRECT vBB = GetBoundBoxWindow();	// 오브젝트의 바운딩영역을 윈도우내 좌표로 돌려준다.
-	if( XE::IsArea( vBB.vLT, vBB.GetSize(), XE::VEC2(lx,ly) ) )
-	{
-		OnTouch( vBB, XE::VEC2(lx, ly) );	// virtual
-	}
-}
-
 // 오브젝트 중심기준 좌표계로 바운딩박스를 만든다.
-XE::xRECT XEBaseWorldObj::GetBoundBoxLocal( void ) 
+XE::xRECT XEBaseWorldObj::GetBoundBoxLocal( const XSprObj* pso, 
+																						const XActDat* pActDat ) const
 {
-	if( GetpSprObj() )	{
+// 	if( GetpSprObj() )	{
+// 		XE::xRECT rect;
+// 		rect.vLT = GetpSprObj()->GetAction()->GetBoundBoxLT();
+// 		rect.vRB = GetpSprObj()->GetAction()->GetBoundBoxRB();
+// 		rect.vLT *= GetpSprObj()->GetScale();
+// 		rect.vRB *= GetpSprObj()->GetScale();
+// 		return rect;
+// 	} else
+	if( pso ) {
 		XE::xRECT rect;
-		rect.vLT = GetpSprObj()->GetAction()->GetBoundBoxLT();
-		rect.vRB = GetpSprObj()->GetAction()->GetBoundBoxRB();
-		rect.vLT *= GetpSprObj()->GetScale();
-		rect.vRB *= GetpSprObj()->GetScale();
+		rect.vLT = pActDat->GetBoundBoxLT();
+		rect.vRB = pActDat->GetBoundBoxRB();
+		rect.vLT *= pso->GetScale();
+		rect.vRB *= pso->GetScale();
 		return rect;
 	} else
-	if( m_pSurface )	{
+		if( m_pSurface ) {
 		XE::xRECT rect;
 		XE::VEC2 vSize = m_pSurface->GetSize();
 		rect.vLT.x = -(vSize.w / 2.f);
@@ -245,6 +253,16 @@ XE::xRECT XEBaseWorldObj::GetBoundBoxLocal( void )
 		return rect;
 	}
 	return XE::xRECT();
+}
+
+void XEBaseWorldObj::OnLButtonUp( float lx, float ly )
+{
+	// 오브젝트의 바운딩영역을 윈도우내 좌표로 돌려준다.
+	XE::xRECT vBB = GetBoundBoxWindow( GetpSprObj(), 
+																		 GetpSprObj()->GetAction());	
+	if( XE::IsArea( vBB.vLT, vBB.GetSize(), XE::VEC2( lx, ly ) ) ) {
+		OnTouch( vBB, XE::VEC2( lx, ly ) );	// virtual
+	}
 }
 
 int XEBaseWorldObj::Serialize( XArchive& ar )

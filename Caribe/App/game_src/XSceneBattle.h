@@ -201,7 +201,7 @@ private:
 	void Release() override;
 	void CreateHeroesFace();
 	int OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 );
-	XWnd* GetpLayerUI();
+	XWndBatchRender* GetpLayerUI();
 	XWndBatchRender* GetpLayerFaces();
 };
 

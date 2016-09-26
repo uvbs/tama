@@ -84,6 +84,7 @@ public:
 	virtual void FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr ) {}
 #ifdef _VER_OPENGL
 	virtual void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam ) {}
+	virtual void DrawByParam( const XSprObj *pSprObj, const XE::xRenderParam& param ) const {}
 #else
 	virtual void Draw( XSprObj *pSprObj, float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam ) {}
 #endif
@@ -165,8 +166,8 @@ struct CHANNEL_EFFECT {
 	float fAlphaSrc = 1.f;				//     "               시작알파값
 	float fNextKeyFrame = 0.f;	// 보간하며 변환될 다음키의 프레임
 	float fStartKeyFrame = 0.f;	//         "            시작키의 프레임
-	bool IsFlipHoriz() { return (dwDrawFlag & EFF_FLIP_HORIZ) != 0; }
-	bool IsFlipVert() { return (dwDrawFlag & EFF_FLIP_VERT) != 0; }
+	bool IsFlipHoriz() const { return (dwDrawFlag & EFF_FLIP_HORIZ) != 0; }
+	bool IsFlipVert() const { return (dwDrawFlag & EFF_FLIP_VERT) != 0; }
 	void Clear() {
 		fAlpha = 1.f;
 		dwDrawFlag = 0;
@@ -176,6 +177,9 @@ struct CHANNEL_EFFECT {
 		fNextKeyFrame = fStartKeyFrame = 0.f;
 	}
 	void FrameMove( float dt, float frmCurr );
+	XE::xtBlendFunc GetfuncBlend() const {
+		return XE::ConvertDMTypeToBlendFunc( DrawMode );
+	}
 };
 
 
@@ -206,7 +210,19 @@ public:
 	GET_ACCESSOR( CHANNEL_EFFECT&, cnEffect );
 	GET_ACCESSOR( CHANNEL_ROT&, cnRot );
 	GET_ACCESSOR( CHANNEL_SCALE&, cnScale );
-	
+	const CHANNEL_POS& GetcnPosConst() const {
+		return m_cnPos;
+	}
+	const CHANNEL_ROT& GetcnRotConst() const {
+		return m_cnRot;
+	}
+	const CHANNEL_SCALE& GetcnScaleConst() const {
+		return m_cnScale;
+	}
+	const CHANNEL_EFFECT& GetcnEffConst() const {
+		return m_cnEffect;
+	}
+
 	void SetFlipHoriz( BOOL bFlag ) { ( bFlag ) ? m_cnEffect.dwDrawFlag |= EFF_FLIP_HORIZ : m_cnEffect.dwDrawFlag &= ~EFF_FLIP_HORIZ; }
 	void SetFlipVert( BOOL bFlag ) { ( bFlag ) ? m_cnEffect.dwDrawFlag |= EFF_FLIP_VERT : m_cnEffect.dwDrawFlag &= ~EFF_FLIP_VERT; }
 	void Transform( XE::VEC2 *pvOutPos ) { Transform( &pvOutPos->x, &pvOutPos->y ); }
@@ -246,6 +262,7 @@ public:
 	GET_SET_ACCESSOR( XSprite*, pSpriteCurr );
 	void Clear( void ) override { XLayerMove::Clear(); Init(); }
 	void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam ) override;
+	void DrawByParam( const XSprObj *pSprObj, const XE::xRenderParam& param ) const override;
 	DWORD GetPixel( float cx, float cy, float mx, float my, const MATRIX &m, BYTE *pa, BYTE *pr, BYTE *pg, BYTE *pb ) override;
 	int Serialize( XArchive& ar, XSprObj *pSprObj ) override;
 	int DeSerialize( XArchive& ar, XSprObj *pSprObj ) override;

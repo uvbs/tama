@@ -96,6 +96,9 @@ void XSprMng::Destroy( void )
 {
 	// 스레드부터 없애서 스레드간 충돌을 막는다.
 	DestroyThread();
+	//
+	m_listAsync.clear();
+	m_listAsyncComplete.clear();
 	// 캐시에 있는거 다 날림.
 	DoFlushCache();
 

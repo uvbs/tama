@@ -63,6 +63,7 @@ struct xRenderParam {
 	XE::VEC4 m_vColor;
 	DWORD m_dwDrawFlag = 0;
 	xtBlendFunc m_funcBlend;
+	int m_Priority;			// 배치모드 렌더에서 찍기 우선순위. 숫자가 클수록 먼저 찍힌다.
 	bool m_bAlphaTest;
 	bool m_bZBuff;
 	float m_adjZ;
@@ -72,7 +73,8 @@ struct xRenderParam {
 		, m_vColor( 1.f, 1.f, 1.f, 1.f )
 		, m_dwDrawFlag( 0 )
 		, m_funcBlend( xBF_MULTIPLY )
-		, m_adjZ( 0 ) 
+		, m_adjZ( 0 )
+		, m_Priority( 0 )
 		, m_bAlphaTest( false )
 		, m_bZBuff( false )
 // 		, m_Priority( 0 )

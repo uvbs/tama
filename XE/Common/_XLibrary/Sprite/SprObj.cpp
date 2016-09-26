@@ -18,6 +18,7 @@
 #include "XFramework/client/XClientMain.h"
 #include "etc/Debug.h"
 #include "XActObj2.h"
+#include "etc/XSurface.h"
 #include "SprObj.h"
 
 #ifdef WIN32
@@ -128,11 +129,14 @@ XSprObj::XSprObj( const _tstring& strFile,
 	m_spDat = LoadInternal( strFile.c_str(), hsl, bUseAtlas, bBatch, bAsync, &m_Async.m_idAsyncLoad );
 	if( m_spDat->m_pSprDat ) {
 		OnFinishLoad( m_spDat->m_pSprDat );
+		SetAction( idAct, loop );
 		if( m_funcLoadFinished ) {
 			m_funcLoadFinished( this );
 		}
+	} else {
+		// 비동기에선 아직 로딩이 안된상태이므로 setAction예약만.
+		SetAction( idAct, loop );
 	}
-	SetAction( idAct, loop );
 }
 
 // for lua
@@ -375,10 +379,12 @@ void XSprObj::SetAction( DWORD idAct, xRPT_TYPE playType, BOOL bExecFrameMove )
 #endif // _XASYNC_SPR
 		return;
 	}
-	if( _m_pObjActCurr 
-			&& idAct == GetAction()->GetID() 
-			&&	m_PlayType == playType ) {		// 이미 셋된 액션아이디로 다시 셋시킬순 없다
-		return;
+	if( _m_pObjActCurr ) {
+		const auto pActDat = _m_pObjActCurr->GetpAction();
+		// 이미 셋된 액션아이디로 다시 셋시킬순 없다
+		if( idAct == pActDat->GetID() &&	m_PlayType == playType ) {		
+			return;
+		}
 	}
 	m_fFrameCurrent = 0;
 	m_bFinish = FALSE;
@@ -426,13 +432,15 @@ void XSprObj::FrameMove( float dt )
 #ifdef _XASYNC_SPR
 	// 비동기 로딩중이면 진행안함. 로딩이 끝나면 SprMng쪽에서 pSprDat을 세팅함.
 	// 비동기로 예약된 setAction
+	auto async = m_Async;		// 복사본
 	if( m_Async.m_idAsyncLoad ) {
 		if( m_spDat->m_pSprDat ) {
 			OnFinishLoad( m_spDat->m_pSprDat );
 			if( m_Async.m_idAct ) {
-				SetAction( m_Async.m_idAct, m_Async.m_playType );
-				// 비동기 로딩 완료
 				m_Async.Clear();
+				SetAction( async.m_idAct, async.m_playType );
+				XBREAK( GetpObjActCurr() == nullptr );
+				// 비동기 로딩 완료
 				if( m_funcLoadFinished ) {
 					m_funcLoadFinished( this );
 				}
@@ -614,9 +622,11 @@ XSprObj* XSprObj::AddSprObj( LPCTSTR szSpr
 		return NULL;
 	}
 #endif
-	XSprObj *pSprObj = CreateSprObj( szSpr );
+//	XSprObj *pSprObj = CreateSprObj( szSpr );
+	auto pSprObj = new XSprObj( szSpr, XE::xHSL(), idAct, playMode, 
+															true, true, true, nullptr );
 	pSprObj->SetdwID( idSprObj );
-	pSprObj->SetAction( idAct, playMode );
+//	pSprObj->SetAction( idAct, playMode );
 	// 일단 최대 CreateObj키는 10개로 제한하자. SprDat가 로드될때 사전로드SprObj를 모든 액션에서 다 로드하면 효율이 안좋을것 같다
 	xUseSprObj useSpr;
 	useSpr.m_idActParent = idActParent;
@@ -693,6 +703,33 @@ void XSprObj::Draw( float x, float y, const MATRIX& mParent )
 	} else {
 		GetpObjActCurr()->Draw( 0, 0, mWorld, &EffectParam );
 	}
+}
+
+void XSprObj::DrawByParam( const XE::xRenderParam& _param ) const
+{
+#if defined(_XSPR_LAZY_LOAD) || defined(_XASYNC_SPR)
+	if( XBREAK( IsError() ) )
+		return;
+	if( IsAsyncLoading() ) {
+		return;
+	}
+#endif // defined(_XSPR_LAZY_LOAD) || defined(_XASYNC_SPR)
+	auto pObjAct = GetpObjActCurr();
+	if( pObjAct == nullptr )
+		return;
+	auto pAct = pObjAct->GetpAction();
+//	MATRIX mWorld, m;
+	XE::xRenderParam param = _param;
+	XBREAK( param.m_funcBlend == XE::xBF_NONE );
+	if( param.m_funcBlend == XE::xBF_NO_DRAW )
+		return;
+	const auto vScaleAct = pAct->GetvScale();
+	const auto v3RotAct = pAct->GetvRotate();
+	param.m_vScale *= vScaleAct;
+	param.m_vRot *= v3RotAct;
+	MATRIX mLocal;
+	param.GetmTransform( &mLocal );
+	GetpObjActCurr()->DrawByParam( this, param );
 }
 #endif // GL
 #ifdef _VER_DX

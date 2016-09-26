@@ -38,6 +38,7 @@
 using namespace XSKILL;
 using namespace XGAME;
 using namespace xnUnit;
+using namespace XE;
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -179,7 +180,13 @@ XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
 	//
 	CreateFSMObj();
 	//
-	m_psfcShadow = IMAGE_MNG->Load( XE::MakePath(DIR_IMG,_T("shadow.png")) );
+// 	m_psfcShadow = IMAGE_MNG->Load( XE::MakePath(DIR_IMG,_T("shadow.png")) );
+	const bool bUseAtlas = true;
+	const bool bAsync = true;
+	m_psfcShadow = IMAGE_MNG->LoadByBatch( PATH_IMG( "shadow.png" ), 
+																				 XE::xPF_ARGB4444,
+																				 bUseAtlas,
+																				 false, false, bAsync );
 	// 특성스킬 세팅
 #if defined(WIN32) && defined(_CHEAT)
 	if( IsCheatFiltered() )
@@ -229,12 +236,19 @@ void XBaseUnit::Release()
 */
 void XBaseUnit::OnCreate()
 {
+	const bool bBatch = true;
+	const bool bZBuff = true;
+	const bool bAsync = true;
 	SetScaleObj( GetPropScale() );
 	//
 	if( GetUnitSize() <= XGAME::xSIZE_MIDDLE ) {
-		m_psoHit = new XSprObj( _T( "eff_hit02.spr" ) );
-		m_psoHit->SetAction( 2, xRPT_1PLAY );
-		m_psoHit->DoFinish();	// 사전 로딩한거기땜에 애니메이션이 나오면 안되서.
+		m_psoHit = new XSprObj( _T( "eff_hit02.spr" ), XE::xHSL(), 2, xRPT_1PLAY, 
+														bBatch, bZBuff, bAsync, [this](XSprObj* pso) {
+//			m_bbLocal = GetBoundBoxLocal( pso, pso->GetAction() );
+			m_psoHit->DoFinish();	// 사전 로딩한거기땜에 애니메이션이 나오면 안되서.
+		});
+//		m_psoHit->SetAction( 2, xRPT_1PLAY );
+//		m_psoHit->DoFinish();	// 사전 로딩한거기땜에 애니메이션이 나오면 안되서.
 	}
 	// 유닛의 spr을 읽는다.
 // 	XE::VEC3 vHSL = GetHSL();  // virtual
@@ -248,8 +262,7 @@ void XBaseUnit::OnCreate()
 		// 적 유닛의 경우만 2버전을 쓴다. 영웅은 2버전이 없다.
 		strSpr = strTitle + _T( "2.spr" );
 	}
-	const bool bBatch = true;
-	LoadSpr( strSpr.c_str(), hsl, ACT_IDLE1, true, xRPT_LOOP );
+	LoadSpr( strSpr.c_str(), hsl, ACT_IDLE1, bBatch, bZBuff, xRPT_LOOP );
 	XBREAK( GetpSprObj() == nullptr );
 	XE::VEC2 vScale( GetScaleObj().x, GetScaleObj().z );
 	GetpSprObj()->SetScale( vScale );		// 꼼수로 GetBoundBoxLocal()을 위해 확대시켜둠
@@ -280,7 +293,9 @@ void XBaseUnit::OnFinishLoad( const XSprDat* pSprDat )
 	XBREAK( GetpSprObj() == nullptr );
 	if( GetpSprObj() && GetpSprObjConst()->GetAction() ) {
 		// IDLE상태크기의 바운딩박스를 미리 구해둠
-		m_bbLocal = GetBoundBoxLocal();	// propUnit의 vScale이 반영된 결과
+		// propUnit의 vScale이 반영된 결과
+		m_bbLocal = GetBoundBoxLocal( GetpSprObj(), 
+																	GetpSprObjConst()->GetAction() );
 		if( GetUnitType() == xUNIT_GOLEM ) {
 			m_bbLocal.vLT.Set( -36.f, -106.f );			// spr파일에 바운딩박스 값이 잘못돼서 직접 넣음.
 			m_bbLocal.vRB.Set( 36, 10 );
@@ -408,7 +423,7 @@ void XBaseUnit::FrameMove( float dt )
 		if( m_timerDisappear.IsOver() ) {
 			// 무덤 객체 생성
 			ID idAct = (ID)xRandom(1, 3);
-			auto pObj = new XObjLoop( GetvwPos(), _T( "obj_grave.spr" ), idAct, true, 60.f );
+			auto pObj = new XObjLoop( GetvwPos(), _T( "obj_grave.spr" ), idAct, true, true, 60.f );
 //			pObj->SetbZBuff( true );
 			const auto scaleFactor = GetScaleFactor();
 			pObj->SetScaleObj( scaleFactor );
@@ -426,7 +441,7 @@ void XBaseUnit::FrameMove( float dt )
 	if( GetpSprObjConst()->GetAction() ) {
 		// 로딩이 완료되면 IDLE상태크기의 바운딩박스를 미리 구해둠
 		if( m_bbLocal.vLT.IsZero() && m_bbLocal.vRB.IsZero() )
-			m_bbLocal = GetBoundBoxLocal();	// propUnit의 vScale이 반영된 결과
+			m_bbLocal = GetBoundBoxLocal( GetpSprObj(), GetpSprObj()->GetAction() );	// propUnit의 vScale이 반영된 결과
 	}
 #endif // _XASYNC_SPR
 	auto pWorld = GetpWndWorld()->GetspWorld();
@@ -571,8 +586,8 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 {
 	float scaleDraw = GetScaleObj().x * scale;
 	const float scaleFactor = GetScaleFactor();
-
 	scaleDraw *= scaleFactor;
+
 	// 정식선택되었을때 인디케이터
 	const XSPSquad& spSelect = XWndBattleField::sGet()->GetspSelectSquad();
 	BOOL bDrawSelect = FALSE;
@@ -622,12 +637,50 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 	}
 
 	if( m_psfcShadow /*&& m_psoSelect == NULL*/ ) {
-		XE::VEC2 vAdj = ( m_psfcShadow->GetSize() / -2.f ) * scaleDraw;;
-		m_psfcShadow->SetScale( scaleDraw );
-// 		m_psfcShadow->SetfAlpha( 0.8f * GetAlpha() );
-		m_psfcShadow->SetfAlpha( 1.0f * GetAlpha() );
-		m_psfcShadow->Draw( vPos + vAdj );
+		const XE::VEC2 vAdj = ( m_psfcShadow->GetSize() / -2.f ) * scaleDraw;;
+//		m_psfcShadow->SetScale( scaleDraw );
+//		m_psfcShadow->SetfAlpha( 1.0f * GetAlpha() );
+//		m_psfcShadow->Draw( vPos + vAdj );
+		MATRIX mWorld;
+		MatrixIdentity( mWorld );
+		const auto v = vPos + vAdj;
+//		MatrixTranslation( mWorld, v.x, v.y, GetvwPos().y );
+		XE::xRenderParam param;
+// 		param.m_vPos.Set( v.x, v.y, GetvwPos().y );
+		param.m_vPos.Set( v.x, v.y, 0 );
+//		param.m_adjZ = -GetvwPos().y;
+		param.m_vScale = scaleDraw;
+		param.m_vColor.w = GetAlpha();
+		param.m_Priority = 1000;
+// 		auto prevZ = GRAPHICS->SetbEnableZBuff( false );
+		m_psfcShadow->DrawByParam( mWorld, param );
 	}
+} // draw shadow
+
+XE::VEC2 XBaseUnit::DrawHitSfx( float scale, float scaleFactor )
+{
+	XPROF_OBJ( "draw hit" );
+	XE::VEC2 v = GetvsCenter();
+	v += m_vHitOffset * scale;
+	// 맞는측의 크기에 비례해서 타격이펙트도 커진다.
+	m_psoHit->SetScale( scaleFactor * scale );
+	// 		m_psoHit->SetScale( scaleFactor * scaleProp * scale );
+#if defined(_CHEAT) && defined(WIN32)
+	if( !(XAPP->m_dwNoDraw & xBD_NO_DRAW_HIT_SFX) )
+#endif // defined(_CHEAT) && defined(WIN32)
+	{
+		XE::xRenderParam param;
+		param.m_vPos.Set( v.x, v.y, GetvwPos().y + 10.f );
+		param.m_vScale = scaleFactor * scale;
+		param.m_bZBuff = false;				// hitsfx만 레이어로 빼서 추가pass로 찍는다.
+		param.m_bAlphaTest = false;
+		param.m_adjZ = 10.f;
+//		m_psoHit->Draw( v );
+// 		MATRIX mWorld;
+// 		MatrixIdentity( mWorld );
+		m_psoHit->DrawByParam( param );
+	}
+	return v;
 }
 
 /**
@@ -640,24 +693,6 @@ float XBaseUnit::GetScaleFactor() const
 	} else {
 		return GetpPropUnit()->scale_factor;
 	}
-// 	float scaleFactor = 1.f;
-// 	if( IsHero() ) {
-// 		scaleFactor = 2.0f;
-// 	} else {
-// 		switch( GetUnitSize() ) {
-// 		case XGAME::xSIZE_SMALL:
-// 		if( m_pSquadObj->GetUnit() == XGAME::xUNIT_PALADIN )
-// 			scaleFactor = 1.5f;
-// 		break;
-// 		case XGAME::xSIZE_MIDDLE:
-// 			scaleFactor = 1.5f;
-// 			break;
-// 		case XGAME::xSIZE_BIG:
-// 			scaleFactor = 2.0f;
-// 			break;
-// 		}
-// 	}
-// 	return scaleFactor;
 }
 
 /**
@@ -716,16 +751,17 @@ void XBaseUnit::Draw( const XE::VEC2& vPos, float scale, float alpha )
 	// 이부분도 느림 피격이펙이 안나오고 있을때도 draw하는지 검사
 //#ifndef _XUZHU_HOME
 	if( m_psoHit && m_psoHit->IsFinish() == FALSE )	  {
-		XPROF_OBJ( "draw hit" );
-		XE::VEC2 v = GetvsCenter();
-		v += m_vHitOffset * scale;
-		// 맞는측의 크기에 비례해서 타격이펙트도 커진다.
-		m_psoHit->SetScale( scaleFactor * scale );
-// 		m_psoHit->SetScale( scaleFactor * scaleProp * scale );
-#if defined(_CHEAT) && defined(WIN32)
-		if( !(XAPP->m_dwNoDraw & xBD_NO_DRAW_HIT_SFX) )
-#endif // defined(_CHEAT) && defined(WIN32)
-			m_psoHit->Draw( v );
+		auto v = DrawHitSfx( scale, scaleFactor );
+// 		XPROF_OBJ( "draw hit" );
+// 		XE::VEC2 v = GetvsCenter();
+// 		v += m_vHitOffset * scale;
+// 		// 맞는측의 크기에 비례해서 타격이펙트도 커진다.
+// 		m_psoHit->SetScale( scaleFactor * scale );
+// // 		m_psoHit->SetScale( scaleFactor * scaleProp * scale );
+// #if defined(_CHEAT) && defined(WIN32)
+// 		if( !(XAPP->m_dwNoDraw & xBD_NO_DRAW_HIT_SFX) )
+// #endif // defined(_CHEAT) && defined(WIN32)
+// 			m_psoHit->Draw( v );
 	}
 //#endif
 	XE::VEC2 vDrawHp = vPos;
@@ -1972,7 +2008,7 @@ void XBaseUnit::OnEventCreateSfx( XSprObj *pSprObj,
 	XE::VEC3 vwPos = GetvwPos();
 	vwPos.y += 0.1f;
 	vwPos += vLocal;
-	XObjLoop *pEff = new XObjLoop( vwPos, szSpr, idAct, false, secLife );
+	auto pEff = new XObjLoop( vwPos, szSpr, idAct, true, false, secLife );
 	pEff->SetDir( m_Dir );
 	pEff->SetScaleObj( scale );
 	GetpWndWorld()->AddObj( XSPWorldObj(pEff) );
@@ -2237,62 +2273,62 @@ XObjLoop* XBaseUnit::sCreateSfxObj( XSPWorldObjConst spObj,
 	XObjLoop *pSfx = NULL;
 	if( !vPos.IsZero() ) {
 		pSfx = new XObjLoop( XGAME::xOT_SFX, XE::VEC3(vPos.x, 0, vPos.y),
-												szSpr, idAct, false, secPlay );
+												szSpr, idAct, true, false, secPlay );
 	} else {
 		if( createPoint == xPT_TARGET_CENTER ) {
 			// pTarget를 따라다니지 않음.
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvCenterWorld(),
-													szSpr, idAct, false, secPlay );
+													szSpr, idAct, true, false, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_BOTTOM ) {
 			// pTarget를 따라다니지 않음.
 			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, spObj, pObj->GetvwPos(),
-													szSpr, idAct, false, secPlay );
+													szSpr, idAct, true, false, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_POS ) {
 			if( secPlay > 0.f )
 				// pTarget를 따라다님
 				pSfx = new XObjLoop( XGAME::xOT_SFX, spObj
-													, szSpr, idAct, false, secPlay );
+													, szSpr, idAct, true, false, secPlay );
 			else
 				pSfx = new XObjLoop( XGAME::xOT_SFX, pObj->GetvwPos(),
-														szSpr, idAct, false, secPlay );
+														szSpr, idAct, true, false, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_TRACE_CENTER ) {
 			// 타겟의 중심을 따라다님
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
-													szSpr, idAct, false, secPlay );
+													szSpr, idAct, true, false, secPlay );
 			pSfx->SetvAdjust( 0.f, 0.f, -pObj->GetSize().h * 0.5f );
 		} else
 		if( createPoint == xPT_TARGET_TRACE_POS ) {
 			// 타겟의 좌표를 따라다님
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
-													szSpr, idAct, false, secPlay );
+													szSpr, idAct, true, false, secPlay );
 		} else
 		if( createPoint == xPT_TARGET_TRACE_BOTTOM ) {
 			pSfx = new XObjLoop( XGAME::xOT_FLOOR_OBJ, spObj,
-													szSpr, idAct, false, secPlay );
+													szSpr, idAct, true, false, secPlay );
 		} else
 		if( createPoint == xPT_ACTION_EVENT ) {
 //			TransformByObj( &m_vlActionEvent );
 			if( pUnit ) {
 				auto vwActionPos = pObj->GetvwPos() + pUnit->GetvlActionEvent();
 				pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, vwActionPos,
-														szSpr, idAct, false, secPlay );
+														szSpr, idAct, true, false, secPlay );
 			}
 		} else
 		if( createPoint == xPT_TARGET_TOP ) {
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvwTop( wAdjZ ),
-													szSpr, idAct, false, secPlay );
+													szSpr, idAct, true, false, secPlay );
 		} else 
 		if( createPoint == xPT_TARGET_TRACE_TOP ) {
 			// 타겟의 좌표를 따라다님
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj,
-													szSpr, idAct, false, secPlay );
+													szSpr, idAct, true, false, secPlay );
 			pSfx->SetvAdjust( 0.f, 0.f, -pObj->GetSize().h );
 		} else {
 			pSfx = new XObjLoop( XGAME::xOT_SFX, spObj, pObj->GetvCenterWorld(),
-													szSpr, idAct, false, secPlay );
+													szSpr, idAct, true, false, secPlay );
 		}
 	}
 

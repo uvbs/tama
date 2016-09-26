@@ -272,7 +272,7 @@ void XBatchRenderer::Render( const xCmd& cmd,
 // 	if( XBREAK( glIndexBuffer == 0 ) )
 // 		return;0
 	const bool bEff = (cmd.m_glsFactor == GL_SRC_ALPHA && cmd.m_gldFactor == GL_ONE);
-	if( cmd.m_bZBuffer || 1)	// zbuff가 사용되어야 하는것이고 이펙트류가 아니어야 한다.
+	if( cmd.m_bZBuffer )	// zbuff가 사용되어야 하는것이고 이펙트류가 아니어야 한다.
 		glEnable( GL_DEPTH_TEST );
 	else
 		glDisable( GL_DEPTH_TEST );

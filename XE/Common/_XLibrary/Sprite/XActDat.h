@@ -33,7 +33,7 @@ class XActDat
 	float m_RepeatMark;				// 도돌이표 위치
 	XE::VEC2 m_vBoundBox[2];			// 바운딩박스. LeftTop, RightBottom
 	XE::VEC2 m_vScale;		// 이 액션의 전체 스케일링
-	X3D::VEC3 m_vRotate;		// 이 액션의 전체 회전
+	XE::VEC3 m_vRotate;		// 이 액션의 전체 회전
 		
 	void Init( void ) {
 		memset( m_szActName, 0, sizeof(m_szActName) );
@@ -84,7 +84,7 @@ public:
 			m_vBoundBox[1].x < -9999.f || m_vBoundBox[1].y < -9999.f );
 	}
 	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vScale );
-	GET_SET_ACCESSOR_CONST( const X3D::VEC3&, vRotate );
+	GET_SET_ACCESSOR_CONST( const XE::VEC3&, vRotate );
 //	XBaseKey_Itor GetKeyItorBegin( void ) { return m_KeyList.begin(); }	
 	
 	void Create( void );

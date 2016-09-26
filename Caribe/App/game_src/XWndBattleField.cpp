@@ -99,13 +99,13 @@ int XWndBattleField::Process( float dt )
 void XWndBattleField::Draw( void )
 {
 	XWnd::Draw();
-	static XSprObj* s_psoMouse = new XSprObj( _T("unit_fallen_angel.spr"), 
-																						XE::xHSL(), 
-																						ACT_IDLE1, 
-																						xRPT_LOOP, 
-																						true, 
-																						true, 
-																						true,nullptr ); 
+	static auto s_psoMouse = std::make_shared<XSprObj>( _T( "unit_fallen_angel.spr" ),
+																											XE::xHSL(),
+																											ACT_IDLE1,
+																											xRPT_LOOP,
+																											true,
+																											true,
+																											true, nullptr );
 	s_psoMouse->FrameMove( 1.f );
 	MATRIX mWorld;
 	//	MatrixTranslation( m, vPos.x, vPos.y, z/* / 1000.f*/ );

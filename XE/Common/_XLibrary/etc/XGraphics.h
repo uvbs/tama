@@ -86,7 +86,7 @@ private:
 	static bool s_bBatchLoading;			// 배치렌더 서피스로 로딩하도록 활성화
 	bool m_bEnableZBuff = false;
 	bool m_bAlphaTest = false;		// 알파테스트 쉐이더 사용
-	int m_Priority = 0;			// 다음 draw의 찍기 우선순위. 값이 클수록 먼저 찍는다.
+//	int m_Priority = 0;			// 다음 draw의 찍기 우선순위. 값이 클수록 먼저 찍는다.
 													/**
 													스크린의 논리적 해상도. 게임의 논리적 해상도라고도 불린다.
 													기기는 해상도가 여러개지만 게임은 일정한 논리적 해상도를 정해두고 거기에 맞춰 게임을 만든다.
@@ -159,7 +159,7 @@ public:
 // 		m_bAlphaTest = bFlag;
 // 		return bPrev;
 // 	}
-	GET_SET_ACCESSOR_CONST( int, Priority );
+//	GET_SET_ACCESSOR_CONST( int, Priority );
 	inline XE::VEC2 GetLogicalScreenSize() {
 		return XE::VEC2( m_nWidth, m_nHeight );
 	}

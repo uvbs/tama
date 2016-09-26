@@ -334,10 +334,10 @@ class XObjLoop : public XEBaseWorldObj, public XSKILL::XSkillSfx
 	void Destroy();
 	//bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const override;
 public:
-	XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife=0.f );
-	XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife=0.f );
-	XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife = 0.f );
-	XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife = 0.f );
+	XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, bool bZBuff, float secLife=0.f );
+	XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, bool bZBuff, float secLife=0.f );
+	XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, bool bBatch, bool bZBuff, float secLife = 0.f );
+	XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, bool bZBuff, float secLife = 0.f );
 	virtual ~XObjLoop() { Destroy(); }
 	///< 
 //	GET_SET_BOOL_ACCESSOR( bZBuff );

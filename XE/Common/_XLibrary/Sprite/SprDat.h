@@ -110,10 +110,8 @@ public:
 	}
 	XActDat* GetAction( DWORD id ) {
 		int idx = m_indexFromID[id];
-#ifdef _XDEBUG
 		if( XBREAKF( idx == -1, "%s에 %d ID의 액션이 없다", m_strFile.c_str(), id ) ) 
 			idx = 0;		// 다운은 안되도록
-#endif
 		return m_ppActions[ idx ]; 
 	}
 	ID GetidActByRandom() const;

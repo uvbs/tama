@@ -48,7 +48,9 @@ XObjBullet::XObjBullet( ID idBullet,
 						LPCTSTR szSpr, ID idAct,
 						float secFly )
 	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), 
-										XGAME::xOT_ETC, vwSrc, szSpr, idAct, true )
+										XGAME::xOT_ETC, vwSrc, szSpr, idAct,
+										true,
+										true )
 {
 	Init();
 	m_idBullet = idBullet;
@@ -107,7 +109,7 @@ void XObjBullet::FrameMove( float dt )
 	GetpSprObj()->SetRotateZ( dAng );
 	if( timeLerp >= 1.0f )	{
 		if( m_sprArrive.empty() == false )		{
-			auto pSfx = new XObjLoop( vDst, m_sprArrive.c_str(), m_idActArrive, false );
+			auto pSfx = new XObjLoop( vDst, m_sprArrive.c_str(), m_idActArrive, true, false );
 			XBattleField::sGet()->AddObj( XSPWorldObj(pSfx) );
 			// 도착시 sfx가 지정되어있으면 타겟에게 생성하도록 한다.
 // 			if( m_spTarget != nullptr &&
@@ -256,7 +258,7 @@ void XObjArrow::OnArriveBullet( DWORD dwParam )
 		XE::VEC3 vwDst = GetvDst();
 		vwDst.x += 24 - random( 48 );
 		vwDst.y += 24 - random( 48 );
-		XObjLoop *pStuck = new XObjLoop( vwDst, _T("arrow_stuck.spr"), 1, true );
+		auto pStuck = new XObjLoop( vwDst, _T("arrow_stuck.spr"), 1, true, true );
 		XBattleField::sGet()->AddObj( XSPWorldObj(pStuck) );
 	}
 	XObjBullet::OnArriveBullet( dwParam );
@@ -383,7 +385,8 @@ void XObjRock::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 
 ////////////////////////////////////////////////////////////////
 XObjLaser::XObjLaser( LPCTSTR szSpr, const XE::VEC3& vwStart, const XE::VEC3& vwEnd )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwStart, szSpr, 1 )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwStart, szSpr, 1, 
+										false, false )
 {
 	Init();
 	///< 
@@ -438,7 +441,7 @@ void XObjLaser::FrameMove( float dt )
 		}
 		XE::VEC3 vDst = m_vwEnd;
 		vDst.y += 0.1f;
-		XObjLoop *pEff = new XObjLoop( vDst, _T( "eff_flame.spr" ), 2, 0.f );
+		auto pEff = new XObjLoop( vDst, _T( "eff_flame.spr" ), 2, true, false, 0.f );
 		if( m_vwStart.x < m_vwEnd.x )
 			pEff->SetRotateY( 180.f );
 		GetpWndWorld()->AddObj( XSPWorldObj( pEff ) );
@@ -471,8 +474,15 @@ void XObjLaser::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha )
  @brief 
  @param secLife 0은 한번만 플레이하고 중지. -1은 무한루프,>0 값은 해당 초동안 생존
 */
-XObjLoop::XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos, szSpr, idAct, bBatch )
+XObjLoop::XObjLoop( const XE::VEC3& vwPos, 
+										LPCTSTR szSpr, ID idAct, 
+										bool bBatch, bool bZBuff, 
+										float secLife/*=0.f*/ )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), 
+										XGAME::xOT_ETC, 
+										vwPos, 
+										szSpr, idAct, 
+										bBatch, bZBuff )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -482,8 +492,17 @@ XObjLoop::XObjLoop( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch,
 	XBREAK( GetpSprObj() == nullptr );
 }
 
-XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, vwPos, szSpr, 1, bBatch )
+XObjLoop::XObjLoop( int typeObj, 
+										const XE::VEC3& vwPos, 
+										LPCTSTR szSpr, ID idAct, 
+										bool bBatch, bool bZBuff,
+										float secLife/*=0.f*/ )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), 
+										typeObj, 
+										vwPos, 
+										szSpr, 1, 
+										bBatch,
+										bZBuff )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -493,8 +512,16 @@ XObjLoop::XObjLoop( int typeObj, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct,
 	XBREAK( GetpSprObj() == nullptr );
 }
 
-XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, spTrace->GetvwPos(), szSpr, idAct, bBatch )
+XObjLoop::XObjLoop( int typeObj, 
+										XSPWorldObjConst spTrace, 
+										LPCTSTR szSpr, ID idAct, 
+										bool bBatch, bool bZBuff, 
+										float secLife/*=0.f*/ )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), 
+										typeObj, 
+										spTrace->GetvwPos(), 
+										szSpr, idAct, 
+										bBatch, bZBuff )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -511,8 +538,17 @@ XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, LPCTSTR szSpr, ID idA
 /**
  @brief 이펙트 생성은 vwPos에 생성되나 spTrace를 참조해야 하는 버전
 */
-XObjLoop::XObjLoop( int typeObj, XSPWorldObjConst spTrace, const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct, bool bBatch, float secLife/*=0.f*/ )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), typeObj, vwPos, szSpr, idAct, bBatch )
+XObjLoop::XObjLoop( int typeObj, 
+										XSPWorldObjConst spTrace, 
+										const XE::VEC3& vwPos, 
+										LPCTSTR szSpr, ID idAct, 
+										bool bBatch, bool bZBuff,
+										float secLife/*=0.f*/ )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), 
+										typeObj, 
+										vwPos, 
+										szSpr, idAct, 
+										bBatch, bZBuff )
 {
 	Init();
 	m_timerLife.Set( secLife );
@@ -644,7 +680,7 @@ XSkillSfxReceiver::XSkillSfxReceiver( BIT bitCamp,
 																			float sec )
 	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(),
 										XGAME::xOT_SKILL_EFFECT, vwPos,
-										strSpr.c_str(), idAct, false )
+										strSpr.c_str(), idAct, true, false )
 	, XSkillReceiver( 1, XGAME::xMAX_PARAM, 0 )
 {
 	Init();
@@ -1028,7 +1064,11 @@ XObjFlame::XObjFlame( const XSPUnit& spAttacker,
 											float secLife,
 											BIT bitCampTarget,
 											LPCTSTR szSpr, ID idAct )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_DAMAGE, vwPos, szSpr, idAct, false )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), 
+										XGAME::xOT_DAMAGE, 
+										vwPos, 
+										szSpr, idAct, 
+										true, false )
 {
 	Init();
 	m_spAttacker = spAttacker;
@@ -1102,7 +1142,11 @@ void XObjFlame::FrameMove( float dt )
 //////////////////////////////////////////////////////////////////////////
 XObjRes::XObjRes( const XE::VEC3& vwPos, LPCTSTR szSpr, ID idAct
 									, const XVector<XGAME::xRES_NUM>& aryLoots )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos, szSpr, idAct, true )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), 
+										XGAME::xOT_ETC, 
+										vwPos, 
+										szSpr, idAct, 
+										true, true )
 //	, m_spCompMove( 20.f, XE::VEC2( 270.f, 290.f ) )
 {
 	m_psfcShadow = IMAGE_MNG->Load( PATH_IMG( "shadow.png" ) );
@@ -1204,7 +1248,7 @@ void XObjRes::Draw( const XE::VEC2& vPos, float scale/* = 1.f*/, float alpha )
 
 ////////////////////////////////////////////////////////////////
 XObjResNum::XObjResNum( const XE::VEC3& vwPos, XGAME::xtResource resType, int num )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), xOT_UI, vwPos, _T("obj_res.spr"), (int)resType+1, true )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), xOT_UI, vwPos, _T("obj_res.spr"), (int)resType+1, true, true )
 
 {
 	Init();

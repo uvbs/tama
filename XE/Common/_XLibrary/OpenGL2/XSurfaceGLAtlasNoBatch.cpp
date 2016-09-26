@@ -78,6 +78,7 @@ void XSurfaceGLAtlasNoBatch::Destroy()
 																										GetWidth(), GetHeight() );
 	XBREAK( IsbAtlas() == false );
 	XTextureAtlas::sRelease( m_glTexture );
+	m_glTexture = 0;
 	DestroyDevice();
 }
 
@@ -419,6 +420,10 @@ void XSurfaceGLAtlasNoBatch::DrawByParam( const MATRIX &mParent,
 				glBlendEquation( GL_FUNC_ADD );
 			}
 			CHECK_GL_ERROR();
+			if( paramRender.m_bZBuff )	
+				glEnable( GL_DEPTH_TEST );
+			else
+				glDisable( GL_DEPTH_TEST );			
 			MATRIX mWorld;
 			paramRender.GetmTransform( &mWorld );
 			MatrixMultiply( mWorld, mWorld, mParent );
@@ -437,6 +442,7 @@ void XSurfaceGLAtlasNoBatch::DrawByParam( const MATRIX &mParent,
 		}
 	} while( 0 );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glDisable( GL_DEPTH_TEST );
 	CHECK_GL_ERROR();
 }
 

@@ -535,7 +535,8 @@ public:
 	virtual XE::VEC2 DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp ) {
 		return vPos;
 	}
-		void DrawShadow( const XE::VEC2& vPos, float scale );
+	void DrawShadow( const XE::VEC2& vPos, float scale );
+	XE::VEC2 DrawHitSfx( float scale, float scaleFactor );
 	virtual void Release() override;
 	void OnEventCreateSfx( XSprObj *pSprObj, XBaseKey *pKey, float lx, float ly, float scale, LPCTSTR szSpr, ID idAct, xRPT_TYPE typeLoop, float secLifeTime, BOOL bTraceParent, float fAngle, float fOverSec );
 //	virtual void OnEventSprObj( XSprObj *pSprObj, XKeyEvent *pKey, float lx, float ly, ID idEvent, float fAngle, float fOverSec ) override;

@@ -201,9 +201,9 @@ XSurface* XImageMng::LoadByBatch( const _tstring& strRes,
 																	bool bSrcKeep, bool bMakeMask,
 																	bool bAsync ) 
 {
-	XGraphics::sSetEnableBatchLoading( true );
+	auto prev = XGraphics::sSetEnableBatchLoading( true );
 	auto psfc = _Load( true, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
-	XGraphics::sSetEnableBatchLoading( false );
+	XGraphics::sSetEnableBatchLoading( prev );
 	return psfc;
 }
 

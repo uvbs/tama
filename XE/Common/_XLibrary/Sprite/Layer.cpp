@@ -198,11 +198,11 @@ void XLayerImage::Draw( XSprObj *pSprObj,
 		auto vLocal = GetPos();
 		auto funcBlend = XE::xBF_MULTIPLY;
 		if( GetcnEffect().DrawMode != xDM_NONE ) {
-			//
+			// 구버전
 			BOOL bDelegateDraw = FALSE;
 			XDelegateSprObj *pDelegate = pSprObj->GetpDelegate();
 			XEFFECT_PARAM effParam;
-				if( pEffectParam ) {
+			if( pEffectParam ) {
 				effParam = *pEffectParam;
 				if( effParam.drawMode != xDM_ERROR )
 					funcBlend = effParam.GetfuncBlend();
@@ -239,9 +239,11 @@ void XLayerImage::Draw( XSprObj *pSprObj,
 				param.m_funcBlend = effParam.GetfuncBlend();
 				param.m_adjZ = effParam.m_adjZ;
 				param.m_bZBuff = GRAPHICS->IsbEnableZBuff();
-//				param.m_bZBuff = pSpr->IsBatch();
+				//				param.m_bZBuff = pSpr->IsBatch();
 				param.m_bAlphaTest = (param.m_bZBuff == true);
-				if( funcBlend == XE::xBF_ADD || funcBlend == XE::xBF_SUBTRACT ) {
+//				param.m_bAlphaTest = param.m_bAlphaTest;
+				if( effParam.fAlpha < 1.f 
+						|| funcBlend == XE::xBF_ADD || funcBlend == XE::xBF_SUBTRACT ) {
 					param.m_bZBuff = false;
 					param.m_bAlphaTest = false;
 				}
@@ -262,6 +264,65 @@ void XLayerImage::Draw( XSprObj *pSprObj,
 																										vPos + vLocal,
 																										mParent );
 		}
+	}
+}
+
+void XLayerImage::DrawByParam( const XSprObj *pSprObj,
+															 const XE::xRenderParam& _param ) const
+{
+	XSprite *pSpr = m_pSpriteCurr;
+	if( pSpr == nullptr )
+		return;
+	if( pSpr->GetpSurface() == nullptr )
+		return;
+	auto param = _param;
+	auto pSurface = pSpr->GetpSurface();
+	const auto& cnPos = GetcnPosConst();
+	const auto& cnRot = GetcnRotConst();
+	const auto& cnScale = GetcnScaleConst();
+	const auto& cnEff = GetcnEffConst();
+	MATRIX mParent;
+	MatrixIdentity( mParent );
+	param.m_vPos += cnPos.vPos;
+	param.m_vAdjAxis = GetvAdjAxis();
+	param.m_vRot.z += cnRot.fAngle;
+	param.m_vScale *= cnScale.m_vScale;
+	param.m_vColor.a *= cnEff.fAlpha;
+	param.SetFlipHoriz( cnEff.IsFlipHoriz() );
+	param.SetFlipVert( cnEff.IsFlipVert() );
+	param.m_funcBlend = cnEff.GetfuncBlend();		// 기본적으론 내부가 우선이지만
+	// 외부지정 파라메터와 내부 파라메터를 곱함( 둘중 하나라도 add면 add로 찍힘)
+	if( param.m_funcBlend == XE::xBF_ADD 
+			|| cnEff.GetfuncBlend() == XE::xBF_ADD )
+		param.m_funcBlend = XE::xBF_ADD;
+	// z버퍼 사용중이면 알파테스트는 무조건 true가 된다.
+	if( param.m_bZBuff )
+		param.m_bAlphaTest = true;
+	if( param.m_vColor.a < 1.f
+		|| param.m_funcBlend == XE::xBF_ADD || param.m_funcBlend == XE::xBF_SUBTRACT ) {
+		param.m_bZBuff = false;
+		param.m_bAlphaTest = false;
+	}
+	// 델리게이트가 있다면 델리게이트를 먼저실행함
+	bool bDelegateDraw = false;
+ 	auto pDelegate = pSprObj->GetpDelegate();
+	if( pDelegate )
+		bDelegateDraw
+		= pDelegate->OnDelegateDrawImageLayerBefore2( pSprObj,
+																								 pSpr,
+																								 this,
+																								 &param );
+	// 델리게이트에서 드로우를 하지 않았다면 자체드로우를 함.
+	if( bDelegateDraw == false ) {
+		// render
+		pSurface->DrawByParam( mParent, param );
+	}
+	// draw after
+	if( pDelegate ) {
+		pDelegate->OnDelegateDrawImageLayerAfter2( pSprObj,
+																							pSpr,
+																							this,
+																							&param );
 	}
 }
 
