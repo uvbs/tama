@@ -104,7 +104,7 @@ void XSceneWorld::OnDestroy()
 */
 static XUINT64 s_llStart = 0;
 static XUINT64 s_llPass = 0;
-XSceneWorld::XSceneWorld(XGame *pGame, SceneParamPtr& spBaseParam)
+XSceneWorld::XSceneWorld(XGame *pGame, XSPSceneParam& spBaseParam)
 	: XSceneBase( pGame, XGAME::xSC_WORLD )
 	, m_Layout(_T("layout_world.xml") )
 { 

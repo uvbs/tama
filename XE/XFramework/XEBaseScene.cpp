@@ -115,7 +115,7 @@ int XEBaseScene::Process( float dt )
 /**
  @brief 
 */
-void XEBaseScene::DoExit( ID idSceneNext, SceneParamPtr spParam/*=NULL*/ )
+void XEBaseScene::DoExit( ID idSceneNext, XSPSceneParam spParam/*=NULL*/ )
 {
 	// 이미 그 씬상태이면 아무것도 안함.
 	//	if( m_idScene == idSceneNext )		// 유황스팟 유저인카운터 씬때문에 이기능 삭제함.

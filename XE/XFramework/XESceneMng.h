@@ -4,10 +4,10 @@
 
 XE_NAMESPACE_START( XGAME )
 //
-struct xSPM_BASE {
+struct xSceneParamBase {
 	ID idParam;
 	std::string m_strParam;
-	virtual ~xSPM_BASE() {
+	virtual ~xSceneParamBase() {
 		idParam = 0;
 	}
 };
@@ -30,7 +30,7 @@ class XEBaseScene;
 class XESceneMng;
 class XEContent;
 
-typedef std::shared_ptr<XGAME::xSPM_BASE>	SceneParamPtr;
+typedef std::shared_ptr<XGAME::xSceneParamBase>	XSPSceneParam;
 
 ////////////////////////////////////////////////////////////////
 class XEDelegateSceneMng
@@ -41,9 +41,9 @@ public:
 	XEDelegateSceneMng() { Init(); }
 	virtual ~XEDelegateSceneMng() { Destroy(); }
 	//
-	virtual XEBaseScene* DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, SceneParamPtr& spParam ) = 0;
+	virtual XEBaseScene* DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, XSPSceneParam& spParam ) = 0;
 	virtual void DelegateOnDestroy( XEBaseScene *pScene ) {}
-	virtual void DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, SceneParamPtr spParam ) {}
+	virtual void DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, XSPSceneParam spParam ) {}
 };
 ////////////////////////////////////////////////////////////////
 class XESceneMng : public XWnd
@@ -55,7 +55,7 @@ private:
 	XEBaseScene *m_pScene;
 	ID m_idNextScene;		// 다음에 넘어가야할 씬
 	ID m_idLastScene;		// 이전에 파괴된 씬
-	SceneParamPtr m_spParam;		// 씬간에 전달되는 파라메터
+	XSPSceneParam m_spParam;		// 씬간에 전달되는 파라메터
 	XVector<XGAME::xSceneInfo> m_arySceneInfos;		// 각 씬들의 정보.
 	void Init() {
 		m_pGame = NULL;
@@ -73,7 +73,7 @@ public:
 	GET_SET_ACCESSOR( ID, idNextScene );
 	GET_ACCESSOR( ID, idLastScene );
 	GET_SET_ACCESSOR( XEBaseScene*, pScene );
-	GET_SET_ACCESSOR( SceneParamPtr&, spParam );
+	GET_SET_ACCESSOR( XSPSceneParam&, spParam );
 	void OnCheatMode( void );
 	void AddSceneInfo( const XGAME::xSceneInfo& info ) {
 		m_arySceneInfos.Add( info );
@@ -85,7 +85,7 @@ public:
 	const XGAME::xSceneInfo GetSceneInfo( ID idScene );
 	int Process( float dt ) override;
 	void Release() override;
-	XEBaseScene* CreatePreNextScene( ID idNextScene, SceneParamPtr& spParam );
+	XEBaseScene* CreatePreNextScene( ID idNextScene, XSPSceneParam& spParam );
 	void OnDestroyBridge( XEBaseScene *pScenePreCreated );
 	void DestroyCurrScene();
 };

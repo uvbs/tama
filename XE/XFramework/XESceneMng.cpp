@@ -35,7 +35,7 @@ void XESceneMng::Release()
 /**
  @brief 다음에 불려지게 될 씬을 생성만하고 씬리스트엔 올리지 않는다.
 */
-XEBaseScene* XESceneMng::CreatePreNextScene( ID idNextScene, SceneParamPtr& spParam )
+XEBaseScene* XESceneMng::CreatePreNextScene( ID idNextScene, XSPSceneParam& spParam )
 {
 	if( XASSERT(m_pDelegate) ) {
 		auto pScene = m_pDelegate->DelegateCreateScene( this, idNextScene, spParam );

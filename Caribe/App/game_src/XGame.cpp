@@ -432,7 +432,7 @@ XSceneBase* XGame::GetpScene()
 }
 
 // idScene에 해당하는 씬객체를 생성해서 돌려줘야 한다.
-XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, SceneParamPtr& spParam )
+XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, XSPSceneParam& spParam )
 {
 	XSceneBase *pScene = nullptr;
 	GAME->ClearBrilliant();
@@ -551,7 +551,7 @@ void XGame::DelegateOnDestroy( XEBaseScene *pScene )
 	DestroySeq();
 }
 
-void XGame::DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, SceneParamPtr spParam ) 
+void XGame::DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, XSPSceneParam spParam ) 
 {
 	if( idSceneDestroy == xSC_WORLD && idSceneNext == xSC_START ) {
 		if( spParam && spParam->m_strParam == "change_lang" ) {
@@ -999,7 +999,7 @@ int XGame::OnGotoStart( XWnd* pWnd, DWORD p1, DWORD p2 )
 	GAMESVR_SOCKET->ClearConnection();
 //	XAccount::sGetPlayer().reset();
 	ID idParam = p1;
-	SceneParamPtr spParam = std::make_shared<XGAME::xSPM_BASE>();
+	XSPSceneParam spParam = std::make_shared<XGAME::xSceneParamBase>();
 	if( idParam == 1 )
 		spParam->m_strParam = "change_lang";
 	GAME->GetpScene()->DoExit( XGAME::xSC_START, spParam );

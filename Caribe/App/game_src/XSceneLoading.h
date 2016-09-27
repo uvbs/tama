@@ -14,7 +14,7 @@ class XSceneLoading : public XSceneBase
 public:
 	XSceneLoading* sGet();
 public:
-	XSceneLoading( XGame *pGame, SceneParamPtr& spParam );
+	XSceneLoading( XGame *pGame, XSPSceneParam& spParam );
 	virtual ~XSceneLoading() { Destroy(); }
 	//
 	// virtual
@@ -30,7 +30,7 @@ private:
 	static XSceneLoading* s_pSingleton;
 	XLayoutObj m_Layout;
 	int m_cntProcess = 0;
-	SceneParamPtr m_spParamForNext;		// 다음 연결될 씬을 위해 받아둠.
+	XSPSceneParam m_spParamForNext;		// 다음 연결될 씬을 위해 받아둠.
 	XEBaseScene *m_pSceneNextPreCreated = nullptr;		// 브릿지씬을 위해 미리생성시켜둔 브릿지 다음씬.
 private:
 	void Init()  {}

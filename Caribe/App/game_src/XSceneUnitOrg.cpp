@@ -48,7 +48,7 @@ void XSceneUnitOrg::Destroy()
 	SCENE_UNITORG = nullptr;
 }
 
-XSceneUnitOrg::XSceneUnitOrg(XGame *pGame, SceneParamPtr& spBaseParam)
+XSceneUnitOrg::XSceneUnitOrg(XGame *pGame, XSPSceneParam& spBaseParam)
 	: XSceneBase( pGame, XGAME::xSC_UNIT_ORG )
 //	: XSceneBase( pGame, XGAME::xSC_UNIT_ORG )
 	, m_Layout(_T("layout_unitorg.xml"))

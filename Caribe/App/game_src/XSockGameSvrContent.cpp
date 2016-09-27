@@ -424,18 +424,32 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 	XBREAK( info.m_Power == 0 );
 	XBREAK( info.m_Level == 0 );
 	// 전투시 필요한 기본정보.
-	xBattleStart bs;
-	bs.m_idEnemy = idAccEnemy;
-#ifndef _XSINGLE
-	bs.m_typeSpot = info.m_typeSpot;
-	bs.m_idSpot = info.m_idSpot;
-#endif // not _xSINGLE
-	bs.m_Level = info.m_Level;
-	bs.m_strName = info.m_strName;
-	bs.m_spLegion[ 0 ] = ACCOUNT->GetCurrLegion();
-	bs.m_spLegion[ 1 ] = pBaseSpot->GetspLegion();
-	bs.m_typeBattle = XGAME::xBT_NORMAL;
-	///< 
+// 	xBattleStart bs;
+// 	bs.m_idEnemy = idAccEnemy;
+// #ifndef _XSINGLE
+// 	bs.m_typeSpot = info.m_typeSpot;
+// 	bs.m_idSpot = info.m_idSpot;
+// #endif // not _xSINGLE
+// 	bs.m_Level = info.m_Level;
+// 	bs.m_strName = info.m_strName;
+// 	bs.m_spLegion[ 0 ] = ACCOUNT->GetCurrLegion();
+// 	bs.m_spLegion[ 1 ] = pBaseSpot->GetspLegion();
+// 	bs.m_typeBattle = XGAME::xBT_NORMAL;
+	XVector<XSPLegion> aryLegion(2);
+	aryLegion[0] = ACCOUNT->GetCurrLegion();
+	aryLegion[1] = pBaseSpot->GetspLegion();
+	auto spSceneParam 
+		= std::make_shared<XGAME::xSceneBattleParam>( idAccEnemy,
+																									info.m_typeSpot,
+																									info.m_idSpot,
+																									info.m_Level,
+																									info.m_strName,
+																									aryLegion,
+																									XGAME::xBT_NORMAL,
+																									0,
+																									info.m_idxStage,
+																									info.m_idxFloor );
+		///< 
 	XBREAK( snSession == 0 );
 	ACCOUNT->SetBattleSession( snSession
 													,	pBaseSpot->GetspLegion()
@@ -452,10 +466,11 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 				XBREAK( pSpot->GetnumSulfur() == 0 );
 				if( SCENE_BATTLE ) {
 					// 인카운터 유저 추가.
-					bs.m_idEnemy = pSpot->GetidEncounterUser();
+					spSceneParam->m_idEnemy = pSpot->GetidEncounterUser();
+//					bs.m_idEnemy = pSpot->GetidEncounterUser();
 					// 전투씬 파라메터를 밀어넣는다.
-					XSceneBattle::sSetBattleStart( bs );
-					SCENE_BATTLE->OnRecvBattleResultSulfurEncounter( pSpot, info );
+//					XSceneBattle::sSetBattleStart( bs );
+					SCENE_BATTLE->OnRecvBattleResultSulfurEncounter( pSpot, info, spSceneParam );
 				}
 			}
 		}

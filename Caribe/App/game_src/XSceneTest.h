@@ -23,7 +23,7 @@ class XSceneTest : public XSceneBase
 public:
 	XSceneTest* sGet();
 public:
-	XSceneTest( XGame *pGame, SceneParamPtr& spParam );
+	XSceneTest( XGame *pGame, XSPSceneParam& spParam );
 	virtual ~XSceneTest() { Destroy(); }
 	//
 	// virtual
@@ -40,7 +40,7 @@ protected:
 private:
 	static XSceneTest* s_pSingleton;
 	XLayoutObj m_Layout;
-	SceneParamPtr m_spParamForNext;		// 다음 연결될 씬을 위해 받아둠.
+	XSPSceneParam m_spParamForNext;		// 다음 연결될 씬을 위해 받아둠.
 //	DWORD* m_pAtlas = nullptr;
 	GLuint m_glTexture = 0;
 	xSplit::XNode* m_pRoot = nullptr;

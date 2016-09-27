@@ -1015,8 +1015,7 @@ public:
 // 	template<typename T>
 // 	XWndButton* SetButtHander( XWnd *pKeyRoot, const char *cKey, T funcCallback, DWORD param1 = 0 );
 	template<typename T>
-	XWnd* SetButtHander( XWnd *pKeyRoot, const char *cKey, T funcCallback, DWORD param1 = 0)
-	{
+	XWnd* SetButtHander( XWnd *pKeyRoot, const char *cKey, T funcCallback, DWORD param1 = 0)	{
 		typedef int ( XWnd::*CALLBACK_FUNC )( XWnd *, DWORD, DWORD );
 		if( XBREAK( pKeyRoot == NULL ) )
 			return nullptr;
@@ -1025,7 +1024,15 @@ public:
 			pButt->SetEvent( XWM_CLICKED, this, funcCallback, param1 );
 		return pButt;
 	}
-	
+	XWndButton* SetButtHander2( const char *cKey,
+															ID idEvent,
+															std::function<void( XWnd* )> func ) {
+		auto pButt = dynamic_cast<XWndButton*>( Find( cKey ) );
+		if( pButt )
+			pButt->SetEvent2( idEvent, func );
+		return pButt;
+	}
+
 	void SetbTouchableWithChild( bool bFlag );
 	virtual void GetDebugString( _tstring& strOut );
 	void SetbUpdateChilds();

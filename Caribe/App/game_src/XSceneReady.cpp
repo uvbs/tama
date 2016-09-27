@@ -35,7 +35,7 @@ void XSceneReady::Release()
 //	m_spParam.reset();
 }
 
-XSceneReady::XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam ) 
+XSceneReady::XSceneReady( XGame *pGame, XSPSceneParam& spBaseParam ) 
 	: XSceneBase( pGame, XGAME::xSC_READY )
 	, m_Layout(_T("layout_ready_battle.xml"))
 { 

@@ -27,7 +27,7 @@ void XSceneEquip::Destroy()
 	SCENE_EQUIP = NULL;
 }
 
-XSceneEquip::XSceneEquip(XGame *pGame, SceneParamPtr& spBaseParam)
+XSceneEquip::XSceneEquip(XGame *pGame, XSPSceneParam& spBaseParam)
 	: XSceneBase(pGame, XGAME::xSC_EQUIP)
 	, m_Layout(_T("layout_equip.xml"))
 	, m_LayoutTooltip( _T( "layout_item.xml" ) )

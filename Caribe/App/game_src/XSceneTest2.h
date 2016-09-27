@@ -21,7 +21,7 @@ class XSceneTest2 : public XSceneBase
 public:
 	XSceneTest2* sGet();
 public:
-	XSceneTest2( XGame *pGame, SceneParamPtr& spParam );
+	XSceneTest2( XGame *pGame, XSPSceneParam& spParam );
 	virtual ~XSceneTest2() { Destroy(); }
 	//
 	// virtual
@@ -38,7 +38,7 @@ protected:
 private:
 	static XSceneTest2* s_pSingleton;
 	XLayoutObj m_Layout;
-	SceneParamPtr m_spParamForNext;		// 다음 연결될 씬을 위해 받아둠.
+	XSPSceneParam m_spParamForNext;		// 다음 연결될 씬을 위해 받아둠.
 	DWORD* m_pAtlas = nullptr;
 	GLuint m_glTexture = 0;
 	xSplit::XNode* m_pRoot = nullptr;

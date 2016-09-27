@@ -147,17 +147,15 @@ XE_NAMESPACE_END;
 /**
  @brief 
 */
-XSceneBattle::XSceneBattle( XGame *pGame/*, SceneParamPtr& spBaseParam*/ ) 
+XSceneBattle::XSceneBattle( XGame *pGame, XSPSceneParam& spBaseParam ) 
 	: XSceneBase( pGame, XGAME::xSC_INGAME )
 	, m_aryCamp(2)
 	, m_aryBar(2)
 	, m_Layout(_T("layout_battle.xml"))
+	, m_spSceneParam( spBaseParam )
 { 
 	SPRMNG->DoFlushCache();
 	IMAGE_MNG->DoFlushCache();
-	// 전투때는 필요치 않으므로 날린다.
-// 	IMAGE_MNG->DoForceDestroy( PATH_UI("bg_popup_dark.png") );
-// 	IMAGE_MNG->DoForceDestroy( PATH_UI("map.png") );
 	//
 	XBREAK( SCENE_BATTLE != nullptr );
 	SCENE_BATTLE = this;
@@ -1114,16 +1112,31 @@ void XSceneBattle::DoPopupBattleResult( XGAME::xBattleResult& result )
 /**
  서버로부터 유황스팟 배틀 결과가 옴(인카운터!)
 */
-void XSceneBattle::OnRecvBattleResultSulfurEncounter( XSpotSulfur *pSpot
-																										, const XGAME::xBattleStartInfo& info )
+void XSceneBattle::OnRecvBattleResultSulfurEncounter(
+	XSpotSulfur *pSpot,
+	const XGAME::xBattleStartInfo& info,
+	std::shared_ptr<xSceneBattleParam> spParam )
 {
-	XBREAK( XSceneBattle::sIsEmptyBattleStart() );
+//	XBREAK( XSceneBattle::sIsEmptyBattleStart() );
+	XBREAK( spParam->IsInvalid() );
 	//
 	auto pPopup = new XWndEncounter( pSpot, info );
 	pPopup->SetEnableNcEvent( FALSE );		// 창밖터치로 꺼지지 못하게.
 	Add( pPopup );
 	pPopup->SetbModal( TRUE );
 	xSET_BUTT_HANDLER( pPopup, "butt.attack", &XSceneBattle::OnOkBattleResultSulfurEncounter );
+
+
+
+	sadfasdf
+
+
+
+
+	pPopup->SetButtHander2( "butt.attack", XWM_CLICKED, 
+													[this, spParam]( XWnd* ) {
+		DoExit( XGAME::xSC_INGAME, spParam );
+	} );
 	xSET_BUTT_HANDLER( pPopup, "butt.retreat", &XSceneBattle::OnSulfurRetreat );
 }
 
@@ -1144,7 +1157,7 @@ int XSceneBattle::OnOkHerosExp( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("OnOkHerosExp");
 	//
-	auto spParam = std::shared_ptr<XGAME::xSPM_BASE>(new XGAME::xSPM_BASE);
+	auto spParam = std::shared_ptr<XGAME::xSceneParamBase>(new XGAME::xSceneParamBase);
 	spParam->idParam = 1;
 	DoExit( XGAME::xSC_WORLD, spParam);
 	return 1;

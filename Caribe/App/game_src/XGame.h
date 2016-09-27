@@ -267,9 +267,9 @@ public:
 	void DestroyIncompletePurchase() {
 		SAFE_DELETE( m_pIncompletePurchase );
 	}
-	XEBaseScene* DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, SceneParamPtr& spParam ) override;
+	XEBaseScene* DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, XSPSceneParam& spParam ) override;
 	void DelegateOnDestroy( XEBaseScene *pScene );
-	void DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, SceneParamPtr spParam );
+	void DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, XSPSceneParam spParam );
 // 	// fsm
 	void DelegateOnCalcTimer( XSpot *pBaseSpot, const XTimer2& timerCalc );
 	DWORD OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const override;

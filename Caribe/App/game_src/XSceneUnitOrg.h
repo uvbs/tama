@@ -44,7 +44,7 @@ private:
 
 protected:
 public:
-	XSceneUnitOrg(XGame *pGame, SceneParamPtr& spBaseParam);
+	XSceneUnitOrg(XGame *pGame, XSPSceneParam& spBaseParam);
 	virtual ~XSceneUnitOrg(void) { Destroy(); }
 	///< 
 	//

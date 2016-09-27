@@ -16,7 +16,7 @@ class XWndStoragyItemElem;
 class XSceneEquip : public XSceneBase
 {
 public:
-	struct xSPM_EQUIP : public XGAME::xSPM_BASE
+	struct xSPM_EQUIP : public XGAME::xSceneParamBase
 	{
 		ID snHero;
 		XGAME::xtParts idxParts;
@@ -47,7 +47,7 @@ private:
 	void Destroy();
 protected:
 public:
-	XSceneEquip(XGame *pGame, SceneParamPtr& spBaseParam);
+	XSceneEquip(XGame *pGame, XSPSceneParam& spBaseParam);
 	virtual ~XSceneEquip(void) { Destroy(); }
 	//
 	// virtual

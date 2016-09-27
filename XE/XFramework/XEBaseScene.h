@@ -120,7 +120,7 @@ public:
 	}
 	//
 	void DrawTransition( void );
-	void DoExit( ID idNextScene, SceneParamPtr spParam = SceneParamPtr() );
+	void DoExit( ID idNextScene, XSPSceneParam spParam = XSPSceneParam() );
 	// virtual
 	// 앞으로 이거 쓰지말고 OnCreate를 쓸것
 	virtual void Create( void ) {}

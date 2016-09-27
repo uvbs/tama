@@ -140,7 +140,7 @@ private:
 
 protected:
 public:
-	XSceneWorld( XGame *pGame, SceneParamPtr& spBaseParam );
+	XSceneWorld( XGame *pGame, XSPSceneParam& spBaseParam );
 	~XSceneWorld() { Destroy(); }
 	
 	GET_ACCESSOR( XLayoutObj&, Layout );

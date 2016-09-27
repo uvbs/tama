@@ -31,7 +31,7 @@ private:
 	void Destroy();
 protected:
 public:
-	XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam );
+	XSceneReady( XGame *pGame, XSPSceneParam& spBaseParam );
 	virtual ~XSceneReady(void) { Destroy(); }
 	//
 	// virtual

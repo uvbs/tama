@@ -34,7 +34,7 @@ void XSceneTest2::Destroy()
 	s_pSingleton = nullptr;
 }
 
-XSceneTest2::XSceneTest2( XGame *pGame, SceneParamPtr& spParam ) 
+XSceneTest2::XSceneTest2( XGame *pGame, XSPSceneParam& spParam ) 
 	: XSceneBase( pGame, XGAME::xSC_TEST2 )
 { 
 	XBREAK( s_pSingleton != nullptr );	// 이미 생성되어있다면 잘못된것임.

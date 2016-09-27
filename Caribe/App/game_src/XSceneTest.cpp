@@ -206,7 +206,7 @@ void XSceneTest::Destroy()
 	s_pSingleton = nullptr;
 }
 
-XSceneTest::XSceneTest( XGame *pGame, SceneParamPtr& spParam ) 
+XSceneTest::XSceneTest( XGame *pGame, XSPSceneParam& spParam ) 
 	: XSceneBase( pGame, XGAME::xSC_TEST )
 //	, m_Layout(_T("scene_Sample.xml"))
 { 

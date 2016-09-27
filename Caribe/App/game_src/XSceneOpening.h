@@ -14,7 +14,7 @@ class XSceneOpening : public XSceneBase
 public:
 	XSceneOpening* sGet();
 public:
-	XSceneOpening( XGame *pGame, SceneParamPtr& spParam );
+	XSceneOpening( XGame *pGame, XSPSceneParam& spParam );
 	virtual ~XSceneOpening() { Destroy(); }
 	//
 	// virtual
@@ -29,7 +29,7 @@ protected:
 private:
 	static XSceneOpening* s_pSingleton;
 	XLayoutObj m_Layout;
-	SceneParamPtr m_spParamForNext;		// 다음 연결될 씬을 위해 받아둠.
+	XSPSceneParam m_spParamForNext;		// 다음 연결될 씬을 위해 받아둠.
 private:
 	void Init()  {}
 	void Destroy();
