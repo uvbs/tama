@@ -346,7 +346,7 @@ void XGame::DidFinishCreated()
 //  	m_psoTest = new XSprObj(_T("unit_paladin.spr"));
 //  	m_psoTest->SetAction( 98 );
 #ifdef _CHEAT
-	{
+	if( XAPP->m_bDebugMode ) {
 		const XE::VEC2 size( 32, 32 );
 		XE::VEC2 v( XE::GetGameWidth() - size.w, 0 );
 		auto 

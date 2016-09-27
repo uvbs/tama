@@ -8,6 +8,9 @@ LOCAL_MODULE := gamesrc_static
 LOCAL_MODULE_FILENAME := libgamesrc
 
 LOCAL_SRC_FILES := \
+XSceneTest2.cpp \
+XSceneTest.cpp \
+XWndStorageItemElem.cpp \
 XComp.cpp \
 XMsgUnit.cpp \
 XWndPopupDaily.cpp \
