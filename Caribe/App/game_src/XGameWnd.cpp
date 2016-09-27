@@ -43,6 +43,7 @@
 #include "_Wnd2/XWndButton.h"
 #include "_Wnd2/XWndProgressBar.h"
 #include "XHero.h"
+#include "XWndStorageItemElem.h"
 //#include "XPropTech.h"
 #ifdef _xIN_TOOL
 #include "CaribeView.h"
@@ -1207,12 +1208,12 @@ void XWndStatistic::CreateHerosUI( XWnd *pRoot, XSPLegionObj spLegionObj, float 
 		pWndBar->SetPosLocal( vBar );
 		pWndBar->SetLerp( lerp );
 		pRoot->Add( pWndBar );
-		auto pText = new XWndTextString( 0, 0, strNum.c_str(), FONT_NANUM, 18.f );
+		auto pText = new XWndTextString( 0, 0, strNum.c_str(), FONT_RESNUM, 18.f );
 		pText->SetStyleStroke();
 		auto vText = vBar;
 //		vText.y -= 10.f;
 //		vText.x += 3.f;
-		vText.y += 2.f;
+		vText.y += 3.f;
 		pText->SetPosLocal( vText );
 		if( side == XGAME::xSIDE_PLAYER )
 		{
@@ -2036,7 +2037,7 @@ void XWndUnitinfo::Update()
 	}
 	xSET_TEXT( this, "text.levelup.melee", XFORMAT( "%d", (int)statCurr.meleePower ) );
 	if( m_Unit == XGAME::xUNIT_CYCLOPS )
-		xSET_TEXT( this, "text.levelup.range", XFORMAT( "%d(광역)", (int)statCurr.rangePower ) );
+		xSET_TEXT( this, "text.levelup.range", XFORMAT( "%d(splash)", (int)statCurr.rangePower ) );
 	else
 		xSET_TEXT( this, "text.levelup.range", XFORMAT( "%d", (int)statCurr.rangePower ) );
 	xSET_TEXT( this, "text.levelup.def", XFORMAT( "%d", (int)statCurr.def ) );

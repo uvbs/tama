@@ -410,7 +410,7 @@ void XSurfaceGLAtlasBatch::CopySurface( XSurface *src )
 // }
 
 void XSurfaceGLAtlasBatch::DrawByParam( const MATRIX &mParent, 
-																						const XE::xRenderParam& paramRender ) const
+																				const XE::xRenderParam& paramRender ) const
 {
 	// 	if( XBREAK( XRenderCmdMng::sGetpCurrRenderer() == nullptr ) )
 	// 		return;

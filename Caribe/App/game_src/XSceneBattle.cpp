@@ -504,7 +504,7 @@ void XSceneBattle::CreateBattleUI()
 void XSceneBattle::CreateHeroesFace()
 {
 	// 여기서 생성되는 모든 서피스는 배치렌더용으로 생성.
-	auto bPrevBatch = XGraphics::sSetEnableBatchLoading( true );
+//	auto bPrevBatch = XGraphics::sSetEnableBatchLoading( true );
 	do 
 	{
 		auto pLayerFaces = GetpLayerFaces();		// ui batch renderer layer
@@ -560,7 +560,7 @@ void XSceneBattle::CreateHeroesFace()
 			} // if( pLegionObj ) {
 		}
 	} while (0);
-	XGraphics::sSetEnableBatchLoading( bPrevBatch );
+//	XGraphics::sSetEnableBatchLoading( bPrevBatch );
 }
 
 

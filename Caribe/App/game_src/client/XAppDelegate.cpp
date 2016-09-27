@@ -3,6 +3,7 @@
 #include "client/XAppMain.h"
 #include "JWWnd.h"
 #include "XWndTemplate.h"
+#include "XWndStorageItemElem.h"
 
 
 #ifdef WIN32

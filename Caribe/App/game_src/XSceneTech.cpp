@@ -22,6 +22,7 @@
 #include "XPropLegion.h"
 #endif // _XSINGLE
 #include "XImageMng.h"
+#include "XWndStorageItemElem.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -271,7 +272,8 @@ void XSceneTech::UpdateHeroList( XWnd *pRoot )
 				// 장착된 유닛을 그림.
 				auto pWndUnit = new XWndCircleUnit( pHero->GetUnit(), XE::VEC2( 40, 20 ), nullptr );
 				pWndUnit->SetbShowLevelSquad( true );
-				pButtHero->Insert( pButtHero->GetIdsName(), pWndUnit );
+//				pButtHero->Insert( pButtHero->GetIdsName(), pWndUnit );
+				pButtHero->Add( pWndUnit );
 				pList->AddItem( pHero->GetsnHero(), pButtHero );
 				// 장착된(?)유닛의 특성포인트를 표시
 				auto pImg = new XWndImage(PATH_UI("circle_bg_s.png"), XE::VEC2(21,0));

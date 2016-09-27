@@ -71,14 +71,14 @@ public:
 	static XSurface* s_pLastBackBuffer;			// 마지막으로 캡쳐된 백버퍼 화면
 	static void CaptureBackBuffer( BOOL bHighReso );
 	// 배치렌더 서피스로 생성하도록 활성화 한다.
-	static bool sSetEnableBatchLoading( bool bFlag ) {
-		auto bPrev = s_bBatchLoading;
-		s_bBatchLoading = bFlag;
-		return bPrev;
-	}
-	static bool sIsEnableBatchLoading() {
-		return s_bBatchLoading;
-	}
+// 	static bool sSetEnableBatchLoading( bool bFlag ) {
+// 		auto bPrev = s_bBatchLoading;
+// 		s_bBatchLoading = bFlag;
+// 		return bPrev;
+// 	}
+// 	static bool sIsEnableBatchLoading() {
+// 		return s_bBatchLoading;
+// 	}
 // 	static int sGetTotalDPCall();
 	static DWORD s_dwDraw;
 	static XFps s_fpsDPCallBatch, s_fpsDPCallNoBatch, s_fpsDPCallNormal;
@@ -505,6 +505,15 @@ public:
 													 , bool bSrcKeep/* = false*/
 													 , bool bMakeMask/* = false*/
 													 , bool bAsync/* = false*/ );
+	// batch용
+	XSurface* CreateSurface( bool bHighReso,
+													 LPCTSTR szRes,
+													 bool bBatch,
+													 XE::xtPixelFormat formatSurface,
+													 bool bUseAtlas,
+													 bool bSrcKeep,
+													 bool bMakeMask,
+													 bool bAsync );
 	inline XSurface* CreateSurface( LPCTSTR szRes
 																	, XE::xtPixelFormat formatSurface
 																	, bool bUseAtlas

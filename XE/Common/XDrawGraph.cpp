@@ -111,26 +111,26 @@ XProgressBar::XProgressBar( LPCTSTR szImg, LPCTSTR szImgBg, BOOL bHoriz )
 	Init();
 	XBREAK( XE::IsEmpty( szImg ) == TRUE );
 	m_bHoriz = bHoriz;
-	m_pSurface = IMAGE_MNG->LoadByBatch( XE::MakePath( DIR_UI, szImg ),
-																			 XE::xPF_ARGB4444,
-																			 true, false, false, false );
+	m_pSurface = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ),
+																XE::xPF_ARGB4444,
+																true, false, false, true );
 	if( szImgBg )
-		m_psfcBg = IMAGE_MNG->LoadByBatch( XE::MakePath( DIR_UI, szImgBg ),
-																			 XE::xPF_ARGB4444,
-																			 true, false, false, false );
+		m_psfcBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImgBg ),
+																XE::xPF_ARGB4444,
+																true, false, false, true );
 }
 
 XProgressBar::XProgressBar( const XE::VEC2& vPos, LPCTSTR szImg, LPCTSTR szImgBg, BOOL bHoriz )
 {
 	Init();
 	m_bHoriz = bHoriz;
-	m_pSurface = IMAGE_MNG->LoadByBatch( XE::MakePath( DIR_UI, szImg ),
-																			 XE::xPF_ARGB4444,
-																			 true, false, false, false );
-	if( XE::IsHave(szImgBg) )
-		m_psfcBg = IMAGE_MNG->LoadByBatch( XE::MakePath( DIR_UI, szImgBg ),
-																			 XE::xPF_ARGB4444,
-																			 true, false, false, false );
+	m_pSurface = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ),
+																XE::xPF_ARGB4444,
+																true, false, false, false );
+	if( XE::IsHave( szImgBg ) )
+		m_psfcBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImgBg ),
+																XE::xPF_ARGB4444,
+																true, false, false, false );
 	m_vPos = vPos;
 }
 

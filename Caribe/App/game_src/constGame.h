@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "defineAct.h"
-#include "defineGame.h"
+#include "../Resource/defineAct.h"
+#include "../Resource/defineGame.h"
 //#include "XPropItem.h"
 
 #ifdef _CLIENT

@@ -70,6 +70,7 @@ private:
 	float m_dAngZ;
 	BOOL m_bPixelPicking;		// 픽셀단위로 터치를 체크할것인가.
 	XCOLOR m_Color = XCOLOR_WHITE;
+	int m_Priority = 0;
 //	XVector<XEComponent*> m_aryAlphaComponent;
 	XEComponentMng m_compMngByAlpha;
 	void Init() {
@@ -165,7 +166,14 @@ public:
 	XWndImage( const XE::VEC2& vPos ) : XWnd( vPos ) {
 		Init();
 	}
-	XWndImage() { Init(); }
+	// batch모드용
+	XWndImage( const _tstring& strRes, 
+						 bool bBatch,
+						 XE::xtPixelFormat formatSurface, 
+						 const XE::VEC2& vPos );
+	XWndImage() {
+		Init();
+	}
 	virtual ~XWndImage() { Destroy(); }
 	//
 	virtual BOOL IsWndAreaIn( float lx, float ly );
@@ -173,6 +181,7 @@ public:
 protected:
 	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vAdjust );
 public:
+	GET_SET_ACCESSOR_CONST( int, Priority );
 // 	GET_SET_ACCESSOR( xDM_TYPE, Effect );
 // 	inline void SetBlendFunc( XE::xtBlendFunc func ) {
 // 		m_Effect = XE::ConvertBlendFuncDMTypeDmType( func );
@@ -187,7 +196,7 @@ public:
 	}
 private:
 	void Create( BOOL bHighReso, LPCTSTR szImg, bool bMakeMask = false, const XE::VEC2& sizeTexture = XE::VEC2() );
-	void Create( LPCTSTR szRes, XE::xtPixelFormat format, bool bMakeMask );
+	void Create( LPCTSTR szRes, XE::xtPixelFormat format, bool bBatch, bool bMakeMask );
 public:
 	GET_SET_ACCESSOR_CONST( XCOLOR, Color );
 	void Draw() override;
@@ -203,6 +212,7 @@ public:
 		SetSurface( strRes.c_str(), bAutoSizeParent );
 	}
 	void SetSurface( XSurface *pSurface );
+	void SetSurface( LPCTSTR szRes, bool bBatch, XE::xtPixelFormat formatSurface, bool bAutoSizeParent );
 	inline void SetSurfacePtr( XSurface *pSurface ) {
 		SetSurface( pSurface );
 	}
@@ -217,6 +227,9 @@ public:
 	}
 	inline void SetSurfaceRes( const _tstring& strRes, XE::xtPixelFormat format ) {
 		SetSurface( strRes.c_str(), format );
+	}
+	inline void SetSurfaceRes( const _tstring& strRes, XE::xtPixelFormat format, bool bBatch ) {
+		SetSurface( strRes.c_str(), bBatch, format, bBatch );
 	}
 	void SetSurface( const char* cKey, DWORD *pImg, int w, int h, bool bAutoSizeParent );
 	inline void SetSurface( const char* cKey, const XE::xImage& imgRaw, bool bAutoSizeParent = false ) {

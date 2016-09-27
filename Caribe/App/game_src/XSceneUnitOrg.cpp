@@ -22,6 +22,7 @@
 #include "_Wnd2/XWndButton.h"
 #include "_Wnd2/XWndProgressBar.h"
 #include "XHero.h"
+#include "XWndStorageItemElem.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -829,7 +830,7 @@ void XSceneUnitOrg::UpdateTrainingCenterButton( XHero *pHero )
 	if( ACCOUNT->GetNumRemainFreeSlot() == 0 ) {
 		// 톱니를 보이게 한다.
 		if( pGear == nullptr ) {
-			pGear = new XWndSprObj( _T( "wait.spr" ), 2, 76.f, 16.f );
+			pGear = new XWndSprObj( _T( "ui_loading.spr" ), 1, 76.f, 16.f );
 			pButt->Add( pGear );
 		}
 		pGear->SetbShow( true );

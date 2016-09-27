@@ -4,6 +4,7 @@
 * @date	2016/01/22 19:57
 *****************************************************************/
 #pragma once
+#ifdef _XTEST
 #include "XSceneBase.h"
 #include "XFramework/client/XLayoutObj.h"
 #include "OpenGL2/XGraphicsOpenGL.h"
@@ -12,6 +13,7 @@
 #define MAX_SPR2  1
 
 class XSprObj;
+class XWndStoragyItemElem;
 namespace xSplit {
 class XNode;
 }
@@ -43,11 +45,11 @@ private:
 	GLuint m_glTexture = 0;
 	xSplit::XNode* m_pRoot = nullptr;
 	ID m_idCurr = 0;
-#ifdef _XTEST
 	XSprObj* m_psoTest[MAX_SPR1 * MAX_SPR2];
-#endif // _XTEST
+	XVector<XWndStoragyItemElem*> m_aryCtrl;
 private:
 	void Init()  {}
 	void Destroy();
 };
 
+#endif // _XTEST

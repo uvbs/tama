@@ -99,24 +99,24 @@ int XWndBattleField::Process( float dt )
 void XWndBattleField::Draw( void )
 {
 	XWnd::Draw();
-	m_spsoMouse = std::make_shared<XSprObj>( _T( "unit_fallen_angel.spr" ),
-																					 XE::xHSL(),
-																					 ACT_IDLE1,
-																					 xRPT_LOOP,
-																					 true,
-																					 true,
-																					 true, nullptr );
-	m_spsoMouse->FrameMove( 1.f );
-	MATRIX mWorld;
-	//	MatrixTranslation( m, vPos.x, vPos.y, z/* / 1000.f*/ );
-	MatrixTranslation( mWorld, m_vsMouse.x, m_vsMouse.y, m_vwMouse.y );
-	if( m_pObjLayer ) {
-		auto prev = GRAPHICS->SetbEnableZBuff( true );
-		SET_RENDERER( m_pObjLayer->GetpRenderer() )	{
-			m_spsoMouse->Draw( XE::VEC2(0), mWorld );
-		} END_RENDERER;
-		GRAPHICS->SetbEnableZBuff( prev );
-	}
+// 	m_spsoMouse = std::make_shared<XSprObj>( _T( "unit_fallen_angel.spr" ),
+// 																					 XE::xHSL(),
+// 																					 ACT_IDLE1,
+// 																					 xRPT_LOOP,
+// 																					 true,
+// 																					 true,
+// 																					 true, nullptr );
+// 	m_spsoMouse->FrameMove( 1.f );
+// 	MATRIX mWorld;
+// 	//	MatrixTranslation( m, vPos.x, vPos.y, z/* / 1000.f*/ );
+// 	MatrixTranslation( mWorld, m_vsMouse.x, m_vsMouse.y, m_vwMouse.y );
+// 	if( m_pObjLayer ) {
+// 		auto prev = GRAPHICS->SetbEnableZBuff( true );
+// 		SET_RENDERER( m_pObjLayer->GetpRenderer() )	{
+// 			m_spsoMouse->Draw( XE::VEC2(0), mWorld );
+// 		} END_RENDERER;
+// 		GRAPHICS->SetbEnableZBuff( prev );
+// 	}
 }
 
 // void XWndBattleField::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat *pFontDat )

@@ -3,6 +3,7 @@
 #include "XGameEtc.h"
 #include "_Wnd2/XWndList.h"
 #include "_Wnd2/XWndButton.h"
+#include "XWndStorageItemElem.h"
 
 //#include "XGame.h"
 #include "XGameWnd.h"

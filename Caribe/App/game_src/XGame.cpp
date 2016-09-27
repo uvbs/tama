@@ -526,12 +526,12 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, Scen
 		pScene = new XScenePatchClient();
 		pScene->SetstrIdentifier( "scene.patch" );
 		break;
-#ifdef WIN32
+#ifdef _XTEST
 	case XGAME::xSC_TEST:
 		pScene = new XSceneTest( this, spParam );
 		pScene->SetstrIdentifier( "scene.test" );
 		break;
-#endif // WIN32
+#endif // _XTEST
 	case XGAME::xSC_LOADING: {
 		pScene = new XSceneLoading( this, spParam );
 		pScene->SetstrIdentifier( "scene.loading" );

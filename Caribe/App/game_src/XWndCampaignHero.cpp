@@ -13,10 +13,11 @@
 #include "XStageObjHero2.h"
 //#include "XGame.h"
 #include "XAccount.h"
-#include "JWWnd.h"
+//#include "JWWnd.h"
 //#include "XGameWnd.h"
 #include "XSockGameSvr.h"
 #include "XFramework/client/XEContent.h"
+#include "XWndStorageItemElem.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT

@@ -9,6 +9,7 @@
 #include "XWndTemplate.h"
 #include "XSoundMng.h"
 #include "_Wnd2/XWndButton.h"
+#include "XWndStorageItemElem.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

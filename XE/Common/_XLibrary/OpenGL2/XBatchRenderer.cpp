@@ -2,6 +2,8 @@
 #include "etc/XSurface.h"
 #include "opengl2/XGraphicsOpenGL.h"
 #include "OpenGL2/XSurfaceGLAtlasBatch.h"
+#include "FTGL/ftgles.h"
+#include "XE3d.h"
 #include "XBatchRenderer.h"
 
 #ifdef WIN32
@@ -43,88 +45,52 @@ void XBatchRenderer::RenderBatch()
 {
 	m_idTexPrev = 0;
 	m_numDPCall = 0;
-	std::sort( m_qCmds.begin(), m_qCmds.end(), 
-						 []( const xCmd& cmd1, const xCmd& cmd2 )->bool{
-		if( cmd1.m_Priority == cmd2.m_Priority ) {
-			if( cmd1.m_glTex == cmd2.m_glTex ) {
-				if( cmd1.m_pShader->GetglProgram() == cmd2.m_pShader->GetglProgram() ) {
-					if( cmd1.m_glsFactor == cmd2.m_glsFactor ) {
-						if( cmd1.m_gldFactor == cmd2.m_gldFactor ) {
-							if( cmd1.m_glBlendEquation == cmd2.m_glBlendEquation ) {
-								if( cmd1.m_bBlend == cmd2.m_bBlend ) {
-									if( cmd1.m_bZBuffer == cmd2.m_bZBuffer ) {
-										if( cmd1.m_ltViewport == cmd2.m_ltViewport ) {
-											return cmd1.m_idCmd < cmd2.m_idCmd;
-										} else {
-											// 소팅을 하려면 불변의 값을 가져야하므로 x,y,w,h를 모두 합한 값으로 사용함.
-											return (cmd1.GetSumViewport() > cmd2.GetSumViewport());
-										}
-									} else {
-										int b1 = (cmd1.m_bZBuffer) ? 0 : 1;
-										int b2 = (cmd2.m_bZBuffer) ? 0 : 1;
-										return (b1 > b2);
-									}
-								} else {
-									int b1 = (cmd1.m_bBlend) ? 0 : 1;
-									int b2 = (cmd2.m_bBlend) ? 0 : 1;
-									return (b1 > b2);
-								}
-							} else {
-								return (cmd1.m_glBlendEquation > cmd2.m_glBlendEquation);
-							}
-						} else {
-							return (cmd1.m_gldFactor > cmd2.m_gldFactor);
-						}
-					} else {
-						return (cmd1.m_glsFactor > cmd2.m_glsFactor);
-					}
-				} else {
-					return (cmd1.m_pShader->GetglProgram() > cmd2.m_pShader->GetglProgram());
-				}
-			} else {
-				return (cmd1.m_glTex > cmd2.m_glTex);
-			}
-		} else {
-			return (cmd1.m_Priority > cmd2.m_Priority);
-		}
-		return false;
-	}); // sort lambda
-	//////////////////////////////////////////////////////////////////////////
-	////////// render ////////////////////////////////////////////////////////
+	SortCmds();
+	RenderNormal();
+	RenderText();
+	m_qCmds.clear();
+}
+
+/**
+ @brief 렌더명령중 텍스트렌더는 빼고 실행한다.
+*/
+void XBatchRenderer::RenderNormal()
+{
 	std::vector<int> aryNumsBatch;		// dpcall 횟수?
 	int cnt2X = 0;
 	int maxRect = 6 * 64;		// 6개정점이 한 사각형
-//	XE::xVertex aryVertices[ 6 * 64 ];
 #ifndef _DEBUG
-	// 디버그모드에선 클리어를 하지 않아서 에러가 났을때 보이도록 함.
+// 디버그모드에선 클리어를 하지 않아서 에러가 났을때 보이도록 함.
 //	memset( aryVertices, 0, sizeof(XE::xVertex)* maxRect );
 #endif // not _DEBUG
-	auto pVertices = new XE::xVertex[ maxRect ];
+	auto pVertices = new XE::xVertex[maxRect];
 	const xCmd* pPrev = nullptr;
 	int cndDPCall = 0;
 	do {
 		int idx = 0;
 		// draw명령을 모두 순회하면서 같은속성끼리 모은다.
 		for( const auto& cmd : m_qCmds ) {
+			if( cmd.IsFont() )
+				continue;
 			if( pPrev == nullptr ) {
 				pPrev = &cmd;
 			}
 			bool bDiffAttr = false;
 			do {
 				// 이전명령과 비교해서 속성이 달라짐ㄴ
-				if( cmd.m_bBlend != pPrev->m_bBlend 
-						|| cmd.m_glTex != pPrev->m_glTex 
-						|| cmd.m_glsFactor != pPrev->m_glsFactor 
-						|| cmd.m_gldFactor != pPrev->m_gldFactor 
-						|| cmd.m_glBlendEquation != pPrev->m_glBlendEquation 
-						|| cmd.m_pShader != pPrev->m_pShader 
-						|| cmd.m_bZBuffer != pPrev->m_bZBuffer 
+				if( cmd.m_bBlend != pPrev->m_bBlend
+						|| cmd.m_glTex != pPrev->m_glTex
+						|| cmd.m_glsFactor != pPrev->m_glsFactor
+						|| cmd.m_gldFactor != pPrev->m_gldFactor
+						|| cmd.m_glBlendEquation != pPrev->m_glBlendEquation
+						|| cmd.m_pShader != pPrev->m_pShader
+						|| cmd.m_bZBuffer != pPrev->m_bZBuffer
 						|| (cmd.m_ltViewport != pPrev->m_ltViewport)
-						|| (cmd.m_sizeViewport != pPrev->m_sizeViewport) ) {		
+						|| (cmd.m_sizeViewport != pPrev->m_sizeViewport) ) {
 					bDiffAttr = true;
 					break;
 				}
-			} while (0);
+			} while( 0 );
 			if( bDiffAttr ) {
 				Render( *pPrev, idx, pVertices );
 				// 다시 초기화
@@ -132,7 +98,7 @@ void XBatchRenderer::RenderBatch()
 				idx = 0;
 #ifndef _DEBUG
 				// 디버그모드에선 클리어를 하지 않아서 에러가 났을때 보이도록 함.
-//				memset( aryVertices, 0, sizeof( XE::xVertex )* maxRect );
+				//				memset( aryVertices, 0, sizeof( XE::xVertex )* maxRect );
 #endif // not _DEBUG
 				maxRect = 6 * 64;
 				pVertices = new XE::xVertex[maxRect];
@@ -159,8 +125,65 @@ void XBatchRenderer::RenderBatch()
 		}
 	} while( 0 );
 	SAFE_DELETE_ARRAY( pVertices );
-	m_qCmds.clear();
 }
+void XBatchRenderer::SortCmds()
+{
+	std::sort( m_qCmds.begin(), m_qCmds.end(),
+						 []( const xCmd& cmd1, const xCmd& cmd2 )->bool {
+		XBREAK( cmd1.m_Font.m_idFont == 0 && cmd1.m_glTex == 0 );
+		XBREAK( cmd2.m_Font.m_idFont == 0 && cmd2.m_glTex == 0 );
+		if( cmd1.m_Font.m_idFont == cmd2.m_Font.m_idFont ) {
+			if( cmd1.m_Priority == cmd2.m_Priority ) {
+				if( cmd1.m_glTex == cmd2.m_glTex ) {
+					if( cmd1.m_pShader->GetglProgram() == cmd2.m_pShader->GetglProgram() ) {
+						if( cmd1.m_glsFactor == cmd2.m_glsFactor ) {
+							if( cmd1.m_gldFactor == cmd2.m_gldFactor ) {
+								if( cmd1.m_glBlendEquation == cmd2.m_glBlendEquation ) {
+									if( cmd1.m_bBlend == cmd2.m_bBlend ) {
+										if( cmd1.m_bZBuffer == cmd2.m_bZBuffer ) {
+											if( cmd1.m_ltViewport == cmd2.m_ltViewport ) {
+												return cmd1.m_idCmd < cmd2.m_idCmd;
+											} else {
+												// 소팅을 하려면 불변의 값을 가져야하므로 x,y,w,h를 모두 합한 값으로 사용함.
+												return (cmd1.GetSumViewport() > cmd2.GetSumViewport());
+											}
+										} else {
+											int b1 = (cmd1.m_bZBuffer) ? 0 : 1;
+											int b2 = (cmd2.m_bZBuffer) ? 0 : 1;
+											return (b1 > b2);
+										}
+									} else {
+										int b1 = (cmd1.m_bBlend) ? 0 : 1;
+										int b2 = (cmd2.m_bBlend) ? 0 : 1;
+										return (b1 > b2);
+									}
+								} else {
+									return (cmd1.m_glBlendEquation > cmd2.m_glBlendEquation);
+								}
+							} else {
+								return (cmd1.m_gldFactor > cmd2.m_gldFactor);
+							}
+						} else {
+							return (cmd1.m_glsFactor > cmd2.m_glsFactor);
+						}
+					} else {
+						return (cmd1.m_pShader->GetglProgram() > cmd2.m_pShader->GetglProgram());
+					}
+				} else {
+					return (cmd1.m_glTex > cmd2.m_glTex);
+				}
+			} else {
+				return (cmd1.m_Priority > cmd2.m_Priority);
+			}
+		} else {
+// 			const bool b1 = (cmd1.m_Font.m_pFont != nullptr);
+// 			const bool b2 = (cmd2.m_Font.m_pFont != nullptr);
+// 			return (b1 > b2);
+			return (cmd1.m_Font.m_idFont < cmd2.m_Font.m_idFont);
+		}
+		return false;
+	} ); // sort lambda
+} // sort
 
 void XBatchRenderer::ExtendBuffer( int idx, 
 																	int cnt2X, 
@@ -270,6 +293,80 @@ void XBatchRenderer::Render( const xCmd& cmd,
 	++m_numDPCall;
 	++s_cntDPCall;
 	XGraphics::s_fpsDPCallBatch.Process();
+}
+
+/**
+ @brief 렌더명령중 텍스트 출력만 실행한다.
+*/
+void XBatchRenderer::RenderText()
+{
+	for( const auto& cmd : m_qCmds ) {
+		if( cmd.IsFont() ) {
+			RenderFont( cmd.m_Font, cmd.m_v4Color );
+		}
+	}
+}
+
+void XBatchRenderer::RenderFont( const xRenderCmd::xFont& font, 
+																 const XE::VEC4& vColor )
+{
+	const XE::VEC2& v = font.m_vPos;
+	const float adjStyle = font.m_adjStyle;
+	XE::VEC4 vBgColor;
+	if( vColor.x == 0 && vColor.y == 0 && vColor.z == 0 )
+		vBgColor.Set( 1.f, 1.f, 1.f, vColor.a );
+	else
+		vBgColor.Set( 0, 0, 0, vColor.a );
+	if( font.m_Style == xFONT::xSTYLE_SHADOW ) {
+		// 1픽셀 우/하로 빗겨찍는다.
+		RenderStroke( v.x + adjStyle, v.y, font, vBgColor );
+	} else
+	if( font.m_Style == xFONT::xSTYLE_STROKE ) {
+		RenderStroke( v.x + font.m_adjStyle, v.y + font.m_adjStyle, font, vBgColor );
+		RenderStroke( v.x + font.m_adjStyle, v.y - font.m_adjStyle, font, vBgColor );
+		RenderStroke( v.x - font.m_adjStyle, v.y + font.m_adjStyle, font, vBgColor );
+		RenderStroke( v.x - font.m_adjStyle, v.y - font.m_adjStyle, font, vBgColor );
+	}
+	// 본체
+	RenderStroke( v, font, vColor );
+// 	MATRIX mModel, mWorld, mMVP;
+// 	MatrixScaling( mWorld, font.m_vScale.x, font.m_vScale.y, 1.f );
+// 	MatrixTranslation( mModel, font.m_vPos.x, font.m_vPos.y, 0 );
+// 	MatrixMultiply( mWorld, mWorld, mModel );
+// 	MatrixMultiply( mMVP, mWorld, font.m_mVP );
+// 	xFTGL::SetColor( vColor.x, vColor.y, vColor.z, vColor.a );
+// 	xFTGL::SetMatrixModelViewProjection( (void*)GetMatrixPtr( mMVP ) );
+// 	if( font.m_pFont ) {
+// 		font.m_pFont->Render( font.m_szString );
+// 	} else
+// 	if( font.m_pLayer ) {
+// 		font.m_pLayer->Render( font.m_szString, -1, FTPoint(), FTGL::RENDER_FRONT );
+// 	}
+}
+
+void XBatchRenderer::RenderStroke( float x, float y,
+																	 const xRenderCmd::xFont& font,
+																	 const XE::VEC4& vColor )
+{
+	MATRIX mModel, mWorld, mMVP;
+	MatrixScaling( mWorld, font.m_vScale.x, font.m_vScale.y, 1.f );
+	MatrixTranslation( mModel, x, y, 0 );
+	MatrixMultiply( mWorld, mWorld, mModel );
+	MatrixMultiply( mMVP, mWorld, font.m_mVP );
+	xFTGL::SetColor( vColor.x, vColor.y, vColor.z, vColor.a );
+	xFTGL::SetMatrixModelViewProjection( (void*)GetMatrixPtr( mMVP ) );
+	RenderFontInternal( font, vColor );
+}
+
+void XBatchRenderer::RenderFontInternal( const xRenderCmd::xFont& font,
+																				 const XE::VEC4& vColor )
+{
+	if( font.m_pFont ) {
+		font.m_pFont->Render( font.m_szString );
+	} else
+	if( font.m_pLayer ) {
+		font.m_pLayer->Render( font.m_szString, -1, FTPoint(), FTGL::RENDER_FRONT );
+	}
 }
 
 ID XBatchRenderer::GetidVertexBuffer( int idxDPCall )

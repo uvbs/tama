@@ -51,6 +51,7 @@ public:
 																, const char *cIdentifier ) {
 		return sUpdateCtrl( pRoot, szSpr, idAct, XE::VEC2(0), cIdentifier );
 	}
+	static XWndSprObj* sUpdateCtrl( XWnd *pRoot, LPCTSTR szSpr, ID idAct, bool bBatch, const XE::VEC2& vPos, const char *cIdentifier );
 private:
 //	BOOL m_bCreate;
 	BOOL m_bDraw;		// SetbShow()랑은 다른것임. 이건 차일드에 영향없음.
@@ -62,6 +63,7 @@ private:
 	XEDelegateSprObj *m_pDelegate = nullptr;
 	float m_secLife = 0.f;	// 0:loop -1:1play >0 : 생존시간
 	CTimer m_timerLife;
+	int m_Priority = 0;
 	void Init() {
 		m_pSprObj = NULL;
 //		m_bCreate = FALSE;
@@ -102,16 +104,17 @@ public:
 		: XWndSprObj( strSpr.c_str(), idAct, XE::VEC2(x,y), loopType ) {}
 	XWndSprObj( const _tstring& strSpr, ID idAct, int x, int y, xRPT_TYPE loopType = xRPT_LOOP )
 		: XWndSprObj( strSpr.c_str(), idAct, XE::VEC2( x, y ), loopType ) {}
-
+	XWndSprObj( LPCTSTR szSpr, ID idAct, bool bBatch, const XE::VEC2& vPos, xRPT_TYPE loopType );
 	//
 	virtual ~XWndSprObj() { Destroy(); }
 	//
 	GET_ACCESSOR( const XSprObj*, pSprObj );
-	GET_SET_ACCESSOR( xRPT_TYPE, loopType );
-	GET_SET_ACCESSOR( BOOL, bDraw );
+	GET_SET_ACCESSOR_CONST( xRPT_TYPE, loopType );
+	GET_SET_ACCESSOR_CONST( BOOL, bDraw );
 	GET_SET_ACCESSOR( XEDelegateSprObj*, pDelegate );
-	GET_SET_ACCESSOR( const XE::VEC3&, vRotate );
-	ID GetidAct();
+	GET_SET_ACCESSOR_CONST( const XE::VEC3&, vRotate );
+	GET_SET_ACCESSOR_CONST( int, Priority );
+	ID GetidAct() const;
 	// 델리게이트가 XEDelegateSprObj와 XDelegateSprObj로 나눠져있어 뽀록을 사용함 ㅠㅠ;
 	void SetpDelegateBySprObj( XDelegateSprObj *pDelegate );
 	inline void SetRotateX( float dAng ) {

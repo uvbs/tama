@@ -15,6 +15,7 @@
 #include "_Wnd2/XWndList.h"
 #include "_Wnd2/XWndButton.h"
 #include "Sprite/Layer.h"
+#include "XWndStorageItemElem.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT

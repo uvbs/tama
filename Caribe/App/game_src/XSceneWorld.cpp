@@ -36,6 +36,7 @@
 #include "XCampObj.h"
 #include "XWndPopupDaily.h"
 #include "opengl2/XTextureAtlas.h"
+#include "XWndStorageItemElem.h"
 //#include "Sprite/SprMng.h"
 #ifdef _xIN_TOOL
 #include "XDlgPropCloud.h"
@@ -62,7 +63,7 @@ using namespace XGAME;
 #define ID_SPOT_TOOL		50000		// 툴용 스팟의 윈도우 아이디 시작번호
 #define ID_WND_AREA_COST	60000		// XWnd id예약
 
-#define POS_GREEN_ALERT		XE::VEC2( 69, 2 )
+#define POS_GREEN_ALERT		XE::VEC2( 71, 2 )
 
 XSceneWorld *SCENE_WORLD = nullptr;
 
@@ -1202,7 +1203,7 @@ void XSceneWorld::AddGear( XWnd *pButt, const XE::VEC2& _vPos )
 		auto vPos = XE::VEC2(79,7);
 		if( _vPos.IsValid() )
 			vPos = _vPos;
-		auto pMark = new XWndSprObj( _T( "wait.spr" ), 2, vPos );
+		auto pMark = new XWndSprObj( _T( "ui_loading.spr" ), 1, vPos );
 		pMark->SetstrIdentifier( "icon.gear" );
 		pButt->Add( pMark );
 		auto pWndSound = new XWndPlaySound( 26, true );

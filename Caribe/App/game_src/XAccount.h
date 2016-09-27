@@ -12,7 +12,7 @@
 #include "XPropWorld.h"
 #include "XPropTech.h"
 #include "XGuild.h"
-#include "VerPacket.h"
+#include "../Resource/VerPacket.h"
 #include "XPropUpgrade.h"
 #include "XFramework/Game/XEComponents.h"
 #include "XPropSquad.h"

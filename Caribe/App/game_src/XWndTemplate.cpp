@@ -10,6 +10,7 @@
 #include "XHero.h"
 #include "XPropItem.h"
 #include "XSoundMng.h"
+#include "XWndStorageItemElem.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

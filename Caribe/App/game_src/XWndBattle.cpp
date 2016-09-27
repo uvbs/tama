@@ -4,8 +4,10 @@
 #include "XAccount.h"
 #include "XGame.h"
 #include "XLegion.h"
-#include "JWWnd.h"
+//#include "JWWnd.h"
 #include "_Wnd2/XWndProgressBar.h"
+#include "_Wnd2/XWndSprObj.h"
+#include "_Wnd2/XWndImage.h"
 #include "XUnitHero.h"
 #include "XSquadObj.h"
 #include "Sprite/Layer.h"
@@ -165,7 +167,7 @@ void XWndSkillButton::Draw( void )
 }
 //////////////////////////////////////////////////////////////////////////
 XWndFaceInBattle::XWndFaceInBattle( XSPSquad spSquadObj, int side )
-	: XWndStoragyItemElem( XE::VEC2(0), spSquadObj->GetpHero() )
+	: XWndStoragyItemElem( XE::VEC2(0), spSquadObj->GetpHero(), true )
 {
 	m_spSquadObj = spSquadObj;
 	m_Side = side;
@@ -178,10 +180,15 @@ XWndFaceInBattle::~XWndFaceInBattle()
 
 BOOL XWndFaceInBattle::OnCreate()
 {
-	auto pRed = new XWndImage( PATH_UI("common_bg_frame_red.png"), XE::VEC2( 3, 2 ) );
+	auto pRed = new XWndImage( PATH_UI("common_bg_frame_red.png"), 
+														 XE::VEC2( 3, 2 ) );
 	pRed->SetstrIdentifier( "rect.red" );
 	pRed->SetbShow( false );
 	Add( pRed );
+	const int lvHero = m_spSquadObj->GetpHero()->GetLevel();
+	SetLevel( lvHero );
+	SetbShowName( true );
+	SetbShowNum( false );
 	XWndStoragyItemElem::OnCreate();
 	auto pBar = new XWndProgressBar2();
 	pBar->SetstrIdentifier("bar.hp");

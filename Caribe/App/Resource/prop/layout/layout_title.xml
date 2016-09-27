@@ -2,12 +2,12 @@
 <layout font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf">
   <popup_nickname>
     <popup img="guild_popup_bg.png" key="img.popup.bg" nc_close="false">
-      <text posx="41" posy="78" width="324" font="font_text_b" align="hcenter" font_size="30" font_style="stroke" text="80154" />
-      <img posx="60" posy="105" file="option_input_box.png" key="img.input.box" format_surface="argb8888">
+      <text posx="center" posy="58" width="324" font="font_text_b" align="hcenter" font_size="30" font_style="stroke" text="80154" />
+      <img posx="center" posy="85" file="option_input_box.png" key="img.input.box" format_surface="argb8888">
         <text posx="0" posy="0" width="284" font="font_text_b" align="center" font_size="43" font_style="stroke" key="text.nickname" />
       </img>
-      <butt posx="160" posy="183" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80009"></butt>
-      <butt posx="365" posy="19" img_up="common_butt_x.png" key="butt.close">
+      <butt posx="center" posy="163" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.ok" font_style="stroke" text="80009"></butt>
+      <butt posx="right" posy="up" img_up="common_butt_x.png" key="butt.close">
         <!--x버튼-->
       </butt>
     </popup>

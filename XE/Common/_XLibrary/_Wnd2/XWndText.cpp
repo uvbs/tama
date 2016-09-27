@@ -695,3 +695,8 @@ XWndTextString* xSET_TEXT_FORMAT( XWnd *pRoot, const char *cKey, LPCTSTR strForm
 		XLOGXN( "xSET_TEXT_FORMAT: %s not found.", C2SZ( cKey ) );
 	return pText;
 };
+
+void XWndTextString::SetbBatch( bool bFlag )
+{
+	m_pFont->SetbBatch( bFlag );
+}

@@ -9,6 +9,7 @@
 #include "XSockGameSvr.h"
 #include "XExpTableHero.h"
 #include "skill/XSkillDat.h"
+#include "XWndStorageItemElem.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT

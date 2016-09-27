@@ -358,7 +358,7 @@ XWndImage* XWndSpot::UpdateHardMark( const char* cIdentifier, bool bShow )
 			pImg->SetX( -( vSize.w * 0.5f ) );
 			pImg->SetY( bb.vLT.y - vSize.h );
 			_tstring strImg = XE::Format( _T( "world_hard%d.png" ), lvHard + 2 );
-			pImg->SetSurfaceRes( XE::MakePath( DIR_UI, strImg ) );
+			pImg->SetSurfaceRes( XE::MakePath( DIR_UI, strImg ), XE::xPF_ARGB1555, true );
 		}
 		return pImg;
 	}
@@ -374,8 +374,13 @@ XWndSprObj* XWndSpot::UpdateExclamByQuest( const char* cIdentifier, bool bShow )
 		return SafeCast2<XWndSprObj*>( pExist );
 	}
 	if( m_pBaseSpot->IsEventSpot() && m_pBaseSpot->IsActive() ) {	
-		auto pWndSpr = XWndSprObj::sUpdateCtrl( this, _T("ui_exclam.spr"), 1, "spr.exclam" );
+		auto pWndSpr = XWndSprObj::sUpdateCtrl( this, 
+																						_T("ui_exclam.spr"), 1,
+																						true,						// bBatch
+																						XE::VEC2(0),
+																						"spr.exclam" );
 		if( pWndSpr ) {
+			pWndSpr->SetPriority( -500 );
 			auto bb = GetBoundBoxByVisibleLocal();
 			pWndSpr->SetY( 5.f );
 		}

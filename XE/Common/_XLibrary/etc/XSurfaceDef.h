@@ -59,6 +59,8 @@ inline xDM_TYPE ConvertBlendFuncDMTypeDmType( xtBlendFunc func ) {
 
 inline xtBlendFunc ConvertDMTypeToBlendFunc( xDM_TYPE drawMode ) {
 	switch( drawMode ) {
+	case xDM_NONE:
+		return XE::xBF_NO_DRAW;
 	case xDM_NORMAL:
 	case xDM_MULTIPLY:		
 		return XE::xBF_MULTIPLY;

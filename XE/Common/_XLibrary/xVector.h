@@ -726,6 +726,12 @@ namespace XE
 			a = rhs.w;
 			return *this;
 		}
+		inline void Set( float _x, float _y, float _z, float _w ) {
+			x = _x;
+			y = _y;
+			z = _z;
+			w = _w;
+		}
 	};
 }; // XE
 

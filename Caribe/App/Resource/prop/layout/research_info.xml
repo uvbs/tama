@@ -43,29 +43,7 @@
           <!--"연구비용(타이틀)"-->
         </text>
       </butt>
-      <butt posx="right" posy="5" img_up="common_butt_x.png" key="butt.close"></butt>
-      <_butt posx="200" posy="170" img_up="common_butt_reward.png" key="butt.close" format_surface="argb8888">
-        <!--취소버튼-->
-        <text posx="center" posy="center" font="font_text_s" text_col="white" font_size="20" font_style="stroke" text="3">
-          <!--99999-->
-        </text>
-      </_butt>
-      <_wnd posx="200" posy="40" key="">
-        <!---->
-        <img posx="0" poxy="0" file="world_top_wood.png">
-          <!--필요자원1(나무)-->
-          <text posx="20" posy="0" key="" text="17">
-            <!--필요자원-->
-          </text>
-          <text posx="70" posy="0" key="" text="17">
-            <!--보유자원-->
-          </text>
-        </img>
-        <img file="world_top_iron.png" posy="20" />
-        <img file="world_top_sulfur.png" posy="40"></img>
-        <img file="world_top_jewel.png" posy="60"></img>
-        <img file="world_top_mandrake.png" posy="80"></img>
-      </_wnd>
+      <butt posx="right" posy="up" img_up="common_butt_x.png" key="butt.close"></butt>
       <wnd posx="189" posy="30" width="132" height="106" key="wnd.res">
         <!--연구비용-->
       </wnd>
@@ -73,7 +51,7 @@
         <!--연구시간-->
         <wnd posx="center" posy="center">
           <img posx="10" posy="0" file="icon_clock.png">
-            <text posx="15" posy="center" key="text.time" text="1" font_size="20" font_style="stroke" font="font_text_s">
+            <text posx="15" posy="center" key="text.time" text="1" font_size="20" font_style="stroke" font="font_res_num">
               <!--연구시간-->
             </text>
           </img>

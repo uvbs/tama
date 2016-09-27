@@ -6,6 +6,7 @@
 
 
 class XFontDatFTGL;
+class XBatchRenderer;
 class XFontDatFTGL : public XBaseFontDat
 {
 	ID m_idFTGLFont;		// m_font가 새로 할당되면 아이디가 바뀜.(안드로이드를 위한 Restore가 생기면서 추가)
@@ -23,7 +24,7 @@ public:
 	}
 	virtual ~XFontDatFTGL() { Destroy(); }	
 	//
-	GET_ACCESSOR( ID, idFTGLFont );
+	GET_ACCESSOR_CONST( ID, idFTGLFont );
 	GET_ACCESSOR( FTFont*, font );
 	//
 	BOOL Create( LPCTSTR szFont, float fontSize, float outset );
@@ -49,7 +50,9 @@ public:
 		RestoreDevice(); 
 	}
 	void Reload2() override;
+private:
 	void _RenderStroke( float x, float y, LPCTSTR szStr, const MATRIX& mVP, float alpha );
+	float RenderBatch( XBatchRenderer* pRenderer, const XE::VEC2& vPos, LPCTSTR szString, XCOLOR color, xFONT::xtStyle style );
 };
 
 #endif // android

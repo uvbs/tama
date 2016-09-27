@@ -201,9 +201,9 @@ XSurface* XImageMng::LoadByBatch( const _tstring& strRes,
 																	bool bSrcKeep, bool bMakeMask,
 																	bool bAsync ) 
 {
-	auto prev = XGraphics::sSetEnableBatchLoading( true );
-	auto psfc = _Load( true, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
-	XGraphics::sSetEnableBatchLoading( prev );
+// 	auto prev = XGraphics::sSetEnableBatchLoading( true );
+	auto psfc = _Load( true, strRes.c_str(), format, true, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+// 	XGraphics::sSetEnableBatchLoading( prev );
 	return psfc;
 }
 
@@ -216,6 +216,7 @@ XSurface* XImageMng::LoadByBatch( const _tstring& strRes,
 XSurface* XImageMng::_Load( bool bHighReso, 
 														LPCTSTR _szRes, 
 														XE::xtPixelFormat format, 
+														bool bBatch,
 														bool bUseAtlas, 
 														bool bSrcKeep, bool bMakeMask, 
 														bool bAsync )
@@ -234,7 +235,7 @@ XSurface* XImageMng::_Load( bool bHighReso,
 	//////////////////////////////////////////////////////////////////////////
 	// 이미 로딩한것인지 이미지풀에서 szRes로 찾아봄
 	{
-		auto pImg = FindExist( strRes.c_str(), XGraphics::sIsEnableBatchLoading() );
+		auto pImg = FindExist( strRes.c_str(), bBatch );
 		if( pImg ) {
 			// 재로딩이 되었다면 로딩한 시간을 다시 갱신시킴
 			pImg->m_secLoaded = XTimer2::sGetTime();
@@ -243,7 +244,6 @@ XSurface* XImageMng::_Load( bool bHighReso,
 			return pImg->m_pSurface;
 		}
 	}
-	const bool bBatch = XGraphics::sIsEnableBatchLoading();
 	if( bAsync ) {
 		// 현재 배치로딩 활성화 여부에 따라 맞는 서피스를 생성해준다.
 		auto pSurface = (bBatch)
@@ -279,7 +279,7 @@ XSurface* XImageMng::_Load( bool bHighReso,
 		XE::LANG.ChangeToLangDir( strRes.c_str(), szLangPath );
 		strLoadTry = szLangPath;
 		auto llTime = XE::GetFreqTime();
-		auto pSurface = GRAPHICS->CreateSurface( bHighReso, szLangPath, format, 
+		auto pSurface = GRAPHICS->CreateSurface( bHighReso, szLangPath, bBatch, format, 
 																						 bUseAtlas, bSrcKeep, bMakeMask, bAsync );
 		auto llPass = XE::GetFreqTime() - llTime;
 		if( pSurface == nullptr ) {
@@ -289,6 +289,7 @@ XSurface* XImageMng::_Load( bool bHighReso,
 			llTime = XE::GetFreqTime();
 			pSurface = GRAPHICS->CreateSurface( bHighReso, 
 																					strRes.c_str(), 
+																					bBatch,
 																					format, 
 																					bUseAtlas,
 																					bSrcKeep, 
@@ -454,7 +455,7 @@ void XImageMng::DoFlushCache()
 			if( img.m_pSurface ) {
 // 				CONSOLE( "fush img:[%s]", img.m_pSurface->GetstrRes().c_str() );
 #ifdef _DEBUG
-				CONSOLE( "flush img:[%s]", img.m_strRes.c_str() );
+				XTRACE( "flush img:[%s]", img.m_strRes.c_str() );
 #endif // _DEBUG
 			}
 #endif // _DEBUG

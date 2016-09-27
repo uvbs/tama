@@ -726,7 +726,7 @@ void XSprObj::DrawByParam( const XE::xRenderParam& _param ) const
 	const auto vScaleAct = pAct->GetvScale();
 	const auto v3RotAct = pAct->GetvRotate();
 	param.m_vScale *= vScaleAct;
-	param.m_vRot *= v3RotAct;
+	param.m_vRot += v3RotAct;
 	MATRIX mLocal;
 	param.GetmTransform( &mLocal );
 	GetpObjActCurr()->DrawByParam( this, param );

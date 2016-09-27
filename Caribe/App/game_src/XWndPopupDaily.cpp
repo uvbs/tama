@@ -13,6 +13,7 @@
 #include "XSpotDaily.h"
 #include "XStruct.h"
 #include "XWndTemplate.h"
+#include "XWndStorageItemElem.h"
 #if _DEV_LEVEL <= DLV_DEV_PERSONAL
 #include "XCampObj.h"
 #endif

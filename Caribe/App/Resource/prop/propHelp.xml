@@ -517,7 +517,7 @@
   </indicate.unitorg>
   <indicate.level event="xAE_WHERE_QUEST" event_param="xQC_EVENT_LEVEL" stop_pos_x="550" stop_pos_y="0">
     <touch flag="yes" />
-    <indicate x="95" y="11" dir="left" />
+    <indicate x="61" y="39" dir="up" />
   </indicate.level>
   <indicate.resource.get event="xAE_WHERE_QUEST" event_param="xQC_EVENT_GET_RESOURCE">
     <touch flag="yes" />

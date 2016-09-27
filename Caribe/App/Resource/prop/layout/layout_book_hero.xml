@@ -134,7 +134,7 @@
       </text>
       <spr posx="75" posy="17" num="6" disty="24" key="spr.up." file="ui_upstat.spr" id_act="1" />
     </img>
-    <spr posx="90" posy="225" key="spr.train.before" flip="yes" />
+    <spr posx="90" posy="245" key="spr.train.before" flip="yes" />
   </sub_levelup>
   <sub_skillup>
     <img file="board03.png" posx="334" posy="127" scale_x="1.17">

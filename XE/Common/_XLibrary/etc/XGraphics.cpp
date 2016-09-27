@@ -607,11 +607,13 @@ void XGraphics::DrawPie( float x, float y
 	num++;
 	DrawFan( pos, col, idxAry, num );
 }
+
 /**
  @brief 파일로부터 이미지를 읽어서 서피스를 만든다.
 */
 XSurface* XGraphics::CreateSurface( bool bHighReso, 
 																		LPCTSTR szRes, 
+																		bool bBatch,
 																		XE::xtPixelFormat formatSurface, 
 																		bool bUseAtlas, 
 																		bool bSrcKeep/* = false*/, 
@@ -631,7 +633,7 @@ XSurface* XGraphics::CreateSurface( bool bHighReso,
 		XSurface* pSurface = nullptr;
 		const bool bTooBig = (sizeImgMem.w > 2048 || sizeImgMem.h > 2048 );
 		if( bUseAtlas && !bTooBig ) {
-			if(XGraphics::sIsEnableBatchLoading())
+			if(bBatch)
 				pSurface = GRAPHICS->CreateSurfaceAtlasBatch();
 			else
 				pSurface = GRAPHICS->CreateSurfaceAtlasNoBatch();
@@ -667,6 +669,17 @@ XSurface* XGraphics::CreateSurface( bool bHighReso,
 	}
 }
 
+XSurface* XGraphics::CreateSurface( bool bHighReso,
+																		LPCTSTR szRes,
+																		XE::xtPixelFormat formatSurface,
+																		bool bUseAtlas,
+																		bool bSrcKeep/* = false*/,
+																		bool bMakeMask/* = false*/,
+																		bool bAsync/* = false*/ )
+{
+	const bool bBatch = false;
+	return CreateSurface( bHighReso, szRes, bBatch, formatSurface, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+}
 
 XSurface* XGraphics::CreateSurface( const XE::POINT& sizeSurfaceOrig
 																	, const XE::VEC2& vAdj

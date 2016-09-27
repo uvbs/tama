@@ -526,6 +526,11 @@ public:
 	*/
 //	virtual void DrawBatch( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const = 0;
 	virtual void DrawByParam( const MATRIX &mParent, const XE::xRenderParam& paramRender ) const = 0;
+	void DrawByParam( const XE::xRenderParam& paramRender ) const {
+		MATRIX m;
+		MatrixIdentity( m );
+		DrawByParam( m, paramRender );
+	}
 	virtual void Draw( float x, float y ) = 0; //{ XBREAKF(1, "구현되지않음"); }
 	virtual void Draw( float x, float y, const MATRIX &mParent ) = 0;
 	inline void Draw( const XE::VEC2& vPos, const MATRIX &mParent ) {

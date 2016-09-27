@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 
-#include "defineGame.h"
+#include "../Resource/defineGame.h"
 #include "XFramework/XEBaseProp.h"
 #include "XArchive.h"
 

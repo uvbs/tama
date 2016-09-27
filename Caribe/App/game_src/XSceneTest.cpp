@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#ifdef _XTEST
 #include "XSceneTest.h"
 #include "XGame.h"
 #include "OpenGL2/XGraphicsOpenGL.h"
@@ -8,6 +9,7 @@
 #include "etc/XSurfaceDef.h"
 #include "Opengl2/XBatchRenderer.h"
 #include "XGameWnd.h"
+#include "XWndStorageItemElem.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -226,7 +228,6 @@ XSceneTest::XSceneTest( XGame *pGame, SceneParamPtr& spParam )
 void XSceneTest::Create( void )
 {
 	XSceneBase::Create();
-#ifdef _XTEST
 	for( int i = 0; i < MAX_SPR1 * MAX_SPR2; ++i ) {
 		const int maxFiles = XNUM_ARRAY( s_files );
 		const _tstring strFile = C2SZ( s_files[xRandom(maxFiles)] );
@@ -243,7 +244,26 @@ void XSceneTest::Create( void )
 //		m_psoTest[i]->SetRotateZ( (float)xRandom( 360 ) );
 		// 		m_psoTest[i]->SetDrawMode( (xDM_TYPE)(xDM_NORMAL + xRandom(5)) );
 	}
-#endif // _XTEST
+	XGAME::xReward reward;
+	reward.SetHero( 100 );
+	float scale = 0.5f;
+	XE::VEC2 vPos( 100, 100 );
+	for( int i = 0; i < 3; ++i ) {
+		auto pCtrl = new XWndStoragyItemElem( vPos, reward, false );
+//		pCtrl->SetbShowNum( true );
+		pCtrl->SetLevel( 10 );
+		pCtrl->SetScaleLocal( scale, scale );
+		m_aryCtrl.push_back( pCtrl );
+		Add( pCtrl );
+		vPos.x += 200.f;
+		scale *= 2.f;
+	}
+// 	m_aryCtrl.push_back(  );
+// 	m_aryCtrl.push_back( new XWndStoragyItemElem( XE::VEC2( 200, 100 ), reward, true ) );
+// 	m_aryCtrl.push_back( new XWndStoragyItemElem( XE::VEC2( 400, 100 ), reward, true ) );
+// 	//	m_pCtrl->SetLevel( 10 );
+// 	m_pCtrl->SetbShowNum( true );
+// 	Add( m_pCtrl );
 }
 
 /**
@@ -384,3 +404,4 @@ void XSceneTest::OnRButtonUp( float lx, float ly ) {
 // 	SAFE_DELETE( m_pRoot );
 }
 
+#endif // _TEST

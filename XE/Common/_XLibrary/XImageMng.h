@@ -54,58 +54,31 @@ private:
 	XSurface* _Load( bool bHighReso,
 									 LPCTSTR szRes, 
 									 XE::xtPixelFormat format, 
+									 bool bBatch,
 									 bool bUseAtlas,
 									 bool bSrcKeep, bool bMakeMask,
 									 bool bAsync );
 public:
-	// 구코드 호환용
-// 	XSurface* Load( BOOL bHighReso, LPCTSTR szRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask=FALSE, bool bAsync = false );
-// 	inline XSurface* Load( LPCTSTR szRes, bool bAsync, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE ) {
-// 		return _Load( true, szRes, XE::xPF_NONE, true, xBOOLToBool(bSrcKeep), xBOOLToBool(bMakeMask), bAsync );
-// 	}
-// 	inline XSurface* Load( const _tstring& strRes, bool bAsync, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE ) {
-// // 		return Load( TRUE, strRes.c_str(), bSrcKeep, bMakeMask, bAsync );
-// 		return _Load( true, strRes.c_str(), XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
-// 	}
-// 	inline XSurface* Load( const _tstring&& strRes, bool bAsync, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE ) {
-// //		return Load( TRUE, strRes.c_str(), bSrcKeep, bMakeMask, bAsync );
-// 		return _Load( true, strRes.c_str(), XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
-// 	}
-// 	XSurface* Load( bool bHighReso, LPCTSTR szRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
-// 		return _Load( bHighReso, szRes, XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
-// 	}
-// 	XSurface* Load( bool bHighReso, const _tstring& strRes, BOOL bSrcKeep = FALSE, BOOL bMakeMask = FALSE, bool bAsync = false ) {
-// 		return _Load( bHighReso, strRes.c_str(), XE::xPF_NONE, true, xBOOLToBool( bSrcKeep ), xBOOLToBool( bMakeMask ), bAsync );
-// // 		return Load( bHighReso, strRes.c_str(), bSrcKeep, bMakeMask );
-// 	}
-	// 신코드
-// 	XSurface* Load( bool bHighReso, 
-// 									LPCTSTR szRes, 
-// 									XE::xtPixelFormat format, 
-// 									bool bUseAtlas, 
-// 									bool bSrcKeep, bool bMakeMask, 
-// 									bool bAsync );
-// 	inline XSurface* Load( bool bHighReso, 
-// 												 const _tstring& strRes, 
-// 												 XE::xtPixelFormat format, 
-// 												 bool bUseAtlas, 
-// 												 bool bSrcKeep, bool bMakeMask, bool
-// 												 bAsync ) {
-// 		return Load( bHighReso, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
-// 	}
-	inline XSurface* Load( const _tstring& strRes, 
+	inline XSurface* Load( const _tstring& strRes,
+												 bool bBatch,
+												 XE::xtPixelFormat format,
+												 bool bUseAtlas,
+												 bool bAsync ) {
+		return _Load( true, strRes.c_str(), format, bBatch, bUseAtlas, false, false, bAsync );
+	}
+	inline XSurface* Load( const _tstring& strRes,
 												 XE::xtPixelFormat format, 
 												 bool bUseAtlas, 
 												 bool bSrcKeep, bool bMakeMask,
 												 bool bAsync ) {
-		return _Load( true, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+		return _Load( true, strRes.c_str(), format, false, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
 	}
 	inline XSurface* Load( const _tstring&& strRes, 
 												 XE::xtPixelFormat format, 
 												 bool bUseAtlas, 
 												 bool bSrcKeep, bool bMakeMask, 
 												 bool bAsync ) {
-		return _Load( true, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+		return _Load( true, strRes.c_str(), format, false, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
 	}
 	XSurface* LoadByBatch( const _tstring& strRes,
 												 XE::xtPixelFormat format,
@@ -114,12 +87,14 @@ public:
 												 bool bAsync );
 	//
 	inline XSurface* Load( const _tstring& strRes ) {
-		return Load( strRes.c_str(), XE::xPF_NONE, true, false, false, false );
+		return Load( strRes.c_str(), XE::xPF_NONE, true, false, false, true );
 	}
-// 	inline XSurface* Load( LPCTSTR szRes,
-// 												 XE::xtPixelFormat format ) {
-// 		return Load( szRes, format, true, false, false, false );
-// 	}
+	inline XSurface* LoadByBatch( const _tstring& strRes ) {
+		return LoadByBatch( strRes, XE::xPF_ARGB4444, true, false, false, true );
+	}
+	inline XSurface* LoadByBatch( const _tstring& strRes, XE::xtPixelFormat format ) {
+		return LoadByBatch( strRes, format, true, false, false, true );
+	}
 	inline XSurface* Load( const _tstring& strRes,
 												 XE::xtPixelFormat format ) {
 		return Load( strRes.c_str(), format, true, false, false, false );
@@ -128,18 +103,11 @@ public:
 												 XE::xtPixelFormat format, bool bSrcKeep ) {
 		return Load( strRes.c_str(), format, true, bSrcKeep, false, false );
 	}
-// 	inline XSurface* Load( const _tstring& strRes,
-// 												 XE::xtPixelFormat format, 
-// 												 bool bUseAtlas, 
-// 												 bool bSrcKeep, bool bMakeMask,
-// 												 bool bAsync ) {
-// 		return _Load( true, strRes.c_str(), format, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
-// 	}
 	inline XSurface* LoadByRetina( LPCTSTR szRes,
 																 XE::xtPixelFormat format,
 																 bool bUseAtlas,
 																 bool bAsync ) {
-		return _Load( false, szRes, format, bUseAtlas, false, false, bAsync );
+		return _Load( false, szRes, format, false, bUseAtlas, false, false, bAsync );
 	}
 	XSurface* CreateSurface( const char* cKey
 													, const XE::POINT& sizeSurfaceOrig

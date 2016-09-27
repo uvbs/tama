@@ -1,4 +1,6 @@
 ﻿#include "stdafx.h"
+#include "XStruct.h"
+#include "XWndStorageItemElem.h"
 #include "JBWnd.h"
 #include "XSoundMng.h"
 #include "client/XAppMain.h"

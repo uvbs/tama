@@ -410,6 +410,7 @@ void XSurfaceGLAtlasNoBatch::DrawByParam( const MATRIX &mParent,
 	//	XBREAK( GetsizeMem().IsZero() );
 	CHECK_GL_ERROR();
 	do {
+		XBREAK( paramRender.m_Priority );		// NoBatch에서는 이 옵션을 적용할 수 없다.
 		const auto blend = paramRender.m_funcBlend;
 		if( blend != xBF_NO_DRAW ) {
 			glEnable( GL_BLEND );

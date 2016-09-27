@@ -8,8 +8,9 @@
 #pragma once
 #include "_Wnd2/XWndPopup.h"
 #include "_Wnd2/XWndButton.h"
-#include "JWWnd.h"
+//#include "JWWnd.h"
 #include "Sprite/XDelegateSprObj.h"
+#include "XWndStorageItemElem.h"
 
 namespace XGAME {
 struct xBattleResult;

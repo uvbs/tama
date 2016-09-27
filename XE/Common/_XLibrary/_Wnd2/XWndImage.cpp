@@ -44,15 +44,16 @@ XWndImage* XWndImage::sUpdateCtrl( XWnd *pRoot
 	pCtrl->SetSurfaceRes( resImg );
 	return pCtrl;
 }
-
-
 //===========================================================
-XWndImage::XWndImage( LPCTSTR szRes, XE::xtPixelFormat formatSurface, float x, float y, bool bMakeMask )
+XWndImage::XWndImage( LPCTSTR szRes, 
+											XE::xtPixelFormat formatSurface, 
+											float x, float y, 
+											bool bMakeMask )
 	: XWnd( x, y )
 {
 	Init();
 	if( XE::IsHave( szRes ) ) {
-		Create( szRes, formatSurface, bMakeMask );
+		Create( szRes, formatSurface, false, bMakeMask );
 		if( m_pSurface )
 			SetSizeLocal( m_pSurface->GetSize() );
 		// 마스킹을 만들면 디폴트로 픽셀픽킹모드로 된다.
@@ -60,8 +61,24 @@ XWndImage::XWndImage( LPCTSTR szRes, XE::xtPixelFormat formatSurface, float x, f
 			SetbPixelPicking( TRUE );
 	}
 }
+/**
+ @brief batch모드용
+*/
+XWndImage::XWndImage( const _tstring& strRes, 
+											bool bBatch, 
+											XE::xtPixelFormat formatSurface, 
+											const XE::VEC2& vPos )
+	: XWnd( vPos )
+{
+	Init();
+	if( !strRes.empty() ) {
+		Create( strRes.c_str(), formatSurface, bBatch, false );
+		if( m_pSurface )
+			SetSizeLocal( m_pSurface->GetSize() );
+	}
+}
 
-void XWndImage::Destroy() 
+void XWndImage::Destroy()
 {
 //		if( m_bCreate )
 	SAFE_RELEASE2( IMAGE_MNG, m_pSurface );	// 레퍼런스 카운트로 관리되고 있으니 무조건 릴리즈해야 하는거 아닌가?
@@ -72,7 +89,8 @@ void XWndImage::Destroy()
  @brief szRes리소스 패스의 이미지파일을 읽는다.
  @param sizeTexture 기본적으로는 원래크기의 절반크기로 텍스쳐가 생성되지만 이 크기를 임의로 지정할 수 있다.(구현보류)
 */
-void XWndImage::Create( BOOL bHighReso, LPCTSTR szRes, bool bMakeMask, const XE::VEC2& sizeTexture )
+void XWndImage::Create( BOOL bHighReso, LPCTSTR szRes, 
+												bool bMakeMask, const XE::VEC2& sizeTexture )
 {
 	XBREAK( bHighReso == FALSE );	// 이제 무조건 TRUE로 바뀜
 	SAFE_RELEASE2(IMAGE_MNG, m_pSurface);
@@ -86,10 +104,23 @@ void XWndImage::Create( BOOL bHighReso, LPCTSTR szRes, bool bMakeMask, const XE:
 */
 void XWndImage::Create( LPCTSTR szRes
 											, XE::xtPixelFormat format
+											, bool bBatch
 											, bool bMakeMask )
 {
 	SAFE_RELEASE2(IMAGE_MNG, m_pSurface);
- 	m_pSurface = IMAGE_MNG->Load( szRes, format, true, false, bMakeMask, false );
+	if( bBatch ) {
+		m_pSurface = IMAGE_MNG->LoadByBatch( szRes, format,
+																				 true,
+																				 false,
+																				 bMakeMask,
+																				 false );
+	} else {
+		m_pSurface = IMAGE_MNG->Load( szRes, format,
+																	true,
+																	false,
+																	bMakeMask,
+																	false );
+	}
 	XBREAKF( m_pSurface == nullptr, "create fail. %s", szRes );
 //	m_bCreate = TRUE;
 }
@@ -117,17 +148,26 @@ void XWndImage::SetSurface( LPCTSTR szRes, bool bAutoSizeParent )
 {
 	SetSurface( szRes, XE::xPF_ARGB4444, bAutoSizeParent );
 }
-void XWndImage::SetSurface( LPCTSTR szRes, XE::xtPixelFormat formatSurface, bool bAutoSizeParent ) 
+
+void XWndImage::SetSurface( LPCTSTR szRes, 
+														XE::xtPixelFormat formatSurface,
+														bool bAutoSizeParent )
+{
+	SetSurface( szRes, false, formatSurface, bAutoSizeParent );
+}
+
+void XWndImage::SetSurface( LPCTSTR szRes, 
+														bool bBatch,
+														XE::xtPixelFormat formatSurface,
+														bool bAutoSizeParent ) 
 {
 	if( szRes == nullptr )
 		return;
 	//  같은 이미지를 세팅하려 했으면 다시 할필요 없음.
 	if( m_pSurface && m_pSurface->GetstrRes() == szRes )
 		return;
-//	if( m_bCreate )
-//		SAFE_RELEASE2(IMAGE_MNG, m_pSurface );
 	if( XE::IsHave(szRes) )	{
-		Create( szRes, formatSurface, false ); 
+		Create( szRes, formatSurface, bBatch, false ); 
 		if( bAutoSizeParent ) {
 			if( m_pParent ) {
 				XE::VEC2 sizeParent = m_pParent->GetSizeLocal();
@@ -271,16 +311,27 @@ void XWndImage::Draw()
 		const auto vAdjDrawFinal = GetvAdjDrawFinal();
 		const auto vPos = GetPosFinal() + vAdjDrawFinal + m_vAdjust;		// <<= m_vAdjust도 this의 스케일을 적용하는게 맞다. 지금은 이변수에 대한 외부의존이 높기때문에 건드리지 않는다.
 		const auto vScale = GetScaleFinal();
-		m_pSurface->SetRotateY( m_dAngY );
-		m_pSurface->SetRotateZ( m_dAngZ );
-		m_pSurface->SetScale( vScale );
-		m_pSurface->SetAdjustAxis( m_vAdjustAxis );
-		m_pSurface->SetfAlpha( GetAlphaFinal() );
-//		m_pSurface->SetDrawMode( GetblendFunc() );
-		m_pSurface->SetBlendFunc( GetblendFunc() );
-		m_pSurface->SetColor( m_Color );
-//		m_pSurface->SetColor( XCOLOR_RED );
-		m_pSurface->Draw( vPos );
+		XE::xRenderParam param;
+		param.m_vPos = vPos;
+		param.m_vRot = XE::VEC3( 0, m_dAngY, m_dAngZ );
+		param.m_vScale = vScale;
+		param.m_vAdjAxis = m_vAdjustAxis;
+		param.m_vColor.x = XCOLOR_RGB_R( m_Color ) / 255.f;
+		param.m_vColor.y = XCOLOR_RGB_G( m_Color ) / 255.f;
+		param.m_vColor.z = XCOLOR_RGB_B( m_Color ) / 255.f;
+		param.m_vColor.a = GetAlphaFinal();
+		param.m_funcBlend = GetblendFunc();
+		param.m_Priority = m_Priority;
+		m_pSurface->DrawByParam( param );
+
+// 		m_pSurface->SetRotateY( m_dAngY );
+// 		m_pSurface->SetRotateZ( m_dAngZ );
+// 		m_pSurface->SetScale( vScale );
+// 		m_pSurface->SetAdjustAxis( m_vAdjustAxis );
+// 		m_pSurface->SetfAlpha( GetAlphaFinal() );
+// 		m_pSurface->SetBlendFunc( GetblendFunc() );
+// 		m_pSurface->SetColor( m_Color );
+// 		m_pSurface->Draw( vPos );
 #ifdef _CHEAT
 		if( XWnd::s_bDebugMode )
 			CONSOLE("wndImg:pos=%d,%d", (int)vPos.x, (int)vPos.y );

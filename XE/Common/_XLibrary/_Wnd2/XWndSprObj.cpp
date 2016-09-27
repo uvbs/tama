@@ -4,6 +4,7 @@
 #include "sprite/SprObj.h"
 #include "sprite/XActObj2.h"
 #include "Sprite/XActDat.h"
+#include "etc/XSurface.h"
 #include "_Wnd2/XWndSprObj.h"
 
 #ifdef WIN32
@@ -48,6 +49,25 @@ XWndSprObj* XWndSprObj::sUpdateCtrl( XWnd *pRoot
 	return pCtrl;
 }
 
+XWndSprObj* XWndSprObj::sUpdateCtrl( XWnd *pRoot
+																		 , LPCTSTR szSpr
+																		 , ID idAct
+																		 , bool bBatch
+																		 , const XE::VEC2& vPos
+																		 , const char *cIdentifier )
+{
+	auto pCtrl = SafeCast2<XWndSprObj*>( pRoot->Find( cIdentifier ) );
+	if( pCtrl == nullptr ) {
+		pCtrl = new XWndSprObj( szSpr, idAct, bBatch, vPos, xRPT_LOOP );
+		pCtrl->SetstrIdentifier( cIdentifier );
+		XBREAK( pCtrl == nullptr );
+		pRoot->Add( pCtrl );
+	}
+	pCtrl->SetPosLocal( vPos );
+	pCtrl->SetSprObj( szSpr, idAct );
+	return pCtrl;
+}
+
 XWndSprObj::XWndSprObj( LPCTSTR szSpr, 
 												ID idAct, 
 												const XE::VEC2& vPos, 
@@ -62,6 +82,23 @@ XWndSprObj::XWndSprObj( LPCTSTR szSpr,
 		m_idAct = idAct;
 	}
 }
+
+XWndSprObj::XWndSprObj( LPCTSTR szSpr,
+												ID idAct,
+												bool bBatch,
+												const XE::VEC2& vPos,
+												xRPT_TYPE loopType/*=xRPT_LOOP*/ )
+	: XWnd( vPos.x, vPos.y )
+{
+	Init();
+	SetPosLocal( vPos );
+	if( XE::IsHave( szSpr ) ) {
+		CreateSprObj( szSpr, idAct, true, bBatch, false, loopType );
+		m_loopType = loopType;
+		m_idAct = idAct;
+	}
+}
+
 void XWndSprObj::Destroy() 
 {
 	SAFE_DELETE( m_pSprObj );
@@ -202,14 +239,21 @@ void XWndSprObj::Draw( void )
 	XPROF_OBJ_AUTO();
 //	XWnd::Draw();	// << 이걸왜 먼저 불렀지?
 	if( m_pSprObj && m_bDraw ) {
-		XE::VEC2 vScale = GetScaleFinal();
-		float alphaWin = GetAlphaFinal();
-		m_pSprObj->SetRotateX( m_vRotate.x );
-		m_pSprObj->SetRotateY( m_vRotate.y );
-		m_pSprObj->SetRotateZ( m_vRotate.z );
-		m_pSprObj->SetfAlpha( alphaWin );
-		m_pSprObj->SetScale( vScale );
-		m_pSprObj->Draw( GetPosFinal() );
+//		const XE::VEC2 vScale = GetScaleFinal();
+// 		float alphaWin = GetAlphaFinal();
+// 		m_pSprObj->SetRotateX( m_vRotate.x );
+// 		m_pSprObj->SetRotateY( m_vRotate.y );
+// 		m_pSprObj->SetRotateZ( m_vRotate.z );
+// 		m_pSprObj->SetfAlpha( alphaWin );
+// 		m_pSprObj->SetScale( vScale );
+// 		m_pSprObj->Draw( GetPosFinal() );
+		XE::xRenderParam param;
+		param.m_vPos = GetPosFinal();
+		param.m_vRot = m_vRotate;
+		param.m_vScale = GetScaleFinal();
+		param.m_vColor.a = GetAlphaFinal();
+		param.m_Priority = m_Priority;
+		m_pSprObj->DrawByParam( param );
 	}
 	XWnd::Draw();
 }
@@ -247,7 +291,7 @@ XE::xRECT XWndSprObj::GetBoundBoxByVisibleNoTrans()
 	}
 }
 
-ID XWndSprObj::GetidAct() 
+ID XWndSprObj::GetidAct() const
 {
 	return (m_pSprObj) ? m_pSprObj->GetActionID() : 0;
 }
