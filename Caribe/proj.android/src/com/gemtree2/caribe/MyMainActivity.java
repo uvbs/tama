@@ -1,4 +1,4 @@
-﻿package com.gemtree.caribe;
+﻿package com.gemtree2.caribe;
 
 import java.io.IOException;
 
@@ -32,19 +32,12 @@ import com.example.android.trivialdrivesample.util.Purchase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.mtricks.caribe.R;
-<<<<<<< HEAD
+import com.gemtree2.caribe.R;
 import com.mtricks.xe.Cocos2dxHelper;
-=======
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 import com.mtricks.xe.Cocos2dxHelper.Cocos2dxHelperListener;
 import com.mtricks.xe.XeActivity;
 
 // gcm 관련
-<<<<<<< HEAD
-=======
-/*
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -54,11 +47,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-<<<<<<< HEAD
 
-=======
-*/
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 
 public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener {
 	public static Version ver = new Version();
@@ -75,7 +64,6 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	{
 		Log.v(TAG, "id : \"" + id + "\" param1 : \"" + param1 + "\" parma2 : \"" + param2 +"\"" );
 		
-<<<<<<< HEAD
 //		if(id.equals("gcm_regid"))	{
 		if( id.equals("gcm_regid") ) {
 			return myActivity.regid;
@@ -87,19 +75,6 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
     	} else {
     		Log.e(TAG, "CppToJava:unknown id:" + id); 
     	}
-=======
-		if(id.equals("deviceid"))
-    	{
-			return myActivity.regid;
-    	}
-		else if(id.equals("buy"))
-    	{
-			myActivity.onBuyProduct(param1);
-			
-			return "";
-    	}
-		
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 		return "";
 	}
 
@@ -115,12 +90,8 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		
 		gcmInit();
 		
-<<<<<<< HEAD
 //		SendPush("hello xuzhu!");
 		Log.d( TAG, "model:" + Cocos2dxHelper.getDeviceModel() );
-=======
-		//SendPush("");
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 		
 		if(Version._XKOREA) {
 		    Log.d(TAG, "country: Korea");
@@ -130,12 +101,9 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		} else
 		if(Version._XINDONESIA) {
 		    Log.d(TAG, "country: Indonesia");
-<<<<<<< HEAD
 		} else 
 		if(Version._SOFTNYX) {
 		    Log.d(TAG, "country: softnyx");
-=======
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 		} else {
 		    Log.e(TAG, "country: unknown");
 		}
@@ -188,18 +156,12 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		
 		if(Version._XGOOGLE_IAP) {
 			String base64EncodedPublicKey;
-<<<<<<< HEAD
 			if(Version._XKOREA) {
 				// 가짜 키(해킹 혼란용)
 				base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm8bv6VAFIJdxVqUWDNqJvVVQ64jfMT2Iwd9NZNg8AX8XWrjhU7rljC7RGb+p+7XhGwty3LMS4fj8ooxwVz9Ce6cCXm82nqqf+JBMqcng8p3QbcmfKXBEoEZc6qBptPJe4i0uExPo5ncfX+14OhvYqBg0wHE4BTp9wPRKU4IygdPWzdp/n7bM3MhhNctWtDOl+q40cykPLpRhACNNk6jUijTB3A5I+lbHDObXTyUBkagNDF4Rq53RjGavTc1773mJKRKe1zzheV5FtyNIH9OWf4VQ1y3iUXXxkmkcebh1jaZhVzIbq1lozZ9wQPMSA4cRpqG7PpN8bgCX/MK6JAZwNQIDAQAB";
 				Log.d("caribe", "key:" + base64EncodedPublicKey );
 //				base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm5PqbcvMo7gjcKafqQ24mfI67rL/kF8vQFoVXqZnv/7WaUkFUqD9MdUWsDPhg1rb+3P4UHjnpE7a+JnUefnlJurI1edgifrkgtQtcmT9acrIctqTXbSHglEosceVF+R/1W3lD2aDp7TczJyhKUNH38ivRKC460479sUvqy4I9yNB8eN7t6KcBPvQ6t0eF5e65yd9pXq08srrNYSaAjNWFJdYMDG3X8P/MBFo+R0vUXtfz34uceYGDyMi/J2J4grng9KF1fcunOsgPnQiYdFLqebCEgC/wNxKkVViIAEYd0MjFeTkqkG/6H01WVSIz7tbQsumSjxBP7hcX4DiFlrnvQIDAQAB";
 			} else
-=======
-			if(Version._XKOREA)
-				base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm5PqbcvMo7gjcKafqQ24mfI67rL/kF8vQFoVXqZnv/7WaUkFUqD9MdUWsDPhg1rb+3P4UHjnpE7a+JnUefnlJurI1edgifrkgtQtcmT9acrIctqTXbSHglEosceVF+R/1W3lD2aDp7TczJyhKUNH38ivRKC460479sUvqy4I9yNB8eN7t6KcBPvQ6t0eF5e65yd9pXq08srrNYSaAjNWFJdYMDG3X8P/MBFo+R0vUXtfz34uceYGDyMi/J2J4grng9KF1fcunOsgPnQiYdFLqebCEgC/wNxKkVViIAEYd0MjFeTkqkG/6H01WVSIz7tbQsumSjxBP7hcX4DiFlrnvQIDAQAB";
-			else
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 			if(Version._XTHAILAND)
 				base64EncodedPublicKey = "";
 			else
@@ -207,17 +169,12 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 				base64EncodedPublicKey = "";
 			//
 			RegistIAPGoods( SKU_GEM );
-<<<<<<< HEAD
 //			CreateGoogleIAP( base64EncodedPublicKey );
 		} // XGOOGLE_IAP
 		if( Version._XSOFTNYX ) {
 			com.pgman.util.Utility.setLocal( this, "ko" );
 			PGMAN_Start();
 		}
-=======
-			CreateGoogleIAP( base64EncodedPublicKey );
-		} // XGOOGLE_IAP
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 		// Facebook
 		if( Version._XFACEBOOK || Version._XINI3 ) {
 			CreateFacebook(savedInstanceState);
@@ -252,10 +209,6 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		i.setData(u);
 		myActivity.startActivity(i);
 	}
-<<<<<<< HEAD
-=======
-	
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 	// ============================================================================
 	// ============================================================================
 	// ============================================================================
@@ -267,12 +220,9 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	private static final String PROPERTY_APP_VERSION = "appVersion";
 	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-<<<<<<< HEAD
 //	String SENDER_ID = "449217004536"; // API 콘솔에 있는 프로젝트 번호
-	String SENDER_ID = "424401185423"; // API 콘솔에 있는 프로젝트 번호
-=======
-	String SENDER_ID = "449217004536"; // API 콘솔에 있는 프로젝트 번호
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
+//	String SENDER_ID = "424401185423"; // API 콘솔에 있는 프로젝트 번호
+	String SENDER_ID = "988195830797"; // API 콘솔에 있는 프로젝트 번호
 
 	GoogleCloudMessaging gcm; // gcm 객체
 	AtomicInteger msgId = new AtomicInteger();
@@ -284,7 +234,6 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		if (checkPlayServices()) {
 			gcm = GoogleCloudMessaging.getInstance(this); // gcm 객체
 			context = getApplicationContext();
-<<<<<<< HEAD
 			// sharedPref에 저장된 regid를 꺼내온다. 앱버전이 바꼈으면 새로 등록한다.
 			regid = getRegistrationId(context);
 			if (regid.isEmpty() ) {
@@ -295,19 +244,6 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 			}
 		} else {
 			Log.i(TAG_GCM, "No valid Google Play Services APK found.");
-=======
-			regid = getRegistrationId(context);
-
-			if (regid.isEmpty()) {
-				registerInBackground();
-			}
-
-			
-			
-			Log.i(TAG, regid);
-		} else {
-			Log.i(TAG, "No valid Google Play Services APK found.");
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 		}
 	}
 
@@ -319,10 +255,7 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	 * doesn't, display a dialog that allows users to download the APK from the
 	 * Google Play Store or enable it in the device's system settings.
 	 */
-<<<<<<< HEAD
 
-=======
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 	private boolean checkPlayServices() {
 		int resultCode = GooglePlayServicesUtil
 				.isGooglePlayServicesAvailable(this);
@@ -332,21 +265,13 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 				GooglePlayServicesUtil.getErrorDialog(resultCode, this,
 						PLAY_SERVICES_RESOLUTION_REQUEST).show();
 			} else {
-<<<<<<< HEAD
 				Log.i(TAG_GCM, "This device is not supported.");
-=======
-				Log.i(TAG, "This device is not supported.");
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 				finish();
 			}
 			return false;
 		}
 		return true; // 성공
 	}
-<<<<<<< HEAD
-=======
-
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 	/**
 	 * 등록 ID 및 응용 프로그램의 SharedPreferences에서 응용 프로그램 versionCode를 저장합니다.
 	 * 
@@ -358,18 +283,11 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	 * @param regId
 	 *            registration ID
 	 */
-<<<<<<< HEAD
 	
 	private void storeRegistrationId(Context context, String regId) {
 		final SharedPreferences prefs = getGcmPreferences(context);
 		int appVersion = getAppVersion(context);
 		Log.i(TAG_GCM, "Saving regId on app version " + appVersion);
-=======
-	private void storeRegistrationId(Context context, String regId) {
-		final SharedPreferences prefs = getGcmPreferences(context);
-		int appVersion = getAppVersion(context);
-		Log.i(TAG, "Saving regId on app version " + appVersion);
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(PROPERTY_REG_ID, regId);
 		editor.putInt(PROPERTY_APP_VERSION, appVersion);
@@ -390,19 +308,12 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	 * @return registration ID, or empty string if there is no existing
 	 *         registration ID.
 	 */
-<<<<<<< HEAD
 	
-=======
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 	private String getRegistrationId(Context context) {
 		final SharedPreferences prefs = getGcmPreferences(context);
 		String registrationId = prefs.getString(PROPERTY_REG_ID, "");
 		if (registrationId.isEmpty()) {
-<<<<<<< HEAD
 			Log.i(TAG_GCM, "Registration not found.");
-=======
-			Log.i(TAG, "Registration not found.");
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 			return "";
 		}
 		// 응용 프로그램이 업데이트 된 경우 확인; 이렇게하면 기존 REGID가 새로운 애플리케이션 버전으로
@@ -414,11 +325,7 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 				Integer.MIN_VALUE);
 		int currentVersion = getAppVersion(context);
 		if (registeredVersion != currentVersion) {
-<<<<<<< HEAD
 			Log.i(TAG_GCM, "App version changed.");
-=======
-			Log.i(TAG, "App version changed.");
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 			return "";
 		}
 		return registrationId;
@@ -435,10 +342,7 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	 * Stores the registration ID and the app versionCode in the application's
 	 * shared preferences.
 	 */
-<<<<<<< HEAD
 	
-=======
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 	private void registerInBackground() {
 		new AsyncTask<Void, Void, String>() {
 			@Override
@@ -507,10 +411,7 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	/**
 	 * @return Application's {@code SharedPreferences}.
 	 */
-<<<<<<< HEAD
 	
-=======
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 	private SharedPreferences getGcmPreferences(Context context) {
 		// 이 샘플 응용 프로그램은 공유 환경 설정에서 등록 ID를 유지하지만, 당신은 당신의 응용 프로그램에서 REGID를 저장하는
 		// 방법을 당신에게 달려 있습니다.
@@ -532,7 +433,6 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	 * since the device sends upstream messages to a server that echoes back the
 	 * message using the 'from' address in the message.
 	 */
-<<<<<<< HEAD
 	
 	private void sendRegistrationIdToBackend() {
 		// 여기에 구현.
@@ -545,17 +445,6 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	}
 
 
-=======
-	private void sendRegistrationIdToBackend() {
-		// 여기에 구현.
-		// Your implementation here.
-		
-		Log.i(TAG, "등록 ID : " + regid);
-		// 여기서 등록 ID를 서버로 보내자
-	}
-
-	/*
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 	// 기기에서 푸시를 보내자!
 	private void SendPush(final String push)
 	{
@@ -579,13 +468,9 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 			        conn.setUseCaches(false);
 			        conn.setRequestMethod("POST");
 			        conn.setRequestProperty("Content-Type", "application/json");
-<<<<<<< HEAD
 //			        conn.setRequestProperty("Authorization", "key=AIzaSyDGo3mEIx6ykmWSr0AFZzwkvYvZBywW8QA");
 //			        conn.setRequestProperty("Authorization", "key=AIzaSyC8J2qO3b-CUkVlx6wduBzdobs_DREK8f0");
 			        conn.setRequestProperty("Authorization", "key=AIzaSyCAnAgzJXDtYJSjBTX1uTR2vQ6NScQmTFA");
-=======
-			        conn.setRequestProperty("Authorization", "key=AIzaSyDGo3mEIx6ykmWSr0AFZzwkvYvZBywW8QA");
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 			        OutputStream out = conn.getOutputStream();
 
 			        out.write(postData);
@@ -593,11 +478,7 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 			        out.close();
 
 			        int responseCode = conn.getResponseCode();
-<<<<<<< HEAD
 			        Log.d(TAG_GCM,"msg : " + responseCode+ "   " + conn.getResponseMessage());
-=======
-			        Log.d(TAG,"msagg : " + responseCode+ "   " + conn.getResponseMessage());
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 			        conn.disconnect();
 					} catch (UnsupportedEncodingException e) {
 						// TODO 자동 생성된 catch 블록
@@ -609,9 +490,5 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 			}
 		}).start();
 	}
-<<<<<<< HEAD
 	
-=======
-	*/
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 }

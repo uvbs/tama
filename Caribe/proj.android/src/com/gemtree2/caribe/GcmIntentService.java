@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gemtree.caribe;
+package com.gemtree2.caribe;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -28,7 +28,7 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.mtricks.caribe.R;
+import com.gemtree2.caribe.R;
 
 /**
  * 이 IntentService는 GCM 메시지의 실제 처리를 수행합니다. 서비스가 작업을 수행하는 동안 GcmBroadcastReceiver
@@ -62,10 +62,7 @@ public class GcmIntentService extends IntentService {
 		// The getMessageType() intent parameter must be the intent you received
 		// in your BroadcastReceiver.
 		String messageType = gcm.getMessageType(intent);
-<<<<<<< HEAD
 		Log.i(TAG, "Received:=================================================== ");
-=======
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 
 		// unparcelling 번들의 효과가. has effect of unparcelling Bundle
 		if (!extras.isEmpty()) {
@@ -103,18 +100,11 @@ public class GcmIntentService extends IntentService {
 				}*/
 				//Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
 				// 수신 된 메시지에 대한 알림을 게시합니다.
-<<<<<<< HEAD
 //				Log.i(TAG, "Received2: " + extras.toString());
 				// Post notification of received message.
 //				sendNotification("Received: " + extras.toString());
 				sendNotification(extras.getString("msg"));	// "msg" : "정복자들/특성연구가 완료됨"
 //				Log.i(TAG, "Received: " + extras.toString());
-=======
-				// Post notification of received message.
-				//sendNotification("Received: " + extras.toString());
-				sendNotification(extras.getString("msg"));
-				Log.i(TAG, "Received: " + extras.toString());
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 			}
 		}
 		// WakefulBroadcastReceiver에서 제공하는 웨이크 잠금을 해제합니다.
@@ -134,7 +124,6 @@ public class GcmIntentService extends IntentService {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
 				new Intent(this, MyMainActivity.class), 0);
 		
-<<<<<<< HEAD
 		String [] strArr = msg.split("/");	// "msg" : "정복자들/특성연구가 완료됨"에서 /단위로 제목과 본문을 분리함.
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.ic_launcher)
@@ -152,17 +141,6 @@ public class GcmIntentService extends IntentService {
                                 .bigText(msg))
                         .setContentText(msg); */
 		
-=======
-		String [] strArr = msg.split("/");
-
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				this).setSmallIcon(R.drawable.ic_launcher)
-				.setContentTitle(strArr[0])
-				.setStyle(new NotificationCompat.BigTextStyle().bigText(strArr[1]))
-				.setVibrate(new long[] { 100, 100, 100, 100})
-				.setContentText(msg);
-
->>>>>>> a0ed401913e2273227457e089b4100928406b35c
 		mBuilder.setContentIntent(contentIntent);
 		mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 	}
