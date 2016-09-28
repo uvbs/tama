@@ -84,7 +84,7 @@ XSceneTitle::XSceneTitle(XGame *pGame)
 #if defined(_SOFTNYX)
 	strVer += _T(" For Softnyx");
 #elif defined(_VER_ANDROID)
-	strVer += _T(" For Softnyx");
+	strVer += _T(" For Google");
 #elif defined(_VER_IOS)
 	strVer += _T(" For iOS");
 #elif defined(WIN32)

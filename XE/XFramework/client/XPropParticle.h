@@ -13,7 +13,7 @@
 #include <vector>
 
 namespace XE {
-enum xtBlendFunc;
+enum xtBlendFunc : int;
 }
 /****************************************************************
 * @brief 

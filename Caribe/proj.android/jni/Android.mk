@@ -64,22 +64,12 @@ LOCAL_EXPORT_CPPFLAGS += $(COMMON_CPPFLAGS)
 
 LOCAL_WHOLE_STATIC_LIBRARIES := \
 	xe_static \
-	xe_spr_static \
-	xe_gl2_static \
-	xe_wnd_static \
-	xe_etc_static \
-	xe_network_static \
-	xframework_static \
-	xframework_client_static \
-	xframework_game_static \
 	gamesrc_static \
 	skill_static \
 	jni_static \
 	oolong_math_static \
 	lua514_static \
 	freetype2-static \
-	zip_static \
-	xml_static \
 	ftgl2_static
 
 
@@ -91,23 +81,12 @@ include $(BUILD_SHARED_LIBRARY)
 
 
 $(call import-module,../XE/Common/_XLibrary)
-$(call import-module,../XE/Common/_XLibrary/etc)
-$(call import-module,../XE/Common/_XLibrary/_Wnd2)
-$(call import-module,../XE/Common/_XLibrary/Sprite)
-$(call import-module,../XE/Common/_XLibrary/OpenGL2)
-$(call import-module,../XE/Common/_XLibrary/network)
-$(call import-module,../XE/XFramework)
 $(call import-module,../XE/XFramework/android)
-$(call import-module,../XE/XFramework/client)
-$(call import-module,../XE/XFramework/Game)
 $(call import-module,../XE/Third_Party_lib/Oolong_Engine2)
 $(call import-module,../XE/Third_Party_lib/lua514)
 $(call import-module,../XE/Third_Party_lib/ftgles/freetype2_android/Android/jni)
 $(call import-module,../XE/Third_Party_lib/ftgles/ftgles2/ftgles)
-$(call import-module,../XE/Third_Party_lib/zip_support)
-$(call import-module,../XE/Third_Party_lib/tinyxml)
 $(call import-module,App/game_src)
 $(call import-module,App/game_src/skill)
-
 #$(call import-module,../XE/Third_Party_lib/CocosDenshion/android)
 

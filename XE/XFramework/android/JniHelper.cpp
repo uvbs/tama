@@ -730,7 +730,7 @@ void JniHelper::LoadMarketURL( const char *url )
 		return;
 
 	LOGD("LoadMarketURL:%s", url);
-	jclass _javaClass = getClassID_("com/mtricks/caribe/MyMainActivity", _env);
+	jclass _javaClass = getClassID_("com/gemtree2/caribe/MyMainActivity", _env);
 	jmethodID mid = _env->GetStaticMethodID(_javaClass, "LoadMarketURL", "(Ljava/lang/String;)V");
 	if (mid == NULL) {
 		LOGD("not found java function");
@@ -932,7 +932,7 @@ extern "C"
 
 	//  ÀÎ¾Û
 	JNIEXPORT jstring JNICALL 
-	Java_com_mtricks_caribe_MyMainActivity_JavaToCpp( JNIEnv* env
+	Java_com_gemtree2_caribe_MyMainActivity_JavaToCpp( JNIEnv* env
 																									, jobject thiz
 																									, jstring id
 																									, jstring param1
@@ -976,7 +976,7 @@ extern "C"
 			return "";
 		}
 		jstring r;
-		jclass _javaClass = getClassID_( "com/mtricks/caribe/MyMainActivity", _env );
+		jclass _javaClass = getClassID_( "com/gemtree2/caribe/MyMainActivity", _env );
 		jmethodID mid = _env->GetStaticMethodID( _javaClass
 																					, methodName
 			, "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;" );
