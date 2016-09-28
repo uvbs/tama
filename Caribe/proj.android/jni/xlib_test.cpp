@@ -11,6 +11,11 @@
 #define  LOGD(...)
 #endif
 
+#ifdef _XSINGLE
+#pragma message("=================single build================================")
+#endif
+
+
 XAppDelegate *APP_DELEGATE = NULL;
 
 extern "C"
