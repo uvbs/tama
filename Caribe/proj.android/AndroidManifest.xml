@@ -24,7 +24,7 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <!-- android:debuggable="true" -->
   <application android:allowBackup="true" android:label="Conquerors" android:icon="@drawable/ic_launcher">
-    <activity android:name="com.mtricks.caribe.MyMainActivity" android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:label="정복자들">
+    <activity android:name="com.gemtree.caribe.MyMainActivity" android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:label="정복자들">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -44,13 +44,13 @@
            	android:theme="@style/Theme.pgman.Transparent">
     </activity>
     <!-- Push -->
-    <receiver android:name="com.mtricks.caribe.GcmBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
+    <receiver android:name="com.gemtree.caribe.GcmBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
       <intent-filter>
         <action android:name="com.google.android.c2dm.intent.RECEIVE" />
         <category android:name="com.mtricks.caribe" />
       </intent-filter>
     </receiver>
-    <service android:name="com.mtricks.caribe.GcmIntentService" />
+    <service android:name="com.gemtree.caribe.GcmIntentService" />
     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
     <meta-data 
         android:name="@string/pgman_registered_app_id"

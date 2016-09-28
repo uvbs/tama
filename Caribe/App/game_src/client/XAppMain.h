@@ -6,6 +6,8 @@
 #define XRESO_WIDTH		640
 #define XRESO_HEIGHT	360
 
+// XCheatOption.h로 옮겨짐
+
 // namespace XGAME {
 // 	// m_dwFilter
 // 	enum {

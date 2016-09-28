@@ -533,6 +533,9 @@
     <ClCompile Include="..\..\..\game_src\XSceneTest2.cpp">
       <Filter>source\_test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XWndStorageItemElem.cpp">
+      <Filter>source\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
@@ -1141,6 +1144,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XSceneTest2.h">
       <Filter>source\_test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XWndStorageItemElem.h">
+      <Filter>source\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -459,14 +459,14 @@ void XWndStoragyItemElem::Draw()
 	// 액자안에 들어갈 이미지(아이템,영웅등)
 	if (m_pItemImg) {
 		auto vScaleSoul = vScale;
-		if (typeItem == XGAME::xIT_SOUL)
-			vScaleSoul *= 0.77f;
-		else
-			vScaleSoul *= m_vScaleItemImg;
+// 		if (typeItem == XGAME::xIT_SOUL)
+// 			vScaleSoul *= 0.77f;
+// 		else
+// 			vScaleSoul *= m_vScaleItemImg;
 		{
 			XE::xRenderParam param;
 			param.m_vPos = vPos + XE::VEC2( 3, 2 ) * vScale;
-			param.m_vScale = vScaleSoul;
+			param.m_vScale = vScale * 0.77f;
 			param.m_funcBlend = GetblendFunc();
 			if( m_bBatch )
 				param.m_Priority = -20;

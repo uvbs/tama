@@ -649,7 +649,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Caribe\App\game_src\XWndStorageItemElem.h" />
     <ClInclude Include="..\..\..\Common\XDrawGraph.h" />
     <ClInclude Include="..\..\..\Common\XGameUtil.h" />
     <ClInclude Include="..\..\..\Common\XInterpolationObj.h" />
@@ -973,7 +972,6 @@
     <ClInclude Include="Stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Caribe\App\game_src\XWndStorageItemElem.cpp" />
     <ClCompile Include="..\..\..\Common\XDrawGraph.cpp" />
     <ClCompile Include="..\..\..\Common\XGameUtil.cpp" />
     <ClCompile Include="..\..\..\Common\XInterpolationObj.cpp" />

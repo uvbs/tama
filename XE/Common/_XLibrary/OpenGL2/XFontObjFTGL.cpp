@@ -261,9 +261,9 @@ void XFontObjFTGL::RenderTextBatch( XBatchRenderer* pRenderer,
 	MatrixMultiply( mMVP, mWorld, mVP );
 
 #ifdef _XPROFILE
-	if( !(XGraphics::s_dwDraw & XE::xeBitNoFont) ) {
+	if( !(XGraphics::s_dwDraw & XE::xeBitNoFont) )
 #endif // _XPROFILE
-//		GetLayout().Render( szString, -1, FTPoint(), FTGL::RENDER_FRONT );
+	{
 		static ID s_idFont = 0;
 		xRenderCmd::xCmd cmd;
 		cmd.m_v4Color = XE::VEC4( m_R, m_G, m_B, alpha );

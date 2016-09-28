@@ -538,7 +538,8 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 			if( typeSpot == XGAME::xSPOT_COMMON )  {
 				auto pSpot = SafeCast<XSpotCommon*>( pBaseSpot );
 				if( pSpot->IsGuildRaid() ) {
-					bs.m_typeBattle = XGAME::xBT_GUILD_RAID;
+					//bs.m_typeBattle = XGAME::xBT_GUILD_RAID;
+					spSceneParam->m_typeBattle = XGAME::xBT_GUILD_RAID;
 					int i0;
 					arParam >> i0;	auto err = ( XGAME::xtGuildError )i0;
 					if( err == XGAME::xGE_ERROR_STILL_TRYING_RAID ) {
@@ -548,9 +549,12 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 				}
 			}
 			// 전투씬 추가파라메터
-			bs.m_idxStage = idxStage;
-			bs.m_idxFloor = idxFloor;
-			bs.m_Level = levelLegion;
+// 			bs.m_idxStage = idxStage;
+// 			bs.m_idxFloor = idxFloor;
+// 			bs.m_Level = levelLegion;
+			spSceneParam->m_idxStage = idxStage;
+			spSceneParam->m_idxFloor = idxFloor;
+			spSceneParam->m_Level = levelLegion;
 		} break;
 		default:
 			XBREAK(1);
@@ -558,8 +562,8 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 		} // switch( typeSpot )
 		if( SCENE_WORLD ) {
 			// 전투씬 파라메터를 밀어넣는다.
-			XSceneBattle::sSetBattleStart( bs );
-			SCENE_WORLD->OnRecvBattleInfo();
+//			XSceneBattle::sSetBattleStart( bs );
+			SCENE_WORLD->OnRecvBattleInfo( spSceneParam );
 		}
 	}
 }
@@ -652,20 +656,33 @@ void XSockGameSvr::RecvJewelBattleInfo( XPacket& p, const xCALLBACK& c )
 																pJewel->GetidSpot(), 0 );
 		if( SCENE_WORLD ) {
 			if( XASSERT(pJewel) ) {
-				XGAME::xBattleStart bs;
-#ifndef _XSINGLE
-				bs.m_typeSpot = pJewel->GettypeSpot();
-				bs.m_idSpot = pJewel->GetidSpot();
-#endif // not _XSINGLE
-				bs.m_idEnemy = pJewel->GetidOwner();
-				bs.m_Level = pJewel->GetLevel();
-				bs.m_strName = pJewel->GetstrName();
-				bs.m_spLegion[0] = ACCOUNT->GetCurrLegion();
-				bs.m_spLegion[1] = spLegion;
-				bs.m_typeBattle = XGAME::xBT_NORMAL;
-				bs.m_Defense = pJewel->GetDefense();
-				XSceneBattle::sSetBattleStart( bs );
-				SCENE_WORLD->OnRecvBattleInfo();
+// 				XGAME::xBattleStart bs;
+// #ifndef _XSINGLE
+// 				bs.m_typeSpot = pJewel->GettypeSpot();
+// 				bs.m_idSpot = pJewel->GetidSpot();
+// #endif // not _XSINGLE
+// 				bs.m_idEnemy = pJewel->GetidOwner();
+// 				bs.m_Level = pJewel->GetLevel();
+// 				bs.m_strName = pJewel->GetstrName();
+// 				bs.m_spLegion[0] = ACCOUNT->GetCurrLegion();
+// 				bs.m_spLegion[1] = spLegion;
+// 				bs.m_typeBattle = XGAME::xBT_NORMAL;
+// 				bs.m_Defense = pJewel->GetDefense();
+// 				XSceneBattle::sSetBattleStart( bs );
+
+				XVector<XSPLegion> aryLegion;
+				aryLegion.push_back( ACCOUNT->GetCurrLegion() );
+				aryLegion.push_back( spLegion );
+				auto spParam = std::make_shared<XGAME::xSceneBattleParam>( pJewel->GetidOwner(),
+																																	pJewel->GettypeSpot(),
+																																	pJewel->GetidSpot(),
+																																	pJewel->GetLevel(),
+																																	pJewel->GetstrName(),
+																																	aryLegion,
+																																	XGAME::xBT_NORMAL,
+																																	pJewel->GetDefense(),
+																																	-1, 0 );
+				SCENE_WORLD->OnRecvBattleInfo( spParam );
 			}
 		}
 	} else {
@@ -1174,20 +1191,31 @@ void XSockGameSvr::RecvMandrakeLegionResult( XPacket& p, const xCALLBACK& c )
 			pSpot->SetspLegion( spLegion );
 			if( SCENE_WORLD ) {
 				if( snSession ) {		// battle mode
-					XGAME::xBattleStart bs;
-#ifndef _XSINGLE
-					bs.m_typeSpot = pSpot->GettypeSpot();
-					bs.m_idSpot = pSpot->GetidSpot();
-#endif // not _XSINGLE
-					bs.m_idEnemy = idEnemy;
-					bs.m_Level = level;
-					bs.m_strName = strName;
-					bs.m_spLegion[ 0 ] = ACCOUNT->GetCurrLegion();
-					bs.m_spLegion[ 1 ] = spLegion;
-					bs.m_typeBattle = XGAME::xBT_NORMAL;
-					XSceneBattle::sSetBattleStart( bs );
-					SCENE_WORLD->OnRecvBattleInfo();
-//					SCENE_WORLD->OnRecvBattleInfo( idSpot, idEnemy, level, strName.c_str(), spLegion, 0/*, pAccEnemy*/ );
+// 					XGAME::xBattleStart bs;
+// #ifndef _XSINGLE
+// 					bs.m_typeSpot = pSpot->GettypeSpot();
+// 					bs.m_idSpot = pSpot->GetidSpot();
+// #endif // not _XSINGLE
+// 					bs.m_idEnemy = idEnemy;
+// 					bs.m_Level = level;
+// 					bs.m_strName = strName;
+// 					bs.m_spLegion[ 0 ] = ACCOUNT->GetCurrLegion();
+// 					bs.m_spLegion[ 1 ] = spLegion;
+// 					bs.m_typeBattle = XGAME::xBT_NORMAL;
+// 					XSceneBattle::sSetBattleStart( bs );
+// 					SCENE_WORLD->OnRecvBattleInfo();
+					XVector<XSPLegion> aryLegion;
+					aryLegion.push_back( ACCOUNT->GetCurrLegion() );
+					aryLegion.push_back( spLegion );
+					auto spParam = std::make_shared<XGAME::xSceneBattleParam>( idEnemy,
+																																		 pSpot->GettypeSpot(),
+																																		 pSpot->GetidSpot(),
+																																		 level,
+																																		 strName,
+																																		 aryLegion,
+																																		 XGAME::xBT_NORMAL,
+																																		 0, -1, 0 );
+					SCENE_WORLD->OnRecvBattleInfo( spParam );
 				} else {
 					SCENE_WORLD->OnRecvReconSpot( pSpot->GetidSpot(), spLegion );
 				}

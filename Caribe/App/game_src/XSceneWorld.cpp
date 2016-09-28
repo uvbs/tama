@@ -2249,11 +2249,12 @@ int XSceneWorld::OnCollectSpot(XWnd* pWnd, DWORD p1, DWORD p2)
 /**
  전투전 상대유저의 부대정보가 왔다.
 */
-void XSceneWorld::OnRecvBattleInfo()
+void XSceneWorld::OnRecvBattleInfo( std::shared_ptr<XGAME::xSceneBattleParam> spParam )
 {
 	// 배틀씬 파라메터가 모두 세팅되어 있어야 함.
-	XBREAK( XSceneBattle::sIsEmptyBattleStart() == true );
-	DoExit( XGAME::xSC_READY );
+//	XBREAK( XSceneBattle::sIsEmptyBattleStart() == true );
+	XBREAK( spParam->IsInvalid() );
+	DoExit( XGAME::xSC_READY, spParam );
 }
 
 /**

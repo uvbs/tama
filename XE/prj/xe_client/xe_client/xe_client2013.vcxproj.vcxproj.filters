@@ -521,9 +521,6 @@
     <ClCompile Include="..\..\..\Common\_XLibrary\OpenGL2\XTextureAtlasSub.cpp">
       <Filter>source\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Caribe\App\game_src\XWndStorageItemElem.cpp">
-      <Filter>source\wnd</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stdafx.h" />
@@ -1183,9 +1180,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\_XLibrary\OpenGL2\XBatchRenderer.h">
       <Filter>source\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Caribe\App\game_src\XWndStorageItemElem.h">
-      <Filter>source\wnd</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

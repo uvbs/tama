@@ -138,31 +138,31 @@ int XGAME::xBattleLog::AddLootRes( XGAME::xtResource type, int add )
 // 	return 1;
 // }
 //////////////////////////////////////////////////////////////////////////
-bool xBattleStart::IsValid() const {
-	if( XBREAK(m_spLegion[0] == nullptr || m_spLegion[1] == nullptr) )
-		return false;
-	if( XBREAK(!m_typeBattle || !m_Level || m_strName.empty()) )
-		return false;
-#ifndef _XSINGLE
-	if( XBREAK(!m_typeSpot) )
-		return false;
-	if( XBREAK(!m_idSpot) )
-		return false;
-	if( m_typeSpot == xSPOT_CASTLE || m_typeSpot == xSPOT_JEWEL || m_typeSpot == xSPOT_MANDRAKE )
-		if( XBREAK(m_idEnemy == 0) )
-			return false;
-	if( m_typeSpot == xSPOT_JEWEL )
-		if( XBREAK(m_Defense == 0) )
-			return false;
-	if( m_Defense > 0 )
-		if( XBREAK(m_typeSpot != xSPOT_JEWEL) )
-			return false;
-	if( m_typeSpot == xSPOT_CAMPAIGN || m_typeSpot == xSPOT_COMMON )
-		if( XBREAK(m_idxStage < 0) )
-			return false;
-#endif // not _XSINGLE
-	return true;
-}
+// bool xBattleStart::IsValid() const {
+// 	if( XBREAK(m_spLegion[0] == nullptr || m_spLegion[1] == nullptr) )
+// 		return false;
+// 	if( XBREAK(!m_typeBattle || !m_Level || m_strName.empty()) )
+// 		return false;
+// #ifndef _XSINGLE
+// 	if( XBREAK(!m_typeSpot) )
+// 		return false;
+// 	if( XBREAK(!m_idSpot) )
+// 		return false;
+// 	if( m_typeSpot == xSPOT_CASTLE || m_typeSpot == xSPOT_JEWEL || m_typeSpot == xSPOT_MANDRAKE )
+// 		if( XBREAK(m_idEnemy == 0) )
+// 			return false;
+// 	if( m_typeSpot == xSPOT_JEWEL )
+// 		if( XBREAK(m_Defense == 0) )
+// 			return false;
+// 	if( m_Defense > 0 )
+// 		if( XBREAK(m_typeSpot != xSPOT_JEWEL) )
+// 			return false;
+// 	if( m_typeSpot == xSPOT_CAMPAIGN || m_typeSpot == xSPOT_COMMON )
+// 		if( XBREAK(m_idxStage < 0) )
+// 			return false;
+// #endif // not _XSINGLE
+// 	return true;
+// }
 // void xBattleStart::Serialize( XArchive& ar ) const
 // {
 // 	XASSERT( ar.IsForDB() == false );

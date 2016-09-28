@@ -232,17 +232,19 @@ namespace XE
 #ifdef _VER_DX
 		VEC2( D3DXVECTOR2 vd3d ) { x = vd3d.x; y = vd3d.y; }
 #endif
+#ifdef _XOOLONG
 		VEC2( const Vec2& vec2 ) {
 			x = vec2.x;		y = vec2.y;
 		}
+		void Set( const Vec2& v ) {
+			x = v.x;	y = v.y;
+		}
+#endif // _XOOLONG
 		
 		template<typename T>
 		void Set( T _x, T _y ) { x = (float)_x; y = (float)_y; }
 		template<typename T>
 		void Set( T xy ) { x = (float)xy; y = (float)xy; }
-		void Set( const Vec2& v ) {
-			x = v.x;	y = v.y;
-		}
 
 		// casting
 		//		operator float* ();
@@ -716,6 +718,7 @@ namespace XE
 			float a;
 			float w;
 		};
+#ifdef _XOOLONG
 		operator Vec4 () const {
 			return Vec4( x, y, z, a );
 		}
@@ -726,6 +729,7 @@ namespace XE
 			a = rhs.w;
 			return *this;
 		}
+#endif // _XOOLONG
 		inline void Set( float _x, float _y, float _z, float _w ) {
 			x = _x;
 			y = _y;

@@ -1024,14 +1024,9 @@ public:
 			pButt->SetEvent( XWM_CLICKED, this, funcCallback, param1 );
 		return pButt;
 	}
-	XWndButton* SetButtHander2( const char *cKey,
-															ID idEvent,
-															std::function<void( XWnd* )> func ) {
-		auto pButt = dynamic_cast<XWndButton*>( Find( cKey ) );
-		if( pButt )
-			pButt->SetEvent2( idEvent, func );
-		return pButt;
-	}
+	XWnd* SetClickHander( const char *cKey,
+												ID idEvent,
+												std::function<void( XWnd* )> func );
 
 	void SetbTouchableWithChild( bool bFlag );
 	virtual void GetDebugString( _tstring& strOut );

@@ -30,6 +30,10 @@ namespace xHelp {
 	class XPropCamera;
 	class XOrderCamera;
 }
+namespace XGAME {
+struct xSceneBattleParam;
+}
+
 // 월드씬
 class XSceneWorld : public XSceneBase
 									, public XDelegateWndEdit
@@ -283,8 +287,8 @@ public:
 //	int OnRecvBattleResult(XGAME::xtSpot typeSpot, int bWin);
 	void OnRecvBattleResult( XGAME::xBattleResult& result );
 	//	void OnRecvBattleInfo(ID idSpot, ID idBattle, int level, LPCTSTR szName, LegionPtr& spLegion, ID snSession/*, XAccount *pEnemy = nullptr*/, int defense = 0);
-	void OnRecvBattleInfo();
-//	void DoEnterBattleScene( ID idSpot, ID idBattle, int level, LPCTSTR szName, LegionPtr& spLegion, ID snSession/*, XAccount *pEnemy*/, int defense, std::shared_ptr<XGAME::xSPM_BATTLE> spOut );
+	void OnRecvBattleInfo( std::shared_ptr<XGAME::xSceneBattleParam> spParam );
+	//	void DoEnterBattleScene( ID idSpot, ID idBattle, int level, LPCTSTR szName, LegionPtr& spLegion, ID snSession/*, XAccount *pEnemy*/, int defense, std::shared_ptr<XGAME::xSPM_BATTLE> spOut );
 	//	void OnRecvAttackedSpotResult( BOOL bWin, XSpotResource *pSpot, int level );
 	void OnRecvAttackedCastle(ID idSpot, ID idAccount, int level, LPCTSTR szName);
 //	void OnRecvSpotCollect(XSpot *pBaseSpot, XGAME::xtResource typeRes, float _num);

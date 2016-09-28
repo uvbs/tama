@@ -2510,3 +2510,13 @@ void XWnd::SendMsgToChilds( const std::string& strMsg )
 		}
 	}
 }
+
+XWnd* XWnd::SetClickHander( const char *cKey,
+														ID idEvent,
+														std::function<void( XWnd* )> func ) 
+{
+	auto pButt = Find( cKey );
+	if( pButt )
+		pButt->SetEvent2( idEvent, func );
+	return pButt;
+}

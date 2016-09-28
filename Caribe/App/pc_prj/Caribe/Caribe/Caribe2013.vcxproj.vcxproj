@@ -954,6 +954,7 @@
     <ClInclude Include="..\..\..\game_src\XWndResCtrl.h" />
     <ClInclude Include="..\..\..\game_src\XWndSpots.h" />
     <ClInclude Include="..\..\..\game_src\XWndStorage.h" />
+    <ClInclude Include="..\..\..\game_src\XWndStorageItemElem.h" />
     <ClInclude Include="..\..\..\game_src\XWndTech.h" />
     <ClInclude Include="..\..\..\game_src\XWndTemplate.h" />
     <ClInclude Include="..\..\..\game_src\XWndUnitOrg.h" />
@@ -1154,6 +1155,7 @@
     <ClCompile Include="..\..\..\game_src\XWndResCtrl.cpp" />
     <ClCompile Include="..\..\..\game_src\XWndSpots.cpp" />
     <ClCompile Include="..\..\..\game_src\XWndStorage.cpp" />
+    <ClCompile Include="..\..\..\game_src\XWndStorageItemElem.cpp" />
     <ClCompile Include="..\..\..\game_src\XWndTech.cpp" />
     <ClCompile Include="..\..\..\game_src\XWndTemplate.cpp" />
     <ClCompile Include="..\..\..\game_src\XWndUnitOrg.cpp" />

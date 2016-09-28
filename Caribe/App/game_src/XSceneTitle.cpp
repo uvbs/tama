@@ -114,7 +114,7 @@ void XSceneTitle::Create(void)
 #if !defined(_XSINGLE)
 	// 로긴서버의 ip와 포트를 지정
 	const _tstring strIp = C2SZ(CONNECT_INI.m_cIP);
-	XTRACE("ip/port:%s(%d)", strIp.c_str(), CONNECT_INI.m_Port );
+	CONSOLE("ip/port:%s(%d)", strIp.c_str(), CONNECT_INI.m_Port );
 	LOGINSVR_SOCKET->SetIpAndPort( CONNECT_INI.m_cIP, CONNECT_INI.m_Port );
 	//
 	if( s_secLoginLockStart > 0 ) {

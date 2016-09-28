@@ -71,6 +71,7 @@
 #include "XDefNetwork.h"
 #include "XFramework/XEProfile.h"
 #include "XImageMng.h"
+#include "client/XCheatOption.h"
 #ifdef _CHEAT
 #include "OpenGL2/XTextureAtlas.h"
 #endif // _CHEAT
@@ -483,7 +484,7 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, XSPS
 		pScene->SetstrIdentifier( "scene.legion" );
 		break;
 	case XGAME::xSC_INGAME:
-		pScene = new XSceneBattle( this/*, spParam */);
+		pScene = new XSceneBattle( this, spParam );
 		pScene->SetstrIdentifier( "scene.battle" );
 		break;
 	case XGAME::xSC_STORAGE:
@@ -826,7 +827,7 @@ void XGame::Draw()
 		}
 // 		PUT_STRING_STROKE( vMouse.x + 100.f, vMouse.y, XCOLOR_YELLOW, strt.c_str() );
 	}
-	{
+	if( XAPP->m_dwOption & XGAME::xBIT_SHOW_DPCALL) {
 		const int cnt1 = XGraphics::s_fpsDPCallBatch.GetFps();
 		const int cnt2 = XGraphics::s_fpsDPCallNoBatch.GetFps();
 		const int cnt3 = XGraphics::s_fpsDPCallNormal.GetFps();

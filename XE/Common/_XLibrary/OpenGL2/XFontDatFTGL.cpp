@@ -251,8 +251,9 @@ float XFontDatFTGL::RenderBatch( XBatchRenderer* pRenderer,
 	MatrixMultiply( mWorld, mWorld, mModel );
 	MatrixMultiply( mMVP, mWorld, mVP );
 #ifdef _XPROFILE
-	if( !(XGraphics::s_dwDraw & XE::xeBitNoFont) ) {
+	if( !(XGraphics::s_dwDraw & XE::xeBitNoFont) )
 #endif // _XPROFILE
+	{
 //		m_font->Render( szString );
 		xRenderCmd::xCmd cmd;
 		static ID s_idFont = 0;

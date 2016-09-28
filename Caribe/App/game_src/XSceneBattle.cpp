@@ -67,11 +67,38 @@ using namespace XGAME;
 using namespace XSKILL;
 
 XSceneBattle *SCENE_BATTLE = nullptr;
-XGAME::xBattleStart XSceneBattle::s_BattleStart;
+//XGAME::xBattleStart XSceneBattle::s_BattleStart;
 //////////////////////////////////////////////////////////////////////////
 
 XE_NAMESPACE_START( XGAME )
 	
+bool xSceneBattleParam::IsValid() const {
+	if( XBREAK( m_spLegion[0] == nullptr || m_spLegion[1] == nullptr ) )
+		return false;
+	if( XBREAK( !m_typeBattle || !m_Level || m_strName.empty() ) )
+		return false;
+#ifndef _XSINGLE
+	if( XBREAK( !m_typeSpot ) )
+		return false;
+	if( XBREAK( !m_idSpot ) )
+		return false;
+	if( m_typeSpot == xSPOT_CASTLE || m_typeSpot == xSPOT_JEWEL || m_typeSpot == xSPOT_MANDRAKE )
+		if( XBREAK( m_idEnemy == 0 ) )
+			return false;
+	if( m_typeSpot == xSPOT_JEWEL )
+		if( XBREAK( m_Defense == 0 ) )
+			return false;
+	if( m_Defense > 0 )
+		if( XBREAK( m_typeSpot != xSPOT_JEWEL ) )
+			return false;
+	if( m_typeSpot == xSPOT_CAMPAIGN || m_typeSpot == xSPOT_COMMON )
+		if( XBREAK( m_idxStage < 0 ) )
+			return false;
+#endif // not _XSINGLE
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
 void xsCamp::Release() {
 	m_spAcc.reset();
 	m_spLegionObj->Release();
@@ -152,7 +179,7 @@ XSceneBattle::XSceneBattle( XGame *pGame, XSPSceneParam& spBaseParam )
 	, m_aryCamp(2)
 	, m_aryBar(2)
 	, m_Layout(_T("layout_battle.xml"))
-	, m_spSceneParam( spBaseParam )
+	, m_spSceneParam( std::static_pointer_cast<xSceneBattleParam>( spBaseParam ) )
 { 
 	SPRMNG->DoFlushCache();
 	IMAGE_MNG->DoFlushCache();
@@ -172,9 +199,11 @@ XSceneBattle::XSceneBattle( XGame *pGame, XSPSceneParam& spBaseParam )
 	auto strBg = XGC->GetBgBattle( XGAME::xSPOT_NPC );
 #else
 	// 파라메터가 세팅안되어 있으면 에러.
-	XBREAK( XSceneBattle::sIsEmptyBattleStart() );
+	
+//	XBREAK( XSceneBattle::sIsEmptyBattleStart() );
+	XBREAK( m_spSceneParam->IsInvalid() );
 	// 싱글모드가 아니면 스팟아이디는 모두 있어야 함.
-	XSpot *pSpot = sGetpWorld()->GetSpot( s_BattleStart.m_idSpot );
+	XSpot *pSpot = sGetpWorld()->GetSpot( m_spSceneParam->m_idSpot );
 	XBREAK( pSpot == nullptr );
 	m_pSpot = pSpot;
 	if( pSpot && pSpot->IsNpc() && pSpot->GetLevel() < 10 ) {
@@ -182,11 +211,24 @@ XSceneBattle::XSceneBattle( XGame *pGame, XSPSceneParam& spBaseParam )
 	} else {
 		XBaseUnit::s_bNotUseActiveByEnemy = false;
 	}
-	auto strBg = XGC->GetBgBattle( s_BattleStart.m_typeSpot );
-	if( s_BattleStart.m_Defense > 0 ) {
+	auto strBg = XGC->GetBgBattle( m_spSceneParam->m_typeSpot );
+	if( m_spSceneParam->m_Defense > 0 ) {
 		// defense값이 있으면 스팟타입은 반드시 jewel이어야 한다.
-		XASSERT( s_BattleStart.m_typeSpot == xSPOT_JEWEL );
+		XASSERT( m_spSceneParam->m_typeSpot == xSPOT_JEWEL );
 	}
+// 	XSpot *pSpot = sGetpWorld()->GetSpot( m_spSceneParam->m_idSpot );
+// 	XBREAK( pSpot == nullptr );
+// 	m_pSpot = pSpot;
+// 	if( pSpot && pSpot->IsNpc() && pSpot->GetLevel() < 10 ) {
+// 		XBaseUnit::s_bNotUseActiveByEnemy = true;
+// 	} else {
+// 		XBaseUnit::s_bNotUseActiveByEnemy = false;
+// 	}
+// 	auto strBg = XGC->GetBgBattle( m_spSceneParam->m_typeSpot );
+// 	if( m_spSceneParam->m_Defense > 0 ) {
+// 		// defense값이 있으면 스팟타입은 반드시 jewel이어야 한다.
+// 		XASSERT( m_spSceneParam->m_typeSpot == xSPOT_JEWEL );
+// 	}
 #endif
 	// XBattleField(XWorld)객체 생성
 	// 배경 레이어
@@ -232,7 +274,7 @@ XSceneBattle::XSceneBattle( XGame *pGame, XSPSceneParam& spBaseParam )
 		pWnd->SetbTouchable( false );
 	}
 	// 전투타입을 지정한다.
-	XBattleField::sGet()->SettypeBattle( s_BattleStart.m_typeBattle );
+	XBattleField::sGet()->SettypeBattle( m_spSceneParam->m_typeBattle );
 	// ui메인
 	{
 		auto pWnd = new XWndBatchRender( "layer.ui", false, false, false, false );
@@ -248,7 +290,7 @@ void XSceneBattle::Release()
 {
 	if( XBattleField::sGet() )
 		XBattleField::sGet()->GetpObjMngMutable()->Release();
-	s_BattleStart.Release();
+//	m_spSceneParam->Release();
 	XSceneBase::Release();
 	for( auto& camp : m_aryCamp ) {
 		camp.m_spLegionObj->Release();
@@ -285,12 +327,12 @@ void XSceneBattle::CreateCamps()
 		//		camp.m_spAcc = ACCOUNT;
 		// 플레이어측 정보도 외부에서 받아서 세팅하게 해서 ACCOUNT와의 연관성을 완전히 끊어야 한다.
 		camp.SetAccInfo( xSIDE_PLAYER, 0, ACCOUNT->GetLevel(), ACCOUNT->Get_strName() );
-		camp.m_spLegion = s_BattleStart.m_spLegion[idxSide];
+		camp.m_spLegion = m_spSceneParam->m_spLegion[idxSide];
 #ifdef _XSINGLE
 		camp.m_idsLegion = "single1_player";
 #endif // _XSINGLE
 		camp.CreateLegionObj();
-		camp.CreateSquadObj( m_pWndWorld, s_BattleStart.m_typeBattle );
+		camp.CreateSquadObj( m_pWndWorld, m_spSceneParam->m_typeBattle );
 		camp.m_psfcProfile = GAME->GetpsfcProfile();
 	}
 	// 적진영 생성
@@ -298,13 +340,13 @@ void XSceneBattle::CreateCamps()
 		const int idxSide = xSI_OTHER;
 		auto& camp = m_aryCamp[idxSide];
 		//		camp.m_spAcc = ;
-		camp.SetAccInfo( xSIDE_OTHER, s_BattleStart.m_idEnemy, s_BattleStart.m_Level, s_BattleStart.m_strName );
-		camp.m_spLegion = s_BattleStart.m_spLegion[idxSide];
+		camp.SetAccInfo( xSIDE_OTHER, m_spSceneParam->m_idEnemy, m_spSceneParam->m_Level, m_spSceneParam->m_strName );
+		camp.m_spLegion = m_spSceneParam->m_spLegion[idxSide];
 #ifdef _XSINGLE
 		camp.m_idsLegion = "single1_enemy";
 #endif // _XSINGLE
 		camp.CreateLegionObj();
-		camp.CreateSquadObj( m_pWndWorld, s_BattleStart.m_typeBattle );
+		camp.CreateSquadObj( m_pWndWorld, m_spSceneParam->m_typeBattle );
 		camp.m_psfcProfile = nullptr;
 	}
 	// 각 유닛들에게 OnStart이벤트
@@ -312,7 +354,7 @@ void XSceneBattle::CreateCamps()
 		camp.m_spLegionObj->OnSkillEvent( xJC_START );
 	}
 	//
-	s_BattleStart.Release();		// spAcc가 파괴되기전에 미리 해제시켜줘야 함.
+	m_spSceneParam->Release();		// spAcc가 파괴되기전에 미리 해제시켜줘야 함.
 }
 BOOL XSceneBattle::OnCreate()
 {
@@ -741,7 +783,7 @@ int XSceneBattle::OnEnterScene( XWnd*, DWORD idSeqPopup, DWORD )		// 씬이 모�
 			// 대기
 		} else {
 			// 전투가 벌어지는 스팟을 파라메터로 넘겨 특정스팟조건의 이벤트가 있으면 실행하도록 한다.
-			const DWORD dwParam2 = s_BattleStart.m_idSpot;
+			const DWORD dwParam2 = m_spSceneParam->m_idSpot;
 			XSceneBase::OnEnterScene( nullptr, 0, dwParam2 );
 			// ENTER_SCENE이벤트로 컷씬이 시작되었으면
 			if( GAME->IsPlayingSeq() ) {
@@ -1041,7 +1083,7 @@ void XSceneBattle::OnFinishBattle( XGAME::xtSide bitCampWin, bool bRetreatSulfur
 #else
 	SendFinishBattle( XGAME::xEB_FINISH
 									, bitCampWin
-									, s_BattleStart.m_idxStage
+									, m_spSceneParam->m_idxStage
 									, bRetreatSulfur );
 
 #endif
@@ -1056,12 +1098,12 @@ void XSceneBattle::SendFinishBattle( XGAME::xtExitBattle ebCode,
 	XGAME::xBattleFinish battle;
 	battle.ebCode = ebCode;
 #ifndef _XSINGLE
-	battle.idSpot = s_BattleStart.m_idSpot;
+	battle.idSpot = m_spSceneParam->m_idSpot;
 #endif // not _XSINGLE
 //	battle.idEnemy = m_idEnemy;
 	battle.snSession = ACCOUNT->GetsnSession();
 	battle.bitWinner = bitWinner;
-	battle.idxStage = s_BattleStart.m_idxStage;
+	battle.idxStage = m_spSceneParam->m_idxStage;
 	battle.secPlay = (int)m_timerPlay.GetPassSec();
 	battle.bRunAwaySulfur = bRetreatSulfur;
 	{
@@ -1098,7 +1140,7 @@ void XSceneBattle::OnRecvBattleResult( XGAME::xBattleResult& result )
 void XSceneBattle::DoPopupBattleResult( XGAME::xBattleResult& result )
 {
 #ifndef _XSINGLE
-	auto pBaseSpot = sGetpWorld()->GetSpot( s_BattleStart.m_idSpot );
+	auto pBaseSpot = sGetpWorld()->GetSpot( m_spSceneParam->m_idSpot );
 	XBREAK( pBaseSpot == nullptr );
 	auto pPopup = XGAME::DoPopupBattleResult( result, this, pBaseSpot );
 	if( pPopup ) {
@@ -1121,23 +1163,25 @@ void XSceneBattle::OnRecvBattleResultSulfurEncounter(
 	XBREAK( spParam->IsInvalid() );
 	//
 	auto pPopup = new XWndEncounter( pSpot, info );
+	pPopup->SetstrIdentifier( "wnd.encounter" );
 	pPopup->SetEnableNcEvent( FALSE );		// 창밖터치로 꺼지지 못하게.
 	Add( pPopup );
 	pPopup->SetbModal( TRUE );
-	xSET_BUTT_HANDLER( pPopup, "butt.attack", &XSceneBattle::OnOkBattleResultSulfurEncounter );
-
-
-
-	sadfasdf
-
-
-
-
-	pPopup->SetButtHander2( "butt.attack", XWM_CLICKED, 
+//	xSET_BUTT_HANDLER( pPopup, "butt.attack", &XSceneBattle::OnOkBattleResultSulfurEncounter );
+//	xSET_BUTT_HANDLER( pPopup, "butt.retreat", &XSceneBattle::OnSulfurRetreat );
+	pPopup->SetClickHander( "butt.attack", XWM_CLICKED, 
 													[this, spParam]( XWnd* ) {
 		DoExit( XGAME::xSC_INGAME, spParam );
 	} );
-	xSET_BUTT_HANDLER( pPopup, "butt.retreat", &XSceneBattle::OnSulfurRetreat );
+	pPopup->SetClickHander( "butt.retreat", XWM_CLICKED,
+													[this]( XWnd* ) {
+		if( ACCOUNT->IsEnoughCash( XGAME::xCS_SULFUR_RETREAT ) ) {
+			OnFinishBattle( XGAME::xSIDE_PLAYER, true );
+			DestroyWndByIdentifier( "wnd.encounter" );
+		} else {
+			// 캐쉬를 구매할거냐는 창이 뜨고 캐쉬 구매팝업을 띄운다.
+		}
+	} );
 }
 
 int XSceneBattle::OnOkBattleResult( XWnd* pWnd, DWORD p1, DWORD p2 )
@@ -1166,30 +1210,30 @@ int XSceneBattle::OnOkHerosExp( XWnd* pWnd, DWORD p1, DWORD p2 )
 /**
  인카운터전 OK눌렀을때 핸들러.
 */
-int XSceneBattle::OnOkBattleResultSulfurEncounter( XWnd* pWnd, DWORD p1, DWORD p2 )
-{
-	// 배틀씬 파라메터가 모두 세팅되어 있어야 함.
-	XBREAK( XSceneBattle::sIsEmptyBattleStart() );
-	DoExit( XGAME::xSC_INGAME );
-	return 1;
-}
+// int XSceneBattle::OnOkBattleResultSulfurEncounter( XWnd* pWnd, DWORD p1, DWORD p2 )
+// {
+// 	// 배틀씬 파라메터가 모두 세팅되어 있어야 함.
+// 	XBREAK( XSceneBattle::sIsEmptyBattleStart() );
+// 	DoExit( XGAME::xSC_INGAME );
+// 	return 1;
+// }
 
 /****************************************************************
 * @brief 유황전투에서 기습이 발생했을때 도주를 누름.
 *****************************************************************/
-int XSceneBattle::OnSulfurRetreat( XWnd* pWnd, DWORD p1, DWORD p2 )
-{
-	CONSOLE("OnSulfurRetreat");
-	//
-	if( ACCOUNT->IsEnoughCash( XGAME::xCS_SULFUR_RETREAT ) )	{
-		OnFinishBattle( XGAME::xSIDE_PLAYER, true );
-		pWnd->GetpParent()->SetbDestroy( TRUE );
-	} else	{
-		// 캐쉬를 구매할거냐는 창이 뜨고 캐쉬 구매팝업을 띄운다.
-	}
-	
-	return 1;
-}
+// int XSceneBattle::OnSulfurRetreat( XWnd* pWnd, DWORD p1, DWORD p2 )
+// {
+// 	CONSOLE("OnSulfurRetreat");
+// 	//
+// 	if( ACCOUNT->IsEnoughCash( XGAME::xCS_SULFUR_RETREAT ) )	{
+// 		OnFinishBattle( XGAME::xSIDE_PLAYER, true );
+// 		pWnd->GetpParent()->SetbDestroy( TRUE );
+// 	} else	{
+// 		// 캐쉬를 구매할거냐는 창이 뜨고 캐쉬 구매팝업을 띄운다.
+// 	}
+// 	
+// 	return 1;
+// }
 
 /**
  @brief 
@@ -1538,7 +1582,7 @@ int XSceneBattle::OnSurrrender(XWnd* pWnd, DWORD p1, DWORD p2)
 	XBattleField::sGet()->SetAI( false );
 	m_bFinish = true;
 #ifndef _XSINGLE
-	SendFinishBattle( XGAME::xEB_RETREAT, XGAME::xSIDE_OTHER, s_BattleStart.m_idxStage, 0 );
+	SendFinishBattle( XGAME::xEB_RETREAT, XGAME::xSIDE_OTHER, m_spSceneParam->m_idxStage, 0 );
 #endif // not _XSINGLE
 	return 1;
 }
@@ -1594,7 +1638,7 @@ void XSceneBattle::CreateParticleSfx()
 #ifdef _XSINGLE
 	return;
 #else
-	if( s_BattleStart.m_typeSpot != XGAME::xSPOT_SULFUR )
+	if( m_spSceneParam->m_typeSpot != XGAME::xSPOT_SULFUR )
 		return;
 #endif // not _XSINGLE
 	auto pWndLayer = static_cast<XWndParticleLayer*>( Find( "layer.particle" ) );
