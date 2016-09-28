@@ -45,8 +45,10 @@ struct xSceneBattleParam : public xSceneParamBase {
 										 xtBattle typeBattle,
 										 int def, int idxStage, int idxFloor )
 		: m_idEnemy( idEnemy )
+#ifndef _XSINGLE
 		, m_typeSpot( typeSpot )
 		, m_idSpot( idSpot )
+#endif // not _XSINGLE
 		, m_Level( level )
 		, m_strName( strName )
 		, m_spLegion( aryLegion )

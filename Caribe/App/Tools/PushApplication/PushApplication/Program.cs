@@ -25,8 +25,8 @@ namespace PushApplication
         private const string DEVICE_ID = "";
         private string strUri = "https://android.googleapis.com/gcm/send";            //google url
 
-//        private string DBIp = "192.168.0.192";
-         private string DBIp = "127.0.0.1";
+        private string DBIp = "192.168.0.192";
+//         private string DBIp = "127.0.0.1";
 //        private string DBIp = "211.125.93.154";
         private string DBName = "Caribe";
         private string DBId = "Caribe";
@@ -35,7 +35,8 @@ namespace PushApplication
         
         //private string API_KEY = "AIzaSyCSr8aUCvk-Qij0NBRrBKGLfizpGSzBtWw";
 //        private string API_KEY = "AIzaSyDGo3mEIx6ykmWSr0AFZzwkvYvZBywW8QA"; //caribe
-        private string API_KEY = "AIzaSyCAnAgzJXDtYJSjBTX1uTR2vQ6NScQmTFA"; //caribe
+//        private string API_KEY = "AIzaSyCAnAgzJXDtYJSjBTX1uTR2vQ6NScQmTFA"; //caribe
+        private string API_KEY = "AIzaSyCjV6y9Rg5pnt-L3ptKK7Lw73OHoHTuhDM"; //caribe
         
 
         private const int APPLY_COUNT = 1000;

@@ -457,9 +457,11 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 					Log.e(TAG, "GoogleIAP:inv = null");
 				Log.d(TAG, "GoogleIAP:stridProduct=" + stridProduct);
 				SkuDetails skuDetail = inv.getSkuDetails(stridProduct);
-				if( skuDetail == null )
+				if( skuDetail != null ) {
+					strPrice = skuDetail.getPrice();
+				} else {
 					Log.e(TAG, "GoogleIAP:not found sku:" + stridProduct);
-				strPrice = skuDetail.getPrice();
+				}
 //				strPrice = inv.getSkuDetails(stridProduct).getPrice();
 				if( debugLog )
 					Log.d(TAG, "GoogleIAP:onBuyProduct:price:" + strPrice );

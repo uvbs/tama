@@ -34,8 +34,8 @@ namespace XE
 
 void XLang::Init() 
 {
-	m_strKey = _T( "korean" );
-	m_strFolder = _T( "ko" );
+	m_strKey = _T( "english" );
+	m_strFolder = _T( "en" );
 	TCHAR szBuff[32];
 	_tcscpy_s( szBuff, m_strFolder.c_str() );
 	_tcscat_s( szBuff, _T( "/" ) );

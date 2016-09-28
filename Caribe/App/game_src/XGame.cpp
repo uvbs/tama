@@ -1557,7 +1557,7 @@ int XGame::OnGotoAppStore( XWnd* pWnd, DWORD p1, DWORD p2 )
 #ifdef _SOFTNYX
 	JniHelper::LoadMarketURL( "http://store.softnyx.com/app/detail.aspx?seq=3237" );			// 현재 테스트라 안됩니다
 #else
-	JniHelper::LoadMarketURL( "market://details?id=com.gemtree.caribe" );			// 현재 테스트라 안됩니다
+	JniHelper::LoadMarketURL( "market://details?id=com.gemtree2.caribe" );			// 현재 테스트라 안됩니다
 #endif
 #endif
 // #ifdef _VER_ANDROID

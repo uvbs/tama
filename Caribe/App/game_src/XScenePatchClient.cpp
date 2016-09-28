@@ -642,7 +642,7 @@ int XScenePatchClient::FSMReqRecvRes( xtAct event )
 						strBuff = XFORMAT( " update from svr%.1f%%", 
 											((float)m_pTask->GetidxCurrDownload() / m_pTask->GetNumRequest()) * 100.f );
 					}
-					XTRACE( "%s", strBuff.c_str() );
+// 					XTRACE( "%s", strBuff.c_str() );
 					m_pWndText->SetText( strBuff );
 				}
 			}

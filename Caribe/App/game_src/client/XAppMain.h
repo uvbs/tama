@@ -99,7 +99,7 @@ public:
 	xtTestMode m_ModeTest = xTEST_NONE;
 //	bool m_bLow = false;
 	int m_idxViewAtlas = -1;
-#ifdef WIN32
+#ifdef _CHEAT
 	bool m_bViewMemoryInfo = false;
 	std::string m_strLayoutXml;
 	std::string m_strLayoutNode;

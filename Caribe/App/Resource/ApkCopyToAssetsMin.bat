@@ -31,5 +31,6 @@ copy "ui\fb_empty.png" "..\..\proj.android\assets\ui\"
 mkdir "..\..\proj.android\assets\spr\"
 copy "spr\ui_glow_butt.spr" "..\..\proj.android\assets\spr\"
 copy "spr\ui_loading.spr" "..\..\proj.android\assets\spr\"
+copy "spr\opening.spr" "..\..\proj.android\assets\spr\"
 
 pause

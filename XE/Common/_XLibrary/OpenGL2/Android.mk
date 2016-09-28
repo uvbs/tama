@@ -18,7 +18,7 @@ XTextureAtlas.cpp \
 XTextureAtlasSub.cpp \
 XSurfaceGLAtlasBatch.cpp \
 XSurfaceGLAtlasNoBatch.cpp \
-XRenderCmd.cpp \
+XBatchRenderer.cpp \
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) \
 							$(LOCAL_PATH)/../ \

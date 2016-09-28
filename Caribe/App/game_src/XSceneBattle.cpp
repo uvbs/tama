@@ -457,6 +457,7 @@ XSPAcc XSceneBattle::sCreateAcc()
 }
 void XSceneBattle::sSetBattleParamForSingle()
 {
+	m_spSceneParam = std::make_shared()
 	XGAME::xBattleStart bs;
 	auto spAcc = sCreateAcc();
 	bs.m_spLegion[0] = spAcc->GetCurrLegion();
@@ -474,6 +475,23 @@ void XSceneBattle::sSetBattleParamForSingle()
 	bs.m_idEnemy = 0;
 	bs.m_typeBattle = XGAME::xBT_NORMAL;
 	XSceneBattle::sSetBattleStart( bs );
+// 	XGAME::xBattleStart bs;
+// 	auto spAcc = sCreateAcc();
+// 	bs.m_spLegion[0] = spAcc->GetCurrLegion();
+// 	// 적군단 생성.
+// 	bs.m_Level = 50;
+// 	bs.m_strName = _T( "babarian" );
+// 	{
+// 		auto pPropLegion = XPropLegion::sGet()->GetpProp( "single1_enemy" );
+// 		if( pPropLegion ) {
+// 			auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, bs.m_Level, false );
+// 			bs.m_spLegion[1] = spLegion;
+// 		}
+// 	}
+// 	bs.m_Defense = 0;
+// 	bs.m_idEnemy = 0;
+// 	bs.m_typeBattle = XGAME::xBT_NORMAL;
+// 	XSceneBattle::sSetBattleStart( bs );
 }
 #endif // _XSINGLE
 
