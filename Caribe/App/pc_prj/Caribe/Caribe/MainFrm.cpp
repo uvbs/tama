@@ -2728,6 +2728,8 @@ void CMainFrame::OnProfiling()
 }
 void CMainFrame::OnUpdateProfiling( CCmdUI *pCmdUI )
 {
+#ifdef _XPROFILE
 	pCmdUI->SetCheck( XEProfile::sIsActive() );
+#endif // _XPROFILE
 }
 
