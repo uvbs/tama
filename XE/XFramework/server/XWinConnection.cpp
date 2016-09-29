@@ -4,6 +4,7 @@
 #include "XEUser.h"
 #include "XWinSocketSvr.h"
 #include "Network/xenDef.h"
+#include "XFramework/XEProfile.h"
 #ifdef WIN32
 #ifdef _DEBUG
 #define new DEBUG_NEW

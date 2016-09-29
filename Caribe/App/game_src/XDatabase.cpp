@@ -1,9 +1,10 @@
 ﻿#include "stdafx.h"
-#include "XDatabase.h"
+#include "XFramework/XEProfile.h"
 #include "XDBUAccount.h"
 #include "XResObj.h"
-
+#include "XFramework/XEProfile.h"
 #include "XUserDB.h"
+#include "XDatabase.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
