@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XFramework/XEProfile.h"
 #include "XWinSocketSvr.h"
 #include "XWinConnection.h"
 #include "etc/Debug.h"
