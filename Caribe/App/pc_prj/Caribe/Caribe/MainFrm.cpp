@@ -2721,8 +2721,10 @@ void CMainFrame::OnUpdateProfileTestNoProcess( CCmdUI *pCmdUI )
 
 void CMainFrame::OnProfiling()
 {
+#ifdef _XPROFILE
 	if( SCENE_BATTLE )
 		SCENE_BATTLE->OnDebugProfile( nullptr, 0, 0 );
+#endif // _XPROFILE
 }
 void CMainFrame::OnUpdateProfiling( CCmdUI *pCmdUI )
 {
