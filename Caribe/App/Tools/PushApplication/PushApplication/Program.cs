@@ -25,8 +25,8 @@ namespace PushApplication
         private const string DEVICE_ID = "";
         private string strUri = "https://android.googleapis.com/gcm/send";            //google url
 
-        private string DBIp = "192.168.0.192";
-//         private string DBIp = "127.0.0.1";
+//        private string DBIp = "192.168.0.192";
+         private string DBIp = "127.0.0.1";
 //        private string DBIp = "211.125.93.154";
         private string DBName = "Caribe";
         private string DBId = "Caribe";

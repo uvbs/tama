@@ -89,6 +89,7 @@ private:
 	CTimer m_timerBird;
 	CTimer m_timerSec;
 	XSPAcc m_spAcc;
+	XVector<XSurface*> m_aryWorldSurface;
 //////////////////////////////////////
 // 툴
 #ifdef _xIN_TOOL

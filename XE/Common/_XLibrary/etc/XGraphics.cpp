@@ -688,7 +688,7 @@ XSurface* XGraphics::CreateSurface( const XE::POINT& sizeSurfaceOrig
 																	, const XE::POINT& sizeMemSrc
 																	, bool bSrcKeep, bool bMakeMask ) {
 	auto pSurface = CreateSurface();		// virtual
-	if( pSurface ) {
+	if( pSurface && pImgSrc ) {
 		bool bOk = pSurface->Create( sizeSurfaceOrig
 															, vAdj
 															, formatSurface

@@ -37,6 +37,7 @@
 #include "XWndPopupDaily.h"
 #include "opengl2/XTextureAtlas.h"
 #include "XWndStorageItemElem.h"
+#include "XImageMng.h"
 //#include "Sprite/SprMng.h"
 #ifdef _xIN_TOOL
 #include "XDlgPropCloud.h"
@@ -77,6 +78,9 @@ void XSceneWorld::xLayout::DestroyAll() {
 //////////////////////////////////////////////////////////////////////////
 void XSceneWorld::Destroy() 
 {	
+	for( auto psfc : m_aryWorldSurface ) {
+		SAFE_RELEASE2( IMAGE_MNG, psfc );
+	}
 #ifdef _xIN_TOOL
 //	SAFE_RELEASE2(IMAGE_MNG, m_psfcBrush );
 // 	if( XAPP )
@@ -306,7 +310,11 @@ void XSceneWorld::LoadWorldMap( XWndScrollView* pScrlView )
 					const XE::POINT posMemSrc( k * 1024, i * 1024 );
 					const XE::POINT sizeArea( 1024, 1024 );
 					const XE::POINT sizeMemSrc( 4096, 4096 );
-					auto pSurface = GRAPHICS->CreateSurface();
+//					auto pSurface = GRAPHICS->CreateSurface();
+					const std::string strKey = XE::Format( "world%d.%d", i, k );
+					auto pSurface = IMAGE_MNG->CreateSurface( strKey );
+					// 레퍼런스 카운트 설계가 잘못되서 m_aryWorldSurface로 받아뒀다가 직접 해제시켜야한다. 
+					m_aryWorldSurface.push_back( pSurface );
 					pSurface->CreateSub( posMemSrc
 															, sizeArea
 															, sizeMemSrc

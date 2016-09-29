@@ -373,12 +373,29 @@ XSurface* XImageMng::CreateSurface( const char* cKey
 		img.m_bAsyncLoad = false;
 		m_listSurface.Add( img );
 		pSurface->IncRefCnt();
-		if( !img.m_pSurface->IsbAtlas() )
-			s_sizeTotalVMem += pSurface->GetSizeByte();
+		if( !img.m_pSurface->IsbAtlas() ) {
+			if( pImgSrc )
+				s_sizeTotalVMem += pSurface->GetSizeByte();
+		}
 		return pSurface;
 	}
 	return nullptr;
 }
+
+/**
+ @brief 관리되는 빈서피스를 생성해서 돌려준다.
+*/
+XSurface* XImageMng::CreateSurface( const std::string& strKey )
+{
+	return CreateSurface( strKey.c_str(),
+												XE::POINT(),
+												XE::VEC2(),
+												XE::xPF_NONE,
+												nullptr,
+												XE::POINT(),
+												false, false );
+}
+
 
 XSurface* XImageMng::CreateSurface( const char* cKey, const XE::xImage& imgInfo )
 {

@@ -496,8 +496,9 @@ BOOL XAppMain::OnSelectLoadType( XE::xtLoadType typeLoad )
 
 bool XAppMain::RequestCheatAuth()
 {
-	if( XAccount::sGetPlayer() && XAccount::sGetPlayer()->GetGMLevel() == 1 )
+	if( XAccount::sGetPlayer() && XAccount::sGetPlayer()->GetGMLevel() == 1 ) {
 		return true;
+	}
 	return false;
 }
 

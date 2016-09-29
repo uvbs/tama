@@ -208,7 +208,7 @@ public:
 		return FALSE; 
 	}
 	void OnDestroy();
-	bool RequestCheatAuth() { return true; }
+	virtual bool RequestCheatAuth() { return true; }
 #ifdef WIN32
 	bool IsThreadMain() const;
 #endif // WIN32

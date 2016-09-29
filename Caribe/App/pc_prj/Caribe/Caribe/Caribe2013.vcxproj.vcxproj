@@ -369,7 +369,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
@@ -393,7 +393,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
@@ -415,7 +415,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
@@ -437,7 +437,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_SOFTNYX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_SOFTNYX;_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -458,7 +458,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_XGMO;XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_SOFTNYX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XGMO;XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_SOFTNYX;_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -479,7 +479,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_XPATCH;XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XPATCH;XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
@@ -501,7 +501,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XSINGLE;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XSINGLE;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
@@ -523,7 +523,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;_XSINGLE;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_XSINGLE;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
@@ -545,7 +545,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_XTEST;XE_GLES2;_XSINGLE;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XTEST;XE_GLES2;_XSINGLE;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
@@ -565,7 +565,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <ExceptionHandling>Sync</ExceptionHandling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
@@ -590,7 +590,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <ExceptionHandling>Sync</ExceptionHandling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>_XCREW;_XGOOGLE;XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XCREW;_XGOOGLE;XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
@@ -615,7 +615,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <ExceptionHandling>Sync</ExceptionHandling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>_XGMO;_SOFTNYX;XE_GLES2;_VER_OPENGL;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XGMO;_SOFTNYX;XE_GLES2;_VER_OPENGL;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
@@ -639,7 +639,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <ExceptionHandling>Sync</ExceptionHandling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>_XCREW;_SOFTNYX;XE_GLES2;_VER_OPENGL;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XCREW;_SOFTNYX;XE_GLES2;_VER_OPENGL;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
@@ -664,7 +664,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ExceptionHandling>Sync</ExceptionHandling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>_DEV_TEST;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEV_TEST;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <AdditionalOptions>/NODEFAULTLIB:library %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
@@ -689,7 +689,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <ExceptionHandling>Sync</ExceptionHandling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XSINGLE;_DEV_TEST;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XSINGLE;_DEV_TEST;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -713,7 +713,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <ExceptionHandling>Sync</ExceptionHandling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XSINGLE;_DEV_TEST;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;_XSINGLE;_DEV_TEST;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -737,7 +737,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <ExceptionHandling>Sync</ExceptionHandling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>_XTEST;XE_GLES2;_VER_OPENGL;_XSINGLE;_DEV_TEST;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XTEST;XE_GLES2;_VER_OPENGL;_XSINGLE;_DEV_TEST;WIN32;WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>

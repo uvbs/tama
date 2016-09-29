@@ -153,7 +153,7 @@ public:
 	BOOL DoEditBox( TCHAR *pOutText, int lenOut );
 	BOOL OnSelectLoadType( XE::xtLoadType typeLoad ) override;
 private:
-	bool RequestCheatAuth();
+	bool RequestCheatAuth() override;
 };
 
 

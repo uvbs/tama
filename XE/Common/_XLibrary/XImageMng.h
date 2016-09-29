@@ -120,6 +120,7 @@ public:
 	inline XSurface* CreateSurface( const std::string& strKey, const XE::xImage& imgInfo ) {
 		return CreateSurface( strKey.c_str(), imgInfo );
 	}
+	XSurface* CreateSurface( const std::string& strKey );
 	void RestoreDevice();
 	void DestroyDevice();
 	void Release( XSurface* pSurface );

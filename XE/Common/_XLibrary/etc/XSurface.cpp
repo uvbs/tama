@@ -104,20 +104,17 @@ void XSurface::ClearVertices()
 
 void XSurface::DestroyDevice()
 {
-	if( !m_bAtlas ) {
-		AddSizeByte( -GetbytesMemAligned() );
-//		XSurface::s_sizeTotalVMem -= GetbytesMemAligned();
-	}
-	//memset( m_Vertices, 0, sizeof( m_Vertices ) );
+// 	if( !m_bAtlas ) {
+// 		AddSizeByte( -GetbytesMemAligned() );
+// 	}
 	ClearVertices();
 }
 
 void XSurface::RestoreDeviceFromSrcImg()
 {
-	if( !m_bAtlas ) {
-		AddSizeByte( GetbytesMemAligned() );
-//		XSurface::s_sizeTotalVMem += GetbytesMemAligned();
-	}
+// 	if( !m_bAtlas ) {
+// 		AddSizeByte( GetbytesMemAligned() );
+// 	}
 }
 /**
  @brief 
@@ -172,8 +169,8 @@ bool XSurface::Create( const XE::POINT& sizeSurfaceOrig
 									, bUseAtlas );
 	if( bOk ) {
 		m_bAtlas = bUseAtlas;
-		if( !m_bAtlas )
-			AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
+// 		if( !m_bAtlas )
+// 			AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
 	}
 	return bOk;
 }
@@ -235,10 +232,10 @@ bool XSurface::CreateSub( const XE::POINT& posMemSrc
 														, sizeRender
 														, vAdj
 														, formatSurface );
-	if( bOk ) {
-		if( !m_bAtlas )
-			AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
-	}
+// 	if( bOk ) {
+// 		if( !m_bAtlas )
+// 			AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
+// 	}
 	return bOk;
 }
 
