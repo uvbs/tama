@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup>
+    <popup img="bg_popup_dark.png" format="argb8888" alpha="0.9">
+      <text posx="center" posy="55" font="font_text_b" text_col="white" font_size="30" text="2045">
+        <!--승리보상-->
+      </text>
+      <butt posx="center" posy="211" img_up="common_butt_mid.png" key="butt.ok"></butt>
+      <butt posx="600" posy="8" img_up="common_butt_x.png" key="butt.cancel"></butt>
+      <list posx="23" posy="49" width="242" height="200" type="thumb" spacew="2" spaceh="2" items_num="30" items_node="elem" dir="vert" />
+      <list posx="372" posy="49" width="242" height="200" type="thumb" spacew="2" spaceh="2" items_num="30" items_node="elem" dir="vert" />
+      <list posx="0" posy="269" width="640" height="51" type="list_horiz" spacew="2" items_num="30" items_node="elem" dir="horiz" />
+    </popup>
+    <_temp>
+      <popup img="bg_popup_dark.png" format="argb8888">
+        <!--타이틀-->
+        <img posx="center" posy="-15" img="popup_title_bar.png" format="argb8888">
+          <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" text="80074" />
+        </img>
+        <!--"소리끄기", "언어선택", "진동끄기", "초대거절" 텍스트-->
+        <text posx="30" posy="95" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="right" text="80079" width="100" />
+        <text posx="210" posy="95" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="right" text="80080" width="100" />
+        <text posx="30" posy="185" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="right" text="80081" width="100" />
+        <text posx="210" posy="185" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="right" text="2335" width="100"></text>
+        <!--체크박스 bg 1 ~ 4-->
+        <img posx="140" posy="80" file="option_bg_checkbox.png" key="img.world.checkbox1">
+          <!--사운드 토글-->
+          <img posx="9" posy="8" file="option_check.png" key="img.world.check1" show="off" touch="false" />
+        </img>
+        <img posx="320" posy="80" file="option_bg_checkbox.png" key="img.world.checkbox2">
+          <!--국기-->
+          <img posx="9" posy="8" key="img.flag" />
+          <_list posx="9" posy="40" width="47" height="100" type="list" key="list.flag" />
+        </img>
+        <img posx="140" posy="170" file="option_bg_checkbox.png" key="img.world.checkbox3">
+          <!--계정등록-->
+          <img posx="9" posy="8" file="option_check.png" key="img.world.check2" show="off" touch="false" />
+        </img>
+        <img posx="320" posy="170" file="option_bg_checkbox.png" key="img.butt.check4">
+          <!--저사양-->
+          <img posx="9" posy="8" file="option_check.png" key="img.world.check4" show="off" touch="false" />
+        </img>
+        <!--닫기 버튼-->
+        <butt posx="center" posy="223" img_up="common_butt_mid.png" key="butt.ok"></butt>
+        <butt posx="600" posy="8" img_up="common_butt_x.png" key="butt.cancel"></butt>
+        <_temp />
+      </popup>
+    </_temp>
+  </popup>
+  <elem>
+    <hero_ctrl scale="0.68"></hero_ctrl>
+  </elem>
+</layout>

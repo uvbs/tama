@@ -1368,10 +1368,16 @@
     <Xml Include="..\..\..\Resource\prop\layout\mail.xml">
       <Filter>Layout XML</Filter>
     </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\option.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\player_info.xml">
       <Filter>Layout XML</Filter>
     </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\popup_battle_exp.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\popup_battle_result.xml">
       <Filter>Layout XML</Filter>
     </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\popup_daily.xml">
@@ -1387,6 +1393,12 @@
       <Filter>Layout XML</Filter>
     </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\rank.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\regist_acc.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\research_info.xml">
       <Filter>Layout XML</Filter>
     </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\scene_loading.xml">
@@ -1413,10 +1425,19 @@
     <Xml Include="..\..\..\Resource\prop\layout\squad_levelup.xml">
       <Filter>Layout XML</Filter>
     </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\trade_confirm.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\abil_tree.xml">
       <Filter>Layout XML</Filter>
     </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\bar_blue.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\buy_by_cash.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\camp_hero.xml">
       <Filter>Layout XML</Filter>
     </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\campaign.xml">

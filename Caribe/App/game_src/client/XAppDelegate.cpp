@@ -43,6 +43,7 @@ XWnd* XAppDelegate::DelegateCreateCustomCtrl( const std::string& strcCtrl
 		reward.SetHero( 0 );		// 영웅타입으로만 생성하도록.
 		auto pWndFace = new XWndStoragyItemElem( attrAll.vPos, reward );
 		pWndFace->SetNum(0);
+		pWndFace->SetScaleLocal( attrAll.vScale );
 		pWndCreated = pWndFace;
 	} else
 	if( strcCtrl == "unit_ctrl" ) {

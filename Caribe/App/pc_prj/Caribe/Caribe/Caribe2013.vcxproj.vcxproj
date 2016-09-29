@@ -1216,8 +1216,10 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\Resource\prop\layout\abil_tree.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\bar_blue.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\buy_by_cash.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\campaign.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\camp_hero.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\guild_shop.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\hero_portrait.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\layout.xml" />
@@ -1250,13 +1252,17 @@
     <Xml Include="..\..\..\Resource\prop\layout\layout_world.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\login_lock.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\mail.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\option.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\player_info.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\popup_battle_exp.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\popup_battle_result.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\popup_daily.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\popup_spot.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\profile_picture.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\quest_info.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\rank.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\regist_acc.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\research_info.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\scene_loading.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\scene_main_loading.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\scene_opening.xml" />
@@ -1265,6 +1271,7 @@
     <Xml Include="..\..\..\Resource\prop\layout\skill_levelup.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\squad_info.xml" />
     <Xml Include="..\..\..\Resource\prop\layout\squad_levelup.xml" />
+    <Xml Include="..\..\..\Resource\prop\layout\trade_confirm.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
