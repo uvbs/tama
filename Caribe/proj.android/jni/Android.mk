@@ -79,6 +79,7 @@ LOCAL_WHOLE_STATIC_LIBRARIES := \
 	lua514_static \
 	freetype2-static \
 	zip_static \
+	libpng_static \
 	xml_static \
 	ftgl2_static
 
@@ -100,6 +101,7 @@ $(call import-module,../XE/XFramework)
 $(call import-module,../XE/XFramework/android)
 $(call import-module,../XE/XFramework/client)
 $(call import-module,../XE/XFramework/Game)
+$(call import-module,../XE/XFramework/lpng1256)
 $(call import-module,../XE/Third_Party_lib/Oolong_Engine2)
 $(call import-module,../XE/Third_Party_lib/lua514)
 $(call import-module,../XE/Third_Party_lib/ftgles/freetype2_android/Android/jni)

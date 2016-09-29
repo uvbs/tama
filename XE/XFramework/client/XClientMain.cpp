@@ -649,6 +649,7 @@ void XClientMain::LoadCheat( void )
 void XClientMain::OnCheatMode( void )
 {
 #ifdef _CHEAT
+	
 	m_bDebugMode = !m_bDebugMode;
 	if( GetpGame() ) {
 		GetpGame()->OnCheatMode();

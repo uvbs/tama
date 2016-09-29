@@ -45,8 +45,8 @@ private:
 	XSurface* m_psfcBgLevel = nullptr;
 	XSurface* m_psfcEquip = nullptr;
 	XE::VEC2 m_vScaleItemImg;	// m_pItemImg만 따로 스케일링을 줄때.
-	XArrayLinearN<XSurface*, XGAME::xGD_MAX> m_aryStar;		// 별
 	XSurface *m_psfcSelected;		// 선택중
+	XArrayLinearN<XSurface*, XGAME::xGD_MAX> m_aryStar;		// 별
 	XWndTextString *m_pNum;		// 갯수
 	XWndButton *m_lockButt;		// 잠금 버튼
 	XSurface *m_pSoulStone = nullptr;

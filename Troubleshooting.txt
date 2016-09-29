@@ -2,6 +2,10 @@
 브랜치 테스트
 git test
 문제해결
+2016.9.29
+ *_fprintf이(가) msvcrt.lib(MSVCR120.dll)에 이미 정의되어 있습니다.
+   .본프로젝트는 release빌드인데 라이브러리는 디버그 빌드면 난다. 라이브러리쪽 릴리즈 빌드를 다시 해볼것.
+   .특정라이브러리 무시옵션은 다른 모듈에서의 링크까지 에러나므로 안됨.
 2016.9.28
   Android NDK: WARNING: Ignoring unknown import directory: ..\..\XE\Common\_XLibrary\android\prebuilt    
   Android NDK: ..\..\Caribe/../XE/Common/_XLibrary/Android.mk: Cannot find module with tag 'libpng' in import path    

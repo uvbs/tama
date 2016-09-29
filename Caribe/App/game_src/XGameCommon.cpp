@@ -21,12 +21,12 @@
 #include "XPropLegion.h"
 #include "XGlobalConst.h"
 #include "XResMng.h"
-#include "XImageMng.h"
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 #include "XPropUser.h"
 #endif // #if defined(_CLIENT) || defined(_GAME_SERVER)
 
 #ifdef _CLIENT
+#include "XImageMng.h"
 #include "XFramework/client/XPropParticle.h"
 #endif // _DEBUG
 
@@ -109,7 +109,9 @@ void XGameCommon::CreateCommon()
 #if (!defined(_XPROP_SERIALIZE) && defined(_CLIENT)) || defined(_SERVER)
 	XBREAK( CONSTANT != nullptr );
 	LoadConstant();
+#ifdef _CLIENT
 	IMAGE_MNG->LoadMap( _T( "img_map.txt" ) );
+#endif // _CLIENT
 	// 안드로이드는 여기 읽으면 안됨
 #ifndef _XSINGLE
 #ifdef _VER_ANDROID

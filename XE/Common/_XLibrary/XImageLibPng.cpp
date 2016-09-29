@@ -14,9 +14,11 @@
 #endif
 #include "etc/xGraphics.h"
 #if defined(_VER_ANDROID)
-	#include "png.h"	// 안드로이드는 prebuilt된 안드로이드 전용 라이브러리를 써야 한다.
+//	#include "png.h"	// 안드로이드는 prebuilt된 안드로이드 전용 라이브러리를 써야 한다.
+#include "libpng1256/png.h"
 #elif defined(WIN32)
-	#include "libpng_win/include/png.h"
+//	#include "libpng_win/include/png.h"
+	#include "libpng1256/png.h"
 #elif defined(_VER_IOS)
 	#include "libpng/png.h"
 //#elif defined(WIN32)

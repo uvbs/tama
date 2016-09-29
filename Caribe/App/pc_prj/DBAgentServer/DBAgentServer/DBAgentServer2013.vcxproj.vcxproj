@@ -56,12 +56,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}</ProjectGuid>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>Perforce Project</SccProjectName>
+    <SccLocalPath>..\..\..\..\..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
     <ProjectName>DBAgentServer_2013</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>

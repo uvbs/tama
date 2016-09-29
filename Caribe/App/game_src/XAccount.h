@@ -456,7 +456,7 @@ protected:
 	ID m_GuildIndex;										// 
 	XList4< ID > m_listGuildJoinReq;				// 가입 길드 리스트?
 	XGAME::xtGuildGrade m_Guildgrade;						// 길드 등급
-	int	m_GMLevel;											// 
+	int	m_GMLevel;											// 1이 가장높은 등급. 
 	XECompBit m_bitUnlockMenu;			// 잠금해제된 기능들(xBM_XXXX)
 	bool m_bUnlockTicketForPaladin = false;		// 기사 언락 포인트
 	int m_numUnlockTicketForMiddleOrBig = 0;	// 중대형유닛중 하나를 언락시킬수 있는 포인트 개수.

@@ -94,9 +94,10 @@ LOCAL_LDLIBS := -lGLESv2 \
 
 LOCAL_CFLAGS += $(COMMON_CFLAGS)
 
-LOCAL_WHOLE_STATIC_LIBRARIES := cocos_libpng_static cocos_curl_static
+#LOCAL_WHOLE_STATIC_LIBRARIES := cocos_libpng_static cocos_curl_static
+LOCAL_WHOLE_STATIC_LIBRARIES := cocos_curl_static
 
 include $(BUILD_STATIC_LIBRARY)
 
-$(call import-module,libpng)
+#$(call import-module,libpng)
 $(call import-module,libcurl)

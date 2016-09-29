@@ -77,7 +77,8 @@ void XWndStoragyItemElem::Destory()
 	SAFE_DELETE( m_pfoLevel );
 	SAFE_DELETE( m_pfoNum );
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcBgGradation );
-//	SAFE_RELEASE2( IMAGE_MNG, m_psfcNameBg );
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcEquip );
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcBgLevel );
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcBgName );
 	SAFE_RELEASE2( IMAGE_MNG, m_pBG );
 	SAFE_RELEASE2( IMAGE_MNG, m_pItemImg );

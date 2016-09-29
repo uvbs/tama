@@ -56,9 +56,12 @@ cd ..\ui"
 del /q /f _*.png
 cd ..
 
+net use * /delete /y
 net use k: \\192.168.0.193\caribe_patch_tool Ahqlf099! /user:mtricks_dev1
 @if not "%ERRORLEVEL%" == "0" goto FAIL
 
+@echo 아무키나 누르면 카피가 시작됩니다.
+pause
 xcopy *.* "k:\patchFile" /e /s /y /i
 @if not "%ERRORLEVEL%" == "0" goto FAIL
 

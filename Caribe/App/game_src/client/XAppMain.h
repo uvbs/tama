@@ -152,6 +152,8 @@ public:
 	void OnError( XE::xtError codeError, DWORD p1, DWORD p2 );
 	BOOL DoEditBox( TCHAR *pOutText, int lenOut );
 	BOOL OnSelectLoadType( XE::xtLoadType typeLoad ) override;
+private:
+	bool RequestCheatAuth();
 };
 
 

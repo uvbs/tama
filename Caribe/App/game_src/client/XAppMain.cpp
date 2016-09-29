@@ -8,6 +8,7 @@
 #include "XResMng.h"
 #include "client/XCheatOption.h"
 #include "client/XAppMain.h"
+#include "XAccount.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -492,3 +493,11 @@ BOOL XAppMain::OnSelectLoadType( XE::xtLoadType typeLoad )
 		}
 	return FALSE;
 }
+
+bool XAppMain::RequestCheatAuth()
+{
+	if( XAccount::sGetPlayer() && XAccount::sGetPlayer()->GetGMLevel() == 1 )
+		return true;
+	return false;
+}
+
