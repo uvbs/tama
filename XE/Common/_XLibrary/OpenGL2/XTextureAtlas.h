@@ -96,6 +96,12 @@ public:
 	static int sGetNumAtlas() {
 		return s_listSurfaceAll.size();
 	}
+	static void sAddSizeVM( int addbytes ) {
+		s_sizeVM += addbytes;
+	}
+	static int sGetSizeVM() {
+		return s_sizeVM;
+	}
 	//////////////////////////////////////////////////////////////////////////
 public:
 	XTextureAtlas( const char* cTag );
@@ -128,8 +134,6 @@ public:
 	void PushAtlasMng();
 	void PopAtlasMng();
 private:
-	static XSPAtlasMng s_spCurrAtlasMng;
-	static XList4<XSPAtlasMng> s_listAtlasLayer;
 	void Init() {}
 	void Destroy();
 	XSPAtlas AddAtlas( const XE::VEC2& size, XE::xtPixelFormat formatSurface );
@@ -141,7 +145,10 @@ private:
 	void DestroyAtlas( XSPAtlas spAtlas );
 	//	void UpdateSub( const DWORD* pImg, const XE::VEC2& vLT, const XE::VEC2& sizeImg, ID glTex );
 private:
+	static XSPAtlasMng s_spCurrAtlasMng;
+	static XList4<XSPAtlasMng> s_listAtlasLayer;
 	static XE::VEC2 s_sizeDefault;
+	static int s_sizeVM;
 	ID m_idMng = 0;
 	std::string m_strTag;
 	XList4<XSPAtlas> m_listAtlas;		// 커다란 아틀라스들의 리스트

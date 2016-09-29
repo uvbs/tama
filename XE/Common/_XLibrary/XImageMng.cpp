@@ -48,17 +48,17 @@ void XImageMng::Destroy()
 	CheckRelease();
 	//	XLIST4_DESTROY(m_listSurface );
 	for( auto img : m_listSurface ) {
-		if( img.m_pSurface )
+		if( img.m_pSurface && !img.m_pSurface->IsbAtlas() )
 			s_sizeTotalVMem -= img.m_pSurface->GetSizeByte();
 		SAFE_DELETE( img.m_pSurface );
 	}
 }
-bool XImageMng::DoForceDestroy( XSurface *pSurface ) 
-{
-	if( !pSurface )
-		return false;
-	return DoForceDestroy( pSurface->GetstrRes() );
-}
+// bool XImageMng::DoForceDestroy( XSurface *pSurface ) 
+// {
+// 	if( !pSurface )
+// 		return false;
+// 	return DoForceDestroy( pSurface->GetstrRes() );
+// }
 
 void XImageMng::CheckRelease( void )
 {
@@ -128,7 +128,8 @@ void XImageMng::DestroyOlderFile()
 			if( img.m_pSurface->GetnRefCnt() == 0 && secPass > 60 * 5 ) {
 	//		if( img.m_pSurface->GetnRefCnt() == 0 && secPass > 60 ) {
 	//			CONSOLE("%s destroyed.......", img.m_strRes.c_str() );
-				s_sizeTotalVMem -= img.m_pSurface->GetSizeByte();
+				if( !img.m_pSurface->IsbAtlas() )
+					s_sizeTotalVMem -= img.m_pSurface->GetSizeByte();
 				SAFE_DELETE( img.m_pSurface );
 				m_listSurface.erase( itor++ );
 			} else {
@@ -268,7 +269,6 @@ XSurface* XImageMng::_Load( bool bHighReso,
 			asyncLoad.m_bBatch = bBatch;
 			m_listAsync.Add( asyncLoad );		// 비동기 대기열에 등록.
 			pSurface->IncRefCnt();
-//			s_sizeTotalVMem += pSurface->GetSizeByte();
 		}
 		return pSurface;
 	} else {
@@ -315,7 +315,8 @@ XSurface* XImageMng::_Load( bool bHighReso,
 			img.m_bBatch = bBatch;
 			m_listSurface.Add( img );
 			pSurface->IncRefCnt();
-			s_sizeTotalVMem += pSurface->GetSizeByte();
+			if( !pSurface->IsbAtlas() )
+				s_sizeTotalVMem += pSurface->GetSizeByte();
 			DestroyOlderFile();
 		}
 		return pSurface;
@@ -372,7 +373,8 @@ XSurface* XImageMng::CreateSurface( const char* cKey
 		img.m_bAsyncLoad = false;
 		m_listSurface.Add( img );
 		pSurface->IncRefCnt();
-		s_sizeTotalVMem += pSurface->GetSizeByte();
+		if( !img.m_pSurface->IsbAtlas() )
+			s_sizeTotalVMem += pSurface->GetSizeByte();
 		return pSurface;
 	}
 	return nullptr;
@@ -415,30 +417,30 @@ void XImageMng::OnPause()
 // 		img.m_pSurface->OnPause();
 // 	}
 }
-bool XImageMng::DoForceDestroy( const _tstring& strRes )
-{
-	for( auto itor = m_listSurface.begin(); itor != m_listSurface.end(); ) {
-		auto& img = ( *itor );
-		XBREAK( img.m_pSurface == nullptr );
-//		if( img.m_pSurface->GetstrRes() == strRes ) {
-		if( img.m_strRes == strRes ) {
-//			img.m_pSurface->_ClearRefCnt();
-			// 다른데서 여전히 참조하고 있을수 있으니 refCnt 0일때만 파괴해야한다. 결국 ReleaseNow()기능을 만드는거랑 같네
-			XBREAK( img.m_pSurface->GetnRefCnt() > 0 );		// 아직 어딘가에서 참조하고있다는것이다. 그러므로 지금 당장 이 리소스를 없애려면 그쪽부터 해제시켜야한다.
-			XBREAK( img.m_pSurface->GetnRefCnt() < 0 );		// 
-			// 아무곳에서도 참조하지 않는 refCnt 0이지만 시간땜에 아직 파괴되지 않은 리소스를 지금 즉시 파괴한다.
-			if( img.m_pSurface->GetnRefCnt() == 0 ) {
-				s_sizeTotalVMem -= img.m_pSurface->GetSizeByte();
-				SAFE_DELETE( img.m_pSurface );
-				m_listSurface.erase( itor++ );
-				return true;
-			} else
-				++itor;
-		} else
-			++itor;
-	}
-	return false;
-}
+// bool XImageMng::DoForceDestroy( const _tstring& strRes )
+// {
+// 	for( auto itor = m_listSurface.begin(); itor != m_listSurface.end(); ) {
+// 		auto& img = ( *itor );
+// 		XBREAK( img.m_pSurface == nullptr );
+// //		if( img.m_pSurface->GetstrRes() == strRes ) {
+// 		if( img.m_strRes == strRes ) {
+// //			img.m_pSurface->_ClearRefCnt();
+// 			// 다른데서 여전히 참조하고 있을수 있으니 refCnt 0일때만 파괴해야한다. 결국 ReleaseNow()기능을 만드는거랑 같네
+// 			XBREAK( img.m_pSurface->GetnRefCnt() > 0 );		// 아직 어딘가에서 참조하고있다는것이다. 그러므로 지금 당장 이 리소스를 없애려면 그쪽부터 해제시켜야한다.
+// 			XBREAK( img.m_pSurface->GetnRefCnt() < 0 );		// 
+// 			// 아무곳에서도 참조하지 않는 refCnt 0이지만 시간땜에 아직 파괴되지 않은 리소스를 지금 즉시 파괴한다.
+// 			if( img.m_pSurface->GetnRefCnt() == 0 ) {
+// 				s_sizeTotalVMem -= img.m_pSurface->GetSizeByte();
+// 				SAFE_DELETE( img.m_pSurface );
+// 				m_listSurface.erase( itor++ );
+// 				return true;
+// 			} else
+// 				++itor;
+// 		} else
+// 			++itor;
+// 	}
+// 	return false;
+// }
 
 /**
  @brief 아무도 참조하고 있지는 않지만 캐쉬타임에 걸려 아직 파괴되지 않은 리스스들을 모두 날린다.

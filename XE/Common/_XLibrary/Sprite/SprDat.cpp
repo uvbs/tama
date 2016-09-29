@@ -25,6 +25,8 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace XE;
 
+int XSprDat::s_sizeVM = 0;
+
 /////////////////////////////////////////////////////////
 //
 // class XSprObj
@@ -176,8 +178,10 @@ BOOL XSprDat::Load( LPCTSTR _szFilename,
 			XE::VEC2 vSize = pSpr->GetsizeMemAligned();
 			int byteSize = (int)(vSize.w * vSize.h * 2);
 			XSprite::s_sizeTotalMem += byteSize;
-			if( !bUseAtlas )
+			if( !bUseAtlas ) {
 				m_SizeByte += byteSize;
+				s_sizeVM += byteSize;
+			}
 		}
 	}
 	if( bRestore == FALSE )	{

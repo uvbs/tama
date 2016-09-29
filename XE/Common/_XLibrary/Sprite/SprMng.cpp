@@ -19,7 +19,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace xSpr;
 
 XSprMng *SPRMNG = NULL;
-int XSprMng::s_sizeTotalVM = 0;
+//int XSprMng::s_sizeTotalVM = 0;
 xSec XSprMng::s_secCache = 180;
 static volatile bool s_bThread = true;
 

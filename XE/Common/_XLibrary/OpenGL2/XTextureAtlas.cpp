@@ -18,6 +18,7 @@ using namespace xnTexAtlas;
 
 XList4<XSPAtlas> XTextureAtlas::s_listSurfaceAll;
 XList4<XSPAtlasMng> XTextureAtlas::s_listAtlasLayer;
+int XTextureAtlas::s_sizeVM = 0;
 
 //////////////////////////////////////////////////////////////////////////
 void XTextureAtlas::sRelease( ID idTex, ID idNode )
@@ -248,7 +249,9 @@ xSplit::XNode* XTextureAtlas::InsertElem( XSPAtlas spAtlas,
 			if( pNewNode->GetRectTex().vRB.y > spAtlas->m_maxFill.y )
 				spAtlas->m_maxFill.y = pNewNode->GetRectTex().vRB.y;
 		} else {
+			s_sizeVM -= spAtlas->GetBytes();
 			bResized = spAtlas->ResizeAtlas();
+			s_sizeVM += spAtlas->GetBytes();
 			if( bResized) {
 				spAtlas->m_pRoot->ResizeRoot( spAtlas->m_Size );
 				SPRMNG->UpdateUV( spAtlas->m_idTex, sizePrev.ToPoint(), spAtlas->m_Size.ToPoint() );
@@ -301,6 +304,7 @@ XSPAtlas XTextureAtlas::AddAtlas( const XE::VEC2& _size, XE::xtPixelFormat forma
 																									 XE::xPF_ARGB8888,
 																									 spAtlas->m_Size,	// aligned
 																									 formatSurface );
+	s_sizeVM += spAtlas->GetBytes();
 	extern int s_glFmt, s_glType;
 	spAtlas->m_glFmt = s_glFmt;
 	spAtlas->m_glType = s_glType;

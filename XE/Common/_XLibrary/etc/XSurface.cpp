@@ -12,7 +12,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 DWORD XSurface::s_dwMaxSurfaceWidth = 0;
-int XSurface::s_sizeTotalVMem = 0;
+//int XSurface::s_sizeTotalVMem = 0;
 int XSurface::s_cntDPCallNoBatch = 0;
 int XSurface::s_cntDPCallNormal = 0;
 
@@ -106,7 +106,7 @@ void XSurface::DestroyDevice()
 {
 	if( !m_bAtlas ) {
 		AddSizeByte( -GetbytesMemAligned() );
-		XSurface::s_sizeTotalVMem -= GetbytesMemAligned();
+//		XSurface::s_sizeTotalVMem -= GetbytesMemAligned();
 	}
 	//memset( m_Vertices, 0, sizeof( m_Vertices ) );
 	ClearVertices();
@@ -116,7 +116,7 @@ void XSurface::RestoreDeviceFromSrcImg()
 {
 	if( !m_bAtlas ) {
 		AddSizeByte( GetbytesMemAligned() );
-		XSurface::s_sizeTotalVMem += GetbytesMemAligned();
+//		XSurface::s_sizeTotalVMem += GetbytesMemAligned();
 	}
 }
 /**

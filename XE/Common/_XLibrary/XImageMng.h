@@ -133,8 +133,8 @@ public:
 		}
 		return num;
 	}
-	bool DoForceDestroy( const _tstring& strRes );
-	bool DoForceDestroy( XSurface *pSurface );
+// 	bool DoForceDestroy( const _tstring& strRes );
+// 	bool DoForceDestroy( XSurface *pSurface );
 	void DoFlushCache();
 // #ifdef WIN32
 // 	void OnPauseByWin32();

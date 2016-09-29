@@ -31,7 +31,7 @@ xAtlas::~xAtlas() {
 	if( glTex )
 		::glDeleteTextures( 1, &glTex );
 	const int bpp = XE::GetBpp( m_FormatSurface );
-	XSurface::sAddSizeTotalVMem( (int)(-m_Size.Size() * bpp) );
+	XTextureAtlas::sAddSizeVM(  (int)(-m_Size.Size() * bpp) );
 #ifdef WIN32
 	CONSOLE("destroy atlas: id=%d\n", m_idTex );
 #endif // WIN32

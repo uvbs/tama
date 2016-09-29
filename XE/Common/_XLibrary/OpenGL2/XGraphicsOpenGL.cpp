@@ -1343,7 +1343,7 @@ GLuint XGraphicsOpenGL::CreateTextureGL( void* const pImgSrc
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	//
-	XSurface::sAddSizeTotalVMem( sizeSrcAligned * bppSurface );
+//	XSurface::sAddSizeTotalVMem( sizeSrcAligned * bppSurface );
 	CHECK_GL_ERROR();
 	
 	//
@@ -1525,8 +1525,7 @@ GLuint XGraphicsOpenGL::CreateTextureSubGL( void* const pImgSrc
 			
 			SAFE_DELETE_ARRAY( pDst16 );
 		} // if( bppSurface == 2 ) {
-//		XSurface::s_sizeTotalVMem += sizeTexAligned.Size() * bppSurface;
-		XSurface::sAddSizeTotalVMem( sizeTexAligned.Size() * bppSurface );
+//		XSurface::sAddSizeTotalVMem( sizeTexAligned.Size() * bppSurface );
 		SAFE_DELETE_ARRAY( pBuffClipped );
 	} // if( pImgSrc ) {
 	return glTexture;

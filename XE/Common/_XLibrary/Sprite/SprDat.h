@@ -18,6 +18,7 @@ public:
 	enum { SPR_VER = 33,
 				MAX_ID = 100 };
 	//////////////////////////////////////////////////////////////////////////
+	static int s_sizeVM;
 private:
 	ID m_snDat = 0;
 //	int m_nRefCnt;

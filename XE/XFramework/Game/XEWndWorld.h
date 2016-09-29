@@ -94,5 +94,7 @@ private:
 	void ClearCurrRenderer();
 	void SetCurrAtlas();
 	void ClearCurrAtlas();
+	void OnProcessBefore();
+	void OnProcessAfter();
 };
 

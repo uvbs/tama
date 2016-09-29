@@ -2,6 +2,7 @@
 #include "XGame.h"
 #include "sprite/SprMng.h"
 #include "sprite/SprObj.h"
+#include "sprite/SprDat.h"
 #include "sprite/Key.h"
 #include "XParticleMng.h"
 #include "XFramework/XEToolTip.h"
@@ -785,19 +786,25 @@ void XGame::Draw()
 		}
 	}
 	if( XAPP->m_bViewMemoryInfo ) {
-		const auto sizeTotalVMem = XSurface::sGetsizeTotalVMem();
+		const auto sizeTotalVMem = XImageMng::s_sizeTotalVMem 
+															+ XSprDat::s_sizeVM
+															+ XTextureAtlas::sGetSizeVM();
 		XE::VEC2 v(39,92);
 		PUT_STRING_STROKE( v.x, v.y, XCOLOR_YELLOW
-									, XFORMAT("TotalXSurface vMem=%sM"
-											, XE::NumberToMoneyString(sizeTotalVMem / 1024 / 1024)) );
+											 , XFORMAT( "Total vMem=%sM"
+																	, XE::NtS( sizeTotalVMem / 1024 / 1024 ) ) );
+		v.y += 10.f;
+		PUT_STRING_STROKE( v.x, v.y, XCOLOR_YELLOW
+											 , XFORMAT( "Atlas vMem=%sM"
+																	, XE::NtS( XTextureAtlas::sGetSizeVM() / 1024 / 1024 ) ) );
 		v.y += 10.f;
 		PUT_STRING_STROKE( v.x, v.y, XCOLOR_YELLOW
 									, XFORMAT("ImageMng vMem=%sM"
-											, XE::NumberToMoneyString(XImageMng::s_sizeTotalVMem / 1024 / 1024)) );
+											, XE::NtS(XImageMng::s_sizeTotalVMem / 1024 / 1024)) );
 		v.y += 10.f;
 		PUT_STRING_STROKE( v.x, v.y, XCOLOR_YELLOW
 									, XFORMAT("SprMng vMem=%sM"
-											, XE::NumberToMoneyString(XSprMng::s_sizeTotalVM / 1024 / 1024)) );
+											, XE::NtS(XSprDat::s_sizeVM / 1024 / 1024)) );
 	}
 #ifdef WIN32
 	if( XWnd::s_bDrawMouseOverWins && XWnd::s_aryMouseOver.size() ) {

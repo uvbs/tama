@@ -92,19 +92,19 @@ class XSurface : public XRefRes
 public:
 	static DWORD GetMaxSurfaceWidth( void ) { XBREAK(s_dwMaxSurfaceWidth==0); return s_dwMaxSurfaceWidth; }
 	static void SetMaxSurfaceWidth( DWORD dwMaxWidth ) { s_dwMaxSurfaceWidth = dwMaxWidth; }
-	static int sGetsizeTotalVMem() {
-		return s_sizeTotalVMem;
-	}
-	static void sAddSizeTotalVMem( int bytes ) {
-		s_sizeTotalVMem += bytes;
-	}
+// 	static int sGetsizeTotalVMem() {
+// 		return s_sizeTotalVMem;
+// 	}
+// 	static void sAddSizeTotalVMem( int bytes ) {
+// 		s_sizeTotalVMem += bytes;
+// 	}
 	static void sClearCntDPCall() {
 		s_cntDPCallNoBatch = s_cntDPCallNormal = 0;
 	}
 protected:
 	static int s_cntDPCallNoBatch, s_cntDPCallNormal;
 private:
-	static int s_sizeTotalVMem;
+//	static int s_sizeTotalVMem;
 	static DWORD s_dwMaxSurfaceWidth;		// D3DCAPS.MaxTextureWidth같은거임
 	void Init( void ) {
 		m_bHighReso = FALSE;

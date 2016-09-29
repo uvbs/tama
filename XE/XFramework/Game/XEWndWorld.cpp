@@ -52,34 +52,27 @@ void XEWndWorld::Release()
 
 BOOL XEWndWorld::OnCreate()
 {
-// 	XBREAK( m_spWorld == nullptr );
-// 	const auto sizeWorld = m_spWorld->GetvwSize();
-// 	XBREAK( sizeWorld.IsZero() );
-// 	XE::VEC2 vwCamera = sizeWorld * 0.5f;
-// 	XE::VEC2 vwLT = vwCamera - (GetSizeLocal() * 0.5f) * (1 / m_scaleCamera);
-// 	XBREAK( GetSizeLocal().IsZero() );
-// 	InitScroll( XE::VEC2( 0 ),
-// 							sizeWorld,
-// 							vwLT,	// 화면좌상귀에 해당하는 월드좌표
-// 							GetSizeLocal(),
-// 							XScroll::xTP_ALL );
-// 	XBREAK( XScroll::GetvCenter().IsZero() );
-// 	SetFocus( XScroll::GetvCenter() );
 	XWnd::OnCreate();
 	return TRUE;
 }
 
+void XEWndWorld::OnProcessBefore()
+{
+	m_spAtlas->PushAtlasMng();
+}
+
 int XEWndWorld::Process( float dt ) 
 {
-//	SetvwCamera( XScroll::GetvCenter() );
 	if( m_spWorld ) {
-// 		auto pPrev = XTextureAtlas::sSetpCurrMng( m_pAtlas );
 		m_spWorld->Process( this, dt );
-// 		XTextureAtlas::sSetpCurrMng( pPrev );
 	}
 	XWnd::Process( dt );
-//	XScroll::Process( dt );
 	return 1;
+}
+
+void XEWndWorld::OnProcessAfter()
+{
+	m_spAtlas->PopAtlasMng();
 }
 
 void XEWndWorld::Draw()

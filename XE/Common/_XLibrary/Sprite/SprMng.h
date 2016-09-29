@@ -49,7 +49,7 @@ XE_NAMESPACE_END; // XE
 //////////////////////////////////////////////////////////////////////////
 class XSprMng {
 public:
-	static int s_sizeTotalVM;
+//	static int s_sizeTotalVM;
 	static XSprMng* sGet() {
 		return s_pInstance;
 	}
