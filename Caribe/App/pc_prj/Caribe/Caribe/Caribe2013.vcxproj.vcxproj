@@ -112,7 +112,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -415,7 +415,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XGMO;XE_GLES2;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
@@ -466,7 +466,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\debug;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xe_clientd_gles2.lib;libGLESv2.lib;libgles_cm.lib;windowscodecs.lib;winmm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xe_clientd_gles2.lib;libGLESv2.lib;libgles_cm.lib;windowscodecs.lib;winmm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Patch5|Win32'">
@@ -893,6 +893,7 @@
     <ClInclude Include="..\..\..\game_src\XSceneLoading.h" />
     <ClInclude Include="..\..\..\game_src\XSceneOpening.h" />
     <ClInclude Include="..\..\..\game_src\XScenePatchClient.h" />
+    <ClInclude Include="..\..\..\game_src\XScenePrivateRaid.h" />
     <ClInclude Include="..\..\..\game_src\XSceneProcess.h" />
     <ClInclude Include="..\..\..\game_src\XSceneReady.h" />
     <ClInclude Include="..\..\..\game_src\XSceneShop.h" />
@@ -1099,6 +1100,7 @@
     <ClCompile Include="..\..\..\game_src\XSceneLoading.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneOpening.cpp" />
     <ClCompile Include="..\..\..\game_src\XScenePatchClient.cpp" />
+    <ClCompile Include="..\..\..\game_src\XScenePrivateRaid.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneProcess.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneReady.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneShop.cpp" />

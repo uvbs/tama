@@ -338,24 +338,24 @@ int XSceneTitle::OnClickTitle(XWnd* pWnd, DWORD p1, DWORD p2)
 	XAccount::sSetPlayer( spAcc );
 	spAcc->SetpDelegateLevel(GAME);
 	spAcc->CreateFakeAccount();
-	XGAME::xBattleStart bs;
-	bs.m_Level = 1;
-	bs.m_strName = _T("babarian");
-	bs.m_spLegion[0] = ACCOUNT->GetCurrLegion();
-	// 최초 NPC군단생성
-	int lvLegion = 50;
-	XGAME::xLegionParam info;
-	info.x_gradeLegion = XGAME::xGL_NORMAL;
-	info.unit = (XGAME::xtUnit)XAPP->m_nDebugRespawnUnit;
-	info.bRandom = XAPP->m_bDebugRespawnNumRandom != FALSE;
-	auto pLegion = XLegion::sCreateLegionForNPC( lvLegion, 0, info );
-	bs.m_spLegion[1] = LegionPtr(pLegion);
-	bs.m_Defense = 0;
-	bs.m_idEnemy = 0;
-	bs.m_typeBattle = XGAME::xBT_NORMAL;
-	XSceneBattle::sSetBattleStart( bs );
-
-	DoExit(XGAME::xSC_INGAME );
+// 	XGAME::xBattleStart bs;
+// 	bs.m_Level = 1;
+// 	bs.m_strName = _T("babarian");
+// 	bs.m_spLegion[0] = ACCOUNT->GetCurrLegion();
+// 	// 최초 NPC군단생성
+// 	int lvLegion = 50;
+// 	XGAME::xLegionParam info;
+// 	info.x_gradeLegion = XGAME::xGL_NORMAL;
+// 	info.unit = (XGAME::xtUnit)XAPP->m_nDebugRespawnUnit;
+// 	info.bRandom = XAPP->m_bDebugRespawnNumRandom != FALSE;
+// 	auto pLegion = XLegion::sCreateLegionForNPC( lvLegion, 0, info );
+// 	bs.m_spLegion[1] = LegionPtr(pLegion);
+// 	bs.m_Defense = 0;
+// 	bs.m_idEnemy = 0;
+// 	bs.m_typeBattle = XGAME::xBT_NORMAL;
+// 	XSceneBattle::sSetBattleStart( bs );
+// 
+ 	DoExit(XGAME::xSC_INGAME );
 #else
 	if (ACCOUNT)	{
 		//길드 정보를 못받았다 다시 요청함

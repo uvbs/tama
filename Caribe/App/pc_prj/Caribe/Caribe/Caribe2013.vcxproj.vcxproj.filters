@@ -542,6 +542,9 @@
     <ClCompile Include="..\..\..\game_src\XSpotPrivateRaid.cpp">
       <Filter>source\world and spot</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XScenePrivateRaid.cpp">
+      <Filter>source\scean</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
@@ -1159,6 +1162,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XSpotPrivateRaid.h">
       <Filter>source\world and spot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XScenePrivateRaid.h">
+      <Filter>source\scean</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -480,6 +480,7 @@ namespace XGAME
 		xSC_LOADING,		///< ·Îµù¾À
 		xSC_TEST,				///< °¢Á¾Å×½ºÆ®¿ë empty ¾À
 		xSC_TEST2,				///< °¢Á¾Å×½ºÆ®¿ë empty ¾À
+		xSC_PRIVATE_RAID,
 		xSCENE_MAX,
 	};
 	// ÄÆ¾À ÀÌº¥Æ® ÆÄ¶ó¸ÞÅÍ

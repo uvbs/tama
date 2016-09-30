@@ -440,8 +440,10 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 	aryLegion[1] = pBaseSpot->GetspLegion();
 	auto spSceneParam 
 		= std::make_shared<XGAME::xSceneBattleParam>( idAccEnemy,
+#ifndef _XSINGLE
 																									info.m_typeSpot,
 																									info.m_idSpot,
+#endif // not _XSINGLE
 																									info.m_Level,
 																									info.m_strName,
 																									aryLegion,
@@ -674,8 +676,10 @@ void XSockGameSvr::RecvJewelBattleInfo( XPacket& p, const xCALLBACK& c )
 				aryLegion.push_back( ACCOUNT->GetCurrLegion() );
 				aryLegion.push_back( spLegion );
 				auto spParam = std::make_shared<XGAME::xSceneBattleParam>( pJewel->GetidOwner(),
+#ifndef _XSINGLE
 																																	pJewel->GettypeSpot(),
 																																	pJewel->GetidSpot(),
+#endif // not _XSINGLE
 																																	pJewel->GetLevel(),
 																																	pJewel->GetstrName(),
 																																	aryLegion,
@@ -1206,8 +1210,10 @@ void XSockGameSvr::RecvMandrakeLegionResult( XPacket& p, const xCALLBACK& c )
 					aryLegion.push_back( ACCOUNT->GetCurrLegion() );
 					aryLegion.push_back( spLegion );
 					auto spParam = std::make_shared<XGAME::xSceneBattleParam>( idEnemy,
+#ifndef _XSINGLE
 																																		 pSpot->GettypeSpot(),
 																																		 pSpot->GetidSpot(),
+#endif // not _XSINGLE
 																																		 level,
 																																		 strName,
 																																		 aryLegion,

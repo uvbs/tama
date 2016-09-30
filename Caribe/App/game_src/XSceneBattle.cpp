@@ -195,7 +195,7 @@ XSceneBattle::XSceneBattle( XGame *pGame, XSPSceneParam& spBaseParam )
 #endif // _XMEM_POOL
 #ifdef _XSINGLE
 	// 전투파라메터를 외부에서 넘어온것처럼 시뮬레이션 한다.
-	sSetBattleParamForSingle();
+	m_spSceneParam = sSetBattleParamForSingle();
 	auto strBg = XGC->GetBgBattle( XGAME::xSPOT_NPC );
 #else
 	// 파라메터가 세팅안되어 있으면 에러.
@@ -216,19 +216,6 @@ XSceneBattle::XSceneBattle( XGame *pGame, XSPSceneParam& spBaseParam )
 		// defense값이 있으면 스팟타입은 반드시 jewel이어야 한다.
 		XASSERT( m_spSceneParam->m_typeSpot == xSPOT_JEWEL );
 	}
-// 	XSpot *pSpot = sGetpWorld()->GetSpot( m_spSceneParam->m_idSpot );
-// 	XBREAK( pSpot == nullptr );
-// 	m_pSpot = pSpot;
-// 	if( pSpot && pSpot->IsNpc() && pSpot->GetLevel() < 10 ) {
-// 		XBaseUnit::s_bNotUseActiveByEnemy = true;
-// 	} else {
-// 		XBaseUnit::s_bNotUseActiveByEnemy = false;
-// 	}
-// 	auto strBg = XGC->GetBgBattle( m_spSceneParam->m_typeSpot );
-// 	if( m_spSceneParam->m_Defense > 0 ) {
-// 		// defense값이 있으면 스팟타입은 반드시 jewel이어야 한다.
-// 		XASSERT( m_spSceneParam->m_typeSpot == xSPOT_JEWEL );
-// 	}
 #endif
 	// XBattleField(XWorld)객체 생성
 	// 배경 레이어
@@ -455,29 +442,32 @@ XSPAcc XSceneBattle::sCreateAcc()
 	}
 	return spAcc;
 }
-void XSceneBattle::sSetBattleParamForSingle()
+std::shared_ptr<XGAME::xSceneBattleParam> 
+XSceneBattle::sSetBattleParamForSingle()
 {
-	m_spSceneParam = std::make_shared()
-	XGAME::xBattleStart bs;
+//	XGAME::xBattleStart bs;
+	const int level = 50;
 	auto spAcc = sCreateAcc();
-	bs.m_spLegion[0] = spAcc->GetCurrLegion();
-	// 적군단 생성.
-	bs.m_Level = 50;
-	bs.m_strName = _T( "babarian" );
+	XVector<XSPLegion> aryLegion;
+	aryLegion.push_back( spAcc->GetCurrLegion() );
 	{
 		auto pPropLegion = XPropLegion::sGet()->GetpProp( "single1_enemy" );
 		if( pPropLegion ) {
-			auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, bs.m_Level, false );
-			bs.m_spLegion[1] = spLegion;
+			auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, 
+																										 level, false );
+			aryLegion.push_back( spLegion );
 		}
 	}
-	bs.m_Defense = 0;
-	bs.m_idEnemy = 0;
-	bs.m_typeBattle = XGAME::xBT_NORMAL;
-	XSceneBattle::sSetBattleStart( bs );
-// 	XGAME::xBattleStart bs;
-// 	auto spAcc = sCreateAcc();
-// 	bs.m_spLegion[0] = spAcc->GetCurrLegion();
+
+	auto spSceneParam 
+		= std::make_shared<XGAME::xSceneBattleParam>( 0,
+																									50,
+																									_T( "babarian" ),
+																									aryLegion,
+																									XGAME::xBT_NORMAL,
+																									0, -1, 0 );
+	return spSceneParam;
+		//	bs.m_spLegion[0] = spAcc->GetCurrLegion();
 // 	// 적군단 생성.
 // 	bs.m_Level = 50;
 // 	bs.m_strName = _T( "babarian" );

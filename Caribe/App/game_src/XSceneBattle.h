@@ -60,6 +60,9 @@ struct xSceneBattleParam : public xSceneParamBase {
 	bool IsVsNpc() const {
 		return m_idEnemy == 0;
 	}
+	inline bool IsPrivateRaid() const {
+		return m_typeBattle == XGAME::xBT_PRIVATE_RAID;
+	}
 	bool IsValid() const;
 	inline bool IsInvalid() const {
 		return !IsValid();
@@ -248,7 +251,7 @@ private:
 	XSPSquad GetspSquadObj( ID snSquad );
 	int OnTouchHeroFace( XWnd* pWnd, DWORD snSquad, DWORD );
 	void CheckLeak();
-	static void sSetBattleParamForSingle();
+	static std::shared_ptr<XGAME::xSceneBattleParam> sSetBattleParamForSingle();
 	void CreateCamps();
 	void Release() override;
 	void CreateHeroesFace();

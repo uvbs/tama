@@ -552,6 +552,7 @@ namespace XGAME {
 		xBT_NONE = 0,
 		xBT_NORMAL,		// 일반 전투
 		xBT_GUILD_RAID,	// 길드레이드
+		xBT_PRIVATE_RAID,		// 개인레이드
 	};
 	// 전투 승패결과
 	enum xtWin {
