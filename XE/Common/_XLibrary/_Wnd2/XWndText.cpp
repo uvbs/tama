@@ -575,7 +575,7 @@ void XWndTextString::SetLineLength( float len )
 /**
  @brief 텍스트컨트롤의 경우 m_vPos를 수정하는게 아니고 자체 정렬옵션을 사용한다.
 */
-void XWndTextString::AutoLayoutByAlign( XWnd *pParent, XE::xAlign align )
+void XWndTextString::AutoLayoutByAlign( const XWnd *pParent, XE::xAlign align )
 {
 	if( !align )
 		align = xALIGN_LEFT;
@@ -585,7 +585,7 @@ void XWndTextString::AutoLayoutByAlign( XWnd *pParent, XE::xAlign align )
 /**
  @brief 자식들의 크기를 포함
 */
-XE::VEC2 XWndTextString::GetSizeNoTransLayout() 
+XE::VEC2 XWndTextString::GetSizeNoTransLayout()
 {	
 	const auto sizeLocalNoTrans = GetSizeLocalNoTrans();
 	// 윈도우 크기가 지정되어 있으면 그것을 우선적으로 돌려준다.

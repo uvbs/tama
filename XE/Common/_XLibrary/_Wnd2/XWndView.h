@@ -126,7 +126,7 @@ public:
 		SetSizeLocal( vAligned );
 		return vAligned;
 	}
-	void OnFinishCreatedChildLayout( XLayout *pLayout ) override;
+	void OnFinishCreatedChildLayout( const XLayout *pLayout ) override;
 	void Update() override;
 	void OnNCLButtonDown( float lx, float ly ) {
 		if( m_bNcClose )

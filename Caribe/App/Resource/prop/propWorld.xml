@@ -1,487 +1,487 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <world file="map.png" ratio_produce="1" ratio_castle_produce="1" ratio_regen="1">
-    <spots>
-        <common id="612" x="943" y="865" ids="spot.home" spr="spot_castle.spr" opened="yes" />
-        <npc id="614" x="1047" y="871" ids="spot.614" secRegen="180" />
-        <npc id="613" x="971" y="926" ids="spot.613" secRegen="180" />
-        <common id="554" x="1070" y="929" name="2130" ids="spot.labor" spr="spot_labor.spr" opened="yes" />
-        <common id="606" x="843" y="821" name="15088" ids="spot.tavern" spr="spot_tavern.spr" opened="yes" />
-        <common id="608" x="1222" y="817" name="2131" ids="spot.cathedral" spr="spot_cathedral.spr" opened="yes" />
-        <common id="607" x="785" y="674" name="2133" ids="spot.academy" spr="spot_academy.spr" opened="yes" />
-        <common id="610" x="926" y="595" name="2134" ids="spot.barrack" spr="spot_barrack.spr" opened="yes" />
-        <common id="609" x="1356" y="936" name="2135" ids="spot.embassy" spr="spot_embassy.spr" opened="yes" />
-        <npc id="615" x="1066" y="984" ids="spot.615" secRegen="180" />
-        <npc id="616" x="1142" y="935" ids="spot.616" secRegen="180" />
-        <npc id="617" x="1166" y="786" ids="spot.617" secRegen="180" />
-        <npc id="618" x="1072" y="696" ids="spot.618" secRegen="180" />
-        <npc id="619" x="734" y="731" ids="spot.619" secRegen="180" />
-        <npc id="620" x="894" y="553" ids="spot.620" secRegen="180" />
-        <castle id="621" x="1127" y="582" ids="spot.621">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="622" x="920" y="761" ids="spot.622" secRegen="180" />
-        <npc id="623" x="945" y="1021" ids="spot.623" secRegen="180" />
-        <npc id="624" x="824" y="743" ids="spot.624" secRegen="180" />
-        <npc id="625" x="974" y="638" ids="spot.625" secRegen="180" />
-        <npc id="626" x="1234" y="587" ids="spot.626" secRegen="180" />
-        <castle id="627" x="1404" y="868" ids="spot.627">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="628" x="1217" y="886" ids="spot.628" secRegen="180" />
-        <castle id="629" x="1481" y="950" ids="spot.629">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="630" x="1582" y="882" ids="spot.630">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="631" x="1656" y="843" ids="spot.631" secRegen="180" />
-        <castle id="632" x="669" y="826" ids="spot.632">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="633" x="522" y="741" ids="spot.633">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="634" x="545" y="850" ids="spot.634" secRegen="180" />
-        <event id="635" x="589" y="793" name="15100" ids="spot.635" when="x.boss1" level="13" spr="spot_npc_boss.spr" opened="yes" secRegen="180" legion="legion.boss1" />
-        <npc id="637" x="596" y="950" ids="spot.637" secRegen="180" />
-        <castle id="638" x="579" y="1105" ids="spot.638">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_JEWEL" num="60" />
-        </castle>
-        <castle id="639" x="727" y="1158" ids="spot.639">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="640" x="450" y="1433" ids="spot.640">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_JEWEL" num="60" />
-        </castle>
-        <npc id="641" x="551" y="1336" ids="spot.641" secRegen="180" />
-        <castle id="642" x="665" y="1268" ids="spot.642">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_JEWEL" num="60" />
-        </castle>
-        <castle id="643" x="687" y="1426" ids="spot.643">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_JEWEL" num="60" />
-        </castle>
-        <castle id="644" x="842" y="1408" ids="spot.644">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_JEWEL" num="60" />
-        </castle>
-        <event id="645" x="1508" y="1177" name="15102" ids="spot.645" when="x.boss4" level="21" spr="spot_npc_boss.spr" opened="yes" secRegen="180" legion="legion.boss4" />
-        <castle id="646" x="1010" y="1379" ids="spot.646">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_SULFUR" num="60" />
-        </castle>
-        <common id="548" x="966" y="1281" name="30115" ids="spot.guildraid.15" spr="spot_guild_raid.spr" opened="yes" type="guild_raid" str="raid.guild.15" />
-        <npc id="647" x="930" y="1386" ids="spot.647" secRegen="180" />
-        <castle id="648" x="1115" y="1304" ids="spot.648">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_SULFUR" num="60" />
-        </castle>
-        <sulfur id="649" x="1169" y="1377" ids="spot.649" produce="1" secRegenNpc="300" />
-        <sulfur id="650" x="1212" y="1316" ids="spot.650" opened="yes" produce="1" secRegenNpc="300" />
-        <npc id="651" x="1255" y="1383" ids="spot.651" secRegen="180" />
-        <castle id="652" x="1352" y="1392" ids="spot.652">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_SULFUR" num="60" />
-        </castle>
-        <sulfur id="653" x="1285" y="1251" ids="spot.653" produce="1" secRegenNpc="300" />
-        <npc id="654" x="1312" y="1321" ids="spot.654" secRegen="180" />
-        <castle id="656" x="1167" y="1092" ids="spot.656">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_SULFUR" num="60" />
-        </castle>
-        <npc id="657" x="1041" y="1177" ids="spot.657" secRegen="180" />
-        <sulfur id="658" x="1129" y="1171" ids="spot.658" produce="1" secRegenNpc="300" />
-        <sulfur id="659" x="1266" y="1163" ids="spot.659" produce="1" secRegenNpc="300" />
-        <castle id="660" x="1344" y="1113" ids="spot.660">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_SULFUR" num="60" />
-        </castle>
-        <npc id="661" x="1282" y="1077" ids="spot.661" secRegen="180" />
-        <castle id="662" x="1543" y="1384" ids="spot.662">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_SULFUR" num="60" />
-        </castle>
-        <sulfur id="663" x="1446" y="1377" ids="spot.663" produce="1" secRegenNpc="300" />
-        <npc id="664" x="1415" y="1307" ids="spot.664" secRegen="180" />
-        <castle id="665" x="1565" y="1258" ids="spot.665">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="666" x="1498" y="1310" ids="spot.666" produce="1" secRegenNpc="300" />
-        <npc id="667" x="1457" y="1240" ids="spot.667" secRegen="180" />
-        <sulfur id="668" x="1409" y="1180" ids="spot.668" produce="1" secRegenNpc="300" />
-        <camp id="669" x="806" y="1301" name="15040" ids="spot.669" when="x.camp01" opened="yes" camp="camp.01" />
-        <castle id="670" x="1547" y="1095" ids="spot.670">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_MANDRAKE" num="60" />
-        </castle>
-        <sulfur id="671" x="1476" y="1042" ids="spot.671" produce="1" secRegenNpc="300" />
-        <npc id="672" x="1455" y="1111" ids="spot.672" secRegen="180" />
-        <jewel id="673" x="486" y="1287" ids="spot.673" opened="yes" idx="1" produce="180" />
-        <castle id="674" x="733" y="993" ids="spot.674">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-            <produce res="xRES_JEWEL" num="60" />
-        </castle>
-        <daily id="676" x="1364" y="806" ids="spot.daily" opened="yes">
-            <reward v1="5000" v2="1" v3="5">
-                <day1>
-                    <reward res="xRES_WOOD" num="5000" />
-                </day1>
-                <day2>
-                    <reward res="xRES_IRON" num="5000" />
-                </day2>
-                <day3>
-                    <reward res="xRES_JEWEL" num="2450" />
-                </day3>
-                <day4>
-                    <reward res="xRES_SULFUR" num="1610" />
-                </day4>
-                <day5>
-                    <reward res="xRES_MANDRAKE" num="940" />
-                </day5>
-                <day6>
-                    <reward res="xRES_WOOD" num="5000" />
-                    <reward res="xRES_IRON" num="5000" />
-                </day6>
-                <day7>
-                    <reward res="xRES_WOOD" num="4000" />
-                    <reward res="xRES_IRON" num="4000" />
-                    <reward res="xRES_JEWEL" num="1225" />
-                    <reward res="xRES_SULFUR" num="805" />
-                    <reward res="xRES_MANDRAKE" num="470" />
-                </day7>
-            </reward>
-        </daily>
-        <common id="677" x="850" y="1042" name="15085" ids="spot.medal.camp" spr="spot_medal_camp.spr" opened="yes" type="fixed_camp" str="camp.medal" />
-        <common id="678" x="536" y="1028" name="15095" ids="spot.hero.camp" spr="spot_hero_camp.spr" opened="yes" type="hero_camp" str="camp.hero2" />
-        <event id="679" x="1010" y="896" name="15096" ids="spot.baba.assult" when="scout_attack2" secRegen="180" />
-        <event id="680" x="1108" y="968" name="15092" ids="spot.baba.boss" when="scout_attack3" level="4" secRegen="180" />
-        <common id="681" x="883" y="947" name="80052" ids="spot.market" spr="spot_market.spr" />
-        <event id="682" x="1014" y="746" name="15097" ids="spot.682" when="assassin_spot" spr="spot_npc4.spr" code="code.assassin.medius" secRegen="180" />
-        <event id="683" x="1074" y="809" name="15097" ids="spot.683" when="assassin_spot" spr="spot_npc4.spr" code="code.assassin.medius" secRegen="180" />
-        <event id="684" x="1121" y="876" name="15097" ids="spot.684" when="assassin_spot" spr="spot_npc4.spr" code="code.assassin.medius" secRegen="180" />
-        <cash id="685" x="1549" y="815" ids="spot.685" secRegen="3600" numMin="1" numMax="5" />
-        <cash id="686" x="780" y="1096" ids="spot.686" secRegen="3600" numMin="1" numMax="5" />
-        <cash id="687" x="777" y="1368" ids="spot.687" secRegen="3600" numMin="1" numMax="5" />
-        <cash id="688" x="1065" y="1103" ids="spot.688" secRegen="3600" numMin="1" numMax="5" />
-        <event id="689" x="542" y="1452" name="15101" ids="spot.boss2" when="x.boss2" level="16" spr="spot_npc_boss.spr" opened="yes" secRegen="180" legion="legion.boss2" />
-        <event id="690" x="1084" y="1225" name="15098" ids="spot.boss3" when="x.boss3" level="19" spr="spot_npc_boss.spr" opened="yes" secRegen="180" legion="legion.boss3" />
-        <camp id="691" x="1356" y="1247" name="15099" ids="spot.camp.02" when="x.camp02" opened="yes" camp="camp.01" />
-        <mandrake id="692" x="1504" y="589" name="5073" ids="spot.mandrake.01" opened="yes" idx="1" produce="180" />
-        <castle id="694" x="1598" y="480" ids="spot.694">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="695" x="1708" y="728" ids="spot.695">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="696" x="1933" y="828" ids="spot.696">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="697" x="1798" y="452" ids="spot.697">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="698" x="1987" y="587" ids="spot.698">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="699" x="384" y="681" ids="spot.699">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="700" x="490" y="538" ids="spot.700">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="701" x="186" y="669" ids="spot.701">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="702" x="278" y="539" ids="spot.702">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="703" x="337" y="452" ids="spot.703">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="704" x="139" y="437" ids="spot.704">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="705" x="248" y="302" ids="spot.705">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="706" x="1257" y="517" ids="spot.706">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="707" x="1077" y="519" ids="spot.707">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="708" x="920" y="450" ids="spot.708">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="710" x="1257" y="377" ids="spot.710">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="711" x="1357" y="111" ids="spot.711">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="712" x="430" y="1017" ids="spot.712">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="713" x="334" y="1167" ids="spot.713">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="714" x="332" y="1051" ids="spot.714" produce="1" secRegenNpc="300" />
-        <castle id="716" x="153" y="885" ids="spot.716">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="717" x="196" y="964" ids="spot.717" produce="1" secRegenNpc="300" />
-        <castle id="718" x="137" y="1020" ids="spot.718">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="719" x="185" y="1099" ids="spot.719" produce="1" secRegenNpc="300" />
-        <castle id="720" x="336" y="1315" ids="spot.720">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="721" x="280" y="1240" ids="spot.721" produce="1" secRegenNpc="300" />
-        <castle id="722" x="186" y="1223" ids="spot.722">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="723" x="84" y="1272" ids="spot.723" produce="1" secRegenNpc="300" />
-        <castle id="724" x="370" y="1520" ids="spot.724">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="725" x="160" y="1459" ids="spot.725">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="727" x="383" y="1813" ids="spot.727">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="728" x="177" y="1829" ids="spot.728">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="729" x="510" y="1889" ids="spot.729">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="730" x="791" y="1890" ids="spot.730">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="732" x="1887" y="998" ids="spot.732">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="733" x="1737" y="1241" ids="spot.733">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="734" x="1936" y="1246" ids="spot.734">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="735" x="1696" y="1316" ids="spot.735" secRegen="180" />
-        <npc id="736" x="1648" y="1101" ids="spot.736" secRegen="180" />
-        <npc id="737" x="1977" y="1005" ids="spot.737" secRegen="180" />
-        <npc id="738" x="1882" y="1321" ids="spot.738" secRegen="180" />
-        <castle id="739" x="482" y="376" ids="spot.739">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="740" x="579" y="392" ids="spot.740" produce="1" secRegenNpc="300" />
-        <npc id="741" x="618" y="310" ids="spot.741" secRegen="180" />
-        <castle id="742" x="728" y="450" ids="spot.742">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="743" x="686" y="375" ids="spot.743" produce="1" secRegenNpc="300" />
-        <npc id="744" x="779" y="378" ids="spot.744" secRegen="180" />
-        <castle id="745" x="918" y="164" ids="spot.745">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="746" x="794" y="165" ids="spot.746" produce="1" secRegenNpc="300" />
-        <npc id="747" x="765" y="89" ids="spot.747" secRegen="180" />
-        <castle id="748" x="679" y="93" ids="spot.748">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="749" x="586" y="241" ids="spot.749" produce="1" secRegenNpc="300" />
-        <npc id="750" x="481" y="244" ids="spot.750" secRegen="180" />
-        <castle id="751" x="407" y="106" ids="spot.751">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="752" x="452" y="145" ids="spot.752" produce="1" secRegenNpc="300" />
-        <npc id="753" x="375" y="204" ids="spot.753" secRegen="180" />
-        <castle id="754" x="245" y="169" ids="spot.754">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <sulfur id="755" x="139" y="160" ids="spot.755" produce="1" secRegenNpc="300" />
-        <npc id="756" x="292" y="91" ids="spot.756" secRegen="180" />
-        <castle id="757" x="1646" y="1530" ids="spot.757">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="758" x="1813" y="1528" ids="spot.758" secRegen="180" />
-        <castle id="760" x="1692" y="1599" ids="spot.760">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="761" x="1743" y="1675" ids="spot.761" secRegen="180" />
-        <castle id="762" x="1930" y="1814" ids="spot.762">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="763" x="1828" y="1744" ids="spot.763" secRegen="180" />
-        <castle id="764" x="1795" y="1894" ids="spot.764">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="765" x="1844" y="1938" ids="spot.765" secRegen="180" />
-        <castle id="766" x="1731" y="1801" ids="spot.766">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="767" x="1652" y="1842" ids="spot.767" secRegen="180" />
-        <castle id="768" x="1505" y="1899" ids="spot.768">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="769" x="1555" y="1982" ids="spot.769" secRegen="180" />
-        <castle id="770" x="1606" y="1721" ids="spot.770">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="771" x="1497" y="1759" ids="spot.771" secRegen="180" />
-        <castle id="772" x="1365" y="1818" ids="spot.772">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="773" x="1441" y="1694" ids="spot.773" secRegen="180" />
-        <castle id="774" x="1352" y="1677" ids="spot.774">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="775" x="1289" y="1771" ids="spot.775" secRegen="180" />
-        <castle id="776" x="1226" y="1690" ids="spot.776">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="777" x="1195" y="1765" ids="spot.777" secRegen="180" />
-        <castle id="778" x="1165" y="1519" ids="spot.778">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="779" x="1069" y="1678" ids="spot.779" secRegen="180" />
-        <castle id="780" x="924" y="1608" ids="spot.780">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="781" x="876" y="1508" ids="spot.781" secRegen="180" />
-        <castle id="782" x="1214" y="1884" ids="spot.782">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="783" x="1106" y="1900" ids="spot.783" secRegen="180" />
-        <castle id="784" x="965" y="1798" ids="spot.784">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="785" x="928" y="1906" ids="spot.785" secRegen="180" />
-        <castle id="786" x="1701" y="166" ids="spot.786">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <castle id="787" x="1858" y="218" ids="spot.787">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="788" x="1889" y="159" ids="spot.788" secRegen="180" />
-        <npc id="789" x="1903" y="309" ids="spot.789" secRegen="180" />
-        <npc id="790" x="1550" y="665" ids="spot.790" secRegen="180" />
-        <npc id="791" x="1551" y="403" ids="spot.791" secRegen="180" />
-        <npc id="792" x="1820" y="749" ids="spot.792" secRegen="180" />
-        <npc id="793" x="1944" y="666" ids="spot.793" secRegen="180" />
-        <npc id="794" x="1793" y="596" ids="spot.794" secRegen="180" />
-        <npc id="795" x="1955" y="396" ids="spot.795" secRegen="180" />
-        <npc id="796" x="441" y="611" ids="spot.796" secRegen="180" />
-        <npc id="797" x="672" y="524" ids="spot.797" secRegen="180" />
-        <npc id="798" x="286" y="677" ids="spot.798" secRegen="180" />
-        <npc id="799" x="120" y="532" ids="spot.799" secRegen="180" />
-        <npc id="800" x="444" y="442" ids="spot.800" secRegen="180" />
-        <npc id="801" x="237" y="463" ids="spot.801" secRegen="180" />
-        <npc id="802" x="347" y="290" ids="spot.802" secRegen="180" />
-        <npc id="803" x="1353" y="520" ids="spot.803" secRegen="180" />
-        <npc id="804" x="1156" y="513" ids="spot.804" secRegen="180" />
-        <npc id="805" x="981" y="377" ids="spot.805" secRegen="180" />
-        <npc id="806" x="935" y="298" ids="spot.806" secRegen="180" />
-        <npc id="807" x="1294" y="293" ids="spot.807" secRegen="180" />
-        <npc id="808" x="1356" y="205" ids="spot.808" secRegen="180" />
-        <npc id="809" x="334" y="885" ids="spot.809" secRegen="180" />
-        <npc id="810" x="287" y="956" ids="spot.810" secRegen="180" />
-        <npc id="811" x="235" y="892" ids="spot.811" secRegen="180" />
-        <npc id="812" x="97" y="1097" ids="spot.812" secRegen="180" />
-        <npc id="813" x="232" y="1163" ids="spot.813" secRegen="180" />
-        <npc id="814" x="286" y="1384" ids="spot.814" secRegen="180" />
-        <npc id="815" x="269" y="1460" ids="spot.815" secRegen="180" />
-        <npc id="816" x="144" y="1572" ids="spot.816" secRegen="180" />
-        <npc id="817" x="579" y="1547" ids="spot.817" secRegen="180" />
-        <castle id="818" x="670" y="1684" ids="spot.818">
-            <produce res="xRES_WOOD" num="60" />
-            <produce res="xRES_IRON" num="60" />
-        </castle>
-        <npc id="819" x="725" y="1604" ids="spot.819" secRegen="180" />
-        <npc id="820" x="320" y="1728" ids="spot.820" secRegen="180" />
-        <npc id="821" x="242" y="1894" ids="spot.821" secRegen="180" />
-        <npc id="822" x="649" y="1891" ids="spot.822" secRegen="180" />
-        <npc id="823" x="778" y="1801" ids="spot.823" secRegen="180" />
-        <event id="824" x="344" y="734" name="15103" ids="spot.824" when="x.boss5" level="21" spr="unit_treant2.spr" opened="yes" secRegen="180" legion="legion.boss5" />
-        <common id="825" x="1285" y="726" name="15000" ids="spot.private.raid" type="private.raid" str="spot_private_raid.spr" />
-    </spots>
+  <spots>
+    <common id="612" x="943" y="865" ids="spot.home" spr="spot_castle.spr" opened="yes" />
+    <npc id="614" x="1047" y="871" ids="spot.614" secRegen="180" />
+    <npc id="613" x="971" y="926" ids="spot.613" secRegen="180" />
+    <common id="554" x="1070" y="929" name="2130" ids="spot.labor" spr="spot_labor.spr" opened="yes" />
+    <common id="606" x="843" y="821" name="15088" ids="spot.tavern" spr="spot_tavern.spr" opened="yes" />
+    <common id="608" x="1222" y="817" name="2131" ids="spot.cathedral" spr="spot_cathedral.spr" opened="yes" />
+    <common id="607" x="785" y="674" name="2133" ids="spot.academy" spr="spot_academy.spr" opened="yes" />
+    <common id="610" x="926" y="595" name="2134" ids="spot.barrack" spr="spot_barrack.spr" opened="yes" />
+    <common id="609" x="1356" y="936" name="2135" ids="spot.embassy" spr="spot_embassy.spr" opened="yes" />
+    <npc id="615" x="1066" y="984" ids="spot.615" secRegen="180" />
+    <npc id="616" x="1142" y="935" ids="spot.616" secRegen="180" />
+    <npc id="617" x="1166" y="786" ids="spot.617" secRegen="180" />
+    <npc id="618" x="1072" y="696" ids="spot.618" secRegen="180" />
+    <npc id="619" x="734" y="731" ids="spot.619" secRegen="180" />
+    <npc id="620" x="894" y="553" ids="spot.620" secRegen="180" />
+    <castle id="621" x="1127" y="582" ids="spot.621">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="622" x="920" y="761" ids="spot.622" secRegen="180" />
+    <npc id="623" x="945" y="1021" ids="spot.623" secRegen="180" />
+    <npc id="624" x="824" y="743" ids="spot.624" secRegen="180" />
+    <npc id="625" x="974" y="638" ids="spot.625" secRegen="180" />
+    <npc id="626" x="1234" y="587" ids="spot.626" secRegen="180" />
+    <castle id="627" x="1404" y="868" ids="spot.627">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="628" x="1217" y="886" ids="spot.628" secRegen="180" />
+    <castle id="629" x="1481" y="950" ids="spot.629">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="630" x="1582" y="882" ids="spot.630">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="631" x="1656" y="843" ids="spot.631" secRegen="180" />
+    <castle id="632" x="669" y="826" ids="spot.632">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="633" x="522" y="741" ids="spot.633">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="634" x="545" y="850" ids="spot.634" secRegen="180" />
+    <event id="635" x="589" y="793" name="15100" ids="spot.635" when="x.boss1" level="13" spr="spot_npc_boss.spr" opened="yes" secRegen="180" legion="legion.boss1" />
+    <npc id="637" x="596" y="950" ids="spot.637" secRegen="180" />
+    <castle id="638" x="579" y="1105" ids="spot.638">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_JEWEL" num="60" />
+    </castle>
+    <castle id="639" x="727" y="1158" ids="spot.639">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="640" x="450" y="1433" ids="spot.640">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_JEWEL" num="60" />
+    </castle>
+    <npc id="641" x="551" y="1336" ids="spot.641" secRegen="180" />
+    <castle id="642" x="665" y="1268" ids="spot.642">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_JEWEL" num="60" />
+    </castle>
+    <castle id="643" x="687" y="1426" ids="spot.643">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_JEWEL" num="60" />
+    </castle>
+    <castle id="644" x="842" y="1408" ids="spot.644">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_JEWEL" num="60" />
+    </castle>
+    <event id="645" x="1508" y="1177" name="15102" ids="spot.645" when="x.boss4" level="21" spr="spot_npc_boss.spr" opened="yes" secRegen="180" legion="legion.boss4" />
+    <castle id="646" x="1010" y="1379" ids="spot.646">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_SULFUR" num="60" />
+    </castle>
+    <common id="548" x="966" y="1281" name="30115" ids="spot.guildraid.15" spr="spot_guild_raid.spr" opened="yes" type="guild_raid" str="raid.guild.15" />
+    <npc id="647" x="930" y="1386" ids="spot.647" secRegen="180" />
+    <castle id="648" x="1115" y="1304" ids="spot.648">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_SULFUR" num="60" />
+    </castle>
+    <sulfur id="649" x="1169" y="1377" ids="spot.649" produce="1" secRegenNpc="300" />
+    <sulfur id="650" x="1212" y="1316" ids="spot.650" opened="yes" produce="1" secRegenNpc="300" />
+    <npc id="651" x="1255" y="1383" ids="spot.651" secRegen="180" />
+    <castle id="652" x="1352" y="1392" ids="spot.652">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_SULFUR" num="60" />
+    </castle>
+    <sulfur id="653" x="1285" y="1251" ids="spot.653" produce="1" secRegenNpc="300" />
+    <npc id="654" x="1312" y="1321" ids="spot.654" secRegen="180" />
+    <castle id="656" x="1167" y="1092" ids="spot.656">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_SULFUR" num="60" />
+    </castle>
+    <npc id="657" x="1041" y="1177" ids="spot.657" secRegen="180" />
+    <sulfur id="658" x="1129" y="1171" ids="spot.658" produce="1" secRegenNpc="300" />
+    <sulfur id="659" x="1266" y="1163" ids="spot.659" produce="1" secRegenNpc="300" />
+    <castle id="660" x="1344" y="1113" ids="spot.660">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_SULFUR" num="60" />
+    </castle>
+    <npc id="661" x="1282" y="1077" ids="spot.661" secRegen="180" />
+    <castle id="662" x="1543" y="1384" ids="spot.662">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_SULFUR" num="60" />
+    </castle>
+    <sulfur id="663" x="1446" y="1377" ids="spot.663" produce="1" secRegenNpc="300" />
+    <npc id="664" x="1415" y="1307" ids="spot.664" secRegen="180" />
+    <castle id="665" x="1565" y="1258" ids="spot.665">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="666" x="1498" y="1310" ids="spot.666" produce="1" secRegenNpc="300" />
+    <npc id="667" x="1457" y="1240" ids="spot.667" secRegen="180" />
+    <sulfur id="668" x="1409" y="1180" ids="spot.668" produce="1" secRegenNpc="300" />
+    <camp id="669" x="806" y="1301" name="15040" ids="spot.669" when="x.camp01" opened="yes" camp="camp.01" />
+    <castle id="670" x="1547" y="1095" ids="spot.670">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_MANDRAKE" num="60" />
+    </castle>
+    <sulfur id="671" x="1476" y="1042" ids="spot.671" produce="1" secRegenNpc="300" />
+    <npc id="672" x="1455" y="1111" ids="spot.672" secRegen="180" />
+    <jewel id="673" x="486" y="1287" ids="spot.673" opened="yes" idx="1" produce="180" />
+    <castle id="674" x="733" y="993" ids="spot.674">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+      <produce res="xRES_JEWEL" num="60" />
+    </castle>
+    <daily id="676" x="1364" y="806" ids="spot.daily" opened="yes">
+      <reward v1="5000" v2="1" v3="5">
+        <day1>
+          <reward res="xRES_WOOD" num="5000" />
+        </day1>
+        <day2>
+          <reward res="xRES_IRON" num="5000" />
+        </day2>
+        <day3>
+          <reward res="xRES_JEWEL" num="2450" />
+        </day3>
+        <day4>
+          <reward res="xRES_SULFUR" num="1610" />
+        </day4>
+        <day5>
+          <reward res="xRES_MANDRAKE" num="940" />
+        </day5>
+        <day6>
+          <reward res="xRES_WOOD" num="5000" />
+          <reward res="xRES_IRON" num="5000" />
+        </day6>
+        <day7>
+          <reward res="xRES_WOOD" num="4000" />
+          <reward res="xRES_IRON" num="4000" />
+          <reward res="xRES_JEWEL" num="1225" />
+          <reward res="xRES_SULFUR" num="805" />
+          <reward res="xRES_MANDRAKE" num="470" />
+        </day7>
+      </reward>
+    </daily>
+    <common id="677" x="850" y="1042" name="15085" ids="spot.medal.camp" spr="spot_medal_camp.spr" opened="yes" type="fixed_camp" str="camp.medal" />
+    <common id="678" x="536" y="1028" name="15095" ids="spot.hero.camp" spr="spot_hero_camp.spr" opened="yes" type="hero_camp" str="camp.hero2" />
+    <event id="679" x="1010" y="896" name="15096" ids="spot.baba.assult" when="scout_attack2" secRegen="180" />
+    <event id="680" x="1108" y="968" name="15092" ids="spot.baba.boss" when="scout_attack3" level="4" secRegen="180" />
+    <common id="681" x="883" y="947" name="80052" ids="spot.market" spr="spot_market.spr" />
+    <event id="682" x="1014" y="746" name="15097" ids="spot.682" when="assassin_spot" spr="spot_npc4.spr" code="code.assassin.medius" secRegen="180" />
+    <event id="683" x="1074" y="809" name="15097" ids="spot.683" when="assassin_spot" spr="spot_npc4.spr" code="code.assassin.medius" secRegen="180" />
+    <event id="684" x="1121" y="876" name="15097" ids="spot.684" when="assassin_spot" spr="spot_npc4.spr" code="code.assassin.medius" secRegen="180" />
+    <cash id="685" x="1549" y="815" ids="spot.685" secRegen="3600" numMin="1" numMax="5" />
+    <cash id="686" x="780" y="1096" ids="spot.686" secRegen="3600" numMin="1" numMax="5" />
+    <cash id="687" x="777" y="1368" ids="spot.687" secRegen="3600" numMin="1" numMax="5" />
+    <cash id="688" x="1065" y="1103" ids="spot.688" secRegen="3600" numMin="1" numMax="5" />
+    <event id="689" x="542" y="1452" name="15101" ids="spot.boss2" when="x.boss2" level="16" spr="spot_npc_boss.spr" opened="yes" secRegen="180" legion="legion.boss2" />
+    <event id="690" x="1084" y="1225" name="15098" ids="spot.boss3" when="x.boss3" level="19" spr="spot_npc_boss.spr" opened="yes" secRegen="180" legion="legion.boss3" />
+    <camp id="691" x="1356" y="1247" name="15099" ids="spot.camp.02" when="x.camp02" opened="yes" camp="camp.01" />
+    <mandrake id="692" x="1504" y="589" name="5073" ids="spot.mandrake.01" opened="yes" idx="1" produce="180" />
+    <castle id="694" x="1598" y="480" ids="spot.694">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="695" x="1708" y="728" ids="spot.695">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="696" x="1933" y="828" ids="spot.696">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="697" x="1798" y="452" ids="spot.697">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="698" x="1987" y="587" ids="spot.698">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="699" x="384" y="681" ids="spot.699">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="700" x="490" y="538" ids="spot.700">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="701" x="186" y="669" ids="spot.701">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="702" x="278" y="539" ids="spot.702">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="703" x="337" y="452" ids="spot.703">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="704" x="139" y="437" ids="spot.704">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="705" x="248" y="302" ids="spot.705">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="706" x="1257" y="517" ids="spot.706">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="707" x="1077" y="519" ids="spot.707">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="708" x="920" y="450" ids="spot.708">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="710" x="1257" y="377" ids="spot.710">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="711" x="1357" y="111" ids="spot.711">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="712" x="430" y="1017" ids="spot.712">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="713" x="334" y="1167" ids="spot.713">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="714" x="332" y="1051" ids="spot.714" produce="1" secRegenNpc="300" />
+    <castle id="716" x="153" y="885" ids="spot.716">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="717" x="196" y="964" ids="spot.717" produce="1" secRegenNpc="300" />
+    <castle id="718" x="137" y="1020" ids="spot.718">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="719" x="185" y="1099" ids="spot.719" produce="1" secRegenNpc="300" />
+    <castle id="720" x="336" y="1315" ids="spot.720">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="721" x="280" y="1240" ids="spot.721" produce="1" secRegenNpc="300" />
+    <castle id="722" x="186" y="1223" ids="spot.722">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="723" x="84" y="1272" ids="spot.723" produce="1" secRegenNpc="300" />
+    <castle id="724" x="370" y="1520" ids="spot.724">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="725" x="160" y="1459" ids="spot.725">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="727" x="383" y="1813" ids="spot.727">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="728" x="177" y="1829" ids="spot.728">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="729" x="510" y="1889" ids="spot.729">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="730" x="791" y="1890" ids="spot.730">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="732" x="1887" y="998" ids="spot.732">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="733" x="1737" y="1241" ids="spot.733">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="734" x="1936" y="1246" ids="spot.734">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="735" x="1696" y="1316" ids="spot.735" secRegen="180" />
+    <npc id="736" x="1648" y="1101" ids="spot.736" secRegen="180" />
+    <npc id="737" x="1977" y="1005" ids="spot.737" secRegen="180" />
+    <npc id="738" x="1882" y="1321" ids="spot.738" secRegen="180" />
+    <castle id="739" x="482" y="376" ids="spot.739">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="740" x="579" y="392" ids="spot.740" produce="1" secRegenNpc="300" />
+    <npc id="741" x="618" y="310" ids="spot.741" secRegen="180" />
+    <castle id="742" x="728" y="450" ids="spot.742">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="743" x="686" y="375" ids="spot.743" produce="1" secRegenNpc="300" />
+    <npc id="744" x="779" y="378" ids="spot.744" secRegen="180" />
+    <castle id="745" x="918" y="164" ids="spot.745">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="746" x="794" y="165" ids="spot.746" produce="1" secRegenNpc="300" />
+    <npc id="747" x="765" y="89" ids="spot.747" secRegen="180" />
+    <castle id="748" x="679" y="93" ids="spot.748">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="749" x="586" y="241" ids="spot.749" produce="1" secRegenNpc="300" />
+    <npc id="750" x="481" y="244" ids="spot.750" secRegen="180" />
+    <castle id="751" x="407" y="106" ids="spot.751">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="752" x="452" y="145" ids="spot.752" produce="1" secRegenNpc="300" />
+    <npc id="753" x="375" y="204" ids="spot.753" secRegen="180" />
+    <castle id="754" x="245" y="169" ids="spot.754">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <sulfur id="755" x="139" y="160" ids="spot.755" produce="1" secRegenNpc="300" />
+    <npc id="756" x="292" y="91" ids="spot.756" secRegen="180" />
+    <castle id="757" x="1646" y="1530" ids="spot.757">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="758" x="1813" y="1528" ids="spot.758" secRegen="180" />
+    <castle id="760" x="1692" y="1599" ids="spot.760">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="761" x="1743" y="1675" ids="spot.761" secRegen="180" />
+    <castle id="762" x="1930" y="1814" ids="spot.762">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="763" x="1828" y="1744" ids="spot.763" secRegen="180" />
+    <castle id="764" x="1795" y="1894" ids="spot.764">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="765" x="1844" y="1938" ids="spot.765" secRegen="180" />
+    <castle id="766" x="1731" y="1801" ids="spot.766">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="767" x="1652" y="1842" ids="spot.767" secRegen="180" />
+    <castle id="768" x="1505" y="1899" ids="spot.768">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="769" x="1555" y="1982" ids="spot.769" secRegen="180" />
+    <castle id="770" x="1606" y="1721" ids="spot.770">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="771" x="1497" y="1759" ids="spot.771" secRegen="180" />
+    <castle id="772" x="1365" y="1818" ids="spot.772">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="773" x="1441" y="1694" ids="spot.773" secRegen="180" />
+    <castle id="774" x="1352" y="1677" ids="spot.774">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="775" x="1289" y="1771" ids="spot.775" secRegen="180" />
+    <castle id="776" x="1226" y="1690" ids="spot.776">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="777" x="1195" y="1765" ids="spot.777" secRegen="180" />
+    <castle id="778" x="1165" y="1519" ids="spot.778">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="779" x="1069" y="1678" ids="spot.779" secRegen="180" />
+    <castle id="780" x="924" y="1608" ids="spot.780">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="781" x="876" y="1508" ids="spot.781" secRegen="180" />
+    <castle id="782" x="1214" y="1884" ids="spot.782">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="783" x="1106" y="1900" ids="spot.783" secRegen="180" />
+    <castle id="784" x="965" y="1798" ids="spot.784">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="785" x="928" y="1906" ids="spot.785" secRegen="180" />
+    <castle id="786" x="1701" y="166" ids="spot.786">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <castle id="787" x="1858" y="218" ids="spot.787">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="788" x="1889" y="159" ids="spot.788" secRegen="180" />
+    <npc id="789" x="1903" y="309" ids="spot.789" secRegen="180" />
+    <npc id="790" x="1550" y="665" ids="spot.790" secRegen="180" />
+    <npc id="791" x="1551" y="403" ids="spot.791" secRegen="180" />
+    <npc id="792" x="1820" y="749" ids="spot.792" secRegen="180" />
+    <npc id="793" x="1944" y="666" ids="spot.793" secRegen="180" />
+    <npc id="794" x="1793" y="596" ids="spot.794" secRegen="180" />
+    <npc id="795" x="1955" y="396" ids="spot.795" secRegen="180" />
+    <npc id="796" x="441" y="611" ids="spot.796" secRegen="180" />
+    <npc id="797" x="672" y="524" ids="spot.797" secRegen="180" />
+    <npc id="798" x="286" y="677" ids="spot.798" secRegen="180" />
+    <npc id="799" x="120" y="532" ids="spot.799" secRegen="180" />
+    <npc id="800" x="444" y="442" ids="spot.800" secRegen="180" />
+    <npc id="801" x="237" y="463" ids="spot.801" secRegen="180" />
+    <npc id="802" x="347" y="290" ids="spot.802" secRegen="180" />
+    <npc id="803" x="1353" y="520" ids="spot.803" secRegen="180" />
+    <npc id="804" x="1156" y="513" ids="spot.804" secRegen="180" />
+    <npc id="805" x="981" y="377" ids="spot.805" secRegen="180" />
+    <npc id="806" x="935" y="298" ids="spot.806" secRegen="180" />
+    <npc id="807" x="1294" y="293" ids="spot.807" secRegen="180" />
+    <npc id="808" x="1356" y="205" ids="spot.808" secRegen="180" />
+    <npc id="809" x="334" y="885" ids="spot.809" secRegen="180" />
+    <npc id="810" x="287" y="956" ids="spot.810" secRegen="180" />
+    <npc id="811" x="235" y="892" ids="spot.811" secRegen="180" />
+    <npc id="812" x="97" y="1097" ids="spot.812" secRegen="180" />
+    <npc id="813" x="232" y="1163" ids="spot.813" secRegen="180" />
+    <npc id="814" x="286" y="1384" ids="spot.814" secRegen="180" />
+    <npc id="815" x="269" y="1460" ids="spot.815" secRegen="180" />
+    <npc id="816" x="144" y="1572" ids="spot.816" secRegen="180" />
+    <npc id="817" x="579" y="1547" ids="spot.817" secRegen="180" />
+    <castle id="818" x="670" y="1684" ids="spot.818">
+      <produce res="xRES_WOOD" num="60" />
+      <produce res="xRES_IRON" num="60" />
+    </castle>
+    <npc id="819" x="725" y="1604" ids="spot.819" secRegen="180" />
+    <npc id="820" x="320" y="1728" ids="spot.820" secRegen="180" />
+    <npc id="821" x="242" y="1894" ids="spot.821" secRegen="180" />
+    <npc id="822" x="649" y="1891" ids="spot.822" secRegen="180" />
+    <npc id="823" x="778" y="1801" ids="spot.823" secRegen="180" />
+    <event id="824" x="344" y="734" name="15103" ids="spot.824" when="x.boss5" level="21" spr="unit_treant2.spr" opened="yes" secRegen="180" legion="legion.boss5" />
+    <private_raid id="826" x="1285" y="726" name="15000" ids="spot.private.raid" spr="spot_private_raid.spr" act="1" level="20" />
+  </spots>
 </world>

@@ -207,6 +207,9 @@ public:
 #ifdef _CLIENT
 	static XSPAcc s_spInstance;
 	static XSPAcc sGetPlayer() { return s_spInstance; }
+	static XSPAccConst sGetPlayerConst() {
+		return s_spInstance;
+	}
 	static void sSetPlayer( XSPAcc spAcc ) { 
 #ifdef _DEBUG
 		XBREAK( s_spInstance != nullptr );
@@ -730,6 +733,9 @@ public:
 	}
 	inline void GetlistpHeroByInven( XList4<XHero*> *plistOut ) {
 		*plistOut = m_listHero;
+	}
+	inline const XList4<XHero*>& GetlistHeroByInvenConst() const {
+		return m_listHero;
 	}
 	void GetarypHeroByInven( XVector<XHero*> *pAryOut );
 	void GetaryidPropHeroByInven( XVector<ID> *pAryOut );

@@ -5892,6 +5892,8 @@ int XGameUser::RecvSpotTouch( XPacket& p )
 			pBaseSpot->CreateLegion( m_spAcc );
 //		SendSpotSync( pBaseSpot );
 	} break;
+	case XGAME::xSPOT_PRIVATE_RAID: {
+	} break;
 	//////////////////////////////////////////////////////////////////////////
 	case XGAME::xSPOT_COMMON: {
 		auto pSpot = SafeCast<XSpotCommon*>( pBaseSpot );

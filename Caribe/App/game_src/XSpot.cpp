@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XSpotPrivateRaid.h"
 #include "XSpots.h"
 #include "XSpotDaily.h"
 #include "XArchive.h"
@@ -344,10 +345,10 @@ XSpot* XSpot::sCreateDeSerialize( XArchive& ar, XWorld *pWorld )
 // 		pSpot = new XSpotGuildRaid( pWorld,  );
 // 		bRet = pSpot->DeSerialize( ar, verWorld );
 // 		break;
-//   case XGAME::xSPOT_PRIVATE_RAID:
-//     pSpot = new XSpotPrivateRaid( pWorld,  );
-//     bRet = pSpot->DeSerialize( ar, verWorld );
-//     break;
+  case XGAME::xSPOT_PRIVATE_RAID:
+    pSpot = new XSpotPrivateRaid( pWorld );
+    bRet = pSpot->DeSerialize( ar, verWorld );
+    break;
 	case XGAME::xSPOT_COMMON:
 		pSpot = new XSpotCommon( pWorld, typeSpot );
 		bRet = pSpot->DeSerialize( ar, verWorld );
@@ -427,6 +428,10 @@ XSpot* XSpot::sCreate( XWorld *pWorld, XPropWorld::xBASESPOT *pBaseProp, XSPAcc 
 		case XGAME::xSPOT_CASH: {
 			auto pProp = static_cast<XPropWorld::xCash*>( pBaseProp );
 			pSpot = new XSpotCash( pWorld, pProp );
+		} break;
+		case XGAME::xSPOT_PRIVATE_RAID: {
+			auto pProp = static_cast<XPropWorld::xPrivateRaid*>( pBaseProp );
+			pSpot = new XSpotPrivateRaid( pWorld, pProp );
 		} break;
 		case XGAME::xSPOT_COMMON: {
 			auto pProp = static_cast<XPropWorld::xCommon*>( pBaseProp );

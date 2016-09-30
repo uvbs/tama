@@ -39,15 +39,15 @@ static char THIS_FILE[] = __FILE__;
 XLayout* XLayout::s_pMain = nullptr;		// 메인 레이아웃. 
 XDelegateLayout* XLayout::s_pDelegateMain = nullptr;
 
-XWndList* xGET_LIST_CTRL( XWnd *pRoot, const char *cKey ) {
-	XBREAK( pRoot == nullptr );
-	XWnd *pWnd = pRoot->Find( cKey );
-	if( pWnd == nullptr )
-		return nullptr;
-	return SafeCast<XWndList*>( pWnd );
-}
+// XWndList* xGET_LIST_CTRL( XWnd *pRoot, const char *cKey ) {
+// 	XBREAK( pRoot == nullptr );
+// 	XWnd *pWnd = pRoot->Find( cKey );
+// 	if( pWnd == nullptr )
+// 		return nullptr;
+// 	return SafeCast<XWndList*>( pWnd );
+// }
 
-XWndView* XDelegateLayout::DelegateLayoutCreateViewCtrl( XWnd* pParent, const XLayout::xATTR_ALL& attr )
+XWndView* XDelegateLayout::DelegateLayoutCreateViewCtrl( const XWnd* pParent, const XLayout::xATTR_ALL& attr ) const
 {
 	return new XWndView();
 }
@@ -181,22 +181,47 @@ BOOL XLayout::CreateLayout( TiXmlElement *elemNode, XWnd *pParent )
 }
 
 /**
+ @brief 레이아웃에서 strNode를 찾아서 생성한 후 리턴한다.
+ strNode의 컨트롤은 루트가 하나여야 한다. 만약 루트가 두개이상이라면 첫번째 컨트롤만 루트로 생성되어 리턴된다.
+ @param pParent 부모를 넘겨주긴 하지만 참조만 할뿐 여기에 추가하지는 않는다.
+*/
+XWnd* XLayout::CreateWnd( const std::string& strNode, const XWnd* pParent ) const 
+{
+	if( strNode.empty() )
+		return nullptr;
+	auto pNode = GetNode( strNode.c_str(), m_rootNode );
+	if( pNode == nullptr )
+		return nullptr;
+	// 찾은 노드의 attr변수들을 읽는다.
+	xATTR_ALL attr;
+	GetAttrCommon( pNode->ToElement(), &attr );
+	auto pElemCtrl = pNode->FirstChildElement();
+	return CreateControl2( pElemCtrl, pParent );
+}
+
+/**
  elemNode에 정의된 윈도우를 하나의 윈도우로 생성해서 돌려준다.
  그러므로 노드의 바로밑 자식은 단 하나여야 한다. 여러개있을경우 첫번째것만 인식한다.
 */
-XWnd* XLayout::CreateXWindow( TiXmlElement *elemNode )
+XWnd* XLayout::CreateXWindow( TiXmlElement *elemNode/*, XWnd* pParent*/ )
 {
+	if( !elemNode )
+		return nullptr;
+	xATTR_ALL attrAll;
+
+	GetAttrCommon( elemNode, &attrAll );
 	TiXmlElement *elemCtrl = elemNode->FirstChildElement();
 	if( elemCtrl == NULL )
 		return NULL;
 	const char *cCtrlName = elemCtrl->Value();
 	XWnd *pRoot = NULL;
-	CreateControl( cCtrlName, elemCtrl, NULL, &pRoot );
+	CreateControl( cCtrlName, elemCtrl, nullptr, &pRoot );
+
 	return pRoot;
 }
 
 // 바로 아랫단계 자식들 레벨을 우선적으로 검색하고 손자레벨로 검색을 확장하는 버전.
-TiXmlNode* XLayout::FindNode( TiXmlNode *nodeWnd, const char *cKey )
+TiXmlNode* XLayout::FindNode( TiXmlNode *nodeWnd, const char *cKey ) const
 {
 	// 바로 아래 자식들 레벨부터 우선적으로 검사해본다.
 	TiXmlNode *nodeChild = nodeWnd->FirstChild( cKey );
@@ -217,7 +242,7 @@ TiXmlNode* XLayout::FindNode( TiXmlNode *nodeWnd, const char *cKey )
 }
 
 
-XLAYOUT_ELEM* XLayout::GetElement( const char* cKey, TiXmlNode *nodeRoot )
+XLAYOUT_ELEM* XLayout::GetElement( const char* cKey, TiXmlNode *nodeRoot ) const
 {
 	if( nodeRoot == NULL )
 		nodeRoot = m_rootNode;
@@ -227,13 +252,214 @@ XLAYOUT_ELEM* XLayout::GetElement( const char* cKey, TiXmlNode *nodeRoot )
 	return NULL;
 }
 
-XLAYOUT_NODE* XLayout::GetNode( const char* cKey, TiXmlNode *nodeRoot )
+XLAYOUT_NODE* XLayout::GetNode( const char* cKey, TiXmlNode *nodeRoot ) const
 {
 	if( nodeRoot == NULL )
 		nodeRoot = m_rootNode;
 	TiXmlNode *nodeWnd = 	FindNode( nodeRoot, cKey );
 	return nodeWnd;
 }
+
+
+/** //////////////////////////////////////////////////////////////////////////
+ @brief elemCtrl컨트롤을 생성해서 리턴한다.
+ @param pParent 이것은 단지 참조용이다. 생성후 여기에 차일드로 넣지 않는다.
+*/
+XWnd* XLayout::CreateControl2( TiXmlElement *elemCtrl, const XWnd *pParent ) const
+{
+	const char *cCtrlName = elemCtrl->Value();
+// 	TCHAR szWndNode[ 64 ];
+// 	_tcscpy_s( szWndNode, C2SZ( m_nodeWnd->Value() ) );
+// 	m_strNodeWnd = szWndNode;
+	//
+	XWnd *pAddWnd = nullptr;
+	xATTR_ALL attrAll;
+	GetAttrCommon( elemCtrl, &attrAll );
+	XBREAK( attrAll.num > 1 );		// 루트는 하나여야 하므로 이것은 지원되지 않는다.
+	int debug = 0;
+#ifdef _DEBUG
+	{
+		elemCtrl->Attribute( "debug", &debug );
+		if( debug ) {
+			attrAll.m_Debug = debug;
+		}
+	}
+#endif // _DEBUG
+	//////////////////////////////////////////////////////////////////////////
+	// XWndImage 컨트롤
+	if( XE::IsSame( cCtrlName, "img" ) ) {
+		pAddWnd = CreateImgCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "spr" ) ) {
+		pAddWnd = CreateSprCtrlWnd( elemCtrl, pParent, attrAll );
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( XE::IsSame( cCtrlName, "pbar2" ) ) {
+		pAddWnd = CreateProgressBarCtrl2( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( XE::IsSame( cCtrlName, "pbar" ) ) {
+		pAddWnd = CreateProgressBarCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( XE::IsSame( cCtrlName, "butt" ) ) {
+		pAddWnd = CreateButtonCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} // butt
+	else
+	if( XE::IsSame( cCtrlName, "radio_butt" ) ) {
+		int idGroup = 0;
+		elemCtrl->Attribute( "group", &idGroup );
+		//
+		pAddWnd = CreateRadioButtonCtrl( cCtrlName, elemCtrl, pParent, (ID)idGroup, attrAll/*, attrButt*/ );
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( XE::IsSame( cCtrlName, "text" ) ) {
+		pAddWnd = CreateStaticTextOnlyOne( cCtrlName, elemCtrl, pParent, attrAll );
+// 		pAddWnd = CreateStaticText( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( XE::IsSame( cCtrlName, "list" ) ) {
+//		pAddWnd = CreateListCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "slide" ) ) {
+//		pAddWnd = CreateSlideCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "popup" ) ) {
+//		pAddWnd = CreatePopupFrame( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "view" ) ) {
+//		pAddWnd = CreateViewFrame( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "tabview" ) ) {
+//		pAddWnd = CreateTabViewCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else	
+	if( XE::IsSame( cCtrlName, "tab" ) ) {
+//		AddTab( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "wnd" ) ) {
+		pAddWnd = new XWnd( attrAll.vPos, attrAll.vSize );
+		pAddWnd->SetScaleLocal( attrAll.vScale );
+	} else
+	if( XE::IsSame( cCtrlName, "rect" ) ) {
+		pAddWnd = new XWndRect( attrAll.vPos, attrAll.vSize, attrAll.col );
+		pAddWnd->SetAlphaLocal( attrAll.alpha );
+	} else
+	if( XE::IsSame( cCtrlName, "slide_down" ) )	{
+//		pAddWnd = CreateSlideDownCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "edit_box" ) || XE::IsSame( cCtrlName, "edit" ))	{
+//		pAddWnd = CreateEditBoxCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if(	XE::IsSame( cCtrlName, "scroll_view" ) )	{
+//		pAddWnd = CreateScrollViewCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "sound" ) || XE::IsSame( cCtrlName, "snd" ) ) {
+		if( attrAll.idActUp )
+			pAddWnd = new XWndPlaySound( attrAll.idActUp );
+		else
+		if( !attrAll.GetstrFile().empty() )
+			pAddWnd = new XWndPlayMusic( SZ2C( attrAll.GetstrFile() ) );
+	} else
+	if( XE::IsSame( cCtrlName, "layout" ) ) {
+		auto strtLayout = attrAll.GetstrFile();
+		if( strtLayout.empty() ) {
+			const _tstring strtFile = C2SZ( m_strFullpath );
+			strtLayout = XE::GetFileName( strtFile );
+		}
+		XBREAK( strtLayout.empty() );
+		XLayoutObj layoutObj( strtLayout );
+		const int num = attrAll.num;
+		auto vPos = attrAll.vPos;
+		//
+		XWnd *pRoot = new XWnd();
+		if( layoutObj.CreateLayout( attrAll.m_strcLayout, pRoot ) ) {
+			pRoot->SetPosLocal( vPos );
+			pRoot->SetAutoSize();
+			AlignCtrl( "layout", elemCtrl, pParent, pRoot, attrAll );
+			pRoot->SetScaleLocal( attrAll.vScale );
+			pRoot->SetbShow( attrAll.bShow );
+			pRoot->SetstrIdentifier( attrAll.strKey );
+// 			pParent->Add( pRoot );
+// 			CreateLayout( elemCtrl, pRoot );
+		} else {
+			SAFE_DELETE( pRoot );
+		}
+		vPos += attrAll.vDist;
+	}	else 
+// 	if( XE::IsSame( cCtrlName, "click" ) ) {
+// 		// click event
+// 		xATTR_ALL attrClick;
+// 		GetAttrCommon( elemCtrl, &attrClick );
+// // 		ID idTooltip = 0;
+// // 		GetAttrDWORD( elemCtrl, "tooltip", &idTooltip );
+// 		// 클릭이벤트를 할당해야할 실제 컨트롤을 얻음.(아직은 구조적인 문제로 click이벤트가 해당 컨트롤부터 아래에 있어야 함.
+// 		auto pWndClick = pParent->Find( attrClick.strKey );
+// // 		if( pWndClick ) {
+// // 			pWndClick->SetEvent( XWM_CLICKED, pParent, &XWnd::__OnClickLayoutEvent );
+// // 		}
+// 		if( attrClick.GetstrFile().empty() ) {
+// 			std::string strcFile = XE::GetFileName( m_strFullpath );
+// 			attrClick.SetstrFile( C2SZ(strcFile) );
+// 		}
+// 		xnWnd::xClickEvent event;
+// 		event.m_xmlClick = attrClick.GetstrFile();
+// 		event.m_strNodeClick = attrClick.m_strcLayout;
+// 		event.m_vPopupByLayout = attrClick.vPos;
+// 		if( attrClick.align )
+// 			event.m_AlignClick = attrClick.align;
+// 		event.m_strKeyTarget = attrClick.strKey;
+// 		event.m_strType = elemCtrl->Attribute( "wnd_type" );
+// 		pParent->AddClickEvent( event );
+//	} else
+// 	if( XE::IsSame( cCtrlName, "tooltip" ) ) {
+// 		xnWnd::xTooltip event;
+// 		event.m_xml = attrAll.GetstrFile();
+// 		event.m_strNode = attrAll.m_strcLayout;
+// 		event.m_idText = attrAll.idText;
+// 		DWORD length = 0;
+// 		if( !GetAttrDWORD( elemCtrl, "len", &length ) ) {
+// 			GetAttrDWORD( elemCtrl, "length", &length );
+// 		}
+// 		event.m_Length = (float)length;
+// 		pParent->SetdatTooltip( event );
+// 		if( pParent )
+// 			pParent->SetEvent( XWM_TOOLTIP, XEContent::sGet(), &XEContent::__OnClickTooltip );
+// 		
+// 	} else 
+	{
+		// 그 외 해석이 안되는 custom 컨트롤
+		// virtual
+		pAddWnd = CreateCustomControl( cCtrlName, elemCtrl, pParent, attrAll );		
+	}
+
+	// 만들어진 윈도우 컨트롤을 부모윈도우에 붙인다.
+	if( pAddWnd ) {
+		pAddWnd->SetDebug( debug );
+		pAddWnd->SetvAdjPos( attrAll.vAdjust );
+		if( attrAll.m_Touchable >= 0 )
+			pAddWnd->SetbTouchable( (attrAll.m_Touchable == 1)? TRUE : FALSE );
+		pAddWnd->SetstrIdentifier( attrAll.strKey );
+		pAddWnd->SetbEnable( attrAll.bEnable );
+		pAddWnd->SetbShow( attrAll.bShow );
+		if( attrAll.align && attrAll.align != XE::xALIGN_LEFT ) {
+			pAddWnd->SetAlign( attrAll.align );
+			pAddWnd->SetbUpdate( true );		// 
+		}
+
+		auto nodeChild = elemCtrl->FirstChildElement();
+		while( nodeChild ) {
+			auto pCtrlChild = CreateControl2( nodeChild, pAddWnd );
+			pAddWnd->Add( pCtrlChild );
+			nodeChild = nodeChild->NextSiblingElement();
+		}
+		// pAddWnd의 자식들이 모두 생성이 끝나고 핸들러가 호출된다.
+		pAddWnd->OnFinishCreatedChildLayout( this );
+		//
+		return pAddWnd;
+	}
+
+	return 0;
+} // CreateControl2
 
 /**
  
@@ -331,7 +557,16 @@ int XLayout::CreateControl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd 
 	} else
 	//////////////////////////////////////////////////////////////////////////
 	if( XE::IsSame( cCtrlName, "text" ) ) {
-		pAddWnd = CreateStaticText( cCtrlName, elemCtrl, pParent, attrAll );
+		if( attrAll.num > 1 ) {
+			// 여러개 생성
+			for( int i = 0; i < attrAll.num; ++i ) {
+				XWnd *pWnd = CreateStaticTextOnlyOne( cCtrlName, elemCtrl, pParent, attrAll, i );
+				AddWndParent( pWnd, pParent, attrAll, i );
+			}
+		} else {
+			pAddWnd = CreateStaticTextOnlyOne( cCtrlName, elemCtrl, pParent, attrAll );
+		}
+//		pAddWnd = CreateStaticText( cCtrlName, elemCtrl, pParent, attrAll );
 	} else
 	//////////////////////////////////////////////////////////////////////////
 	if( XE::IsSame( cCtrlName, "list" ) ) {
@@ -498,6 +733,8 @@ int XLayout::CreateControl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd 
 		// 먼저 부모에 붙인다.
 		if( pParent )
 			AddWndParent( pAddWnd, pParent, attrAll );
+		else
+			pAddWnd->SetstrIdentifier( attrAll.strKey );
 		// 버추얼 커스텀에게 맡겼는데도 모르는게 나왔다면 이 노드를 키로 다시 리커시브로 들어가본다.
 		CreateLayout( elemCtrl, pAddWnd );
 		// 좌표 정렬(자식들의 생성이 끝난후 실시)
@@ -556,38 +793,34 @@ void XLayout::AddWndParent( XWnd *pAddWnd,
 /**
  @brief 
 */
-XWnd *XLayout::CreateStaticText( const char *cCtrlName, 
-										TiXmlElement *elemCtrl, 
-										XWnd *pParent, 
-										const xATTR_ALL& attrAll )
-{
-// 	xATTR_ALL attr;
-// 	attr = attrAll;			// attrAll로 먼저 넣고
-// 	GetAttrCtrlText( elemCtrl, &attr );		// 추가로 텍스트의 속성을 넣는다.
-	XWnd *pAddWnd = NULL;
-	//
-	if( attrAll.num > 1 ) {
-		// 여러개 생성
-		for( int i = 0; i < attrAll.num; ++i ) {
-			XWnd *pWnd = CreateStaticTextOnlyOne( cCtrlName, elemCtrl, pParent, attrAll, i );
-			AddWndParent( pWnd, pParent, attrAll, i );
-		}
-	} else {
-		pAddWnd = CreateStaticTextOnlyOne( cCtrlName, elemCtrl, pParent, attrAll );
-//		pAddWnd = CreateStaticTextOnlyOne( cCtrlName, elemCtrl, pParent, attr );
-	}
-
-	return pAddWnd;
-}
+// XWnd *XLayout::CreateStaticText( const char *cCtrlName, 
+// 										TiXmlElement *elemCtrl, 
+// 										const XWnd *pParent, 
+// 										const xATTR_ALL& attrAll ) const 
+// {
+// 	XWnd *pAddWnd = NULL;
+// 	//
+// 	if( attrAll.num > 1 ) {
+// 		// 여러개 생성
+// 		for( int i = 0; i < attrAll.num; ++i ) {
+// 			XWnd *pWnd = CreateStaticTextOnlyOne( cCtrlName, elemCtrl, pParent, attrAll, i );
+// 			AddWndParent( pWnd, pParent, attrAll, i );
+// 		}
+// 	} else {
+// 		pAddWnd = CreateStaticTextOnlyOne( cCtrlName, elemCtrl, pParent, attrAll );
+// 	}
+// 
+// 	return pAddWnd;
+// }
 
 /**
  @brief 
 */
 XWnd *XLayout::CreateStaticTextOnlyOne( const char *cCtrlName, 
 																				TiXmlElement *elemCtrl, 
-																				XWnd *pParent, 
+																				const XWnd *pParent, 
 																				const xATTR_ALL& attr, 
-																				int idxMulti )
+																				int idxMulti ) const
 {
 	XE::VEC2 vPos = attr.vPos;
 	if( idxMulti > 0 )
@@ -640,7 +873,7 @@ XWnd *XLayout::CreateStaticTextOnlyOne( const char *cCtrlName,
 페이지 슬라이드 컨트롤
  elemCtrl: 슬라이드노드
 */
-XWnd* XLayout::CreateSlideCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, const xATTR_ALL& attrAll )
+XWnd* XLayout::CreateSlideCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, const XWnd *pParent, const xATTR_ALL& attrAll ) const
 {
 	xATTR_ALL attr;
 	attr = attrAll;
@@ -726,24 +959,25 @@ XWnd* XLayout::CreateSlideCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, X
 	return pSlide;
 }
 
-XWndPageSlideWithXML* XLayout::CreateSlideWnd( const xATTR_ALL& attr, TiXmlElement *elemCtrl )
+XWndPageSlideWithXML* XLayout::CreateSlideWnd( const xATTR_ALL& attr, TiXmlElement *elemCtrl ) const
 {
-	XWndPageSlideWithXML *pSlide = new XWndPageSlideWithXML( attr.vPos, 
-													attr.vSize, 
-													this, 
-													elemCtrl, 
-													attr.strImgDisable.c_str() );
-	return pSlide;
+// 	auto pSlide = new XWndPageSlideWithXML( attr.vPos, 
+// 													attr.vSize, 
+// 													this, 
+// 													elemCtrl, 
+// 													attr.strImgDisable.c_str() );
+// 	return pSlide;
+	return nullptr;
 }
 
 /**
  XWndImage컨트롤
 */
-XWnd* XLayout::CreateImgCtrl( const char *cCtrlName, 
-							TiXmlElement *elemCtrl, 
-							XWnd *pParent, 
-							const xATTR_ALL& attrAll,
-							int idxMulti )
+XWnd* XLayout::CreateImgCtrl( const char *cCtrlName,
+															TiXmlElement *elemCtrl,
+															const XWnd *pParent,
+															const xATTR_ALL& attrAll,
+															int idxMulti ) const
 {
 	XE::VEC2 vPos = attrAll.vPos;
 	//
@@ -792,6 +1026,55 @@ XWnd* XLayout::CreateImgCtrl( const char *cCtrlName,
 	return pWnd;
 }
 
+
+XWnd* XLayout::CreateSprCtrlWnd( TiXmlElement *elemCtrl, 
+																 const XWnd *pParent, 
+																 const xATTR_ALL& attrAll ) const
+{
+	XE::VEC2 vPos = attrAll.vPos;
+	if( attrAll.align == XE::xALIGN_HCENTER ) {
+		// 중앙정렬로 되어있으면 좌표를 부모의 중앙으로 한다.
+		const XE::VEC2 vSize = pParent->GetSizeValidNoTrans();
+		if( vSize.w > 0 )
+			vPos.x = vSize.w / 2.f;
+	}
+	// 확장자가 없으면 붙인다.
+	_tstring strSpr = attrAll.GetstrFile();
+	if( !strSpr.empty() ) {
+		if( XE::IsEmpty( XE::GetFileExt( strSpr ) ) ) {
+			strSpr += _T( ".spr" );
+		}
+	}
+	int idAct = attrAll.idAct;
+	if( idAct <= 0 )
+		idAct = 1;		// 지정안되어있으면 디폴트 1로 한다.
+	// playtype
+	const char *cPlayType = elemCtrl->Attribute( "play_type" );
+	xRPT_TYPE loopType = xRPT_LOOP;
+	if( XE::IsHave( cPlayType ) ) {
+		if( XE::IsSame( cPlayType, "once" ) )
+			loopType = xRPT_1PLAY;
+		else if( XE::IsSame( cPlayType, "once_standby" ) )
+			loopType = xRPT_1PLAY_CONT;
+	}
+	// 한개생성
+	XWndSprObj *pWnd = NULL;
+	if( strSpr.empty() ) {
+		pWnd = new XWndSprObj( vPos.x, vPos.y );
+		pWnd->SetloopType( loopType );
+	} else
+		pWnd = new XWndSprObj( strSpr.c_str(), (ID)idAct, vPos.x, vPos.y, loopType );
+	if( pWnd ) {
+		pWnd->SetRotateY( attrAll.vRot.y );
+		pWnd->SetRotateZ( attrAll.vRot.z );
+		pWnd->SetFlipHoriz( attrAll.m_bFlipX );
+		pWnd->SetFlipVert( attrAll.m_bFlipY );
+		pWnd->SetScaleLocal( attrAll.vScale );
+		if( !attrAll.vSize.IsMinus() )
+			pWnd->SetSizeLocal( attrAll.vSize );
+	}
+	return pWnd;
+}
 /**
  SprObj컨트롤
 */
@@ -1068,11 +1351,10 @@ int XLayout::AddTab( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParen
 /**
  버튼 컨트롤 생성함수.
 */
-XWnd* XLayout::CreateButtonCtrl( const char *cCtrlName, TiXmlElement* /*elemCtrl*/, 
-								XWnd *pParent,
-								const xATTR_ALL& attrAll, 
-//								const xATTR_BUTT& attrButt,
-								int idxMulti )
+XWnd* XLayout::CreateButtonCtrl( const char *cCtrlName, TiXmlElement* /*elemCtrl*/,
+																 const XWnd *pParent,
+																 const xATTR_ALL& attrAll,
+																 int idxMulti ) const
 {
 	XWnd *pAddWnd = NULL;
 	XE::VEC2 vPos = attrAll.vPos;		// 시작위치
@@ -1122,11 +1404,12 @@ XWnd* XLayout::CreateButtonCtrl( const char *cCtrlName, TiXmlElement* /*elemCtrl
 /**
  라디오 버튼 컨트롤 생성함수.
 */
-XWnd* XLayout::CreateRadioButtonCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, 
-										XWnd *pParent,
-										const ID idGroup,
-										const xATTR_ALL& attrAll, 
-										int idxMulti )
+XWnd* XLayout::CreateRadioButtonCtrl( const char *cCtrlName,
+																			TiXmlElement *elemCtrl,
+																			const XWnd *pParent,
+																			const ID idGroup,
+																			const xATTR_ALL& attrAll,
+																			int idxMulti ) const
 {
 	XWnd *pAddWnd = NULL;
 	XE::VEC2 vPos = attrAll.vPos;		// 시작위치
@@ -1177,8 +1460,8 @@ XWnd* XLayout::CreateRadioButtonCtrl( const char *cCtrlName, TiXmlElement *elemC
 
 XWnd *XLayout::CreateProgressBarCtrl( const char *cCtrlName, 
 												TiXmlElement *elemCtrl, 
-												XWnd *pParent, 
-												const xATTR_ALL& attrAll )
+												const XWnd *pParent, 
+												const xATTR_ALL& attrAll ) const
 {
 	xATTR_ALL attr;
 	attr = attrAll;			// attrAll로 먼저 넣고
@@ -1218,8 +1501,8 @@ XWnd *XLayout::CreateProgressBarCtrl( const char *cCtrlName,
 
 XWnd *XLayout::CreateProgressBarCtrl2( const char *cCtrlName, 
 												TiXmlElement *elemCtrl, 
-												XWnd *pParent, 
-												const xATTR_ALL& attrAll )
+												const XWnd *pParent, 
+												const xATTR_ALL& attrAll ) const
 {
 	//
 //	XE::xAlign align = XE::xALIGN_LEFT;
@@ -1246,9 +1529,9 @@ XWnd *XLayout::CreateProgressBarCtrl2( const char *cCtrlName,
 */
 void XLayout::AlignCtrl( const char* cCtrlName
 												, TiXmlElement* pElemCtrl
-												, XWnd* pParent
+												, const XWnd* pParent
 												, XWnd* pCtrl
-												, const xATTR_ALL& attrAll )
+												, const xATTR_ALL& attrAll ) const
 {
 	pCtrl->AutoLayoutByAlign( pParent, attrAll.align );
 }
@@ -1256,7 +1539,7 @@ void XLayout::AlignCtrl( const char* cCtrlName
 /**
  @brief XWndProgressBar2의 "layer" 로더
 */
-int XLayout::LoadLayer( XWndProgressBar2 *pBar, TiXmlElement *pRoot )
+int XLayout::LoadLayer( XWndProgressBar2 *pBar, TiXmlElement *pRoot ) const
 {
 	auto pNode = pRoot->FirstChildElement();
 	if( pNode == nullptr )
@@ -1360,13 +1643,15 @@ XWnd *XLayout::CreateListCtrl( const char *cCtrlName,
 		// 테스트때만 쓰기위해 0이면 객체를 생성하지 않는다.
 		const char *cItems = elemCtrl->Attribute( "items_node" );
 		if( XE::IsHave( cItems ) ) {
-			TiXmlElement *pElemItem = GetElement( cItems );
+			TiXmlElement *pElemItem = const_cast<TiXmlElement*>( GetElement( cItems ) );
 			if( pElemItem ) {
 				pWndList->SetstrItemLayoutForXML( cItems );		// 아이템 레이아웃 이름을 저장.
 				if( numItems > 0 ) {
 					// 개수가 지정되지 아낳으면 노드이름만 저장하고 객체를 생성하지 않음.
 					for( int i = 0; i < numItems; ++i ) {
 						XWnd *pItem = CreateXWindow( pElemItem );
+						const std::string strKey = XE::Format("%s.%s%d", attr.strKey.c_str(), pItem->GetstrIdentifier().c_str(), i+1);
+						pItem->SetstrIdentifier( strKey );
 						pWndList->AddItem( pItem );			// id는 랜덤으로 하는게 맞는거 같다. 중복이 너무 쉽게 되고. 인덱스로 판별하는 방식은 가급적 안쓰는게 좋을듯. strIds를 사용할것.
 // 						pWndList->AddItem( i + 1, pItem );
 					}
@@ -1407,7 +1692,7 @@ XWnd *XLayout::CreateListCtrl( const char *cCtrlName,
 */
 XWnd *XLayout::CreateSlideDownCtrl( const char *cCtrlName, 
 												TiXmlElement *elemCtrl, 
-												XWnd *pParent, 
+												const XWnd *pParent, 
 												const xATTR_ALL& attrAll )
 {
 	xATTR_ALL attr;
@@ -1450,7 +1735,7 @@ XWnd *XLayout::CreateSlideDownCtrl( const char *cCtrlName,
 }
 
 //
-XWndSlideDown* XLayout::CreateSlideDownWnd( const xATTR_ALL& attr )
+XWndSlideDown* XLayout::CreateSlideDownWnd( const xATTR_ALL& attr ) const
 {
 	XWndSlideDown *pSlide = new XWndSlideDown( attr.vPos.x, attr.vPos.y, attr.strImgUp.c_str(), attr.strImgDown.c_str() );
 	return pSlide;
@@ -1458,8 +1743,8 @@ XWndSlideDown* XLayout::CreateSlideDownWnd( const xATTR_ALL& attr )
 
 XWnd *XLayout::CreateEditBoxCtrl( const char *cCtrlName, 
 								TiXmlElement *elemCtrl, 
-								XWnd *pParent, 
-								const xATTR_ALL& attrAll )
+								const XWnd *pParent, 
+								const xATTR_ALL& attrAll ) const
 {
 	xATTR_ALL attr;
 	attr = attrAll;			// attrAll로 먼저 넣고
@@ -1494,7 +1779,7 @@ XWnd *XLayout::CreateEditBoxCtrl( const char *cCtrlName,
 	return pWndEdit;
 }
 
-XWndEdit* XLayout::CreateEditBoxWnd( const xATTR_ALL& attr )
+XWndEdit* XLayout::CreateEditBoxWnd( const xATTR_ALL& attr ) const
 {
 	XWndEdit *pEdit;
 	LPCTSTR szFont = attr.strFont.c_str();
@@ -1509,8 +1794,8 @@ XWndEdit* XLayout::CreateEditBoxWnd( const xATTR_ALL& attr )
 
 XWnd *XLayout::CreateScrollViewCtrl( const char *cCtrlName, 
 									TiXmlElement *elemCtrl, 
-									XWnd *pParent, 
-									const xATTR_ALL& attrAll )
+									const XWnd *pParent, 
+									const xATTR_ALL& attrAll ) const
 {
 	xATTR_ALL attr;
 	attr = attrAll;			// attrAll로 먼저 넣고
@@ -1521,7 +1806,7 @@ XWnd *XLayout::CreateScrollViewCtrl( const char *cCtrlName,
 	return pScrlView;
 }
 
-XWndScrollView* XLayout::CreateScrollViewWnd( const xATTR_ALL& attr )
+XWndScrollView* XLayout::CreateScrollViewWnd( const xATTR_ALL& attr ) const
 {
 	XWndScrollView *pScrlView =
 		new XWndScrollView( attr.vPos, attr.vSize );
@@ -1537,7 +1822,7 @@ XWndScrollView* XLayout::CreateScrollViewWnd( const xATTR_ALL& attr )
 
 // Create Control
 //////////////////////////////////////////////////////////////////////////
-void XLayout::GetAttrAdj( TiXmlElement* pElemCtrl, XE::VEC2* pOut )
+void XLayout::GetAttrAdj( TiXmlElement* pElemCtrl, XE::VEC2* pOut ) const
 {
 	double adjx = -9999.;
 	double adjy = -9999.;
@@ -1552,7 +1837,7 @@ void XLayout::GetAttrAdj( TiXmlElement* pElemCtrl, XE::VEC2* pOut )
  @brief 
  @param idx "adjx2"와 같은식으로 읽고 싶을때 인덱스값을 지정한다. 
 */
-void XLayout::GetAttrVector2( TiXmlElement* pElemCtrl, const char* cHeader, XE::VEC2* pOut, int idx )
+void XLayout::GetAttrVector2( TiXmlElement* pElemCtrl, const char* cHeader, XE::VEC2* pOut, int idx ) const
 {
 	if( cHeader == nullptr )
 		return;
@@ -1574,7 +1859,7 @@ void XLayout::GetAttrVector2( TiXmlElement* pElemCtrl, const char* cHeader, XE::
 }
 //////////////////////////////////////////////////////////////////////////
 // GetAttribute
-int XLayout::GetAttrCommon( TiXmlElement *elemCtrl, xATTR_ALL *pOut )
+int XLayout::GetAttrCommon( TiXmlElement *elemCtrl, xATTR_ALL *pOut ) const
 {
 #ifdef _DEBUG
 	int debug;
@@ -1776,7 +2061,7 @@ int XLayout::GetAttrCommon( TiXmlElement *elemCtrl, xATTR_ALL *pOut )
 	return 1;
 } // GetAttrCommon
 
-int XLayout::GetAttrColor( TiXmlElement *elemCtrl, const char *cAttrKey, XCOLOR *pOutColor )
+int XLayout::GetAttrColor( TiXmlElement *elemCtrl, const char *cAttrKey, XCOLOR *pOutColor ) const
 {
 	char cRgbKey[ 64 ];
 	BOOL bRgba = FALSE;
@@ -1859,7 +2144,7 @@ int XLayout::GetAttrColor( TiXmlElement *elemCtrl, const char *cAttrKey, XCOLOR 
 }
 
 // RGBA각각의 바이트 값을 읽어서 pColElem에 담는다.
-int XLayout::GetAttrRGBA( TiXmlElement *elemCtrl, const char *cAttrKey, BYTE *pColElem )
+int XLayout::GetAttrRGBA( TiXmlElement *elemCtrl, const char *cAttrKey, BYTE *pColElem ) const
 {
 	int val = -1;
 	elemCtrl->Attribute( cAttrKey, &val );
@@ -1867,7 +2152,7 @@ int XLayout::GetAttrRGBA( TiXmlElement *elemCtrl, const char *cAttrKey, BYTE *pC
 	return (val == -1)? 0 : 1;
 }
 
-int XLayout::GetAttrFont( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring *pOutStr, float *pOutSize, xFONT::xtStyle *pOutStyle )
+int XLayout::GetAttrFont( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring *pOutStr, float *pOutSize, xFONT::xtStyle *pOutStyle ) const
 {
 	const char *cFontKey = elemCtrl->Attribute( cAttrKey );
 	if( XE::IsHave( cFontKey ) )
@@ -1917,7 +2202,7 @@ int XLayout::GetAttrFont( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring
 	return 1;
 }
 
-int XLayout::GetAttrPos( TiXmlElement *elemCtrl, const char *cAttrKey, XE::VEC2 *pOut, XE::xAlign *pOutAlign )
+int XLayout::GetAttrPos( TiXmlElement *elemCtrl, const char *cAttrKey, XE::VEC2 *pOut, XE::xAlign *pOutAlign ) const
 {
 	char cKey[ 64 ];
 	strcpy_s( cKey, cAttrKey );
@@ -1949,12 +2234,12 @@ int XLayout::GetAttrPos( TiXmlElement *elemCtrl, const char *cAttrKey, XE::VEC2 
 	return 1;
 }
 
-int XLayout::GetAttrPos( TiXmlElement *elemCtrl, const char *cAttrKey, xATTR_ALL *pOut )
+int XLayout::GetAttrPos( TiXmlElement *elemCtrl, const char *cAttrKey, xATTR_ALL *pOut ) const
 {
 	return GetAttrPos( elemCtrl, cAttrKey, &pOut->vPos, &pOut->align );
 }
 
-int XLayout::GetAttrSize( TiXmlElement *elemCtrl, XE::VEC2 *pOut )
+int XLayout::GetAttrSize( TiXmlElement *elemCtrl, XE::VEC2 *pOut ) const
 {
 	int w=-1, h=-1;
 	GetAttrValueI( elemCtrl, "width", &w );
@@ -1968,7 +2253,7 @@ int XLayout::GetAttrSize( TiXmlElement *elemCtrl, XE::VEC2 *pOut )
 	return 1;
 }
 
-int XLayout::GetAttrScale( TiXmlElement *elemCtrl, XE::VEC2 *pOut )
+int XLayout::GetAttrScale( TiXmlElement *elemCtrl, XE::VEC2 *pOut ) const
 {
 	double scale = 1.0;
 	elemCtrl->Attribute( "scale", &scale );
@@ -1988,7 +2273,7 @@ int XLayout::GetAttrScale( TiXmlElement *elemCtrl, XE::VEC2 *pOut )
 		pOut->y = (float)scaley;
 	return 1;
 }
-int XLayout::GetAttrText( TiXmlElement *elemCtrl, const char *cAttrKey, ID *pOut )
+int XLayout::GetAttrText( TiXmlElement *elemCtrl, const char *cAttrKey, ID *pOut ) const
 {
 	int idText = -1;
 	elemCtrl->Attribute( cAttrKey, &idText );
@@ -2003,7 +2288,7 @@ int XLayout::GetAttrText( TiXmlElement *elemCtrl, const char *cAttrKey, ID *pOut
 	return 0;
 }
 
-int XLayout::GetAttrTextAlign( TiXmlElement *elemCtrl, XE::xAlign *pOut, float *pOutWidth )
+int XLayout::GetAttrTextAlign( TiXmlElement *elemCtrl, XE::xAlign *pOut, float *pOutWidth ) const
 {
 	const char *cAlign = elemCtrl->Attribute( "align" );
 	if( XE::IsEmpty(cAlign) )
@@ -2029,7 +2314,7 @@ int XLayout::GetAttrTextAlign( TiXmlElement *elemCtrl, XE::xAlign *pOut, float *
 	return 1;
 }
 
-int XLayout::GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, BOOL *pOut )
+int XLayout::GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, BOOL *pOut ) const
 {
 	XBREAK( pOut == nullptr );
 	const char *cBool = elemCtrl->Attribute( cKey );
@@ -2056,7 +2341,7 @@ int XLayout::GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, BOOL *pOut )
 /**
  @brief 리턴값은 실제 값을 읽었는지 생략되었는지를 나타내는것에 주의
 */
-bool XLayout::GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, bool *pOut ) 
+bool XLayout::GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, bool *pOut )  const
 {
 	XBREAK( pOut == nullptr );
 	BOOL bFlag = FALSE;
@@ -2068,7 +2353,7 @@ bool XLayout::GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, bool *pOut 
 	return false;
 }
 
-bool XLayout::GetAttrDWORD( TiXmlElement *elemCtrl, const char* cKey, DWORD *pOut )
+bool XLayout::GetAttrDWORD( TiXmlElement *elemCtrl, const char* cKey, DWORD *pOut ) const
 {
 	int val = 0x7fffffff;
 	elemCtrl->Attribute( cKey, &val );
@@ -2081,7 +2366,7 @@ bool XLayout::GetAttrDWORD( TiXmlElement *elemCtrl, const char* cKey, DWORD *pOu
 	return false;
 }
 
-bool XLayout::GetAttrInt( TiXmlElement *elemCtrl, const char* cKey, int *pOut )
+bool XLayout::GetAttrInt( TiXmlElement *elemCtrl, const char* cKey, int *pOut ) const
 {
 	int val = 0x7fffffff;
 	elemCtrl->Attribute( cKey, &val );
@@ -2094,7 +2379,7 @@ bool XLayout::GetAttrInt( TiXmlElement *elemCtrl, const char* cKey, int *pOut )
 	return false;
 }
 
-bool XLayout::GetAttrFloat( TiXmlElement *elemCtrl, const char* cKey, float *pOut )
+bool XLayout::GetAttrFloat( TiXmlElement *elemCtrl, const char* cKey, float *pOut ) const
 {
 	double val = 9999.0;
 	elemCtrl->Attribute( cKey, &val );
@@ -2108,7 +2393,7 @@ bool XLayout::GetAttrFloat( TiXmlElement *elemCtrl, const char* cKey, float *pOu
 }
 
 
-int XLayout::GetAttrWinID( TiXmlElement *elemCtrl, ID *pOut )
+int XLayout::GetAttrWinID( TiXmlElement *elemCtrl, ID *pOut ) const
 {
 	// 윈도우 아이디
 	int idWnd = 0;
@@ -2118,7 +2403,7 @@ int XLayout::GetAttrWinID( TiXmlElement *elemCtrl, ID *pOut )
 	return 0;
 }
 
-int XLayout::GetAttrFile( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring *pOutStr )
+int XLayout::GetAttrFile( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring *pOutStr ) const
 {
 	if( XE::IsHave( cAttrKey ) ) {
 		// 지정된 키가 있으면 그걸로 찾고 끝낸다.
@@ -2166,7 +2451,7 @@ int XLayout::GetAttrFile( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring
 	return 0;
 }
 
-bool XLayout::GetAttrBlendFunc( TiXmlElement* pElemCtrl, XE::xtBlendFunc* pOut, const std::string& strKey )
+bool XLayout::GetAttrBlendFunc( TiXmlElement* pElemCtrl, XE::xtBlendFunc* pOut, const std::string& strKey ) const
 {
 	const char *cStr = pElemCtrl->Attribute( (strKey.empty())? "blend" : strKey.c_str() );
 	if( XE::IsHave(cStr) ) {
@@ -2191,7 +2476,7 @@ bool XLayout::GetAttrBlendFunc( TiXmlElement* pElemCtrl, XE::xtBlendFunc* pOut, 
 	return false;
 }
 
-bool XLayout::GetAttridAct( TiXmlElement* pElemCtrl, ID* pOut )
+bool XLayout::GetAttridAct( TiXmlElement* pElemCtrl, ID* pOut ) const
 {
 	int idAct = 0;
 	pElemCtrl->Attribute( "act", &idAct );
@@ -2203,114 +2488,15 @@ bool XLayout::GetAttridAct( TiXmlElement* pElemCtrl, ID* pOut )
 		*pOut = (ID)idAct;
 	return idAct != 0;
 }
-/**
- 버튼을 위한 어트리뷰트를 읽어 구조체에 담아준다. 
-*/
-// int XLayout::GetAttrCtrlButton( TiXmlElement *elemCtrl, xATTR_BUTT *pOut )
-// {
-// 	// x, y좌표 읽음 혹은 정렬
-// 	int x=0, y=0;
-// 	DWORD xfFlag = 0;
-// 	const char *cPosx = elemCtrl->Attribute( "posx" );
-// 	const char *cPosy = elemCtrl->Attribute( "posy" );
-// 	if( XE::IsSame( cPosx, "center" ) )
-// 		xfFlag |= xfALIGN_HCENTER;
-// 	else if( XE::IsSame( cPosx, "right" ) )
-// 		xfFlag |= xfALIGN_RIGHT;
-// 	else
-// 		GetAttrValueI( elemCtrl, "posx", &x );
-// //		elemCtrl->Attribute( "posx", &x );
-// 	if( XE::IsSame( cPosy, "center" ) )
-// 		xfFlag |= xfALIGN_VCENTER;
-// 	else if( XE::IsSame( cPosy, "bottom" ) )
-// 		xfFlag |= xfALIGN_BOTTOM;
-// 	else
-// 		GetAttrValueI( elemCtrl, "posy", &y );
-// //		elemCtrl->Attribute( "posy", &y );
-// 	pOut->vPos.x = (float) x;
-// 	pOut->vPos.y = (float) y;
-// 	pOut->xfFlag = xfFlag;
-// 	// size
-// 	GetAttrSize( elemCtrl, &pOut->vSize );
-// 	// 텍스트
-// 	int idText = -1;		// Layout에 "text 아이디" 를 아예 쓰지 않은 경우
-// 	elemCtrl->Attribute( "text", &idText );
-// 	if( idText )
-// 		if( idText != -1 && XE::IsEmpty( XTEXT(idText) ) )
-// 			XALERT( "node=%s, text id %d not found", m_strNodeWnd.c_str(), idText );
-// 	pOut->idText = (ID)idText;
-// 	// 컬러
-// 	XCOLOR colText = XCOLOR_WHITE;				// 디폴트 컬러
-// 	GetAttrColor( elemCtrl, "text_col", &colText );	// 컬러 태그가 있으면 그값을 쓴다.
-// //	GetAttrColor( elemCtrl, "col", &colText );	// 컬러 태그가 있으면 그값을 쓴다.
-// 	pOut->colText = colText;
-// 	// 폰트
-// 	_tstring strFont;
-// 	float sizeFont = 20;
-// 	xFONT::xtStyle style = xFONT::xSTYLE_NORMAL;
-// 	GetAttrFont( elemCtrl, "font", &strFont, &sizeFont, &style );
-// 	pOut->strFont = strFont;
-// 	pOut->sizeFont = sizeFont;
-// 	pOut->style = style;
-// 	//
-// 	// sprite button
-// 	const char *cSpr = elemCtrl->Attribute( "spr" );
-// 	if( XE::IsHave( cSpr ) )
-// 	{
-// 		_tstring strSpr = C2SZ( cSpr );
-// 		if( XE::IsEmpty( XE::GetFileExt( strSpr.c_str() ) ) )		// 확장자가 안붙어 있으면 붙인다.
-// 			strSpr += _T(".spr");
-// 		int idActUp=0, idActDown=0, idActDisable=0;
-// 		elemCtrl->Attribute( "act_up", &idActUp );
-// 		elemCtrl->Attribute( "act_down", &idActDown );
-// 		elemCtrl->Attribute( "act_off", &idActDisable );
-// 		pOut->strSpr = strSpr;
-// 		pOut->idActUp = idActUp;
-// 		pOut->idActDown = idActDown;
-// 		pOut->idActDisable = idActDisable;
-// 	}
-// 	// image button
-// 	const char *cImgUp = elemCtrl->Attribute( "img_up" );
-// 	if( XE::IsEmpty(cImgUp) )
-// 		cImgUp = elemCtrl->Attribute( "file" );
-// 	if( XE::IsHave( cImgUp ) )
-// 	{
-// 		const char *cImgDown = elemCtrl->Attribute( "img_down" );
-// 		const char *cImgDisable = elemCtrl->Attribute( "img_off" );
-// 		_tstring strImgUp, strImgDown, strImgDisable;
-// 		strImgUp = C2SZ( cImgUp );
-// 		if( XE::IsHave( cImgDown ) )
-// 			strImgDown = C2SZ( cImgDown );
-// 		if( XE::IsHave( cImgDisable ) )
-// 			strImgDisable = C2SZ( cImgDisable );
-// 		pOut->strImgUp = strImgUp;
-// 		pOut->strImgDown = strImgDown;
-// 		pOut->strImgDisable = strImgDisable;
-// 	}
-// 	// num sequence
-// 	elemCtrl->Attribute( "num", &pOut->num );
-// 	// dist
-// 	{
-// 		int distx=0, disty=0;
-// 		elemCtrl->Attribute( "distx", &distx );
-// 		elemCtrl->Attribute( "disty", &disty );
-// 		if( distx )
-// 			pOut->vDist.x = (float)distx;
-// 		if( disty )
-// 			pOut->vDist.y = (float)disty;
-// 	}
-// 
-// 	return 1;
-// }
 
-int XLayout::GetAttrNum( TiXmlElement *elemCtrl )
+int XLayout::GetAttrNum( TiXmlElement *elemCtrl ) const
 {
 	int num = 0;
 	elemCtrl->Attribute( "num", &num );
 	return num;
 }
 
-XE::VEC2 XLayout::GetAttrDist( TiXmlElement *elemCtrl )
+XE::VEC2 XLayout::GetAttrDist( TiXmlElement *elemCtrl ) const
 {
 	int distx=0, disty=0;
 	elemCtrl->Attribute( "distx", &distx );
@@ -2334,7 +2520,7 @@ XWnd* XLayout::GetNextCtrlFromKey( XWnd *pRoot, const char *cKey, int *pOutIdx, 
 }
 
 // 어트리뷰트의 수식형 값을 실수형으로 읽음
-const char* XLayout::GetAttrValueF( TiXmlElement *elem, const char *cKey, float *pOut )
+const char* XLayout::GetAttrValueF( TiXmlElement *elem, const char *cKey, float *pOut ) const
 {
 	const char *cStr = elem->Attribute( cKey );
 	if( cStr ){
@@ -2393,7 +2579,7 @@ const char* XLayout::GetAttrValueF( TiXmlElement *elem, const char *cKey, float 
 }
 
 // 어트리뷰트의 수식형 값을 정수형으로 읽음
-const char* XLayout::GetAttrValueI( TiXmlElement *elem, const char *cKey, int *pOut )
+const char* XLayout::GetAttrValueI( TiXmlElement *elem, const char *cKey, int *pOut ) const
 {
 	float val = (float)*pOut;
 	const char *cStr = GetAttrValueF( elem, cKey, &val );
@@ -2473,8 +2659,8 @@ XWndPopup* xGET_POPUP_CTRL( XWnd *pRoot, const char *cKey ) {
 
 XWnd* XLayout::CreateCustomControl( const char *cCtrlName
 																	, TiXmlElement *elemCtrl
-																	, XWnd *pParent
-																	, const xATTR_ALL& attrAll ) 
+																	, const XWnd *pParent
+																	, const xATTR_ALL& attrAll ) const 
 {
 	if( s_pDelegateMain )
 		return s_pDelegateMain->DelegateCreateCustomCtrl( std::string(cCtrlName), elemCtrl, pParent, attrAll );

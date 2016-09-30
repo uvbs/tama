@@ -251,6 +251,9 @@
     <ClCompile Include="..\..\..\game_src\XSpotDaily.cpp">
       <Filter>source\contents</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSpotPrivateRaid.cpp">
+      <Filter>source\contents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Resource\defineGame.h" />
@@ -559,6 +562,9 @@
       <Filter>source\network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XSpotDaily.h">
+      <Filter>source\contents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSpotPrivateRaid.h">
       <Filter>source\contents</Filter>
     </ClInclude>
   </ItemGroup>

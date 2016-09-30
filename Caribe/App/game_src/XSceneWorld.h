@@ -232,17 +232,17 @@ public:
 	
 	// 스팟 업데이트
 private:
-	void UpdateCastleSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateJewelSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateSulfurSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateMandrakeSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateNpcSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateDailySpot( XSpot *pBaseSpot, XWnd *pRoot );
-//	void UpdateSpecialSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateCampaignSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateVisitSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateCashSpot( XSpot *pBaseSpot, XWnd *pRoot );
-  void UpdateCommonSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateCastleSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateJewelSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateSulfurSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateMandrakeSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateNpcSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateDailySpot( XSpot *pBaseSpot, XWnd *pRoot );
+// //	void UpdateSpecialSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateCampaignSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateVisitSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateCashSpot( XSpot *pBaseSpot, XWnd *pRoot );
+//   void UpdateCommonSpot( XSpot *pBaseSpot, XWnd *pRoot );
 	void UpdateSpots(void);
   void UpdateResIcon( XSpot *pSpot, XWnd *pRoot );
 public:

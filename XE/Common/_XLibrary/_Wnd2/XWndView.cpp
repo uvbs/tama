@@ -253,7 +253,7 @@ void XWndView::SetBgImg( LPCTSTR szImg, XE::xtPixelFormat formatSurface )
 	}
 }
 
-void XWndView::OnFinishCreatedChildLayout( XLayout *pLayout )
+void XWndView::OnFinishCreatedChildLayout( const XLayout *pLayout )
 {
 	SetbUpdate( true );
 }

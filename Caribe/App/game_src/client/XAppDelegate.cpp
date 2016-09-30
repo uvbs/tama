@@ -33,8 +33,8 @@ XClientMain* XAppDelegate::OnCreateAppMain( XE::xtDevice device, float widthPhy,
 
 XWnd* XAppDelegate::DelegateCreateCustomCtrl( const std::string& strcCtrl
 																						, TiXmlElement* pElemCtrl
-																						, XWnd *pParent
-																						, const XLayout::xATTR_ALL& attrAll)
+																						, const XWnd *pParent
+																						, const XLayout::xATTR_ALL& attrAll) const
 {
 	XWnd* pWndCreated = nullptr;
 	if( strcCtrl == "hero_ctrl" ) {

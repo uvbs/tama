@@ -35,6 +35,64 @@ using namespace xSpot;
 #undef min
 #endif
 
+
+//////////////////////////////////////////////////////////////////////////
+XWndSpot* XWndSpot::sCreate( XSpot* pBaseSpot )
+{
+	const auto typeSpot = pBaseSpot->GettypeSpot();
+	switch( typeSpot ) {
+	case XGAME::xSPOT_CASTLE:	{
+		auto pSpot = SafeCast<XSpotCastle*>( pBaseSpot );
+		return new XWndCastleSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_JEWEL: {
+		auto pSpot = SafeCast<XSpotJewel*>( pBaseSpot );
+		return new XWndJewelSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_SULFUR: {		
+		auto pSpot = SafeCast<XSpotSulfur*>( pBaseSpot );
+		return new XWndSulfurSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_MANDRAKE: {		
+		auto pSpot = SafeCast<XSpotMandrake*>( pBaseSpot );
+		return new XWndMandrakeSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_NPC: {			
+		auto pSpot = SafeCast<XSpotNpc*>( pBaseSpot );
+		return new XWndNpcSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_DAILY: {		
+		auto pSpot = SafeCast<XSpotDaily*>( pBaseSpot );
+		return new XWndDailySpot( pSpot );
+	} break;
+	case XGAME::xSPOT_CAMPAIGN:	{ 
+		auto pSpot = SafeCast<XSpotCampaign*>( pBaseSpot );
+		return new XWndCampaignSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_VISIT: {		
+		auto pSpot = SafeCast<XSpotVisit*>( pBaseSpot );
+		return new XWndVisitSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_CASH: {			
+		auto pSpot = SafeCast<XSpotCash*>( pBaseSpot );
+		return new XWndCashSpot( pSpot );
+	} break;
+// 	case XGAME::xSPOT_GUILD_RAID:		return new XWndGuildRaid
+	case XGAME::xSPOT_PRIVATE_RAID:	{
+		auto pSpot = SafeCast<XSpotPrivateRaid*>( pBaseSpot );
+		return new XWndPrivateRaidSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_COMMON:	{
+		auto pSpot = SafeCast<XSpotCommon*>( pBaseSpot );
+		return new XWndCommonSpot( pSpot );
+	} break;
+	default:
+		XBREAKF( 1, "unknown spot type:type=%d", pBaseSpot->GettypeSpot() );
+		break;
+	}
+	return nullptr;
+}
+
 //////////////////////////////////////////////////////////////////////////
 /**
  @brief 
@@ -118,10 +176,16 @@ void XWndSpot::sUpdateHelloMsg( XSpot *pSpot, const _tstring& strHello )
 ID XWndSpot::s_idLastTouch = 0;
 XWndSpot::XWndSpot( XSpot *pBaseSpot, LPCTSTR szSpr, ID idAct, const XE::VEC2& vPos )
 	: XWndSprObj( vPos )
-//	: XWndSprObj( szSpr, idAct, vPos ) 
 {
 	Init();
-	CreateSprObj( szSpr, idAct, true, true, true, xRPT_LOOP );
+	_tstring strSpr = szSpr;
+	if( strSpr.empty() ) {
+		strSpr = pBaseSpot->GetpBaseProp()->strSpr;
+	}
+	if( idAct == 0 ) {
+		idAct = pBaseSpot->GetpBaseProp()->idAct;
+	}
+	CreateSprObj( strSpr.c_str(), idAct, true, true, true, xRPT_LOOP );
 	m_pBaseSpot = pBaseSpot;
 	m_idSpot = pBaseSpot->GetidSpot();
 	auto pProp = pBaseSpot->GetpBaseProp();
@@ -679,6 +743,21 @@ bool XWndCastleSpot::IsEnemySpot()
 	return ( ACCOUNT->GetidAccount() != m_pSpot->GetidOwner() );
 }
 
+// void XWndCastleSpot::OnClickSpot( XSPAccConst spAcc )
+// {
+// 	// 각 스팟의 팝업창을 띄운다.
+// 	auto pMenu = SCENE_WORLD->CreateSpotPopup2( GetpBaseSpot()->GetidSpot() );
+// 	if( pMenu ) {
+// 		if( m_pSpot->IsQuestion() ) {
+// 			pMenu->AddMenuRecon();
+// 		} else {
+// 			if( m_pSpot->GetidOwner() == spAcc->GetidAccount() ) {
+// 				// 내 소유면 리젠버튼만 추가
+// 			}
+// 		}
+// 	}
+// }
+
 ////////////////////////////////////////////////////////////////
 XWndJewelSpot::XWndJewelSpot( XSpotJewel* pSpot ) 
 	: XWndSpot( pSpot, SPR_JEWEL, 
@@ -1220,6 +1299,13 @@ _tstring XWndCashSpot::GetstrDebugText()
 	return strText;
 }
 
+////////////////////////////////////////////////////////////////
+XWndPrivateRaidSpot::XWndPrivateRaidSpot( XSpotPrivateRaid* pSpot )
+	: XWndSpot( pSpot, _T(""), 0, pSpot->GetPosWorld() )
+{
+	Init();
+}
+
 //////////////////////////////////////////////////////////////////////////
 XWndCommonSpot::XWndCommonSpot( XSpotCommon* pSpot )
 	: XWndSpot( pSpot, SPR_COMMON, pSpot->GetPosWorld() )
@@ -1290,4 +1376,6 @@ _tstring XWndCommonSpot::GetstrDebugText()
 #endif
 	return strText;
 }
+
+//////////////////////////////////////////////////////////////////////////
 

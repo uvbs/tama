@@ -292,7 +292,7 @@ private:
 	inline XE::VEC2 GetLayoutPosFinal(){
 		return GetLayoutPosNoTrans() * GetScaleFinal();
 	}
-	void AutoLayoutByAlign( XWnd *pParent, XE::xAlign align ) override;
+	void AutoLayoutByAlign( const XWnd *pParent, XE::xAlign align ) override;
 }; // XWndTextString
 
 

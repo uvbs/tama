@@ -164,3 +164,5 @@ public:
 	}
 }; // class XWndList
 
+
+XWndList* xGET_LIST_CTRL( XWnd *pRoot, const char *cKey );

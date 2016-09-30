@@ -14,6 +14,7 @@ class XSpotCash;
 class XSpotDaily;
 //class XSpotSpecial;
 class XSpotCommon;
+class XSpotPrivateRaid;
 class XWndTextString;
 class XWndImage;
 class XSprObj;
@@ -33,6 +34,7 @@ public:
 																									, XSurface* psfcProfile
 																									, float secDelay );
 	static void sUpdateHelloMsg( XSpot *pSpot, const _tstring& strHello );
+	static XWndSpot* sCreate( XSpot* pBaseSpot );
 private:
 	XSpot *m_pBaseSpot = nullptr;
 	CTimer m_timerBlink;
@@ -84,6 +86,7 @@ public:
 	int Process( float dt ) override;
 	void OnLButtonDown( float lx, float ly ) override;
 	void OnLButtonUp( float lx, float ly ) override;
+//	virtual void OnClickSpot() = 0;
 protected:
 	virtual XWndTextString* UpdateName( const char* cIdentifier, bool bShow );
 	virtual XWndTextString* UpdateLevel( const char* cIdentifier, bool bShow, XWndTextString* pTextName );
@@ -115,6 +118,7 @@ public:
 	bool IsEnemySpot() override;
 	_tstring GetstrDebugText() override;
 	_tstring GetstrName( bool *pOutbNameColorByPower ) override;
+// 	void OnClickSpot() override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -300,3 +304,27 @@ public:
 	_tstring GetstrName( bool *pOutbNameColorByPower ) override;
 };
 
+//////////////////////////////////////////////////////////////////////////
+/****************************************************************
+* @brief 
+* @author xuzhu
+* @date	2016/09/30 15:49
+*****************************************************************/
+class XWndPrivateRaidSpot : public XWndSpot
+{
+public:
+	XWndPrivateRaidSpot(XSpotPrivateRaid* pSpot);
+	virtual ~XWndPrivateRaidSpot() { Destroy(); }
+	// get/setter
+	// public member
+	bool IsEnemySpot() override {		// 스팟이 적스팟인가	
+		return true;
+	}
+private:
+	// private member
+	int m_Test = 0;
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+}; // class XWndPrivateRaidSpot

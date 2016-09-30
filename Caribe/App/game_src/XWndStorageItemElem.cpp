@@ -264,7 +264,8 @@ void XWndStoragyItemElem::SetHero( XHero* pHero )
 		SetbShowNum( false );
 		m_Level = pHero->GetLevel();
 //		m_snHero = pHero->GetsnHero();
-		m_Reward.SetHero( pHero->GetidProp(), 1 );
+//		m_Reward.SetHero( pHero->GetidProp(), 1 );
+		SetHero( pHero->GetidProp() );
 		// 영혼석이 아닌경우에만 별 그림
 		const auto numStar = pHero->GetGrade();
 		for( int i = 0; i < numStar; ++i )
@@ -467,7 +468,10 @@ void XWndStoragyItemElem::Draw()
 		{
 			XE::xRenderParam param;
 			param.m_vPos = vPos + XE::VEC2( 3, 2 ) * vScale;
-			param.m_vScale = vScale * 0.77f;
+			if( IsHero() )
+				param.m_vScale = vScale * 0.77f;
+			else
+				param.m_vScale = vScale;
 			param.m_funcBlend = GetblendFunc();
 			if( m_bBatch )
 				param.m_Priority = -20;

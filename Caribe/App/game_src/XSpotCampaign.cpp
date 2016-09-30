@@ -38,6 +38,7 @@ XSpotCampaign::XSpotCampaign( XWorld *pWorld, XPropWorld::xCampaign* pProp, XPro
 		m_spCampObj = xCampaign::XCampObj::sCreateCampObj( pPropCamp, 0 );
 	}
 }
+
 void XSpotCampaign::OnCreateNewOnServer( XSPAcc spAcc )
 {
 }

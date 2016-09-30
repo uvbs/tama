@@ -864,10 +864,8 @@ void XSockGameSvr::RecvJewelMatchResult( XPacket& p, const xCALLBACK& c )
 	ID idEnemy;
 	p >> idxMine;
 	p >> idEnemy;
-	//
-	auto pSpot = sGetpWorld()->GetSpotJewelByIdx( idxMine ); //sGetpWorld()->GetSpot<XSpotJewel*>( XGAME::xSPOT_JEWEL, strIdentifier.c_str() );
-	if( pSpot == nullptr )
-	{
+	auto pSpot = sGetpWorld()->GetSpotJewelByIdx( idxMine ); 
+	if( pSpot == nullptr ) {
 		// 스팟이 없으면 새로 생성한다.
 		auto pProp = PROP_WORLD->GetpPropJewelByIdx( idxMine ); //PROP_WORLD->GetpPropJewel(strFormat.c_str());
 		XBREAK( pProp == nullptr );

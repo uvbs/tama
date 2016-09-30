@@ -628,6 +628,7 @@
     <ClInclude Include="..\..\..\game_src\XSpotJewel.h" />
     <ClInclude Include="..\..\..\game_src\XSpotMandrake.h" />
     <ClInclude Include="..\..\..\game_src\XSpotNpc.h" />
+    <ClInclude Include="..\..\..\game_src\XSpotPrivateRaid.h" />
     <ClInclude Include="..\..\..\game_src\XSpots.h" />
     <ClInclude Include="..\..\..\game_src\XSpotSulfur.h" />
     <ClInclude Include="..\..\..\game_src\XSquadron.h" />
@@ -720,6 +721,7 @@
     <ClCompile Include="..\..\..\game_src\XSpotJewel.cpp" />
     <ClCompile Include="..\..\..\game_src\XSpotMandrake.cpp" />
     <ClCompile Include="..\..\..\game_src\XSpotNpc.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSpotPrivateRaid.cpp" />
     <ClCompile Include="..\..\..\game_src\XSpotSulfur.cpp" />
     <ClCompile Include="..\..\..\game_src\XSquadron.cpp" />
     <ClCompile Include="..\..\..\game_src\XStageObj.cpp" />

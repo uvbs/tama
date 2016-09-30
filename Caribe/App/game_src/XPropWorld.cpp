@@ -295,25 +295,25 @@ BOOL XPropWorld::LoadSpots( XEXmlNode& node )
 	XEXmlNode childNode = node.GetFirst();
 //	XArrayLinearN<xBASESPOT*,1024> m_listSpots;
 	while( !childNode.IsEmpty() ) {
-		xBASESPOT *pBaseSpot = nullptr;
+		xBASESPOT *pBaseProp = nullptr;
 		// 식별자가 있는 경우 읽는다.
 		if( childNode.GetstrName() == _T("castle") ) {
-			pBaseSpot = LoadCastle( node, childNode );
+			pBaseProp = LoadCastle( node, childNode );
 		} else
 		if( childNode.GetstrName() == _T("jewel") ) {
-			pBaseSpot = LoadJewel( node, childNode );
+			pBaseProp = LoadJewel( node, childNode );
 		} else
 		if( childNode.GetstrName() == _T("sulfur") ) {
-			pBaseSpot = LoadSulfur( node, childNode );
+			pBaseProp = LoadSulfur( node, childNode );
 		} else
 		if( childNode.GetstrName() == _T("mandrake") ) {
-			pBaseSpot = LoadMandrake( node, childNode );
+			pBaseProp = LoadMandrake( node, childNode );
 		} else
 		if( childNode.GetstrName() == _T("npc") || childNode.GetstrName() == _T("event") ) {
-			pBaseSpot = LoadNpc( node, childNode );
+			pBaseProp = LoadNpc( node, childNode );
 		} else
 		if( childNode.GetstrName() == _T("daily") ) {
-			pBaseSpot = LoadDaily( node, childNode );
+			pBaseProp = LoadDaily( node, childNode );
 // 			xDaily *spot = new xDaily;
 // 			pBaseSpot = spot;
 // 			GetBaseSpotAttr( spot, childNode );
@@ -325,7 +325,7 @@ BOOL XPropWorld::LoadSpots( XEXmlNode& node )
 // 		} else
 		if( childNode.GetstrName() == _T("camp") ) {
 			xCampaign *spot = new xCampaign;
-			pBaseSpot = spot;
+			pBaseProp = spot;
 			GetBaseSpotAttr( spot, childNode );
 			std::string strCamp = childNode.GetString( "camp" );
 			spot->strCamp = C2SZ( strCamp.c_str() );	// 디버깅용.
@@ -334,22 +334,27 @@ BOOL XPropWorld::LoadSpots( XEXmlNode& node )
 		} else
 		if( childNode.GetstrName() == _T("visit") ) {
 			xVisit *spot = new xVisit;
-			pBaseSpot = spot;
+			pBaseProp = spot;
 			GetBaseSpotAttr( spot, childNode );
 			spot->idDialog = (ID)childNode.GetInt( "dialog" );
 			spot->idsSeq = childNode.GetString( "seq" );
 		} else
 		if( childNode.GetstrName() == _T("cash") ) {
 			xCash *spot = new xCash;
-			pBaseSpot = spot;
+			pBaseProp = spot;
 			GetBaseSpotAttr( spot, childNode );
 			spot->secRegen = (float)childNode.GetInt( "secRegen" );
 			spot->produceMin = childNode.GetFloat( "numMin" );
 			spot->produceMax = childNode.GetFloat( "numMax" );
 		} else
+		if( childNode.GetstrName() == _T("private_raid") ) {
+			auto* pProp = new xPrivateRaid;
+			pBaseProp = pProp;
+			GetBaseSpotAttr( pProp, childNode );
+		} else
 		if( childNode.GetstrName() == _T("common") ) {
 			xCommon *spot = new xCommon;
-			pBaseSpot = spot;
+			pBaseProp = spot;
 			GetBaseSpotAttr( spot, childNode );
 			spot->strType = childNode.GetTString( "type" );
 			spot->strParam = childNode.GetTString( "str" );
@@ -366,8 +371,8 @@ BOOL XPropWorld::LoadSpots( XEXmlNode& node )
 		}
 		// 
 		//
-		if( XASSERT(pBaseSpot) ) {
-			AddSpot( pBaseSpot );
+		if( XASSERT(pBaseProp) ) {
+			AddSpot( pBaseProp );
 		}
 		childNode = childNode.GetNext();
 	}
@@ -773,45 +778,7 @@ XPropWorld::xBASESPOT* XPropWorld::CreateSpot( XGAME::xtSpot type )
 	ID idSpot = ++s_idGlobal;
 	_tstring strIdentifier = MakeIds( idSpot );
 	xBASESPOT *pBaseSpot = sCreateSpot( type );
-// 	xBASESPOT *pBaseSpot = nullptr;
-// 	switch( type ) {
-// 	case XGAME::xSPOT_CASTLE: {
-//  		pBaseSpot = new xCASTLE;
-// 	} break;
-// 	case XGAME::xSPOT_JEWEL:
-// 		pBaseSpot = new xJEWEL;
-// 		break;
-// 	case XGAME::xSPOT_SULFUR:
-// 		pBaseSpot = new xSULFUR;
-// 		break;
-// 	case XGAME::xSPOT_MANDRAKE:
-// 		pBaseSpot = new xMANDRAKE;
-// 		break;
-// 	case XGAME::xSPOT_NPC:
-// 		pBaseSpot = new xNPC;
-// 		break;
-// 	case XGAME::xSPOT_DAILY:
-// 		pBaseSpot = new xDaily;
-// 		break;
-// // 	case XGAME::xSPOT_SPECIAL:
-// // 		pBaseSpot = new xSpecial;
-// // 		break;
-// 	case XGAME::xSPOT_CAMPAIGN:
-// 		pBaseSpot = new xCampaign;
-// 		break;
-// 	case XGAME::xSPOT_VISIT:
-// 		pBaseSpot = new xVisit;
-// 		break;
-// 	case XGAME::xSPOT_CASH:
-// 		pBaseSpot = new xCash;
-// 		break;
-//   case XGAME::xSPOT_COMMON:
-//     pBaseSpot = new xCommon;
-//     break;
-// 	default:
-// 		XBREAK(1);
-// 		break;
-// 	}
+
 	if( pBaseSpot )	{
 		pBaseSpot->idSpot = idSpot;
 		pBaseSpot->strIdentifier = strIdentifier;
@@ -852,6 +819,9 @@ XPropWorld::xBASESPOT* XPropWorld::sCreateSpot( xtSpot type )
 		break;
 	case XGAME::xSPOT_CASH:
 		pBaseSpot = new xCash;
+		break;
+	case XGAME::xSPOT_PRIVATE_RAID:
+		pBaseSpot = new xPrivateRaid;
 		break;
 	case XGAME::xSPOT_COMMON:
 		pBaseSpot = new xCommon;

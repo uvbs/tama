@@ -365,7 +365,7 @@ public:
 	XWnd( XLayout *pLayout, const char *cNodeName );
 	virtual ~XWnd() { Destroy(); }
 
-	GET_ACCESSOR( XE::xtWnd, wtWnd );
+	GET_ACCESSOR_CONST( XE::xtWnd, wtWnd );
 	GET_ACCESSOR( XWnd*, pParent );
 	// 비공식API이므로 엔진개발자 외엔 사용하지 말것.
 	void _SetpParent( XWnd* pParent ) {
@@ -600,23 +600,23 @@ public:
 		m_vAdjDraw = vAdjDraw;
 	}
 	// transform width, height
-	inline float GetWidthLocal() { 
+	inline float GetWidthLocal() const { 
 		return m_vSize.x * GetScaleLocal().x; 
 	}
-	inline float GetHeightLocal() { 
+	inline float GetHeightLocal() const { 
 		return m_vSize.y * GetScaleLocal().y; 
 	}
-	inline XE::VEC2 GetSizeLocal() { 
+	inline XE::VEC2 GetSizeLocal() const { 
 		return m_vSize * GetScaleLocal(); 
 	}
-	inline XE::VEC2 GetSizeLocalNoTrans() {
+	inline XE::VEC2 GetSizeLocalNoTrans() const {
 		return m_vSize;
 	}
-	inline XE::VEC2 GetSizeFinal() { 
+	inline XE::VEC2 GetSizeFinal() const { 
 		return m_vSize * GetScaleFinal(); 
 	}
-	float GetWidthFinalValid();
-	float GetHeightFinalValid();
+	float GetWidthFinalValid() const;
+	float GetHeightFinalValid() const;
 // 	virtual XE::VEC2 GetSizeWindow() {
 // 		return m_vSize * GetScaleFinal();
 // 	}
@@ -691,18 +691,9 @@ public:
 	}
 	/// m_vSize와는 다르게 실제 화면에 렌더되는 크기의 바운드박스를 얻는다 보통 클리핑에 사용된다
 	XE::xRECT GetBoundBoxByVisibleFinal();
-// 	inline XE::xRECT GetBoundBoxByVisibleFinal() const {
-// 		return GetBoundBoxByVisible();
-// 	}
 	// this의 트랜스폼이 적용된 바운딩박스 크기를 돌려준다. 기준은 this의 (0,0)이다.
 	inline XE::xRECT GetBoundBoxByVisibleLocal() {
 		return GetBoundBoxByVisibleNoTrans() * m_vScale;
-// 	// 코드가 괴상하군 한번 손봐야 할듯.
-// 		XE::xRECT rect;
-// 		rect.vRB = rect.vLT + GetSizeFinal() - XE::VEC2( 1 );
-// 		if( rect.vRB.IsMinus() )
-// 			rect.vRB = rect.vLT;	// 사이즈가 없는 윈도우는 RB가 -1이 되면 XWnd::Draw 클리핑에서 걸러지므로 LT랑 같게 한다.,
-// 		return rect;
 	}
 	/// this윈도우의 실제 그림이 있는 영역의 트랜스폼되지 않은 크기바운딩박스를 돌려준다. 기준은 this의 (0,0)이다.
 	/// 일반적으로는 0,0 - m_vSize가 바운딩 박스지만 텍스트나 스프라이트의 경우는 옵션이나 그림모양에 따라 다르다.
@@ -912,7 +903,7 @@ public:
 	virtual BOOL RestoreGameResource();
 	virtual void OnFinishAppear() {}
 	// 레이아웃에서 생성될때 this의 자식들이 모두 생성이 끝나면 호출된다.
-	virtual void OnFinishCreatedChildLayout( XLayout *pLayout ) {}
+	virtual void OnFinishCreatedChildLayout( const XLayout *pLayout ) {}
 	//
 	void LuaDestroy() {
 		SetbDestroy( TRUE );
@@ -934,14 +925,14 @@ public:
 	virtual XE::VEC2 GetSizeNoTransLayout();
 	XE::VEC2 GetSizeNoTransLayoutWithAry( const XVector<XWnd*>& aryWnd ) const;
 	XE::VEC2 GetSizeFinalLayout();
-	XE::VEC2 GetSizeValidNoTrans();
-	float GetSizeValidNoTransWidth();
-	float GetSizeValidNoTransHeight();
-	void AutoLayoutHCenter( XWnd *pParent );
-	void AutoLayoutBottom( XWnd *pParent );
-	void AutoLayoutRight( XWnd *pParent );
-	void AutoLayoutVCenter( XWnd *pParent );
-	void AutoLayoutCenter( XWnd *pParent );
+	XE::VEC2 GetSizeValidNoTrans() const;
+	float GetSizeValidNoTransWidth() const;
+	float GetSizeValidNoTransHeight() const;
+	void AutoLayoutHCenter( const XWnd *pParent );
+	void AutoLayoutBottom( const XWnd *pParent );
+	void AutoLayoutRight( const XWnd *pParent );
+	void AutoLayoutVCenter( const XWnd *pParent );
+	void AutoLayoutCenter( const XWnd *pParent );
 	void AutoLayoutHCenter() {
 		AutoLayoutHCenter( m_pParent );
 	}
@@ -956,7 +947,7 @@ public:
 	void AutoLayoutVCenterWithAry( XVector<XWnd*>& aryChilds, float marginTB );
 	void AutoLayoutVCenterByChilds( float marginTB );
 	void AutoLayoutHCenterByChilds( float marginLR );
-	virtual void AutoLayoutByAlign( XWnd *pParent, XE::xAlign align );
+	virtual void AutoLayoutByAlign( const XWnd *pParent, XE::xAlign align );
 	inline void AutoLayoutByAlign( XE::xAlign align ) {
 // 		auto pParent = GetpParentValid();
 // 		if( pParent )
@@ -1057,10 +1048,10 @@ public:
 	virtual void ProcessMsg( const std::string& strMsg ) {}
 	void SendMsgToChilds( const std::string& strMsg );
 	int __OnClickLayoutEvent( XWnd* pWnd, DWORD, DWORD );
-	XWnd* GetpParentValidWidth();
-	XWnd* GetpParentValidHeight();
-	XWnd* GetpParentHaveAlignV();
-	XWnd* GetpParentHaveAlignH();
+	XWnd* GetpParentValidWidth() const;
+	XWnd* GetpParentValidHeight() const;
+	XWnd* GetpParentHaveAlignV() const;
+	XWnd* GetpParentHaveAlignH() const;
 #if defined(_CHEAT) && defined(WIN32)
 	void UpdateMouseOverWins( const XE::VEC2& vMouse, int depth, XVector<xWinDepth>* pOutAry );
 #endif // defined(_CHEAT) && defined(WIN32)

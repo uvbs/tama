@@ -407,3 +407,12 @@ XE::VEC2 XWndList::GetSizeNoTransLayout()
 {
 	return GetSizeLocal();
 }
+
+
+XWndList* xGET_LIST_CTRL( XWnd *pRoot, const char *cKey ) {
+	XBREAK( pRoot == nullptr );
+	XWnd *pWnd = pRoot->Find( cKey );
+	if( pWnd == nullptr )
+		return nullptr;
+	return SafeCast<XWndList*>( pWnd );
+}

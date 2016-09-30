@@ -251,6 +251,9 @@
     <ClCompile Include="..\..\..\game_src\XSpotDaily.cpp">
       <Filter>source\obj</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSpotPrivateRaid.cpp">
+      <Filter>source\obj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Resource\VerPacket.h" />
@@ -532,6 +535,9 @@
       <Filter>source\campaign</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XSpotDaily.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSpotPrivateRaid.h">
       <Filter>source\obj</Filter>
     </ClInclude>
   </ItemGroup>

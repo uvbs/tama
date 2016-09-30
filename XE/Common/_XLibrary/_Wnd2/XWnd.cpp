@@ -1893,31 +1893,6 @@ XE::VEC2 XWnd::GetSizeNoTransLayout()
 	if( m_vSize.h > sizeTotalLayoutSize.h )
 		sizeTotalLayoutSize.h = m_vSize.h;
 	return sizeTotalLayoutSize;
-
-// 	XE::VEC2 vMaxSize;
-	// 자식들의 사이즈 구함.
-// 	XE::VEC2 sizeLayoutChilds;
-// 	for( auto pChild : m_listItems ) {
-// 		if (pChild->GetDestroy() == FALSE) {
-// 			auto sizeLocalChild = pChild->GetSizeNoTransLayout();
-// 			auto sizeFinalChild = sizeLocalChild * pChild->GetScaleLocal();
-// 			auto vTotalSize = pChild->GetPosLocal() + sizeFinalChild;
-// 			if (vTotalSize.w > sizeLayoutChilds.w)
-// 				sizeLayoutChilds.w = vTotalSize.w;
-// 			if (vTotalSize.h > sizeLayoutChilds.h)
-// 				sizeLayoutChilds.h = vTotalSize.h;
-// 		}
-// 	}
-// 	// this의 사이즈도 비교
-// 	auto vSizeThis = m_vSize;
-// 	auto sizeTotalLayoutSize = sizeLayoutChilds;
-// 	// this의 사이즈와 자식들의 레이아웃사이즈중에서 큰걸 선택한다.
-// 	if( vSizeThis.w > sizeTotalLayoutSize.w )
-// 		sizeTotalLayoutSize.w = vSizeThis.w;
-// 	if( vSizeThis.h > sizeTotalLayoutSize.h )
-// 		sizeTotalLayoutSize.h = vSizeThis.h;
-// 
-// 	return sizeTotalLayoutSize;
 }
 
 /**
@@ -1988,38 +1963,38 @@ void XWnd::GetMaxLTPosByChild( XE::VEC2 *pOutLT, XE::VEC2 *pOutRB )
  @brief this의 GetSizeLocal()을 얻는다. 그러나 사이즈가 invalid하면 부모의 크기로받는다.
  @param pParent 부모를 직접 지정할수있다.
 */
-XE::VEC2 XWnd::GetSizeValidNoTrans()
+XE::VEC2 XWnd::GetSizeValidNoTrans() const
 {
 	XE::VEC2 vSize = GetSizeLocalNoTrans();
 	// this의 사이즈가 invalid하면 부모의 사이즈를 얻는다.
 	if( vSize.IsInvalid() ) {
-		if( GetpParent() )
-			return GetpParent()->GetSizeValidNoTrans();
+		if( m_pParent )
+			return m_pParent->GetSizeValidNoTrans();
 		// 부모가 없다면 전체 게임화면사이즈를 돌려준다.
 		return XE::GetGameSize();
 	} 
 	return vSize;
 }
 
-float XWnd::GetSizeValidNoTransWidth()
+float XWnd::GetSizeValidNoTransWidth() const
 {
 	float width = GetSizeLocalNoTrans().w;
 	// this의 사이즈가 invalid하면 부모의 사이즈를 얻는다.
 	if( width <= 0 ) {
-		if( GetpParent() )
-			return GetpParent()->GetSizeValidNoTransWidth();
+		if( m_pParent )
+			return m_pParent->GetSizeValidNoTransWidth();
 		return XE::GetGameSize().w;
 	}
 	return width;
 }
 
-float XWnd::GetSizeValidNoTransHeight()
+float XWnd::GetSizeValidNoTransHeight() const
 {
 	float height = GetSizeLocalNoTrans().h;
 	// this의 사이즈가 invalid하면 부모의 사이즈를 얻는다.
 	if( height <= 0 ) {
-		if( GetpParent() )
-			return GetpParent()->GetSizeValidNoTransHeight();
+		if( m_pParent )
+			return m_pParent->GetSizeValidNoTransHeight();
 		// 부모가 없다면 전체 게임화면사이즈를 돌려준다.
 		return XE::GetGameSize().h;
 	}
@@ -2027,18 +2002,18 @@ float XWnd::GetSizeValidNoTransHeight()
 }
 
 // this의 부모중에 가로 align이 있는 부모를 찾는다.
-XWnd* XWnd::GetpParentHaveAlignH() 
+XWnd* XWnd::GetpParentHaveAlignH()  const
 {
-	auto pParent = GetpParent();
+	auto pParent = m_pParent;
 	if( pParent && (pParent->GetAlign() & (xALIGN_HCENTER | xALIGN_RIGHT)))
 		return pParent;
 	return nullptr;
 }
 
 // this의 부모중에 세로 align이 있는 부모를 찾는다.
-XWnd* XWnd::GetpParentHaveAlignV() 
+XWnd* XWnd::GetpParentHaveAlignV() const
 {
-	auto pParent = GetpParent();
+	auto pParent = m_pParent;
 	if( pParent && ( pParent->GetAlign() & ( xALIGN_VCENTER | xALIGN_BOTTOM ) ) )
 		return pParent;
 	return nullptr;
@@ -2050,7 +2025,7 @@ XWnd* XWnd::GetpParentHaveAlignV()
  @note 이것은 부모가 0,0 ~ w,h 일때를 가정한것이다. 그러나 부모가 스프라이트 
        객체라면 vLT가 반드시 0,0이라는 보장이 없으므로 boundbox를 구해서 계산하는게 맞다. XWndImage::Update()
 */
-void XWnd::AutoLayoutHCenter( XWnd *pParent )
+void XWnd::AutoLayoutHCenter( const XWnd *pParent )
 {
 	// 폭이 있는 부모를 찾음.
 	if( pParent )
@@ -2066,7 +2041,7 @@ void XWnd::AutoLayoutHCenter( XWnd *pParent )
 /**
  자동으로 부모의 크기에 맞춰 세로의 중앙으로 맞춰준다.
 */
-void XWnd::AutoLayoutVCenter( XWnd *pParent )
+void XWnd::AutoLayoutVCenter( const XWnd *pParent )
 {
 	if( pParent )
 		pParent = ( pParent->GetSizeLocalNoTrans().h > 0 ) ? pParent : pParent->GetpParentValidHeight();
@@ -2079,14 +2054,14 @@ void XWnd::AutoLayoutVCenter( XWnd *pParent )
 /**
  자동으로 부모의 크기에 맞춰 가로세로 정중앙에 맞춰준다.
 */
-void XWnd::AutoLayoutCenter( XWnd *pParent )
+void XWnd::AutoLayoutCenter( const XWnd *pParent )
 {
 	// 가로,세로값중 하나만 유효한 윈도우도 있어서 따로 함.
 	AutoLayoutHCenter( pParent );
 	AutoLayoutVCenter( pParent );
 }
 
-void XWnd::AutoLayoutRight( XWnd *pParent )
+void XWnd::AutoLayoutRight( const XWnd *pParent )
 {
 	if( pParent )
 		pParent = ( pParent->GetSizeLocalNoTrans().w > 0 ) ? pParent : pParent->GetpParentValidWidth();
@@ -2096,7 +2071,7 @@ void XWnd::AutoLayoutRight( XWnd *pParent )
 	SetX( left );
 }
 
-void XWnd::AutoLayoutBottom( XWnd *pParent )
+void XWnd::AutoLayoutBottom( const XWnd *pParent )
 {
 	if( pParent )
 		pParent = ( pParent->GetSizeLocalNoTrans().h > 0 ) ? pParent : pParent->GetpParentValidHeight();
@@ -2109,7 +2084,7 @@ void XWnd::AutoLayoutBottom( XWnd *pParent )
 /**
  @brief align값에 의해 부모를 기준으로 자동으로 m_vPos값을 정렬한다.
 */
-void XWnd::AutoLayoutByAlign( XWnd *pParent, XE::xAlign align )
+void XWnd::AutoLayoutByAlign( const XWnd *pParent, XE::xAlign align )
 {
 	// left align의 경우는 현재값을 그대로 둔다.
 	if( align && align != xALIGN_LEFT ) {
@@ -2476,7 +2451,7 @@ XWnd* XWnd::GetpParentValid()
 /**
  @brief 가로폭만 유효한값을 가진 부모를 찾는다.
 */
-XWnd* XWnd::GetpParentValidWidth()
+XWnd* XWnd::GetpParentValidWidth() const 
 {
 	if( m_pParent && m_pParent->GetSizeLocal().w <= 0 )
 		return m_pParent->GetpParentValidWidth();
@@ -2486,14 +2461,14 @@ XWnd* XWnd::GetpParentValidWidth()
 /**
  @brief 세로폭만 유효한값을 가진 부모를 찾는다.
 */
-XWnd* XWnd::GetpParentValidHeight()
+XWnd* XWnd::GetpParentValidHeight() const
 {
 	if( m_pParent && m_pParent->GetSizeLocal().h <= 0 )
 		return m_pParent->GetpParentValidHeight();
 	return m_pParent;
 }
 
-float XWnd::GetWidthFinalValid() 
+float XWnd::GetWidthFinalValid() const 
 {
 	if( m_vSize.w <= 0 ) {
 		if( m_pParent )
@@ -2502,7 +2477,7 @@ float XWnd::GetWidthFinalValid()
 	return m_vSize.w * GetScaleFinal().x;
 }
 
-float XWnd::GetHeightFinalValid()
+float XWnd::GetHeightFinalValid() const
 {
 	if( m_vSize.h <= 0 ) {
 		if( m_pParent )
