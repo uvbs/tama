@@ -2942,6 +2942,14 @@ void XSceneWorld::UpdateDebugButtons()
 			pButt->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnCheat, 20 );
 			v.x += 25.f;
 		}
+
+
+		v.Set( XE::GetGameWidth() - vSize.w, 240.f );
+		pButt = XWndButtonDebug::sUpdateCtrl( this, "butt.debug.battle", v, vSize, _T( "battle" ), bDebugMode );
+		if( pButt ) {
+			pButt->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnCheat, 99 );
+			v.x -= 25.f;
+		}
 //	}
 #endif // CHEAT
 
@@ -3039,8 +3047,6 @@ int XSceneWorld::OnCheat( XWnd* pWnd, DWORD p1, DWORD p2 )
 		// 특성초기화. XSceneTech::OnCheat에서 사용
 	} else
 	if( type == 99 ) {
-//		DoBlinkSpotCode( 225547, 5.f );
-//		DoMoveToCodeSpots( 225547 );
 	}
 	SetbUpdate( true );
 	return 1;

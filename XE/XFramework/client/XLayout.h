@@ -3,7 +3,7 @@
 #include "XBaseFontDat.h"
 #include "XBaseDelegate.h"
 #include "_Wnd2/XWnd.h"
-//#include "_Wnd2/XWndSprObj.h"
+#include "XFramework/XParamObj.h"
 
 #define XLAYOUT_ELEM	TiXmlElement
 #define XLAYOUT_NODE	TiXmlNode
@@ -127,6 +127,7 @@ public:
 		bool m_bFlipX = false;
 		bool m_bFlipY = false;
 		XE::xtPixelFormat m_Format = XE::xPF_NONE;
+		XParamObj m_Param;
 		xATTR_ALL() {
 			xfFlag = 0;
 			idText = 0;

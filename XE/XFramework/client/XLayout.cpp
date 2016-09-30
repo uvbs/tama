@@ -23,6 +23,7 @@
 #include "sprite/SprObj.h"
 #include "_Wnd2/XWndSprObj.h"
 #include "sprite/XActObj2.h"
+#include "XFramework/XParamObj.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -1339,14 +1340,18 @@ XWnd *XLayout::CreateListCtrl( const char *cCtrlName,
 	int wSpace=0, hSpace=0;
 	elemCtrl->Attribute( "spacew", &wSpace );
 	elemCtrl->Attribute( "spaceh", &hSpace );
+	// 선택가능 여부
+	bool bSelectedUI = false;
+	GetAttrBool( elemCtrl, "selectable", &bSelectedUI );
 	// img
 	_tstring strBg;
 	GetAttrFile( elemCtrl, NULL, &strBg );
-	//
+	//////////////////////////////////////////////////////////////////////////
 	auto pWndList = new XWndList( attr.vPos,			// 좌상귀 좌표
 																attr.vSize,			// 리스트영역 크기
 																type );			// 리스트 타입
 	pWndList->SetvSpace( XE::VEC2( wSpace, hSpace ) );
+	pWndList->SetbSelectedUI( bSelectedUI );
 	// 리스트안에 들어갈 items
 	int numItems = -1;
 	elemCtrl->Attribute( "items_num", &numItems );
@@ -1362,7 +1367,8 @@ XWnd *XLayout::CreateListCtrl( const char *cCtrlName,
 					// 개수가 지정되지 아낳으면 노드이름만 저장하고 객체를 생성하지 않음.
 					for( int i = 0; i < numItems; ++i ) {
 						XWnd *pItem = CreateXWindow( pElemItem );
-						pWndList->AddItem( i + 1, pItem );
+						pWndList->AddItem( pItem );			// id는 랜덤으로 하는게 맞는거 같다. 중복이 너무 쉽게 되고. 인덱스로 판별하는 방식은 가급적 안쓰는게 좋을듯. strIds를 사용할것.
+// 						pWndList->AddItem( i + 1, pItem );
 					}
 				}
 			} else {
@@ -1761,6 +1767,12 @@ int XLayout::GetAttrCommon( TiXmlElement *elemCtrl, xATTR_ALL *pOut )
 	BOOL bTouchable = FALSE;
 	if( GetAttrBool( elemCtrl, "touchable", &bTouchable ) )
 		pOut->m_Touchable = ( bTouchable ) ? 1 : 0;
+	{
+		DWORD dwParam;
+		if( GetAttrDWORD( elemCtrl, "param", &dwParam ) ) {
+			pOut->m_Param.Set( "param", dwParam );
+		}
+	}
 	return 1;
 } // GetAttrCommon
 

@@ -2,14 +2,19 @@
 <layout>
   <popup>
     <popup img="bg_popup_dark.png" format="argb8888" alpha="0.9">
+      <img posx="center" posy="89" img="img/icon_featherb01.png">
+        <text posx="0" posy="0" font="font_res_num" text_col="white" font_size="20" />
+      </img>
       <text posx="center" posy="55" font="font_text_b" text_col="white" font_size="30" text="2045">
         <!--승리보상-->
       </text>
-      <butt posx="center" posy="211" img_up="common_butt_mid.png" key="butt.ok"></butt>
+      <butt posx="center" posy="211" img_up="common_butt_mid.png" key="butt.ok">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="40" text="80189" font_style="stroke"></text>
+      </butt>
       <butt posx="600" posy="8" img_up="common_butt_x.png" key="butt.cancel"></butt>
-      <list posx="23" posy="49" width="242" height="200" type="thumb" spacew="2" spaceh="2" items_num="30" items_node="elem" dir="vert" />
-      <list posx="372" posy="49" width="242" height="200" type="thumb" spacew="2" spaceh="2" items_num="30" items_node="elem" dir="vert" />
-      <list posx="0" posy="269" width="640" height="51" type="list_horiz" spacew="2" items_num="30" items_node="elem" dir="horiz" />
+      <list posx="23" posy="49" width="242" height="200" type="thumb" spacew="2" spaceh="2" items_num="30" items_node="elem" dir="vert" selectable="true" />
+      <list posx="372" posy="49" width="242" height="200" type="thumb" spacew="2" spaceh="2" items_num="30" items_node="elem" dir="vert" selectable="true" />
+      <list posx="0" posy="269" width="640" height="51" type="list_horiz" spacew="2" items_num="30" items_node="elem" dir="horiz" selectable="true" />
     </popup>
     <_temp>
       <popup img="bg_popup_dark.png" format="argb8888">
@@ -48,6 +53,8 @@
     </_temp>
   </popup>
   <elem>
-    <hero_ctrl scale="0.68"></hero_ctrl>
+    <hero_ctrl scale="0.68" param="100">
+      <unit_ctrl posx="right" posy="bottom" scale="0.7" adjx="10" param="1" />
+    </hero_ctrl>
   </elem>
 </layout>

@@ -659,3 +659,9 @@ bool XSpotCommon::IsHeroCamp() const
 	auto pProp = static_cast<XPropWorld::xCommon*>( PROP_WORLD->GetpProp( GetidSpot() ) );
 	return ( pProp ) ? ( pProp->strType == _T( "hero_camp" ) ) : false;
 }
+
+bool XSpotCommon::IsPrivateRaid() const
+{
+	auto pProp = static_cast<XPropWorld::xCommon*>( PROP_WORLD->GetpProp( GetidSpot() ) );
+	return ( pProp ) ? ( pProp->strType == _T( "private.raid" ) ) : false;
+}

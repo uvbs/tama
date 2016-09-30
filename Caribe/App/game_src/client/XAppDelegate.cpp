@@ -42,13 +42,18 @@ XWnd* XAppDelegate::DelegateCreateCustomCtrl( const std::string& strcCtrl
 		xReward reward;
 		reward.SetHero( 0 );		// 영웅타입으로만 생성하도록.
 		auto pWndFace = new XWndStoragyItemElem( attrAll.vPos, reward );
+		const DWORD idHero = attrAll.m_Param.GetDword("param");
+		if( idHero ) {
+			pWndFace->SetHero( idHero );
+		}
 		pWndFace->SetNum(0);
 		pWndFace->SetScaleLocal( attrAll.vScale );
 		pWndCreated = pWndFace;
 	} else
 	if( strcCtrl == "unit_ctrl" ) {
 //		pWndCreated = XGAME::CreateUnitFace( pParent, xUNIT_NONE );
-		pWndCreated = new XWndCircleUnit();
+		auto unit = static_cast<XGAME::xtUnit>( attrAll.m_Param.GetDword( "param" ) );
+		pWndCreated = new XWndCircleUnit( unit, XE::VEC2(), nullptr );
 		pWndCreated->SetPosLocal( attrAll.vPos );
 		pWndCreated->SetScaleLocal( attrAll.vScale );
 		pWndCreated->SetAlphaLocal( attrAll.alpha );

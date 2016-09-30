@@ -617,6 +617,29 @@ void XWnd::Update()
 	}
 }
 
+/**
+ @brief this에 쌓인 이벤트메시지들을 처리하고 자식들에게도 넘긴다.
+*/
+void XWnd::DispatchMsg()
+{
+	if( GetDestroyFinal() )
+		return;
+	while( m_qMsg.size() ) {
+		const auto& msg = FrontMsg();
+		if( DispatchMsg( msg ) ) {
+			PopMsg();
+			SetbUpdate( true );
+		}
+		// 10개이상 쌓인것은 뭔가 이상하다고 간주.
+		if( XBREAK( m_qMsg.size() > 10 ) )
+			break;
+	}
+	for( auto pWnd : m_listItems ) {
+		pWnd->DispatchMsg();
+	}
+
+}
+
 // private전용 자식 삭제
 // 모든 윈도우는 자신이 SAFE_DELETE되기 전에 이것을 먼저 불러야 한다.
 // virturl 파괴자로 인해 부모의 리소스가 먼저삭제되고 자식들의 리소스가 나중에 파괴되어

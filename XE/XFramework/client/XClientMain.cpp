@@ -476,6 +476,7 @@ void XClientMain::FrameMove( void )
 void XClientMain::OnDelegateFrameMove( float dt ) 
 {
 	m_pGame->Process( dt );
+	m_pGame->DispatchMsg();
 }
 
 void XClientMain::Draw( void )

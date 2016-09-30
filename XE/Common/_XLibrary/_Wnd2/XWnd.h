@@ -14,6 +14,7 @@
 //#include "../XDrawGraph.h"
 #include "XBaseDelegate.h"
 #include "XWndH.h"
+#include "XFramework/XParamObj.h"
 
 class XWndButton;
 class XDelegateWnd;
@@ -72,13 +73,22 @@ class XDelegateWnd;
 #define XWM_FINISH_NUMBER_COUNTER		1000	// XWnnTextNumberCount의 카운터가 끝나면 호출.
 
 // flag
-namespace XE {
-	enum {	xID_OK=1,
-				xID_CANCEL=2,
-				xID_YES=3,
-				xID_NO=4
-			};
+XE_NAMESPACE_START( XE )
+//
+enum {	xID_OK=1,
+		xID_CANCEL=2,
+		xID_YES=3,
+		xID_NO=4
+	};
+// 윈도우 메시지
+struct xMsgWin {
+	std::string m_strMsg;
+	XParamObj m_ParamObj;
 };
+//
+XE_NAMESPACE_END; // XE
+	
+	
 
 struct XWND_RES_FRAME
 {
@@ -285,6 +295,7 @@ private:
 	XE::xAlign m_Align = XE::xALIGN_NONE;
 	XVector<xnWnd::xClickEvent> m_aryClickEvent;
 	xnWnd::xTooltip m_datTooltip;		// 툴팁 정보
+	XList4<XE::xMsgWin> m_qMsg;			// 이벤트메시지 큐
 #ifdef WIN32
 	int m_nDepth;				// 윈도우 트리에서의 깊이
 #endif
@@ -1055,10 +1066,27 @@ public:
 #endif // defined(_CHEAT) && defined(WIN32)
 	bool IsMouseOver( const XE::VEC2& vMouse );
 	void SetEvent2( ID idEvent, std::function<void(XWnd*)> func );
+	inline void PushMsg( const std::string& strMsg ) {
+		XE::xMsgWin msg;
+		msg.m_strMsg = strMsg;
+		m_qMsg.push_back( msg );
+	}
+	void DispatchMsg();
+	/**
+	 @brief 외부로부터 이벤트메시지가 들어왔을때 각 윈도우는 그것을 처리한다.
+	 @return 메시지처리를 끝내고 메시지삭제를 원할땐 true를 리턴한다. 
+	*/
+	virtual bool DispatchMsg( const XE::xMsgWin& msg ) { return false; }
 private:
 	virtual void OnNCModal() {}
 	virtual bool IsAbleAlign() const { return true; }
 	virtual XE::VEC2 GetvChildLocal( const XE::VEC2& vLocal, XWnd* pParent, XWnd* pGrandParent ) const;
+	const XE::xMsgWin& FrontMsg() const {
+		return m_qMsg.front();
+	}
+	void PopMsg() {
+		m_qMsg.pop_front();
+	}
 }; // class XWnd
 
 #pragma warning ( default : 4250 )

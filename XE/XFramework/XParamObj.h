@@ -40,6 +40,9 @@ public:
 			return m_Empty;
 		return ( *itor ).second;
 	}
+	inline bool IsEmpty( const char* cKey ) const {
+		return  m_mapVal.find( std::string( cKey ) ) == m_mapVal.end();
+	}
 	inline bool IsEmpty() const {
 		return m_mapVal.empty();
 	}
@@ -96,15 +99,23 @@ public:
 	}
 #endif // WIN32
 	int GetInt( const char* cKey ) const {
+		if( m_paramInt.IsEmpty( cKey ) )
+			return 0;
 		return m_paramInt.Get( cKey );
 	}
 	DWORD GetDword( const char* cKey ) const {
+		if( m_paramDword.IsEmpty( cKey ) )
+			return 0;
 		return m_paramDword.Get( cKey );
 	}
-	DWORD GetWord( const char* cKey ) const {
+	WORD GetWord( const char* cKey ) const {
+		if( m_paramWord.IsEmpty( cKey ) )
+			return 0;
 		return m_paramWord.Get( cKey );
 	}
 	float GetFloat( const char* cKey ) const {
+		if( m_paramFloat.IsEmpty( cKey ) )
+			return 0;
 		return m_paramFloat.Get( cKey );
 	}
 	char GetChar( const char* cKey ) const {

@@ -7,6 +7,7 @@
 #include "XFramework/MFC/XEServerMainFrm.h"
 #include "XFramework/XDetectDeadLock.h"
 #include "XResObj.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG

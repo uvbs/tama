@@ -614,3 +614,18 @@ void XWndStoragyItemElem::SetEventItemTooltip()
 	XBREAK( m_Reward.GetidItem() == 0 );
 	SetEvent( XWM_CLICKED, GAME, &XGame::OnClickItemTooltip, m_Reward.GetidItem() );
 }
+
+/**
+ @brief 외부로부터 받은 메시지를 처리한다.
+*/
+bool XWndStoragyItemElem::DispatchMsg( const XE::xMsgWin& msg )
+{
+	XWnd::DispatchMsg( msg );
+	if( msg.m_strMsg == "selected" ) {
+		SetbSelected( true );
+	} else
+	if( msg.m_strMsg == "deselected" ) {
+		SetbSelected( false );
+	}
+	return true;
+}

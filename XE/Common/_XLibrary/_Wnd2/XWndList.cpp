@@ -298,6 +298,21 @@ void XWndList::OnLButtonUp( float lx, float ly )
 					}
 				}
 			} else {
+				if( m_bSelectedUI ) {
+					// 선택가능한 UI면 선택한것을 리스트에 보관해둔다.
+					if( !m_listSelect.empty() ) {
+						// 기존에 선택되어있던것은 해제 이벤트를 보낸다.
+						ID idExist = m_listSelect.front();
+						if( idExist ) {
+							auto pExist = Find( idExist );
+							if( pExist )
+								pExist->PushMsg( "deselected" );
+						}
+					}
+					m_listSelect.clear();
+					m_listSelect.push_back( idWnd );		// 항상 0번인덱스에 0번인덱스에 넣음.
+					pClickedWnd->PushMsg( "selected" );
+				}
 				CallEventHandler( XWM_SELECT_ELEM, idWnd );
 				pClickedWnd->CallEventHandler( XWM_HELP_CLICKED, idWnd );
 			}

@@ -39,6 +39,7 @@ private:
 	XE::VEC2 m_vDown;
 	XList4<ID> m_listSelect;		// 멀티셀렉션 옵션일때.
 	BOOL m_bMultiSelect;		// 여러개 선택가능한 형태
+	bool m_bSelectedUI;			// 선택시 선택UI를 표시할건지
 	int m_State;					// 0:가만있음. 1:크기변화로 재배열되는중. 
 	XE::VEC2 m_sizeResizingChild;	// 크기가 변하는 자식의 변하는 양
 	XInterpolationObjDeAccel m_ipoRearrange;		// 재배열될때 사용.
@@ -78,6 +79,7 @@ public:
 	GET_SET_ACCESSOR_CONST( const std::string&, strItemLayoutForXML );
 	GET_SET_ACCESSOR_CONST( const XE::VEC2&, sizeFixed );
 	GET_SET_ACCESSOR( _XWndListDelegate*, pDelegate );
+	GET_SET_BOOL_ACCESSOR( bSelectedUI );
 	void SetstrItemLayoutForXML( const char *cNodeName ) {
 		m_strItemLayoutForXML = cNodeName;
 	}

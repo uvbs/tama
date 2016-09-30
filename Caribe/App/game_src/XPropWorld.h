@@ -2,6 +2,7 @@
 
 #include "XXMLDoc.h"
 #include "XStruct.h"
+#include "XFramework/XParamObj.h"
 
 const int VER_PROP_WORLD = 1;
 
@@ -256,6 +257,7 @@ public:
     _tstring strType;
     _tstring strParam;
     int nParam[4];
+		XParamObj m_Param;
     xCommon() : xBASESPOT( XGAME::xSPOT_COMMON ) {
       XCLEAR_ARRAY( nParam );
     }

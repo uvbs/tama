@@ -140,6 +140,8 @@ public:
 	void SetEventItemTooltip();
 	void ClearHero();
 	bool IsHero() const;
+private:
+	bool DispatchMsg( const XE::xMsgWin& msg ) override;
 };
 
 

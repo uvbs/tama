@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <world file="map.png" ratio_produce="1" ratio_castle_produce="1" ratio_regen="1">
     <spots>
         <common id="612" x="943" y="865" ids="spot.home" spr="spot_castle.spr" opened="yes" />
@@ -482,5 +482,6 @@
         <npc id="822" x="649" y="1891" ids="spot.822" secRegen="180" />
         <npc id="823" x="778" y="1801" ids="spot.823" secRegen="180" />
         <event id="824" x="344" y="734" name="15103" ids="spot.824" when="x.boss5" level="21" spr="unit_treant2.spr" opened="yes" secRegen="180" legion="legion.boss5" />
+        <common id="825" x="1285" y="726" name="15000" ids="spot.private.raid" type="private.raid" str="spot_private_raid.spr" />
     </spots>
 </world>
