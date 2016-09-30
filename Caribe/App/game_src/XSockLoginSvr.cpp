@@ -206,8 +206,8 @@ BOOL XSockLoginSvr::SendLoginFromUUID( XWnd *pCallback, const char *cUUID, const
 	ar << VER_CLPK;
 	ar << VER_CGPK;
 	ar << VER_CPPK;
-	ar << (DWORD)DLV_OPEN_BETA;
-//	ar << (DWORD)_DEV_LEVEL;
+//	ar << (DWORD)DLV_OPEN_BETA;
+	ar << (DWORD)_DEV_LEVEL;
 //	SerializeCrashDump( ar );
 //	if( ACCOUNT && XE::IsHave(ACCOUNT->GetSessionKey()) )
 	if( XGame::sIsHaveSessionKey() )
