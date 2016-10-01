@@ -415,7 +415,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>XE_GLES2;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XGMO;XE_GLES2;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>

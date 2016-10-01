@@ -231,7 +231,8 @@ void XSceneTest::Create( void )
 	for( int i = 0; i < MAX_SPR1 * MAX_SPR2; ++i ) {
 		const int maxFiles = XNUM_ARRAY( s_files );
 		const _tstring strFile = C2SZ( s_files[xRandom(maxFiles)] );
-		m_psoTest[i] = new XSprObj( _T( "particle_star.spr" ), XE::xHSL(), false, false, false, nullptr );
+		m_psoTest[i] = new XSprObj( _T( "ui_levelup.spr" ), XE::xHSL(), false, false, false, nullptr );
+		m_psoTest[i]->SetAction( 3 );
 // 		m_psoTest[i] = new XSprObj( strFile );
 		auto pso = m_psoTest[i];
 //		pso->SetAction( 4 );

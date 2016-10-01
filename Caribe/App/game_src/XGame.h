@@ -118,6 +118,7 @@ public:
 #ifdef _CHEAT
 	xHelp::XSeq *m_pCurrSeq = nullptr;
 	std::string m_strcNodeParticle;
+	static _tstring s_strMouseSpr;		// 마우스커서에 달려서 테스트해볼수 있는 spr파일명
 #endif // cheat
 private:
 	static XGame* s_pInstance;

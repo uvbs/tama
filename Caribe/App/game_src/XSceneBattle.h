@@ -23,10 +23,8 @@ class XWndBatchRender;
 XE_NAMESPACE_START( XGAME )
 struct xSceneBattleParam : public xSceneParamBase {
 	ID m_idEnemy = 0;			// 상대가 pc의 경우.
-#ifndef _XSINGLE
 	xtSpot m_typeSpot = XGAME::xSPOT_NONE;	// 전투가벌어지는 스팟의 타입(에러확인용)
 	ID m_idSpot = 0;					// 전투가 벌어지는 스팟(0인경우도 있음)
-#endif // not _XSINGLE
 	int m_Level = 0;					// 상대의 레벨
 	_tstring m_strName;				// 상대이름
 	XVector<XSPLegion> m_spLegion;	// 0:아군 1:적군
@@ -35,20 +33,16 @@ struct xSceneBattleParam : public xSceneParamBase {
 	int m_idxStage = -1;				///< 캠페인의 경우 스테이지 인덱스
 	int m_idxFloor = 0;
 	xSceneBattleParam( ID idEnemy,
-#ifndef _XSINGLE
 										 xtSpot typeSpot,
 										 ID idSpot,
-#endif // not _XSINGLE
 										 int level,
 										 const _tstring& strName,
 										 const XVector<XSPLegion>& aryLegion,
 										 xtBattle typeBattle,
 										 int def, int idxStage, int idxFloor )
 		: m_idEnemy( idEnemy )
-#ifndef _XSINGLE
 		, m_typeSpot( typeSpot )
 		, m_idSpot( idSpot )
-#endif // not _XSINGLE
 		, m_Level( level )
 		, m_strName( strName )
 		, m_spLegion( aryLegion )
