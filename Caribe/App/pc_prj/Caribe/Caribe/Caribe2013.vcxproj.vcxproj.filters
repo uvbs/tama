@@ -545,6 +545,15 @@
     <ClCompile Include="..\..\..\game_src\XScenePrivateRaid.cpp">
       <Filter>source\scean</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneBattleSub.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneBattleSingle.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XAsyncMng.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
@@ -1165,6 +1174,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XScenePrivateRaid.h">
       <Filter>source\scean</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSceneBattleSub.h">
+      <Filter>source\battle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSceneBattleSingle.h">
+      <Filter>source\battle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XAsyncMng.h">
+      <Filter>source\battle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,5 @@
 ﻿#include "StdAfx.h"
-#include "XSceneBattle.h"
+#include "XAsyncMng.h"
 #include "XWndBattle.h"
 #include "XGame.h"
 #include "XSockGameSvr.h"
@@ -54,6 +54,9 @@
 //#include "OpenGL2/XBatchRenderer.h"
 #include "XFramework/client/XWndBatchRender.h"
 #include "XImageMng.h"
+#include "XSceneBattleSingle.h"
+#include "XSceneBattleSub.h"
+#include "XSceneBattle.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -67,115 +70,11 @@ using namespace XGAME;
 using namespace XSKILL;
 
 XSceneBattle *SCENE_BATTLE = nullptr;
-//XGAME::xBattleStart XSceneBattle::s_BattleStart;
-//////////////////////////////////////////////////////////////////////////
-
-XE_NAMESPACE_START( XGAME )
-	
-bool xSceneBattleParam::IsValid() const {
-	if( XBREAK( m_spLegion[0] == nullptr || m_spLegion[1] == nullptr ) )
-		return false;
-	if( XBREAK( !m_typeBattle || !m_Level || m_strName.empty() ) )
-		return false;
-#ifndef _XSINGLE
-	if( XBREAK( !m_typeSpot ) )
-		return false;
-	if( XBREAK( !m_idSpot ) )
-		return false;
-	if( m_typeSpot == xSPOT_CASTLE || m_typeSpot == xSPOT_JEWEL || m_typeSpot == xSPOT_MANDRAKE )
-		if( XBREAK( m_idEnemy == 0 ) )
-			return false;
-	if( m_typeSpot == xSPOT_JEWEL )
-		if( XBREAK( m_Defense == 0 ) )
-			return false;
-	if( m_Defense > 0 )
-		if( XBREAK( m_typeSpot != xSPOT_JEWEL ) )
-			return false;
-	if( m_typeSpot == xSPOT_CAMPAIGN || m_typeSpot == xSPOT_COMMON )
-		if( XBREAK( m_idxStage < 0 ) )
-			return false;
-#endif // not _XSINGLE
-	return true;
-}
-
-//////////////////////////////////////////////////////////////////////////
-void xsCamp::Release() {
-	m_spAcc.reset();
-	m_spLegionObj->Release();
-
-}
-
-#ifdef _XSINGLE
-void xsCamp::CreateLegion( const std::string& idsLegion, XGAME::xtSide bitSide ) {
-	XBREAK( bitSide == 0 );
-	XBREAK( idsLegion.empty() );
-	m_idsLegion = idsLegion;
-	m_bitSide = bitSide;
-	auto pPropLegion = XPropLegion::sGet()->GetpProp( idsLegion );
-	if( XASSERT( pPropLegion ) ) {
-		m_spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, 50, false );
-	}
-}
-// void xsCamp::ReCreateLegion( XWndBattleField* pWndWorld) 
-// {
-// 	CreateLegion( m_idsLegion, m_bitSide );
-// 	CreateLegionObj();
-// 	CreateSquadObj( pWndWorld, m_bitOption );
-// }
-#endif // _XSINGLE
-// 
-void xsCamp::CreateLegionObj()
-{
-	XBREAK( m_spLegion == nullptr );
-	XBREAK( m_bitSide == 0 );
-//	m_spLegionObj = XSPLegionObj( new XLegionObj( m_spLegion, m_bitSide ) );
-	m_spLegionObj = std::make_shared<XLegionObj>( m_spLegion, m_bitSide );
-}
-
-/**
- @brief m_spLegionObj의 분대객체들을 생성한다.
-*/
-void xsCamp::CreateSquadObj( XWndBattleField* pWndWorld, XGAME::xtBattle typeBattle )
-{
-#ifdef _XSINGLE
-	XBREAK( m_idsLegion.empty() );
-#endif // _XSINGLE
-	XBREAK( m_spLegionObj == nullptr );
-	XBREAK( pWndWorld == nullptr );
-	auto pBattleField = pWndWorld->GetspBattleField();
-	XBREAK( pBattleField == nullptr );
-	m_bitOption = typeBattle;
-	const XE::VEC3 vCenterWorld( pBattleField->GetvwSize().w * 0.5f, 231.f, 0 );
-	BIT bitOption = XGAME::xLO_DEFAULT;
-	if( typeBattle == xBT_GUILD_RAID && m_bitSide != xSIDE_PLAYER ) {
-		bitOption |= xLO_NO_CREATE_DEAD;
-	}
-	const auto vwBasePos = (m_bitSide == xSIDE_PLAYER)? 
-														vCenterWorld - XE::VEC3( 240, 0 ) :
-														vCenterWorld + XE::VEC3( 240, 0 );
-	// m_pLegion을 바탕으로 내부에서 분대 객체를 만듬. 분대객체안에서는 다시 유닛 객체를 만듬.
-	m_spLegionObj->CreateLegion2( pWndWorld, vwBasePos, (xtLegionOption)bitOption );
-#ifdef _XSINGLE
-	auto pPropLegion = XPropLegion::sGet()->GetpProp( m_idsLegion );
-	if( pPropLegion ) {
-		for( auto& squad : pPropLegion->arySquads ) {
-			auto spSquadObj = m_spLegionObj->GetspSquadObjByIdx( squad.idxPos );
-			if( spSquadObj ) {
-				spSquadObj->m_bShowHpInfo = squad.m_bShow;
-			}
-		}
-	}
-#endif // _XSINGLE
-}
-
-XE_NAMESPACE_END;
-
-//////////////////////////////////////////////////////////////////////////
-/**
+/** //////////////////////////////////////////////////////////////////////////
  @brief 
 */
-XSceneBattle::XSceneBattle( XGame *pGame, XSPSceneParam& spBaseParam ) 
-	: XSceneBase( pGame, XGAME::xSC_INGAME )
+XSceneBattle::XSceneBattle( XGame *pGame, XGAME::xtScene scene, XSPSceneParam spBaseParam )
+	: XSceneBase( pGame, scene )
 	, m_aryCamp(2)
 	, m_aryBar(2)
 	, m_Layout(_T("layout_battle.xml"))
@@ -194,29 +93,32 @@ XSceneBattle::XSceneBattle( XGame *pGame, XSPSceneParam& spBaseParam )
 	XObjArrow::s_pPool = new XPool<XObjArrow>( XGAME::MAX_UNIT_SMALL * 30 );
 #endif // _XMEM_POOL
 #ifdef _XSINGLE
-	// 전투파라메터를 외부에서 넘어온것처럼 시뮬레이션 한다.
-	m_spSceneParam = sSetBattleParamForSingle();
-	auto strBg = XGC->GetBgBattle( XGAME::xSPOT_NPC );
+// 	// 전투파라메터를 외부에서 넘어온것처럼 시뮬레이션 한다.
+// 	m_spSceneParam = sSetBattleParam();
+ 	XSpot* pSpot = nullptr;
 #else
-	// 파라메터가 세팅안되어 있으면 에러.
-	
-//	XBREAK( XSceneBattle::sIsEmptyBattleStart() );
-	XBREAK( m_spSceneParam->IsInvalid() );
 	// 싱글모드가 아니면 스팟아이디는 모두 있어야 함.
 	XSpot *pSpot = sGetpWorld()->GetSpot( m_spSceneParam->m_idSpot );
 	XBREAK( pSpot == nullptr );
+#endif
+	// 파라메터가 세팅안되어 있으면 에러.
+	XBREAK( m_spSceneParam->IsInvalid() );
 	m_pSpot = pSpot;
+#ifdef _XSINGLE
+	// 10레벨이하의 적NPC는 액티브스킬을 쓰지 않음
 	if( pSpot && pSpot->IsNpc() && pSpot->GetLevel() < 10 ) {
 		XBaseUnit::s_bNotUseActiveByEnemy = true;
 	} else {
 		XBaseUnit::s_bNotUseActiveByEnemy = false;
 	}
+#endif // _XSINGLE
+	// 배경이미지 파일명 꺼냄
 	auto strBg = XGC->GetBgBattle( m_spSceneParam->m_typeSpot );
 	if( m_spSceneParam->m_Defense > 0 ) {
 		// defense값이 있으면 스팟타입은 반드시 jewel이어야 한다.
 		XASSERT( m_spSceneParam->m_typeSpot == xSPOT_JEWEL );
 	}
-#endif
+
 	// XBattleField(XWorld)객체 생성
 	// 배경 레이어
 	// 배경레이어용 이미지 로딩
@@ -319,7 +221,7 @@ void XSceneBattle::CreateCamps()
 		camp.m_idsLegion = "single1_player";
 #endif // _XSINGLE
 		camp.CreateLegionObj();
-		camp.CreateSquadObj( m_pWndWorld, m_spSceneParam->m_typeBattle );
+		camp.CreateSquadObjs( m_pWndWorld, m_spSceneParam->m_typeBattle );
 		camp.m_psfcProfile = GAME->GetpsfcProfile();
 	}
 	// 적진영 생성
@@ -333,7 +235,7 @@ void XSceneBattle::CreateCamps()
 		camp.m_idsLegion = "single1_enemy";
 #endif // _XSINGLE
 		camp.CreateLegionObj();
-		camp.CreateSquadObj( m_pWndWorld, m_spSceneParam->m_typeBattle );
+		camp.CreateSquadObjs( m_pWndWorld, m_spSceneParam->m_typeBattle );
 		camp.m_psfcProfile = nullptr;
 	}
 	// 각 유닛들에게 OnStart이벤트
@@ -368,7 +270,7 @@ BOOL XSceneBattle::OnCreate()
 	}
 
 	// 분수형태 이미터
-	XE::VEC2 sizeWorld = m_pWndWorld->GetspWorld()->GetvwSize();
+	XE::VEC2 sizeWorld = GetspWorld()->GetvwSize();
 	//
 	CreateParticleSfx();
 
@@ -409,81 +311,6 @@ BOOL XSceneBattle::OnCreate()
 
 	return TRUE;
 }
-
-/**
- @brief 군단객체 생성에 필요한 파라메터들을 생성
- for 싱글모드
-*/
-#ifdef _XSINGLE
-XSPAcc XSceneBattle::sCreateAcc()
-{
-	XSPAcc spAcc = XAccount::sGetPlayer();
-	if( spAcc == nullptr ) {
-		spAcc = std::make_shared<XAccount>( 1 );
-		spAcc->SetpDelegateLevel( GAME );
-		XAccount::sSetPlayer( spAcc );
-		spAcc->CreateFakeAccount();
-		// 플레이어측 군단
-		auto pPropLegion = XPropLegion::sGet()->GetpProp( "single1_player" );
-		if( pPropLegion ) {
-//			auto spLegion = spAcc->CreateLegion( pPropLegion );
-			auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, 50, false );
-// 			XVector<XSquadron*> arySquad;
-// 			spLegion->GetSquadronToAry( &arySquad );
-// 			for( auto pSquad : arySquad ) {
-			for( auto pSquad : spLegion->GetarySquadrons() ) {
-				if( pSquad && pSquad->GetpHero() ) {
-					ACCOUNT->AddHero( pSquad->GetpHero() );
-					pSquad->SetbCreateHero( FALSE );
-				}
-			}
-			ACCOUNT->SetspLegion( 0, spLegion );
-		}
-	}
-	return spAcc;
-}
-std::shared_ptr<XGAME::xSceneBattleParam> 
-XSceneBattle::sSetBattleParamForSingle()
-{
-//	XGAME::xBattleStart bs;
-	const int level = 50;
-	auto spAcc = sCreateAcc();
-	XVector<XSPLegion> aryLegion;
-	aryLegion.push_back( spAcc->GetCurrLegion() );
-	{
-		auto pPropLegion = XPropLegion::sGet()->GetpProp( "single1_enemy" );
-		if( pPropLegion ) {
-			auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, 
-																										 level, false );
-			aryLegion.push_back( spLegion );
-		}
-	}
-
-	auto spSceneParam 
-		= std::make_shared<XGAME::xSceneBattleParam>( 0,
-																									50,
-																									_T( "babarian" ),
-																									aryLegion,
-																									XGAME::xBT_NORMAL,
-																									0, -1, 0 );
-	return spSceneParam;
-		//	bs.m_spLegion[0] = spAcc->GetCurrLegion();
-// 	// 적군단 생성.
-// 	bs.m_Level = 50;
-// 	bs.m_strName = _T( "babarian" );
-// 	{
-// 		auto pPropLegion = XPropLegion::sGet()->GetpProp( "single1_enemy" );
-// 		if( pPropLegion ) {
-// 			auto spLegion = XLegion::sCreateLegionForNPC2( *pPropLegion, bs.m_Level, false );
-// 			bs.m_spLegion[1] = spLegion;
-// 		}
-// 	}
-// 	bs.m_Defense = 0;
-// 	bs.m_idEnemy = 0;
-// 	bs.m_typeBattle = XGAME::xBT_NORMAL;
-// 	XSceneBattle::sSetBattleStart( bs );
-}
-#endif // _XSINGLE
 
 #ifdef _XSINGLE
 void XSceneBattle::SaveSingle()
@@ -552,21 +379,22 @@ void XSceneBattle::CreateBattleUI()
 void XSceneBattle::CreateHeroesFace()
 {
 	// 여기서 생성되는 모든 서피스는 배치렌더용으로 생성.
-//	auto bPrevBatch = XGraphics::sSetEnableBatchLoading( true );
-	do 
-	{
+	do {
 		auto pLayerFaces = GetpLayerFaces();		// ui batch renderer layer
 		XTextureAtlas::XAutoPushObj spAuto( pLayerFaces->GetspAtlas() );
 		// 좌우 영웅리스트
 		for( int i = 0; i < 2; ++i ) {
-			auto pLegionObj = XBattleField::sGet()->GetLegionObj( i );
-			if( pLegionObj ) {
+			auto spLegionObj = XBattleField::sGet()->GetLegionObj( i );
+			if( spLegionObj ) {
 				XWnd* pWndLayer = new XWnd();
 				pWndLayer->SetstrIdentifierf( "wnd.layer.faces%d", i );
 				pLayerFaces->Add( pWndLayer );
 				XWnd* pFirst = nullptr;
 				//
-				for( auto spSquadObj : pLegionObj->GetlistSquad() ) {
+				XVector<XSPSquadObjConst> arySquads;
+				// 초상화에 필요한 부대리스트를 받아온다.
+				GetSquadObjToAry( i, spLegionObj, &arySquads );
+				for( auto spSquadObj : spLegionObj->GetlistSquad() ) {
 					auto pHero = spSquadObj->GetpHero();
 					if( pHero ) {
 						auto pWnd = new XWndFaceInBattle( spSquadObj, i + 1 );
@@ -611,6 +439,144 @@ void XSceneBattle::CreateHeroesFace()
 //	XGraphics::sSetEnableBatchLoading( bPrevBatch );
 }
 
+/** //////////////////////////////////////////////////////////////////
+ @brief 현재 게임모드에 맞춰서 초상화로 표시해야할 부대목록을 얻는다.
+*/
+void XSceneBattle::GetSquadObjToAry( int idxSide,
+																		 XSPLegionObjConst spLegionObj,
+																		 XVector<XSPSquadObjConst>* pOut )
+{
+	for( auto sp : spLegionObj->GetlistSquad() ) {
+		pOut->push_back( sp );
+	}
+}
+/** //////////////////////////////////////////////////////////////////
+ @brief 현재 부대정보를 바탕으로 초상화리스트를 다시 갱신한다.
+*/
+void XSceneBattle::UpdateHeroesFace()
+{
+	// 여기서 생성되는 모든 서피스는 배치렌더용으로 생성.
+	do {
+		auto pLayerFaces = GetpLayerFaces();		// ui batch renderer layer
+		XTextureAtlas::XAutoPushObj spAuto( pLayerFaces->GetspAtlas() );
+		// 좌우 영웅리스트
+		for( int i = 0; i < 2; ++i ) {
+			DestroyWndByIdentifierf("wnd.layer.faces%d", i );
+				auto spLegionObj = XBattleField::sGet()->GetLegionObj( i );
+			if( spLegionObj ) {
+				// 초상화 레이어 생성
+				XWnd* pWndLayer = new XWnd();
+				pWndLayer->SetstrIdentifierf( "wnd.layer.faces%d", i );
+				pLayerFaces->Add( pWndLayer );
+				// 
+				OnCreateFaces( spLegionObj, i, pWndLayer ); // virtual
+			} // if( pLegionObj ) {
+		}
+	} while (0);
+}
+
+void XSceneBattle::OnCreateFaces( XSPLegionObj spLegionObj, 
+																	int idxSide,
+																	XWnd* pWndLayer )
+{
+	// 일단 초상화 컨트롤을 모두 생성시켜서 레이어에 넣는다.
+	CreateFaceWnds( spLegionObj.get(), idxSide, pWndLayer );
+	// 15행씩 n열로 정렬
+	XVector<XVector<XWnd*>> aryFaces;
+	ArrangeAry( &aryFaces, pWndLayer );
+	// 각 FaceWnd들을 확축하고 y정렬
+	if( aryFaces.size() ) {
+		ArrangeFaces( aryFaces, pWndLayer, idxSide );
+	}
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 15개씩 배열된 초상화컨트롤을 확축을 하며 정렬한다.
+*/
+void XSceneBattle::ArrangeFaces( const XVector<XVector<XWnd*>>& aryFaces,
+																 XWnd* pWndLayer,
+																 int idxSide )
+{
+	const float dir = (idxSide == 0) ? 1.f : -1.f;
+	const XE::VEC2 vDist( 1.f, 1.f );
+	const float hDist = 2.f;	// 초상화간 간격
+	auto& aryFirstRow = aryFaces.front(); // 첫번째 열
+	const auto pFirst = aryFirstRow.front(); // 첫번째 초상화
+	const float marginTB = 0.f;	// 위아래 마진
+															// elem하나의 크기
+	const auto sizeElem = pFirst->GetSizeNoTransLayout();
+	const auto sizeSector = sizeElem + vDist;		// 간격까지 합한 크기
+	auto hList = sizeSector.h * (aryFirstRow.size() + 1);
+	auto hScene = this->GetSizeLocal().h;
+	if( hList > hScene ) {
+		XE::VEC2 vPos( 0, 0 );
+		auto scale = hScene / hList;		// 전체 높이가 씬높이보다 커서 스케일 조정.
+		if( idxSide == 1 ) {
+			vPos.x = GetSizeLocal().w - (sizeElem.w * scale);
+		}
+		for( auto& aryRow : aryFaces ) {
+			for( auto pWnd : aryRow ) {
+				pWnd->SetScaleLocal( scale );	// 모든컨트롤들의 스케일을 조정.
+				pWnd->SetPosLocal( vPos );
+				vPos.y += (sizeElem.h * scale) + vDist.h;
+			} // aryRow
+			vPos.x += ((sizeElem.w * scale) + vDist.w) * dir;
+			vPos.y = 0;
+		}
+	} else {
+		// 확축을 할 필요가 없을때.
+		for( auto& aryRow : aryFaces ) {
+			pWndLayer->AutoLayoutVCenterWithAry( aryRow, marginTB );
+		}
+	}
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief pWndLayer의 자식윈도우들을 15행 n열 배열로 정렬시킨다.
+*/
+void XSceneBattle::ArrangeAry( XVector<XVector<XWnd*>>* pOut, 
+															 XWnd* pWndLayer )
+{
+	XVector<XWnd*> aryRow;
+	int idx = 0;
+	for( auto pWnd : pWndLayer->GetlistItems() ) {
+		aryRow.push_back( pWnd );
+		if( ++idx >= 15 ) {
+			pOut->push_back( aryRow ); // 15행완성 1열 추가.
+			aryRow.clear();
+			idx = 0;
+		}
+	}
+	if( !aryRow.empty() ) {
+		pOut->push_back( aryRow );
+		aryRow.clear();
+	}
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief idxSide진영쪽 초상화 컨트롤을 모두 생성한다.
+*/
+void XSceneBattle::CreateFaceWnds( const XLegionObj* pLegionObj, 
+																	 int idxSide, XWnd* pWndLayer )
+{
+	for( const auto spSquadObj : pLegionObj->GetlistSquad() ) {
+		auto pHero = spSquadObj->GetpHero();
+		if( pHero ) {
+			auto pWnd = new XWndFaceInBattle( spSquadObj, idxSide + 1 );
+			pWnd->SetstrIdentifierf( "face.%8x", pHero->GetsnHero() );
+			pWnd->SetPosLocal( idxSide * 609, 0 );
+#if !defined(_DEBUG)
+			if( i == 0 )		// 디버깅모드일때는 제한없이 양쪽편을 다 누를 수 있음.
+#endif
+			{
+				pWnd->SetEvent( XWM_CLICKED, this, 
+												&XSceneBattle::OnTouchHeroFace, 
+												spSquadObj->GetsnSquadObj() );
+			}
+			pWndLayer->Add( pWnd );
+		}
+	}
+}
 
 #ifdef _XSINGLE
 void XSceneBattle::sSetAbilHeroes()
@@ -719,22 +685,20 @@ void XSceneBattle::Update()
 	if( pWndButt ) {
 		switch( m_mulPlay ) {
 		case 1:
-//			xSET_SHOW( pWndButt, "img.text.x1", true );
 			xSET_SHOW( pWndButt, "img.text.x2", false );
 			xSET_SHOW( pWndButt, "img.text.x4", false );
 			break;
 		case 2:
-//			xSET_SHOW( pWndButt, "img.text.x1", false );
 			xSET_SHOW( pWndButt, "img.text.x2", true );
 			xSET_SHOW( pWndButt, "img.text.x4", false );
 			break;
 		case 4:
-//			xSET_SHOW( pWndButt, "img.text.x1", false );
 			xSET_SHOW( pWndButt, "img.text.x2", false );
 			xSET_SHOW( pWndButt, "img.text.x4", true );
 			break;
 		}
 	}
+	UpdateHeroesFace();
 #ifdef _CHEAT
 	xSET_SHOW( this, "butt.debug.retry", XAPP->m_bDebugMode );
 #ifdef _XSINGLE
@@ -745,9 +709,10 @@ void XSceneBattle::Update()
 	xSET_SHOW( this, "butt.debug.allkill", XAPP->m_bDebugMode );
 	xSET_SHOW( this, "butt.debug.show.damage", XAPP->m_bDebugMode );
 	xSET_SHOW( this, "butt.debug.suicide", XAPP->m_bDebugMode );
-	GetpLayerFaces()->SetbShow( !(XAPP->m_dwNoDraw & xBD_NO_DRAW_FACES) );
+	GetpLayerFaces()->SetbShow( !XAPP->IsBitNoDraw( xBD_NO_DRAW_FACES) );
 #endif
 	XEBaseScene::Update();
+	XTRACE( "scene Updated" );
 }
 
 /**
@@ -755,8 +720,7 @@ void XSceneBattle::Update()
 */
 void XSceneBattle::OnEndSceneProcess( XSceneProcess *pProcess )
 {
-	if( pProcess->GetstrIdentifier() == "scene.process.ready" )
-	{
+	if( pProcess->GetstrIdentifier() == "scene.process.ready" )	{
 		pProcess->SetbDestroy( TRUE );
 		if( m_bFinish )
 			return;
@@ -765,16 +729,21 @@ void XSceneBattle::OnEndSceneProcess( XSceneProcess *pProcess )
 		m_pProcess->SetbTouchable( false );
 		m_pProcess->SetstrIdentifier("scene.process.battle");
 		Add( m_pProcess );
-		BOOL bRealTimer = TRUE;
-// #ifdef _DEBUG
-		bRealTimer = FALSE;	// 디버깅중엔 편의상 리얼타이머를 사용하지 않음.
-// #endif
-		m_timerPlay.Set( 60 * 2, bRealTimer );    // 제한시간 2분
+		const BOOL bRealTimer = FALSE;	// 배속기능땜에 리얼타이머를쓰지 않음.
+		int secTimeOver = GetsecTimeOver();		// virtual
+		m_timerPlay.Set( secTimeOver, bRealTimer );    // 제한시간 x분
 	} else
 	if( pProcess->GetstrIdentifier() == "scene.process.battle" )
 	{
 
 	}
+}
+/** //////////////////////////////////////////////////////////////////
+ @brief 제한시간
+*/
+int XSceneBattle::GetsecTimeOver()
+{
+	return 60 * 2;
 }
 
 // 씬이 모두 밝아지고 호출됨
@@ -1105,9 +1074,7 @@ void XSceneBattle::SendFinishBattle( XGAME::xtExitBattle ebCode,
 	XBREAK( !bitWinner );
 	XGAME::xBattleFinish battle;
 	battle.ebCode = ebCode;
-#ifndef _XSINGLE
 	battle.idSpot = m_spSceneParam->m_idSpot;
-#endif // not _XSINGLE
 //	battle.idEnemy = m_idEnemy;
 	battle.snSession = ACCOUNT->GetsnSession();
 	battle.bitWinner = bitWinner;
@@ -1333,9 +1300,9 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 		}
 
 		// 참조가 없는 모든 자원 해제
-		if( XAPP->m_dwFilter & xBIT_FLUSH_SPR )
+		if( XAPP->IsBitOption( xBO_FLUSH_SPR ) )
 			SPRMNG->DoFlushCache();
-		if( XAPP->m_dwFilter & xBIT_FLUSH_IMG )
+		if( XAPP->IsBitOption( xBO_FLUSH_IMG ) )
 			IMAGE_MNG->DoFlushCache();
 		//
 		m_aryCamp[xSI_PLAYER].m_idsLegion = "single1_player";
@@ -1345,7 +1312,7 @@ int XSceneBattle::OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 )
 				camp.CreateLegion( camp.m_idsLegion, camp.m_bitSide );
 			}
 			camp.CreateLegionObj();
-			camp.CreateSquadObj( m_pWndWorld, camp.m_bitOption );
+			camp.CreateSquadObjs( m_pWndWorld, camp.m_bitOption );
 		}
 		// 각 유닛들에게 OnStart이벤트
 		for( auto& camp : m_aryCamp ) {
@@ -1470,7 +1437,8 @@ void XSceneBattle::OnSelectSquad( const XSPSquad& spSquadSelect )
 	//
 #ifdef _XSINGLE
 	// 부대선택시 정보출력이 켜져있고 영웅정보는 콘솔에 출력도 켜져있으면 콘솔에 출력.
-	if( XAPP->m_bDebugMode && XAPP->m_bDebugViewSquadInfo && (XAPP->m_dwFilter & xBIT_HERO_INFO_CONSOLE))	{
+	if( XAPP->m_bDebugMode && XAPP->m_bDebugViewSquadInfo 
+			&& (XAPP->IsBitOption( xBO_HERO_INFO_CONSOLE)))	{
 		auto pUnit = spSquadSelect->GetspHeroUnit().get();
 		XVector<_tstring> aryStr;
 		GetSquadInfoToAry( spSquadSelect, pUnit, &aryStr );
@@ -1481,8 +1449,13 @@ void XSceneBattle::OnSelectSquad( const XSPSquad& spSquadSelect )
 #endif
 }
 
+/** //////////////////////////////////////////////////////////////////
+ @brief 부대가 전멸함.
+*/
 void XSceneBattle::OnDieSquad( XSPSquad spSquadObj )
 {
+	auto spLegionObj = spSquadObj->GetspLegionObj();
+	// 선택하고 있던 부대면 선택 취소
 	auto pButtSkill = dynamic_cast<XWndSkillButton*>( Find("butt.skill") );
 	if( pButtSkill ) {
 		if( pButtSkill->GetsnHero() == spSquadObj->GetpHero()->GetsnHero() ) {
@@ -1492,7 +1465,7 @@ void XSceneBattle::OnDieSquad( XSPSquad spSquadObj )
 #ifdef _XSINGLE
 	if( XAPP->m_bWaitAfterWin ) {
 		const auto snHero = spSquadObj->GetpHero()->GetsnHero();
-		auto idxSquad = spSquadObj->GetspLegionObj()->GetspLegion()->GetIdxSquadByHeroSN( snHero );
+		auto idxSquad = spSquadObj->GetspLegionObj()->GetspLegion()->_GetIdxSquadByHeroSN( snHero );
 		// 한 부대가 전멸하면 같은 라인의 부대를 모두 멈춘다.
 		for( auto& camp : m_aryCamp ) {
 			int idxCol = (idxSquad % 5);
@@ -1810,3 +1783,18 @@ void XSceneBattle::SetAI( bool bFlag )
 	}
 }
 #endif // _XSINGLE
+
+XSPWorldConst XSceneBattle::GetspWorld() const
+{
+	return m_pWndWorld->GetspWorld();
+}
+
+XSPWorld XSceneBattle::GetspmWorld()
+{
+	return m_pWndWorld->GetspWorldMutable();
+}
+
+void XSceneBattle::AddObj( XSPWorldObj spObj )
+{
+	GetspmWorld()->AddObj( spObj );
+}

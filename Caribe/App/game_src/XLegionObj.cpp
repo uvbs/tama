@@ -63,14 +63,12 @@ BOOL XLegionObj::CreateLegion( XWndBattleField *pWndWorld,
 								XGAME::xtLegionOption bitOption )
 {
 	XE::VEC2 vDist(166 * 1.5f,117 * 1.5f);	// 분대간 간격
-	int col = m_spLegion->GetarySquadrons().GetMax() / 5;	// 몇 라인까지 나오는가
-	int mod = m_spLegion->GetarySquadrons().GetMax() % 5;	// 
+	int col = m_spLegion->GetMaxSquadSlot() / 5;	// 몇 라인까지 나오는가
+	int mod = m_spLegion->GetMaxSquadSlot() % 5;	// 
 //	BIT bitSide = m_Camp.GetbitCamp(); // ( idxLegion == 0 ) ? XGAME::xSIDE_PLAYER : XGAME::xSIDE_OTHER;
-	for( int i = 0; i < col; ++i )
-	{
-		for( int j = 0; j < 5; ++j )
-		{
-			XSquadron *pSquad = m_spLegion->GetSquadron( i * 5 + j );
+	for( int i = 0; i < col; ++i )	{
+		for( int j = 0; j < 5; ++j )		{
+			auto pSquad = m_spLegion->GetpSquadronByidxPos( i * 5 + j );
 			bool bCreate = true;
 			if( bitOption & XGAME::xLO_NO_CREATE_DEAD ) {
 				if( pSquad && pSquad->GetpHero()->GetbLive() == false )
@@ -87,7 +85,7 @@ BOOL XLegionObj::CreateLegion( XWndBattleField *pWndWorld,
 				{
 					XBREAK( pSquad->GetnumUnit() > XGAME::MAX_UNIT_SMALL );
 					XSquadObj *pSquadObj = new XSquadObj( GetThis(), pSquad, vCurr );
-					pSquadObj->CreateSquad( pWndWorld, m_Camp );
+					pSquadObj->CreateUnitAndHero( pWndWorld, m_Camp );
 					AddSquad( XSPSquad( pSquadObj ) );
 				}
 			}
@@ -101,12 +99,12 @@ BOOL XLegionObj::CreateLegion( XWndBattleField *pWndWorld,
 		else
 			vCurr.x = vwStart.x + ( col * vDist.w );
 		vCurr.y = vwStart.y + ( j * vDist.h );
-		XSquadron *pSquad = m_spLegion->GetSquadron( col * 5 + j );
+		auto pSquad = m_spLegion->GetpSquadronByidxPos( col * 5 + j );
 		if( pSquad )
 		{
 			XSquadObj *pSquadObj = new XSquadObj( GetThis(), pSquad, vCurr );
 			XPropUnit::xPROP *pProp = PROP_UNIT->GetpProp( pSquadObj->GetpHero()->GetUnit() );
-			pSquadObj->CreateSquad( pWndWorld, m_Camp );
+			pSquadObj->CreateUnitAndHero( pWndWorld, m_Camp );
 			AddSquad( XSPSquad( pSquadObj ) );
 		}
 	}
@@ -120,7 +118,7 @@ BOOL XLegionObj::CreateLegionDebug( XWndBattleField *pWndWorld,
 {
 	vwStart.y = pWndWorld->GetspWorld()->GetvwSize().h / 2.f;
 //	BIT bitSide = m_Camp.GetbitCamp(); // ( idxLegion == 0 ) ? XGAME::xSIDE_PLAYER : XGAME::xSIDE_OTHER;
-	XSquadron *pSquad = m_spLegion->GetSquadron( 2 );
+	auto pSquad = m_spLegion->GetpSquadronByidxPos( 2 );
 #ifdef _XSINGLE
 	m_spLegion->SetpLeader( pSquad->GetpHero() );
 #endif
@@ -137,11 +135,12 @@ BOOL XLegionObj::CreateLegionDebug( XWndBattleField *pWndWorld,
 /**
  @brief 분대객체들을 만든다.
 */
-bool XLegionObj::CreateLegion2( XWndBattleField *pWndWorld, 
+bool XLegionObj::CreateSquadObjList( XWndBattleField *pWndWorld, 
 																const XE::VEC3& vwStart, 
 																xtLegionOption bitOption )
 {
-	const int maxSquad = m_spLegion->GetarySquadrons().GetMax();
+//	const int maxSquad = m_spLegion->GetarySquadrons().GetMax();
+	const int maxSquad = m_spLegion->GetMaxSquadSlot();
 	int col = maxSquad / 5;	// 몇 라인까지 나오는가
 	int mod = maxSquad % 5;	// 마지막 짜투리 부대수
 	for( int i = 0; i < col; ++i ) {
@@ -165,27 +164,67 @@ bool XLegionObj::CreateLegion2( XWndBattleField *pWndWorld,
 XSPSquad XLegionObj::CreateSquadObj( int col, int row
 																		, const XE::VEC3& vwBase
 																		, xtLegionOption bitOption
-																		, XWndBattleField* pWndWorld )
+																		, XWndBattleField* pWndWorld ) const
 {
 	if( !m_spLegion )
 		return nullptr;
-	const auto pSquad = m_spLegion->GetSquadron( col * 5 + row );
+	auto pSquad = m_spLegion->GetpmSquadronByidxPos( col * 5 + row );
 	if( !pSquad )
 		return nullptr;
-	const float sideSign = ( IsPlayer() ) ? -1.f : 1.f;
+	const float sideSign = (IsPlayer()) ? -1.f : 1.f;
 	const XE::VEC2 vDist( 166 * 1.5f, 117 * 1.5f );	// 분대간 간격
-	//
+	XE::VEC3 vCurr;
+	vCurr.x = vwBase.x + ((col * vDist.w) * sideSign);
+	vCurr.y = vwBase.y + (row * vDist.h);
+	return sCreateSquadObj( shared_from_this(), pSquad, vCurr, bitOption, pWndWorld );
+	// 	if( !m_spLegion )
+// 		return nullptr;
+// 	const auto pSquad = m_spLegion->GetpSquadronByidxPos( col * 5 + row );
+// 	if( !pSquad )
+// 		return nullptr;
+// 	const float sideSign = ( IsPlayer() ) ? -1.f : 1.f;
+// 	const XE::VEC2 vDist( 166 * 1.5f, 117 * 1.5f );	// 분대간 간격
+// 	//
+// 	if( bitOption & XGAME::xLO_NO_CREATE_DEAD ) {
+// 		// 죽은부대는 생성하지 않는 옵션이면 부대생성하지 않음.
+// 		if( pSquad->GetpHero()->GetbLive() == false )
+// 			return nullptr;
+// 	}
+// 	XE::VEC3 vCurr;
+// 	vCurr.x = vwBase.x + ( ( col * vDist.w ) * sideSign );
+// 	vCurr.y = vwBase.y + ( row * vDist.h );
+// 	XBREAK( pSquad->GetnumUnit() > XGAME::MAX_UNIT_SMALL );
+// 	auto spSquadObj = std::make_shared<XSquadObj>( GetThis(), 
+// 																								 pSquad, 
+// 																								 vCurr );
+// 	spSquadObj->CreateUnitAndHero( pWndWorld, m_Camp );
+// 	return spSquadObj;
+}
+
+XSPSquad XLegionObj::sCreateSquadObj( XSPLegionObjConst spLegionObj,
+																			XSquadron* pSquad,
+																			const XE::VEC3& vwPos,
+																			xtLegionOption bitOption,
+																			XWndBattleField* pWndWorld )
+{
+	XBREAK( pSquad == nullptr );
+//	const float sideSign = (IsPlayer()) ? -1.f : 1.f;
+//	const XE::VEC2 vDist( 166 * 1.5f, 117 * 1.5f );	// 분대간 간격
+																									//
 	if( bitOption & XGAME::xLO_NO_CREATE_DEAD ) {
 		// 죽은부대는 생성하지 않는 옵션이면 부대생성하지 않음.
 		if( pSquad->GetpHero()->GetbLive() == false )
 			return nullptr;
 	}
-	XE::VEC3 vCurr;
-	vCurr.x = vwBase.x + ( ( col * vDist.w ) * sideSign );
-	vCurr.y = vwBase.y + ( row * vDist.h );
+// 	XE::VEC3 vCurr;
+// 	vCurr.x = vwBase.x + ((col * vDist.w) * sideSign);
+// 	vCurr.y = vwBase.y + (row * vDist.h);
 	XBREAK( pSquad->GetnumUnit() > XGAME::MAX_UNIT_SMALL );
-	auto spSquadObj = std::make_shared<XSquadObj>( GetThis(), pSquad, vCurr );
-	spSquadObj->CreateSquad( pWndWorld, m_Camp );
+	auto spSquadObj = std::make_shared<XSquadObj>( std::const_pointer_cast<XLegionObj>( spLegionObj ),
+																								 pSquad,
+																								 vwPos );
+	const auto& camp = spLegionObj->GetCamp();
+	spSquadObj->CreateUnitAndHero( pWndWorld, camp );
 	return spSquadObj;
 }
 
@@ -528,7 +567,7 @@ XSPSquad XLegionObj::GetSquadBySN( ID snSquad )
 
 XSPSquad XLegionObj::GetspSquadObjByIdx( int idx )
 {
-	auto pSquad = m_spLegion->GetpSquadronByIdx( idx );
+	auto pSquad = m_spLegion->GetpSquadronByidxPos( idx );
 	if( !pSquad )
 		return nullptr;
 	for( auto spSquadObj : m_listSquad ) {

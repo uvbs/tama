@@ -209,8 +209,8 @@ int XUnitHero::DoSkillMotion( void )
 			v.z -= 85.f;
 			XCOLOR col = (IsPlayer())? XCOLOR_WHITE : XCOLOR_RED;
 			_tstring str = XFORMAT( "%s!", pDat->GetSkillName() );
-			auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
-			AddObj( pObjText );
+// 			auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
+// 			AddObj( pObjText );
 		}
 		if( IsPlayer() )
 			m_bYell = false;
@@ -336,8 +336,8 @@ bool XUnitHero::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
 		if( XASSERT(pNode) )	{
 			_tstring str = XFORMAT( "%s!", XTEXT( pNode->idName ) );
 			XCOLOR col = ( IsPlayer() ) ? XCOLOR_WHITE : XCOLOR_RED;
-			auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
-			AddObj( pObjText );
+// 			auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
+// 			AddObj( pObjText );
 		}
 	}
 	return XBaseUnit::OnEventApplyInvokeEffect( pCaster, pBuffObj, pSkillDat, pEffect, level );

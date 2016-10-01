@@ -167,16 +167,6 @@ inline void SafeRelease( Interface **ppInterfaceToRelease ) {
 #define SET_BOOL_ACCESSOR( y )       inline void Set##y( bool flag ) { m_##y = flag; } inline bool Toggle##y() { m_##y = !m_##y; return m_##y; }
 #define GET_SET_BOOL_ACCESSOR( y )   SET_BOOL_ACCESSOR( y ) GET_BOOL_ACCESSOR( y )
 
-/**
- ex: GET_SET_TSTRING_ACCESSOR( strName );
- 는 아래와 같다.
- LPCTSTR GetstrName( void ) {
-	return m_strName.c_str();
- }
- void SetstrName( LPCTSTR strName ) {
-	m_strName = strName;
- }
-*/
 #define SET_TSTRING_ACCESSOR( y )	inline void Set##y( LPCTSTR t ) { m_##y = t; };\
 																	inline void Set##y( const _tstring& t ) { m_##y = t; };
 #define GET_TSTRING_ACCESSOR( y )	inline LPCTSTR Get##y() const { return m_##y.c_str(); };\
@@ -191,10 +181,23 @@ inline void SafeRelease( Interface **ppInterfaceToRelease ) {
 #endif
 #define GET_SET_STRING_ACCESSOR( y )   SET_STRING_ACCESSOR( y ) GET_STRING_ACCESSOR( y )
 #define GET_SET_TSTRING_ACCESSOR( y )   SET_TSTRING_ACCESSOR( y ) GET_TSTRING_ACCESSOR( y )
-
-
 // 초기화때 이외에는 이 변수에 대해 읽기만 한다는걸 보장한다.
 #define GET_READONLY_ACCESSOR( x, y )       inline x Get##y() const           { return m_##y; };
+
+#define GET_BIT_ACCESSOR( y )	\
+	bool IsBit##y( DWORD dwBit ) const { \
+		return (m_dw##y & dwBit) != 0; \
+	}
+
+#define SET_BIT_ACCESSOR( y ) \
+	void ClearBit##y( DWORD dwBit ) { \
+		m_dw##y &= ~dwBit; \
+	} \
+	void SetBit##y( DWORD dwBit ) { \
+		m_dw##y |= dwBit; \
+	}
+
+#define GET_SET_BIT_ACCESSOR( y )		GET_BIT_ACCESSOR( y )		SET_BIT_ACCESSOR( y )
 
 #define IS_FLOAT_SAME(F,F2)	( ((F2)-0.01f) < (F) && ((F2)+0.01f) > (F) )
 #define ROUND_OFF(F)		(((F)>0)? (float)((int)((F)+0.5f)) : (float)((int)((F)-0.5f)))	// 소숫점아래 반올림. 반올림맞는거 같은데 왜 '버림'이라고 했지?

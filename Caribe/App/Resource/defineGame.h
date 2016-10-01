@@ -321,13 +321,22 @@ namespace XGAME
 	// ¿µ¿õ ÀÔ¼ö¹æ¹ý
 	enum xtGet {
 		xGET_NONE,
-		xGET_GATHA,
-		xGET_QUEST,
-		xGET_GUILD_RAID,
-		xGET_MEDAL_SPOT,
-		xGET_EVENT,
+		xGET_GATHA				= 0x001,
+		xGET_QUEST				= 0x002,
+		xGET_GUILD_RAID		= 0x004,
+		xGET_MEDAL_SPOT		= 0x008,
+		xGET_EVENT				= 0x010,
 		xGET_MAX,
 	};
+// 	enum xtGetBit {
+// 		xGB_NONE = 0,
+// 		xGB_GATHA				= 0x001,
+// 		xGB_QUEST				= 0x002,
+// 		xGB_GUILD_RAID	= 0x004,
+// 		xGB_MEDAL_SPOT	= 0x008,
+// 		xGB_EVENT				= 0x010,
+// 		xGB_MAX,
+// 	};
 	// ½ºÆÌ Å¸ÀÔ
 	enum xtSpot {
 		xSPOT_NONE,

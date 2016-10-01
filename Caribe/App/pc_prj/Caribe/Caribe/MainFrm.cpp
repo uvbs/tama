@@ -2565,13 +2565,13 @@ void CMainFrame::OnUpdateOnViewDamageLogging( CCmdUI *pCmdUI )
 void CMainFrame::OnBattleOption()
 {
 	CDlgBattleOption dlg;
-	if( XAPP->m_dwFilter & xBIT_PLAYER_HERO )
+	if( XAPP->IsBitFilter( xBIT_PLAYER_HERO ) )
 		dlg.m_bCheckPlayerHero = TRUE;
-	if( XAPP->m_dwFilter & xBIT_PLAYER_UNIT )
+	if( XAPP->IsBitFilter( xBIT_PLAYER_UNIT ) )
 		dlg.m_bCheckPlayerUnit = TRUE;
-	if( XAPP->m_dwFilter & xBIT_ENEMY_HERO )
+	if( XAPP->IsBitFilter( xBIT_ENEMY_HERO ) )
 		dlg.m_bCheckEnemyHero = TRUE;
-	if( XAPP->m_dwFilter & xBIT_ENEMY_UNIT )
+	if( XAPP->IsBitFilter( xBIT_ENEMY_UNIT ) )
 		dlg.m_bCheckEnemyUnit = TRUE;
 // 	if( XAPP->m_dwFilter & xBIT_HERO_INFO_CONSOLE )
 // 		dlg.m_bHeroInfoToConsole = TRUE;
@@ -2584,14 +2584,14 @@ void CMainFrame::OnBattleOption()
 		// noDraw
 		DWORD bit = 0x01;
 		for( int i = 0; i < 32; ++i ) {
-			if( XAPP->m_dwNoDraw & bit )
+			if( XAPP->IsBitNoDraw( bit ) )
 				dlg.m_bNoDraw[i] = TRUE;
 			bit <<= 1;
 		}
 		// option
 		bit = 0x01;
 		for( int i = 0; i < 32; ++i ) {
-			if( XAPP->m_dwOption & bit )
+			if( XAPP->IsBitOption( bit ) )
 				dlg.m_bOption[i] = TRUE;
 			bit <<= 1;
 		}
@@ -2600,43 +2600,37 @@ void CMainFrame::OnBattleOption()
 	//
 	if( dlg.DoModal() ) {
 		// dwFilter
-		if( dlg.m_bCheckPlayerHero )	XAPP->m_dwFilter |= xBIT_PLAYER_HERO;
-		else													XAPP->m_dwFilter &= ~xBIT_PLAYER_HERO;
-		if( dlg.m_bCheckPlayerUnit )	XAPP->m_dwFilter |= xBIT_PLAYER_UNIT;
-		else													XAPP->m_dwFilter &= ~xBIT_PLAYER_UNIT;
-		if( dlg.m_bCheckEnemyHero )		XAPP->m_dwFilter |= xBIT_ENEMY_HERO;
-		else													XAPP->m_dwFilter &= ~xBIT_ENEMY_HERO;
-		if( dlg.m_bCheckEnemyUnit )		XAPP->m_dwFilter |= xBIT_ENEMY_UNIT;
-		else													XAPP->m_dwFilter &= ~xBIT_ENEMY_UNIT;
-// 		if( dlg.m_bHeroInfoToConsole )	XAPP->m_dwFilter |= xBIT_HERO_INFO_CONSOLE;
-// 		else														XAPP->m_dwFilter &= ~xBIT_HERO_INFO_CONSOLE;
-// 		if( dlg.m_bCheckFlushImg )	XAPP->m_dwFilter |= xBIT_FLUSH_IMG;
-// 		else												XAPP->m_dwFilter &= ~xBIT_FLUSH_IMG;
-// 		if( dlg.m_bCheckFlushSpr )	XAPP->m_dwFilter |= xBIT_FLUSH_SPR;
-// 		else												XAPP->m_dwFilter &= ~xBIT_FLUSH_SPR;
+		if( dlg.m_bCheckPlayerHero )	XAPP->SetBitFilter(xBIT_PLAYER_HERO);
+		else													XAPP->ClearBitFilter( xBIT_PLAYER_HERO );
+		if( dlg.m_bCheckPlayerUnit )	XAPP->SetBitFilter( xBIT_PLAYER_UNIT );
+		else													XAPP->ClearBitFilter( xBIT_PLAYER_UNIT );
+		if( dlg.m_bCheckEnemyHero )		XAPP->SetBitFilter( xBIT_ENEMY_HERO );
+		else													XAPP->ClearBitFilter( xBIT_ENEMY_HERO );
+		if( dlg.m_bCheckEnemyUnit )		XAPP->SetBitFilter( xBIT_ENEMY_UNIT );
+		else													XAPP->ClearBitFilter( xBIT_ENEMY_UNIT );
 		// noDraw
 		DWORD 
 		bit = 0x01;
 		for( int i = 0; i < 32; ++i ) {
 			if( dlg.m_bNoDraw[i] )
-				XAPP->m_dwNoDraw |= bit;
+				XAPP->SetBitNoDraw( bit );
 			else
-				XAPP->m_dwNoDraw &= ~bit;
+				XAPP->ClearBitNoDraw( bit );
 			bit <<= 1;
 		}
 		bit = 0x01;
 		for( int i = 0; i < 32; ++i ) {
 			if( dlg.m_bOption[i] )
-				XAPP->m_dwOption |= bit;
+				XAPP->SetBitOption( bit );
 			else
-				XAPP->m_dwOption &= ~bit;
+				XAPP->ClearBitOption( bit );
 			bit <<= 1;
 		}
 		XObjDmgNum::s_strFont = (LPCTSTR)dlg.m_strFontDmg;
 		//
 #ifdef _XSINGLE
 		if( SCENE_BATTLE ) {
-			SCENE_BATTLE->SetAI( !(XAPP->m_dwOption & xBIT_STOP_AI) );
+			SCENE_BATTLE->SetAI( !XAPP->IsBitOption( xBO_STOP_AI ) );
 		}
 #endif // 
 
@@ -2780,27 +2774,27 @@ void CMainFrame::OnGotoTestScene()
 void CMainFrame::OnHideHpbar()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	if( XAPP->m_dwNoDraw & xBD_HIDE_HPBAR )
-		XAPP->m_dwNoDraw &= ~xBD_HIDE_HPBAR;
+	if( XAPP->IsBitNoDraw( xBD_HIDE_HPBAR ) )
+		XAPP->ClearBitNoDraw( xBD_HIDE_HPBAR );
 	else
-		XAPP->m_dwNoDraw |= xBD_HIDE_HPBAR;
+		XAPP->SetBitNoDraw(xBD_HIDE_HPBAR);
 }
 void CMainFrame::OnUpdateHideHpbar( CCmdUI *pCmdUI )
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	pCmdUI->SetCheck( (XAPP->m_dwNoDraw & xBD_HIDE_HPBAR) != 0 );
+	pCmdUI->SetCheck( (XAPP->IsBitNoDraw(xBD_HIDE_HPBAR)) != 0 );
 }
 
 void CMainFrame::OnHideName()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	if( XAPP->m_dwNoDraw & xBD_HIDE_NAME )
-		XAPP->m_dwNoDraw &= ~xBD_HIDE_NAME;
+	if( XAPP->IsBitNoDraw(xBD_HIDE_NAME) )
+		XAPP->ClearBitNoDraw(xBD_HIDE_NAME);
 	else
-		XAPP->m_dwNoDraw |= xBD_HIDE_NAME;
+		XAPP->SetBitNoDraw(xBD_HIDE_NAME);
 }
 void CMainFrame::OnUpdateHideName( CCmdUI *pCmdUI )
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	pCmdUI->SetCheck( (XAPP->m_dwNoDraw & xBD_HIDE_NAME) != 0 );
+	pCmdUI->SetCheck( (XAPP->IsBitNoDraw(xBD_HIDE_NAME)) != 0 );
 }

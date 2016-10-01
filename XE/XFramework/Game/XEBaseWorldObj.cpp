@@ -28,8 +28,9 @@ XEBaseWorldObj::XEBaseWorldObj( XEWndWorld *pWndWorld,
 																bool bZBuff )
 {
 	Init(); 
+	const _tstring strImg = szImg;
 	m_Type = type;
-	LoadImage( szImg );
+	LoadImage( strImg.c_str() );
 	m_vwPos = vPos;
 	m_pWndWorld = pWndWorld;
 //	m_bZBuff = bBatch;		// 배치모드면 무조건 zbuff를 써야 찍기우선순위가 해결됨.

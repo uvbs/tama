@@ -27,6 +27,7 @@ class XAdjParam;
 class XHero : public XDelegateLevel
 {
 public:
+	static XPropHero* sGet() { return PROP_HERO; }
 	static int sSerialize( XArchive& ar, XHero *pHero );
 	static XHero* sCreateDeSerialize( XArchive& ar, XSPAcc spAcc );
 	static int sGetMaxExpWithLevel( XGAME::xtTrain type, int level );

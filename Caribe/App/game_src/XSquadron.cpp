@@ -105,7 +105,7 @@ BOOL XSquadron::DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion )
 	if( isHero == 11 )
 	{
 		int verHero = 0;
-		ar >> b0;	m_bCreateHero = b0;
+		ar >> b0;	m_bCreateHero = xbyteToBool(b0);
 		ar >> b0;	verHero = b0;
 		ar >> b0;	//m_bResourceSquad = xbyteToBool(b0);
 		XBREAK( spAcc && m_bCreateHero == TRUE );	// 계정이 있는데 NPC플랙인경우
@@ -192,7 +192,7 @@ BOOL XSquadron::DeSerializeFull( XArchive& ar, int verLegion )
 		XBREAK( m_mulHp == 0.f );
 	}
 	RESTORE_VERIFY_CHECKSUM( ar );
-	m_bCreateHero = TRUE;
+	m_bCreateHero = true;
 	return TRUE;
 }
 

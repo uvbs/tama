@@ -1,4 +1,33 @@
-﻿#pragma once
+﻿/**
+@file     hello.c
+@brief    hello world  소스파일.
+
+파일여러줄 설명입니다.\n
+진짜 여러줄 입니다.\n
+음..하나.둘.셋
+넷다섯.
+*/
+
+/**
+@mainpage Hello World 메인페이지
+@section intro 소개
+- 소개      :   프로그램의 기본을 배울수있는 프로그램.
+@section   Program 프로그램명
+- 프로그램명  :   Hello World 프로그램.
+- 프로그램내용    :   화면에 Hello World!을 출력한다.
+@section  INOUTPUT    입출력자료
+- INPUT           :   없음.
+- OUTPUT      :   Hello World 화면출력.
+@section  CREATEINFO      작성정보
+- 작성자      :   infiniterun
+- 작성일      :   2005/04/18
+@section  MODIFYINFO      수정정보
+- 수정자/수정일   : 수정내역
+- infiniterun/2005.0418    :   "Helo World"에 "!"추가
+*/
+
+
+#pragma once
 #include "tinyxml/tinyxml.h"
 #include "XBaseFontDat.h"
 #include "XBaseDelegate.h"
@@ -27,6 +56,7 @@ class XWndList;
 //////////////////////////////////////////////////////////////////////////
 /**
  커스텀 컨트롤을 위해 XLayout을 상속받는 현 방식은 최초 레이아웃 객체 생성시에
+ ====================================================================
  항상 상속받은 객체를 수동으로 생성시켜야 한다는 단점이 있다.
  메인 레이아웃은 싱글톤 형태로 수동으로 생성시키고 커스텀 컨트롤은 델리게이트
  형태로 생성시키는게 좀더 편할듯 하다.

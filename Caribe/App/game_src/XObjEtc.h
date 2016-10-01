@@ -503,6 +503,8 @@ private:
 	int m_State = 0;
 	XCOLOR m_Col = 0;
 	XSurface *m_psfcBg = nullptr;
+	float m_secLife = 4.f;		// 떠오르는 시간 디폴트
+	XE::VEC2 m_vInDraw;						// 화면밖으로 벗어나도 무조건 안쪽에 찍히게 할때 그 경계의 좌우 좌표. 마이너스값이면 작동하지 않는다.
 	void Init() {
 	}
 	void Destroy();
@@ -514,7 +516,11 @@ public:
 								XCOLOR col );
 	~XObjYellSkill() { Destroy(); }
 	//
-	GET_SET_ACCESSOR( XCOLOR, Col );
+	GET_SET_ACCESSOR_CONST( XCOLOR, Col );
+	GET_SET_ACCESSOR_CONST( const XE::VEC3&, vDelta );
+	GET_SET_ACCESSOR_CONST( float, secLife );
+	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vInDraw );
+
 	//
 	void Release() override {
 		m_spOwner.reset();

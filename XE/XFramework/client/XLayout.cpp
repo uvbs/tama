@@ -36,16 +36,8 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-XLayout* XLayout::s_pMain = nullptr;		// 메인 레이아웃. 
-XDelegateLayout* XLayout::s_pDelegateMain = nullptr;
-
-// XWndList* xGET_LIST_CTRL( XWnd *pRoot, const char *cKey ) {
-// 	XBREAK( pRoot == nullptr );
-// 	XWnd *pWnd = pRoot->Find( cKey );
-// 	if( pWnd == nullptr )
-// 		return nullptr;
-// 	return SafeCast<XWndList*>( pWnd );
-// }
+XLayout* XLayout::s_pMain = nullptr;		/** 메인 레이아웃. */
+XDelegateLayout* XLayout::s_pDelegateMain = nullptr;	/** 델리게이터 */
 
 XWndView* XDelegateLayout::DelegateLayoutCreateViewCtrl( const XWnd* pParent, const XLayout::xATTR_ALL& attr ) const
 {

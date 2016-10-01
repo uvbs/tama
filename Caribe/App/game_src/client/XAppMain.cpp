@@ -9,6 +9,7 @@
 #include "client/XCheatOption.h"
 #include "client/XAppMain.h"
 #include "XAccount.h"
+#include "XAsyncMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -502,3 +503,9 @@ bool XAppMain::RequestCheatAuth()
 	return false;
 }
 
+void XAppMain::FrameMove()
+{
+	XClientMain::FrameMove();
+	//
+	XAsyncMng::sGet()->Process();
+}

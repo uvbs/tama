@@ -58,7 +58,7 @@ public:
 	XStatistic* GetpStatObj() const {
 		return const_cast<XStatistic*>( m_pStatObj );
 	}
-	GET_ACCESSOR( XList4<XSPSquad>&, listSquad );
+	GET_ACCESSOR_CONST( const XList4<XSPSquad>&, listSquad );
   GET_SET_ACCESSOR( float, Def );
 	XHero* GetpLeader();
 	BOOL IsPlayer() const {
@@ -115,8 +115,16 @@ public:
 	int SerializeForGuildRaid( XArchive& ar );
 	void DrawSquadsBar( const XE::VEC2& vPos );
 	void GetArySquadByResource( XVector<XSPSquad>* pOut );
-	XSPSquad CreateSquadObj( int i, int j, const XE::VEC3& vwBase, XGAME::xtLegionOption bitOption, XWndBattleField* pWndWorld );
-	bool CreateLegion2( XWndBattleField *pWndWorld, const XE::VEC3& vwStart, XGAME::xtLegionOption bitOption );
+	XSPSquad CreateSquadObj( int i, int j, 
+													 const XE::VEC3& vwBase, 
+													 XGAME::xtLegionOption bitOption, 
+													 XWndBattleField* pWndWorld ) const;
+	static XSPSquad sCreateSquadObj( XSPLegionObjConst spLegionObj,
+																	 XSquadron* pSquad,
+																	 const XE::VEC3& vwPos,
+																	 XGAME::xtLegionOption bitOption,
+																	 XWndBattleField* pWndWorld );
+	bool CreateSquadObjList( XWndBattleField *pWndWorld, const XE::VEC3& vwStart, XGAME::xtLegionOption bitOption );
 	XSPSquad GetspSquadObjByIdx( int idx );
 	inline XSPSquad GetspSquadObjBySN( ID snSquad ) {
 		return GetSquadBySN( snSquad );

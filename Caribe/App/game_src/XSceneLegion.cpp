@@ -83,11 +83,11 @@ XSceneLegion::XSceneLegion( XGame *pGame )
 				v.x = vStart.x + -98.f * i;
 				v.y = vStart.y + 57.f * k;
 				int idx = ( i * 5 + k );
-				XSquadron *pSquad = m_pLegion->GetSquadron( idx );
+				auto pSquad = m_pLegion->GetpSquadronByidxPos( idx );
 				XHero *pHero = NULL;
 				if( pSquad )
 					pHero = pSquad->GetpHero();
-				XWndSquadInLegion *pWnd = new XWndSquadInLegion( pHero, v, m_pLegion );
+				auto pWnd = new XWndSquadInLegion( pHero, v, m_pLegion );
 				ID idWnd = 100 + idx;
 				pWnd->SetEvent( XWM_CLICKED, this, &XSceneLegion::OnClickSquad, idWnd );
 				pWnd->SetEvent( XWM_DROP, this, &XSceneLegion::OnDropSquad );
@@ -370,13 +370,13 @@ void XSceneLegion::CreateSquadToLegion( XHero *pHeroNew, XLegion *pLegion, int i
 	m_pHeroList->DelItem( pHeroNew->GetsnHero() );
 	// 부대객체를 생성한다.
 	XSquadron *pSq = new XSquadron( pHeroNew );
-	pLegion->SetSquadron(idxSlot, pSq, FALSE);
+	pLegion->AddSquadron(idxSlot, pSq, FALSE);
 }
 
 void XSceneLegion::MoveSquadInLegion( int idxSrc, int idxDst, ID snHeroSrc, ID snHeroDst )
 {
 	if (idxDst == -1)
-		m_pLegion->RemoveSquad(snHeroSrc);
+		m_pLegion->DestroySquadBysnHero(snHeroSrc);
 	else
 		m_pLegion->SwapSlotSquad(idxSrc, idxDst);
 
@@ -445,15 +445,14 @@ void XSceneLegion::CopyLegionObj()
 	XLegion *pLegion = ACCOUNT->GetCurrLegion().get();
 	m_pLegion = new XLegion;
 	m_pLegion->SetgradeLegion( pLegion->GetgradeLegion() );
-	for (int i = 0; i < pLegion->GetarySquadrons().GetMax(); i++)
-	{
-		if (pLegion->GetarySquadrons()[i])
-		{
-			XSquadron *pSq = new XSquadron(*pLegion->GetarySquadrons()[i]);
-			m_pLegion->SetSquadron(i, pSq, FALSE);
-			if (pLegion->GetpLeader() && pLegion->GetpLeader()->GetsnHero() == pSq->GetpHero()->GetsnHero())
-				m_pLegion->SetpLeader(pSq->GetpHero());
-		}
+// 	for( int i = 0; i < pLegion->GetMaxSquadSlot(); i++ ) {
+// 		if( pLegion->GetpSquadronByidxPos(i) ) {
+	for( auto pSqSrc : pLegion->GetlistSquadrons() ) {
+			auto pSq = new XSquadron( *pSqSrc );
+			m_pLegion->AddSquadron( pSqSrc->GetidxPos(), pSq, false );
+			if( pLegion->GetpLeader() 
+					&& pLegion->GetpLeader()->GetsnHero() == pSq->GetpHero()->GetsnHero() )
+				m_pLegion->SetpLeader( pSq->GetpHero() );
 	}
 }
 

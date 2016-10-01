@@ -183,7 +183,7 @@ public:
 	}
 	//
 	void SetAI( BOOL bFlag );
-	BOOL CreateSquad( XWndBattleField *pWndWorld, const XECompCamp& camp );
+	BOOL CreateUnitAndHero( XWndBattleField *pWndWorld, const XECompCamp& camp );
 #ifdef _CHEAT
 	BOOL CreateSquadsDebug( XWndBattleField *pWndWorld, XECompCamp& camp );
 #endif // _DEBUG

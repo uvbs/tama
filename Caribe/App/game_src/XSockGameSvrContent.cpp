@@ -440,10 +440,8 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 	aryLegion[1] = pBaseSpot->GetspLegion();
 	auto spSceneParam 
 		= std::make_shared<XGAME::xSceneBattleParam>( idAccEnemy,
-#ifndef _XSINGLE
 																									info.m_typeSpot,
 																									info.m_idSpot,
-#endif // not _XSINGLE
 																									info.m_Level,
 																									info.m_strName,
 																									aryLegion,
@@ -676,10 +674,8 @@ void XSockGameSvr::RecvJewelBattleInfo( XPacket& p, const xCALLBACK& c )
 				aryLegion.push_back( ACCOUNT->GetCurrLegion() );
 				aryLegion.push_back( spLegion );
 				auto spParam = std::make_shared<XGAME::xSceneBattleParam>( pJewel->GetidOwner(),
-#ifndef _XSINGLE
 																																	pJewel->GettypeSpot(),
 																																	pJewel->GetidSpot(),
-#endif // not _XSINGLE
 																																	pJewel->GetLevel(),
 																																	pJewel->GetstrName(),
 																																	aryLegion,
@@ -1210,10 +1206,8 @@ void XSockGameSvr::RecvMandrakeLegionResult( XPacket& p, const xCALLBACK& c )
 					aryLegion.push_back( ACCOUNT->GetCurrLegion() );
 					aryLegion.push_back( spLegion );
 					auto spParam = std::make_shared<XGAME::xSceneBattleParam>( idEnemy,
-#ifndef _XSINGLE
 																																		 pSpot->GettypeSpot(),
 																																		 pSpot->GetidSpot(),
-#endif // not _XSINGLE
 																																		 level,
 																																		 strName,
 																																		 aryLegion,
@@ -1589,7 +1583,7 @@ void XSockGameSvr::RecvNewSquad( XPacket& p, const xCALLBACK& c )
 		//SCENE_LEGION->CreateSquadToLegion( pHero, pLegion, idxSlot );
 	}
 	XSquadron *pSq = new XSquadron( pHero );
-	pLegion->SetSquadron( idxSlot, pSq, FALSE );
+	pLegion->AddSquadron( idxSlot, pSq, FALSE );
 }
 
 /**
@@ -1638,7 +1632,7 @@ void XSockGameSvr::RecvMoveSquad( XPacket& p, const xCALLBACK& c )
 		return;
 	
 	if( idxDst == -1 )
-		pLegion->RemoveSquad( snHeroSrc );
+		pLegion->DestroySquadBysnHero( snHeroSrc );
 	else
 	{
 		// swap
@@ -3319,33 +3313,25 @@ BOOL XSockGameSvr::SendReqChangeSquad(XWnd *pTimeoutCallback, int idx, XLegion *
 {
 	if(pLegion == nullptr)
 		return false;
-	int size = 0;
 	XPacket ar((ID)xCL2GS_LOBBY_CHANGE_SQUAD);
 	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
 	ID idKey =
 		AddResponse(ar.GetidPacket(),
 		&XSockGameSvr::RecvChangeSquad, pTimeoutCallback);
 
-	auto& arySquad = pLegion->GetarySquadrons();
+//	auto& arySquad = pLegion->GetarySquadrons();
 	ar << idx;
-	//ar << arySquad
-	// size를 먼저 넣기 위해 2번돌음..
-	for (int i = 0; i < arySquad.GetMax(); i++) {
-		if (arySquad[i])
-			size++;
-	}
+	const int size = pLegion->GetNumSquadrons();
 	ar << size;
 	if (pLegion->GetpLeader())
-		ar << (ID)pLegion->GetpLeader()->GetsnHero();
+		ar << pLegion->GetpLeader()->GetsnHero();
 	else
 		ar << 0;
-	for (int i = 0; i < arySquad.GetMax(); i++) {
-		if (arySquad[i]){
-			ar << i;	//슬롯
-			//부대의 영웅이 계정에 없는 영웅일수는 없다
-			XBREAK(ACCOUNT->GetHero(arySquad[i]->GetpHero()->GetsnHero()) == nullptr);
-			ar << (ID)arySquad[i]->GetpHero()->GetsnHero();
-		}
+	for( auto pSq : pLegion->GetlistSquadrons() ) {
+		ar << pSq->GetidxPos();	//슬롯
+		//부대의 영웅이 계정에 없는 영웅일수는 없다
+		XBREAK(ACCOUNT->GetHero(pSq->GetpHero()->GetsnHero()) == nullptr);
+		ar << pSq->GetpHero()->GetsnHero();
 	}
 	//pLegion->Serialize(ar);
 	Send(ar);
@@ -3358,8 +3344,7 @@ void XSockGameSvr::RecvChangeSquad(XPacket& p, const xCALLBACK& c)
 	ID snHero, snLeader;
 
 	p >> success;
-	if (success == 0)
-	{
+	if (success == 0)	{
 		if (SCENE_LEGION)
 			SCENE_LEGION->RecvChangeSquad(success);
 		return;
@@ -3369,20 +3354,16 @@ void XSockGameSvr::RecvChangeSquad(XPacket& p, const xCALLBACK& c)
 	p >> size;
 	p >> snLeader;
 
-	for (int i = 0; i < XGAME::MAX_SQUAD; i++)
-	{
-		ACCOUNT->GetCurrLegion()->RemoveSquad(i);
+	for (int i = 0; i < XGAME::MAX_SQUAD; i++)	{
+		ACCOUNT->GetCurrLegion()->DestroySquadByIdxPos(i);
 	}
 
-	for (int i = 0; i < size; i++)
-	{
+	for (int i = 0; i < size; i++)	{
 		p >> slot;
 		p >> snHero;
-
 		XBREAK(ACCOUNT->GetHero(snHero) == nullptr);
-
-		XSquadron *pSq = new XSquadron(ACCOUNT->GetHero(snHero));
-		ACCOUNT->GetCurrLegion()->SetSquadron(slot, pSq, FALSE);
+		auto pSq = new XSquadron(ACCOUNT->GetHero(snHero));
+		ACCOUNT->GetCurrLegion()->AddSquadron(slot, pSq, false);
 
 		if (pSq->GetpHero()->GetsnHero() == snLeader)
 			ACCOUNT->GetCurrLegion()->SetpLeader(pSq->GetpHero());

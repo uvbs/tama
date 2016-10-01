@@ -36,6 +36,7 @@
 #include "XSceneWorld.h"
 #include "XSceneTitle.h"
 #include "XSceneBattle.h"
+#include "XScenePrivateRaid.h"
 #include "XSceneUnitOrg.h"
 #include "XSceneShop.h"
 #include "XSceneHero.h"
@@ -439,14 +440,14 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, XSPS
 	XSceneBase *pScene = nullptr;
 	GAME->ClearBrilliant();
 	switch( idScene )	{
-	case XGAME::xSC_START:
+	case XGAME::xSC_START: {
 		XAccount::sGetPlayer().reset();
 #ifdef _XSINGLE
 #ifdef _XTEST
 //		pSceneMng->SetidNextScene( XGAME::xSC_INGAME );
 		pSceneMng->SetidNextScene( XGAME::xSC_TEST );
 #else
- 		pSceneMng->SetidNextScene( XGAME::xSC_INGAME );
+		pSceneMng->SetidNextScene( XGAME::xSC_INGAME );
 #endif // _XTEST
 #else
 #ifdef _XPATCH
@@ -455,7 +456,7 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, XSPS
 		pSceneMng->SetidNextScene( XGAME::xSC_TITLE );
 #endif
 #endif
-		break;
+	} break;
 	case XGAME::xSC_OPENNING:
 // 		pScene = new XSceneOpening( this, spParam );
 // 		pScene->SetstrIdentifier( "scene.opening" );
@@ -484,10 +485,20 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, XSPS
 		pScene = new XSceneLegion( this );
 		pScene->SetstrIdentifier( "scene.legion" );
 		break;
-	case XGAME::xSC_INGAME:
-		pScene = new XSceneBattle( this, spParam );
+	case XGAME::xSC_INGAME: {
+#ifdef _XSINGLE
+		// 싱글에선 가상의 파라메터를 넣어준다.
+		//auto spBattleParam = XSceneBattle::sSetBattleParam();
+		auto spBattleParam = XScenePrivateRaid::sSetPrivateRaidParam();
+#endif // _XSINGLE
+		if( spBattleParam->IsNormal() ) {
+			pScene = new XSceneBattle( this, spBattleParam );
+		} else
+		if( spBattleParam->IsPrivateRaid() ) {
+			pScene = new XScenePrivateRaid( this, spBattleParam );
+		}
 		pScene->SetstrIdentifier( "scene.battle" );
-		break;
+	} break;
 	case XGAME::xSC_STORAGE:
 		pScene = new XSceneStorage(this);
 		pScene->SetstrIdentifier( "scene.storage" );
@@ -834,7 +845,7 @@ void XGame::Draw()
 		}
 // 		PUT_STRING_STROKE( vMouse.x + 100.f, vMouse.y, XCOLOR_YELLOW, strt.c_str() );
 	}
-	if( XAPP->m_dwOption & XGAME::xBIT_SHOW_DPCALL) {
+	if( XAPP->IsBitOption( XGAME::xBO_SHOW_DPCALL ) ) {
 		const int cnt1 = XGraphics::s_fpsDPCallBatch.GetFps();
 		const int cnt2 = XGraphics::s_fpsDPCallNoBatch.GetFps();
 		const int cnt3 = XGraphics::s_fpsDPCallNormal.GetFps();

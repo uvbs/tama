@@ -184,10 +184,15 @@ void XEObjMng::Draw( XEWndWorld *pWndWorld )
 			for( auto spObj : m_listObj ) {
 				XEBaseWorldObj *pObj = spObj.get();
 				auto pSprObj = pObj->GetpSprObj();
-				if( pSprObj && pSprObj->GetAction() ) {
-					auto rectBB = pObj->GetBoundBoxWindow( pSprObj, pSprObj->GetAction() );
-					if( pWndWorld->IsOutBoundary( rectBB ) == FALSE )
-						m_aryVisible.Add( pObj );
+				if( pSprObj ) {
+					if( pSprObj->GetAction() ) {
+						auto rectBB = pObj->GetBoundBoxWindow( pSprObj, pSprObj->GetAction() );
+						if( pWndWorld->IsOutBoundary( rectBB ) == FALSE ) {
+							m_aryVisible.Add( pObj );
+						} else {
+							int a = 0;
+						}
+					}
 				}
 			}
 		}

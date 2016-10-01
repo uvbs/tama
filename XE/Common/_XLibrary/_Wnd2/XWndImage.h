@@ -70,7 +70,7 @@ private:
 	float m_dAngZ;
 	BOOL m_bPixelPicking;		// 픽셀단위로 터치를 체크할것인가.
 	XCOLOR m_Color = XCOLOR_WHITE;
-	int m_Priority = 0;
+	int m_Priority = 0;			// 찍기 우선순위 숫자가 클수록 먼저찍힌다.
 //	XVector<XEComponent*> m_aryAlphaComponent;
 	XEComponentMng m_compMngByAlpha;
 	void Init() {

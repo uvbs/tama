@@ -181,7 +181,10 @@ XWndFaceInBattle::~XWndFaceInBattle()
 BOOL XWndFaceInBattle::OnCreate()
 {
 	auto pRed = new XWndImage( PATH_UI("common_bg_frame_red.png"), 
+														 true,
+														 XE::xPF_ARGB4444,
 														 XE::VEC2( 3, 2 ) );
+	pRed->SetPriority( -100 );
 	pRed->SetstrIdentifier( "rect.red" );
 	pRed->SetbShow( false );
 	Add( pRed );

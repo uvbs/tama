@@ -221,7 +221,8 @@ LegionPtr XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutL
 																									, pPropHero
 																									, sqParam );
 			if( XASSERT( pSquad ) ) {
-				pLegion->SetSquadron( sqParam.idxPos, pSquad, true );
+				//pLegion->AddSquadron( sqParam.idxPos, pSquad, true );
+				pLegion->AddSquadron( sqParam.idxPos, pSquad, true );
 				// 리더 영웅 지정
 				XLegion::sSetLeaderByInfo( pPropStage->m_spxLegion.get(), spLegion, pSquad );
 			}
@@ -233,7 +234,7 @@ LegionPtr XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutL
 			XList4<int> listSlotNum;
 			if( pPropStage->m_spxLegion->arySquads.size() != 0 ) {
 				for( int i = 0; i < pLegion->GetMaxSquadSlot(); ++i ) {
-					if( pLegion->GetpSquadronByIdx( i ) == nullptr )
+					if( pLegion->GetpSquadronByidxPos( i ) == nullptr )
 						listSlotNum.Add( i );
 				}
 			}
@@ -257,23 +258,12 @@ LegionPtr XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutL
 				SetSquadParam( spCampObj, sqParam.idxPos, lvLegion, idxFloor, squad, &sqParam );
 				XBREAK( sqParam.idHero == 0 );
 				auto pPropHero = PROP_HERO->GetpProp( sqParam.idHero );
-// 				if( squad.idHero == 0 )
-// 					squad.idHero = spCampObj->GetidHeroByCreateSquad( sqParam.idxPos, &squad, pPropStage );
-// 				auto pPropHero = XLegion::sGetpPropHeroByInfo( squad, lvLegion );
-// 				if( !squad.unit )
-// 					squad.unit = spCampObj->GetUnitWhenCreateSquad( sqParam.idxPos, &squad, pPropStage, idxFloor );
-// 				sqParam.unit = XLegion::sGetUnitByInfo( squad, pPropHero, lvLegion );
-// 				sqParam.lvHero = XLegion::sGetLvHeroByInfo( squad, lvLegion );
-// 				sqParam.lvSkill = XLegion::sGetLvSkillByInfo( squad, lvLegion );
-// 				sqParam.lvSquad = XLegion::sGetLvSquadByInfo( squad, lvLegion );
-// 				sqParam.grade = XLegion::sGetGradeHeroByInfo( squad, lvLegion );
-// 				sqParam.mulAtk = squad.mulAtk;
-// 				sqParam.mulHp = squad.mulHp;
 				auto pSquad = XLegion::sCreateSquadronForNPC2( lvLegion
 																										, pPropHero
 																										, sqParam );
 				if( XASSERT( pSquad ) ) {
-					pLegion->SetSquadron( idxSlot, pSquad, true );
+//					pLegion->AddSquadron( idxSlot, pSquad, true );
+					pLegion->AddSquadron( idxSlot, pSquad, true );
 					// 리더 영웅 지정
 					XLegion::sSetLeaderByInfo( pPropStage->m_spxLegion.get(), spLegion, pSquad );
 				}

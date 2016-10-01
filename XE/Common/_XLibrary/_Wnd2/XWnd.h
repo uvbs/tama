@@ -944,7 +944,7 @@ public:
 	}
 	void AutoLayoutHCenterWithAry( XArrayLinearN<XWnd*, 256>& aryChilds, float marginLR );
 	void AutoLayoutHCenterWithAry( XVector<XWnd*>& aryWnd, float marginLR );
-	void AutoLayoutVCenterWithAry( XVector<XWnd*>& aryChilds, float marginTB );
+	void AutoLayoutVCenterWithAry( const XVector<XWnd*>& aryChilds, float marginTB ) const;
 	void AutoLayoutVCenterByChilds( float marginTB );
 	void AutoLayoutHCenterByChilds( float marginLR );
 	virtual void AutoLayoutByAlign( const XWnd *pParent, XE::xAlign align );

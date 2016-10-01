@@ -1010,7 +1010,7 @@ void XAccount::CreateFakeAccount(void)
 	auto pHero = GetpHeroByIdentifier(_T("unluny"));
 	if( XASSERT(pHero) )
 		pHero->SetGrade( XGAME::xGD_RARE );		// 언루니는 3성으로 시작.
-	auto pSquad = pLegion->GetSquadron(1);
+	auto pSquad = pLegion->GetpSquadronByidxPos(1);
 	if (XASSERT(pSquad))
 		pLegion->SetpLeader(pSquad->GetpHero());
 	///< 
@@ -1042,7 +1042,7 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 	auto pHero = XHero::sCreateHero(pPropHero, levelSquad, unit);
 	AddHero(pHero);
 	auto pSq = new XSquadron(pHero);
-	pLegion->SetSquadron(idxSquad, pSq, FALSE);
+	pLegion->AddSquadron(idxSquad, pSq, false);
 	return pSq;
 }
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
@@ -1235,7 +1235,7 @@ XLegion* XAccount::CreateLegionByRandom(int numSquad, int byLevel)
 	//
 	for (int i = 0; i < numSquad; ++i) {
 		int idxSquad = idx[i];
-		if (pLegion->GetSquadron(idxSquad) == nullptr) {
+		if (pLegion->GetpSquadronByidxPos(idxSquad) == nullptr) {
 			XSquadron *pSquad = nullptr;
 #ifdef _XSINGLE
 			auto unit = aryUnits.GetFromRandom();
@@ -1361,7 +1361,7 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 	XASSERT( lvPassive > 0 && lvPassive <= XGAME::MAX_SKILL_LEVEL - 1 );
 	XBREAK( XE::IsEmpty( idsHero ) );
 	XBREAK( XGAME::IsInvalidGrade(grade) );
-	XBREAK(pLegion->GetSquadron(idxSquad) != nullptr);
+	XBREAK(pLegion->GetpSquadronByidxPos(idxSquad) != nullptr);
 	auto pPropHero = PROP_HERO->GetpProp( idsHero );
 	XBREAK( pPropHero == nullptr );
 	auto pHero = XHero::sCreateHero(pPropHero, lvSquad, unit);
@@ -1374,7 +1374,7 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 	// NPC가 아니므로 sq가 블럭을 벗어날때 pHero를 파괴하진 않는다.
 	// 일단은 놔두고 깔끔하게 해결해야함.
 	XSquadron *pSq = new XSquadron(pHero);
-	pLegion->SetSquadron(idxSquad, pSq, FALSE);
+	pLegion->AddSquadron(idxSquad, pSq, FALSE);
 	return pSq;
 }
 
@@ -1652,7 +1652,7 @@ void XAccount::DeleteHeroInLegion(ID snHero)
 // 	XARRAYN_LOOP(m_aryLegion, LegionPtr&, spLegion)
 	for( auto spLegion : m_aryLegion ) {
 		if ( spLegion )
-			spLegion->RemoveSquad(snHero);
+			spLegion->DestroySquadBysnHero(snHero);
 	}// END_LOOP;
 }
 /**
@@ -2106,9 +2106,10 @@ void XAccount::AddExpToHeros(int add, XLegion *pLegion, XVector<ID>* pOutAryLeve
 		return;
 	const auto typeTrain = XGAME::xTR_LEVEL_UP;
 	// 군단내 영웅리스트를 얻는다.
-	XArrayLinearN<XHero*, XGAME::MAX_SQUAD> ary;
-	pLegion->GetHerosToAry(ary);
-	XARRAYLINEARN_LOOP(ary, XHero*, pHero) {
+	XVector<XHero*> ary;
+	pLegion->GetHerosToAry( &ary );
+//	XARRAYLINEARN_LOOP(ary, XHero*, pHero) {
+	for( auto pHero : ary ) {
 		if (!pHero->IsMaxLevelLevel()) {
 			int lvMax = pHero->GetLvLimitByAccLv( GetLevel(), XGAME::xTR_LEVEL_UP );
 			if( pHero->GetLevel() < lvMax ) {
@@ -2120,7 +2121,7 @@ void XAccount::AddExpToHeros(int add, XLegion *pLegion, XVector<ID>* pOutAryLeve
 				}
 			}
 		}
-	} END_LOOP;
+	}
 }
 
 /**
@@ -3067,25 +3068,27 @@ int XAccount::GetMilitaryPower()
 {
 	float score = 0;
 	auto spLegion = GetCurrLegion();
-	XArrayLinearN<XHero*, XGAME::MAX_SQUAD> aryHeroes;
-	spLegion->GetHerosToAry( aryHeroes );
+	XVector<XHero*> aryHeroes;
+	spLegion->GetHerosToAry( &aryHeroes );
 	std::vector<XHero*> aryHeroesEtc;   // 메인군단에 속하지 않은 나머지 영웅들
 	for( auto pHero : m_listHero ) {
 		bool bMain = false;
-		XARRAYLINEARN_LOOP_AUTO( aryHeroes, pHeroInLegion ) {
+//		XARRAYLINEARN_LOOP_AUTO( aryHeroes, pHeroInLegion ) {
+		for( auto pHeroInLegion : aryHeroes ) {
 			if( pHeroInLegion->GetsnHero() == pHero->GetsnHero() ) {
 				bMain = true;
 				break;
 			}
-		} END_LOOP;
+		}
 		// 메인군단에 속하지 않은 영웅만 어레이에 넣는다.
 		if( !bMain )
 			aryHeroesEtc.push_back( pHero );
 	}
 	// 메인 군단에 속한 영웅들의 전투력 합산
-	XARRAYLINEARN_LOOP_AUTO( aryHeroes, pHero ) {
+//	XARRAYLINEARN_LOOP_AUTO( aryHeroes, pHero ) {
+	for( auto pHero : aryHeroes ) {
 		score += XLegion::sGetMilitaryPower( pHero );
-	} END_LOOP;
+	}
 	for( auto pHero : aryHeroesEtc ) {
 		// 메인군단에 속하지 않은 영웅들의 전투력은 10%만 취한다.
 		score += ( XLegion::sGetMilitaryPower(pHero ) * 0.1f ); 

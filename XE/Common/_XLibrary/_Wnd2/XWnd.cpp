@@ -2193,7 +2193,7 @@ void XWnd::AutoLayoutHCenterWithAry( XVector<XWnd*>& aryWnd, float marginLR )
  @param marginTB 위아래 마진
  @param dist elem간 간격
 */
-void XWnd::AutoLayoutVCenterWithAry( XVector<XWnd*>& aryChilds, float marginTB )
+void XWnd::AutoLayoutVCenterWithAry( const XVector<XWnd*>& aryChilds, float marginTB ) const
 {
 	const int num = aryChilds.size();
 	if( num == 0 )

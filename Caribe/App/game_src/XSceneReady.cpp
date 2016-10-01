@@ -80,7 +80,7 @@ XSceneReady::XSceneReady( XGame *pGame, XSPSceneParam& spBaseParam )
 				v.x = vStart.x + 64.f * i;
 				v.y = vStart.y + 58.f * k;
 				int idx = ( i * 5 + k );
-				XSquadron *pSquad = spLegion->GetSquadron( idx );
+				auto pSquad = spLegion->GetpSquadronByidxPos( idx );
 				XHero *pHero = nullptr;
 				bool bFog = false;
 				if( pSquad ) {
@@ -134,7 +134,7 @@ void XSceneReady::UpdateMyLegion()
 			v.x = vStart.x + -64.f * i;
 			v.y = vStart.y + 58.f * k;
 			int idx = ( i * 5 + k );
-			auto pSquad = spLegion->GetSquadron( idx );
+			auto pSquad = spLegion->GetpSquadronByidxPos( idx );
 			XHero *pHero = nullptr;
 			if( pSquad )
 				pHero = pSquad->GetpHero();
@@ -225,13 +225,13 @@ void XSceneReady::Update()
 		auto spLegion = m_spParam->m_spLegion[1];
 		auto pWndSquad = SafeCast2<XWndSquadInLegion*>( Find( idWnd ) );
 		if( XASSERT(pWndSquad) ) {
-			auto pSquad = spLegion->GetpSquadronByIdx( idx );
+			auto pSquad = spLegion->GetpSquadronByidxPos( idx );
 			if( pSquad ) {
 				auto pHeroEnemy = pSquad->GetpHero();
 				// 상성표시 처리
 				auto idxSelected = XWndSquadInLegion::sGetidxSelectedSquad();
 				// 선택된 아군 부대영웅
-				auto pHeroSelected = ACCOUNT->GetCurrLegion()->GetpHeroByIdxSquad( idxSelected );
+				auto pHeroSelected = ACCOUNT->GetCurrLegion()->GetpHeroByIdxPos( idxSelected );
 				if( pHeroSelected ) {
 					int adj = 0;
 					if( XGAME::IsSuperiorMOS( pHeroSelected->GetTypeAtk()
@@ -388,7 +388,7 @@ int XSceneReady::OnClickMySquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	int idxSquad = (int)p1;
 	CONSOLE( "OnClickMySquad:idx=%d", idxSquad );
-	auto pHero = ACCOUNT->GetCurrLegion()->GetpHeroByIdxSquad( idxSquad );
+	auto pHero = ACCOUNT->GetCurrLegion()->GetpHeroByIdxPos( idxSquad );
 	if( pHero ) {
 		XWndSquadInLegion::sSetidxSelectedSquad( idxSquad );
 		auto pWndHeroes = SafeCast2<XWndSelectHeroesInReady*>( Find("wnd.heroes") );
@@ -420,7 +420,7 @@ int XSceneReady::OnClickEnemySquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 	if( XASSERT(spLegion) ) {
 		int goldCost = ACCOUNT->GetCostOpenFog( spLegion );
 		if( ACCOUNT->IsEnoughGold( goldCost ) ) {
-			auto pSquad = spLegion->GetpSquadronByIdx( idx );
+			auto pSquad = spLegion->GetpSquadronByidxPos( idx );
 			if( pSquad ) {
 				auto pHero = pSquad->GetpHero();
 				if( XASSERT(pHero) ) {
@@ -497,7 +497,7 @@ int XSceneReady::OnClickEdit( XWnd* pWnd, DWORD p1, DWORD p2 )
 	//auto& bs = XSceneBattle::sGetBattleStart();
 	m_bEditMode = !m_bEditMode;
 	int idxSquad = XWndSquadInLegion::sGetidxSelectedSquad();
-	auto pHero = m_spParam->m_spLegion[0]->GetpHeroByIdxSquad( idxSquad );
+	auto pHero = m_spParam->m_spLegion[0]->GetpHeroByIdxPos( idxSquad );
 	if( pHero ) {
 		// 영웅선택창을 띄운다.
 		UpdateWndSelectHeroes();
@@ -518,7 +518,7 @@ XWndSelectHeroesInReady* XSceneReady::UpdateWndSelectHeroes()
 {
 	//auto& bs = XSceneBattle::sGetBattleStart();
 	int idxSquad = XWndSquadInLegion::sGetidxSelectedSquad();
-	auto pHeroSelected = m_spParam->m_spLegion[ 0 ]->GetpHeroByIdxSquad( idxSquad );
+	auto pHeroSelected = m_spParam->m_spLegion[ 0 ]->GetpHeroByIdxPos( idxSquad );
 	// 영웅선택 팝업 생성
 	XBREAK( Find("wnd.heroes") );		// 기존에 이미 있으면 반드시 파괴시키고 다시 불러야함.
 	auto pWndHeroes = new XWndSelectHeroesInReady( pHeroSelected );

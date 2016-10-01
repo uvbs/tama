@@ -807,6 +807,7 @@
     <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
     <ClInclude Include="..\..\..\game_src\XAccount.h" />
     <ClInclude Include="..\..\..\game_src\XAppLayout.h" />
+    <ClInclude Include="..\..\..\game_src\XAsyncMng.h" />
     <ClInclude Include="..\..\..\game_src\XBaseItem.h" />
     <ClInclude Include="..\..\..\game_src\XBaseUnit.h" />
     <ClInclude Include="..\..\..\game_src\XBaseUnitH.h" />
@@ -885,6 +886,8 @@
     <ClInclude Include="..\..\..\game_src\XSceneArmory.h" />
     <ClInclude Include="..\..\..\game_src\XSceneBase.h" />
     <ClInclude Include="..\..\..\game_src\XSceneBattle.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneBattleSingle.h" />
+    <ClInclude Include="..\..\..\game_src\XSceneBattleSub.h" />
     <ClInclude Include="..\..\..\game_src\XSceneEquip.h" />
     <ClInclude Include="..\..\..\game_src\XSceneGuild.h" />
     <ClInclude Include="..\..\..\game_src\XSceneGuildShop.h" />
@@ -1026,6 +1029,7 @@
     <ClCompile Include="..\..\..\game_src\skill\XSkillReceiver.cpp" />
     <ClCompile Include="..\..\..\game_src\skill\XSkillUser.cpp" />
     <ClCompile Include="..\..\..\game_src\XAccount.cpp" />
+    <ClCompile Include="..\..\..\game_src\XAsyncMng.cpp" />
     <ClCompile Include="..\..\..\game_src\XBaseItem.cpp" />
     <ClCompile Include="..\..\..\game_src\XBaseUnit.cpp" />
     <ClCompile Include="..\..\..\game_src\XBattleField.cpp" />
@@ -1092,6 +1096,8 @@
     <ClCompile Include="..\..\..\game_src\XSceneArmory.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneBase.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneBattle.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneBattleSingle.cpp" />
+    <ClCompile Include="..\..\..\game_src\XSceneBattleSub.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneEquip.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneGuild.cpp" />
     <ClCompile Include="..\..\..\game_src\XSceneGuildShop.cpp" />

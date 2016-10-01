@@ -246,7 +246,7 @@ void XBattleField::SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit,
 	int numUnit = 1;
 	auto pHero = new XHero( pPropHero, 1, unit );
 	auto pSquadObj = new XSquadObj( spLegionObj, pHero, vwPos );
-	pSquadObj->CreateSquad( XWndBattleField::sGet(), spLegionObj->GetCamp() );
+	pSquadObj->CreateUnitAndHero( XWndBattleField::sGet(), spLegionObj->GetCamp() );
 	spLegionObj->AddSquad( XSPSquad( pSquadObj ) );
 	pSquadObj->OnStartBattle();	// 치트로 생성한 부대는 첨에 전투시작 이벤트 한번 날려줌.
 #endif // _XSINGLE

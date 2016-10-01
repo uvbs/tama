@@ -206,7 +206,7 @@ void XWndSpotRecon::Update()
 			int idx = ( i * 5 + k );
 			ID idWnd = 100 + idx;
 			XHero *pHero = nullptr;
-			auto pSquad = spLegion->GetSquadron( idx );
+			auto pSquad = spLegion->GetpSquadronByidxPos( idx );
 			bool bFog = false;
 			auto vCenter = v + vSize * 0.5f;
 			if( pSquad ) {

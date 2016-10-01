@@ -206,7 +206,7 @@ void XPropLegion::UpdatePropWithAcc( const std::string& idsLegion, XSPAcc spAcc 
 		for( auto& squad : pPropLegion->arySquads ) {
 			const int idxPos = squad.idxPos;
 			auto spLegion = spAcc->GetCurrLegion();
-			auto pHero = spLegion->GetpHeroByIdxSquad( idxPos );
+			auto pHero = spLegion->GetpHeroByIdxPos( idxPos );
 			if( XASSERT( pHero ) ) {
 				squad.m_listAbil.clear();
 				for( auto i = 1; i < XGAME::xUNIT_MAX; ++i ) {

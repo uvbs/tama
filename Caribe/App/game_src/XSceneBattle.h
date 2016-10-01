@@ -5,6 +5,7 @@
 #include "XArchive.h"
 #include "XSpot.h"
 #include "XParticleMng.h"
+#include "XSceneBattleSub.h"
 
 class XGame;
 class XLegion;
@@ -20,87 +21,12 @@ class XWndFaceInBattle;
 class XSurface;
 class XWndBatchRender;
 
-XE_NAMESPACE_START( XGAME )
-struct xSceneBattleParam : public xSceneParamBase {
-	ID m_idEnemy = 0;			// 상대가 pc의 경우.
-#ifndef _XSINGLE
-	xtSpot m_typeSpot = XGAME::xSPOT_NONE;	// 전투가벌어지는 스팟의 타입(에러확인용)
-	ID m_idSpot = 0;					// 전투가 벌어지는 스팟(0인경우도 있음)
-#endif // not _XSINGLE
-	int m_Level = 0;					// 상대의 레벨
-	_tstring m_strName;				// 상대이름
-	XVector<XSPLegion> m_spLegion;	// 0:아군 1:적군
-	xtBattle m_typeBattle = XGAME::xBT_NONE;
-	int m_Defense = 0;				// 방어도(보석광산용)
-	int m_idxStage = -1;				///< 캠페인의 경우 스테이지 인덱스
-	int m_idxFloor = 0;
-	xSceneBattleParam( ID idEnemy,
-#ifndef _XSINGLE
-										 xtSpot typeSpot,
-										 ID idSpot,
-#endif // not _XSINGLE
-										 int level,
-										 const _tstring& strName,
-										 const XVector<XSPLegion>& aryLegion,
-										 xtBattle typeBattle,
-										 int def, int idxStage, int idxFloor )
-		: m_idEnemy( idEnemy )
-#ifndef _XSINGLE
-		, m_typeSpot( typeSpot )
-		, m_idSpot( idSpot )
-#endif // not _XSINGLE
-		, m_Level( level )
-		, m_strName( strName )
-		, m_spLegion( aryLegion )
-		, m_typeBattle( typeBattle )
-		, m_Defense( def )
-		, m_idxStage( idxStage )
-		, m_idxFloor( idxFloor ) {	}
-	// npc와 전투하는것인가.
-	bool IsVsNpc() const {
-		return m_idEnemy == 0;
-	}
-	inline bool IsPrivateRaid() const {
-		return m_typeBattle == XGAME::xBT_PRIVATE_RAID;
-	}
-	bool IsValid() const;
-	inline bool IsInvalid() const {
-		return !IsValid();
-	}
-	inline void Release() {
-		m_spLegion[0].reset();
-		m_spLegion[1].reset();
-	}
-};
+#define MAX_SQUAD_PVRAID		30
 
-// 전투시 양측 진영의 모든 정보.
-struct xsCamp	{
-	xtSide m_bitSide = xSIDE_NONE;
-	XSPAcc m_spAcc;
-	ID m_idAcc = 0;				// 이 진영이 pc일경우.
-	int m_Level = 0;			// 군단(군주)레벨( m_spAcc는 앞으로 안써야하기때문)
-	_tstring m_strName;		// 군단(군주) 이름.
-	XSPLegion m_spLegion;
-	XSPLegionObj m_spLegionObj;
-	xtBattle m_bitOption = XGAME::xBT_NONE;
-	XSurface* m_psfcProfile = nullptr;
-#ifdef _XSINGLE
-	std::string m_idsLegion;		// XPropLegion의 군단ids
-// 	void ReCreateLegion( XWndBattleField* pWndWorld );
-	void CreateLegion( const std::string& idsLegion, xtSide bitSide );
-#endif // _XSINGLE
-	void CreateLegionObj();
-	void CreateSquadObj( XWndBattleField* pWndWorld, xtBattle typeBattle );
-	void SetAccInfo( xtSide bitSide, ID idAcc, int lvAcc, const _tstring& strName ) {
-		m_bitSide = bitSide;
-		m_idAcc = idAcc;
-		m_Level = lvAcc;
-		m_strName = strName;
-	}
-	void Release();
-};
-	
-XE_NAMESPACE_END;
+namespace XGAME {
+struct xSceneBattleParam;
+struct xsCamp;
+}
 /**
  @brief 
 */
@@ -109,22 +35,8 @@ class XSceneBattle : public XSceneBase, public XParticleDelegate
 	friend class XSceneProcessBattle;
 	friend class XSceneProcessReady;
 public:
-// 	static bool sIsHaveBattleStart() {
-// 		return s_BattleStart.IsValid();
-// 	}
-// 	static bool sIsEmptyBattleStart() {
-// 		return !sIsHaveBattleStart();
-// 	}
-// 	static const XGAME::xBattleStart& sGetBattleStart() {
-// 		return s_BattleStart;
-// 	}
-// 	static void sSetBattleStart( const XGAME::xBattleStart& bs ) {
-// 		// 복사로 전달.
-// 		s_BattleStart = bs;
-// 	}
+	static std::shared_ptr<XGAME::xSceneBattleParam> sSetBattleParam();
 private:
-	// 전투시작시 필요한 정보들을 외부에서 적재한후 배틀씬을 부른다.
-// 	static XGAME::xBattleStart s_BattleStart;
 private:
 	XLayoutObj m_Layout;
 	/*
@@ -152,9 +64,15 @@ private:
 	}
 	void Destroy();
 protected:
+	GET_ACCESSOR_CONST( std::shared_ptr<XGAME::xSceneBattleParam>, spSceneParam );
+	GET_ACCESSOR_PTR( XWndBattleField*, pWndWorld );
+	XSceneBattle( XGame *pGame, XGAME::xtScene scene, XSPSceneParam spBaseParam );
 public:
-	XSceneBattle( XGame *pGame, XSPSceneParam& spBaseParam );
-	virtual ~XSceneBattle(void) { Destroy(); }
+	XSceneBattle( XGame *pGame, XSPSceneParam spBaseParam )
+		: XSceneBattle( pGame, XGAME::xSC_INGAME, spBaseParam ) {}
+	virtual ~XSceneBattle( void ) {
+		Destroy();
+	}
 	//
 	inline const XGAME::xsCamp& GetCamp( XGAME::xtSideIndex idxSide ) const {
 		return m_aryCamp[ idxSide ];
@@ -198,7 +116,9 @@ public:
 	void OnRecvBattleResultSulfurEncounter( XSpotSulfur *pSpot, const XGAME::xBattleStartInfo& info, std::shared_ptr<XGAME::xSceneBattleParam> spParam );
 // 	int OnOkBattleResultSulfurEncounter( XWnd* pWnd, DWORD p1, DWORD p2 );
 	void OnEndSceneProcess( XSceneProcess *pProcess );
-// 	int OnDebugRetry( XWnd* pWnd, DWORD p1, DWORD p2 );
+	virtual int GetsecTimeOver();
+	//virtual void OnStartProcessBattle();
+	// 	int OnDebugRetry( XWnd* pWnd, DWORD p1, DWORD p2 );
 // 	int OnDebugRecreate( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnDebugProfile( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnUseSkillByButton( XWnd* pWnd, DWORD p1, DWORD p2 );
@@ -235,7 +155,7 @@ public:
 	XE::VEC2 GetvwCamera();
 	void OnCreateOrderDialog( ID idHero ) override;
 	XHero* GetpHero( ID idHero ) override;
-	void OnDieSquad( XSPSquad spSquadObj );
+	virtual void OnDieSquad( XSPSquad spSquadObj );
 #ifdef _XSINGLE
 	static void sSetAbilHeroes();
 	static void sSetAbilHero( XHero *pHero, XGAME::xtUnit unit, LPCTSTR idsAbil, int point );
@@ -243,7 +163,9 @@ public:
 	void SaveSingle();
 	void SetAI( bool bFlag );
 #endif // _XSINGLE
-
+protected:
+	XSPWorldConst GetspWorld() const;
+	void AddObj( XSPWorldObj spObj );
 private:
 	void OnEnterBattle();
 	void CreateProcessReady();
@@ -251,13 +173,20 @@ private:
 	XSPSquad GetspSquadObj( ID snSquad );
 	int OnTouchHeroFace( XWnd* pWnd, DWORD snSquad, DWORD );
 	void CheckLeak();
-	static std::shared_ptr<XGAME::xSceneBattleParam> sSetBattleParamForSingle();
 	void CreateCamps();
 	void Release() override;
 	void CreateHeroesFace();
+	virtual void GetSquadObjToAry( int idxSide, XSPLegionObjConst spLegionObj, XVector<XSPSquadObjConst>* pOut );
+	void UpdateHeroesFace();
+	virtual void OnCreateFaces( XSPLegionObj spLegionObj, int idxSide, XWnd* pWndLayer );
+	void ArrangeFaces( const XVector<XVector<XWnd*>>& aryFaces, XWnd* pWndLayer, int idxSide );
+	void ArrangeAry( XVector<XVector<XWnd*>>* pOut, XWnd* pWndLayer );
+	void CreateFaceWnds( const XLegionObj* pLegionObj, int idxSide, XWnd* pWndLayer );
 	int OnDebugButton( XWnd* pWnd, DWORD p1, DWORD p2 );
 	XWndBatchRender* GetpLayerUI();
 	XWndBatchRender* GetpLayerFaces();
+	XSPWorld GetspmWorld();
+	void OnDieSquadPrivateRaid( XSPSquad spSquadObj );
 };
 
 extern XSceneBattle *SCENE_BATTLE;

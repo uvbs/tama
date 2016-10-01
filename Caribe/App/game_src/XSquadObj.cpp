@@ -41,17 +41,17 @@ using namespace XSKILL;
 ////////////////////////////////////////////////////////////////
 int XSquadObj::s_numObj = 0;		// 메모리 릭 추적용
 
-XSquadObj::XSquadObj( XSPLegionObj spLegionObj, 
-						const XSquadron *pSquad, 
-						const XE::VEC3& vwPos )
+XSquadObj::XSquadObj( XSPLegionObj spLegionObj,
+											const XSquadron *pSquad,
+											const XE::VEC3& vwPos )
 	: XSquadObj( spLegionObj, pSquad->GetpHero(), vwPos )
 {
 	m_pSquadron = const_cast<XSquadron*>( pSquad );
 }
 
-XSquadObj::XSquadObj( XSPLegionObj spLegionObj, 
-						XHero *pHero, 
-						const XE::VEC3& vwPos )
+XSquadObj::XSquadObj( XSPLegionObj spLegionObj,
+											XHero *pHero,
+											const XE::VEC3& vwPos )
 {
 	Init();
 //	m_pSquadron = pSquad;
@@ -261,7 +261,8 @@ void XSquadObj::CreateAndAddUnit( XPropUnit::xPROP *pProp
 /**
  m_pSquad를 바탕으로 대장과 유닛들을 생성한다.
 */
-BOOL XSquadObj::CreateSquad( XWndBattleField *pWndWorld, const XECompCamp& camp )
+BOOL XSquadObj::CreateUnitAndHero( XWndBattleField *pWndWorld, 
+																	 const XECompCamp& camp )
 {
 	auto pProp = PROP_UNIT->GetpProp( m_pHero->GetUnit() );
 	int numUnit = m_pHero->GetnumUnit();

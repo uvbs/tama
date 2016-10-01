@@ -31,7 +31,7 @@ void XStatistic::AddSquad( const XHero *pHero )
 	xSquad *pSquad = new xSquad;
 	pSquad->pHero = const_cast<XHero*>( pHero );
 	m_listSquads.Add( pSquad );
-	XBREAK( m_listSquads.size() > 15 );
+//	XBREAK( m_listSquads.size() > 15 );
 }
 
 /**

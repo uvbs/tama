@@ -4307,7 +4307,7 @@ int XGameUser::RecvNewSquad( XPacket& p )
 	XVERIFY_BREAK( pLegion == NULL );
 	XSquadron *pSq = new XSquadron( pHero );
 	XVERIFY_BREAK( pSq == NULL );
-	BOOL bSuccess = pLegion->SetSquadron( idxSlot, pSq, FALSE );
+	BOOL bSuccess = pLegion->AddSquadron( idxSlot, pSq, FALSE );
 	if( bSuccess == FALSE )
 		SAFE_DELETE( pSq );
 	XVERIFY_BREAK( bSuccess == FALSE );
@@ -4338,17 +4338,17 @@ int XGameUser::RecvMoveSquad( XPacket& p )
 	XLegion *pLegion = m_spAcc->GetLegionByIdx( idxLegion ).get();
 	XVERIFY_BREAK( pLegion == NULL );
 	XVERIFY_BREAK( idxDst < -1 );
-	int idx = pLegion->GetSquadronIdxByHeroSN( snHeroSrc );
+	int idx = pLegion->_GetIdxSquadByHeroSN( snHeroSrc );
 	XVERIFY_BREAK( idx != idxSrc );
 	if( snHeroDst > 0 )
 	{
-		idx = pLegion->GetSquadronIdxByHeroSN( snHeroDst );
+		idx = pLegion->_GetIdxSquadByHeroSN( snHeroDst );
 		XVERIFY_BREAK( idx != idxDst );
 	}
 	if( idxDst == -1 )
 	{
 		// remove squad
-		pLegion->RemoveSquad( idxSrc );
+		pLegion->DestroySquadBysnHero( idxSrc );
 	} else
 	{
 		BOOL bRet = pLegion->SwapSlotSquad( idxSrc, idxDst );
@@ -4402,7 +4402,7 @@ int XGameUser::RecvChangeSquad(XPacket& p)
 	ar << legionherosize;
 	ar << (ID)snLeader;
 	for (int n = 0; n < XGAME::MAX_SQUAD; n++) {
-		m_spAcc->GetCurrLegion()->RemoveSquad(n);
+		m_spAcc->GetCurrLegion()->DestroySquadByIdxPos(n);
 	}
 	auto itor = squadlist.begin();		
 	for (; itor != squadlist.end(); itor++) {	

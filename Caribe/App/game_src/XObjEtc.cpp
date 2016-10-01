@@ -656,7 +656,7 @@ void XObjLoop::Draw( const XE::VEC2& vPos, float scale, float alpha )
 {
 	XPROF_OBJ_AUTO();
 #if defined(_CHEAT) && defined(WIN32)
-	if( !(XAPP->m_dwNoDraw & xBD_NO_DRAW_SKILL_SFX) )
+	if( !XAPP->IsBitNoDraw(xBD_NO_DRAW_SKILL_SFX) )
 #endif // defined(_CHEAT) && defined(WIN32)
 	{
 		// 이펙트류는 z버퍼와 알파테스트를 사용하지 않는다.
@@ -928,7 +928,7 @@ void XObjDmgNum::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alpha/
 		col = XCOLOR_RGBA(r,g,b,a);
 	}
 #if defined(_CHEAT) && defined(WIN32)
-	if( !(XAPP->m_dwNoDraw & xBD_NO_DRAW_DMG_NUM) )
+	if( !XAPP->IsBitNoDraw( xBD_NO_DRAW_DMG_NUM) )
 #endif // defined(_CHEAT) && defined(WIN32)
 		m_pfdNumber->DrawStringStyle( vPos.x, vPos.y, col, xFONT::xSTYLE_STROKE, m_strNumber.c_str() );
 //#endif 
@@ -939,7 +939,12 @@ XObjYellSkill::XObjYellSkill( LPCTSTR szText,
 															const XSPUnit& spOwner,
 															const XE::VEC3& vwPos, 
 															XCOLOR col )
-	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), XGAME::xOT_ETC, vwPos )
+	: XEBaseWorldObj( XWndBattleField::sGetObjLayer(), 
+										XGAME::xOT_ETC, 
+										vwPos,
+										_T("ui_yell.spr"),
+										1,
+										false, false )
 {
 	Init();
 	m_Col = col;
@@ -952,7 +957,7 @@ XObjYellSkill::XObjYellSkill( LPCTSTR szText,
 	m_timerLife.Set(0.5f);
 	m_vDelta.Set(0,0,-0.2f);
 	m_State = 0;
-	m_psfcBg = IMAGE_MNG->Load( PATH_UI("yell_banner.png") );
+	m_psfcBg = IMAGE_MNG->Load( PATH_UI("yell_banner.png"), false, XE::xPF_ARGB4444, true, false );
 	XBREAK( m_psfcBg == nullptr );
 	float width =  m_psfcBg->GetWidth();
 	m_pFontObj->SetLineLength( width );
@@ -966,23 +971,6 @@ void XObjYellSkill::Destroy()
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcBg );
 }
 
-// bool XObjYellSkill::GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const
-// {
-// 	if( strParam == "atlas" )
-// 		return true;
-// 	else 
-// 	if( strParam == "batch" )
-// 		return false;
-// 	else
-// 	if( strParam == "zbuff" )
-// 		return false;
-// 	else
-// 	if( strParam == "alphatest" )
-// 		return false;
-// 	XBREAK( 1 );
-// 	return false;
-// }
-
 void XObjYellSkill::FrameMove( float dt )
 {
 	if( m_spOwner ) {
@@ -995,14 +983,14 @@ void XObjYellSkill::FrameMove( float dt )
 			return;
 		}
 	}
-	AddPos( m_vDelta * dt );
+	XE::VEC3 vDelta = m_vDelta;
 	if( m_State == 0 ) {
 		// 떠오르기
 		if( m_timerLife.IsOver() ) {
 			// 1.5초간 대기.
 			m_State = 1;
 			m_timerLife.Set(1.5f);
-			m_vDelta.Set(0);
+			vDelta.Set(0);
 		}
 	} else 
 	if( m_State == 1 ) {
@@ -1010,8 +998,8 @@ void XObjYellSkill::FrameMove( float dt )
 		if( m_timerLife.IsOver() ) {
 			// x초간 빠르게 떠오르며 사라진다.
 			m_State = 2;
-			m_timerLife.Set(4.0f);
-			m_vDelta.z = -1.0f;
+			m_timerLife.Set( m_secLife );
+			vDelta.z = m_vDelta.z;
 		}
 	} else {
 		float alpha = 1.0f - m_timerLife.GetSlerp();
@@ -1019,6 +1007,7 @@ void XObjYellSkill::FrameMove( float dt )
 		if( m_timerLife.IsOver() )
 			SetDestroy(1);
 	}
+	AddPos( vDelta * dt );
 	XEBaseWorldObj::FrameMove( dt );
 }
 
@@ -1039,14 +1028,14 @@ void XObjYellSkill::Draw( const XE::VEC2& vPos, float scale/* =1.f */, float alp
 	if( a > 255 )
 		a = 255;
 	XCOLOR col = XCOLOR_RGBA( rp, gp, bp, a );
-// 	if( m_Col != 0 ) {
-// 		col = m_Col;
-// 	}
 	m_pFontObj->SetColor( col );
-	m_pFontObj->DrawString( vLT + XE::VEC2(0,5), m_strText.c_str() );
-//	m_pfdNumber->DrawString( vPos.x, vPos.y, m_strNumber.c_str(), col );
-//	m_pFontDat->DrawStringStyle( vPos.x, vPos.y, col, xFONT::xSTYLE_STROKE, m_strText.c_str() );
-//	m_pFontDat->DrawString( vPos.x, vPos.y, col, m_strText.c_str() );
+	const float width = GetSize().w * scale;
+	auto vFinal = vLT + XE::VEC2( 0, 5 );
+	if( m_vInDraw.v1 >= 0 && vFinal.x < m_vInDraw.v1 )
+		vFinal.x = m_vInDraw.v1;
+	if( m_vInDraw.v2 >= 0 && vFinal.x + width > m_vInDraw.v2 )
+		vFinal.x = m_vInDraw.v2 - width;
+	m_pFontObj->DrawString( vFinal, m_strText.c_str() );
 }
 
 

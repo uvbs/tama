@@ -66,7 +66,8 @@ public:
 private:
 	ID m_snLegion;
 	XHero *m_pLeader = nullptr;		// 널이 될수 있음.
-	XVector< XSquadron*> m_arySquadrons;	// 중대 리스트
+//	XVector< XSquadron*> m_arySquadrons;	// 중대 리스트
+	XList4<XSquadron*> m_listSquadrons;		// 부대 리스트
 	XList4<XSquadron*> m_listFogs;
 	XGAME::xtGradeLegion m_gradeLegion = XGAME::xGL_NORMAL;
 	float m_RateHp = 1.f;	// 인게임전투시 유닛들에게 곱해질 hp배율
@@ -79,15 +80,14 @@ private:
 	void Destroy();
 public:
 	XLegion();
-	XLegion( ID snLegion )
-		: m_arySquadrons( XGAME::MAX_SQUAD ) {
+	XLegion( ID snLegion ) {
 		Init();
 		m_snLegion = snLegion;
 	}
 	~XLegion() { Destroy(); }
 	//
-	GET_ACCESSOR( const XVector<XSquadron*>&, arySquadrons );
-//	int GetSquadronToAry( XVector<XSquadron*>* pOut ) const;
+// 	GET_ACCESSOR( const XVector<XSquadron*>&, arySquadrons );
+	GET_ACCESSOR_CONST( const XList4<XSquadron*>&, listSquadrons );
 	GET_ACCESSOR_CONST( ID, snLegion );
 	GET_SET_ACCESSOR( XHero*, pLeader );
 	GET_ACCESSOR_CONST( XGAME::xtGradeLegion, gradeLegion );
@@ -99,11 +99,6 @@ public:
 	void SetgradeLegion( XGAME::xtGradeLegion gradeLegion ) {
 		m_gradeLegion = gradeLegion;
 		XBREAK( XGAME::IsInvalidGradeLegion(gradeLegion) );
-		// 이제 이값은 외부에서 직접 입력해야하도록 바뀜
-// 		if( gradeLegion == XGAME::xGL_ELITE )
-// 			m_RateHp = 10.f;
-// 		else if( gradeLegion == XGAME::xGL_RAID )
-// 			m_RateHp = 100.f;
 	}
 	GET_SET_ACCESSOR_CONST( float, RateHp );
 	GET_SET_ACCESSOR_CONST( float, RateAtk );
@@ -118,35 +113,43 @@ public:
 	XLegion* CreateLegionForLink( XSPAcc spAcc );
 	void SetAutoLeader();
 	// 부대 수를 얻는다.
-	int GetNumSquadrons( void );
-	XSquadron* GetSquadron( int idx ) {
-		if( idx == -1 )
-			return nullptr;
-		if( idx < 0 || idx >= m_arySquadrons.GetMax() )
-			return nullptr;
-		return m_arySquadrons[idx];
+	inline int GetNumSquadrons() {
+		return m_listSquadrons.size();
 	}
-	inline XSquadron* GetpSquadronByIdx( int idx ) {
-		return GetSquadron( idx );
-	}
-	BOOL SetSquadron( int idx, XSquadron *pSq, BOOL bCreateHero );
-	bool SetSquadron( int idx, XSquadron *pSq, bool bCreateHero ) {
-		return SetSquadron( idx, pSq, xboolToBOOL(bCreateHero) ) != FALSE;
-	}
+	XSquadron* GetpmSquadronByidxPos( int idxSquad );
+	const XSquadron* GetpSquadronByidxPos( int idxSquad ) const;
+	const XSquadron* GetpSquadronBySN( ID snSquad ) const;
+	XSquadron* GetpmSquadronBySN( ID snSquad );
+	// 	XSquadron* GetSquadron( int idx ) {
+// 		if( idx == -1 )
+// 			return nullptr;
+// 		if( idx < 0 || idx >= m_arySquadrons.GetMax() )
+// 			return nullptr;
+// 		return m_arySquadrons[idx];
+// 	}
+// 	inline XSquadron* GetpSquadronByIdx( int idx ) {
+// 		return GetSquadron( idx );
+// 	}
+// 	void SetSquadron( int idx, XSquadron *pSq, BOOL bCreateHero );
+// 	void SetSquadron( int idx, XSquadron *pSq, bool bCreateHero ) {
+// 		return SetSquadron( idx, pSq, xboolToBOOL(bCreateHero) ) != FALSE;
+// 	}
+	void AddSquadron( int idxPos, XSquadron *pSq, bool bCreateHero );
+	void DestroySquadron( ID idSquad );
 	XSquadron* GetSquadronByHeroSN( ID snHero ) const;
-	int GetSquadronIdxByHeroSN( ID snHero ) const;
-	inline int GetIdxSquadByHeroSN( ID snHero ) const {
-		return GetSquadronIdxByHeroSN( snHero );
-	}
-	BOOL SwapSlotSquad( XHero *pHeroSrc, XHero *pHeroDst );
-	BOOL SwapSlotSquad( int idxSrc, int idxDst );
+	int _GetIdxSquadByHeroSN( ID snHero ) const;
+// 	inline int GetIdxSquadByHeroSN( ID snHero ) const {
+// 		return GetIdxSquadByHeroSN( snHero );
+// 	}
+	void SwapSlotSquad( XHero *pHeroSrc, XHero *pHeroDst );
+	void SwapSlotSquad( int idxSrc, int idxDst );
 //	void MoveSlotSquad( XHero *pHero, int idx )
-	BOOL RemoveSquad( XHero *pHero );
-	BOOL RemoveSquad( ID snHero );
-	BOOL RemoveSquad( int idx );
-	int GetHerosToAry( XArrayLinearN<XHero*, XGAME::MAX_SQUAD>& aryOut );
+//	BOOL DestroySquad( XHero *pHero );
+	void DestroySquadBysnHero( ID snHero );
+	void DestroySquadByIdxPos( int idx );
+//	int GetHerosToAry( XArrayLinearN<XHero*, XGAME::MAX_SQUAD>& aryOut );
 	int GetHerosToAry( XVector<XHero*> *pOutAry );
-	int GetLevelUpHerosToAry( XArrayLinearN<XHero*, XGAME::MAX_SQUAD> *pAryOut );
+//	int GetLevelUpHerosToAry( XArrayLinearN<XHero*, XGAME::MAX_SQUAD> *pAryOut );
 	void AdjustLegion();
 	void DummyDataRechange( int levelAcc, XAccount *pAcc );
 	//BOOL SetSquadAll(int idx, XLegion *pLegion);
@@ -167,7 +170,7 @@ public:
 	int GetMaxFogs( int numVisible );
 	bool DelFogSquad( ID snHero );
 	XHero* GetpHeroBySN( ID snHero ) const;
-	XHero* GetpHeroByIdxSquad( int idxSquad );
+	XHero* GetpHeroByIdxPos( int idxSquad );
 	int GetIdxSquadByLeader();
 	bool ChangeHeroInSquad( XHero *pHeroFrom, XHero *pHeroTo );
 	/// 영웅이 군단에 속해있는지.
@@ -175,7 +178,8 @@ public:
 		return GetpHeroBySN( snHero ) != nullptr;
 	}
 	inline int GetMaxSquadSlot() const {
-		return m_arySquadrons.GetMax();
+		return XGAME::MAX_SQUAD;
+//		return m_arySquadrons.GetMax();
 	}
 	float GethpMaxEach( ID snSquadHero, bool bHero ) const;
 //	bool IsValid() const;
