@@ -227,7 +227,7 @@ XWndTextString* XWndSpot::UpdateName( const char* cIdentifier, bool bShow )
 	auto pText = XWndTextString::sUpdateCtrl( this
 																					, cIdentifier
 																					, XE::VEC2(0)
-																					, FONT_NANUM_BOLD, 18 );
+																					, FONT_MNLS, 18 );
 	if( pText ) {
 		pText->SetStyleStroke();
 		pText->SetbShow( true );

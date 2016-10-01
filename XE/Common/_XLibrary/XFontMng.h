@@ -4,42 +4,20 @@
 
 #define FONT_SYSTEM		_T("normal.ttf")
 #define FONT_SIZE_DEFAULT	20.f
-//#define FONT_SCALE_DEFAULT	0.9f
 
 #define BASE_FONT XE::GetGame()->GetpfdSystem()
 #define BASE_FONT_SMALL XE::GetGame()->GetpfdSystemSmall()
 
-#define FONT_NANUM_FILE			_T("normal.ttf")
-#define FONT_NANUM_BOLD_FILE	_T("bold.ttf")
-/*
-#define FONT_NANUM_FILE		_T("NanumGothicBold.ttf")
-#define FONT_COOPER_FILE		_T("CooperBlackStd.otf")
-#define FONT_NANUM_BOLD_FILE		_T("NanumGothicExtraBold.ttf")
-#define FONT_THAI_FILE		_T("kunlasatri.ttf")
-*/
+// #define FONT_NANUM_FILE			_T("normal.ttf")
+// #define FONT_NANUM_BOLD_FILE	_T("bold.ttf")
+// #define FONT_MNLS_FILE			_T("normal.ttf")
+// #define FONT_NANUM_FILE				XFontMng::s_aryFonts[0].c_str()
+// #define FONT_NANUM_BOLD_FILE	XFontMng::s_aryFonts[1].c_str()
+// #define FONT_MNLS_FILE				XFontMng::s_aryFonts[2].c_str()
 
-#ifdef WIN32
-//#define FONT_NANUM		_T("서울남산체 B")
-//#define FONT_NANUM		_T("2002L")
-//#define FONT_NANUM		_T("나눔고딕")
-//#define FONT_NANUM		_T("Noto Sans CJK KR Regular")
-//#define FONT_NANUM_BOLD		_T("서울남산체 EB")
-//#define FONT_NANUM_BOLD		_T("-2002")
-//#define FONT_NANUM_BOLD		_T("나눔고딕 ExtraBold")
-#define FONT_NANUM		FONT_NANUM_FILE
-#define FONT_NANUM_BOLD		FONT_NANUM_BOLD_FILE
-#define FONT_COOPER		_T("Cooper Std Black")
-#define FONT_THAI		_T("Kunlasatri 보통")
-#define FONT_BADABOOM	_T("BadaBoom BB")
-//#define FONT_MOK		_T("-우리목각M")
-#else
-#define FONT_NANUM		FONT_NANUM_FILE
-#define FONT_NANUM_BOLD		FONT_NANUM_BOLD_FILE
-#define FONT_COOPER		FONT_NANUM_FILE
-#define FONT_THAI		FONT_NANUM_FILE
-#define FONT_BADABOOM	_T( "damage.ttf" )
-#define FONT_MOK		_T("mok.TTF")
-#endif
+#define FONT_NANUM				XFontMng::s_aryFonts[0].c_str()
+#define FONT_NANUM_BOLD		XFontMng::s_aryFonts[1].c_str()
+#define FONT_MNLS					XFontMng::s_aryFonts[2].c_str()
 
 #ifdef WIN32
 // 폰트파일명을 넘겨주면 폰트 이름을 돌려준다.
@@ -77,7 +55,13 @@ class XFontMng
 	void Add( XBaseFontDat *pFile ) { m_listObjs.Add( pFile ); }
 	XBaseFontDat* Find( LPCTSTR szFilename, float sizeFont );
 public:
-	XFontMng() { 
+	/**
+	0: 본문용
+	1: 제목용
+	2: 유니코드용
+	*/
+	static std::vector<_tstring> s_aryFonts;		/// 폰트파일들
+	XFontMng() {
 		Init(); 
 	}
 	virtual ~XFontMng() { Destroy(); }	

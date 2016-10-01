@@ -18,7 +18,7 @@
   </popup_log>
   <elem>
     <img file="log_list2.png">
-      <text font_size="20" font="font_text_b" style="stroke" posx="10" posy="4" key="text.name.target" width="200">
+      <text font_size="20" style="stroke" posx="10" posy="4" key="text.name.target" width="200" font="font_mnls">
         <!--대상 유저 이름-->
       </text>
       <img key="img.icon.name" posx="120" posy="2" file="world_top_shield.png" scale="0.7">

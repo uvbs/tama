@@ -631,7 +631,7 @@ XWndGuildMember::XWndGuildMember(XGuild::SGuildMember *pMember)
 	XBREAK(m_pMember == nullptr);
 	auto pImg = new XWndImage( TRUE, XE::MakePath( DIR_UI, _T( "guild_member_info.png" ) ), 0.f, 0.f );
 	Add( pImg );
-	auto pText = new XWndTextString(XE::VEC2(0, 0), m_pMember->m_strName.c_str(), FONT_NANUM_BOLD, 30.f);
+	auto pText = new XWndTextString(XE::VEC2(0, 0), m_pMember->m_strName.c_str(), FONT_MNLS, 30.f);
 //	pText->SetLineLength(150.f);
 	pText->SetAlign(XE::xALIGN_CENTER);
 	pImg->Add(pText);
@@ -660,7 +660,7 @@ XWndGuildJoinReqMember::XWndGuildJoinReqMember(XGuild::SGuildMember *pUser)
 	m_pUser = pUser;
 	XBREAK(m_pUser == nullptr);
 
-	XWndTextString *pText = new XWndTextString(XE::VEC2(0, 8), m_pUser->m_strName.c_str(), FONT_NANUM_BOLD, 30.f);
+	XWndTextString *pText = new XWndTextString(XE::VEC2(0, 8), m_pUser->m_strName.c_str(), FONT_MNLS, 30.f);
 	pText->SetLineLength(150.f);
 	pText->SetAlign(XE::xALIGN_HCENTER);
 	Add(pText);
@@ -1370,7 +1370,7 @@ void XWndPopupSpotMenu::UpdateForSulfur()
 																												, XTEXT(2334)
 																												, enc.m_strDefender.c_str()
 																												, XE::NumberToMoneyString(enc.m_numSulfur) );
-							auto pText = new XWndTextString( v, strMsg, FONT_NANUM, 18.f );
+							auto pText = new XWndTextString( v, strMsg, FONT_MNLS, 18.f );
 							pWndScrl->Add( pText );
 							auto sizeText = pText->GetSizeNoTransLayout();
 							v.y += sizeText.h + 2.f;

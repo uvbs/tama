@@ -17,7 +17,7 @@
           <img posx="-12" posy="-2" file="world_top_shield.png">
             <text posx="center" posy="center" key="text.level" font="font_res_num" font_size="20" font_style="stroke" id="666" />
           </img>
-          <text posx="center" posy="center" key="text.name" font="font_text_b" font_size="20" font_style="stroke" />
+          <text posx="center" posy="center" key="text.name" font="font_mnls" font_size="20" font_style="stroke" />
           <text posx="-10" posy="14" key="text.exp" font="font_text_s" font_size="15" font_style="stroke" text="80000" show="off"></text>
         </img>
         <!--승점-->
@@ -35,7 +35,7 @@
         <!--"다른플레이어에게 보여질...."-->
       </text>
       <img posx="center" posy="138" file="edit_box.png">
-        <edit_box posx="5" posy="2" width="165" height="20" key="edit.hello.msg" text_col="black" />
+        <edit_box posx="center" posy="center" width="165" _height="20" key="edit.hello.msg" text_col="black" font="font_mnls" />
       </img>
     </popup>
   </popup_player>

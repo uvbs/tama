@@ -175,8 +175,12 @@ const std::string XGame::OnSelectLanguageKey()
 	// 옵션 로딩및 적용
 	m_pOption = new XOption();
 	m_pOption->Load();
+	const auto strcKey = m_pOption->GetstrcKeyCurrLang();
+	if( strcKey == "english" ) {
+		XFontMng::s_aryFonts[2] = _T("../normal.ttf");
+	}
 //	XE::LANG.SetSelectedKey( m_pOption->GetstrcKeyCurrLang() );
-	return m_pOption->GetstrcKeyCurrLang();
+	return strcKey;
 }
 
 bool XGame::IsbFirst() const

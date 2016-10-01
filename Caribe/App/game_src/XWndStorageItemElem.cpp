@@ -467,7 +467,10 @@ void XWndStoragyItemElem::Draw()
 		{
 			XE::xRenderParam param;
 			param.m_vPos = vPos + XE::VEC2( 3, 2 ) * vScale;
-			param.m_vScale = vScale * 0.77f;
+			if( IsHero() || m_pSoulStone )
+				param.m_vScale = vScale * 0.77f;
+			else
+				param.m_vScale = vScale;
 			param.m_funcBlend = GetblendFunc();
 			if( m_bBatch )
 				param.m_Priority = -20;

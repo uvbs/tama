@@ -18,7 +18,7 @@
       <img file="world_top_shield.png" posx="center" posy="26">
         <text posx="center" posy="6" font="font_res_num" key="text.spot.level" font_size="17" text_col="white" style="stroke" debug="1" />
       </img>
-      <text posx="center" posy="45" font="font_text_s" text_col="white" key="text.spot.name" font_size="25" style="stroke" />
+      <text posx="center" posy="45" font="font_mnls" text_col="white" key="text.spot.name" font_size="25" style="stroke" />
       <text posx="center" posy="166" font="font_text_s" text_col="white" key="text.numlose" font_size="20" show="off">
         <!--최근전적-->
       </text>
@@ -87,7 +87,7 @@
         <img file="spot_bg_log.png" posx="center" posy="64">
           <scroll_view width="212" height="87" posx="2" posy="2" key="scrl.log" />
         </img>
-        <text posx="center" posy="61" font="font_text_s" text_col="white" font_size="15" style="stroke" text="2246">
+        <text posx="center" posy="61" font="font_mnls" text_col="white" font_size="15" style="stroke" text="2246">
           <!--약탈기록-->
         </text>
       </wnd>
