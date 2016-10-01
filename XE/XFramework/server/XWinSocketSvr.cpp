@@ -10,6 +10,7 @@
 #include "XPool.h"
 #include "XFramework/XDetectDeadLock.h"
 #include "Network/XWinNetwork.h"
+#include "XFramework/XEProfile.h"
 
 /********************************************************************
 	@date:	2016/03/15 12:44

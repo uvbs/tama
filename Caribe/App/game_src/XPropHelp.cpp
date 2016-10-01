@@ -157,6 +157,9 @@ PropSeqPtr XPropHelp::LoadSeq( XEXmlNode& node )
 	spProp->m_idsFinishededQuest = node.GetString( "finish_quest" );
 	spProp->m_vStopPos.x = node.GetFloat("stop_pos_x");
 	spProp->m_vStopPos.y = node.GetFloat( "stop_pos_y" );
+	if( node.GetInt("debug") ) {
+		int a= 0;
+	}
 	_tstring strToken = node.GetTString( "event" );
 	if( !strToken.empty() ) {
 		auto seqEvent = ( XGAME::xtActionEvent )CONSTANT->GetValue( strToken );
