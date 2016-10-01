@@ -73,7 +73,9 @@ XSceneBattle *SCENE_BATTLE = nullptr;
 /** //////////////////////////////////////////////////////////////////////////
  @brief 
 */
-XSceneBattle::XSceneBattle( XGame *pGame, XGAME::xtScene scene, XSPSceneParam spBaseParam )
+XSceneBattle::XSceneBattle( XGame *pGame, 
+														XGAME::xtScene scene, 
+														XSPSceneParam spBaseParam )
 	: XSceneBase( pGame, scene )
 	, m_aryCamp(2)
 	, m_aryBar(2)

@@ -490,6 +490,8 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, XSPS
 		// 싱글에선 가상의 파라메터를 넣어준다.
 		//auto spBattleParam = XSceneBattle::sSetBattleParam();
 		auto spBattleParam = XScenePrivateRaid::sSetPrivateRaidParam();
+#else
+		auto spBattleParam = std::static_pointer_cast<xSceneBattleParam>(spParam);
 #endif // _XSINGLE
 		if( spBattleParam->IsNormal() ) {
 			pScene = new XSceneBattle( this, spBattleParam );
