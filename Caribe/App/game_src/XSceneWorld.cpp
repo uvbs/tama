@@ -1,5 +1,5 @@
 ﻿#include "StdAfx.h"
-#include "XSceneWorld.h"
+#include "XWndTech.h"
 #include "XGame.h"
 #include "XPropWorld.h"
 #include "XPropCloud.h"
@@ -48,6 +48,7 @@
 #ifdef WIN32
 #include "CaribeView.h"
 #endif
+#include "XSceneWorld.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -371,12 +372,20 @@ int XSceneWorld::OnEnterScene( XWnd*, DWORD p1, DWORD )
 		auto& listAlert = GAME->GetlistAlertWorld();
 		auto pElem = listAlert.GetpFirst();
 		if( XASSERT(pElem) ) {
-			auto pAlert = new XGameWndAlert( pElem->m_strMsg, nullptr, XWnd::xOK );
-			if( pAlert ) {
-				pAlert->SetEvent( XWM_OK, this, &XSceneWorld::OnEnterScene, 1 );
-				Add( pAlert );
-				pAlert->SetbModal( TRUE );
-				listAlert.DelByIdx(0);
+			if( pElem->m_Type == xAW_RESEARCH_COMPLETE ) {
+				auto pHero = XAccount::sGetPlayer()->GetpHeroBySN( pElem->m_snHero );
+				auto pPopup = new XWndResearchComplete( pHero, 
+																								pElem->m_idParam, 
+																								pElem->m_Level );
+				Add( pPopup );
+			} else {
+				auto pAlert = new XGameWndAlert( pElem->m_strMsg, nullptr, XWnd::xOK );
+				if( pAlert ) {
+					pAlert->SetEvent( XWM_OK, this, &XSceneWorld::OnEnterScene, 1 );
+					Add( pAlert );
+					pAlert->SetbModal( TRUE );
+					listAlert.DelByIdx( 0 );
+				}
 			}
 			return 1;
 		}

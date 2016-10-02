@@ -468,11 +468,7 @@ void XWndStoragyItemElem::Draw()
 		{
 			XE::xRenderParam param;
 			param.m_vPos = vPos + XE::VEC2( 3, 2 ) * vScale;
-<<<<<<< HEAD
-			if( IsHero() )
-=======
 			if( IsHero() || m_pSoulStone )
->>>>>>> ui_batch_render
 				param.m_vScale = vScale * 0.77f;
 			else
 				param.m_vScale = vScale;

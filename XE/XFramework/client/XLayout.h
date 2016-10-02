@@ -299,6 +299,10 @@ public:
 	int GetAttrText( TiXmlElement *elemCtrl, const char *cAttrKey, ID *pOut ) const;
 	int GetAttrTextAlign( TiXmlElement *elemCtrl, XE::xAlign *pOut, float *pOutWidth ) const;
 	int GetAttrWinID( TiXmlElement *elemCtrl, ID *pOut ) const;
+	bool GetAttrStr( TiXmlElement* pElemCtrl, const char* cKey, std::string* pOut ) const;
+#ifdef WIN32
+	bool GetAttrStr( TiXmlElement* pElemCtrl, const char* cKey, _tstring* pOut ) const;
+#endif // _DEBUG
 	int GetAttrFile( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring *pOutStr ) const;
 	int GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, BOOL *pOut ) const;
 	bool GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, bool *pOut ) const;

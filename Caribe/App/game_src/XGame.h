@@ -59,6 +59,8 @@ namespace XGAME {
 	struct xAlertWorld {
 		xtAlertWorld m_Type;
 		ID m_snHero = 0;
+		ID m_idParam = 0;
+		int m_Level = 0;
 		_tstring m_strMsg;
 		ID getid() const {
 			return m_snHero;

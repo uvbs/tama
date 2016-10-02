@@ -144,6 +144,13 @@ private:
 	bool DispatchMsg( const XE::xMsgWin& msg ) override;
 };
 
+inline XWndStoragyItemElem* xGetCtrlHero( XWnd* pRoot, const std::string& key ) {
+	return SafeCast<XWndStoragyItemElem*>( pRoot->Find( key ) );
+}
+
+inline XWndStoragyItemElem* xGetCtrlItem( XWnd* pRoot, const std::string& key ) {
+	return SafeCast<XWndStoragyItemElem*>( pRoot->Find( key ) );
+}
 
 
 

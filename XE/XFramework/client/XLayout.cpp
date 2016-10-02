@@ -2046,9 +2046,14 @@ int XLayout::GetAttrCommon( TiXmlElement *elemCtrl, xATTR_ALL *pOut ) const
 		pOut->m_Touchable = ( bTouchable ) ? 1 : 0;
 	{
 		DWORD dwParam;
+		_tstring str;
 		if( GetAttrDWORD( elemCtrl, "param", &dwParam ) ) {
 			pOut->m_Param.Set( "param", dwParam );
+		} else 
+		if( GetAttrStr( elemCtrl, "param", &str ) ) {
+			pOut->m_Param.Set( "param", str );
 		}
+		
 	}
 	return 1;
 } // GetAttrCommon
@@ -2395,7 +2400,34 @@ int XLayout::GetAttrWinID( TiXmlElement *elemCtrl, ID *pOut ) const
 	return 0;
 }
 
-int XLayout::GetAttrFile( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring *pOutStr ) const
+bool XLayout::GetAttrStr( TiXmlElement* pElemCtrl,
+													const char* cKey,
+													std::string* pOut ) const
+{
+	const char *cStr = pElemCtrl->Attribute( cKey );
+	if( XE::IsHave( cStr ) ) {
+		*pOut = (cStr)? cStr : "";
+		return true;
+	}
+	return false;
+}
+#ifdef WIN32
+bool XLayout::GetAttrStr( TiXmlElement* pElemCtrl,
+													const char* cKey,
+													_tstring* pOut ) const
+{
+	const char *cStr = pElemCtrl->Attribute( cKey );
+	if( XE::IsHave( cStr ) ) {
+		*pOut = C2SZ( cStr );
+		return true;
+	}
+	return false;
+}
+#endif // WIN32
+
+int XLayout::GetAttrFile( TiXmlElement *elemCtrl, 
+													const char *cAttrKey, 
+													_tstring *pOutStr ) const
 {
 	if( XE::IsHave( cAttrKey ) ) {
 		// 지정된 키가 있으면 그걸로 찾고 끝낸다.

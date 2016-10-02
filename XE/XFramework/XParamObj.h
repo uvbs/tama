@@ -103,6 +103,12 @@ public:
 			return 0;
 		return m_paramInt.Get( cKey );
 	}
+	bool GetInt( const char* cKey, int* pOut ) const {
+		if( m_paramInt.IsEmpty( cKey ) )
+			return false;
+		*pOut = m_paramInt.Get( cKey );
+		return true;
+	}
 	DWORD GetDword( const char* cKey ) const {
 		if( m_paramDword.IsEmpty( cKey ) )
 			return 0;
@@ -130,6 +136,22 @@ public:
 #else	// WIN32
 		return m_paramStrc.Get( cKey );
 #endif // not win32
+	}
+	bool GetStrt( const char* cKey, _tstring* pOut ) const {
+		if( m_paramStrt.IsEmpty( cKey ) )
+			return false;
+#ifdef WIN32
+		*pOut = m_paramStrt.Get( cKey );
+#else	// WIN32
+		*pOut = m_paramStrc.Get( cKey );
+#endif // not win32
+		return true;
+	}
+	bool GetStrc( const char* cKey, std::string* pOut ) const {
+		if( m_paramStrc.IsEmpty( cKey ) )
+			return false;
+		*pOut = m_paramStrc.Get( cKey );
+		return true;
 	}
 	bool IsEmpty() const {
 		return m_paramInt.IsEmpty() && m_paramDword.IsEmpty() && m_paramWord.IsEmpty()

@@ -99,3 +99,26 @@ private:
 	BOOL OnCreate() override;
 	void Update() override;
 }; // class XWndResearchConfirm
+
+/****************************************************************
+* @brief 
+* @author xuzhu
+* @date	2016/10/02 15:44
+*****************************************************************/
+class XWndResearchComplete : public XWndPopup
+{
+public:
+	XWndResearchComplete( XHero* pHero, ID idAbil, int point );
+	~XWndResearchComplete() { Destroy(); }
+	// get/setter
+	// public member
+private:
+	// private member
+	int m_Test = 0;
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	BOOL OnCreate() override;
+	void Update() override;
+}; // class XWndResearchComplete

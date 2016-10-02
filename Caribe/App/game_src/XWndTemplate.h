@@ -124,4 +124,35 @@ private:
 	void Update() override;
 }; // class XWndCircleSkill
 
+inline XWndCircleUnit* xGetCtrlUnit( XWnd* pRoot, const std::string& key ) {
+	return SafeCast<XWndCircleUnit*>( pRoot->Find( key ) );
+}
+
+/****************************************************************
+* @brief 스킬과 스킬의 원형프레임을 그려주는 모듈.
+* @author xuzhu
+* @date	2015/12/01 22:01
+*****************************************************************/
+class XWndTechAbil : public XWnd
+{
+public:
+	XWndTechAbil( const XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XHero *pHero);
+	~XWndTechAbil() { Destroy(); }
+	// get/setter
+	GET_SET_BOOL_ACCESSOR( bShowLevel );
+	// public member
+	GET_SET_ACCESSOR_CONST( int, Level );
+	void SetSkill( const XSKILL::XSkillDat *pDat, int level );
+private:
+	// private member
+	const XSKILL::XSkillDat *m_pSkillDat = nullptr;
+	XHero *m_pHero = nullptr;
+	bool m_bShowLevel = false;
+	int m_Level = 0;
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	void Update() override;
+}; // class XWndTechAbil
 

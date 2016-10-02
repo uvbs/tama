@@ -4,6 +4,7 @@
 #include "JWWnd.h"
 #include "XWndTemplate.h"
 #include "XWndStorageItemElem.h"
+#include "skill/XESkillMng.h"
 
 
 #ifdef WIN32
@@ -57,6 +58,35 @@ XWnd* XAppDelegate::DelegateCreateCustomCtrl( const std::string& strcCtrl
 		pWndCreated->SetPosLocal( attrAll.vPos );
 		pWndCreated->SetScaleLocal( attrAll.vScale );
 		pWndCreated->SetAlphaLocal( attrAll.alpha );
+	} else
+	if( strcCtrl == "skill_ctrl" ) {
+		XSKILL::XSkillDat* pDat = nullptr;
+		const DWORD idSkill = attrAll.m_Param.GetDword( "param" );
+		if( idSkill ) {
+			pDat = XSKILL::XESkillMng::sGet()->FindByID( idSkill );
+		}
+		auto pCtrl = new XWndCircleSkill( pDat, attrAll.vPos, nullptr );
+		pCtrl->SetScaleLocal( attrAll.vScale );
+		pWndCreated = pCtrl;
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( strcCtrl == "abil_ctrl" ) {
+		const XSKILL::XSkillDat* pDat = nullptr;
+		int idSkill = 0;
+		_tstring strIds;
+		if( !attrAll.m_Param.GetInt( "param", &idSkill ) ) {
+			attrAll.m_Param.GetStrt( "param", &strIds );
+		}
+		if( idSkill ) {
+			pDat = XSKILL::XESkillMng::sGet()->FindByID( idSkill );
+		} else
+		if( !strIds.empty() ) {
+			pDat = static_cast<const XSKILL::XSkillDat*>( XSKILL::XESkillMng::sGet()->FindByIds( strIds ) );
+		}
+		
+		auto pCtrl = new XWndTechAbil( pDat, attrAll.vPos, nullptr );
+		pCtrl->SetScaleLocal( attrAll.vScale );
+		pWndCreated = pCtrl;
 	}
 
 

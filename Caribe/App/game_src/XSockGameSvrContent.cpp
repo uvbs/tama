@@ -3529,20 +3529,21 @@ void XSockGameSvr::RecvResearchComplete( XPacket& p, const xCALLBACK& c )
 		// 완료됨.
 		ACCOUNT->GetResearching().DoComplete();
 		// 여기서 바로 띄우면 안되고 보관해놨다가 월드맵뜨면 띄워야 함.
-		_tstring str = XE::Format( XTEXT( 2029 ), XTEXT( pProp->idName ) );	// "아무개"의 연구가 완료되었습니다.
-		if( SCENE_WORLD && !GAME->IsPlayingSeq() ) {
-			auto pAlert = XWND_ALERT( "%s", str.c_str() );
-			if( pAlert ) {
-				pAlert->SetbModal( TRUE );
-			}
-		} else {
+//		_tstring str = XE::Format( XTEXT( 2029 ), XTEXT( pProp->idName ) );	// "아무개"의 연구가 완료되었습니다.
+//		if( SCENE_WORLD && !GAME->IsPlayingSeq() ) {
+			// 			auto pAlert = XWND_ALERT( "%s", str.c_str() );
+// 			if( pAlert ) {
+// 				pAlert->SetbModal( TRUE );
+// 			}
+//		} else {
 			auto& listAlert = GAME->GetlistAlertWorld();
 			xAlertWorld alert;
 			alert.m_Type = xAW_RESEARCH_COMPLETE;
 			alert.m_snHero = snHero;
-			alert.m_strMsg = str;
+			alert.m_idParam = idAbil;
+			alert.m_Level = point;
 			listAlert.Add( alert );
-		}
+//		}
 		if (codeError == xEC_QUICK_OK)
 			SendUnregistPushMsg(NULL, ACCOUNT->GetidAccount(), XGAME::xTECH_TRAINING, idAbil);
 	} else {

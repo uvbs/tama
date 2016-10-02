@@ -1,15 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <popup>
-    <popup img="popup_squadskill1.png">
-      <text posx="center" posy="5" font="font_text_s" text_col="white" font_size="20" text="2017" font_style="stroke">
-        <!--"연구비용(타이틀)"-->
+    <popup img="popup_squadskill1.png" format="argb8888">
+      <text posx="center" posy="5" font="font_text_s" text_col="white" font_size="20" text="2027" font_style="stroke">
+        <!--연구 완료-->
       </text>
       <_layout posx="85" posy="40" file="profile_picture.xml" layout="profile_me">
         <!--아이콘들어갈네모박스-->
       </_layout>
       <wnd posx="43" posy="31" width="135" height="128">
-        <img posx="center" posy="5" file="common_bg_frame.png">
+        <!--특성아이콘/이름/설명-->
+        <abil_ctrl posx="center" posy="5" _param="gungnir" key="ctrl.abil" />
+        <_img posx="center" posy="5" file="common_bg_frame.png">
           <img posx="4" posy="3" key="img.abil" />
           <spr posx="49" posy="49" file="brilliant.spr" id_act="1" scale="0.5" />
           <img posx="43" posy="43" file="popup_squadskilllevel.png">
@@ -18,7 +20,7 @@
               <!--필요자원-->
             </text>
           </img>
-        </img>
+        </_img>
         <text font="font_text_s" text_col="white" font_size="20" font_style="shadow" key="text.abil.name" text="1" posx="center" posy="62">
           <!--스킬이름-->
         </text>
@@ -37,6 +39,9 @@
           </img>
         </_img>
       </wnd>
+      <text posx="0" posy="166" font="font_mnls" text_col="white" font_size="20" font_style="shadow" key="text.notice" width="359" height="45" align="center">
+        <!--훈련이 완료되었습니다.-->
+      </text>
       <_butt posx="center" posy="170" img_up="common_butt_mid.png" key="butt.ok">
         <!--연구버튼-->
         <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" text="2304" font_style="stroke" debug="44">
@@ -58,8 +63,8 @@
         </wnd>
       </_wnd>
       <wnd posx="180" posy="24" width="143" height="115">
-        <hero_ctrl posx="18" posy="center" param="100" />
-        <unit_ctrl posx="96" posy="center" param="1" />
+        <hero_ctrl posx="18" posy="center" _param="100" key="ctrl.hero" />
+        <unit_ctrl posx="96" posy="center" _param="1" key="ctrl.unit" />
       </wnd>
     </popup>
   </popup>

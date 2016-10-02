@@ -618,3 +618,60 @@ XWndPopup* XGAME::DoPopupBattleResult( XGAME::xBattleResult& result, XWnd* pPare
 #endif // not _XSINGLE
 }
 
+////////////////////////////////////////////////////////////////
+/** //////////////////////////////////////////////////////////////////
+ @brief 특성 범용 컨트롤
+*/
+XWndTechAbil::XWndTechAbil( const XSKILL::XSkillDat *pDat
+														, const XE::VEC2& vPos
+														, XHero *pHero )
+	: XWnd( vPos )
+	, m_pSkillDat( pDat )
+{
+	m_pHero = pHero;
+	XLayoutObj::sCreateLayout( _T("mod_abil.xml"), "module", this );
+	SetSkill( pDat, 0 );
+	if( pDat ) {
+		xSET_IMG( this, "img.abil", pDat->GetResIcon(), XE::xPF_ARGB4444 );
+	}
+}
+
+void XWndTechAbil::SetSkill( const XSKILL::XSkillDat *pDat,
+														 int level )
+{
+	if( pDat ) {
+		xSET_IMG( this, "img.abil", pDat->GetResIcon(), XE::xPF_ARGB4444 );
+	}
+	m_Level = level;
+}
+
+void XWndTechAbil::Update()
+{
+	xSET_SHOW( this, "img.bg.lv", m_bShowLevel );
+	if( m_bShowLevel ) { 
+		xSET_TEXT_FORMAT( this, "text.point", _T("%d"), m_Level );
+	}
+// 	auto blendFunc = GetblendFunc();
+// 	// 스킬아이콘
+// 	auto pFace = xGET_IMAGE_CTRL( this, "img.skill" );
+// 	if( pFace == nullptr ) {
+// 		pFace = new XWndImage( XE::VEC2( 0 ) );
+// 		pFace->SetstrIdentifier( "img.skill" );
+// 		Add( pFace );
+// 	}
+// 	{
+// 		auto pImg = xGET_IMAGE_CTRL( this, "img.bg.level" );
+// 		if( !pImg ) {
+// 			pImg = new XWndImage( PATH_UI("popup_squadskilllevel.png"), 
+// 														true,
+// 														XE::xPF_ARGB1555,
+// 														XE::VEC2(43,43) );
+// 		}
+// 	}
+// 	if( pFace && m_pSkillDat ) {
+// 		auto strResUnit = XE::MakePath( DIR_IMG, m_pSkillDat->GetstrIcon() );
+// 		pFace->SetSurfaceRes( strResUnit );
+// 		pFace->SetblendFunc( blendFunc );
+// 	}
+	XWnd::Update();
+}

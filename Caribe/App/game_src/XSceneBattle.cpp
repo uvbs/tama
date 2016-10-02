@@ -659,22 +659,14 @@ void XSceneBattle::CreateDebugButtons( void )
 		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnDebugAllKill, 3 );
 		Add( pButt );
 		v.x += size.w;
-// 		pButt = new XWndButtonDebug( v.x, v.y,
-// 																 size.w, size.h,
-// 																 _T( "<-" ),
-// 																 XE::GetMain()->GetpGame()->GetpfdSystem() );
-// 		pButt->SetstrIdentifier( "butt.debug.minus" );
-// 		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnCheat, 0 );
-// 		Add( pButt );
-// 		v.x += size.w;
-// 		pButt = new XWndButtonDebug( v.x, v.y,
-// 																 size.w, size.h,
-// 																 _T( "->" ),
-// 																 XE::GetMain()->GetpGame()->GetpfdSystem() );
-// 		pButt->SetstrIdentifier( "butt.debug.plus" );
-// 		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnCheat, 1 );
-// 		Add( pButt );
-// 		v.x += size.w;
+		pButt = new XWndButtonDebug( v.x, v.y,
+																 size.w, size.h,
+																 _T( "test" ),
+																 XE::GetMain()->GetpGame()->GetpfdSystem() );
+		pButt->SetstrIdentifier( "butt.debug.test" );
+		pButt->SetEvent( XWM_CLICKED, this, &XSceneBattle::OnDebugTest, 0 );
+		Add( pButt );
+		v.x += size.w;
 
 
 	}
@@ -1799,4 +1791,20 @@ XSPWorld XSceneBattle::GetspmWorld()
 void XSceneBattle::AddObj( XSPWorldObj spObj )
 {
 	GetspmWorld()->AddObj( spObj );
+}
+
+//#include "XWndTech.h"
+/**
+ @brief 
+*/
+int XSceneBattle::OnDebugTest( XWnd* pWnd, DWORD p1, DWORD p2 )
+{
+	CONSOLE("%s", __TFUNC__);
+	//
+// 	XHero* pHero = XAccount::sGetPlayerConst()->GetlistHeroByInvenConst().front();	
+// 	const int level = 1;
+// 	ID idAbil = 47;
+// 	auto pPopup = new XWndResearchComplete( pHero, idAbil, level );
+// 	Add( pPopup );
+	return 1;
 }
