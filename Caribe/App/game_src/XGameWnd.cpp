@@ -1946,8 +1946,8 @@ XWndLevelup::XWndLevelup()
 		if( pText ) {
 			_tstring str;
 			if( i == 0 ) {
-				_tstring str1 = XE::NumberToMoneyString( ACCOUNT->GetmaxAP( level - 1 ) );
-				_tstring str2 = XE::NumberToMoneyString(ACCOUNT->GetmaxAP());
+				_tstring str1 = XE::NtS( ACCOUNT->GetmaxAP( level - 1 ) );
+				_tstring str2 = XE::NtS(ACCOUNT->GetmaxAP());
 				str = XFORMAT("%s: %s => %s", XTEXT(2099), str1.c_str(), str2.c_str() );
 				++idx;
 			} else
@@ -1972,11 +1972,6 @@ XWndLevelup::XWndLevelup()
 				if( ACCOUNT->GetnumUnlockTicketForMiddleOrBig() ) {
 					str = XTEXT(2144);	// 새로운 유닛을 사용할수 있게 되었슴다.
 				}
-// 				// 렙업에 의해 새로 언락시킬수 있게 된 유닛이 있는지.
-// 				if( ACCOUNT->IsUnlockableUnitByLevel() )
-// 				{
-// 					str = XFORMAT( "새로운 종류의 병사를 사용할 수 있게 되었습니다.", XTEXT( 30003 ), XTEXT( 30004 ), XTEXT( 30005 ) );
-// 				}
 			}
 			pText->SetText( str );
 			

@@ -285,6 +285,7 @@ public:
 	virtual void FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr );
 #ifdef _VER_OPENGL
 	virtual void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam );
+	void DrawByParam( const XSprObj *pSprObj, const XE::xRenderParam& _param ) const override;
 #else
 	virtual void Draw( XSprObj *pSprObj, float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam );
 #endif
