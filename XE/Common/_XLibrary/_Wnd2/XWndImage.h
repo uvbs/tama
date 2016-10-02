@@ -10,6 +10,7 @@ class XEComponent;
 //////////////////////////////////////////////////////////////////////////
 
 class XWndImage : public XWnd
+
 {
 public:
 	static XWndImage* sUpdateCtrl( XWnd *pRoot, const char *cIdentifier );

@@ -123,9 +123,11 @@ void XWndSprObj::CreateSprObj( LPCTSTR szSpr,
 			// 캐시에 있다가 불려온것이면 데이타가 있다.
 			const XE::VEC2 vSize = pSprObj->GetSize();
 			SetSizeLocal( vSize );
+			SetbUpdate( true );
 		} else {
 			const XE::VEC2 vSize( 2, 2 );		// 비동기로 로딩해서 크기를 일단 이렇게 맞춤.
 			SetSizeLocal( vSize );
+			SetbUpdate( true );
 		}
 	} );
 	m_pSprObj->SetAction( idAct, loopType );

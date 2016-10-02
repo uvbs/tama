@@ -287,7 +287,7 @@ void XLayerImage::DrawByParam( const XSprObj *pSprObj,
 	MATRIX mParent;
 	MatrixIdentity( mParent );
 	param.m_vPos += cnPos.vPos;
-	param.m_vAdjAxis = GetvAdjAxis();
+	param.m_vAdjAxis += GetvAdjAxis();
 	param.m_vRot.z += cnRot.fAngle;
 	param.m_vScale *= cnScale.m_vScale;
 	param.m_vColor.a *= cnEff.fAlpha;
@@ -386,8 +386,6 @@ void XLayerObject::Draw( XSprObj *, float x, float y, const D3DXMATRIX &m, XEFFE
 	const XE::VEC2 vPos( x, y );
 	XSprObj *pSprObj = m_pSprObjCurr;
 	if( pSprObj ) {
-// 		float lx = Getx();
-// 		float ly = Gety();
 		auto vLocal = GetPos();
 		pSprObj->SetAdjustAxis( GetvAdjAxis() );		// 회전축을 보정함
 		pSprObj->SetRotateZ( GetcnRot().fAngle );
@@ -406,9 +404,47 @@ void XLayerObject::Draw( XSprObj *, float x, float y, const D3DXMATRIX &m, XEFFE
 			pSprObj->SetfAlpha( GetcnEffect().fAlpha );
 		}
 		pSprObj->Draw( vPos + vLocal, m );
-//		pSprObj->Draw( x + lx, y + ly, m );
 	} 
 }
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 신버전
+*/
+void XLayerObject::DrawByParam( const XSprObj *_pSprObj,
+																const XE::xRenderParam& _param ) const
+{
+	XSprObj *pSprObj = m_pSprObjCurr;
+	if( pSprObj ) {
+		const auto& cnPos = GetcnPosConst();
+		const auto& cnRot = GetcnRotConst();
+		const auto& cnScale = GetcnScaleConst();
+		const auto& cnEff = GetcnEffConst();
+		auto param = _param;
+		param.m_vPos += cnPos.vPos;
+		param.m_vRot.z += cnRot.fAngle;
+		param.m_vScale *= cnScale.m_vScale;
+		param.m_vAdjAxis += GetvAdjAxis();
+		param.m_vColor.a *= cnEff.fAlpha;
+		param.SetFlipHoriz( cnEff.IsFlipHoriz() );
+		param.SetFlipVert( cnEff.IsFlipVert() );
+		param.m_funcBlend = cnEff.GetfuncBlend();		// 기본적으론 내부가 우선이지만
+		// 외부지정 파라메터와 내부 파라메터를 곱함( 둘중 하나라도 add면 add로 찍힘)
+		if( param.m_funcBlend == XE::xBF_ADD
+				|| cnEff.GetfuncBlend() == XE::xBF_ADD )
+			param.m_funcBlend = XE::xBF_ADD;
+		// z버퍼 사용중이면 알파테스트는 무조건 true가 된다.
+		if( param.m_bZBuff )
+			param.m_bAlphaTest = true;
+		if( param.m_vColor.a < 1.f
+				|| param.m_funcBlend == XE::xBF_ADD || param.m_funcBlend == XE::xBF_SUBTRACT ) {
+			param.m_bZBuff = false;
+			param.m_bAlphaTest = false;
+		}
+		//
+		pSprObj->DrawByParam( param );
+	}
+}
+
 void XLayerObject::FrameMove( XSprObj *pParent, float dt, float fFrmCurr )
 {
 	XLayerMove::FrameMove( pParent, dt, fFrmCurr );

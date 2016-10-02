@@ -84,7 +84,7 @@ XWndRankingElem::XWndRankingElem( int nRank, LPCTSTR szName, int nLadder )
 	pText->SetLineLength( 52.f );
 	pText->SetAlign( XE::xALIGN_HCENTER );
 	Add( pText );
-	pText = new XWndTextString( XE::VEC2( 52, 0 ), szName, FONT_NANUM_BOLD, 30.f );
+	pText = new XWndTextString( XE::VEC2( 52, 0 ), szName, FONT_MNLS, 30.f );
 	pText->SetLineLength( 147.f );
 	pText->SetAlign( XE::xALIGN_HCENTER );
 	Add( pText );
@@ -298,7 +298,7 @@ XWndHello::XWndHello( ID idSpot, const XE::VEC2& vwSpot )
 	const auto sizeThis = pImg->GetSizeFinal();
 	SetSizeLocal( sizeThis );
 	SetPosLocal( vwSpot );
-	auto pText = new XWndTextString( XE::VEC2( 0, 2 ), _T( "" ), FONT_NANUM, 15.f, XCOLOR_BLACK );
+	auto pText = new XWndTextString( XE::VEC2( 0, 2 ), _T( "" ), FONT_MNLS, 15.f, XCOLOR_BLACK );
 	pText->SetstrIdentifier( "text.hello" );
 	pText->SetLineLength( sizeThis.w );
 //	pText->SetAlignHCenter();

@@ -3015,7 +3015,7 @@ int XSceneWorld::OnCheat( XWnd* pWnd, DWORD p1, DWORD p2 )
 // 		if( XE::GetMain()->m_bCtrl )
 // 			exp *= 10;
 // 		exp = (int)(exp * plusMinus);
-		GAMESVR_SOCKET->SendCheat( this, 1, exp / 3 );
+		GAMESVR_SOCKET->SendCheat( this, 1, (exp / 3)-1 );
 	} else
 	if( type == 2 )	{
 		// 영웅 레벨 업으로 예약

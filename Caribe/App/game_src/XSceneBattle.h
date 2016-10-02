@@ -21,7 +21,53 @@ class XWndFaceInBattle;
 class XSurface;
 class XWndBatchRender;
 
+<<<<<<< HEAD
 #define MAX_SQUAD_PVRAID		30
+=======
+XE_NAMESPACE_START( XGAME )
+struct xSceneBattleParam : public xSceneParamBase {
+	ID m_idEnemy = 0;			// 상대가 pc의 경우.
+	xtSpot m_typeSpot = XGAME::xSPOT_NONE;	// 전투가벌어지는 스팟의 타입(에러확인용)
+	ID m_idSpot = 0;					// 전투가 벌어지는 스팟(0인경우도 있음)
+	int m_Level = 0;					// 상대의 레벨
+	_tstring m_strName;				// 상대이름
+	XVector<XSPLegion> m_spLegion;	// 0:아군 1:적군
+	xtBattle m_typeBattle = XGAME::xBT_NONE;
+	int m_Defense = 0;				// 방어도(보석광산용)
+	int m_idxStage = -1;				///< 캠페인의 경우 스테이지 인덱스
+	int m_idxFloor = 0;
+	xSceneBattleParam( ID idEnemy,
+										 xtSpot typeSpot,
+										 ID idSpot,
+										 int level,
+										 const _tstring& strName,
+										 const XVector<XSPLegion>& aryLegion,
+										 xtBattle typeBattle,
+										 int def, int idxStage, int idxFloor )
+		: m_idEnemy( idEnemy )
+		, m_typeSpot( typeSpot )
+		, m_idSpot( idSpot )
+		, m_Level( level )
+		, m_strName( strName )
+		, m_spLegion( aryLegion )
+		, m_typeBattle( typeBattle )
+		, m_Defense( def )
+		, m_idxStage( idxStage )
+		, m_idxFloor( idxFloor ) {	}
+	// npc와 전투하는것인가.
+	bool IsVsNpc() const {
+		return m_idEnemy == 0;
+	}
+	bool IsValid() const;
+	inline bool IsInvalid() const {
+		return !IsValid();
+	}
+	inline void Release() {
+		m_spLegion[0].reset();
+		m_spLegion[1].reset();
+	}
+};
+>>>>>>> ui_batch_render
 
 namespace XGAME {
 struct xSceneBattleParam;

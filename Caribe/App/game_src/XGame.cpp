@@ -176,8 +176,12 @@ const std::string XGame::OnSelectLanguageKey()
 	// 옵션 로딩및 적용
 	m_pOption = new XOption();
 	m_pOption->Load();
+	const auto strcKey = m_pOption->GetstrcKeyCurrLang();
+	if( strcKey == "english" ) {
+		XFontMng::s_aryFonts[2] = _T("../normal.ttf");
+	}
 //	XE::LANG.SetSelectedKey( m_pOption->GetstrcKeyCurrLang() );
-	return m_pOption->GetstrcKeyCurrLang();
+	return strcKey;
 }
 
 bool XGame::IsbFirst() const
@@ -382,24 +386,22 @@ void XGame::CopyLuaToWork()
 void XGame::CreateGameResource()
 {
 	XBREAK( s_bLoaded == true );
-// #ifdef _XPATCH
-// 	// 패치로 text_ko.txt가 갱신되었을 수도 있으니 다시 로딩함.
-// 	SAFE_DELETE( TEXT_TBL );
-// //	LoadTextTable();
-// #endif
 	// 공통 리소스 로딩.
 	XGameCommon::CreateCommon();
-// 	XPropBgObj::sGet()->LoadProp( _T("propObj.xml") );
 	// 패치 클라가 들어가면 게임관련 리소스는 패치클라가 끝난후 로딩된다.
 	XWndButton::SetDefaultEvent( XWM_SOUND_DOWN, this, &XGame::OnSoundDown );
 	//
 	XLOGXN("load main layout: layout.xml");
 	// 메인 레이아웃 생성
-//	XAppLayout::sCreate(_T("layout.xml"), nullptr );
 	XLayout::sCreateMain(_T("layout.xml"), XAppDelegate::sGet() );
 	//
 	m_psoBrilliant = new XSprObj( _T("brilliant.spr") );
 	m_psoBrilliant->SetAction( 1 );
+#ifdef _CHEAT
+// 	m_psoMouse = new XSprObj( _T("ui_levelup.spr") );
+// 	m_psoMouse->SetAction( 3 );
+
+#endif // _CHEAT
 	s_bLoaded = true;
 } // createGameResource
 
@@ -597,12 +599,11 @@ int XGame::Process( float dt )
 	ProcessConnection();
 	XConnector::sGet()->Process( dt );
 	//
-// 	if( m_psoTest ) {
-// 		m_psoTest->SetAction( 98 );
-// 		m_psoTest->SetFlipHoriz( TRUE );
-// 		m_psoTest->SetmultiplySpeed( 4.95f );
-// 		m_psoTest->FrameMove( dt );
-// 	}
+#ifdef _CHEAT
+	if( m_psoMouse ) {
+		m_psoMouse->FrameMove( dt );
+	}
+#endif // _CHEAT
 		//
 	XEContent::Process( dt );
 		//
@@ -857,11 +858,10 @@ void XGame::Draw()
 	}
 #endif // WIN32
 #endif // _CHEAT
-// 	if( m_psoTest ) {
-// 		auto vMouse = INPUTMNG->GetMousePos();
-// //		m_psoTest->Draw( vMouse );
-//  		m_psoTest->Draw( XE::GetGameSize() * 0.75f );
-// 	}
+	if( m_psoMouse ) {
+		auto vMouse = INPUTMNG->GetMousePos();
+		m_psoMouse->Draw( vMouse );
+	}
 } // void XGame::Draw()
 
 void XGame::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat* pFontDat )

@@ -291,7 +291,7 @@ XWndTextString* XWndSpot::UpdateName( const char* cIdentifier, bool bShow )
 	auto pText = XWndTextString::sUpdateCtrl( this
 																					, cIdentifier
 																					, XE::VEC2(0)
-																					, FONT_NANUM_BOLD, 18 );
+																					, FONT_MNLS, 18 );
 	if( pText ) {
 		pText->SetStyleStroke();
 		pText->SetbShow( true );
@@ -416,11 +416,12 @@ XWndImage* XWndSpot::UpdateHardMark( const char* cIdentifier, bool bShow )
 		int lvHard = XGAME::GetHardLevel( power, ACCOUNT->GetPowerExcludeEmpty() );
 		auto pImg = XWndImage::sUpdateCtrl( this, XE::VEC2(0), nullptr, true, cIdentifier );
 		if( pImg ) {
+			pImg->SetPriority( -100 );
 			pImg->SetbShow( true );
 			const auto bb = GetBoundBoxByVisibleLocal();
 			const auto vSize = pImg->GetSizeLocal();
 			pImg->SetX( -( vSize.w * 0.5f ) );
-			pImg->SetY( bb.vLT.y - vSize.h );
+			pImg->SetY( bb.vLT.y - (vSize.h * 0.8f) );
 			_tstring strImg = XE::Format( _T( "world_hard%d.png" ), lvHard + 2 );
 			pImg->SetSurfaceRes( XE::MakePath( DIR_UI, strImg ), XE::xPF_ARGB1555, true );
 		}
