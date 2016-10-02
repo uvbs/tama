@@ -3071,6 +3071,7 @@ void XSockGameSvr::RecvCheckTrainComplete( XPacket& p, const xCALLBACK& c )
 		//
 		_tstring str;
 		int type2 = -1;
+		XBREAK(1);	// XWndSkillTrainComplete로 교체할것.
 		switch( type ) {
 		case XGAME::xTR_LEVEL_UP:
 			str = XE::Format( XTEXT( 2096 ), pHero->GetstrName().c_str() );	// 영웅 xxx의 훈련이 끝났습니다.
@@ -3103,15 +3104,18 @@ void XSockGameSvr::RecvCheckTrainComplete( XPacket& p, const xCALLBACK& c )
 			xAlertWorld alert;
 			alert.m_Type = xAW_TRAIN_COMPLETE;
 			alert.m_snHero = pHero->GetsnHero();
+			alert.m_Train = type;
 			alert.m_strMsg = str;
 			listAlert.Add( alert );
 // 			}
 		} else {
-			auto pAlert = new XGameWndAlert( str.c_str(), nullptr, XWnd::xOK );
-			if( pAlert ) {
-				GAME->GetpScene()->Add( pAlert );
-				pAlert->SetbModal( TRUE );
-			}
+			const int lv = pHero->GetLevel( type );
+			GAME->DoPopupTrainComplete( type, pHero, lv );
+// 			auto pAlert = new XGameWndAlert( str.c_str(), nullptr, XWnd::xOK );
+// 			if( pAlert ) {
+// 				GAME->GetpScene()->Add( pAlert );
+// 				pAlert->SetbModal( TRUE );
+// 			}
 		}
 		if ( typeComplete ) {
 			// 즉시완료시키면 렙업창 꺼줌.
@@ -3528,22 +3532,25 @@ void XSockGameSvr::RecvResearchComplete( XPacket& p, const xCALLBACK& c )
 	if( codeError == xEC_OK || codeError == xEC_QUICK_OK ) {
 		// 완료됨.
 		ACCOUNT->GetResearching().DoComplete();
-		// 여기서 바로 띄우면 안되고 보관해놨다가 월드맵뜨면 띄워야 함.
-//		_tstring str = XE::Format( XTEXT( 2029 ), XTEXT( pProp->idName ) );	// "아무개"의 연구가 완료되었습니다.
-//		if( SCENE_WORLD && !GAME->IsPlayingSeq() ) {
-			// 			auto pAlert = XWND_ALERT( "%s", str.c_str() );
-// 			if( pAlert ) {
-// 				pAlert->SetbModal( TRUE );
-// 			}
-//		} else {
-			auto& listAlert = GAME->GetlistAlertWorld();
-			xAlertWorld alert;
-			alert.m_Type = xAW_RESEARCH_COMPLETE;
-			alert.m_snHero = snHero;
-			alert.m_idParam = idAbil;
-			alert.m_Level = point;
-			listAlert.Add( alert );
-//		}
+		GAME->OnRecvResearchCompleted( pHero, idAbil, point );
+// 		// 현재 월드씬이면 바로 띄우고 아니면 큐에 보관했다가 월드맵 진입하면 띄운다.
+// 		_tstring str = XE::Format( XTEXT( 2029 ), XTEXT( pProp->idName ) );	// "아무개"의 연구가 완료되었습니다.
+// 		if( SCENE_WORLD && !GAME->IsPlayingSeq() ) {
+// 			auto pPopup = new XWndResearchComplete( pHero, idAbil, point );
+// 			SCENE_WORLD->Add( pPopup );
+// 			// 			auto pAlert = XWND_ALERT( "%s", str.c_str() );
+// // 			if( pAlert ) {
+// // 				pAlert->SetbModal( TRUE );
+// // 			}
+// 		} else {
+// 			auto& listAlert = GAME->GetlistAlertWorld();
+// 			xAlertWorld alert;
+// 			alert.m_Type = xAW_RESEARCH_COMPLETE;
+// 			alert.m_snHero = snHero;
+// 			alert.m_idParam = idAbil;
+// 			alert.m_Level = point;
+// 			listAlert.Add( alert );
+// 		}
 		if (codeError == xEC_QUICK_OK)
 			SendUnregistPushMsg(NULL, ACCOUNT->GetidAccount(), XGAME::xTECH_TRAINING, idAbil);
 	} else {
@@ -3947,53 +3954,6 @@ void XSockGameSvr::RecvCheckAPTimeOver( XPacket& p, const xCALLBACK& c )
 		ACCOUNT->GettimerAP().RetryTimer( 2 );		// n초후에 다시 시도하도록 함.
 	}
 }
-
-
-/*
-SendReqCheckAPTimeOver()
-{
-	ar << (WORD)ACCOUNT->GetAP();
-	ar << (WORD)ACCOUNT->GetmaxAP();
-}
-
-RecvReqCheckAPTimeOver()
-{
-	WORD w0;
-	p >> w0;		// 0이오는것은 실패임.
-	if( w0 > 0 )
-	{
-		ACCOUNT->SetAP( w0 );
-		ACCOUNT->ResetAPTimer();
-	}
-	p >> w0;	ACCOUNT->SetmaxAP( w0 );
-
-}
-
-// 서버
-RecvCheckAPTimeOver()
-{
-	XBREAK( m_pAccount->GetmaxAP() > 0xffff );
-	if( m_pAccount->IsAPTimeOver() )
-	{
-		int ap = m_pAccount->AddAP( 1 );
-		m_pAccount->ResetAPTimer();
-		XBREAK( ap > 0xffff );
-		XBREAK( ap == 0 );		// 적어도 1은 더했으므로 0이 나올수는 없다.
-		ar << (WORD)ap;
-		ar << (WORD)m_pAccount->GetmaxAP();
-		m_pAccount->SetcntAPFail( 0 );		// 성공하면 계속 초기화
-	} else
-	{
-		ar << (WORD)0;	// 0이면 타이머가 아직 안지났음.
-		ar << (WORD)m_pAccount->GetmaxAP();
-		int cntFail = m_pAccount->GetcntAPFail();
-		XVERIFY_BREAK( ++cntFail >= 5 );	// 5초씩이나 차이가 난다는것은 클라랑 심각하게 비동기되고 있다는것이므로 재접하도록 함.
-		m_pAccount->SetcntAPFail( cntFail );
-	}
-
-}
-*/
-
 /**
  @brief 
  전송하고 응답을 기다려야 하는 류의 구현에 사용.
@@ -4023,95 +3983,6 @@ BOOL XSockGameSvr::SendReqTrainCompleteQuick( XWnd *pTimeoutCallback, ID snSlot,
 	//
 	return TRUE;
 }
-
-/**
- @brief 영웅에게 메달이나 보옥등의 전리품 제공하여 렙업
- 전송하고 응답을 기다려야 하는 류의 구현에 사용.
- _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
- @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
- @param param 사용자가 정의해서 쓰시오
- @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
- @see AddResponse()
-*/
-// BOOL XSockGameSvr::SendReqProvideBooty( XWnd *pTimeoutCallback, ID snHero, XGAME::xtTrain type, int num )
-// {
-// 	_XCHECK_CONNECT(0);
-// 	//
-// 	XPacket ar( (ID)xCL2GS_PROVIDE_BOODY );
-// 	ar << snHero;
-// 	ar << (BYTE)type;
-// 	XBREAK( num > 0xff );
-// //	ar << (BYTE)num;	// 이건 메달제공이기때문에 대량으로 한꺼번에 제공될 필요 없다. 해서도 안되고.
-// 	ar << (BYTE)0;
-// 	ar << (BYTE)0;
-// 	ar << (BYTE)0;
-// 
-// 	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
-// 	ID idKey = 
-// 		AddResponse( ar.GetidPacket(), 
-// 					&XSockGameSvr::RecvProvideBooty, pTimeoutCallback );
-// 	Send( ar );
-// 	//
-// 	return TRUE;
-// }
-// 
-// /**
-//  SendReqProvideBooty()에 대한 응답함수
-//  @param p 패킷이 들어있는 아카이브
-//  @see SendReqProvideBooty()
-// */
-// void XSockGameSvr::RecvProvideBooty( XPacket& p, const xCALLBACK& c )
-// {
-// 	ID snHero;
-// 	BYTE b0;
-// 	WORD w0;
-// 	p >> snHero;
-// 	p >> b0;	auto type = (XGAME::xtTrain)b0;
-// 	p >> b0;	int verEtc = b0;
-// 	p >> b0 >> b0;
-// 	ID idNeed;
-// 	auto pHero = ACCOUNT->GetHero( snHero );
-// 	if( XBREAK( pHero == nullptr ) )
-// 		return;
-// 	switch( type )
-// 	{
-// 	case XGAME::xTR_SQUAD_UP: {
-// 		int numRefund1;
-// 		int numRefund2;
-// 		p >> numRefund1 >> numRefund2;
-// 		if( numRefund1 )
-// 			CONSOLE("유황환불:+%d", numRefund1);
-// 		if( numRefund2 )
-// 			CONSOLE( "만드레이크환불:+%d", numRefund2 );
-// 	} break;
-// 	case XGAME::xTR_SKILL_ACTIVE_UP:
-// 	case XGAME::xTR_SKILL_PASSIVE_UP: {
-// 		int numRefund;
-// 		p >> numRefund;
-// 		if( numRefund )
-// 			CONSOLE( "보석환불:+%d", numRefund );
-// 	} break;
-// 	default:
-// 		XBREAK(1);
-// 		break;
-// 	}
-// 	ACCOUNT->DeSerializeTrainSlot( p, verEtc );
-// 	pHero->DeSerializeLevelupReady( p );
-// 	p >> idNeed;
-// 	p >> b0;	bool bLevelup = xbyteToBool(b0);
-// 	p >> b0;	pHero->SetNumProvide( type, b0 );
-// 	p >> w0;	auto result = (xErrorCode)w0;
-// 	if( result == xEC_NO_MORE_PROVIDE )
-// 		XWND_ALERT("%s", _T("더이상 할 수 없습니다. 훈련이 끝나기를 기다려 주세요.") );
-// 
-// 	if( idNeed )
-// 		// 무조건 한개씩만 제공하는걸로 가정
-// 		XBREAK( 0 == ACCOUNT->DestroyItem( idNeed, 1 ) );
-// 	///< 
-// 	GAME->SetbUpdate( true );
-// 
-// 
-// }
 
 /**
  @brief 

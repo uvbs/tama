@@ -378,6 +378,22 @@ int XSceneWorld::OnEnterScene( XWnd*, DWORD p1, DWORD )
 																								pElem->m_idParam, 
 																								pElem->m_Level );
 				Add( pPopup );
+			} else 
+			if( pElem->m_Type == xAW_TRAIN_COMPLETE ) {
+				switch( pElem->m_Train ) {
+				case xTR_LEVEL_UP: {
+
+				} break;
+				case xTR_SQUAD_UP: {
+				} break;
+				case xTR_SKILL_ACTIVE_UP: {
+				} break;
+				case xTR_SKILL_PASSIVE_UP: {
+				} break;
+				default:
+					XBREAK(1);
+					break;
+				}
 			} else {
 				auto pAlert = new XGameWndAlert( pElem->m_strMsg, nullptr, XWnd::xOK );
 				if( pAlert ) {
@@ -414,6 +430,7 @@ int XSceneWorld::OnEnterScene( XWnd*, DWORD p1, DWORD )
 	XLOGP( "%s, %llu", _T("XSceneWorld"), s_llPass );
 	return 1;
 }
+
 /**
  @brief 씬이 모두 밝아지고 호출됨
 */

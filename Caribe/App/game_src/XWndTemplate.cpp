@@ -442,34 +442,66 @@ void XWndCircleUnit::Update()
 }
 
 ////////////////////////////////////////////////////////////////
-XWndCircleSkill::XWndCircleSkill( XSKILL::XSkillDat *pDat
-																, const XE::VEC2& vPos
-																, XHero *pHero )
-		: XWndImage( PATH_UI("common_bg_skillsimbol.png"), vPos )
+// XWndCircleSkill::XWndCircleSkill( const XSKILL::XSkillDat *pDat
+// 																, const XE::VEC2& vPos
+// 																, XHero *pHero )
+// 		: XWndImage( PATH_UI("common_bg_skillsimbol.png"), vPos )
+// 		, m_pSkillDat( pDat )
+// {
+// 	Init();
+// 	m_pHero = pHero;
+// }
+// 
+// void XWndCircleSkill::Update()
+// {
+// 	auto blendFunc = GetblendFunc();
+// 	// 스킬아이콘
+// 	auto pFace = xGET_IMAGE_CTRL( this, "img.skill" );
+// 	if( pFace == nullptr ) {
+// 		pFace = new XWndImage( XE::VEC2(0) );
+// 		pFace->SetstrIdentifier( "img.skill" );
+// 		Add( pFace );
+// 	}
+// 	if( pFace ) {
+// 		auto strResUnit = XE::MakePath( DIR_IMG, m_pSkillDat->GetstrIcon() );
+// 		pFace->SetSurfaceRes( strResUnit );
+// 		pFace->SetblendFunc( blendFunc );
+// 	}
+// 	XWndImage::Update();
+// }
+/** //////////////////////////////////////////////////////////////////
+@brief 특성 범용 컨트롤
+*/
+XWndCircleSkill::XWndCircleSkill( const XSKILL::XSkillDat *pDat
+																	, const XE::VEC2& vPos
+																	, XHero *pHero )
+	: XWnd( vPos )
+	, m_pSkillDat( pDat )
 {
-	Init();
-	m_pSkillDat = pDat;
 	m_pHero = pHero;
+	XLayoutObj::sCreateLayout( _T( "mod_skill.xml" ), "module", this );
+	SetSkill( pDat, 0 );
+}
+
+void XWndCircleSkill::SetSkill( const XSKILL::XSkillDat *pDat,
+																int level )
+{
+	if( pDat ) {
+		xSET_IMG( this, "img.skill", pDat->GetResIcon(), XE::xPF_ARGB1555 );
+	}
+	m_Level = level;
 }
 
 void XWndCircleSkill::Update()
 {
-	auto blendFunc = GetblendFunc();
-	// 스킬아이콘
-	auto pFace = xGET_IMAGE_CTRL( this, "img.skill" );
-	if( pFace == nullptr ) {
-		pFace = new XWndImage( XE::VEC2(0) );
-		pFace->SetstrIdentifier( "img.skill" );
-		Add( pFace );
+	xSET_SHOW( this, "img.bg.lv", m_Level > 0 );
+	if( m_Level ) {
+		xSET_TEXT_FORMAT( this, "text.level", _T( "%d" ), m_Level );
 	}
-	if( pFace ) {
-		auto strResUnit = XE::MakePath( DIR_IMG, m_pSkillDat->GetstrIcon() );
-		pFace->SetSurfaceRes( strResUnit );
-		pFace->SetblendFunc( blendFunc );
-	}
-	XWndImage::Update();
+	XWnd::Update();
 }
 
+//////////////////////////////////////////////////////////////////////////
 /**
  @brief 아이템 아이콘을 함께 보여주는 알림창
 */
@@ -631,9 +663,9 @@ XWndTechAbil::XWndTechAbil( const XSKILL::XSkillDat *pDat
 	m_pHero = pHero;
 	XLayoutObj::sCreateLayout( _T("mod_abil.xml"), "module", this );
 	SetSkill( pDat, 0 );
-	if( pDat ) {
-		xSET_IMG( this, "img.abil", pDat->GetResIcon(), XE::xPF_ARGB4444 );
-	}
+// 	if( pDat ) {
+// 		xSET_IMG( this, "img.abil", pDat->GetResIcon(), XE::xPF_ARGB4444 );
+// 	}
 }
 
 void XWndTechAbil::SetSkill( const XSKILL::XSkillDat *pDat,
@@ -651,27 +683,5 @@ void XWndTechAbil::Update()
 	if( m_bShowLevel ) { 
 		xSET_TEXT_FORMAT( this, "text.point", _T("%d"), m_Level );
 	}
-// 	auto blendFunc = GetblendFunc();
-// 	// 스킬아이콘
-// 	auto pFace = xGET_IMAGE_CTRL( this, "img.skill" );
-// 	if( pFace == nullptr ) {
-// 		pFace = new XWndImage( XE::VEC2( 0 ) );
-// 		pFace->SetstrIdentifier( "img.skill" );
-// 		Add( pFace );
-// 	}
-// 	{
-// 		auto pImg = xGET_IMAGE_CTRL( this, "img.bg.level" );
-// 		if( !pImg ) {
-// 			pImg = new XWndImage( PATH_UI("popup_squadskilllevel.png"), 
-// 														true,
-// 														XE::xPF_ARGB1555,
-// 														XE::VEC2(43,43) );
-// 		}
-// 	}
-// 	if( pFace && m_pSkillDat ) {
-// 		auto strResUnit = XE::MakePath( DIR_IMG, m_pSkillDat->GetstrIcon() );
-// 		pFace->SetSurfaceRes( strResUnit );
-// 		pFace->SetblendFunc( blendFunc );
-// 	}
 	XWnd::Update();
 }

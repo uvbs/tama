@@ -1794,6 +1794,7 @@ void XSceneBattle::AddObj( XSPWorldObj spObj )
 }
 
 //#include "XWndTech.h"
+#include "XWndWorld.h"
 /**
  @brief 
 */
@@ -1801,8 +1802,12 @@ int XSceneBattle::OnDebugTest( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("%s", __TFUNC__);
 	//
-// 	XHero* pHero = XAccount::sGetPlayerConst()->GetlistHeroByInvenConst().front();	
-// 	const int level = 1;
+	XHero* pHero = XAccount::sGetPlayerConst()->GetlistHeroByInvenConst().front();	
+	const int level = 1;
+	auto pPopup = new XWndTrainCompleteLevel( pHero );
+	Add( pPopup );
+	// 	auto pPopup = new XWndSkillTrainComplete( pHero, _T("charge"), 1 );
+// 	Add( pPopup );
 // 	ID idAbil = 47;
 // 	auto pPopup = new XWndResearchComplete( pHero, idAbil, level );
 // 	Add( pPopup );

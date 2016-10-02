@@ -246,6 +246,7 @@ public:
 	int GetMaxLevel() const;
 	int GetMaxLevel( XGAME::xtTrain type ) const;
 	_tstring GetsidSkill( XGAME::xtIdxSkilltype idxType );
+	_tstring GetsidSkill( XGAME::xtTrain train );
 	int GetMaxExp( XGAME::xtTrain type );
 	int GetMaxExpWithLevel( XGAME::xtTrain type, int level ) const {
 		return sGetMaxExpWithLevel( type, level );

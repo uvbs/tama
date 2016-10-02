@@ -1,4 +1,6 @@
 ﻿#include "stdafx.h"
+#include "XWndWorld.h"
+#include "XWndTech.h"
 #include "XGame.h"
 #include "sprite/SprMng.h"
 #include "sprite/SprObj.h"
@@ -2537,4 +2539,57 @@ int XGame::OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 )
 
 #endif // _CHEAT
 	return 1;
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 특성연구 완료 핸들러
+*/
+void XGame::OnRecvResearchCompleted( XHero* pHero, ID idAbil, int point )
+{
+	auto pProp = XPropTech::sGet()->GetpNode( idAbil );
+	if( XBREAK( pProp == nullptr ) )
+		return;
+	// 현재 월드씬이면 바로 띄우고 아니면 큐에 보관했다가 월드맵 진입하면 띄운다.
+	const _tstring str = XE::Format( XTEXT( 2029 ), XTEXT( pProp->idName ) );	// "아무개"의 연구가 완료되었습니다.
+	if( SCENE_WORLD && !GAME->IsPlayingSeq() ) {
+		auto pPopup = new XWndResearchComplete( pHero, idAbil, point );
+		SCENE_WORLD->Add( pPopup );
+	} else {
+		auto& listAlert = GAME->GetlistAlertWorld();
+		xAlertWorld alert;
+		alert.m_Type = xAW_RESEARCH_COMPLETE;
+		alert.m_snHero = pHero->GetsnHero();
+		alert.m_idParam = idAbil;
+		alert.m_Level = point;
+		listAlert.Add( alert );
+	}
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 타입에 따라 훈련완료창을 띄운다.
+*/
+void XGame::DoPopupTrainComplete( xtTrain train, XHero* pHero, int level )
+{
+	switch( train ) {
+	case XGAME::xTR_LEVEL_UP: {
+		auto pPopup = new XWndTrainCompleteLevel( pHero );
+		Add( pPopup );
+	} break;
+	case XGAME::xTR_SQUAD_UP: {
+		auto pAlert = new XGameWndAlert( _T( "" ), nullptr, XWnd::xOK );
+		if( pAlert ) {
+			GAME->GetpScene()->Add( pAlert );
+			pAlert->SetbModal( TRUE );
+		}
+	} break;
+	case XGAME::xTR_SKILL_ACTIVE_UP:
+	case XGAME::xTR_SKILL_PASSIVE_UP: {
+		const _tstring str = pHero->GetsidSkill( train );
+		auto pPopup
+			= new XWndSkillTrainComplete( pHero, str, level );
+	} break;
+	default:
+		XBREAK( 1 );
+		break;
+	}
 }

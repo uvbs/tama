@@ -61,6 +61,7 @@ namespace XGAME {
 		ID m_snHero = 0;
 		ID m_idParam = 0;
 		int m_Level = 0;
+		XGAME::xtTrain m_Train;
 		_tstring m_strMsg;
 		ID getid() const {
 			return m_snHero;
@@ -406,6 +407,8 @@ public:
 	// 	static bool sDoAlertCampaignByError( XGAME::xtError errCode );
 // 	static void sDoPopupSpotWithStageObj( XSpot* pBaseSpot, XSPCampObj spCampObj, XSPStageObj spStageObj );
 	int OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 );
+	void OnRecvResearchCompleted( XHero* pHero, ID idAbil, int point );
+	void DoPopupTrainComplete( XGAME::xtTrain train, XHero* pHero, int level );
 }; // class XGame
 
 

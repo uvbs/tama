@@ -5,6 +5,7 @@
 #include "XWndTemplate.h"
 #include "XWndStorageItemElem.h"
 #include "skill/XESkillMng.h"
+#include "XAccount.h"
 
 
 #ifdef WIN32
@@ -47,6 +48,12 @@ XWnd* XAppDelegate::DelegateCreateCustomCtrl( const std::string& strcCtrl
 		if( idHero ) {
 			pWndFace->SetHero( idHero );
 		}
+		const int idxHero = attrAll.m_Param.GetDword( "param2" );
+		if( idxHero ) {
+			auto pHero = ACCOUNT->GetpHeroByIndex( idxHero );
+			pWndFace->SetHero( pHero );
+		}
+//		pWndFace->SetHeroLevelLight( true );
 		pWndFace->SetNum(0);
 		pWndFace->SetScaleLocal( attrAll.vScale );
 		pWndCreated = pWndFace;
@@ -60,11 +67,22 @@ XWnd* XAppDelegate::DelegateCreateCustomCtrl( const std::string& strcCtrl
 		pWndCreated->SetAlphaLocal( attrAll.alpha );
 	} else
 	if( strcCtrl == "skill_ctrl" ) {
-		XSKILL::XSkillDat* pDat = nullptr;
-		const DWORD idSkill = attrAll.m_Param.GetDword( "param" );
+		const XSKILL::XSkillDat* pDat = nullptr;
+//		const DWORD idSkill = attrAll.m_Param.GetDword( "param" );
+		int idSkill = 0;
+		_tstring strIds;
+		if( !attrAll.m_Param.GetInt( "param", &idSkill ) ) {
+			attrAll.m_Param.GetStrt( "param", &strIds );
+		}
 		if( idSkill ) {
 			pDat = XSKILL::XESkillMng::sGet()->FindByID( idSkill );
+		} else
+		if( !strIds.empty() ) {
+			pDat = static_cast<const XSKILL::XSkillDat*>( XSKILL::XESkillMng::sGet()->FindByIds( strIds ) );
 		}
+// 		if( idSkill ) {
+// 			pDat = XSKILL::XESkillMng::sGet()->FindByID( idSkill );
+// 		}
 		auto pCtrl = new XWndCircleSkill( pDat, attrAll.vPos, nullptr );
 		pCtrl->SetScaleLocal( attrAll.vScale );
 		pWndCreated = pCtrl;

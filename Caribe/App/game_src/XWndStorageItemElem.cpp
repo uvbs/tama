@@ -258,6 +258,18 @@ void XWndStoragyItemElem::SetHero( ID idProp )
 	}
 }
 
+/** //////////////////////////////////////////////////////////////////
+ @brief 영웅레벨의 뒤에 빛효과를 켠다.
+*/
+// void XWndStoragyItemElem::SetHeroLevelLight( bool bFlag )
+// {
+// 	if( m_psoLight == nullptr ) {
+// 		m_psoLight = new XSprObj( _T("brilliant.spr"), 
+// 															XE::xHSL(), 1, xRPT_LOOP, true, 
+// 															)
+// 	}
+// }
+
 void XWndStoragyItemElem::SetHero( XHero* pHero )
 {
 	if( pHero ) {

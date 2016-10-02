@@ -167,8 +167,14 @@ public:
 		return *(m_listEffects.GetpByIndexConst( idx ));
 	}
 	void GetSkillDesc( _tstring *pOut, int level ) const;
+	// 스킬의 설명을 얻는다. pOut이 비어있으면 this스킬의 설명을 바탕으로 한다. 채워져있다면 그 내용을 파싱해서 돌려준다.
 	inline void GetstrDesc( _tstring *pOut, int level ) const {
 		GetSkillDesc( pOut, level );
+	}
+	inline _tstring GetstrDesc2( int level ) const {
+		_tstring str;
+		GetstrDesc( &str, level );
+		return str;
 	}
 	inline LPCTSTR GetstrName() const {
 		return XTEXT( m_idName );

@@ -1064,6 +1064,7 @@ XWnd* XLayout::CreateSprCtrlWnd( TiXmlElement *elemCtrl,
 		pWnd->SetScaleLocal( attrAll.vScale );
 		if( !attrAll.vSize.IsMinus() )
 			pWnd->SetSizeLocal( attrAll.vSize );
+		pWnd->SetAlphaLocal( attrAll.alpha );
 	}
 	return pWnd;
 }
@@ -1108,8 +1109,9 @@ XWnd* XLayout::CreateSprCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, XWn
 			if( strSpr.empty() ) {
 				pWnd = new XWndSprObj( v.x, v.y );
 				pWnd->SetloopType( loopType );
-			} else
+			} else {
 				pWnd = new XWndSprObj( strSpr.c_str(), (ID)idAct, v.x, v.y, loopType );
+			}
 			if( pWnd ) {
 				pWnd->SetRotateY( attrAll.vRot.y );
 				pWnd->SetRotateZ( attrAll.vRot.z );
@@ -1118,6 +1120,7 @@ XWnd* XLayout::CreateSprCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, XWn
 				pWnd->SetScaleLocal( attrAll.vScale );
 				if( !attrAll.vSize.IsMinus() )
 					pWnd->SetSizeLocal( attrAll.vSize );
+				pWnd->SetAlphaLocal( attrAll.alpha );
 			}
 			AddWndParent( pWnd, pParent, attrAll, i );
 //			v += XE::VEC2( distx, disty );
@@ -1129,8 +1132,9 @@ XWnd* XLayout::CreateSprCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, XWn
 		if( strSpr.empty() ) {
 			pWnd = new XWndSprObj( vPos.x, vPos.y );
 			pWnd->SetloopType( loopType );
-		}	else
+		}	else {
 			pWnd = new XWndSprObj( strSpr.c_str(), (ID)idAct, vPos.x, vPos.y, loopType );
+		}
 		if( pWnd ) {
 			pWnd->SetRotateY( attrAll.vRot.y );
 			pWnd->SetRotateZ( attrAll.vRot.z );
@@ -1139,6 +1143,7 @@ XWnd* XLayout::CreateSprCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, XWn
 			pWnd->SetScaleLocal( attrAll.vScale );
 			if( !attrAll.vSize.IsMinus() )
 				pWnd->SetSizeLocal( attrAll.vSize );
+			pWnd->SetAlphaLocal( attrAll.alpha );
 		}
 		return pWnd;
 	}
@@ -2053,7 +2058,24 @@ int XLayout::GetAttrCommon( TiXmlElement *elemCtrl, xATTR_ALL *pOut ) const
 		if( GetAttrStr( elemCtrl, "param", &str ) ) {
 			pOut->m_Param.Set( "param", str );
 		}
-		
+		if( GetAttrDWORD( elemCtrl, "param2", &dwParam ) ) {
+			pOut->m_Param.Set( "param2", dwParam );
+		} else 
+		if( GetAttrStr( elemCtrl, "param2", &str ) ) {
+			pOut->m_Param.Set( "param2", str );
+		}
+		if( GetAttrDWORD( elemCtrl, "param3", &dwParam ) ) {
+			pOut->m_Param.Set( "param3", dwParam );
+		} else 
+		if( GetAttrStr( elemCtrl, "param3", &str ) ) {
+			pOut->m_Param.Set( "param3", str );
+		}
+		if( GetAttrDWORD( elemCtrl, "param4", &dwParam ) ) {
+			pOut->m_Param.Set( "param4", dwParam );
+		} else 
+		if( GetAttrStr( elemCtrl, "param4", &str ) ) {
+			pOut->m_Param.Set( "param4", str );
+		}
 	}
 	return 1;
 } // GetAttrCommon

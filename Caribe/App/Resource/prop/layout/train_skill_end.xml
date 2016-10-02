@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <popup>
+    <popup img="popup_squadskill1.png" format="argb8888">
+      <text posx="center" posy="5" font="font_text_s" text_col="white" font_size="20" text="2346" font_style="stroke">
+        <!--훈련 완료-->
+      </text>
+      <wnd posx="43" posy="31" width="135" height="128">
+        <!--스킬아이콘/이름/설명-->
+        <skill_ctrl posx="center" posy="5" param="charge" key="ctrl.skill" />
+        <text font="font_text_s" text_col="white" font_size="20" font_style="shadow" key="text.skill.name" text="1" posx="center" posy="62">
+          <!--스킬이름-->
+        </text>
+        <text posx="5" posy="74" font="font_text_s" text_col="white" font_size="15" font_style="shadow" key="text.skill.desc" text="55000" length="130" width="125">
+          <!--스킬설명-->
+        </text>
+      </wnd>
+      <_text posx="0" posy="166" font="font_mnls" text_col="white" font_size="20" font_style="shadow" key="text.notice" width="359" height="45" align="center">
+        <!--훈련이 완료되었습니다.-->
+      </_text>
+      <wnd posx="180" posy="24" width="143" height="115">
+        <hero_ctrl posx="center" posy="center" param="100" key="ctrl.hero" />
+      </wnd>
+      <butt posx="right" posy="up" img_up="common_butt_x.png" key="butt.close"></butt>
+    </popup>
+  </popup>
+</root>

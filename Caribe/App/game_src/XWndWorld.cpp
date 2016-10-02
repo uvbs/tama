@@ -1,4 +1,8 @@
 ﻿#include "stdafx.h"
+#include "XWndTemplate.h"
+#include "XWndStorageItemElem.h"
+#include "skill/XSkillDat.h"
+#include "XSkillMng.h"
 #include "XWndWorld.h"
 #include "XGame.h"
 #include "XSceneTech.h"
@@ -1062,3 +1066,73 @@ int XWndRegistAcc::OnClickRegist( XWnd* pWnd, DWORD p1, DWORD p2 )
 	
 	return 1;
 }
+
+////////////////////////////////////////////////////////////////
+XWndSkillTrainComplete::XWndSkillTrainComplete( XHero* pHero, 
+																								const _tstring& idsSkill, 
+																								int level )
+	: XWndPopup( _T( "train_skill_end.xml" ), "popup" )
+{
+	Init();
+	// 스킬 이름과 설명표시
+	auto pDat = SKILL_MNG->FindByIds( idsSkill );
+	if( XBREAK( pDat == nullptr ) )
+		return;
+	// 스킬아이콘의 레벨 표시
+	auto pCtrl = SafeCast<XWndCircleSkill*>( Find( "ctrl.skill" ) );
+	if( XASSERT( pCtrl ) ) {
+		pCtrl->SetSkill( pDat, level );
+		xSET_SHOW( pCtrl, "spr.light", true );
+	}
+	const _tstring strName = pDat->GetstrName();
+	xSET_TEXT( this, "text.skill.name", strName );
+	_tstring strDesc = pDat->GetstrDesc2( level );
+	xSET_TEXT( this, "text.skill.desc", strDesc );
+	// 영웅 지정
+	auto pCtrlHero = ::xGetCtrlHero( this, "ctrl.hero" );
+	if( XASSERT( pCtrlHero ) ) {
+		pCtrlHero->SetHero( pHero );
+	}
+	// XXX의 훈련이 끝났습니다.
+// 	const _tstring strFormat = XTEXT( 2029 );
+// 	xSET_TEXT_FORMAT( this,
+// 										"text.notice",
+// 										strFormat.c_str(),
+// 										strName.c_str() );
+}
+
+BOOL XWndSkillTrainComplete::OnCreate()
+{
+	return XWndPopup::OnCreate();
+}
+
+void XWndSkillTrainComplete::Update()
+{
+
+	XWndPopup::Update();
+}
+
+////////////////////////////////////////////////////////////////
+XWndTrainCompleteLevel::XWndTrainCompleteLevel( XHero* pHero )
+	: XWndPopup( _T( "train_level_end.xml" ), "popup" )
+{
+	Init();
+	// 영웅 지정
+	auto pCtrlHero = ::xGetCtrlHero( this, "ctrl.hero" );
+	if( XASSERT( pCtrlHero ) ) {
+		pCtrlHero->SetHero( pHero );
+		xSET_SHOW( pCtrlHero, "spr.light", true );
+	}
+}
+
+BOOL XWndTrainCompleteLevel::OnCreate()
+{
+	return XWndPopup::OnCreate();
+}
+
+void XWndTrainCompleteLevel::Update()
+{
+
+	XWndPopup::Update();
+}
+

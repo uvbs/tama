@@ -99,24 +99,62 @@ private:
 	void Update() override;
 }; // class XWndCircleUnit
 
+inline XWndCircleUnit* xGetCtrlUnit( XWnd* pRoot, const std::string& key ) {
+	return SafeCast<XWndCircleUnit*>( pRoot->Find( key ) );
+}
+
 /****************************************************************
 * @brief 스킬과 스킬의 원형프레임을 그려주는 모듈.
 * @author xuzhu
 * @date	2015/12/01 22:01
 *****************************************************************/
-class XWndCircleSkill : public XWndImage
-{
+// class XWndCircleSkill : public XWndImage
+// {
+// public:
+// 	XWndCircleSkill( const XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XHero *pHero);
+// 	~XWndCircleSkill() { Destroy(); }
+// 	// get/setter
+// //	GET_SET_BOOL_ACCESSOR( bShowLevel );
+// 	// public member
+// 	void SetSkill( const XSKILL::XSkillDat *pDat, int level ) {
+// 		m_pSkillDat = pDat;
+// 		m_Level = level;
+// 		SetbUpdate( true );
+// 	}
+// private:
+// 	// private member
+// 	const XSKILL::XSkillDat *m_pSkillDat = nullptr;
+// 	XHero *m_pHero = nullptr;
+// //	bool m_bShowLevel = false;
+// 	int m_Level = 0;
+// private:
+// 	// private method
+// 	void Init() {}
+// 	void Destroy() {}
+// 	void Update() override;
+// }; // class XWndCircleSkill
+/****************************************************************
+* @brief 특성과 특성의 원형프레임을 그려주는 모듈.
+* @author xuzhu
+* @date	2015/12/01 22:01
+*****************************************************************/
+class XWndCircleSkill : public XWnd {
 public:
-	XWndCircleSkill( XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XHero *pHero);
-	virtual ~XWndCircleSkill() { Destroy(); }
+	XWndCircleSkill( const XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XHero *pHero );
+	~XWndCircleSkill() {
+		Destroy();
+	}
 	// get/setter
-	GET_SET_BOOL_ACCESSOR( bShowLevel );
+// 	GET_SET_BOOL_ACCESSOR( bShowLevel );
 	// public member
+	GET_SET_ACCESSOR_CONST( int, Level );
+	void SetSkill( const XSKILL::XSkillDat *pDat, int level );
 private:
 	// private member
-	XSKILL::XSkillDat *m_pSkillDat = nullptr;
+	const XSKILL::XSkillDat *m_pSkillDat = nullptr;
 	XHero *m_pHero = nullptr;
-	bool m_bShowLevel = false;
+//	bool m_bShowLevel = false;
+	int m_Level = 0;
 private:
 	// private method
 	void Init() {}
@@ -124,12 +162,12 @@ private:
 	void Update() override;
 }; // class XWndCircleSkill
 
-inline XWndCircleUnit* xGetCtrlUnit( XWnd* pRoot, const std::string& key ) {
-	return SafeCast<XWndCircleUnit*>( pRoot->Find( key ) );
+inline XWndCircleSkill* xGetCtrlSkill( XWnd* pRoot, const std::string& key ) {
+	return SafeCast<XWndCircleSkill*>( pRoot->Find( key ) );
 }
 
 /****************************************************************
-* @brief 스킬과 스킬의 원형프레임을 그려주는 모듈.
+* @brief 특성과 특성의 원형프레임을 그려주는 모듈.
 * @author xuzhu
 * @date	2015/12/01 22:01
 *****************************************************************/

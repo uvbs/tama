@@ -22,6 +22,7 @@
 #endif 
 
 using namespace XSKILL;
+using namespace XGAME;
 #ifdef WIN32
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -754,6 +755,13 @@ _tstring XHero::GetsidSkill( XGAME::xtIdxSkilltype idxType )
 		return GetpProp()->strPassive;
 	if( m_Grade < XGAME::xGD_EPIC )
 		return _tstring();
+	return GetpProp()->strActive;
+}
+
+_tstring XHero::GetsidSkill( XGAME::xtTrain train )
+{
+	if( train == xTR_SKILL_PASSIVE_UP )
+		return GetpProp()->strPassive;
 	return GetpProp()->strActive;
 }
 

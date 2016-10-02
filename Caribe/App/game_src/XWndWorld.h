@@ -321,3 +321,49 @@ private:
 	BOOL OnCreate();
 	void Update();
 }; // class XWndRegistAcc
+
+/****************************************************************
+* @brief 
+* @author xuzhu
+* @date	2016/10/02 15:44
+*****************************************************************/
+class XWndSkillTrainComplete : public XWndPopup
+{
+public:
+	XWndSkillTrainComplete( XHero* pHero, 
+													const _tstring& idsSkill,
+													int level );
+	~XWndSkillTrainComplete() { Destroy(); }
+	// get/setter
+	// public member
+private:
+	// private member
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	BOOL OnCreate() override;
+	void Update() override;
+}; // class XWndSkillTrainComplete
+
+/****************************************************************
+* @brief 
+* @author xuzhu
+* @date	2016/10/02 15:44
+*****************************************************************/
+class XWndTrainCompleteLevel : public XWndPopup
+{
+public:
+	XWndTrainCompleteLevel( XHero* pHero );
+	~XWndTrainCompleteLevel() { Destroy(); }
+	// get/setter
+	// public member
+private:
+	// private member
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	BOOL OnCreate() override;
+	void Update() override;
+}; // class XWndTrainCompleteLevel
