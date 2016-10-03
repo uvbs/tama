@@ -1136,3 +1136,33 @@ void XWndTrainCompleteLevel::Update()
 	XWndPopup::Update();
 }
 
+////////////////////////////////////////////////////////////////
+XWndTrainCompleteSquad::XWndTrainCompleteSquad( XHero* pHero, 
+																								xtUnit unit, 
+																								int level )
+	: XWndPopup( _T( "train_squad_end.xml" ), "popup" )
+{
+	Init();
+	// 영웅 지정
+	auto pCtrlHero = ::xGetCtrlHero( this, "ctrl.hero" );
+	if( XASSERT( pCtrlHero ) ) {
+		pCtrlHero->SetHero( pHero );
+		auto pCtrlUnit = ::xGetCtrlUnit2( this, "ctrl.unit" );
+		if( XASSERT( pCtrlUnit ) ) {
+			pCtrlUnit->SetUnit( unit, level );
+		}
+		//xSET_SHOW( pCtrlHero, "spr.light", true );
+	}
+}
+
+BOOL XWndTrainCompleteSquad::OnCreate()
+{
+	return XWndPopup::OnCreate();
+}
+
+void XWndTrainCompleteSquad::Update()
+{
+
+	XWndPopup::Update();
+}
+

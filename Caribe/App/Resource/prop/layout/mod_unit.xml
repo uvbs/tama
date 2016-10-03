@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout normal="normal.ttf" bold="bold.ttf">
+  <module>
+    <img file="corps_legionnaire_bg.png">
+      <img posx="0" posy="0" key="img.unit" />
+      <img posx="center" posy="-5" file="popup_squadskilllevel.png" key="img.bg.lv">
+        <!--숫자들어간동그라미-->
+        <text posx="center" posy="center" key="text.level" _text="11" font_size="15" _font_style="stroke" font="font_res_num"></text>
+        <spr posx="center" posy="center" file="brilliant.spr" id_act="4" scale="0.7" show="on" key="spr.light" />
+      </img>
+    </img>
+  </module>
+</layout>

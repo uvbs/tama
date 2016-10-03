@@ -367,3 +367,25 @@ private:
 	BOOL OnCreate() override;
 	void Update() override;
 }; // class XWndTrainCompleteLevel
+
+/****************************************************************
+* @brief 
+* @author xuzhu
+* @date	2016/10/02 15:44
+*****************************************************************/
+class XWndTrainCompleteSquad : public XWndPopup
+{
+public:
+	XWndTrainCompleteSquad( XHero* pHero, XGAME::xtUnit unit, int level );
+	~XWndTrainCompleteSquad() { Destroy(); }
+	// get/setter
+	// public member
+private:
+	// private member
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	BOOL OnCreate() override;
+	void Update() override;
+}; // class XWndTrainCompleteSquad

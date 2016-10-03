@@ -104,35 +104,35 @@ inline XWndCircleUnit* xGetCtrlUnit( XWnd* pRoot, const std::string& key ) {
 }
 
 /****************************************************************
-* @brief 스킬과 스킬의 원형프레임을 그려주는 모듈.
+* @brief 유닛과 유닛의 원형프레임을 그려주는 모듈
 * @author xuzhu
-* @date	2015/12/01 22:01
+* @date	2015/11/25 19:48
 *****************************************************************/
-// class XWndCircleSkill : public XWndImage
-// {
-// public:
-// 	XWndCircleSkill( const XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XHero *pHero);
-// 	~XWndCircleSkill() { Destroy(); }
-// 	// get/setter
-// //	GET_SET_BOOL_ACCESSOR( bShowLevel );
-// 	// public member
-// 	void SetSkill( const XSKILL::XSkillDat *pDat, int level ) {
-// 		m_pSkillDat = pDat;
-// 		m_Level = level;
-// 		SetbUpdate( true );
-// 	}
-// private:
-// 	// private member
-// 	const XSKILL::XSkillDat *m_pSkillDat = nullptr;
-// 	XHero *m_pHero = nullptr;
-// //	bool m_bShowLevel = false;
-// 	int m_Level = 0;
-// private:
-// 	// private method
-// 	void Init() {}
-// 	void Destroy() {}
-// 	void Update() override;
-// }; // class XWndCircleSkill
+class XWndCircleUnit2 : public XWnd {
+public:
+	XWndCircleUnit2();
+	XWndCircleUnit2( XGAME::xtUnit unit, const XE::VEC2& vPos, XHero *pHero );
+	~XWndCircleUnit2() {		Destroy();	}
+	// get/setter
+	GET_SET_ACCESSOR_CONST( int, Level );
+	// public member
+	void SetUnit( XGAME::xtUnit unit, int level );
+private:
+	// private member
+	XGAME::xtUnit m_Unit = XGAME::xUNIT_NONE;
+	const XHero *m_pHero = nullptr;
+	int m_Level = 0;
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	void Update() override;
+}; // class XWndCircleUnit2
+
+inline XWndCircleUnit2* xGetCtrlUnit2( XWnd* pRoot, const std::string& key ) {
+	return SafeCast<XWndCircleUnit2*>( pRoot->Find( key ) );
+}
+
 /****************************************************************
 * @brief 특성과 특성의 원형프레임을 그려주는 모듈.
 * @author xuzhu

@@ -1804,8 +1804,10 @@ int XSceneBattle::OnDebugTest( XWnd* pWnd, DWORD p1, DWORD p2 )
 	//
 	XHero* pHero = XAccount::sGetPlayerConst()->GetlistHeroByInvenConst().front();	
 	const int level = 1;
-	auto pPopup = new XWndTrainCompleteLevel( pHero );
+	auto pPopup = new XWndTrainCompleteSquad( pHero, xUNIT_SPEARMAN, level );
 	Add( pPopup );
+	// 	auto pPopup = new XWndTrainCompleteLevel( pHero );
+// 	Add( pPopup );
 	// 	auto pPopup = new XWndSkillTrainComplete( pHero, _T("charge"), 1 );
 // 	Add( pPopup );
 // 	ID idAbil = 47;

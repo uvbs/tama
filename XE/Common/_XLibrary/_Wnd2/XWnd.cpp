@@ -1904,13 +1904,15 @@ XE::VEC2 XWnd::GetSizeNoTransLayoutWithAry( const XVector<XWnd*>& aryWnd ) const
 	XE::VEC2 sizeLayoutChilds;
 	for( auto pChild : aryWnd ) {
 		if( !pChild->GetDestroy() ) {
-			const auto sizeLocalChild = pChild->GetSizeNoTransLayout();
-			const auto sizeFinalChild = sizeLocalChild * pChild->GetScaleLocal();
-			const auto vTotalSize = pChild->GetPosLocal() + sizeFinalChild;
-			if( vTotalSize.w > sizeLayoutChilds.w )
-				sizeLayoutChilds.w = vTotalSize.w;
-			if( vTotalSize.h > sizeLayoutChilds.h )
-				sizeLayoutChilds.h = vTotalSize.h;
+			if( pChild->GetbShow() ) {
+				const auto sizeLocalChild = pChild->GetSizeNoTransLayout();
+				const auto sizeFinalChild = sizeLocalChild * pChild->GetScaleLocal();
+				const auto vTotalSize = pChild->GetPosLocal() + sizeFinalChild;
+				if( vTotalSize.w > sizeLayoutChilds.w )
+					sizeLayoutChilds.w = vTotalSize.w;
+				if( vTotalSize.h > sizeLayoutChilds.h )
+					sizeLayoutChilds.h = vTotalSize.h;
+			}
 		}
 	}
 	return sizeLayoutChilds;

@@ -61,7 +61,7 @@ XWnd* XAppDelegate::DelegateCreateCustomCtrl( const std::string& strcCtrl
 	if( strcCtrl == "unit_ctrl" ) {
 //		pWndCreated = XGAME::CreateUnitFace( pParent, xUNIT_NONE );
 		auto unit = static_cast<XGAME::xtUnit>( attrAll.m_Param.GetDword( "param" ) );
-		pWndCreated = new XWndCircleUnit( unit, XE::VEC2(), nullptr );
+		pWndCreated = new XWndCircleUnit2( unit, XE::VEC2(), nullptr );
 		pWndCreated->SetPosLocal( attrAll.vPos );
 		pWndCreated->SetScaleLocal( attrAll.vScale );
 		pWndCreated->SetAlphaLocal( attrAll.alpha );

@@ -20,6 +20,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+using namespace XGAME;
 XE_NAMESPACE_START( XGAME )
 //
 /**
@@ -441,34 +442,35 @@ void XWndCircleUnit::Update()
 	XWndImage::Update();
 }
 
-////////////////////////////////////////////////////////////////
-// XWndCircleSkill::XWndCircleSkill( const XSKILL::XSkillDat *pDat
-// 																, const XE::VEC2& vPos
-// 																, XHero *pHero )
-// 		: XWndImage( PATH_UI("common_bg_skillsimbol.png"), vPos )
-// 		, m_pSkillDat( pDat )
-// {
-// 	Init();
-// 	m_pHero = pHero;
-// }
-// 
-// void XWndCircleSkill::Update()
-// {
-// 	auto blendFunc = GetblendFunc();
-// 	// 스킬아이콘
-// 	auto pFace = xGET_IMAGE_CTRL( this, "img.skill" );
-// 	if( pFace == nullptr ) {
-// 		pFace = new XWndImage( XE::VEC2(0) );
-// 		pFace->SetstrIdentifier( "img.skill" );
-// 		Add( pFace );
-// 	}
-// 	if( pFace ) {
-// 		auto strResUnit = XE::MakePath( DIR_IMG, m_pSkillDat->GetstrIcon() );
-// 		pFace->SetSurfaceRes( strResUnit );
-// 		pFace->SetblendFunc( blendFunc );
-// 	}
-// 	XWndImage::Update();
-// }
+/** //////////////////////////////////////////////////////////////////
+@brief 특성 범용 컨트롤
+*/
+XWndCircleUnit2::XWndCircleUnit2( XGAME::xtUnit unit, 
+																	const XE::VEC2& vPos, 
+																	XHero *pHero )
+	: XWnd( vPos )
+	, m_Unit( unit )
+	, m_pHero( pHero )
+{
+	XLayoutObj::sCreateLayout( _T( "mod_unit.xml" ), "module", this );
+}
+
+void XWndCircleUnit2::SetUnit( xtUnit unit, int level )
+{
+	const _tstring res = XGAME::GetResUnitSmall( unit );
+	xSET_IMG( this, "img.unit", res, XE::xPF_ARGB1555 );
+	m_Level = level;
+}
+
+void XWndCircleUnit2::Update()
+{
+	xSET_SHOW( this, "img.bg.lv", m_Level > 0 );
+	if( m_Level ) {
+		xSET_TEXT_FORMAT( this, "text.level", _T( "%d" ), m_Level );
+	}
+	XWnd::Update();
+}
+
 /** //////////////////////////////////////////////////////////////////
 @brief 특성 범용 컨트롤
 */
