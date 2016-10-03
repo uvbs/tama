@@ -107,6 +107,80 @@ BOOL XLayout::Reload( void )
 	return Load( m_strFullpath.c_str() );
 }
 
+/** //////////////////////////////////////////////////////////////////
+ @brief cKeyWnd 이름을 갖는 노드를 찾아서 컨트롤들을 생성하고 pParent의 child로 붙인다.
+*/
+bool XLayout::CreateLayout2( const std::string& strKeyWnd, XWnd *pParent )
+{
+	CONSOLE( "layout create2: key=%s", C2SZ( strKeyWnd ) );
+	TiXmlNode *nodeWnd = nullptr;
+	// 해동 노드 찾음.
+	nodeWnd = GetNode( strKeyWnd.c_str(), m_rootNode );
+	if( XBREAK(nodeWnd == nullptr) ) {
+		XLOGXN( "not found key: %s", C2SZ( strKeyWnd ) );
+		return FALSE;
+	}
+	// 로그출력을 위해 메인 노드를 받아둔다.
+	m_nodeWnd = nodeWnd;
+	m_strNodeWnd = C2SZ( m_nodeWnd->Value() );
+	// 부모의 위치와 크기를 명시했을경우 그것을 부모에 적용시킨다.
+	if( pParent ) {
+		xATTR_ALL attr;
+		// 메인노드의 attribute를 읽음.
+		GetAttrCommon( nodeWnd->ToElement(), &attr );
+		auto vPosParent = pParent->GetPosLocal();
+		auto sizeParent = pParent->GetSizeLocal();
+		// 미리 위치와 크기가 지정되어있지 않은경우만 layout값을 사용한다.
+		if( vPosParent.IsInvalid() && attr.vPos.IsValid() ) {
+			// 부모의좌표가 0,-1이고 layout에서 >0으로 지정되었으면 위치를 지정한다.
+			pParent->SetPosLocal( attr.vPos );
+		}
+		if( sizeParent.IsInvalid() && attr.vSize.IsValid() )
+			pParent->SetSizeLocal( attr.vSize );
+	}
+	return CreateLayout2( nodeWnd->ToElement(), pParent );
+}
+
+bool XLayout::CreateLayout2( TiXmlElement *elemNode, XWnd *pParent ) const
+{
+	if( !elemNode )
+		return false;
+	//
+	TiXmlElement *elemCtrl = elemNode->FirstChildElement();
+	if( !elemCtrl )
+		return false;
+	do {
+		// 윈도노드 안의 모든 컨트롤들을 꺼낸다.
+		const char *cNameCtrl = elemCtrl->Value();
+		// virtual 
+		xATTR_ALL attr;
+		if( XE::IsSame( cNameCtrl, "popup" ) ) {
+			GetAttrCommon( elemCtrl, &attr );
+			auto pWnd = CreatePopupFrame2( cNameCtrl, elemCtrl, pParent, attr );
+			if( pWnd ) {
+				if( !attr.strKey.empty() ) {
+					pWnd->SetstrIdentifier( attr.strKey );
+				}
+			}
+		} else {
+			auto pCtrl = CreateControl3( elemCtrl, pParent, &attr );
+			pParent->Add( pCtrl );
+			auto vPos = pCtrl->GetPosLocal();
+			auto size = pCtrl->GetSizeLocal();
+			if( attr.num > 1 ) {
+				for( int i = 0; i < attr.num - 1; ++i ) {
+					pCtrl = CreateControl3( elemCtrl, pParent, &attr );
+					pParent->Add( pCtrl );
+					vPos += attr.vDist;
+					pCtrl->SetPosLocal( vPos );
+				}
+			}
+		}
+		elemCtrl = elemCtrl->NextSiblingElement();
+	} while( elemCtrl );
+	return TRUE;
+}
+
 
 /**
  "main.select_theme.evol"같은 형식으로 바꾸자.
@@ -115,7 +189,9 @@ BOOL XLayout::Reload( void )
  일단은 cKeyGroup명은 전체 xml내에서 고유한 문자열이어야 한다.
  cKeyWnd이름은 cKeyGroup내에서 고유한 문자열이면 된다.
 */
-BOOL XLayout::CreateLayout( const char *cKeyWnd, XWnd *pParent, const char *cKeyGroup )
+BOOL XLayout::CreateLayout( const char *cKeyWnd, 
+														XWnd *pParent, 
+														const char *cKeyGroup )
 {
 	XLOAD_PROFILE1;
 	CONSOLE("layout create: key=%s", C2SZ(cKeyWnd) );
@@ -133,7 +209,7 @@ BOOL XLayout::CreateLayout( const char *cKeyWnd, XWnd *pParent, const char *cKey
 		return FALSE;
 	}
 	m_nodeWnd = nodeWnd;
-	//
+	m_strNodeWnd = C2SZ( m_nodeWnd->Value() );
 	if( pParent ) {
 		xATTR_ALL attr;
 		GetAttrCommon( nodeWnd->ToElement(), &attr );
@@ -195,7 +271,7 @@ XWnd* XLayout::CreateWnd( const std::string& strNode, const XWnd* pParent ) cons
  elemNode에 정의된 윈도우를 하나의 윈도우로 생성해서 돌려준다.
  그러므로 노드의 바로밑 자식은 단 하나여야 한다. 여러개있을경우 첫번째것만 인식한다.
 */
-XWnd* XLayout::CreateXWindow( TiXmlElement *elemNode/*, XWnd* pParent*/ )
+XWnd* XLayout::CreateXWindow( TiXmlElement *elemNode )
 {
 	if( !elemNode )
 		return nullptr;
@@ -210,6 +286,23 @@ XWnd* XLayout::CreateXWindow( TiXmlElement *elemNode/*, XWnd* pParent*/ )
 	CreateControl( cCtrlName, elemCtrl, nullptr, &pRoot );
 
 	return pRoot;
+}
+
+XWnd* XLayout::CreateXWindow2( TiXmlElement *elemNode ) const
+{
+	if( !elemNode )
+		return nullptr;
+	xATTR_ALL attrAll;
+
+	GetAttrCommon( elemNode, &attrAll );
+	TiXmlElement *elemCtrl = elemNode->FirstChildElement();
+	if( elemCtrl == NULL )
+		return NULL;
+	const char *cCtrlName = elemCtrl->Value();
+//	XWnd *pRoot = NULL;
+	return CreateControl2( elemCtrl, nullptr );
+
+//	return pRoot;
 }
 
 // 바로 아랫단계 자식들 레벨을 우선적으로 검색하고 손자레벨로 검색을 확장하는 버전.
@@ -257,12 +350,10 @@ XLAYOUT_NODE* XLayout::GetNode( const char* cKey, TiXmlNode *nodeRoot ) const
  @brief elemCtrl컨트롤을 생성해서 리턴한다.
  @param pParent 이것은 단지 참조용이다. 생성후 여기에 차일드로 넣지 않는다.
 */
-XWnd* XLayout::CreateControl2( TiXmlElement *elemCtrl, const XWnd *pParent ) const
+XWnd* XLayout::CreateControl2( TiXmlElement *elemCtrl, 
+															 const XWnd *pParent ) const
 {
 	const char *cCtrlName = elemCtrl->Value();
-// 	TCHAR szWndNode[ 64 ];
-// 	_tcscpy_s( szWndNode, C2SZ( m_nodeWnd->Value() ) );
-// 	m_strNodeWnd = szWndNode;
 	//
 	XWnd *pAddWnd = nullptr;
 	xATTR_ALL attrAll;
@@ -423,8 +514,6 @@ XWnd* XLayout::CreateControl2( TiXmlElement *elemCtrl, const XWnd *pParent ) con
 		// virtual
 		pAddWnd = CreateCustomControl( cCtrlName, elemCtrl, pParent, attrAll );		
 	}
-
-	// 만들어진 윈도우 컨트롤을 부모윈도우에 붙인다.
 	if( pAddWnd ) {
 		pAddWnd->SetDebug( debug );
 		pAddWnd->SetvAdjPos( attrAll.vAdjust );
@@ -453,14 +542,203 @@ XWnd* XLayout::CreateControl2( TiXmlElement *elemCtrl, const XWnd *pParent ) con
 	return 0;
 } // CreateControl2
 
+XWnd* XLayout::CreateControl3( TiXmlElement *elemCtrl, 
+															 const XWnd *pParent,
+															 xATTR_ALL* pOut ) const
+{
+	const char *cCtrlName = elemCtrl->Value();
+	//
+	XWnd *pAddWnd = nullptr;
+	GetAttrCommon( elemCtrl, pOut );
+	xATTR_ALL& attrAll = *pOut;
+	int debug = 0;
+#ifdef _DEBUG
+	{
+		elemCtrl->Attribute( "debug", &debug );
+		if( debug ) {
+			attrAll.m_Debug = debug;
+		}
+	}
+#endif // _DEBUG
+	//////////////////////////////////////////////////////////////////////////
+	// XWndImage 컨트롤
+	if( XE::IsSame( cCtrlName, "img" ) ) {
+		pAddWnd = CreateImgCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "spr" ) ) {
+		pAddWnd = CreateSprCtrlWnd( elemCtrl, pParent, attrAll );
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( XE::IsSame( cCtrlName, "pbar2" ) ) {
+		pAddWnd = CreateProgressBarCtrl2( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( XE::IsSame( cCtrlName, "pbar" ) ) {
+		pAddWnd = CreateProgressBarCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( XE::IsSame( cCtrlName, "butt" ) ) {
+		pAddWnd = CreateButtonCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} // butt
+	else
+	if( XE::IsSame( cCtrlName, "radio_butt" ) ) {
+		int idGroup = 0;
+		elemCtrl->Attribute( "group", &idGroup );
+		//
+		pAddWnd = CreateRadioButtonCtrl( cCtrlName, elemCtrl, pParent, (ID)idGroup, attrAll/*, attrButt*/ );
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( XE::IsSame( cCtrlName, "text" ) ) {
+		pAddWnd = CreateStaticTextOnlyOne( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	//////////////////////////////////////////////////////////////////////////
+	if( XE::IsSame( cCtrlName, "list" ) ) {
+		pAddWnd = CreateListCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "slide" ) ) {
+//		pAddWnd = CreateSlideCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+// 	if( XE::IsSame( cCtrlName, "popup" ) ) {
+// 		pAddWnd = CreatePopupFrame2( cCtrlName, elemCtrl, pParent, attrAll );
+// 	} else
+	if( XE::IsSame( cCtrlName, "view" ) ) {
+//		pAddWnd = CreateViewFrame( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "tabview" ) ) {
+//		pAddWnd = CreateTabViewCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else	
+	if( XE::IsSame( cCtrlName, "tab" ) ) {
+//		AddTab( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "wnd" ) ) {
+		pAddWnd = new XWnd( attrAll.vPos, attrAll.vSize );
+		pAddWnd->SetScaleLocal( attrAll.vScale );
+	} else
+	if( XE::IsSame( cCtrlName, "rect" ) ) {
+		pAddWnd = new XWndRect( attrAll.vPos, attrAll.vSize, attrAll.col );
+		pAddWnd->SetAlphaLocal( attrAll.alpha );
+	} else
+	if( XE::IsSame( cCtrlName, "slide_down" ) )	{
+//		pAddWnd = CreateSlideDownCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "edit_box" ) || XE::IsSame( cCtrlName, "edit" ))	{
+//		pAddWnd = CreateEditBoxCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if(	XE::IsSame( cCtrlName, "scroll_view" ) )	{
+//		pAddWnd = CreateScrollViewCtrl( cCtrlName, elemCtrl, pParent, attrAll );
+	} else
+	if( XE::IsSame( cCtrlName, "sound" ) || XE::IsSame( cCtrlName, "snd" ) ) {
+		if( attrAll.idActUp )
+			pAddWnd = new XWndPlaySound( attrAll.idActUp );
+		else
+		if( !attrAll.GetstrFile().empty() )
+			pAddWnd = new XWndPlayMusic( SZ2C( attrAll.GetstrFile() ) );
+	} else
+	if( XE::IsSame( cCtrlName, "layout" ) ) {
+		auto strtLayout = attrAll.GetstrFile();
+		if( strtLayout.empty() ) {
+			const _tstring strtFile = C2SZ( m_strFullpath );
+			strtLayout = XE::GetFileName( strtFile );
+		}
+		XBREAK( strtLayout.empty() );
+		XLayoutObj layoutObj( strtLayout );
+		const int num = attrAll.num;
+		auto vPos = attrAll.vPos;
+		//
+		XWnd *pRoot = new XWnd();
+		if( layoutObj.CreateLayout( attrAll.m_strcLayout, pRoot ) ) {
+			pRoot->SetPosLocal( vPos );
+			pRoot->SetAutoSize();
+			AlignCtrl( "layout", elemCtrl, pParent, pRoot, attrAll );
+			pRoot->SetScaleLocal( attrAll.vScale );
+			pRoot->SetbShow( attrAll.bShow );
+			pRoot->SetstrIdentifier( attrAll.strKey );
+// 			pParent->Add( pRoot );
+// 			CreateLayout( elemCtrl, pRoot );
+		} else {
+			SAFE_DELETE( pRoot );
+		}
+		vPos += attrAll.vDist;
+	}	else 
+// 	if( XE::IsSame( cCtrlName, "click" ) ) {
+// 		// click event
+// 		xATTR_ALL attrClick;
+// 		GetAttrCommon( elemCtrl, &attrClick );
+// // 		ID idTooltip = 0;
+// // 		GetAttrDWORD( elemCtrl, "tooltip", &idTooltip );
+// 		// 클릭이벤트를 할당해야할 실제 컨트롤을 얻음.(아직은 구조적인 문제로 click이벤트가 해당 컨트롤부터 아래에 있어야 함.
+// 		auto pWndClick = pParent->Find( attrClick.strKey );
+// // 		if( pWndClick ) {
+// // 			pWndClick->SetEvent( XWM_CLICKED, pParent, &XWnd::__OnClickLayoutEvent );
+// // 		}
+// 		if( attrClick.GetstrFile().empty() ) {
+// 			std::string strcFile = XE::GetFileName( m_strFullpath );
+// 			attrClick.SetstrFile( C2SZ(strcFile) );
+// 		}
+// 		xnWnd::xClickEvent event;
+// 		event.m_xmlClick = attrClick.GetstrFile();
+// 		event.m_strNodeClick = attrClick.m_strcLayout;
+// 		event.m_vPopupByLayout = attrClick.vPos;
+// 		if( attrClick.align )
+// 			event.m_AlignClick = attrClick.align;
+// 		event.m_strKeyTarget = attrClick.strKey;
+// 		event.m_strType = elemCtrl->Attribute( "wnd_type" );
+// 		pParent->AddClickEvent( event );
+//	} else
+// 	if( XE::IsSame( cCtrlName, "tooltip" ) ) {
+// 		xnWnd::xTooltip event;
+// 		event.m_xml = attrAll.GetstrFile();
+// 		event.m_strNode = attrAll.m_strcLayout;
+// 		event.m_idText = attrAll.idText;
+// 		DWORD length = 0;
+// 		if( !GetAttrDWORD( elemCtrl, "len", &length ) ) {
+// 			GetAttrDWORD( elemCtrl, "length", &length );
+// 		}
+// 		event.m_Length = (float)length;
+// 		pParent->SetdatTooltip( event );
+// 		if( pParent )
+// 			pParent->SetEvent( XWM_TOOLTIP, XEContent::sGet(), &XEContent::__OnClickTooltip );
+// 		
+// 	} else 
+	{
+		// 그 외 해석이 안되는 custom 컨트롤
+		// virtual
+		pAddWnd = CreateCustomControl( cCtrlName, elemCtrl, pParent, attrAll );		
+	}
+	if( pAddWnd ) {
+		pAddWnd->SetDebug( debug );
+		pAddWnd->SetvAdjPos( attrAll.vAdjust );
+		if( attrAll.m_Touchable >= 0 )
+			pAddWnd->SetbTouchable( (attrAll.m_Touchable == 1)? TRUE : FALSE );
+		pAddWnd->SetstrIdentifier( attrAll.strKey );
+		pAddWnd->SetbEnable( attrAll.bEnable );
+		pAddWnd->SetbShow( attrAll.bShow );
+		if( attrAll.align && attrAll.align != XE::xALIGN_LEFT ) {
+			pAddWnd->SetAlign( attrAll.align );
+			pAddWnd->SetbUpdate( true );		// 
+		}
+		///< 
+		CreateLayout2( elemCtrl, pAddWnd );
+		// pAddWnd의 자식들이 모두 생성이 끝나고 핸들러가 호출된다.
+		pAddWnd->SetbUpdate( true );
+		//
+		return pAddWnd;
+	}
+
+	return 0;
+} // CreateControl3
+
 /**
  
 */
-int XLayout::CreateControl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, XWnd **ppOutCreated )
+int XLayout::CreateControl( const char *cCtrlName, 
+														TiXmlElement *elemCtrl, 
+														XWnd *pParent, 
+														XWnd **ppOutCreated )
 {
-	TCHAR szWndNode[ 64 ];
-	_tcscpy_s( szWndNode, C2SZ( m_nodeWnd->Value() ) );
-	m_strNodeWnd = szWndNode;
+// 	TCHAR szWndNode[ 64 ];
+// 	_tcscpy_s( szWndNode, C2SZ( m_nodeWnd->Value() ) );
+// 	m_strNodeWnd = szWndNode;
 	//
 	XWnd *pAddWnd = NULL;
 	xATTR_ALL attrAll;
@@ -530,7 +808,7 @@ int XLayout::CreateControl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd 
 		int idGroup = 0;
 		elemCtrl->Attribute( "group", &idGroup );
 		if( XBREAK(idGroup == 0) )
-			CONSOLE("node=%s:radio_butt:group is zero", szWndNode);
+			CONSOLE("node=%s:radio_butt:group is zero", m_strNodeWnd.c_str());
 		//
 		if( attrAll.num > 1 ) {
 			// 여러개 생성
@@ -1193,6 +1471,46 @@ XWnd* XLayout::CreatePopupFrame( const char *cCtrlName
 	return nullptr;
 }
 
+XWnd* XLayout::CreatePopupFrame2( const char *cCtrlName
+																 , TiXmlElement *elemCtrl
+																 , XWnd *pParent
+																 , const xATTR_ALL& attrAll ) const
+{
+	XE::xAlign align = attrAll.align;
+	if( !align )
+		align = XE::xALIGN_HCENTER;
+	// size
+	const auto strImg = attrAll.GetstrFile();
+	// frame
+	const char *cFrame = elemCtrl->Attribute( "frame" );
+	_tstring strFrame;
+	if( XE::IsHave( cFrame ) )
+		strFrame = C2SZ( cFrame );
+	// img
+	bool bNcClose = true;
+	GetAttrBool( elemCtrl, "nc_close", &bNcClose );
+	//
+	// popup의 경우는 다른 컨트롤과달리 부모가 XWndPopup이어야 한다.
+	if( XBREAK( pParent->GetwtWnd() != XE::WT_POPUP ) )
+		return nullptr;
+	auto pPopup = SafeCast<XWndPopup*>( pParent );
+	if( XBREAK( pPopup == nullptr ) )
+		return nullptr;
+	if( strImg.empty() == false ) {
+		// 팝업의 배경 이미지를 설정.
+		pPopup->SetBgImg( strImg.c_str(), attrAll.m_Format );
+	} else
+		if( strFrame.empty() == false ) {
+			pPopup->LoadRes( strFrame.c_str() );
+		}
+	pPopup->SetEnableNcEvent( xboolToBOOL( bNcClose ) );
+	// 팝업 하위의 레이아웃을 만든다.
+// 	if( attrAll.strKey.empty() == false )
+// 		pParent->SetstrIdentifier( attrAll.strKey.c_str() );
+	CreateLayout2( elemCtrl, pPopup );
+	return pPopup;
+}
+
 /**
  @brief 뷰 컨트롤
  (뷰랑 팝업의 차이가 뭐여? 버튼이 디폴트로 있는거? 모달창인거?)
@@ -1590,10 +1908,10 @@ int XLayout::LoadLayer( XWndProgressBar2 *pBar, TiXmlElement *pRoot ) const
 	return numLayer;
 }
 
-XWnd *XLayout::CreateListCtrl( const char *cCtrlName, 
-									TiXmlElement *elemCtrl, 
-									XWnd *pParent, 
-									const xATTR_ALL& attrAll )
+XWnd *XLayout::CreateListCtrl( const char *cCtrlName,
+															 TiXmlElement *elemCtrl,
+															 const XWnd *pParent,
+															 const xATTR_ALL& attrAll ) const
 {
 	xATTR_ALL attr;
 	attr = attrAll;			// attrAll로 먼저 넣고
@@ -1640,14 +1958,17 @@ XWnd *XLayout::CreateListCtrl( const char *cCtrlName,
 		// 테스트때만 쓰기위해 0이면 객체를 생성하지 않는다.
 		const char *cItems = elemCtrl->Attribute( "items_node" );
 		if( XE::IsHave( cItems ) ) {
-			TiXmlElement *pElemItem = const_cast<TiXmlElement*>( GetElement( cItems ) );
+			auto pElemItem = const_cast<TiXmlElement*>( GetElement( cItems ) );
 			if( pElemItem ) {
 				pWndList->SetstrItemLayoutForXML( cItems );		// 아이템 레이아웃 이름을 저장.
 				if( numItems > 0 ) {
 					// 개수가 지정되지 아낳으면 노드이름만 저장하고 객체를 생성하지 않음.
 					for( int i = 0; i < numItems; ++i ) {
-						XWnd *pItem = CreateXWindow( pElemItem );
-						const std::string strKey = XE::Format("%s.%s%d", attr.strKey.c_str(), pItem->GetstrIdentifier().c_str(), i+1);
+						XWnd *pItem = CreateXWindow2( pElemItem );
+						const std::string strKey 
+							= XE::Format("%s.%s%d", attr.strKey.c_str(), 
+																			pItem->GetstrIdentifier().c_str(), 
+																			i+1);
 						pItem->SetstrIdentifier( strKey );
 						pWndList->AddItem( pItem );			// id는 랜덤으로 하는게 맞는거 같다. 중복이 너무 쉽게 되고. 인덱스로 판별하는 방식은 가급적 안쓰는게 좋을듯. strIds를 사용할것.
 // 						pWndList->AddItem( i + 1, pItem );
@@ -1676,10 +1997,6 @@ XWnd *XLayout::CreateListCtrl( const char *cCtrlName,
 	if( attr.vDist.h > 0 )
 		sizeElemFixed.h = attr.vDist.h;
 	pWndList->SetsizeFixed( sizeElemFixed );
-// 	if( dir == XE::xHORIZ )
-// 		pWndList->SetScrollLockHoriz();
-// 	else if( dir == XE::xVERT )
-// 		pWndList->SetScrollLockVert();
 
 	return pWndList;
 }

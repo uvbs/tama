@@ -102,21 +102,18 @@ BOOL XSquadron::DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion )
 	int isHero;
 	BYTE b0;
 	ar >> b0;	isHero = b0;
-	if( isHero == 11 )
-	{
+	if( isHero == 11 )	{
 		int verHero = 0;
 		ar >> b0;	m_bCreateHero = xbyteToBool(b0);
 		ar >> b0;	verHero = b0;
 		ar >> b0;	//m_bResourceSquad = xbyteToBool(b0);
 		XBREAK( spAcc && m_bCreateHero == TRUE );	// 계정이 있는데 NPC플랙인경우
 		XBREAK( spAcc == nullptr && m_bCreateHero == FALSE );	// 계정이 없는데 PC인경우
-		if( m_bCreateHero )
-		{
+		if( m_bCreateHero )		{
 			XBREAK( spAcc != nullptr );
 			m_pHero = new XHero;
 			m_pHero->DeSerialize( ar, spAcc, verHero );
-		} else
-		{
+		} else	{
 			// 플레이어의 부대일경우는 계정에서 영웅을 찾아서 링크만 시킨다.
 			ID snHero;
 			ar >> snHero;

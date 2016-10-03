@@ -18,8 +18,25 @@ base: 소스
   증가레벨 5
 
 
+	int num = 1;
+	do {
+		auto pCtrl = CreateControl( pNode, pParent, &attr );
+		pParent->Add( pCtrl );
+		num = attr.num;
+	} while( --num );
 
-
+	auto pCtrl = CreateControl( pNode, pParent, &attr );
+	pParent->Add( pCtrl );
+	auto vPos = pCtrl->GetPosLocal();
+	auto size = pCtrl->GetSizeLocal();
+	if( attr.num > 1 ) {
+		for( int i = 0; i < attr.num - 1; ++i ) {
+			auto pCtrl = CreateControl( pNode, pParent, &attr );
+			pParent->Add( pCtrl );
+			vPos += attr.vDist;
+			pCtrl->SetPosLocal( vPos );
+		}
+	}
 
 
 
