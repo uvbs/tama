@@ -248,7 +248,7 @@ public:
 		void DeSerialize( XArchive& ar, int );
   };
   struct xPrivateRaid : public xBASESPOT {
-    int dummy;
+		std::string m_idsLegion;			// xLegion의 프로퍼티 식별자.
     xPrivateRaid() : xBASESPOT( XGAME::xSPOT_PRIVATE_RAID ) {}
 		void Serialize( XArchive& ar ) const;
 		void DeSerialize( XArchive& ar, int );

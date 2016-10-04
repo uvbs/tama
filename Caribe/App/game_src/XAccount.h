@@ -47,8 +47,9 @@ ver 5: 리소스 부대
 ver 6: 안개정보
 ver 7: rateHP, rateAtk
 ver 8,9: 부대 mulAtk, mulHp적용
+ver 10: XLegion의 squadron저장방식 변경(고정배열->가변배열)
 */
-#define VER_LEGION_SERIALIZE	9
+#define VER_LEGION_SERIALIZE	10
 #define VER_RESOURCE_SERIALIZE	1
 /*
 	ver 2: 용맹포인트 추가.

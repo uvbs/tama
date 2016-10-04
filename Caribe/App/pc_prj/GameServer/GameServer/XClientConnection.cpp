@@ -187,6 +187,7 @@ BOOL XClientConnection::ProcessPacket(DWORD idPacket, ID idKey, XPacket& p)
 		case xCL2GS_PUSH_GCM_REGIST_ID: retv = pUser->RecvGCMResistId( p );	break;
 		case xCL2GS_LOBBY:						pUser->Cheat_AddPostInfo();				break; //임시 패킷.( 서버 테스트용으로만 사용합니다. 사용을 자재해주세요.)
 		case xCL2GS_PAYMENT_ASSET: retv = pUser->RecvPaymentAssetByGem( p );	break;
+		case xCL2GS_PRIVATE_RAID_ENTER_LIST: retv = pUser->RecvPrivateRaidEnterList( p );	break;
 		case xCL2GS_SYNC:		retv = pUser->RecvSync( p );	break;
 
 		default:

@@ -482,6 +482,6 @@
     <npc id="822" x="649" y="1891" ids="spot.822" secRegen="180" />
     <npc id="823" x="778" y="1801" ids="spot.823" secRegen="180" />
     <event id="824" x="344" y="734" name="15103" ids="spot.824" when="x.boss5" level="21" spr="unit_treant2.spr" opened="yes" secRegen="180" legion="legion.boss5" />
-    <private_raid id="826" x="1285" y="726" name="15000" ids="spot.private.raid" spr="spot_private_raid.spr" act="1" level="20" />
+    <private_raid id="826" x="1285" y="726" name="15000" ids="spot.private.raid" spr="spot_private_raid.spr" act="1" level="20" legion="legion.private.raid" />
   </spots>
 </world>

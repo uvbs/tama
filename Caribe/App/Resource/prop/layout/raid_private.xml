@@ -12,14 +12,15 @@
         <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="40" text="80189" font_style="stroke"></text>
       </butt>
       <butt posx="600" posy="8" img_up="common_butt_x.png" key="butt.cancel"></butt>
-      <list posx="23" posy="49" width="242" height="200" type="thumb" spacew="2" spaceh="2" items_num="30" items_node="elem" dir="vert" selectable="true" key="list.my" />
-      <list posx="372" posy="49" width="242" height="200" type="thumb" spacew="2" spaceh="2" items_num="30" items_node="elem" dir="vert" selectable="true" key="list.enemy" />
-      <list posx="0" posy="269" width="640" height="51" type="list_horiz" spacew="2" _items_num="30" items_node="elem" dir="horiz" selectable="true" key="list.have" />
+      <list posx="23" posy="49" width="242" height="200" type="thumb" spacew="2" spaceh="2" items_num="30" items_node="elem" dir="vert" _selectable="true" key="list.0" />
+      <list posx="372" posy="49" width="242" height="200" type="thumb" spacew="2" spaceh="2" items_num="30" items_node="elem" dir="vert" _selectable="true" key="list.1" />
+      <list posx="0" posy="269" width="640" height="51" type="list_horiz" spacew="2" _items_num="30" items_node="elem" dir="horiz" _selectable="true" key="list.have" />
     </popup>
   </popup>
   <elem>
     <hero_ctrl scale="0.68" _param="100" key="elem.">
-      <unit_ctrl posx="right" posy="bottom" scale="0.7" adjx="10" _param="1" key="ctrl.unit" />
+      <unit_ctrl posx="right" posy="6" scale="0.7" _param="1" key="ctrl.unit" show="off" />
+      <img file="armory_bg_item_black.png" show="off" key="img.cover" />
     </hero_ctrl>
   </elem>
 </layout>

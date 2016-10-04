@@ -3991,6 +3991,11 @@ void XSceneWorld::OnRecvSpotTouch( XSpot *pBaseSpot, std::vector<xDropItem>& ary
 	case XGAME::xSPOT_PRIVATE_RAID: {
 		auto pSpot = SafeCast<XSpotPrivateRaid*>( pBaseSpot );
 		auto pPopup = new XWndPrivateRaid( pSpot );
+		pPopup->SetOkButton( "butt.ok" );
+		pPopup->SetEvent2( XWM_OK, [this, pSpot](XWnd*) {
+			// 서버로 내 출전영웅 리스트 보냄.
+			GAMESVR_SOCKET->SendReqPrivateRaidEnterList( GAME, pSpot->GetlistEnter(0), pSpot->GetidSpot() );
+		});
 		Add( pPopup );
 	} break;
 	case xSPOT_COMMON: {

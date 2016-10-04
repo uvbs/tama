@@ -10,6 +10,8 @@
 
 
 class XSpotPrivateRaid;
+class XWndList;
+class XWndStoragyItemElem;
 /****************************************************************
 * @brief 
 * @author xuzhu
@@ -25,11 +27,16 @@ public:
 private:
 	// private member
 	XSpotPrivateRaid* m_pSpot = nullptr;
+//	XVector<XHero*> m_arySelectedEnter;
 private:
 	// private method
 	void Init() {}
 	void Destroy() {}
 	BOOL OnCreate() override;
 	void Update() override;
-	void SetEnterHeroes( XWndList* pList, XList4<XHero*> listLegions );
+	void UpdateEnterHeroes( XWndList* pList, int idxSide );
+	int OnSelectHeroAtHave( XWnd* pWnd, DWORD p1, DWORD p2 );
+	int OnClickedEnterHeroLeft( XWnd* pWnd, DWORD p1, DWORD p2 );
+	void ClearEnterHeroes( const std::string& strKey );
+	XWndStoragyItemElem* FindpHeroCtrl( XWndList* pWndList, ID snHero );
 }; // class XWndPrivateRaid

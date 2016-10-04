@@ -26,7 +26,7 @@ private:
 	XGAME::xReward m_Reward;
 // 	ID m_idItem = 0;
 	ID m_snItem = 0;			// 무기상같은경우는 idItem만으로 쓰기때문에 0일수가 있다.
-//	ID m_snHero = 0;			// 인벤에 있는 영웅의 경우
+	ID m_snHero = 0;			// 인벤에 있는 영웅의 경우
 	XPropItem::xPROP *m_pProp = nullptr;	// 아이템 프랍
 	XPropHero::xPROP* m_pPropHero = nullptr;
 	XBaseItem *m_pItem = nullptr;			// 아이템 정보
@@ -47,7 +47,7 @@ private:
 //	XSprObj* m_psoLight = nullptr;
 	XE::VEC2 m_vScaleItemImg;	// m_pItemImg만 따로 스케일링을 줄때.
 	XSurface *m_psfcSelected;		// 선택중
-	XArrayLinearN<XSurface*, XGAME::xGD_MAX> m_aryStar;		// 별
+	XVector<XSurface*> m_aryStar;		// 별
 	XWndTextString *m_pNum;		// 갯수
 	XWndButton *m_lockButt;		// 잠금 버튼
 	XSurface *m_pSoulStone = nullptr;
@@ -122,6 +122,7 @@ public:
 	GET_SET_ACCESSOR_CONST( bool, bNotUse );
 	GET_SET_BOOL_ACCESSOR( bShowNum );
 	GET_SET_ACCESSOR_CONST( int, Level );
+	GET_ACCESSOR_CONST( ID, snHero );
 	void SetNum( int num );
 	GET_ACCESSOR( ID, snItem );
 	const char* GetIdsName() {
@@ -129,7 +130,7 @@ public:
 	}
 	void SetItemImg( LPCTSTR szImg );
 	void SetHero( ID idProp );
-	void SetHero( XHero* pHero );
+	void SetHero( const XHero* pHero );
 	void SetLockButt();
 	XWndButton* GetLockButt() { return m_lockButt; }
 	void SetSlotLock();
@@ -143,6 +144,7 @@ public:
 	bool IsHero() const;
 private:
 	bool DispatchMsg( const XE::xMsgWin& msg ) override;
+	void ReleaseStar();
 };
 
 inline XWndStoragyItemElem* xGetCtrlHero( XWnd* pRoot, const std::string& key ) {

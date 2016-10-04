@@ -110,11 +110,11 @@ inline XWndCircleUnit* xGetCtrlUnit( XWnd* pRoot, const std::string& key ) {
 *****************************************************************/
 class XWndCircleUnit2 : public XWnd {
 public:
-	XWndCircleUnit2();
+//	XWndCircleUnit2();
 	XWndCircleUnit2( XGAME::xtUnit unit, const XE::VEC2& vPos, XHero *pHero );
 	~XWndCircleUnit2() {		Destroy();	}
 	// get/setter
-	GET_SET_ACCESSOR_CONST( int, Level );
+//	GET_SET_ACCESSOR_CONST( int, Level );
 	// public member
 	void SetUnit( XGAME::xtUnit unit, int level );
 private:

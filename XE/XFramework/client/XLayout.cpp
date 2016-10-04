@@ -96,7 +96,11 @@ BOOL XLayout::Load( const char *cFullpath )
 			return FALSE;
 	}
 	m_bLoad = TRUE;
+#ifdef _DEBUG
+	XTRACE( "%s load success", C2SZ( m_strFullpath.c_str() ) );
+#else
 	CONSOLE("%s load success", C2SZ(m_strFullpath.c_str()) );
+#endif
 	return TRUE;
 }
 
@@ -112,7 +116,11 @@ BOOL XLayout::Reload( void )
 */
 bool XLayout::CreateLayout2( const std::string& strKeyWnd, XWnd *pParent )
 {
+#ifdef _DEBUG
+	XTRACE( "layout create2: key=%s", C2SZ( strKeyWnd ) );
+#else
 	CONSOLE( "layout create2: key=%s", C2SZ( strKeyWnd ) );
+#endif // _DEBUG
 	TiXmlNode *nodeWnd = nullptr;
 	// 해동 노드 찾음.
 	nodeWnd = GetNode( strKeyWnd.c_str(), m_rootNode );
@@ -194,7 +202,11 @@ BOOL XLayout::CreateLayout( const char *cKeyWnd,
 														const char *cKeyGroup )
 {
 	XLOAD_PROFILE1;
+#ifdef _DEBUG
+	XTRACE( "layout create: key=%s", C2SZ( cKeyWnd ) );
+#else
 	CONSOLE("layout create: key=%s", C2SZ(cKeyWnd) );
+#endif // _DEBUG
 	TiXmlNode *nodeWnd = NULL;
 	if( XE::IsHave( cKeyGroup ) ) {
 		// 그룹명이 있을경우 그룹에서 cKeyWnd를 찾음.
@@ -1966,8 +1978,7 @@ XWnd *XLayout::CreateListCtrl( const char *cCtrlName,
 					for( int i = 0; i < numItems; ++i ) {
 						XWnd *pItem = CreateXWindow2( pElemItem );
 						const std::string strKey 
-							= XE::Format("%s.%s%d", attr.strKey.c_str(), 
-																			pItem->GetstrIdentifier().c_str(), 
+							= XE::Format("%s%d", pItem->GetstrIdentifier().c_str(), 
 																			i+1);
 						pItem->SetstrIdentifier( strKey );
 						pWndList->AddItem( pItem );			// id는 랜덤으로 하는게 맞는거 같다. 중복이 너무 쉽게 되고. 인덱스로 판별하는 방식은 가급적 안쓰는게 좋을듯. strIds를 사용할것.

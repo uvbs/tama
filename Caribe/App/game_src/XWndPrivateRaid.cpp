@@ -26,68 +26,201 @@ XWndPrivateRaid::XWndPrivateRaid(XSpotPrivateRaid* pSpot)
 
 BOOL XWndPrivateRaid::OnCreate()
 {
-	{
-		auto pWndList = xGET_LIST_CTRL( this, "list.my" );
-		if( pWndList ) {
-			XList4<XHero*> listEnterHeroes;
-			SetEnterHeroes( pWndList, listEnterHeroes );
-		}
-	}
-	const auto spAcc = XAccount::sGetPlayerConst();
-	if( spAcc ) {
-		int idx = 0;
-		auto pWndList = xGET_LIST_CTRL( this, "list.have" );
-		for( const auto pHero : spAcc->GetlistHeroByInvenConst() ) {
-			if( XASSERT(pHero) ) {
-				++idx;
-				XWnd* pWnd = GetpLayout()->CreateWnd( "elem", pWndList );
-				auto pCtrlHero = dynamic_cast<XWndStoragyItemElem*>( pWnd );
-				if( XASSERT(pCtrlHero) ) {
-					pCtrlHero->SetHero( pHero );
-					const std::string strKey = XE::Format("%s.%s%d", 
-																								 pWnd->GetstrIdentifier().c_str(), 
-																								 pCtrlHero->GetstrIdentifier().c_str(), 
-																								 idx );
-					pCtrlHero->SetstrIdentifier( strKey );
-					pWndList->AddItem( pCtrlHero );
-				}
-			}
-		}
-	}
-
 	return XWndPopup::OnCreate();
 }
 
 /**
- @brief 출전 영웅들을 UI에 배치
+ @brief 하단 보유 영웅중 하나를 클릭함.
+ 새 영웅추가: 하단리스트 클릭 => 출전리스트의 맨 뒤로 감
+ 출전영웅해제: 상단리스트 클릭(선택) => 같은영웅 한번더 클릭, 리스트에서 삭제
+ 영웅자리바꿈: 상단리스트에서 선택 => 바꿀 영웅을 클릭(교체)
+ 출전영웅교체: 상단영웅 선택 => 하단영웅 선택
 */
-void XWndPrivateRaid::SetEnterHeroes( XWndList* pList, XList4<XHero*> listHero )
+int XWndPrivateRaid::OnSelectHeroAtHave( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
-	XBREAK( listHero.size() > 30 );
-	const std::string& strKeyHead = pList->GetstrIdentifier(); 
-	int i = 0;
-	for( auto pHero : listHero ) {
-		if( i > 30 )
-			break;
-		auto pWnd = pList->Findf("%s.elem.%d", strKeyHead.c_str(), ++i);
-		if( XASSERT(pWnd) ) {
-			auto pWndHero = SafeCast2<XWndStoragyItemElem*>( pWnd );
-			if( XASSERT(pWndHero) ) {
-				if( XASSERT( pHero ) ) {
-					pWndHero->SetHero( pHero );
-					auto pWndUnit = SafeCast2<XWndCircleUnit*>( pWndHero->Find( "ctrl.unit" ) );
-					if( XASSERT(pWndUnit) ) {
-						pWndUnit->SetUnit( pHero->GetUnit() );
-					}
+	CONSOLE("%s", __TFUNC__);
+	//
+	auto pWndHero = SafeCast<XWndStoragyItemElem*>( pWnd->Find( p2 ) );
+	if(	XASSERT(pWndHero) ) {
+		XHero* pHero = ACCOUNT->GetpHeroBySN( pWndHero->GetsnHero() );
+		if(	XASSERT(pHero) ) {
+			m_pSpot->AddEnterHero( pHero, 0 );
+			xSET_SHOW( pWndHero, "img.cover", true );
+			SetbUpdate( true );
+		}
+	}
+	return 1;
+}
+
+/**
+ @brief 좌측의 출전 리스트영웅을 클릭
+*/
+int XWndPrivateRaid::OnClickedEnterHeroLeft( XWnd* pWnd, DWORD p1, DWORD p2 )
+{
+	CONSOLE("%s", __TFUNC__);
+	//
+	auto pWndList = SafeCast<XWndList*>( pWnd );
+	const int idxSide = (int)p1;
+	auto pCtrlHero = SafeCast<XWndStoragyItemElem*>( pWndList->Find( p2 ) );
+	if( XASSERT( pCtrlHero ) ) {
+		XHero* pHero = ACCOUNT->GetpHeroBySN( pCtrlHero->GetsnHero() );
+		if( XASSERT( pHero ) ) {
+			const std::string strKey = XE::Format( "list.%d", idxSide );
+			if( m_pSpot->IsSelectedHero( pHero, idxSide ) ) {
+				// 이미 선택이 되어있던것을 다시 클릭하면 삭제
+				m_pSpot->DelEnterHero( pHero, idxSide );
+				m_pSpot->SetSelectEnterHero( nullptr, idxSide );
+			} else {
+				// 아직 선택안되어 있던것이면 
+				// 기존에 다른게 선택되어있었다.
+				auto pHeroSelected = m_pSpot->GetSelectEnterHero( idxSide );
+				if( pHeroSelected ) {
+					XBREAK( pHeroSelected->GetsnHero() == pHero->GetsnHero() );
+					// 이것은 선택되지 않은상태지만 다른게 이미 선택되어있었으면 스왑
+					m_pSpot->ChangeEnterHero( pHero, pHeroSelected, idxSide );
+					m_pSpot->SetSelectEnterHero( nullptr, idxSide );
+				} else {
+					m_pSpot->SetSelectEnterHero( pHero, idxSide );
 				}
+			}
+			SetbUpdate( true );
+		}
+	}
+	return 1;
+}
+
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 슬롯을 모두 빈슬롯으로 만든다.
+*/
+void XWndPrivateRaid::ClearEnterHeroes( const std::string& strKey )
+{
+	auto pWndList = xGET_LIST_CTRL( this, strKey );
+	if( XASSERT(pWndList) ) {
+		for( auto pElem : pWndList->GetlistElem() ) {
+			auto pCtrlHero = SafeCast<XWndStoragyItemElem*>( pElem );
+			if( XASSERT(pCtrlHero) ) {
+				pCtrlHero->ClearHero();
+				xSET_SHOW( pCtrlHero, "ctrl.unit", false );
 			}
 		}
 	}
+
+}
+
+// void XWndPrivateRaid::DelWndList( const std::string& strKey, XHero* pHero )
+// {
+// 	auto pWnd = Find( strKey );
+// 	if( pWnd ) {
+// 		// heroCtrl에서 pHero를 모두 지운다.
+// 		// 다시 갱신한다.
+// 		pWnd->DestroyWndByIdentifierf( "elem.%08x", )
+// 	}
+// }
+
+
+/**
+ @brief 출전 영웅들을 UI에 배치
+*/
+void XWndPrivateRaid::UpdateEnterHeroes( XWndList* pWndList, int idxSide )
+{
+	const auto& listEnterHero = m_pSpot->GetlistEnter( idxSide );
+	XBREAK( listEnterHero.size() > 30 );
+ 	int i = 0;
+	for( auto pHero : listEnterHero ) {
+ 		if( i > 30 )
+ 			break;
+		auto pCtrlHero 
+			= SafeCast<XWndStoragyItemElem*>( pWndList->Findf("elem.%d", i + 1 ) );
+		if( XASSERT( pCtrlHero ) ) {
+			if( XASSERT( pHero ) ) {
+				pCtrlHero->SetHero( pHero );
+				pCtrlHero->SetbSelected( m_pSpot->IsSelectedHero( pHero, idxSide ) );
+				auto pWndUnit = ::xGetCtrlUnit2( pCtrlHero, "ctrl.unit" );
+				if( XASSERT( pWndUnit ) ) {
+					pWndUnit->SetUnit( pHero->GetUnit(), pHero->GetlevelSquad() );
+					pWndUnit->SetbShow( true );
+				}
+			}
+		}
+		++i;
+	}
+}
+
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief snHero로 elemd을 찾는다.
+*/
+XWndStoragyItemElem* 
+XWndPrivateRaid::FindpHeroCtrl( XWndList* pWndList, ID snHero )
+{
+	for( auto pElem : pWndList->GetlistItems() ) {
+		auto pCtrl = SafeCast<XWndStoragyItemElem*>( pElem );
+		if( XASSERT(pCtrl) ) {
+			if( pCtrl->GetsnHero() == snHero )
+				return pCtrl;
+		}
+	}
+	return nullptr;
 }
 
 
 void XWndPrivateRaid::Update()
 {
+	// 좌우 진영의 츨전 영웅들 리스트
+	for( int i = 0; i < 2; ++i ) {
+		const std::string strKey = XE::Format( "list.%d", i );
+		ClearEnterHeroes( strKey );
+		auto pWndList = xGET_LIST_CTRL( this, strKey );
+		if( pWndList ) {
+			pWndList->SetEvent( XWM_SELECT_ELEM, this,
+													&XWndPrivateRaid::OnClickedEnterHeroLeft, i );
+			UpdateEnterHeroes( pWndList, i );
+		}
+	}
+// 	{
+// 		auto pWndList = xGET_LIST_CTRL( this, "list.my" );
+// 		if( pWndList ) {
+// 			pWndList->SetEvent( XWM_SELECT_ELEM, this, &XWndPrivateRaid::OnClickedEnterHeroLeft, 0 );
+// 			UpdateEnterHeroes( pWndList, m_pSpot->GetlistEnter() );
+// 		}
+// 	}
+	// 보유한 영웅리스트를 하단에 표시한다.
+	const auto spAcc = XAccount::sGetPlayerConst();
+	if( spAcc ) {
+//		int idx = 0;
+		auto pWndList = xGET_LIST_CTRL( this, "list.have" );
+		if( pWndList ) {
+			pWndList->SetEvent( XWM_SELECT_ELEM, this, &XWndPrivateRaid::OnSelectHeroAtHave );
+			// 보유한 영웅리스트를 계정에서 가져와 루프를 돈다
+			for( const auto pHero : spAcc->GetlistHeroByInvenConst() ) {
+				if( XASSERT( pHero ) ) {
+//					++idx;
+					// 영웅컨트롤을 꺼낸다.
+					const std::string strKey = XE::Format( "elem.%08x", pHero->GetsnHero() );
+					auto pCtrlHero = dynamic_cast<XWndStoragyItemElem*>( pWndList->Find( strKey ));
+					if( pCtrlHero == nullptr ) {
+						XWnd* pWnd = GetpLayout()->CreateWnd( "elem", pWndList );
+						pCtrlHero = dynamic_cast<XWndStoragyItemElem*>( pWnd );
+						if( XASSERT( pCtrlHero ) ) {
+							pCtrlHero->SetstrIdentifier( strKey );
+							pWndList->AddItem( pCtrlHero );
+						}
+					}
+					// 영웅을 지정
+					pCtrlHero->SetHero( pHero );
+					pCtrlHero->SetbSelected( m_pSpot->IsSelectedHero( pHero, 0 ) );
+					// 유닛을 지정
+					auto pCtrlUnit = ::xGetCtrlUnit2( pCtrlHero, "ctrl.unit" );
+					if( XASSERT(pCtrlUnit) ) {
+						pCtrlUnit->SetUnit( pHero->GetUnit(), pHero->GetlevelSquad() );
+						xSET_SHOW( pCtrlHero, "ctrl.unit", true );
+					}
+					// 출전중인 영웅은 표시를 한다. (아군)
+					const bool bEnter = m_pSpot->IsExistEnterHero( pHero, 0 );
+					xSET_SHOW( pCtrlHero, "img.cover", bEnter );
+				}
+			}
+		}
+	}
 	XWndPopup::Update();
 }
 

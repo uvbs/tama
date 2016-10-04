@@ -82,9 +82,9 @@ void XWndStoragyItemElem::Destory()
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcBgName );
 	SAFE_RELEASE2( IMAGE_MNG, m_pBG );
 	SAFE_RELEASE2( IMAGE_MNG, m_pItemImg );
-	XARRAYLINEARN_LOOP_AUTO( m_aryStar, pImg ) {
+	for( auto pImg : m_aryStar ) {
 		SAFE_RELEASE2( IMAGE_MNG, pImg );
-	} END_LOOP;
+	}
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcSelected );
 	SAFE_RELEASE2( IMAGE_MNG, m_pSoulStone );
 }
@@ -221,8 +221,10 @@ BOOL XWndStoragyItemElem::OnCreate()
 		} else {
 			// 영혼석이 아닌경우에만 별 그림
 			auto numStar = m_pProp->grade;
-			for( int i = 0; i < numStar; ++i )
-				m_aryStar.Add( IMAGE_MNG->Load( PATH_UI( "common_etc_smallstar.png" ), m_bBatch, XE::xPF_ARGB4444, true, true ) );
+			for( int i = 0; i < numStar; ++i ) {
+				auto pImg = IMAGE_MNG->Load( PATH_UI( "common_etc_smallstar.png" ), m_bBatch, XE::xPF_ARGB4444, true, true );
+				m_aryStar.push_back( pImg );
+			}
 		}
 		m_pItemImg = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, m_pProp->strIcon.c_str() ), m_bBatch, XE::xPF_ARGB1555, true, true );
 	}
@@ -239,22 +241,27 @@ void XWndStoragyItemElem::SetHero( ID idProp )
 																		true,
 																		true );
 	}
-	if( m_Reward.GetidHero() != idProp ) {
-		// 기존과 다른 영웅이 지정되었을때만 
-		auto pProp = PROP_HERO->GetpProp( idProp );
-		if( XASSERT( pProp ) ) {
-			const _tstring resFace = XE::MakePath( DIR_IMG, pProp->strFace );
-			XBREAK( resFace.empty() );
-			SAFE_RELEASE2( IMAGE_MNG, m_pItemImg );
-			m_pItemImg = IMAGE_MNG->Load( resFace,
-																		m_bBatch,
-																		XE::xPF_ARGB8888,
-																		true,		// atlas
-																		true ); // async
-			SetvScaleItemImg( XE::VEC2( 0.789f, 0.781f ) );
-			SetbUpdate( true );
-			m_Reward.SetHero( idProp );
+	if( idProp ) {
+		if( m_Reward.GetidHero() != idProp ) {
+			// 기존과 다른 영웅이 지정되었을때만 
+			auto pProp = PROP_HERO->GetpProp( idProp );
+			if( XASSERT( pProp ) ) {
+				const _tstring resFace = XE::MakePath( DIR_IMG, pProp->strFace );
+				XBREAK( resFace.empty() );
+				SAFE_RELEASE2( IMAGE_MNG, m_pItemImg );
+				m_pItemImg = IMAGE_MNG->Load( resFace,
+																			m_bBatch,
+																			XE::xPF_ARGB8888,
+																			true,		// atlas
+																			true ); // async
+				SetvScaleItemImg( XE::VEC2( 0.789f, 0.781f ) );
+				SetbUpdate( true );
+				m_Reward.SetHero( idProp );
+			}
 		}
+	} else {
+		SAFE_RELEASE2( IMAGE_MNG, m_pItemImg );
+		m_Reward.SetHero( 0 );
 	}
 }
 
@@ -270,31 +277,47 @@ void XWndStoragyItemElem::SetHero( ID idProp )
 // 	}
 // }
 
-void XWndStoragyItemElem::SetHero( XHero* pHero )
+void XWndStoragyItemElem::SetHero( const XHero* pHero )
 {
 	if( pHero ) {
 		SetbShowNum( false );
 		m_Level = pHero->GetLevel();
-//		m_snHero = pHero->GetsnHero();
-//		m_Reward.SetHero( pHero->GetidProp(), 1 );
+		m_snHero = pHero->GetsnHero();
+		//		m_Reward.SetHero( pHero->GetidProp(), 1 );
 		SetHero( pHero->GetidProp() );
 		// 영혼석이 아닌경우에만 별 그림
-		const auto numStar = pHero->GetGrade();
-		for( int i = 0; i < numStar; ++i )
-			m_aryStar.Add( IMAGE_MNG->Load( PATH_UI( "common_etc_smallstar.png" ),
-																			m_bBatch,
-																			XE::xPF_ARGB4444,
-																			true, true ) );
+		ReleaseStar();
+		if( m_aryStar.size() == 0 ) {
+			const auto numStar = pHero->GetGrade();
+			for( int i = 0; i < numStar; ++i )
+				m_aryStar.Add( IMAGE_MNG->Load( PATH_UI( "common_etc_smallstar.png" ),
+				m_bBatch,
+				XE::xPF_ARGB4444,
+				true, true ) );
+		}
 		SetbUpdate( true );
+	} else {
+		ClearHero();
 	}
+}
+
+void XWndStoragyItemElem::ReleaseStar()
+{
+	for( auto pImg : m_aryStar ) {
+		SAFE_RELEASE2( IMAGE_MNG, pImg );
+	}
+	m_aryStar.clear();
 }
 
 void XWndStoragyItemElem::ClearHero()
 {
+	m_pPropHero = nullptr;
 	m_Reward.SetHero( 0, 0 );
-//	m_snHero = 0;
+	m_snHero = 0;
 	m_Level = 0;
+	m_bSelected = false;
 	SAFE_RELEASE2( IMAGE_MNG, m_pItemImg );
+	ReleaseStar();
 }
 
 bool XWndStoragyItemElem::IsHero() const
@@ -581,7 +604,8 @@ void XWndStoragyItemElem::Draw()
 		}
 	}
 	// 별
-	XARRAYLINEARN_LOOP_IDX( m_aryStar, auto, i, pImg ) {
+	int i = 0;
+	for( auto pImg : m_aryStar ) {
 		if (pImg != NULL) {
 			auto vs = vScale * 0.8f;
 //			pImg->SetScale(vs);
@@ -596,7 +620,8 @@ void XWndStoragyItemElem::Draw()
 				param.m_Priority = -50;
 			pImg->DrawByParam( param );
 		}
-	} END_LOOP;
+		++i;
+	}
 
 	if( m_bNotUse ) {
 		const auto vSize = XE::VEC2(51,50) * vScale;		//

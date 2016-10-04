@@ -987,30 +987,30 @@ BOOL XLegion::DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion )
 	if( verLegion >= 5 )
 		ar >> m_aryResourceHero;
 	XLIST4_DESTROY( m_listSquadrons );
-	//ar >> m_listSquadrons;
-	for( int i = 0; i < size; ++i ) {
-		auto pSquad = new XSquadron();
-		if( !pSquad->DeSerialize( ar, spAcc, verLegion ) )
-			return FALSE;
-		m_listSquadrons.push_back( pSquad );
+	if( verLegion <= 9 ) {
+		int fill = 0;
+		XLIST4_DESTROY( m_listSquadrons );
+		for( int i = 0; i < size; ++i )  {
+			ar >> fill;
+			if( fill == 1 ) {
+				auto pSquad = new XSquadron();
+				if( !pSquad->DeSerialize( ar, spAcc, verLegion ) )
+					return FALSE;
+				pSquad->SetidxPos( i );
+				m_listSquadrons.push_back( pSquad );
+	//			m_arySquadrons[ i ] = pSquad;
+			} else {
+				XBREAK( fill != 0 );
+			}
+		}
+	} else {
+		for( int i = 0; i < size; ++i ) {
+			auto pSquad = new XSquadron();
+			if( !pSquad->DeSerialize( ar, spAcc, verLegion ) )
+				return FALSE;
+			m_listSquadrons.push_back( pSquad );
+		}
 	}
-//	int fill = 0;
-// 	XHero *pFirst = nullptr;
-// 	XLIST4_DESTROY( m_listSquadrons );
-// 	for( int i = 0; i < size; ++i )  {
-// 		ar >> fill;
-// 		if( fill == 1 ) {
-// 			auto pSquad = new XSquadron();
-// 			if( !pSquad->DeSerialize( ar, spAcc, verLegion ) )
-// 				return FALSE;
-// 			m_listSquadrons.push_back( pSquad );
-// //			m_arySquadrons[ i ] = pSquad;
-// 			if( pFirst == nullptr )
-// 				pFirst = pSquad->GetpHero();
-// 		} else {
-// 			XBREAK( fill != 0 );
-// 		}
-// 	}
 	{
 		ID snLeader;
 		ar >> snLeader;
@@ -1122,29 +1122,32 @@ BOOL XLegion::DeSerializeFull( XArchive& ar, int verLegion )
 	if( verLegion >= 5 )
 		ar >> m_aryResourceHero;
 	XLIST4_DESTROY( m_listSquadrons );
-	for( int i = 0; i < size; ++i ) {
-		auto pSq = new XSquadron();
-		if( !pSq->DeSerializeFull( ar, verLegion ) )
-			return FALSE;
-		m_listSquadrons.push_back( pSq );
+	if( verLegion <= 9 ) {
+	//
+		for( int i = 0; i < size; ++i ) {
+	//		SAFE_DELETE( m_arySquadrons[ i ] );	// 이미 데이타가 있으면 삭제하고 넣는다.
+			int fill;
+			ar >> fill;
+			if( fill == 1 ) {
+				auto pSquad = new XSquadron;
+				if( pSquad->DeSerializeFull( ar, verLegion ) == FALSE )
+					return FALSE;
+				pSquad->SetidxPos( i );
+				m_listSquadrons.push_back( pSquad );
+				//m_arySquadrons[ i ] = pSquad;
+			} else {
+				if( XBREAK( fill != 0 ) )
+					return FALSE;
+			}
+		}
+	} else {
+		for( int i = 0; i < size; ++i ) {
+			auto pSq = new XSquadron();
+			if( !pSq->DeSerializeFull( ar, verLegion ) )
+				return FALSE;
+			m_listSquadrons.push_back( pSq );
+		}
 	}
-// 	XHero *pFirst = nullptr;
-// 	//
-// 	for( int i = 0; i < size; ++i ) {
-// 		SAFE_DELETE( m_arySquadrons[ i ] );	// 이미 데이타가 있으면 삭제하고 넣는다.
-// 		ar >> fill;
-// 		if( fill == 1 ) {
-// 			XSquadron *pSquad = new XSquadron;
-// 			if( pSquad->DeSerializeFull( ar, verLegion ) == FALSE )
-// 				return FALSE;
-// 			m_arySquadrons[ i ] = pSquad;
-// 			if( pFirst == nullptr )
-// 				pFirst = pSquad->GetpHero();
-// 		} else {
-// 			if( XBREAK( fill != 0 ) )
-// 				return FALSE;
-// 		}
-// 	}
 	{
 		ID snLeader;
 		ar >> snLeader;
@@ -1172,12 +1175,12 @@ XLegion* XLegion::CreateLegionForLink( XSPAcc spAcc )
 {
 	// 빈 군단 객체를 만듬
 	XLegion *pNewLegion = new XLegion( m_snLegion );
-	for( auto pSq : m_listSquadrons ) {
-		const ID snHero = pSq->GetpHero()->GetsnHero();
+	for( auto pSqSrc : m_listSquadrons ) {
+		const ID snHero = pSqSrc->GetpHero()->GetsnHero();
 		auto pHero = spAcc->GetHero( snHero );
 		if( XASSERT( pHero ) ) {
-			auto pSq = new XSquadron( pHero );
-			pNewLegion->AddSquadron( pSq->GetidxPos(), pSq, false );
+			auto pSqNew = new XSquadron( pHero );
+			pNewLegion->AddSquadron( pSqSrc->GetidxPos(), pSqNew, false );
 			if( m_pLeader && pHero->GetsnHero() == m_pLeader->GetsnHero() )
 				pNewLegion->SetpLeader( pHero );
 		}
@@ -1322,9 +1325,10 @@ void XLegion::SwapSlotSquad( int idxSrc, int idxDst )
 {
 	auto pSq1 = GetpmSquadronByidxPos( idxSrc );
 	auto pSq2 = GetpmSquadronByidxPos( idxDst );
-	auto idxPos = pSq1->GetidxPos();
-	pSq1->SetidxPos( pSq2->GetidxPos() );
-	pSq2->SetidxPos( idxPos );
+	if ( pSq1 )
+		pSq1->SetidxPos( idxDst );
+	if( pSq2 )
+		pSq2->SetidxPos( idxSrc );
 // 	if( idxSrc < 0 || idxSrc >= m_arySquadrons.GetMax() )
 // 		return FALSE;
 // 	if( idxDst < 0 || idxDst >= m_arySquadrons.GetMax() )

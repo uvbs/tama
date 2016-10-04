@@ -166,3 +166,6 @@ public:
 
 
 XWndList* xGET_LIST_CTRL( XWnd *pRoot, const char *cKey );
+inline XWndList* xGET_LIST_CTRL( XWnd *pRoot, const std::string& strKey ) {
+	return xGET_LIST_CTRL( pRoot, strKey.c_str() );
+}

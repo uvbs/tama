@@ -457,9 +457,10 @@ XWndCircleUnit2::XWndCircleUnit2( XGAME::xtUnit unit,
 
 void XWndCircleUnit2::SetUnit( xtUnit unit, int level )
 {
+	m_Unit = unit;
+	m_Level = level;
 	const _tstring res = XGAME::GetResUnitSmall( unit );
 	xSET_IMG( this, "img.unit", res, XE::xPF_ARGB1555 );
-	m_Level = level;
 }
 
 void XWndCircleUnit2::Update()

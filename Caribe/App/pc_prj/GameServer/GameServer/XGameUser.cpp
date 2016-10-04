@@ -2049,12 +2049,12 @@ int XGameUser::DispatchQuestEventByBattle( XSpot *pBaseSpot,
 	// 스팟전투 승리후에 들어오는 곳이므로 군단정보가 반드시 있어야 함.
 	XBREAK( spLegion == nullptr );
 	if( spLegion != nullptr ) {
-		XArrayLinearN<XHero*, XGAME::MAX_SQUAD> aryHeros;
-		spLegion->GetHerosToAry( aryHeros );
-		XARRAYLINEARN_LOOP( aryHeros, XHero*, pHero ) {
+		XVector<XHero*> aryHeros;
+		spLegion->GetHerosToAry( &aryHeros );
+		for( auto pHero : aryHeros ) {
 			infoQuest.SetidHero( pHero->GetidProp() );
 			DispatchQuestEvent( XGAME::xQC_EVENT_KILL_HERO, infoQuest );
-		} END_LOOP;
+		}
 	}
 	return 1;
 }
@@ -2076,7 +2076,7 @@ int XGameUser::DoRewardProcess( XSpot *pBaseSpot, XGAME::xBattleResult *pOutResu
 	XLegion *pLegion = m_spAcc->GetCurrLegion().get();
 	m_spAcc->AddExpToHeros( XGC->m_expBattlePerHero, m_spAcc->GetCurrLegion().get(), &pOutResult->m_aryLevelUpHeroes );
 	// 영웅들정보 갱신(갱신된 부분만 보내도록 최적화 할것)
-	pLegion->GetHerosToAry( pOutResult->aryHeroes );
+	pLegion->GetHerosToAry( &pOutResult->aryHeroes );
 	return 1;
 }
 
@@ -4307,10 +4307,7 @@ int XGameUser::RecvNewSquad( XPacket& p )
 	XVERIFY_BREAK( pLegion == NULL );
 	XSquadron *pSq = new XSquadron( pHero );
 	XVERIFY_BREAK( pSq == NULL );
-	BOOL bSuccess = pLegion->AddSquadron( idxSlot, pSq, FALSE );
-	if( bSuccess == FALSE )
-		SAFE_DELETE( pSq );
-	XVERIFY_BREAK( bSuccess == FALSE );
+	pLegion->AddSquadron( idxSlot, pSq, FALSE );
 	///< 
 	//결과를 클라에 보냄
 	XPacket ar( (ID)xCL2GS_LOBBY_NEW_SQUAD );
@@ -4345,14 +4342,11 @@ int XGameUser::RecvMoveSquad( XPacket& p )
 		idx = pLegion->_GetIdxSquadByHeroSN( snHeroDst );
 		XVERIFY_BREAK( idx != idxDst );
 	}
-	if( idxDst == -1 )
-	{
+	if( idxDst == -1 )	{
 		// remove squad
 		pLegion->DestroySquadBysnHero( idxSrc );
-	} else
-	{
-		BOOL bRet = pLegion->SwapSlotSquad( idxSrc, idxDst );
-		XVERIFY_BREAK( bRet == FALSE );
+	} else {
+		pLegion->SwapSlotSquad( idxSrc, idxDst );
 	}
 	//결과를 클라에 보냄
 	XPacket ar( (ID)xCL2GS_LOBBY_MOVE_SQUAD );
@@ -4407,7 +4401,7 @@ int XGameUser::RecvChangeSquad(XPacket& p)
 	auto itor = squadlist.begin();		
 	for (; itor != squadlist.end(); itor++) {	
 		XSquadron *pSq = new XSquadron(m_spAcc->GetHero(itor->ssnhero));
-		m_spAcc->GetCurrLegion()->SetSquadron(itor->spos, pSq, FALSE);
+		m_spAcc->GetCurrLegion()->AddSquadron(itor->spos, pSq, false);
 		if (pSq->GetpHero()->GetsnHero() == snLeader)
 			m_spAcc->GetCurrLegion()->SetpLeader(pSq->GetpHero());
 		ar << (int)itor->spos;
@@ -9212,7 +9206,7 @@ void XGameUser::ProcessAttackedHome( xSec secPass )
 	// 진짜 침공이 없었을때만 시뮬레이션 함.
 	if( m_spAcc->GetnumAttaccked() != 0 )
 		return;
-	if( secPass > XAccount::s_secOfflineForSimul ) {
+	if( secPass > (xSec)XAccount::s_secOfflineForSimul ) {
 		bool bOk = ( xRandom( 3 ) == 0 );	// 침공
 		if( bOk ) {
 			int powerMin = (int)( m_spAcc->GetPowerIncludeEmpty() * 1.2 );
@@ -9341,7 +9335,7 @@ void XGameUser::ProcessAttackedJewel( xSec secOffline )
 {
 	// 	if( 진짜침공이 있었는가)
 	// 		return;
-	if( secOffline < XAccount::s_secOfflineForSimul )
+	if( secOffline < (xSec)XAccount::s_secOfflineForSimul )
 		return;
 	XVector<XSpotJewel*> aryJewels;
 	m_spAcc->GetpWorld()->GetSpotsToAry( &aryJewels, XGAME::xSPOT_JEWEL );
@@ -9725,4 +9719,41 @@ int XGameUser::RecvSync( XPacket& p )
 	SendSyncAcc( type );
 	return 1;
 }
+
+/**
+ 클라이언트의 SendReqPrivateRaidEnterList()에 대한 서버측의 Receive함수
+ @param p 패킷이 들어있는 아카이브
+ @return 오류없이 완료되었다면 1을 리턴한다.
+ @see SendReqPrivateRaidEnterList()
+*/
+int XGameUser::RecvPrivateRaidEnterList( XPacket& p )
+{
+	ID idSpot;
+	int size;
+	p >> idSpot;
+	p >> size;
+	XVERIFY_BREAK( size > XSpotPrivateRaid::c_maxSquad );
+	auto pSpot = SafeCast<XSpotPrivateRaid*>( GetpWorld()->GetpSpot( idSpot ) );
+	XVERIFY_BREAK( pSpot == nullptr );
+	for( int i = 0; i < size; ++i ) {
+		ID snHero;
+		p >> snHero;
+		auto pHero = m_spAcc->GetpHeroBySN( snHero );
+		XVERIFY_BREAK( pHero == nullptr );
+		pSpot->AddEnterHero( pHero, 0 );
+	}
+
+	// 클라로 전송
+	XPacket ar( p.GetidPacket() );
+	ar << 1;
+	Send(ar);
+
+	XGAME::xBattleStartInfo info( false, pSpot );
+	info.m_idEnemy = 0;
+	info.m_strName = _T("legion empire");
+	SendBattleInfo( pSpot, &info );
+
+	return 1;
+}
+
 

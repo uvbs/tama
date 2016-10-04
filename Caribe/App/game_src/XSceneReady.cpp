@@ -231,7 +231,7 @@ void XSceneReady::Update()
 				// 상성표시 처리
 				auto idxSelected = XWndSquadInLegion::sGetidxSelectedSquad();
 				// 선택된 아군 부대영웅
-				auto pHeroSelected = ACCOUNT->GetCurrLegion()->GetpHeroByIdxPos( idxSelected );
+				auto pHeroSelected = (idxSelected>=0)? ACCOUNT->GetCurrLegion()->GetpHeroByIdxPos( idxSelected ) : nullptr;
 				if( pHeroSelected ) {
 					int adj = 0;
 					if( XGAME::IsSuperiorMOS( pHeroSelected->GetTypeAtk()

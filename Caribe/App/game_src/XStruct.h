@@ -201,7 +201,7 @@ struct xBattleResult {
 	int m_totalStar = 0;		// 계정이 가진 총 별개수.
 	XArrayLinearN<XBaseItem*, 256> aryUpdated;
 	XArrayLinearN<ItemBox, 256> aryDrops;
-	XArrayLinearN<XHero*, XGAME::MAX_SQUAD> aryHeroes;
+	XVector<XHero*> aryHeroes;
 	XVector<ID> m_aryLevelUpHeroes;		// 레벨업한 영웅들의 sn
 	xBattleLog logForAttacker;
 	int ladder = 0;

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Caribe2013", "Caribe\Caribe2013.vcxproj.vcxproj", "{1565A2CB-DB14-4F22-8545-F51B7C11C502}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -44,6 +44,39 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 6
+		SccProjectUniqueName0 = Caribe\\Caribe2013.vcxproj.vcxproj
+		SccProjectName0 = Perforce\u0020Project
+		SccLocalPath0 = ..\\..\\..\\..
+		SccProvider0 = MSSCCI:Perforce\u0020SCM
+		SccProjectFilePathRelativizedFromConnection0 = Caribe\\App\\pc_prj\\Caribe\\Caribe\\
+		SccProjectUniqueName1 = ..\\..\\..\\..\\XE\\prj\\xe_client\\xe_client\\xe_client2013.vcxproj.vcxproj
+		SccProjectName1 = Perforce\u0020Project
+		SccLocalPath1 = ..\\..\\..\\..
+		SccProvider1 = MSSCCI:Perforce\u0020SCM
+		SccProjectFilePathRelativizedFromConnection1 = XE\\prj\\xe_client\\xe_client\\
+		SccProjectUniqueName2 = ..\\DBAgentServer\\DBAgentServer\\DBAgentServer2013.vcxproj.vcxproj
+		SccProjectName2 = Perforce\u0020Project
+		SccLocalPath2 = ..\\..\\..\\..
+		SccProvider2 = MSSCCI:Perforce\u0020SCM
+		SccProjectFilePathRelativizedFromConnection2 = Caribe\\App\\pc_prj\\DBAgentServer\\DBAgentServer\\
+		SccProjectUniqueName3 = ..\\..\\..\\..\\XE\\prj\\xe_server\\xe_server\\xe_server2013.vcxproj.vcxproj
+		SccProjectName3 = Perforce\u0020Project
+		SccLocalPath3 = ..\\..\\..\\..
+		SccProvider3 = MSSCCI:Perforce\u0020SCM
+		SccProjectFilePathRelativizedFromConnection3 = XE\\prj\\xe_server\\xe_server\\
+		SccProjectUniqueName4 = ..\\GameServer\\GameServer\\GameServer2013.vcxproj.vcxproj
+		SccProjectName4 = Perforce\u0020Project
+		SccLocalPath4 = ..\\..\\..\\..
+		SccProvider4 = MSSCCI:Perforce\u0020SCM
+		SccProjectFilePathRelativizedFromConnection4 = Caribe\\App\\pc_prj\\GameServer\\GameServer\\
+		SccProjectUniqueName5 = ..\\LoginServer\\LoginServer\\LoginServer2013.vcxproj.vcxproj
+		SccProjectName5 = Perforce\u0020Project
+		SccLocalPath5 = ..\\..\\..\\..
+		SccProvider5 = MSSCCI:Perforce\u0020SCM
+		SccProjectFilePathRelativizedFromConnection5 = Caribe\\App\\pc_prj\\LoginServer\\LoginServer\\
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		_DebugGoogle|Win32 = _DebugGoogle|Win32
 		_DebugGoogle|x64 = _DebugGoogle|x64

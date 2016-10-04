@@ -206,10 +206,10 @@ int xBattleResult::Serialize( XArchive& ar ) const {
 		{
 			XArchive _arHeroes;
 			_arHeroes << aryHeroes.size();
-			XARRAYLINEARN_LOOP( aryHeroes, XHero*, pHero ) {
+			for( auto pHero : aryHeroes ) {
 				_arHeroes << pHero->GetsnHero();
 				pHero->SerializeUpgrade( _arHeroes );
-			} END_LOOP;
+			}
 			ar << _arHeroes;
 			ar << m_aryLevelUpHeroes;
 		}
@@ -937,43 +937,43 @@ bool xLegion::LoadFromXML( XEXmlNode& nodeLegion, LPCTSTR szTag )
 	int idx = 0;
 	XEXmlAttr attr = nodeLegion.GetFirstAttribute();
 	while( !attr.IsEmpty() ) {
-// 		if( attr.GetcstrName() == "sn" ) {
-// 			std::string str = attr.GetString();
-// 			snLegion = strtoul( str.c_str(), nullptr, 16 );
-// 		} else
-		if( attr.GetcstrName() == "name" ) {
+		const auto& strName = attr.GetcstrName();
+		if( strName.front() == '_' ) {
+			// 무시
+		} else
+		if( strName == "name" ) {
 			idName = attr.GetInt();
 		} else
-		if( attr.GetcstrName() == "level" ) {
+		if( strName == "level" ) {
 			lvLegion = attr.GetInt();
 		} else
-		if( attr.GetcstrName() == "adj_level" ) {
+		if( strName == "adj_level" ) {
 			adjLvLegion = attr.GetInt();
 		} else
-		if( attr.GetcstrName() == "grade" ) {
+		if( strName == "grade" ) {
 			gradeLegion = (XGAME::xtGradeLegion)sReadConst( attr, szTag );
 		} else
-		if( attr.GetcstrName() == "lv_limit" ) {
+		if( strName == "lv_limit" ) {
 			lvLimit = attr.GetInt();
 		} else
-		if( attr.GetcstrName() == "num_squad" ) {
+		if( strName == "num_squad" ) {
 			numSquad = attr.GetInt();
 		} else
-		if( attr.GetcstrName() == "boss" ) {
+		if( strName == "boss" ) {
 			auto pProp = sReadHeroIdentifier( attr, szTag );
 			if( pProp ) {
 				idBoss = pProp->idProp;
 			}
 		} else
-		if( attr.GetcstrName() == "mul_atk" ) {
+		if( strName == "mul_atk" ) {
 			mulAtk = attr.GetFloat();
 			XBREAK( mulAtk <= 0 );
 		} else
-		if( attr.GetcstrName() == "mul_hp" ) {
+		if( strName == "mul_hp" ) {
 			mulHp = attr.GetFloat();
 			XBREAK( mulHp <= 0 );
 		} else {
-			XBREAKF( 1, "%s:알수없는 속성이름. %s", szTag, attr.GetstrName().c_str() );
+			XBREAKF( 1, "%s:알수없는 속성이름. %s", szTag, strName.c_str() );
 			bRet = false;
 		}
 		//

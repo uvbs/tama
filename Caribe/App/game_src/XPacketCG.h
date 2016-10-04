@@ -153,6 +153,7 @@ enum xtPacket {
 	xCL2GS_INGAME_BATTLE_START,					///< 인게임 부대배치씬에서 시작 누름.
 	xCL2GS_INGAME_ADD_BATTLE_LOG,				///< 추가된 전투기록을 보내준다.
 	xCL2GS_IS_ONLINE,                   ///< 상대 유저가 온라인이냐
+	xCL2GS_PRIVATE_RAID_ENTER_LIST,			///< 개인레이드. 출전영웅 리스트.
 	
 	// tech
 	xCL2GS_TECH_RESEARCH,						///< 특성치를 찍음.

@@ -168,11 +168,11 @@ void XPropWorld::xGuildRaid::DeSerialize( XArchive& ar, int ver ) {
 
 void XPropWorld::xPrivateRaid::Serialize( XArchive& ar ) const {
 	xBASESPOT::Serialize( ar );
-	ar << dummy;
+	ar << m_idsLegion;
 }
 void XPropWorld::xPrivateRaid::DeSerialize( XArchive& ar, int ver ) {
 	xBASESPOT::DeSerialize( ar, ver );
-	ar >> dummy;
+	ar >> m_idsLegion;
 }
 
 void XPropWorld::xCommon::Serialize( XArchive& ar ) const {
@@ -351,6 +351,7 @@ BOOL XPropWorld::LoadSpots( XEXmlNode& node )
 			auto* pProp = new xPrivateRaid;
 			pBaseProp = pProp;
 			GetBaseSpotAttr( pProp, childNode );
+			pProp->m_idsLegion = childNode.GetString( "legion" );
 		} else
 		if( childNode.GetstrName() == _T("common") ) {
 			xCommon *spot = new xCommon;

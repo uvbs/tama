@@ -73,8 +73,8 @@ void XSquadron::Destroy()
 */
 void XSquadron::Serialize( XArchive& ar )
 {
-	if( m_pHero ) {
-		ar << (BYTE)11;
+	if( XASSERT(m_pHero) ) {
+		ar << (char)m_idxPos;		// << (BYTE)11(9버전)
 		ar << (BYTE)m_bCreateHero;
 		ar << (BYTE)VER_HERO_SERIALIZE;
 //		ar << xboolToByte( m_bResourceSquad );
@@ -99,21 +99,50 @@ void XSquadron::Serialize( XArchive& ar )
 */
 BOOL XSquadron::DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion ) 
 {
-	int isHero;
-	BYTE b0;
-	ar >> b0;	isHero = b0;
-	if( isHero == 11 )	{
-		int verHero = 0;
-		ar >> b0;	m_bCreateHero = xbyteToBool(b0);
-		ar >> b0;	verHero = b0;
-		ar >> b0;	//m_bResourceSquad = xbyteToBool(b0);
-		XBREAK( spAcc && m_bCreateHero == TRUE );	// 계정이 있는데 NPC플랙인경우
-		XBREAK( spAcc == nullptr && m_bCreateHero == FALSE );	// 계정이 없는데 PC인경우
-		if( m_bCreateHero )		{
+	if( verLegion <= 9 ) {
+		int isHero;
+		BYTE b0;
+		ar >> b0;	isHero = b0;
+		if( isHero == 11 ) {
+			int verHero = 0;
+			ar >> b0;	m_bCreateHero = xbyteToBool( b0 );
+			ar >> b0;	verHero = b0;
+			ar >> b0;	//m_bResourceSquad = xbyteToBool(b0);
+			XBREAK( spAcc && m_bCreateHero == TRUE );	// 계정이 있는데 NPC플랙인경우
+			XBREAK( spAcc == nullptr && m_bCreateHero == FALSE );	// 계정이 없는데 PC인경우
+			if( m_bCreateHero ) {
+				XBREAK( spAcc != nullptr );
+				m_pHero = new XHero;
+				m_pHero->DeSerialize( ar, spAcc, verHero );
+			} else {
+				// 플레이어의 부대일경우는 계정에서 영웅을 찾아서 링크만 시킨다.
+				ID snHero;
+				ar >> snHero;
+				if( XBREAK( snHero == 0 ) )
+					return FALSE;
+				m_pHero = spAcc->GetHero( snHero );
+				if( XBREAK( m_pHero == nullptr ) )
+					return FALSE;
+
+			}
+		} else {
+			ar >> b0 >> b0 >> b0;
+			// 11이 아니면 0이어야 하는데 다른수면 시리얼라이즈가 잘못된거임.
+			XBREAK( isHero != 0 );
+		}
+	} else {
+		char c0;
+		ar >> c0; m_idxPos = c0;
+		ar >> c0;	m_bCreateHero = xbyteToBool( c0 );
+		ar >> c0;	const int verHero = c0;
+		ar >> c0;	//m_bResourceSquad = xbyteToBool(b0);
+		XBREAK( spAcc && m_bCreateHero );	// 계정이 있는데 NPC플랙인경우
+		XBREAK( spAcc == nullptr && m_bCreateHero == false );	// 계정이 없는데 PC인경우
+		if( m_bCreateHero ) {
 			XBREAK( spAcc != nullptr );
 			m_pHero = new XHero;
 			m_pHero->DeSerialize( ar, spAcc, verHero );
-		} else	{
+		} else {
 			// 플레이어의 부대일경우는 계정에서 영웅을 찾아서 링크만 시킨다.
 			ID snHero;
 			ar >> snHero;
@@ -124,10 +153,7 @@ BOOL XSquadron::DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion )
 				return FALSE;
 
 		}
-	} else	{
-		ar >> b0 >> b0 >> b0;
-		// 11이 아니면 0이어야 하는데 다른수면 시리얼라이즈가 잘못된거임.
-		XBREAK( isHero != 0 );
+
 	}
 	if( verLegion >= 8 ) {
 		WORD w0;
@@ -145,8 +171,8 @@ BOOL XSquadron::DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion )
 */
 void XSquadron::SerializeFull( XArchive& ar )
 {
-	if( m_pHero ) {
-		ar << (BYTE)22;
+	if( XASSERT(m_pHero) ) {
+		ar << (char)m_idxPos; // (BYTE)22;(9ver)
 		ar << (BYTE)0;
 		ar << (BYTE)VER_HERO_SERIALIZE;
 		//ar << xboolToByte(m_bResourceSquad);
@@ -166,20 +192,29 @@ void XSquadron::SerializeFull( XArchive& ar )
 
 BOOL XSquadron::DeSerializeFull( XArchive& ar, int verLegion ) 
 {
-	int isHero;
-	BYTE b0;
-	ar >> b0;	isHero = b0;		// 부대가 있느냐
-	if( verLegion >= 2 && isHero == 22 ) {
-		int verHero = 0;
-		ar >> b0;
-		ar >> b0;	verHero = b0;
-		ar >> b0;	//m_bResourceSquad = xbyteToBool(b0);
+	if( verLegion <= 9 ) {
+		int isHero;
+		BYTE b0;
+		ar >> b0;	isHero = b0;		// 부대가 있느냐
+		if( verLegion >= 2 && isHero == 22 ) {
+			int verHero = 0;
+			ar >> b0;
+			ar >> b0;	verHero = b0;
+			ar >> b0;	
+			m_pHero = new XHero;
+			m_pHero->DeSerialize( ar, nullptr, verHero );
+		} else {
+			ar >> b0 >> b0 >> b0;
+			XBREAK( isHero != 0 );
+		}
+	} else {
+		char c0;
+		ar >> c0;	m_idxPos = c0;
+		ar >> c0;
+		ar >> c0;	const int verHero = c0;
+		ar >> c0;	//
 		m_pHero = new XHero;
 		m_pHero->DeSerialize( ar, nullptr, verHero );
-	} else
-	{
-		ar >> b0 >> b0 >> b0;
-		XBREAK( isHero != 0 );
 	}
 	if( verLegion >= 9 ) {
 		WORD w0;

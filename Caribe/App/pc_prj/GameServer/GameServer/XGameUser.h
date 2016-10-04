@@ -358,6 +358,7 @@ public:
 	void DoSendPost( const XPostInfo* pPostInfo );
 	int RecvSync( XPacket& p );
 	int RecvPaymentAssetByGem( XPacket& p );
+	int RecvPrivateRaidEnterList( XPacket& p );
 private:
 	XCrypto* GetpCryptObj();
 	int ProcSpotEach( XSpot *pBaseSpot, XGAME::xBattleResult *pOut, XGAME::xBattleFinish& battle );

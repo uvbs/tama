@@ -526,6 +526,7 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 		case XGAME::xSPOT_DAILY:
 		case XGAME::xSPOT_SPECIAL:
 		case XGAME::xSPOT_VISIT:
+		case XGAME::xSPOT_PRIVATE_RAID:
 		case XGAME::xSPOT_CASH: {
 		} break;
 		case XGAME::xSPOT_CAMPAIGN:
@@ -5837,5 +5838,46 @@ void XSockGameSvr::DelegateGuildOut( XGuild* pGuild, const xnGuild::xMember& mem
 void XSockGameSvr::DelegateGuildUpdate( XGuild* pGuild, const xnGuild::xMember& member )
 {
 
+}
+
+BOOL SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, const XVector<XHero*>& aryHero, ID idSpot );
+/**
+ @brief 
+ 전송하고 응답을 기다려야 하는 류의 구현에 사용.
+ _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
+ @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
+ @param param 사용자가 정의해서 쓰시오
+ @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
+ @see AddResponse()
+*/
+BOOL XSockGameSvr::SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, 
+																								const XList4<XHero*>& listHero, 
+																								ID idSpot )
+{
+	_XCHECK_CONNECT(0);
+	//
+	XPacket ar( (ID)xCL2GS_PRIVATE_RAID_ENTER_LIST );
+	ar << idSpot;
+	ar << listHero.size();
+	for( const auto pHero : listHero ) {
+		ar << pHero->GetsnHero();
+	}
+
+	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
+	ID idKey = 
+		AddResponse( ar.GetidPacket(), 
+					&XSockGameSvr::RecvPrivateRaidEnterList, pTimeoutCallback );
+	Send( ar );
+	//
+	return TRUE;
+}
+
+/**
+ SendReqPrivateRaidEnterList()에 대한 응답함수
+ @param p 패킷이 들어있는 아카이브
+ @see SendReqPrivateRaidEnterList()
+*/
+void XSockGameSvr::RecvPrivateRaidEnterList( XPacket& p, const xCALLBACK& c )
+{
 }
 

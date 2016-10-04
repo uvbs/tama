@@ -175,4 +175,9 @@
       <!--대장-->
     </squad>
   </_legion.boss6>
+  <legion.private.raid name="0" level="0" grade="xGL_NORMAL" lv_limit="0" adj_level="0" _num_squad="0" _boss="percival" _mul_atk="0.2" _mul_hp="2">
+    <squad_default idx_pos="-1" hero="" type_atk="0" size_unit="0" lv_hero="0" adj_level="0" grade="xGD_COMMON" lv_squad="0" lv_skill="0" mul_atk="1" mul_hp="1">
+      <!--디폴트 값-->
+    </squad_default>
+  </legion.private.raid>
 </root>
