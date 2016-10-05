@@ -172,6 +172,15 @@ void XSpotPrivateRaid::CreateEnemyEnterHeroes( int lvSpot )
 			auto pHero = XHero::sCreateHero( pPropHero, 1, unit );
 			m_aryEnter[1].push_back( pHero );
 		}
+
+
+		일단 테스트를 위해 이런방식으로 전투를 시작해보고
+		리스트로 군단을 만드는건 그다음에 하자
+
+
+
+
+
 // 		auto spLegion = std::make_shared<XLegion>();
 // 		const auto& tblLegion = XGC->GetLegionTable( lvSpot );
 // 		const int numSquad = tblLegion.m_numSquad;
