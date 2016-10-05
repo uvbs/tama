@@ -9,7 +9,10 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+
 XE_NAMESPACE_START( xSplit )
+
+float XNode::c_spaceBorder = 2.f;		// 아틀라스간 경계 너비
 
 void XNode::Destroy()
 {
@@ -31,8 +34,8 @@ XNode* XNode::Insert( const XE::VEC2& sizeImg )
 		if( m_idImg ) {
 			return nullptr;
 		}
-		const auto wImg = sizeImg.w + 1.f;		// 1픽셀 여유를 둔 값으로 비교
-		const auto hImg = sizeImg.h + 1.f;
+		const auto wImg = sizeImg.w + c_spaceBorder;		// 1픽셀 여유를 둔 값으로 비교
+		const auto hImg = sizeImg.h + c_spaceBorder;
 		const auto wRect = m_Rect.GetWidth();
 		const auto hRect = m_Rect.GetHeight();
 		// 삽입할 이미지가 노드크기보다 크면 널리턴

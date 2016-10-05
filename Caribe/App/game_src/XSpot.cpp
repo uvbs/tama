@@ -674,36 +674,6 @@ int XSpot::DoDropItem( XSPAcc spAcc,
 	return pOutAry->size();
 }
 
-// void XSpot::DoDropRegisterBooty( XSPAcc spAcc, float multiply, int power, int lvSpot )
-// {
-// 	XBREAK( power == 0 );
-// 	XBREAK( lvSpot == 0 );
-// 	// 드랍리스트 만들기
-// 	int idxGrade = spAcc->GetGradeLevel( power ) + 2;
-// 	const std::vector<float> aryProbByColor 
-// 		= {0.10f, 0.20f, 0.30f, 0.50f, 1.0f};
-// 	float rate = aryProbByColor[ idxGrade ] * multiply;
-// 	// 어떤징표가 떨어질지 종류를 결정한다.
-// 	{	
-// 		xDropItem dropItem = sDoDropScalpWithDropItem( spAcc );
-// 		dropItem.chance = rate;
-// 		AddDropItem( dropItem );
-// 	}
-// 	// 어떤 보옥이 떨어질지 종류를 결정한다.
-// 	if( !spAcc->IsLockAcademy() ) {	// 아카데미를 안열면 보옥 안떨어짐
-// 		xDropItem dropItem = sDoDropScrollWithDropItem( spAcc, lvSpot );
-// 		// 징표의 절반 확률
-// 		dropItem.chance = rate * 0.5f;
-// 		AddDropItem( dropItem );
-// 	}
-// 	// 어떤 메달이 떨어질지 종류를 결정한다.
-// 	if( !spAcc->IsLockHangout() ) {	// 병사집합소가 안열리면 메달 안떨어짐.
-// 		xDropItem dropItem = sDoDropMedalWithDropItem( spAcc, lvSpot );
-// 		// 징표의 1/4확률
-// 		dropItem.chance = rate * 0.25f;
-// 		AddDropItem( dropItem );
-// 	}
-// }
 /**
  @brief 드랍리스트가 있다면 드랍처리를 한다.
 */
@@ -788,14 +758,6 @@ int XSpot::GetLevelSpawn( int lvAcc ) const
 		}
 	}
 	XBREAK( lvArea <= 0 || lvArea > XGAME::GetLevelMaxAccount() );
-// 	XBREAK( lvAcc == 0 );
-// 	int lv = GetpAreaProp()->lvArea;
-// 	while( 1 ) {
-// 		if( lv + 5 > lvAcc )
-// 			break;
-// 		lv += 5;
-// 	}
-// 	XBREAK( lv <= 0 || lv > XGAME::GetLevelMaxAccount() );
 	return lvArea;
 }
 
@@ -824,15 +786,9 @@ void XSpot::CreateLegion( XSPAcc spAccount )
 		SetpLegion( pLegion );
 		XBREAK( IsPC() == true );
 		UpdatePower( GetspLegion() );
-//		m_Power = XLegion::sGetMilitaryPower( GetspLegion(), spAccount );
 	}
 }
 
-// XGAME::xReward XSpot::_sGetRewardDailyToday( XPropWorld::xDaily* pProp, int lvAcc )
-// {
-// 	XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
-// 	return sGetRewardDaily( pProp, dowToday, lvAcc );
-// }
 
 bool XSpot::_sGetRewardDailyToday( XPropWorld::xDaily* pProp, int lvAcc, XVector<XGAME::xReward>* pOutAry )
 {
@@ -867,16 +823,6 @@ XPropCloud::xCloud* XSpot::GetpAreaProp() const
 {
 	return PROP_CLOUD->GetpAreaHaveSpot( GetidSpot() );
 }
-
-/**
- @brief 플레이어 레벨 lvAcc에 따라 지역레벨을 계산한다.
-*/
-// int XSpot::GetLevelSpawn( int lvAcc )
-// {
-// 	if( m_LevelArea == 0 )
-// 		m_LevelArea = GetLevelByPlayer( lvAcc );
-// 	return m_LevelArea;
-// }
 
 int XSpot::GetLevelSpawn() const
 {
@@ -1001,8 +947,6 @@ void XSpot::SetspLegion( LegionPtr spLegion )
 {
 	m_spLegion = spLegion;
 	UpdatePower( nullptr );
-// 	int power = XLegion::sGetMilitaryPower( spLegion, nullptr );
-// 	SetPower( power );
 }
 
 void XSpot::SetDropItems( const std::vector<xDropItem>& aryDropItem )
@@ -1014,14 +958,14 @@ void XSpot::SetDropItems( const std::vector<xDropItem>& aryDropItem )
  @param spAccEnemy적이 pc이며 계정정보(특성트리포함)가 있다면 그것을 포함해서 계산한다. null이면 특성치에 대한 전투력은 계산되지 않는다.
  @param spLegion 외부파라메터. 이것이 지정되어있다면 이 부대정보로 계산한다.
 */
-void XSpot::UpdatePower( /*XSPAcc spAccEnemy, */LegionPtr spLegion )
+void XSpot::UpdatePower( LegionPtr spLegion )
 {
 	// 외부파라메터가 있을때는 그군단의 전투력으로 세팅하고 없으면 내군단의 전투력으로 세팅한다.
 	if( spLegion )
-		m_Power = XLegion::sGetMilitaryPower( spLegion/*, spAccEnemy*/ );
+		m_Power = XLegion::sGetMilitaryPower( spLegion );
 	else
 	if( m_spLegion )
-		m_Power = XLegion::sGetMilitaryPower( m_spLegion/*, spAccEnemy*/ );
+		m_Power = XLegion::sGetMilitaryPower( m_spLegion );
 }
 
 
@@ -1144,4 +1088,24 @@ void XSpot::GetLootInfo( XVector<XGAME::xRES_NUM>* pOutAry ) const
 		}
 		++idx;
 	}
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 전투를 위한 스팟갱신정보를 아카이브에 담는다.
+ 이어지는 전투에 필요한 정보만 최소한으로 받을것.
+*/
+void XSpot::SerializeForBattle( XArchive* pOut, const XParamObj2& param )
+{
+	// 스팟의 군단정보는 모두 npc이므로(플레이어거는 XAcc에 있으므로) full버전으로 팩킹함.
+	XLegion::sSerializeFull( *pOut, m_spLegion );
+}
+/** //////////////////////////////////////////////////////////////////
+ @brief 전투를 위한 정보를 갱신한다.
+ @param arAdd 스팟별 추가정보
+*/
+void XSpot::DeSerializeForBattle( XArchive& arLegion, 
+																	XArchive& arAdd, 
+																	XSPAcc spAcc )
+{
+	XLegion::sDeSerializeUpdate( &m_spLegion, spAcc, arLegion );
 }

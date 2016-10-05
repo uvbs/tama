@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XLegionH.h"
 #include "XLegion.h"
 #include "XSquadron.h"
 #include "XArchive.h"
@@ -24,6 +25,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 using namespace XGAME;
+
 /**
  @brief lvHero가 가질수 있는 최대부대레벨
 */
@@ -719,7 +721,6 @@ XGAME::xtGrade XLegion::sGetGradeHeroByInfo( const XGAME::xSquad& squad, int lvL
 	return gradeHero;
 }
 
-// void XLegion::sSetLeaderByInfo( const XGAME::xLegion& legion, XSPLegion spLegion, XSquadron *pSquad )
 void XLegion::sSetLeaderByInfo( const XGAME::xLegion* pxLegion, XSPLegion spLegion, XSquadron *pSquad )
 {
 	if( pSquad == nullptr ) 
@@ -745,19 +746,7 @@ void XLegion::SetAutoLeader()
 		XBREAK( pSquad->GetpHero() == nullptr );
 		m_pLeader = pSquad->GetpHero();
 	}
-
-// 	const int idx[ XGAME::MAX_SQUAD ] = {2, 1, 3, 0, 4, 7, 6, 8, 5, 9, 12, 11, 13, 10, 14};
-// 
-// 	for( int i = 0; i < m_arySquadrons.GetMax(); ++i ) {
-// 		auto pSquad = m_arySquadrons[ idx[i] ];
-// 		if( pSquad ) {
-// 			m_pLeader = pSquad->GetpHero();
-// 			XBREAK( m_pLeader == nullptr );
-// 			return;
-// 		}
-// 	}
 }
-
 /** //////////////////////////////////////////////////////////////////
  @brief 전략적으로 부대내 위치를 바꿔줌.
 */
@@ -787,30 +776,6 @@ void XLegion::AdjustLegion()
 		}
 		++idx;
 	}
-/*
-	XARRAYN_LOOP_AUTO( m_arySquadrons, pSquad ) {
-		if( pSquad ) {
-			// 원거리 유닛이 앞줄에 있으면.
-			if( pSquad->GetAtkType() == XGAME::xAT_RANGE && idx < 5 ) {
-				// 자리를 서로 바꿔준다.
-				std::swap( m_arySquadrons[idx + 5], m_arySquadrons[idx] );
-			} else
-			// 스피드유닛이 1,2째줄에 있으면 3번째 줄로 빼준다.
-			if( pSquad->GetAtkType() == XGAME::xAT_SPEED && idx < 10 ) {
-				if( idx < 5 )
-					std::swap( m_arySquadrons[ idx + 10 ], m_arySquadrons[ idx ] );
-				else if( idx < 10 )
-					std::swap( m_arySquadrons[ idx + 5 ], m_arySquadrons[ idx ] );
-			} else
-			// 근접유닛이 뒷열에 있으면 앞열로 옮긴다.
-			if( pSquad->GetAtkType() == XGAME::xAT_TANKER && idx >= 5 ) {
-				std::swap( m_arySquadrons[ idx % 5 ], m_arySquadrons[ idx ] );
-			}
-
-		}
-		++idx;
-	} END_LOOP;
-*/
 }
 
 XGAME::xtGrade XLegion::sGetRandomGradeHeroByTable( int levelUser, XGAME::xtGradeLegion gradeLegion )
@@ -826,34 +791,12 @@ XGAME::xtGrade XLegion::sGetRandomGradeHeroByTable( int levelUser, XGAME::xtGrad
 		grade = XGAME::xGD_COMMON;
 	} else if( levelUser <= 10 ) {
 		// 1,2등급
-// 		XArrayLinearN<float, 2> aryChance;
-// 		aryChance.Add( 0.5f );
-// 		aryChance.Add( 0.5f );
-// 		int idxSel = XE::GetDiceChance( aryChance );
-// 		grade = ( XGAME::xtGrade )( XGAME::xGD_COMMON + idxSel );
 		grade = XGAME::xGD_VETERAN;
 	} else if( levelUser <= 20 )	{
 		// 1,2,3등급
-// 		XArrayLinearN<float, 3> aryChance;
-// 		aryChance.Add( 0.3f );
-// 		aryChance.Add( 0.4f );
-// 		aryChance.Add( 0.3f );
-// 		int idxSel = XE::GetDiceChance( aryChance );
-// 		grade = ( XGAME::xtGrade )( XGAME::xGD_COMMON + idxSel );
 		grade = XGAME::xGD_RARE;
 	} else
 		grade = XGAME::xGD_RARE;
-// 	else if( levelUser <= 20 ) {
-// 		// 2,3등급
-// // 		XArrayLinearN<float, 2> aryChance;
-// // 		aryChance.Add( 0.5f );
-// // 		aryChance.Add( 0.5f );
-// // 		int idxSel = XE::GetDiceChance( aryChance );
-// // 		grade = ( XGAME::xtGrade )( XGAME::xGD_VETERAN + idxSel );
-// 	} else	{
-// 		// 3등급만.
-// 		grade = XGAME::xGD_RARE;
-// 	}
 	return grade;
 }
 
@@ -914,23 +857,31 @@ XLegion* XLegion::sCreateDeserializeFull( XArchive& ar )
 	return pLegion;
 }
 
-/**
- @brief 부대의 생존여부만 아카이빙되어있는 
+void XLegion::sSerialize( XLegion* pLegion, XArchive* pOut ) {
+	XArchive& ar = *pOut;
+	ar << VER_LEGION_SERIALIZE;
+	pLegion->Serialize( ar );
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 아카이브에 있는 군단정보를 pOut에 갱신한다.
+ 군단객체를 통째로 삭제하고 생성해서 하지 않기 위해 만듬.
 */
-// XLegion* XLegion::sCreateDeserializeForGuildRaid( XArchive& ar )
-// {
-// 
-// 	auto pLegion = new XLegion;
-// 	int numSquads = pLegion->DeserializeForGuildRaid( ar );
-// 	if( numSquads == 0 ) {
-// 		SAFE_DELETE( pLegion );
-// 	} else {
-// 		return XSPLegion( pLegion );
-// 	}
-// }
+void XLegion::sDeSerializeUpdate( XSPLegion* pspOut, XSPAcc spAcc, XArchive& ar ) {
+	int ver;
+	ar >> ver;
+	XBREAK( ver < 0 );
+	if( ver == 0 )
+		return;
+	if( *pspOut == nullptr ) {
+		*pspOut = std::make_shared<XLegion>( 0 );
+	}
+	(*pspOut)->Destroy();
+	(*pspOut)->DeSerialize( ar, spAcc, ver );
+}
+
 //////////////////////////////////////////////////////////////////////////
 XLegion::XLegion() 
-//	: m_arySquadrons( XGAME::MAX_SQUAD )
 { 
 	Init(); 
 }
@@ -938,7 +889,11 @@ XLegion::XLegion()
 void XLegion::Destroy()
 {
 	XLIST4_DESTROY( m_listSquadrons );
-//	XARRAYN_DESTROY( m_arySquadrons );
+}
+// 객체 파괴될때 list내용을 파괴시키지 않기 위한 궁여지책. squadron을 shared_ptr로 바꿔야 한다.
+void XLegion::Clear()
+{
+	m_listSquadrons.clear();
 }
 
 void XLegion::Serialize( XArchive& ar )
@@ -957,14 +912,6 @@ void XLegion::Serialize( XArchive& ar )
 	for( auto pSquad : m_listSquadrons ) {
 		pSquad->Serialize( ar );
 	}
-// 	for( int i = 0; i < size; ++i ) {
-// 		if( m_arySquadrons[i] ) {
-// 			ar << 1;
-// 			m_arySquadrons[i]->Serialize(ar);
-// 		} else {
-// 			ar << 0;
-// 		}
-// 	}
 	if( m_pLeader )
 		ar << m_pLeader->GetsnHero();
 	else
@@ -1109,7 +1056,6 @@ BOOL XLegion::DeSerializeFull( XArchive& ar, int verLegion )
 {
 
 	BYTE b0;
-//	int fill;
 	ar >> b0;	const int size = b0;
 	ar >> b0;
 	XBREAK( b0 != 66 );

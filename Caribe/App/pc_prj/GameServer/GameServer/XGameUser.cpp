@@ -1179,6 +1179,9 @@ int XGameUser::RecvSpotAttack( XPacket& p )
 		}
 		SendBattleInfoWithidAccParam( pSpot, 0, &arParam );
 	} else
+	if( pBaseSpot->GettypeSpot() == xSPOT_PRIVATE_RAID ) {
+
+	} else
 	//////////////////////////////////////////////////////////////////////////
 	if( pBaseSpot->IsCampaignType() ) {
 		char c0;
@@ -2334,6 +2337,9 @@ int XGameUser::ProcSpotEach( XSpot *pBaseSpot,
 	case XGAME::xSPOT_CAMPAIGN: {
 		if( pBaseSpot->IsCampaignType() )
 			ProcForCampaign( pBaseSpot, pOut, battle );
+	} break;
+	case XGAME::xSPOT_PRIVATE_RAID: {
+
 	} break;
 	default:
 		XVERIFY_BREAK( 1 );
@@ -5840,11 +5846,6 @@ int XGameUser::RecvSpotTouch( XPacket& p )
 	{
 	//////////////////////////////////////////////////////////////////////////
 	case XGAME::xSPOT_CASTLE: {
-// 		auto pSpot = SafeCast<XSpotCastle*>( pBaseSpot );
-// 		XVERIFY_BREAK( pSpot == nullptr );
-// 		XVERIFY_BREAK( pSpot->GetidOwner() == m_spAcc->GetidAccount() );
-// 		XVERIFY_BREAK( pSpot->IsQuestion() );
-// 		군단정보 요청.
 	} break;
 	//////////////////////////////////////////////////////////////////////////
 	case XGAME::xSPOT_MANDRAKE: {
@@ -8726,6 +8727,36 @@ int XGameUser::RecvBattleStart( XPacket& p )
 	return 1;
 }
 
+/**
+ @brief 클라로부터 스팟의 전투정보를 요청받음.
+ 클라이언트의 SendReqUpdateSpotForBattle()에 대한 서버측의 Receive함수
+ @param p 패킷이 들어있는 아카이브
+ @return 오류없이 완료되었다면 1을 리턴한다.
+ @see SendReqUpdateSpotForBattle()
+*/
+int XGameUser::RecvUpdateSpotForBattle( XPacket& p )
+{
+	ID idSpot;
+	XArchive arAdd;		// 추가정보
+	p >> idSpot;
+	p >> arAdd;
+	auto pSpot = GetpWorld()->GetpSpot( idSpot );
+	XVERIFY_BREAK( pSpot == nullptr );
+	const xtSpot type = pSpot->GettypeSpot();
+	// 전투에 필요한 최소한의 정보만 팩킹해서 보낸다.
+	XArchive arLegion;
+	XParamObj2 param;
+	pSpot->SerializeForBattle( &arLegion, param );
+
+	// 클라로 전송
+	XPacket ar( p.GetidPacket() );
+	ar << idSpot;
+	ar << arLegion;
+	ar << arAdd;
+	Send(ar);
+	return 1;
+}
+
 void XGameUser::SendAddBattleLog( bool bAttack, XGAME::xBattleLog& log )
 {
 	XPacket ar( (ID)xCL2GS_INGAME_ADD_BATTLE_LOG );
@@ -9735,25 +9766,44 @@ int XGameUser::RecvPrivateRaidEnterList( XPacket& p )
 	XVERIFY_BREAK( size > XSpotPrivateRaid::c_maxSquad );
 	auto pSpot = SafeCast<XSpotPrivateRaid*>( GetpWorld()->GetpSpot( idSpot ) );
 	XVERIFY_BREAK( pSpot == nullptr );
+	XList4<XHero*> listEnterPlayer;
 	for( int i = 0; i < size; ++i ) {
 		ID snHero;
 		p >> snHero;
 		auto pHero = m_spAcc->GetpHeroBySN( snHero );
 		XVERIFY_BREAK( pHero == nullptr );
-		pSpot->AddEnterHero( pHero, 0 );
+		listEnterPlayer.push_back( pHero );
 	}
+	pSpot->UpdatePlayerEnterList( listEnterPlayer );
 
-	// 클라로 전송
+	// 클라로 전송(echo)
 	XPacket ar( p.GetidPacket() );
-	ar << 1;
 	Send(ar);
 
-	XGAME::xBattleStartInfo info( false, pSpot );
-	info.m_idEnemy = 0;
-	info.m_strName = _T("legion empire");
-	SendBattleInfo( pSpot, &info );
+// 	XGAME::xBattleStartInfo info( false, pSpot );
+// 	info.m_idEnemy = 0;
+// 	info.m_strName = _T("legion empire");
+// 	SendBattleInfo( pSpot, &info );
 
 	return 1;
 }
 
 
+/**
+ 클라이언트의 SendReqEnterReadyScene()에 대한 서버측의 Receive함수
+ @param p 패킷이 들어있는 아카이브
+ @return 오류없이 완료되었다면 1을 리턴한다.
+ @see SendReqEnterReadyScene()
+*/
+int XGameUser::RecvEnterReadyScene( XPacket& p )
+{
+	ID idSpot;
+	p >> idSpot;
+	auto pSpot = SafeCast<XSpotPrivateRaid*>( GetpWorld()->GetpSpot( idSpot ) );
+	XVERIFY_BREAK( pSpot == nullptr );
+	// 클라로 전송
+	XPacket ar( p.GetidPacket() );
+	ar << idSpot;
+	Send(ar);
+	return 1;
+}

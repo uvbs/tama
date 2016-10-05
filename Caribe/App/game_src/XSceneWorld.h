@@ -287,8 +287,7 @@ public:
 	void OnRecvReconSpot(ID idSpot, const LegionPtr& spLegion );
 //	int OnRecvBattleResult(XGAME::xtSpot typeSpot, int bWin);
 	void OnRecvBattleResult( XGAME::xBattleResult& result );
-	//	void OnRecvBattleInfo(ID idSpot, ID idBattle, int level, LPCTSTR szName, LegionPtr& spLegion, ID snSession/*, XAccount *pEnemy = nullptr*/, int defense = 0);
-	void OnRecvBattleInfo( std::shared_ptr<XGAME::xSceneBattleParam> spParam );
+	void OnRecvBattleInfo( XSPSceneParam spParam );
 	//	void DoEnterBattleScene( ID idSpot, ID idBattle, int level, LPCTSTR szName, LegionPtr& spLegion, ID snSession/*, XAccount *pEnemy*/, int defense, std::shared_ptr<XGAME::xSPM_BATTLE> spOut );
 	//	void OnRecvAttackedSpotResult( BOOL bWin, XSpotResource *pSpot, int level );
 	void OnRecvAttackedCastle(ID idSpot, ID idAccount, int level, LPCTSTR szName);

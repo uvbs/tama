@@ -174,7 +174,8 @@ public:
 	void RecvBuyCashItemByIAP( XPacket& p, const xCALLBACK& c );
 	
 	BOOL SendReqReconSpot( XWnd *pTimeoutCallback, ID idSpot );
-//	void RecvSpotRecon( XPacket& p, const xCALLBACK& c );
+	BOOL SendReqUpdateSpotForBattle( XWnd *pTimeoutCallback, ID idSpot, XArchive& arAdd );
+	//	void RecvSpotRecon( XPacket& p, const xCALLBACK& c );
 
 	BOOL SendReqSpotAttack( XWnd *pTimeoutCallback, ID idSpot, int idxStage = 0, int idxFloor = 0 );
 	void RecvSpotInfo( XPacket& p, const xCALLBACK& c );
@@ -418,6 +419,7 @@ public:
 	//	BOOL SendReqAllGuildInfo( XWnd *pTimeoutCallback );
 	BOOL SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, XGAME::xtPaymentRes typeAsset, bool bByItem );
 	BOOL SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, const XList4<XHero*>& listHero, ID idSpot );
+	BOOL SendReqEnterReadyScene( XWnd *pTimeoutCallback, ID idSpot );
 private:
 	void RecvAttackedSimulByHome( XPacket& p, const xCALLBACK& c );
 	void cbOnDisconnectByExternal() override;
@@ -442,6 +444,8 @@ private:
 	void RecvSyncAcc( XPacket& p, const xCALLBACK& c );
 	void RecvPaymentAssetByGem( XPacket& p, const xCALLBACK& c );
 	void RecvPrivateRaidEnterList( XPacket& p, const xCALLBACK& c );
+	void RecvUpdateSpotForBattle( XPacket& p, const xCALLBACK& c );
+	void RecvEnterReadyScene( XPacket& p, const xCALLBACK& c );
 };
 
 extern XSockGameSvr *GAMESVR_SOCKET;			// 월드서버와의 커넥션

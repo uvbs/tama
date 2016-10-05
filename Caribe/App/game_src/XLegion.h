@@ -1,7 +1,5 @@
 ﻿#pragma once
-//#include "XHero.h"
 #include "XPropHero.h"
-//#include "XPropLegionH.h"
 namespace XGAME {
 struct xSquad;
 struct xLegion;
@@ -10,10 +8,10 @@ class XArchive;
 class XAccount;
 class XSquadron;
 class XHero;
-#define RATE_ATK_DEFAULT_ELITE		0.2f
-#define RATE_HP_DEFAULT_ELITE		5.f
-#define RATE_ATK_DEFAULT_RAID		0.5f
-#define RATE_HP_DEFAULT_RAID		100.f
+// #define RATE_ATK_DEFAULT_ELITE		0.2f
+// #define RATE_HP_DEFAULT_ELITE		5.f
+// #define RATE_ATK_DEFAULT_RAID		0.5f
+// #define RATE_HP_DEFAULT_RAID		100.f
 ////////////////////////////////////////////////////////////////
 class XLegion
 {
@@ -21,6 +19,8 @@ public:
 	enum {
 		xMAX_NOT_FOG = 3,	// 안개로가려지지 않는 부대수
 	};
+	static void sSerialize( XLegion* pLegion, XArchive* pOut );
+	static void sDeSerializeUpdate( XSPLegion* pspOut, XSPAcc spAcc, XArchive& ar );
 	static int sSerializeFull( XArchive& ar, XSPLegion spLegion );
 	static XLegion* sCreateDeserializeFull( XArchive& ar );
 //	static XLegion* sCreateDeserializeForGuildRaid( XArchive& ar );
@@ -66,7 +66,6 @@ public:
 private:
 	ID m_snLegion;
 	XHero *m_pLeader = nullptr;		// 널이 될수 있음.
-//	XVector< XSquadron*> m_arySquadrons;	// 중대 리스트
 	XList4<XSquadron*> m_listSquadrons;		// 부대 리스트
 	XList4<XSquadron*> m_listFogs;
 	XGAME::xtGradeLegion m_gradeLegion = XGAME::xGL_NORMAL;
@@ -78,6 +77,7 @@ private:
 		m_snLegion = XE::GenerateID();
 	}
 	void Destroy();
+	void Clear();
 public:
 	XLegion();
 	XLegion( ID snLegion ) {

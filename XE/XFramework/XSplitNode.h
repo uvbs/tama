@@ -14,6 +14,7 @@ XE_NAMESPACE_START( xSplit )
 class XNode;
 // 벽(?)과 공간을 나타내는 노드
 class XNode {
+	static float c_spaceBorder;		// 아틀라스간 경계 너비
 public:
 	XNode() {
 		memset( m_Child, 0, sizeof( m_Child ) );
@@ -28,7 +29,7 @@ public:
 //	GET_ACCESSOR_CONST( const XE::xRECT&, Rect );
 	// 실제 텍스쳐의 크기
 	const XE::xRECT GetRectTex() const {
-		const auto vSize = m_Rect.GetSize() - 1.f;		// 1픽셀 여유를 줬으므로 실제 텍스쳐의 크기는 -1을 해야한다.
+		const auto vSize = m_Rect.GetSize() - c_spaceBorder;		// 1픽셀 여유를 줬으므로 실제 텍스쳐의 크기는 -1을 해야한다.
 		return XE::xRECT( m_Rect.vLT, vSize);	// 텍스쳐간에 1픽셀씩 거리를 둠.
 	}
 	GET_SET_ACCESSOR_CONST( ID, idImg );

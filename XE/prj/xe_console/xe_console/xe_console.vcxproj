@@ -55,7 +55,7 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTestMode|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -171,8 +171,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEV_LEVEL=DLV_LOCAL;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>XE_GLES2;_DEV_LEVEL=DLV_LOCAL;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\Third_Party_lib\pthread_win32\include;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\zip_support\zlib;..\..\..\;..\..\..\Common\_XLibrary\OpenGL2\WinGLES2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>

@@ -163,6 +163,23 @@ XWndPrivateRaid::FindpHeroCtrl( XWndList* pWndList, ID snHero )
 }
 
 
+
+
+플레이어측 출전UI표시할때
+스팟에 저장되어있는 리스트가 우선
+0번군단에 이미 출전중인 영웅이 있으므로
+레디씬과 전투씬에서는 스팟에 별도로 플레이어측 군단이 있어야 할듯.
+
+
+
+
+
+
+
+
+
+
+
 void XWndPrivateRaid::Update()
 {
 	// 좌우 진영의 츨전 영웅들 리스트

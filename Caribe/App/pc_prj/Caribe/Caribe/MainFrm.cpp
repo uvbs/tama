@@ -41,8 +41,8 @@
 #ifdef WIN32
 #include "XObjEtc.h"
 #endif // WIN32
-#ifdef _XPROFILE
 #include "XSceneBattle.h"
+#ifdef _XPROFILE
 #include "XFramework/XEProfile.h"
 #endif // _XPROFILE
 #include "XImageMng.h"

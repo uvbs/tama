@@ -1184,6 +1184,9 @@
     <ClInclude Include="..\..\..\game_src\XScenePrivateRaid.h">
       <Filter>source\battle</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XLegionH.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\daily_work.txt" />

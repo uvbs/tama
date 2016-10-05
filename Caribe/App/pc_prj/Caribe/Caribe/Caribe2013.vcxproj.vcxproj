@@ -91,7 +91,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugHome(Google)|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -119,14 +119,14 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_single|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugSingleHome|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -147,14 +147,14 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_GMO|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -182,7 +182,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelSingleHome|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -415,7 +415,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_XGMO;XE_GLES2;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XE_GLES2;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305</TreatSpecificWarningsAsErrors>
     </ClCompile>
@@ -832,6 +832,7 @@
     <ClInclude Include="..\..\..\game_src\XGuildRaidCity.h" />
     <ClInclude Include="..\..\..\game_src\XGuildRaidStage.h" />
     <ClInclude Include="..\..\..\game_src\XHeroH.h" />
+    <ClInclude Include="..\..\..\game_src\XLegionH.h" />
     <ClInclude Include="..\..\..\game_src\XLegionObj.h" />
     <ClInclude Include="..\..\..\game_src\XMsgUnit.h" />
     <ClInclude Include="..\..\..\game_src\XObjEtc.h" />

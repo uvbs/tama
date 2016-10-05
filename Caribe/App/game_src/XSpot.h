@@ -385,6 +385,8 @@ public:
 	virtual int DoDropItem( XSPAcc spAcc, XArrayLinearN<ItemBox, 256> *pOutAry, int lvSpot, float multiplyDropNum ) const;
 	virtual void GetLootInfo( XArrayLinearN<XGAME::xRES_NUM, XGAME::xRES_MAX> *pAry ) const;
 	void GetLootInfo( XVector<XGAME::xRES_NUM>* pOutAry ) const;
+	virtual void SerializeForBattle( XArchive* pOutLegion, const XParamObj2& param );
+	virtual void DeSerializeForBattle( XArchive& arLegion, XArchive& arAdd, XSPAcc spAcc );
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 	virtual int GetNeedAP( XSPAcc spAcc );
 #endif // #if defined(_CLIENT) || defined(_GAME_SERVER)

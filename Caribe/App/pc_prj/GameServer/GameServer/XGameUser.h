@@ -300,6 +300,7 @@ public:
 	void DelegateFinishBuff( XSPAcc spAcc, const XGAME::xBuff& buff ) override;
 	void SendOccurBuff( XGAME::xBuff *pBuff );
 	int RecvBattleStart( XPacket& p );
+	int RecvUpdateSpotForBattle( XPacket& p );
 	void SendAddBattleLog( bool bAttack, XGAME::xBattleLog& log );
 	int RecvWithdrawMandrake( XPacket& p );
 	void SendCreateHero( XHero *pHero );
@@ -359,6 +360,7 @@ public:
 	int RecvSync( XPacket& p );
 	int RecvPaymentAssetByGem( XPacket& p );
 	int RecvPrivateRaidEnterList( XPacket& p );
+	int RecvEnterReadyScene( XPacket& p );
 private:
 	XCrypto* GetpCryptObj();
 	int ProcSpotEach( XSpot *pBaseSpot, XGAME::xBattleResult *pOut, XGAME::xBattleFinish& battle );

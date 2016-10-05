@@ -154,6 +154,9 @@ enum xtPacket {
 	xCL2GS_INGAME_ADD_BATTLE_LOG,				///< 추가된 전투기록을 보내준다.
 	xCL2GS_IS_ONLINE,                   ///< 상대 유저가 온라인이냐
 	xCL2GS_PRIVATE_RAID_ENTER_LIST,			///< 개인레이드. 출전영웅 리스트.
+	xCL2GS_SPOT_UPDATE_FOR_VIEW,				///< 스팟정보 업데이트( 뷰어용 )
+	xCL2GS_SPOT_UPDATE_FOR_BATTLE,			///< 스팟정보 업데이트( 전투용 )
+	xCL2GS_ENTER_READY_SCENE,						///< 레디씬 진입요청/승인
 	
 	// tech
 	xCL2GS_TECH_RESEARCH,						///< 특성치를 찍음.

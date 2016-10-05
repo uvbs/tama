@@ -1595,20 +1595,7 @@ int XSceneWorld::OnClickSpot( XWnd* pWnd, DWORD p1, DWORD p2 )
 	XSpot *pBaseSpot = sGetpWorld()->GetSpot( idSpot );
 	if( XBREAK( pBaseSpot == nullptr ) )
 		return 1;
-// 	if( pBaseSpot->IsAbleGetLocalStorage() ) {
-// 		GAMESVR_SOCKET->SendReqSpotCollect( this, idSpot );
-// 	} else {
-// 		// 각 스팟의 팝업창을 띄운다.
-// 		auto pMenu = CreateSpotPopup2( idSpot );
-// 		if( pMenu ) {
-// 			auto pWndSpot = SafeCast<XWndSpot*>( pWnd );
-// 			if( pWndSpot ) {
-// 				pWndSpot->OnClickSpot();
-// 			}
-// 		}
-// 
-// 	}
-
+	//
 	int bSend = 0;
 	switch( pBaseSpot->GettypeSpot() ) {
 	case XGAME::xSPOT_CASTLE:
@@ -1663,65 +1650,6 @@ int XSceneWorld::OnClickSpot( XWnd* pWnd, DWORD p1, DWORD p2 )
 	}
 	return 1;
 }
-// int XSceneWorld::OnClickSpot( XWnd* pWnd, DWORD p1, DWORD p2 )
-// {
-// 	ID idSpot = p1;
-// 	CONSOLE( "click spot:%d", idSpot );
-// 	//
-// 	XSpot *pBaseSpot = sGetpWorld()->GetSpot( idSpot );
-// 	if( XBREAK( pBaseSpot == nullptr) )
-// 		return 1;
-// 	int bCollect = 0;
-// 	switch( pBaseSpot->GettypeSpot() ) {
-// 	case XGAME::xSPOT_CASTLE:
-// 		bCollect = OnClickCastleSpot( pBaseSpot );
-// //		bCollect = 1;
-// 		break;
-// 	case XGAME::xSPOT_JEWEL:
-// 		bCollect = OnClickJewelSpot( pBaseSpot );
-// 		break;
-// 	case XGAME::xSPOT_SULFUR:
-// 		bCollect = OnClickSulfurSpot( pBaseSpot );
-// 		break;
-// 	case XGAME::xSPOT_MANDRAKE:
-// 		bCollect = 1;
-// 		break;
-// 	case XGAME::xSPOT_NPC:
-// 		bCollect = 1;
-// 		break;
-// 	case XGAME::xSPOT_DAILY:
-// 		bCollect = 1;
-// 		break;
-// 	case XGAME::xSPOT_CAMPAIGN:
-// 		bCollect = OnClickCampaignSpot( pBaseSpot );
-// 		break;
-// 	case XGAME::xSPOT_VISIT:
-// 		bCollect = 1;
-// 		OnClickVisitSpot( pBaseSpot );
-// 		break;
-// 	case XGAME::xSPOT_CASH:
-// 		bCollect = 1;
-// 		OnClickCashSpot( pBaseSpot );
-// 		break;
-// 	case XGAME::xSPOT_COMMON:
-// 		bCollect = OnClickCommonSpot( pBaseSpot );
-// 		break;
-// 	default:
-// 		XBREAKF(1, "unknown spot type: %d", pBaseSpot->GettypeSpot() );
-// 		break;
-// 	}
-// 	// 스팟 터치.(방문스팟을 의미하는게 아님)
-// 	if( bCollect ) {
-// 		// 연속해서 누르지 못하게.
-// 		if( m_timerClickSpot.IsOff() || m_timerClickSpot.IsOver() )  {
-// 			GAMESVR_SOCKET->SendSpotTouch( pBaseSpot->GetidSpot() );
-// 			m_timerClickSpot.Set( 1.f );
-// 		} else {
-// //			CONSOLE("스팟 연속 누름 방지");
-// 		}
-// 	}
-// 	return 1;
-// }
 
 int XSceneWorld::OnClickCastleSpot( XSpot *pBaseSpot )
 {
@@ -2304,8 +2232,12 @@ int XSceneWorld::OnAttackSpot( XWnd* pWnd, DWORD p1, DWORD p2 )
 			pPopup->SetEvent( XWM_OK, GAME, &XGame::OnClickFillAPByCash );
 			return 1;
 		}
+		// 적부대정보 최종 업데이트 요청
+		//GAMESVR_SOCKET->SendReqUpdateEnemyLegion( GAME, idSpot );
+		// 레디씬 요청
+		//GAMESVR_SOCKET->SendReqReadyScene( GAME );
 		// 서버로 스팟 공격 신호 보냄
-		GAMESVR_SOCKET->SendReqSpotAttack( this, idSpot, XCampObj::s_idxStage, XCampObj::s_idxFloor );
+		GAMESVR_SOCKET->SendReqSpotAttack( GAME, idSpot, XCampObj::s_idxStage, XCampObj::s_idxFloor );
 	}
 	DestroyWndByIdentifier("menu.circle");
 	DestroyWndByIdentifier("wnd.recon.result");
@@ -2326,10 +2258,9 @@ int XSceneWorld::OnCollectSpot(XWnd* pWnd, DWORD p1, DWORD p2)
 /**
  전투전 상대유저의 부대정보가 왔다.
 */
-void XSceneWorld::OnRecvBattleInfo( std::shared_ptr<XGAME::xSceneBattleParam> spParam )
+void XSceneWorld::OnRecvBattleInfo( XSPSceneParam spParam )
 {
 	// 배틀씬 파라메터가 모두 세팅되어 있어야 함.
-//	XBREAK( XSceneBattle::sIsEmptyBattleStart() == true );
 	XBREAK( spParam->IsInvalid() );
 	DoExit( XGAME::xSC_READY, spParam );
 }
@@ -3995,6 +3926,7 @@ void XSceneWorld::OnRecvSpotTouch( XSpot *pBaseSpot, std::vector<xDropItem>& ary
 		pPopup->SetEvent2( XWM_OK, [this, pSpot](XWnd*) {
 			// 서버로 내 출전영웅 리스트 보냄.
 			GAMESVR_SOCKET->SendReqPrivateRaidEnterList( GAME, pSpot->GetlistEnter(0), pSpot->GetidSpot() );
+			GAMESVR_SOCKET->SendReqEnterReadyScene( GAME, pSpot->GetidSpot() );
 		});
 		Add( pPopup );
 	} break;

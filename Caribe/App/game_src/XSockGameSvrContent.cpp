@@ -7,6 +7,7 @@
  @todo nothing
 */
 #include "stdafx.h"
+#include "XScenePrivateRaid.h"
 #include "XSockGameSvr.h"
 #include "XPacketCG.h"
 #include "XFramework/client/XTimeoutMng.h"
@@ -354,6 +355,58 @@ BOOL XSockGameSvr::SendReqReconSpot( XWnd *pTimeoutCallback, ID idSpot )
 	return TRUE;
 }
 
+/**
+ @brief 스팟정보의 업데이트를 요청한다. 이것은 전투를 위한 요청이므로 이어지는 전투에 필요한 최소한의 정보는 모두 받아야 한다.
+ @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
+ @param idSpot 업데이트 하고자 하는 스팟
+ @param arAdd 업데이트 요청에 추가로 필요한 파라메터(e:스테이지 인덱스, floor...)
+ @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
+ @see AddResponse()
+
+ 전투는 반드시 스팟을 동반해야하는 원칙이 있음.
+ 그 전투에 관한 장기적 데이터의 보관은 스팟에 보관(클리어 상황, 배치상황 같은..)
+ 스팟업데이트는 Viewer용과 battle용 두개로 나뉜다.
+ Viewer용은 단시 UI표시용으로 약식으로 올 수 있다.
+ battle용은 이어지는 전투에 필요한 최소한의 정보를 모두 받아온다.
+ 캠페인류의 경우 해당 스테이지의 전투정보만 받아오면 된다.
+*/
+BOOL XSockGameSvr::SendReqUpdateSpotForBattle( XWnd *pTimeoutCallback, ID idSpot, XArchive& arAdd )
+{
+	_XCHECK_CONNECT(0);
+	//
+	XPacket ar( (ID)xCL2GS_SPOT_UPDATE_FOR_BATTLE );
+	ar << idSpot;
+	ar << arAdd;
+
+	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
+	ID idKey = 
+		AddResponse( ar.GetidPacket(), 
+					&XSockGameSvr::RecvUpdateSpotForBattle, pTimeoutCallback );
+	Send( ar );
+	//
+	return TRUE;
+}
+
+/**
+ SendReqUpdateSpotForBattle()에 대한 응답함수
+ @param p 패킷이 들어있는 아카이브
+ @see SendReqUpdateSpotForBattle()
+*/
+void XSockGameSvr::RecvUpdateSpotForBattle( XPacket& p, const xCALLBACK& c )
+{
+	ID idSpot;
+	XArchive arAdd;		// 스팟별 추가 업데이트 정보
+	XArchive arLegion;
+	p >> idSpot;
+	p >> arLegion;
+	p >> arAdd;
+	//
+	auto pbaseSpot = sGetpWorld()->GetpSpot( idSpot );
+	if( XBREAK(pbaseSpot == nullptr) )
+		return;
+	// 각 스팟에 부대정보 갱신
+	pbaseSpot->DeSerializeForBattle( arLegion, arAdd, ACCOUNT );
+}
 
 /**
  스팟 공격(유저/자원지/npc 통합)
@@ -424,31 +477,32 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 	XBREAK( info.m_Power == 0 );
 	XBREAK( info.m_Level == 0 );
 	// 전투시 필요한 기본정보.
-// 	xBattleStart bs;
-// 	bs.m_idEnemy = idAccEnemy;
-// #ifndef _XSINGLE
-// 	bs.m_typeSpot = info.m_typeSpot;
-// 	bs.m_idSpot = info.m_idSpot;
-// #endif // not _xSINGLE
-// 	bs.m_Level = info.m_Level;
-// 	bs.m_strName = info.m_strName;
-// 	bs.m_spLegion[ 0 ] = ACCOUNT->GetCurrLegion();
-// 	bs.m_spLegion[ 1 ] = pBaseSpot->GetspLegion();
-// 	bs.m_typeBattle = XGAME::xBT_NORMAL;
 	XVector<XSPLegion> aryLegion(2);
 	aryLegion[0] = ACCOUNT->GetCurrLegion();
 	aryLegion[1] = pBaseSpot->GetspLegion();
-	auto spSceneParam 
-		= std::make_shared<XGAME::xSceneBattleParam>( idAccEnemy,
-																									info.m_typeSpot,
-																									info.m_idSpot,
-																									info.m_Level,
-																									info.m_strName,
-																									aryLegion,
-																									XGAME::xBT_NORMAL,
-																									0,
-																									info.m_idxStage,
-																									info.m_idxFloor );
+	XSPSceneParam spSceneParam;
+	if( info.m_typeBattle == XGAME::xBT_PRIVATE_RAID ) {
+		// 전투씬 파라메터
+		spSceneParam
+			= std::make_shared<XGAME::xPrivateRaidParam>( 0,
+																										typeSpot,
+																										info.m_idSpot,
+																										info.m_Level,
+																										info.m_strName,
+																										aryLegion );
+	} else {
+		spSceneParam 
+			= std::make_shared<XGAME::xSceneBattleParam>( idAccEnemy,
+																										info.m_typeSpot,
+																										info.m_idSpot,
+																										info.m_Level,
+																										info.m_strName,
+																										aryLegion,
+																										XGAME::xBT_NORMAL,
+																										0,
+																										info.m_idxStage,
+																										info.m_idxFloor );
+	}
 		///< 
 	XBREAK( snSession == 0 );
 	ACCOUNT->SetBattleSession( snSession
@@ -457,6 +511,8 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 													, info.m_idSpot, 0 );
 	//
 	if( typeSpot == XGAME::xSPOT_SULFUR && idAccEnemy ) {
+		auto spParam = std::static_pointer_cast<XGAME::xSceneBattleParam>(spSceneParam);
+		XBREAK( spParam == nullptr );
 		// 인카운터된 유황스팟.
 		auto pSpot = SafeCast<XSpotSulfur*>( pBaseSpot );
 		if( XASSERT(pSpot) ) {
@@ -466,11 +522,11 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 				XBREAK( pSpot->GetnumSulfur() == 0 );
 				if( SCENE_BATTLE ) {
 					// 인카운터 유저 추가.
-					spSceneParam->m_idEnemy = pSpot->GetidEncounterUser();
+					spParam->m_idEnemy = pSpot->GetidEncounterUser();
 //					bs.m_idEnemy = pSpot->GetidEncounterUser();
 					// 전투씬 파라메터를 밀어넣는다.
 //					XSceneBattle::sSetBattleStart( bs );
-					SCENE_BATTLE->OnRecvBattleResultSulfurEncounter( pSpot, info, spSceneParam );
+					SCENE_BATTLE->OnRecvBattleResultSulfurEncounter( pSpot, info, spParam );
 				}
 			}
 		}
@@ -526,11 +582,12 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 		case XGAME::xSPOT_DAILY:
 		case XGAME::xSPOT_SPECIAL:
 		case XGAME::xSPOT_VISIT:
-		case XGAME::xSPOT_PRIVATE_RAID:
 		case XGAME::xSPOT_CASH: {
 		} break;
 		case XGAME::xSPOT_CAMPAIGN:
 		case XGAME::xSPOT_COMMON: {
+			auto spParam = std::static_pointer_cast<XGAME::xSceneBattleParam>(spSceneParam);
+			XBREAK( spParam == nullptr );
 			int idxStage, levelLegion, idxFloor;
 			arParam >> idxStage;
 			arParam >> levelLegion;
@@ -540,7 +597,7 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 				auto pSpot = SafeCast<XSpotCommon*>( pBaseSpot );
 				if( pSpot->IsGuildRaid() ) {
 					//bs.m_typeBattle = XGAME::xBT_GUILD_RAID;
-					spSceneParam->m_typeBattle = XGAME::xBT_GUILD_RAID;
+					spParam->m_typeBattle = XGAME::xBT_GUILD_RAID;
 					int i0;
 					arParam >> i0;	auto err = ( XGAME::xtGuildError )i0;
 					if( err == XGAME::xGE_ERROR_STILL_TRYING_RAID ) {
@@ -553,9 +610,32 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 // 			bs.m_idxStage = idxStage;
 // 			bs.m_idxFloor = idxFloor;
 // 			bs.m_Level = levelLegion;
-			spSceneParam->m_idxStage = idxStage;
-			spSceneParam->m_idxFloor = idxFloor;
-			spSceneParam->m_Level = levelLegion;
+			spParam->m_idxStage = idxStage;
+			spParam->m_idxFloor = idxFloor;
+			spParam->m_Level = levelLegion;
+		} break;
+		case XGAME::xSPOT_PRIVATE_RAID: {
+			for( int idxSide = 0; idxSide < 2; ++idxSide ) {
+				int numEnter;
+				arParam >> numEnter;
+				for( int i = 0; i < numEnter; ++i ) {
+					ID snHero;
+					arParam >> snHero;
+					XHero* pHero = nullptr;
+					auto spParam = std::static_pointer_cast<XGAME::xPrivateRaidParam>(spSceneParam);
+					if( idxSide == 0 ) {
+						pHero = ACCOUNT->GetpHeroBySN( snHero );
+					} else {
+						// 적군 추가 영웅
+						pHero = XHero::sCreateDeSerialize( arParam, nullptr );
+					}
+					if( XASSERT( spParam ) ) {
+						if( XASSERT( pHero ) ) {
+							spParam->m_aryEnter[idxSide].push_back( pHero );
+						}
+					}
+				} // for numEnter
+			} // for idxSide
 		} break;
 		default:
 			XBREAK(1);
@@ -5840,7 +5920,6 @@ void XSockGameSvr::DelegateGuildUpdate( XGuild* pGuild, const xnGuild::xMember& 
 
 }
 
-BOOL SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, const XVector<XHero*>& aryHero, ID idSpot );
 /**
  @brief 
  전송하고 응답을 기다려야 하는 류의 구현에 사용.
@@ -5879,5 +5958,69 @@ BOOL XSockGameSvr::SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback,
 */
 void XSockGameSvr::RecvPrivateRaidEnterList( XPacket& p, const xCALLBACK& c )
 {
+	// 갱신 완료
+
 }
+
+/**
+ @brief 
+ 전송하고 응답을 기다려야 하는 류의 구현에 사용.
+ _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
+ @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
+ @param param 사용자가 정의해서 쓰시오
+ @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
+ @see AddResponse()
+*/
+BOOL XSockGameSvr::SendReqEnterReadyScene( XWnd *pTimeoutCallback, ID idSpot )
+{
+	_XCHECK_CONNECT(0);
+	//
+	XPacket ar( (ID)xCL2GS_ENTER_READY_SCENE );
+	ar << idSpot;
+
+	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
+	ID idKey = 
+		AddResponse( ar.GetidPacket(), 
+					&XSockGameSvr::RecvEnterReadyScene, pTimeoutCallback );
+	Send( ar );
+	//
+	return TRUE;
+}
+
+/**
+ SendReqEnterReadyScene()에 대한 응답함수
+ @param p 패킷이 들어있는 아카이브
+ @see SendReqEnterReadyScene()
+*/
+void XSockGameSvr::RecvEnterReadyScene( XPacket& p, const xCALLBACK& c )
+{
+	ID idSpot;
+	p >> idSpot;
+	if( SCENE_WORLD == nullptr )
+		return;
+		auto pbaseSpot = sGetpWorld()->GetpSpot( idSpot );
+	if( XBREAK( pbaseSpot == nullptr ) )
+		return;
+	auto pSpot = SafeCast<XSpotPrivateRaid*>( pbaseSpot );
+	if( XBREAK( pSpot == nullptr ) )
+		return;
+	XVector<XSPLegion> aryLegion( 2 );
+	aryLegion[0] = ACCOUNT->GetCurrLegion();
+	aryLegion[1] = pSpot->GetspLegion();
+	auto spParam
+		= std::make_shared<XGAME::xPrivateRaidParam>( 0,			// idEnemy
+																									xSPOT_NPC,
+																									idSpot,
+																									pSpot->GetLevel(),
+																									_T("babarian"), // pSpot->GetstrName(),
+																									aryLegion );
+	// 추가로 추가부대의 리스트를 파라메터에 넣는다.
+	for( int i = 0; i < 2; ++i ) {
+		for( auto pHero : pSpot->GetlistEnter( i ) ) {
+			spParam->m_aryEnter[i].push_back( pHero );
+		}
+	}
+	SCENE_WORLD->DoExit( xSC_READY, spParam );
+}
+
 

@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XLegionH.h"
 #include "XStageObj.h"
 #include "XLegion.h"
 #include "XCampObj.h"

@@ -45,10 +45,10 @@ struct xSceneBattleParam : public xSceneParamBase {
 	inline bool IsNormal() const {
 		return m_typeBattle == XGAME::xBT_NORMAL;
 	}
-	bool IsValid() const;
-	inline bool IsInvalid() const {
-		return !IsValid();
-	}
+	bool IsValid() const override;
+// 	inline bool IsInvalid() const {
+// 		return !IsValid();
+// 	}
 	inline void Release() {
 		m_spLegion[0].reset();
 		m_spLegion[1].reset();

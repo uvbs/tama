@@ -69,6 +69,15 @@ XHero* XHero::sCreateDeSerialize( XArchive& ar, XSPAcc spAcc )
 	return pHero;
 }
 
+XHero* XHero::sCreateDeSerialize2( XArchive& ar, XSPAcc spAcc )
+{
+	int ver;
+	ar >> ver;
+	XHero *pHero = new XHero;
+	pHero->DeSerialize( ar, spAcc, ver );
+	return pHero;
+}
+
 #if defined(_XSINGLE) || !defined(_CLIENT)
 XHero* XHero::sCreateHero( const XPropHero::xPROP *pProp, 
 						int levelSquad, 

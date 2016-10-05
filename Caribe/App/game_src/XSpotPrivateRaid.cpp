@@ -51,12 +51,35 @@ XSpotPrivateRaid::XSpotPrivateRaid( XWorld* pWorld, XPropWorld::xBASESPOT* pProp
 void XSpotPrivateRaid::Serialize( XArchive& ar )
 {
 	XSpot::Serialize( ar );
+	// 본 부대외에 추가 영웅들 리스트를 풀버전으로 보낸다.
+	ar << m_aryEnter[1].size();
+	for( auto pHero : m_aryEnter[1] ) {
+		XHero::sSerialize( ar, pHero );
+	}
 }
 
 BOOL XSpotPrivateRaid::DeSerialize( XArchive& ar, DWORD ver )
 {
 	XSpot::DeSerialize( ar, ver );
+	//
+	if( ver >= 32 ) {
+		XLIST4_DESTROY( m_aryEnter[1] );
+		int numEnter;
+		ar >> numEnter;
+		for( int k = 0; k < numEnter; ++k ) {
+// 			auto spAccW = GetspOwner();
+// 			if( XASSERT(!spAccW.expired()) ) {
+				auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
+ 				m_aryEnter[1].push_back( pHero );
+//			}
+		}
+	}
 	return TRUE;
+}
+
+void XSpotPrivateRaid::UpdatePlayerEnterList( const XList4<XHero*>& listHero )
+{
+	m_aryEnter[0] = listHero;
 }
 
 void XSpotPrivateRaid::AddEnterHero( XHero* pHero, int idxSide )
@@ -161,8 +184,10 @@ void XSpotPrivateRaid::CreateEnemyEnterHeroes( int lvSpot )
 	auto pPropLegion = XPropLegion::sGet()->GetpProp( GetpProp()->m_idsLegion );
 	if( XASSERT(pPropLegion) ) {
 		propLegion = *pPropLegion;		// 카피본
+		// 일반 NPC군단 생성알고리즘으로 레벨에 맞는 부대를 생성함
 		auto spLegion = XLegion::sCreateLegionForNPC2( propLegion, lvSpot, true );
 		SetspLegion( spLegion );
+		// 생성후 모자라는 수는 랜덤으로 생성.
 		const int remain = c_maxSquad - spLegion->GetNumSquadrons();
 //		for( int i = 0; i < c_maxSquad; ++i ) {
 		for( int i = 0; i < remain; ++i ) {		// 일단 테스트를 위해서 이렇게
@@ -172,15 +197,6 @@ void XSpotPrivateRaid::CreateEnemyEnterHeroes( int lvSpot )
 			auto pHero = XHero::sCreateHero( pPropHero, 1, unit );
 			m_aryEnter[1].push_back( pHero );
 		}
-
-
-		일단 테스트를 위해 이런방식으로 전투를 시작해보고
-		리스트로 군단을 만드는건 그다음에 하자
-
-
-
-
-
 // 		auto spLegion = std::make_shared<XLegion>();
 // 		const auto& tblLegion = XGC->GetLegionTable( lvSpot );
 // 		const int numSquad = tblLegion.m_numSquad;

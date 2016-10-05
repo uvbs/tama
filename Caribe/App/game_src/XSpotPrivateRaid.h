@@ -35,6 +35,10 @@ public:
 	bool IsPC() const override {
 		return !IsNpc();
 	}
+	void UpdatePlayerEnterList( const XList4<XHero*>& listHero );
+#ifdef _SERVER
+private:
+#endif // _SERVER
 	void AddEnterHero( XHero* pHero, int idxSide );
 	bool IsExistEnterHero( XHero* pHero, int idxSide );
 	void DelEnterHero( XHero* pHero, int idxSide );

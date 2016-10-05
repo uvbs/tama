@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XLegionH.h"
 #include "XBaseUnit.h"
 #include "XWndBattleField.h"
 #include "XPropUnit.h"

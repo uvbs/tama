@@ -23,9 +23,6 @@ public:
 	XPropWorld::xCampaign* GetpProp() {
 		return static_cast<XPropWorld::xCampaign*>( GetpBaseProp() );
 	}
-// 	xCampaign::CampObjPtr GetspCampObj() {
-// 		return m_spCampaignObj;
-// 	}
 	bool IsNpc() const override {
 		return true;
 	}
@@ -57,5 +54,7 @@ private:
 	void ResetName( XSPAcc spAcc ) override;
 	void OnBeforeBattle( XSPAcc spAcc ) override;
 	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat ) override;
+	void SerializeForBattle( XArchive* pOut, const XParamObj2& param ) override;
+	void DeSerializeForBattle( XArchive& arLegion, XArchive& arAdd, XSPAcc spAcc ) override;
 
 };	// XSpotCampaign

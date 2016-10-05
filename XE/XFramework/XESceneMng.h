@@ -10,6 +10,10 @@ struct xSceneParamBase {
 	virtual ~xSceneParamBase() {
 		idParam = 0;
 	}
+	virtual bool IsValid() const { return true; };
+	inline bool IsInvalid() const {
+		return !IsValid();
+	}
 };
 //
 struct xSceneInfo {

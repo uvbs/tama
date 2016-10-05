@@ -452,6 +452,14 @@ int XSceneReady::OnClickStart( XWnd* pWnd, DWORD p1, DWORD p2 )
 }
 
 
+void XSceneReady::RecvBattleStart()
+{
+// 	if( m_spParam->m_typeBattle == XGAME::xBT_PRIVATE_RAID ) {
+// 		DoExit( XGAME::xSC_PRIVATE_RAID, m_spParam );
+// 	} else {
+		DoExit( XGAME::xSC_INGAME, m_spParam );
+// 	}
+}
 /****************************************************************
 * @brief 
 *****************************************************************/
@@ -470,10 +478,6 @@ int XSceneReady::OnClickCancel( XWnd* pWnd, DWORD p1, DWORD p2 )
 	return 1;
 }
 
-void XSceneReady::RecvBattleStart()
-{
-	DoExit( XGAME::xSC_INGAME, m_spParam );
-}
 
 /****************************************************************
 * @brief 
