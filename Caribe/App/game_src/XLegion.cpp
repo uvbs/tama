@@ -330,7 +330,7 @@ XSquadron* XLegion::sCreateSquadronForNPC( int levelLegion,
 // 	if( pLegionInfo && pLegionInfo->unit )	이걸 propHero결정보다 밑에서하면 외부에서 unit을 직접 지정했을때 버그 난다.
 // 		unit = pLegionInfo->unit;
 // 	XBREAK( unit == XGAME::xUNIT_NONE );
-	auto pSquad = new XSquadron( pPropHero, levelHero, unit, levelSquad, nullptr );
+	auto pSquad = new XSquadron( nullptr, pPropHero, levelHero, unit, levelSquad );
 	pSquad->GetpHero()->SetGrade( grade );
 	return pSquad;
 }
@@ -349,7 +349,7 @@ XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
 	XASSERT( sqParam.lvSkill > 0 && sqParam.lvSkill < XGAME::MAX_SKILL_LEVEL );
 	XASSERT( sqParam.lvSquad > 0 && sqParam.lvSquad <= XGAME::MAX_SQUAD_LEVEL );
 	XASSERT( !IsInvalidGrade(sqParam.grade) );
-	auto pSquad = new XSquadron( pPropHero, sqParam.lvHero, sqParam.unit, sqParam.lvSquad );
+	auto pSquad = new XSquadron( nullptr, pPropHero, sqParam.lvHero, sqParam.unit, sqParam.lvSquad );
 	auto pHero = pSquad->GetpHero();
 	if( sqParam.lvSkill > 0 ) {
 		pHero->SetlvActive( sqParam.lvSkill );

@@ -255,7 +255,7 @@ void XSpotPrivateRaid::CreateEnemyEnterHeroes( int lvSpot )
 			const xtGet bit = (xtGet)( xGET_GATHA | xGET_QUEST | xGET_GUILD_RAID | xGET_MEDAL_SPOT );
 			auto pPropHero = XHero::sGet()->GetpPropRandomByGetType( bit );
 			const auto unit = XGAME::GetRandomUnit( pPropHero->typeAtk, (xtSize)xRandom( 1, 3 ) );
-			auto pHero = XHero::sCreateHero( pPropHero, lvSquad, unit );
+			auto pHero = XHero::sCreateHero( pPropHero, lvSquad, unit, nullptr );
 			m_aryEnter[1].push_back( pHero );
 		}
 	}

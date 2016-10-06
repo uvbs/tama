@@ -1447,27 +1447,21 @@ void XSceneUnitOrg::UpdateTabEquipment(void)
 	xSET_BUTT_HANDLER_PARAM(this, "butt.equip.foot", this, &XSceneUnitOrg::OnClickEquipSlot, (DWORD)XGAME::xPARTS_FOOT);
 	xSET_BUTT_HANDLER_PARAM(this, "butt.equip.accessory", this, &XSceneUnitOrg::OnClickEquipSlot, (DWORD)XGAME::xPARTS_ACCESSORY);
 
-	if (m_pSelHero)
-	{
-		for( int i = 1; i < XGAME::xPARTS_MAX; ++i )
-		{
+	if (m_pSelHero)	{
+		for( int i = 1; i < XGAME::xPARTS_MAX; ++i ) {
 			char cKey[256];
 			auto parts = (XGAME::xtParts)i;
 			sprintf_s( cKey, "img.equip.%s", XGAME::GetPartsIdentifier( parts ) );
 			auto pImgSlot = Find( cKey );
-			if( pImgSlot )
-			{
+			if( pImgSlot ) {
 				auto pWndItem = pImgSlot->Find( "wnd.item.elem" );
-				XBaseItem *pItem = pHero->GetsnEquipItem( parts );
-				if( pItem )
-				{
-//					pImgSlot->SetbShow( FALSE );
-					if( pWndItem == nullptr )
-					{
+				const auto snItem = pHero->GetsnEquipItem( parts );
+				XBaseItem *pItem = ACCOUNT->GetpItemBySN( snItem );
+				if( pItem )	{
+					if( pWndItem == nullptr ) {
 						pWndItem = new XWndStoragyItemElem( pItem );
 						pWndItem->SetstrIdentifier( "wnd.item.elem" );
 						pImgSlot->Add( pWndItem );
-//						pWndItem->SetPosLocal( -4, -4 );
 					}
 					pWndItem->SetbShow( TRUE );
 					// 플레이어가 pItem보다 더좋은 아이템을 가지고 있나.
@@ -1475,9 +1469,7 @@ void XSceneUnitOrg::UpdateTabEquipment(void)
 						GAME->SetGreenAlert( pImgSlot, true, XE::VEC2( 43, 2 ) );
 					else
 						GAME->SetGreenAlert( pImgSlot, false );
-				} else
-				{
-//					pImgSlot->SetbShow( TRUE );
+				} else	{
 					if( pWndItem )
 						pWndItem->SetbShow( FALSE );
 					const bool bExcludeEquiped = true;

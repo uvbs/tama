@@ -145,8 +145,8 @@ public:
 	//
 #ifdef _CHEAT
 	BOOL SendCheat(XWnd *pTimeoutCallback, int type, DWORD param1 = 0, DWORD param2 = 0, DWORD param3 = 0, DWORD param4 = 0, const _tstring& strParam = _tstring() );
-	BOOL SendReqCheatCreateItem(XWnd *pTimeoutCallback, XPropItem::xPROP *pProp, int num);
-	void RecvCheatCreateItem(XPacket& p, const xCALLBACK& c);
+	BOOL SendReqCheatCreateItem( XWnd *pTimeoutCallback, const XPropItem::xPROP *pProp, int num );
+	void RecvCheatCreateItem( XPacket& p, const xCALLBACK& c );
 	//	BOOL SendCheatCreateItem( XWnd *pTimeoutCallback, XPropItem::xPROP *pProp, int num );
 #endif
 

@@ -18,7 +18,7 @@ class XHero;
 class XUnitHero : public XBaseUnit
 {
 	XHero *m_pHero;
-	XPropHero::xPROP *m_pProp;
+	const XPropHero::xPROP *m_pProp = nullptr;
 	CTimer m_timerCool;			// 스킬 쿨타임
 	BOOL m_bUseSkill;			// 스킬사용이 예약되었음
 	XSKILL::XSkillDat* m_pSkillActive;
@@ -29,7 +29,6 @@ class XUnitHero : public XBaseUnit
 	XBaseFontObj *m_pfoName = nullptr;
 	void Init() {
 		m_pHero = NULL;
-		m_pProp = nullptr;
 		m_bUseSkill = FALSE;
 		m_pSkillPassive = nullptr;
 		m_pSkillActive = nullptr;

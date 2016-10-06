@@ -282,7 +282,8 @@ int xBattleResult::DeSerialize( XArchive& ar, int ) {
 			ar >> sw0;  int num = sw0;
 			auto pProp = PROP_ITEM->GetpProp( idProp );
 			if( XASSERT( pProp ) ) {
-				ItemBox itembox = std::make_pair( pProp, num );
+				//ItemBox itembox = std::make_pair( pProp, num );
+				ItemBox itembox( std::make_pair( pProp, num ) );
 				aryDrops.Add( itembox );
 			}
 		}

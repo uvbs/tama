@@ -115,7 +115,7 @@ XWndStoragyItemElem::XWndStoragyItemElem( const XE::VEC2& vPos,
 	switch( reward.rewardType ) {
 	case xtReward::xRW_ITEM: {
 		if( XASSERT(reward.idReward) )
-			m_pProp = PROP_ITEM->GetpProp( reward.idReward );
+			m_pProp = PROP_ITEM->GetpPropMutable( reward.idReward );
 	} break;
 	case xtReward::xRW_GOLD: {
 		XBREAK(1);
@@ -169,7 +169,7 @@ XWndStoragyItemElem::XWndStoragyItemElem(XBaseItem* pItem)
 	if( pItem ) {
  		m_pItem = pItem;
 		m_Reward.SetItem( pItem->GetidProp(), pItem->GetNum() );
-		m_pProp = pItem->GetpProp();
+		m_pProp = const_cast<XPropItem::xPROP*>( pItem->GetpProp() );
 		m_snItem = pItem->GetsnItem();
 	}
 	SetbUpdate( true );
@@ -180,7 +180,7 @@ XWndStoragyItemElem::XWndStoragyItemElem(ID idItem)
 	Init();
 	m_Reward.SetItem( idItem, 1 );
 	if (idItem) {
-		m_pProp = PROP_ITEM->GetpProp( idItem );
+		m_pProp = const_cast<XPropItem::xPROP*>( PROP_ITEM->GetpProp( idItem ));
 	}
 	SetbUpdate( true );
 }

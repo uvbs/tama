@@ -1454,9 +1454,11 @@ int XHero::GetMaxHpSquad( int levelSquad )
 	return (int)GetSquadPower( pProp->hpMax, pProp->size, levelSquad );
 }
 
-ID XHero::GetpPropEquipItem( XGAME::xtParts parts ) const
+const XPropItem::xPROP* XHero::GetpPropEquipItem( XGAME::xtParts parts ) const
 {
-	return m_aryEquip[ parts ].m_idProp;
+	if( m_aryEquip[parts].m_idProp )
+		return PROP_ITEM->GetpProp( m_aryEquip[parts].m_idProp );
+	return nullptr;
 }
 
 /** ////////////////////////////////////////////////////////////////////////////////////
@@ -1465,9 +1467,11 @@ ID XHero::GetpPropEquipItem( XGAME::xtParts parts ) const
 void XHero::SetidPropToEquip( XSPAccConst spAcc )
 {
 	for( auto& slot : m_aryEquip ) {
-		auto pItem = spAcc->GetpcItemBySN( slot.m_snItem );
-		if( XASSERT(pItem) ) {
-			slot.m_idProp = pItem->GetidProp();
+		if( slot.m_snItem ) {
+			auto pItem = spAcc->GetpcItemBySN( slot.m_snItem );
+			if( XASSERT( pItem ) ) {
+				slot.m_idProp = pItem->GetidProp();
+			}
 		}
 	}
 }

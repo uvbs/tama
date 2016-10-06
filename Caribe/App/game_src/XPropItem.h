@@ -163,10 +163,10 @@ public:
 	//	xPROP* GetClanBookProp( XGAME::xtClan clan );
 };
 
-typedef std::pair<XPropItem::xPROP*, int> ItemBox;
+typedef std::pair<const XPropItem::xPROP*, int> ItemBox;
 namespace XGAME {
   inline void GetItemBox( const ItemBox& box, XPropItem::xPROP** ppOut, int *pOutNum ) {
-    *ppOut = std::get<0>( box );
+    *ppOut = const_cast<XPropItem::xPROP*>( std::get<0>( box ) );
     *pOutNum = std::get<1>( box );
   }
 }; // XGAME

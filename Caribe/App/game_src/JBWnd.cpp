@@ -351,7 +351,7 @@ void XWndInvenHeroElem::SetUnitFace( void )
 	SetSizeLocal( 87, 50 );
 }
 
-XPropHero::xPROP* XWndInvenHeroElem::GetpProp()
+const XPropHero::xPROP* XWndInvenHeroElem::GetpProp()
 {
 	if( m_pProp )
 		return m_pProp;

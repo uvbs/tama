@@ -42,33 +42,22 @@ XSceneEquip::XSceneEquip(XGame *pGame, XSPSceneParam& spBaseParam)
 	m_Layout.CreateLayout("equip", this);
 	xSET_ENABLE(this, "butt.equip", FALSE);
 
-	switch (m_BaseParam.idxParts)
-	{
-	case XGAME::xPARTS_HEAD:
-	{
+	switch (m_BaseParam.idxParts)	{
+	case XGAME::xPARTS_HEAD:	{
 		xSET_TEXT(this, "text.title", XTEXT(80085));
-	}
-		break;
-	case XGAME::xPARTS_CHEST:
-	{
+	}		break;
+	case XGAME::xPARTS_CHEST:	{
 		xSET_TEXT(this, "text.title", XTEXT(80087));
-	}
-		break;
-	case XGAME::xPARTS_HAND:
-	{
+	}		break;
+	case XGAME::xPARTS_HAND:	{
 		xSET_TEXT(this, "text.title", XTEXT(80088));
-	}
-		break;
-	case XGAME::xPARTS_FOOT:
-	{
+	}		break;
+	case XGAME::xPARTS_FOOT:	{
 		xSET_TEXT(this, "text.title", XTEXT(80089));
-	}
-		break;
-	case XGAME::xPARTS_ACCESSORY:
-	{
+	}	break;
+	case XGAME::xPARTS_ACCESSORY: {
 		xSET_TEXT(this, "text.title", XTEXT(80090));
-	}
-		break;
+	}	break;
 	}
 
 	XWndList *pWndList = SafeCast<XWndList*, XWnd*>(Find("list.equip"));
@@ -86,15 +75,15 @@ XSceneEquip::XSceneEquip(XGame *pGame, XSPSceneParam& spBaseParam)
 		pImg->Add( pText );
 		BOOL bFirst = TRUE;
 		int i = 0;
-		for( auto pItem : listItem )
-		{
-			if (pItem->GetType() == XGAME::xIT_EQUIP && pItem->GetpProp()->parts == m_BaseParam.idxParts)
-			{
-				XWndStoragyItemElem *pElem = new XWndStoragyItemElem(pItem);
+		for( auto pItem : listItem )		{
+			if (pItem->GetType() == XGAME::xIT_EQUIP && pItem->GetpProp()->parts == m_BaseParam.idxParts)			{
+				auto pElem = new XWndStoragyItemElem(pItem);
 				pWndList->AddItem(pItem->GetsnItem(), pElem);
-
-				if (pItem->GetbEquip()) {
-					XBaseItem *pHeroItem = m_pHero->GetsnEquipItem(m_BaseParam.idxParts);
+				//if (pItem->GetbEquip()) {
+				if( pElem->GetbEquip() ) {
+					//XBaseItem *pHeroItem = m_pHero->GetsnEquipItem(m_BaseParam.idxParts);
+					ID snItem = m_pHero->GetsnEquipItem( m_BaseParam.idxParts );
+					auto pHeroItem = ACCOUNT->GetpItemBySN( snItem );
 					if (pHeroItem && pHeroItem->GetsnItem() == pItem->GetsnItem())
 						snEquipItem = pItem->GetsnItem();
 					pImg = new XWndImage(TRUE, XE::MakePath(DIR_UI, _T("armory_bg_item_black.png")), 0.f, 0.f);
@@ -230,13 +219,11 @@ int XSceneEquip::OnSelectItem(XWnd *pWnd, DWORD p1, DWORD p2)
 
 void XSceneEquip::UpdateItemInfo()
 {
-	if (m_pSelectItem)
-	{
+	if (m_pSelectItem)	{
 		auto pProp = m_pSelectItem->getpProp();
 		if( pProp == nullptr )
 			return;
-		if (m_pSelectItem->GetpItem()->GetbEquip() == FALSE)
-		{
+		if (m_pSelectItem->GetbEquip() == false) {
 			xSET_ENABLE(this, "butt.equip", TRUE);
 		} else
 			xSET_ENABLE(this, "butt.equip", FALSE);

@@ -80,7 +80,7 @@ public:
 	static XWndInvenHeroElem* sUpdateCtrl( XWndList *pWndList, XHero *pHero );
 private:
 	XHero *m_pHero;
-	XPropHero::xPROP *m_pProp = nullptr;
+	const XPropHero::xPROP *m_pProp = nullptr;
 	XSurface *m_pBG;
 	XSurface *m_pFace;
 	XSurface *m_psfcBgGradation = nullptr;
@@ -121,7 +121,7 @@ public:
 	XHero* GetpHero( void ) {
 		return m_pHero;
 	}
-	XPropHero::xPROP* GetpProp();
+	const XPropHero::xPROP* GetpProp();
 	ID GetsnHero( void );
 	int GetnumStars();
 	GET_SET_BOOL_ACCESSOR( bSelected );

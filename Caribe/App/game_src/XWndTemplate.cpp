@@ -508,7 +508,7 @@ void XWndCircleSkill::Update()
 /**
  @brief 아이템 아이콘을 함께 보여주는 알림창
 */
-XGameWndAlert* XGAME::DoAlertWithItem( XPropItem::xPROP* pPropItem, 
+XGameWndAlert* XGAME::DoAlertWithItem( const XPropItem::xPROP* pPropItem, 
 																			 const _tstring& strText,
 																			 XWnd::xtAlert type )
 {

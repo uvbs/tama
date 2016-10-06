@@ -4225,7 +4225,8 @@ int XAccount::DeserializeHeroUpdate( XArchive& ar )
 		pHero->DeSerialize( ar, /*GetThis(), */verHero );
 	} else {
 		// 인벤에 없으면 새로 생성하고 추가한다.
-		XHero::sCreateDeSerialize2( ar, GetThis() );
+		auto pHero = XHero::sCreateDeSerialize2( ar, GetThis() );
+		AddHero( pHero );
 	}
 	return 1;
 }
@@ -5110,7 +5111,7 @@ XGAME::xtError XAccount::IsPromotionHero( XHero *pHero )
 /**
  @brief 영혼석으로 소환할수 있는 상태인지 검사한다.
 */
-XGAME::xtError XAccount::IsAbleSummonHeroBySoulStone( _tstring& strIdHero)
+XGAME::xtError XAccount::IsAbleSummonHeroBySoulStone( const _tstring& strIdHero)
 {
 	auto pProp = PROP_HERO->GetpProp(strIdHero);
 	if (pProp) {

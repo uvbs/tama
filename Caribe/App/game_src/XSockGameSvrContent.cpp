@@ -107,7 +107,7 @@ BOOL XSockGameSvr::SendCheat( XWnd *pTimeoutCallback, int type, DWORD param1, DW
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
  @see AddResponse()
 */
-BOOL XSockGameSvr::SendReqCheatCreateItem( XWnd *pTimeoutCallback, XPropItem::xPROP *pProp, int num )
+BOOL XSockGameSvr::SendReqCheatCreateItem( XWnd *pTimeoutCallback, const XPropItem::xPROP *pProp, int num )
 {
 	_XCHECK_CONNECT(0);
 	//
@@ -628,7 +628,7 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 						pHero = ACCOUNT->GetpHeroBySN( snHero );
 					} else {
 						// 적군 추가 영웅
-						pHero = XHero::sCreateDeSerialize( arParam, nullptr );
+						pHero = XHero::sCreateDeSerialize2( arParam, nullptr );
 					}
 					if( XASSERT( spParam ) ) {
 						if( XASSERT( pHero ) ) {
@@ -1603,7 +1603,8 @@ void XSockGameSvr::RecvSummonHero( XPacket& p, const xCALLBACK& c )
 	} else {
 		WORD w0;
 		p >> w0; 
-		pHero = XHero::sCreateDeSerialize( p, ACCOUNT );
+		pHero = XHero::sCreateDeSerialize2( p, ACCOUNT );
+		ACCOUNT->AddHero( pHero );
 		XBREAK( idPropHero != pHero->GetidProp() );
 	}
 	p >> gold;
@@ -2663,7 +2664,8 @@ void XSockGameSvr::RecvReqQuestReward( XPacket& p, const xCALLBACK& c )
 				ACCOUNT->SetResource( typeRes, sum );
 		} break;
 		case XGAME::xtReward::xRW_HERO: {
-			XHero::sCreateDeSerialize( p, ACCOUNT );
+			auto pHero = XHero::sCreateDeSerialize2( p, ACCOUNT );
+			ACCOUNT->AddHero( pHero );
 		} break;
 		case XGAME::xtReward::xRW_CASH: {
 			DWORD numCash;
@@ -4797,7 +4799,8 @@ void XSockGameSvr::RecvReqKickGuild(XPacket& p, const xCALLBACK& c)
 
 void XSockGameSvr::RecvCreateHero( XPacket& p, const xCALLBACK& c )
 {
-	auto pHero = XHero::sCreateDeSerialize( p, ACCOUNT );
+	auto pHero = XHero::sCreateDeSerialize2( p, ACCOUNT );
+	ACCOUNT->AddHero( pHero );
 	GAME->SetbUpdate( true );
 // 	if (SCENE_UNITORG)
 // 		SCENE_UNITORG->SetbUpdate(true);

@@ -1276,9 +1276,9 @@ public:
 #endif // not _CLIENT
 	//  bool IsPromotionHero(_tstring strIdHero);
 	XGAME::xtError IsPromotionHero( XHero *pHero );
-	XGAME::xtError IsAbleSummonHeroBySoulStone( _tstring& strIdHero );
+	XGAME::xtError IsAbleSummonHeroBySoulStone( const _tstring& strIdHero );
 	XBaseItem* GetSoulStoneByHero( LPCTSTR idsHero );
-	XBaseItem* GetSoulStoneByHero( _tstring& strHero ) {
+	XBaseItem* GetSoulStoneByHero( const _tstring& strHero ) {
 		return GetSoulStoneByHero( strHero.c_str() );
 	}
 	int GetNeedSoulPromotion( XHero *pHero );

@@ -16,24 +16,22 @@ class XWndShopElem : public XWndImage
 	XWndTextString *m_pName;
 	XWndTextString *m_pPrice;
 //	XGlobalConst::cashItem* m_pCashItem;	// 포인터엔 p를 붙일것.
-	XPropItem::xPROP *m_pEtcItemProp;
+	const XPropItem::xPROP *m_pEtcItemProp;
 	_tstring m_idsProduct;
 	void Init()	{
 		m_pIcon = nullptr;
 		m_pName = nullptr;
 		m_pPrice = nullptr;
-//		m_pCashItem = nullptr;
-		m_pEtcItemProp = 0;
 	}
 	void Destroy(){}
 public:
 	//아이템 정보를 받아와야함 : 아이콘, 이름, 가격 / 프랍을 통채로 받아오면 될듯
 	XWndShopElem( const _tstring& idsProduct );
-	XWndShopElem( XPropItem::xPROP* pEtcItemProp );
+	XWndShopElem( const XPropItem::xPROP* pEtcItemProp );
 	virtual ~XWndShopElem(){ Destroy(); }
 
 	GET_ACCESSOR_CONST( const _tstring&, idsProduct );
-	GET_ACCESSOR_CONST( XPropItem::xPROP*, pEtcItemProp );
+	GET_ACCESSOR_CONST( const XPropItem::xPROP*, pEtcItemProp );
 // 	const _tstring& GetidsProduct() const {
 // 		return m_pCashItem->m_productID;
 // 	}

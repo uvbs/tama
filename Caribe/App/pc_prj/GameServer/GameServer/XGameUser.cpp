@@ -234,14 +234,12 @@ int XGameUser::RecvCheat( XPacket& p )
 		int num;
 		p >> idProp;
 		p >> num;
-		for( int i = 0; i < num; ++i )
-		{
+		for( int i = 0; i < num; ++i ) {
 			auto pProp = PROP_HERO->GetpProp( idProp );
-			if( pProp )
-			{
+			if( pProp ) {
 				XGAME::xtSize tierUnit = XGAME::xSIZE_SMALL;
 				auto unit = XGAME::GetRandomUnit( pProp->typeAtk, tierUnit );
-				auto pHero = XHero::sCreateHero( pProp, 1, unit );
+				auto pHero = XHero::sCreateHero( pProp, 1, unit, m_spAcc );
 				m_spAcc->AddHero( pHero );
 				SendCreateHero( pHero );
 			}
@@ -4200,7 +4198,7 @@ int XGameUser::RecvSummonHero( XPacket& p )
 //		int numUnit = 5; //1레벨이니까 기본 숫자제공.
 //		XHero *pHero = XHero::sCreateHero( pPropHero, unit, numUnit );
 		int lvSuqad = 1;
-		XHero *pHero = XHero::sCreateHero( pProp, lvSuqad, unit );
+		XHero *pHero = XHero::sCreateHero( pProp, lvSuqad, unit, m_spAcc );
 		XVERIFY_BREAK( pHero == nullptr );
 		pHero->SetGrade( grade );
 		m_spAcc->AddHero( pHero );
@@ -5720,7 +5718,7 @@ int XGameUser::DoRewardQuest( ID idQuest )
 			auto pPropHero = PROP_HERO->GetpProp( pReward->idReward );
 			if( XASSERT(pPropHero) ) {
 				auto unit = XGAME::GetUnitBySizeAndAtkType( xSIZE_SMALL, pPropHero->typeAtk );
-				auto pHero = XHero::sCreateHero( pPropHero, 1, unit );
+				auto pHero = XHero::sCreateHero( pPropHero, 1, unit, m_spAcc );
 				if( XASSERT(pHero) ) {
 					m_spAcc->AddHero( pHero );
 					XHero::sSerialize( ar, pHero );
@@ -8980,7 +8978,7 @@ int XGameUser::RecvCampaignReward( XPacket& p )
 				auto pPropHero = PROP_HERO->GetpProp( reward.idReward );
 				if( XASSERT( pPropHero ) ) {
 					auto unit = XGAME::GetRandomUnit( pPropHero->typeAtk, XGAME::xSIZE_SMALL );
-					auto pHero = XHero::sCreateHero( pPropHero, 1, unit );
+					auto pHero = XHero::sCreateHero( pPropHero, 1, unit, m_spAcc );
 					XVERIFY_BREAK( pHero == nullptr );
 					m_spAcc->AddHero( pHero );
 					infoQuest.SetidHero( reward.idReward );

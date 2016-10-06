@@ -2,8 +2,6 @@
 #include "XHeroH.h"
 #include "XFramework/Game/XFLevelH.h"
 #include "XPropHero.h"
-//#include "skill/XSkillDat.h"
-//#include "skill/XAdjParam.h"
 #include "XPropSquad.h"
 #include "XPropUpgrade.h"
 #include "XStruct.h"
@@ -213,7 +211,7 @@ public:
 	inline ID GetsnEquipItem(XGAME::xtParts parts) const {
 		return m_aryEquip[ parts ].m_snItem;
 	}
-	ID GetpPropEquipItem( XGAME::xtParts parts ) const;
+	const XPropItem::xPROP* GetpPropEquipItem( XGAME::xtParts parts ) const;
 
 	///< level에서의 최대 exp의 값을 돌려줘야 한다.
 	DWORD OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const;
