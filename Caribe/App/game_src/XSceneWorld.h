@@ -284,7 +284,7 @@ public:
 
 	// Recv
 	void RecvClearStorageWithWndSpot(XSpot *pBaseSpot);
-	void OnRecvReconSpot(ID idSpot, const LegionPtr& spLegion );
+	void OnRecvReconSpot(ID idSpot, const XSPLegion& spLegion );
 //	int OnRecvBattleResult(XGAME::xtSpot typeSpot, int bWin);
 	void OnRecvBattleResult( XGAME::xBattleResult& result );
 	void OnRecvBattleInfo( XSPSceneParam spParam );
@@ -353,7 +353,7 @@ public:
 	void RecvCompleteQuest( XQuestObj *pObj );
 	void OnUpdateQuest( XQuestObj *pObj );
 	void OnRecvQuestReward( XQuestObj *pObj );
-	void OnClickStageInCampaign( ID snSession, ID idSpot, int idxStage, int level, LegionPtr& spLegion );
+	void OnClickStageInCampaign( ID snSession, ID idSpot, int idxStage, int level, XSPLegion& spLegion );
 	int OnCompleteQuest( XWnd* pWnd, DWORD p1, DWORD p2 );
 
 	// ??

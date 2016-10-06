@@ -19,7 +19,7 @@ public:
 	enum {
 		xMAX_NOT_FOG = 3,	// 안개로가려지지 않는 부대수
 	};
-	static void sSerialize( XLegion* pLegion, XArchive* pOut );
+	static void sSerialize( XSPLegionConst spLegion, XArchive* pOut );
 	static void sDeSerializeUpdate( XSPLegion* pspOut, XSPAcc spAcc, XArchive& ar );
 	static int sSerializeFull( XArchive& ar, XSPLegion spLegion );
 	static XLegion* sCreateDeserializeFull( XArchive& ar );
@@ -102,12 +102,12 @@ public:
 	}
 	GET_SET_ACCESSOR_CONST( float, RateHp );
 	GET_SET_ACCESSOR_CONST( float, RateAtk );
-	void Serialize( XArchive& ar );
+	void Serialize( XArchive& ar ) const;
 	void SerializeFull( XArchive& ar );
 	BOOL DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion );
 private:
 	BOOL DeSerializeFull( XArchive& ar, int verLegion );
-	int SerializeFogs( XArchive& ar );
+	int SerializeFogs( XArchive& ar ) const;
 	int DeSerializeFogs( XArchive& ar, int verLegion );
 public:
 	XLegion* CreateLegionForLink( XSPAcc spAcc );
@@ -184,5 +184,8 @@ public:
 	float GethpMaxEach( ID snSquadHero, bool bHero ) const;
 //	bool IsValid() const;
 	bool IsNpc() const;
+	XSquadron* CreateAddSquadron( int idxSquad, const XHero* pHero, bool bCreateHero );
+	void DestroySquadronAll();
+private:
 };
 

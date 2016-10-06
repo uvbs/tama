@@ -30,7 +30,7 @@ using namespace XGAME;
 
 ////////////////////////////////////////////////////////////////
 int XLegionObj::s_numObj = 0;		// 메모리 릭 추적용
-XLegionObj::XLegionObj( /*XAccount *pAccount, */LegionPtr& spLegion, BIT bitCamp, BOOL )
+XLegionObj::XLegionObj( /*XAccount *pAccount, */XSPLegion& spLegion, BIT bitCamp, BOOL )
 {
 	Init();
 	

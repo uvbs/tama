@@ -450,7 +450,7 @@ void XGlobalConst::MakeTablePowerPerLevel()
 	for( int lv = 1; lv <= XGAME::MAX_NPC_LEVEL; ++lv ) {
 		XGAME::xLegionParam info;
 		auto pLegion = XLegion::sCreateLegionForNPC( lv, 0, info );
-		auto spLegion = LegionPtr( pLegion );
+		auto spLegion = XSPLegion( pLegion );
 		int power = XLegion::sGetMilitaryPower( spLegion );
 		m_aryNpcPowerPerLevel[ lv ] = power;
 	}

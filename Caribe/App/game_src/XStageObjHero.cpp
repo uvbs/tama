@@ -92,7 +92,7 @@ int XStageObjHero::DeSerialize( const CampObjPtr spCampObj,
 	ar >> b0;	
 // 	ar >> GetaryDrops();
 	// 군단데이터가 있으면 생성.
-	SetspLegion( LegionPtr(XLegion::sCreateDeserializeFull( ar )) );
+	SetspLegion( XSPLegion(XLegion::sCreateDeserializeFull( ar )) );
 	ar >> dw0;	SetPower( dw0 );
 	// aryDrops복구해야함.
 	SetDropItemsFromProp( spCampObj );

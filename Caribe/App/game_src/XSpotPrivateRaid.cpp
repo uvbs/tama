@@ -77,10 +77,55 @@ BOOL XSpotPrivateRaid::DeSerialize( XArchive& ar, DWORD ver )
 	return TRUE;
 }
 
-void XSpotPrivateRaid::UpdatePlayerEnterList( const XList4<XHero*>& listHero )
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 플레이어의 전체 출전리스트를 받아 앞부분은 군단으로 생성하고 나머지는 대기열에 넣는다.
+*/
+void XSpotPrivateRaid::UpdatePlayerEnterList( const XList4<ID>& _listHero, XSPAccConst spAcc )
 {
-	m_aryEnter[0] = listHero;
+	XList4<ID> listHero = _listHero;
+	// 플레이어 군단객체 생성(외부에서의 군단포인터 참조문제로 한번 생성하면 바꾸지 않음)
+	XSPLegion spLegion = GetspLegion();
+	if( spLegion == nullptr ) {
+		spLegion = std::make_shared<XLegion>();
+		m_spLegionPlayer = spLegion;
+	}
+	// 군단내 기존데이타 삭제
+	spLegion->DestroySquadronAll();
+	// 전체 출전리스트를 건네고 필요한 인원만 부대를 생성하고 생성한 부대는 리스트에서 뺀다.
+	ProcCreateSquadron( spLegion, &listHero, spAcc );
+	// 나머지 인원은 대기열 리스트에 넣는다.
+	m_aryEnter[0].clear();
+	for( auto snHero : listHero ) {
+		auto pHero = spAcc->GetpcHeroBySN( snHero );
+		if( XASSERT( pHero ) ) {
+			m_aryEnter[0].push_back( const_cast<XHero*>( pHero ) );
+		}
+	}
 }
+
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 영웅리스트를 바탕으로 플레이어측 군단객체를 생성한다.
+*/
+void XSpotPrivateRaid::ProcCreateSquadron( XSPLegion spLegion, XList4<ID>* pOutlistHero, XSPAccConst spAcc ) const
+{
+	// 플레이어의 현재 레벨에서 가질수 있는 최대 부대수
+	const int maxHero = XAccount::sGetMaxSquadByLevelForPlayer( spAcc->GetLevel() );
+	// 영웅리스트를 바탕으로 군단객체를 생성한다. 영웅은 반드시 보유중인 영웅이어야 한다.
+	auto& listHero = (*pOutlistHero);
+	int idx = 0;
+	for( auto itor = listHero.begin(); itor != listHero.end(); ) {
+		const ID snHero = ( *itor );
+		auto pHero = spAcc->GetpcHeroBySN( snHero );
+		if( XASSERT( pHero ) ) {
+			spLegion->CreateAddSquadron( idx, pHero, false );
+			// 생성한건 리스트에서 뺀다.
+			listHero.erase( itor++ );
+			if( ++idx >= maxHero )
+				break;
+		}
+	}
+}
+
 
 void XSpotPrivateRaid::AddEnterHero( XHero* pHero, int idxSide )
 {
@@ -188,33 +233,18 @@ void XSpotPrivateRaid::CreateEnemyEnterHeroes( int lvSpot )
 		auto spLegion = XLegion::sCreateLegionForNPC2( propLegion, lvSpot, true );
 		SetspLegion( spLegion );
 		// 생성후 모자라는 수는 랜덤으로 생성.
+		const auto& tblLegion = XGC->GetLegionTable( lvSpot );
+		const int lvSquad = tblLegion.m_lvSquad;
 		const int remain = c_maxSquad - spLegion->GetNumSquadrons();
 //		for( int i = 0; i < c_maxSquad; ++i ) {
 		for( int i = 0; i < remain; ++i ) {		// 일단 테스트를 위해서 이렇게
 			const xtGet bit = (xtGet)( xGET_GATHA | xGET_QUEST | xGET_GUILD_RAID | xGET_MEDAL_SPOT );
 			auto pPropHero = XHero::sGet()->GetpPropRandomByGetType( bit );
 			const auto unit = XGAME::GetRandomUnit( pPropHero->typeAtk, (xtSize)xRandom( 1, 3 ) );
-			auto pHero = XHero::sCreateHero( pPropHero, 1, unit );
+			auto pHero = XHero::sCreateHero( pPropHero, lvSquad, unit );
 			m_aryEnter[1].push_back( pHero );
 		}
-// 		auto spLegion = std::make_shared<XLegion>();
-// 		const auto& tblLegion = XGC->GetLegionTable( lvSpot );
-// 		const int numSquad = tblLegion.m_numSquad;
-// 		for( auto pHero, int i = 0 : m_aryEnter[1], ++i ) {
-// 
-// 			spLegion->AddSquadron( i, )
-// 		}
 	}
 #endif // #if defined(_XSINGLE) || !defined(_CLIENT)
-
-// 	for( int i = 0; i < 30; ++i ) {
-// 
-// 		auto spLegion = XLegion::sCreateLegionForNPC2()
-// 
-// 		const xtGet bit = (xtGet)( xGET_GATHA | xGET_QUEST | xGET_GUILD_RAID | xGET_MEDAL_SPOT );
-// 		auto pPropHero = XHero::sGet()->GetpPropRandomByGetType( bit );
-// 		const auto unit = XGAME::GetRandomUnit( pPropHero->typeAtk, (xtSize)xRandom( 1, 3 ) );
-// 		XHero::sCreateHero( pPropHero, 1, unit );
-// 	}
-
 }
+

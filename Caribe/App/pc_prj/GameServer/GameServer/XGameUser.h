@@ -213,7 +213,7 @@ public:
 	int DoSpotAttackCampaign( XSpot *pBaseSpot, int idxStage, int idxFloor );
 	int DestroySpotByQuest( XQuestObj *pQuestObj );
 	bool IsVerificationBattle( /*전투데이타*/ );
-	int DispatchQuestEventByBattle( XSpot *pBaseSpot, bool bWin, bool bClearSpot, LegionPtr& spLegion );
+	int DispatchQuestEventByBattle( XSpot *pBaseSpot, bool bWin, bool bClearSpot, XSPLegion& spLegion );
 	int DoRewardProcess( XSpot *pSpot, XGAME::xBattleResult *pOutResult );
 	int DoRewardProcessForCastle( XSpotCastle *pSpot, XGAME::xBattleResult *pOut, XGAME::xBattleFinish& pBattle );
 	int DoRewardProcessForJewel( XSpotJewel *pSpot, XGAME::xBattleResult *pOut );

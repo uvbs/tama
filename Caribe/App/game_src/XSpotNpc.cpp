@@ -184,7 +184,7 @@ void XSpotNpc::CreateLegion( XSPAcc spAcc )
 	// 군대생성직전 스폰될당시의 랜덤시드값으로 바꾸고 군단을 생성한다.
 	XSeed seed( GetseedRandom() );
 // 	XLegion *pLegion = CreateLegion( GetpProp(), GetLevel() );
-	LegionPtr spLegion = CreateLegion( GetpProp(), GetLevel() );
+	XSPLegion spLegion = CreateLegion( GetpProp(), GetLevel() );
 	XBREAK( GetspLegion() != nullptr );
 	SetspLegion( spLegion );
 	// 군대가 생성되었다면 자동적으로 스폰 타이머는 꺼진다.
@@ -198,7 +198,7 @@ void XSpotNpc::CreateLegion( XSPAcc spAcc )
 /**
  @brief 
 */
-LegionPtr XSpotNpc::CreateLegion( XPropWorld::xNPC *pProp, int lvSpot )
+XSPLegion XSpotNpc::CreateLegion( XPropWorld::xNPC *pProp, int lvSpot )
 {
 	XBREAK( lvSpot == 0 );
 #if defined(_XSINGLE) || !defined(_CLIENT)
@@ -208,7 +208,7 @@ LegionPtr XSpotNpc::CreateLegion( XPropWorld::xNPC *pProp, int lvSpot )
 		legion = *pPropLegion;
 	return XLegion::sCreateLegionForNPC2( legion, lvSpot, true );
 #else
-	return LegionPtr();
+	return XSPLegion();
 #endif
 }
 

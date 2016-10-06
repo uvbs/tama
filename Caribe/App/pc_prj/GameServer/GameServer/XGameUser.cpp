@@ -1775,7 +1775,7 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 				pBaseSpot->SetnumLose( pBaseSpot->GetnumLose() + 1 );   // 패배횟수를 올림
 	}
 	// 퀘스트이벤트에서 써야하므로 군단포인터를 받아둔다. 참조포인터이므로 밑에서 군단데이터를 삭제해도 지워지지 않는다.
-	LegionPtr spLegion = pBaseSpot->GetspLegion();
+	XSPLegion spLegion = pBaseSpot->GetspLegion();
 	// 소탕치트 했는데 군단이 없으면 급 만듬.
 	if( spLegion == nullptr ) {
 //#ifdef _CHEAT
@@ -2030,7 +2030,7 @@ int XGameUser::ProcCancelBattle( XSpot *pBaseSpot, ID idEnemy )
 int XGameUser::DispatchQuestEventByBattle( XSpot *pBaseSpot, 
 																					bool bWin, 
 																					bool bClearSpot, 
-																					LegionPtr& spLegion  )
+																					XSPLegion& spLegion  )
 {
 	xQuest::XEventInfo infoQuest;
 	infoQuest.SetidSpot( pBaseSpot->GetidSpot() );
@@ -3184,7 +3184,7 @@ void XGameUser::RecvGetUserLegionByIdAcc( XPacket& p )
 	bool bDummyUser = true;
 
 	do {
-		LegionPtr spLegion;
+		XSPLegion spLegion;
 		p >> idSpot;
 		p >> idPacket;
 		p >> idAccount;		// 매칭으로 찾은 상대편 idAccount;
@@ -3239,7 +3239,7 @@ void XGameUser::RecvGetUserLegionByIdAcc( XPacket& p )
 // 					// 이미 정찰된 부대가 있다면 그 정보를 복구시킨다.
 // 					pLegion->SetUnFogList( aryUnfogHeroesSN );
 // 				}
-				spLegion = LegionPtr( pLegion );
+				spLegion = XSPLegion( pLegion );
 				pBaseSpot->SetspLegion( spLegion );
 // 				if( aryResourceHero.size() > 0 )
 // 					pLegion->SetAryResource( aryResourceHero );
@@ -9752,7 +9752,7 @@ int XGameUser::RecvSync( XPacket& p )
 }
 
 /**
- 클라이언트의 SendReqPrivateRaidEnterList()에 대한 서버측의 Receive함수
+ @brief 플레이어측의 출전리스트를 받아 스팟에 갱신한다.
  @param p 패킷이 들어있는 아카이브
  @return 오류없이 완료되었다면 1을 리턴한다.
  @see SendReqPrivateRaidEnterList()
@@ -9766,18 +9766,20 @@ int XGameUser::RecvPrivateRaidEnterList( XPacket& p )
 	XVERIFY_BREAK( size > XSpotPrivateRaid::c_maxSquad );
 	auto pSpot = SafeCast<XSpotPrivateRaid*>( GetpWorld()->GetpSpot( idSpot ) );
 	XVERIFY_BREAK( pSpot == nullptr );
-	XList4<XHero*> listEnterPlayer;
+	XList4<ID> listEnterPlayer;
 	for( int i = 0; i < size; ++i ) {
 		ID snHero;
 		p >> snHero;
-		auto pHero = m_spAcc->GetpHeroBySN( snHero );
-		XVERIFY_BREAK( pHero == nullptr );
-		listEnterPlayer.push_back( pHero );
+// 		auto pHero = m_spAcc->GetpHeroBySN( snHero );
+// 		XVERIFY_BREAK( pHero == nullptr );
+// 		listEnterPlayer.push_back( pHero );
 	}
-	pSpot->UpdatePlayerEnterList( listEnterPlayer );
-
+	pSpot->UpdatePlayerEnterList( listEnterPlayer, m_spAcc );
+	XBREAK( pSpot->GetspLegionPlayer() == nullptr );
 	// 클라로 전송(echo)
 	XPacket ar( p.GetidPacket() );
+	ar << idSpot;
+	XLegion::sSerialize( pSpot->GetspLegionPlayer(), &ar );
 	Send(ar);
 
 // 	XGAME::xBattleStartInfo info( false, pSpot );

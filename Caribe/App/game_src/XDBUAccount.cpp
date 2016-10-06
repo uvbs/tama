@@ -145,7 +145,7 @@ XLegion* XDBUAccount::RestoreLegionPacketFullToLink( XArchive &arFull, int idxLe
 // 	pLegionFull->DeSerializeFull( arFull, ver );
 	XLegion *pLegion = pLegionFull->CreateLegionForLink( GetThis() );
 	SAFE_DELETE( pLegionFull );
-	m_aryLegion[idxLegion] = LegionPtr(pLegion);
+	m_aryLegion[idxLegion] = XSPLegion(pLegion);
 	return pLegion;
 }
 
@@ -169,7 +169,7 @@ XLegion* XDBUAccount::RestoreLegionPacketFull( XArchive& arFull, int idxLegion )
 // 	}
 // 	XLegion *pLegion = new XLegion;
 // 	pLegion->DeSerializeFull( arFull, ver );
-	m_aryLegion[idxLegion] = LegionPtr(pLegion);
+	m_aryLegion[idxLegion] = XSPLegion(pLegion);
 	return pLegion;
 }
 

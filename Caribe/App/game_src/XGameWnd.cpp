@@ -318,7 +318,7 @@ void XWndCastleInfo::Destroy()
 /**
  @brief 
 */
-XWndSquadInLegion* XWndSquadInLegion::sUpdateCtrl( XWnd *pRoot, int idxSquad, const XE::VEC2& v, LegionPtr spLegion )
+XWndSquadInLegion* XWndSquadInLegion::sUpdateCtrl( XWnd *pRoot, int idxSquad, const XE::VEC2& v, XSPLegion spLegion )
 {
 	std::string idsCtrl = XWndSquadInLegion::sGetIds( idxSquad );
 	auto pWndCtrl = SafeCast2<XWndSquadInLegion*>( pRoot->Find( idsCtrl ) );

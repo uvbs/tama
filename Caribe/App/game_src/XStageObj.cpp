@@ -129,7 +129,7 @@ int XStageObj::DeSerialize( const CampObjPtr spCampObj,
 	ar.SetverArchiveInstant( verCamp );
 	ar >> m_listTryer;
 	m_Power = 0;
-	m_spLegion = LegionPtr(XLegion::sCreateDeserializeFull( ar ));
+	m_spLegion = XSPLegion(XLegion::sCreateDeserializeFull( ar ));
 	if( m_spLegion )
 		ar >> m_Power;
 	m_aryDrops.clear();
@@ -163,11 +163,11 @@ bool XStageObj::CreateLegion( CampObjPtr spCampObj, int lvBase, int idxFloor )
  @param pOutLvLegion 생성된 군단의 레벨을 담는다.
 */
 #if defined(_XSINGLE) || !defined(_CLIENT)
-LegionPtr XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutLvLegion, int idxFloor ) const
+XSPLegion XStageObj::CreateLegion2( CampObjPtr spCampObj, int lvBase, int *pOutLvLegion, int idxFloor ) const
 {
 	// XLegion::sCreateLegionForNPC2로 통합하는게 맞지만 지금은 너무 많이 꼬여있어서 당장통합하기가 어려움. 일단 구현해놓고 작은부분부터 통합하는게 나을듯.
 	XLegion *pLegion = new XLegion;
-	auto spLegion = LegionPtr( pLegion );
+	auto spLegion = XSPLegion( pLegion );
 	//
 	do {
 		auto pPropStage = _m_spPropStage.get();

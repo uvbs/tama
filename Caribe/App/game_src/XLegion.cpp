@@ -857,7 +857,7 @@ XLegion* XLegion::sCreateDeserializeFull( XArchive& ar )
 	return pLegion;
 }
 
-void XLegion::sSerialize( XLegion* pLegion, XArchive* pOut ) {
+void XLegion::sSerialize( XSPLegionConst pLegion, XArchive* pOut ) {
 	XArchive& ar = *pOut;
 	ar << VER_LEGION_SERIALIZE;
 	pLegion->Serialize( ar );
@@ -888,7 +888,7 @@ XLegion::XLegion()
 
 void XLegion::Destroy()
 {
-	XLIST4_DESTROY( m_listSquadrons );
+	DestroySquadronAll();
 }
 // 객체 파괴될때 list내용을 파괴시키지 않기 위한 궁여지책. squadron을 shared_ptr로 바꿔야 한다.
 void XLegion::Clear()
@@ -896,7 +896,18 @@ void XLegion::Clear()
 	m_listSquadrons.clear();
 }
 
-void XLegion::Serialize( XArchive& ar )
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 부대객체를 모두 날림
+*/
+void XLegion::DestroySquadronAll()
+{
+	m_listFogs.clear();
+	m_aryResourceHero.clear();
+	XLIST4_DESTROY( m_listSquadrons );
+	m_pLeader = nullptr;
+}
+
+void XLegion::Serialize( XArchive& ar ) const
 {
 	const int size = m_listSquadrons.size();
 	ar << (BYTE)size;
@@ -976,7 +987,7 @@ BOOL XLegion::DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion )
 	return TRUE;
 }
 
-int XLegion::SerializeFogs( XArchive& ar )
+int XLegion::SerializeFogs( XArchive& ar ) const
 {
 	ar << (int)m_listFogs.size();
 	for( auto pSq : m_listFogs ) {
@@ -1131,42 +1142,8 @@ XLegion* XLegion::CreateLegionForLink( XSPAcc spAcc )
 				pNewLegion->SetpLeader( pHero );
 		}
 	}
-	// 중대 어레이를 루프
-// 	XARRAYN_LOOP_IDX( m_arySquadrons, XSquadron*, i, pSq )
-// 	{
-// 		if( pSq )
-// 		{
-// 			// 중대영웅의 snHero를 가져와서 계정의 영웅리스트에서 영웅 포인트를 찾음.
-// 			ID snHero = pSq->GetpHero()->GetsnHero();
-// 			XHero *pHero = spAcc->GetHero( snHero );
-// 			if( XASSERT( pHero ) )
-// 			{
-// 				// 그 영웅포인트로 중대객체를 다시 만듬.
-// 				//			XSquadron sq( pHero );
-// 				XSquadron *pSq = new XSquadron( pHero );
-// 				pNewLegion->SetSquadron( i, pSq, FALSE );
-// 				if (m_pLeader && pHero->GetsnHero() == m_pLeader->GetsnHero())
-// 					pNewLegion->SetpLeader(pHero);
-// 			}
-// 		}
-// 
-// 	} END_LOOP;
 	return pNewLegion;
 }
-
-
-// 부대 수를 얻는다.
-// int XLegion::GetNumSquadrons() 
-// {
-// 	int size = m_arySquadrons.GetMax();
-// 	int num = 0;
-// 	for( int i = 0; i < size; ++i ) {
-// //		if( m_arySquadrons[i]->GetidPropHero() )
-// 		if( m_arySquadrons[ i ] )
-// 			++num;
-// 	}
-// 	return num;
-// }
 
 ID XLegion::sGetHeroByUnit( XGAME::xtUnit unit )
 {
@@ -1657,25 +1634,11 @@ void XLegion::AddSquadron( int idxPos, XSquadron *pSq, bool bCreateHero )
 	pSq->SetidxPos( idxPos );
 	m_listSquadrons.push_back( pSq );
 
-// 	if( idx < 0 || idx >= m_arySquadrons.GetMax() )
-// 		return FALSE;
-// //	XBREAK( m_arySquadrons[ idx ] != nullptr );
-// 	if( m_arySquadrons[ idx ] ) {
-// 		SAFE_DELETE( m_arySquadrons[ idx ] );
-// 	}
-// 	m_arySquadrons[ idx ] = pSq;
-// 	m_arySquadrons[ idx ]->SetbCreateHero( bCreateHero );
-// 	return TRUE;
 }
 
 void XLegion::ClearResourceSquad()
 {
 	m_aryResourceHero.clear();
-// 	XARRAYN_LOOP_AUTO( m_arySquadrons, pSquad ) {
-// 		if( pSquad ) {
-// 			pSquad->SetbResourceSquad( false );	// 일단 초기화
-// 		}
-// 	} END_LOOP;
 }
 /**
  @brief 랜덤으로 numSquad수만큼의 부대를 자원부대로 설정한다.
@@ -1687,12 +1650,6 @@ void XLegion::SetResourceSquad( int numSquad )
 	m_aryResourceHero.clear();
 	// 부대를 임시 리스트에 담는다.
 	XList4<XSquadron*> listSquads = m_listSquadrons;
-// 	// 부대를 임시 리스트에 담는다.
-// 	XARRAYN_LOOP_AUTO( m_arySquadrons, pSquad ) {
-// 		if( pSquad ) {
-// 			listSquads.Add( pSquad );
-// 		}
-// 	} END_LOOP;
 	// 뽑아야할 수만큼 루프를 돈다.
 	while( num-- ) {
 		// 랜덤으로 한부대를 뽑는다.
@@ -1942,3 +1899,15 @@ XSquadron* XLegion::GetpmSquadronBySN( ID snSquad )
 	}
 	return nullptr;
 }
+
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 주어진 영웅으로 부대객체를 만들어 군단에 포함시킨다.
+*/
+XSquadron* XLegion::CreateAddSquadron( int idxSquad, const XHero* pHero, bool bCreateHero )
+{
+	auto pSq = new XSquadron( const_cast<XHero*>( pHero ) );
+	AddSquadron( idxSquad, pSq, bCreateHero );
+	return pSq;
+
+}
+

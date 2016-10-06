@@ -433,7 +433,7 @@ int XAccount::DeSerialize( XArchive& ar )
 			XLegion *pLegion = new XLegion;
 			XBREAK( pLegion == nullptr );
 			pLegion->DeSerialize( ar, GetThis(), verLegion );
-			m_aryLegion[ i ] = LegionPtr( pLegion );
+			m_aryLegion[ i ] = XSPLegion( pLegion );
 		}
 	}
 	RESTORE_VERIFY_CHECKSUM( ar );
@@ -1001,7 +1001,7 @@ void XAccount::CreateFakeAccount(void)
 #else
 	// 디폴트 부대를 생성.
 	XLegion *pLegion = new XLegion;
-	m_aryLegion[0] = LegionPtr(pLegion);
+	m_aryLegion[0] = XSPLegion(pLegion);
 	int tierUnit = 1;
 	int levelSquad = 1;
 	CreateSquadron(pLegion, 1, _T("unluny"), levelSquad, tierUnit);
@@ -1035,14 +1035,38 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 																		int levelSquad,
 																		int tierUnit)
 {
-	auto pPropHero = PROP_HERO->GetpProp(szHeroIdentifier);
-	if (XBREAK(pPropHero == nullptr))
+// 	auto pPropHero = PROP_HERO->GetpProp(szHeroIdentifier);
+// 	if (XBREAK(pPropHero == nullptr))
+// 		return nullptr;
+// 	auto unit = XGAME::GetRandomUnit(pPropHero->typeAtk, (XGAME::xtSize)tierUnit);
+// 	auto pHero = XHero::sCreateHero(pPropHero, levelSquad, unit);
+// 	AddHero(pHero);
+// 	auto pSq = new XSquadron(pHero);
+// 	pLegion->AddSquadron(idxSquad, pSq, false);
+	auto pSq = sCreateSquadron( pLegion, idxSquad, szHeroIdentifier, levelSquad, tierUnit );
+	if( XASSERT(pSq) ) {
+			AddHero( pSq->GetpHero() );
+	}
+	return pSq;
+}
+
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief static 버전
+*/
+XSquadron* XAccount::sCreateSquadron( XLegion *pLegion,
+																		 int idxSquad,
+																		 const _tstring& idsHero,
+																		 int levelSquad,
+																		 int tierUnit )
+{
+	auto pPropHero = PROP_HERO->GetpProp( idsHero );
+	if( XBREAK( pPropHero == nullptr ) )
 		return nullptr;
-	auto unit = XGAME::GetRandomUnit(pPropHero->typeAtk, (XGAME::xtSize)tierUnit);
-	auto pHero = XHero::sCreateHero(pPropHero, levelSquad, unit);
-	AddHero(pHero);
-	auto pSq = new XSquadron(pHero);
-	pLegion->AddSquadron(idxSquad, pSq, false);
+	auto unit = XGAME::GetRandomUnit( pPropHero->typeAtk, ( XGAME::xtSize )tierUnit );
+	auto pHero = XHero::sCreateHero( pPropHero, levelSquad, unit );
+	auto pSq = pLegion->CreateAddSquadron( idxSquad, pHero, false );
+// 	auto pSq = new XSquadron( pHero );
+// 	pLegion->AddSquadron( idxSquad, pSq, false );
 	return pSq;
 }
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
@@ -1216,7 +1240,7 @@ XLegion* XAccount::CreateLegionByRandom(int numSquad, int byLevel)
 	XBREAK(m_aryLegion[0] != NULL);
 	XBREAK(m_listHero.size() > 0);
 	XLegion *pLegion = new XLegion;
-	m_aryLegion[0] = LegionPtr(pLegion);		// 어카운트에만 만드는 용도로 쓰기위해.
+	m_aryLegion[0] = XSPLegion(pLegion);		// 어카운트에만 만드는 용도로 쓰기위해.
 	// 장군 15명 생성
 //	int maxHero = PROP_HERO->GetSize();
 	int idx[XGAME::MAX_SQUAD] = { 2, 1, 3, 0, 4, 7, 6, 8, 5, 9, 12, 11, 13, 10, 14 };
@@ -1442,6 +1466,18 @@ XHero* XAccount::GetHero(ID snHero)
 	}
 	return nullptr;
 }
+
+const XHero* XAccount::GetpcHeroBySN( ID snHero ) const 
+{
+	if( snHero == 0 )
+		return nullptr;
+	for( auto pHero : m_listHero ) {
+		if( pHero->GetsnHero() == snHero )
+			return pHero;
+	}
+	return nullptr;
+}
+
 /**
  @brief 영웅 아이디로 영웅을 찾음.
 */
@@ -4876,7 +4912,7 @@ bool XAccount::IsHaveBetterThanPartsEnteredHero()
 /**
  @brief 전투전 전투세션을 만든다.
 */
-ID XAccount::SetBattleSession( ID snSession, const LegionPtr& spLegion, ID idAccEnemy, ID idSpot, DWORD param )
+ID XAccount::SetBattleSession( ID snSession, const XSPLegion& spLegion, ID idAccEnemy, ID idSpot, DWORD param )
 {
 #ifdef _CLIENT
 	XBREAK( snSession == 0 );
@@ -4921,7 +4957,7 @@ int XAccount::xBattleSession::DeSerialize( XArchive& ar, int verEtc ) {
 	if( bHave ) {
 		XBREAK( bHave != 11 );
 		auto pLegion = XLegion::sCreateDeserializeFull( ar );
-		spEnemy = LegionPtr( pLegion );
+		spEnemy = XSPLegion( pLegion );
 	}
 	else
 		spEnemy.reset();
@@ -5307,7 +5343,7 @@ int XAccount::GetmaxAP( int level )
 }
 #endif // #if defined(_CLIENT) || defined(_GAME_SERVER)
 
-int XAccount::GetCostOpenFog( LegionPtr spLegion )
+int XAccount::GetCostOpenFog( XSPLegion spLegion )
 {
 	int maxFog = spLegion->GetMaxFogs( XLegion::xMAX_NOT_FOG );
 	int numFog = spLegion->GetNumFogs();

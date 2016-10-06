@@ -231,7 +231,7 @@ BOOL XSpot::DeSerialize( XArchive& ar, DWORD verWorld )
 		m_aryLoots[ idx ] = num;
 	}
 //	ar >> m_aryLoots;
-	m_spLegion = LegionPtr( XLegion::sCreateDeserializeFull( ar ) );
+	m_spLegion = XSPLegion( XLegion::sCreateDeserializeFull( ar ) );
 	if( GetpBaseProp() == nullptr )
 		m_spLegion.reset();
 	// 군단정보가 있으면 파워정보를 다시 갱신한다.
@@ -461,7 +461,7 @@ XSpot* XSpot::sCreate( XWorld *pWorld, XPropWorld::xBASESPOT *pBaseProp, XSPAcc 
 
 void XSpot::SetpLegion( XLegion *pLegion ) 
 {
-	m_spLegion = LegionPtr( pLegion );
+	m_spLegion = XSPLegion( pLegion );
 }
 
 /**
@@ -943,7 +943,7 @@ int XSpot::GetDropItems( std::vector<xDropItem> *pOutAry )
 	return pOutAry->size();
 }
 
-void XSpot::SetspLegion( LegionPtr spLegion )
+void XSpot::SetspLegion( XSPLegion spLegion )
 {
 	m_spLegion = spLegion;
 	UpdatePower( nullptr );
@@ -958,7 +958,7 @@ void XSpot::SetDropItems( const std::vector<xDropItem>& aryDropItem )
  @param spAccEnemy적이 pc이며 계정정보(특성트리포함)가 있다면 그것을 포함해서 계산한다. null이면 특성치에 대한 전투력은 계산되지 않는다.
  @param spLegion 외부파라메터. 이것이 지정되어있다면 이 부대정보로 계산한다.
 */
-void XSpot::UpdatePower( LegionPtr spLegion )
+void XSpot::UpdatePower( XSPLegion spLegion )
 {
 	// 외부파라메터가 있을때는 그군단의 전투력으로 세팅하고 없으면 내군단의 전투력으로 세팅한다.
 	if( spLegion )

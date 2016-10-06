@@ -381,7 +381,7 @@ private:
     ID idAccEnemy = 0;      // 상대중인 적의 계정아이디
     ID idSpot = 0;          // 어떤 스팟의 전투인가.
     DWORD param = 0;       // 만약 캠페인형태라면 스테이지 인덱스나 스테이지 아이디등의 부가정보.
-    LegionPtr spEnemy;      // 적 부대 정보(이것을 DB에 저장하는 이유는 전투중 잠깐 끊겼다가 다시 붙었을때 부대 정보가 없어서 무효가 되는일이 없도록하기위함)
+    XSPLegion spEnemy;      // 적 부대 정보(이것을 DB에 저장하는 이유는 전투중 잠깐 끊겼다가 다시 붙었을때 부대 정보가 없어서 무효가 되는일이 없도록하기위함)
     XTimerTiny timerStart;      // 전투 시작시간
     void Clear() {
       snSession = 0;
@@ -724,6 +724,7 @@ public:
 	inline XHero* GetpHeroBySN( ID snHero ) {
 		return GetHero( snHero );
 	}
+	const XHero* GetpcHeroBySN( ID snHero ) const;
 	XHero* GetHeroByidProp( ID idProp );
 	XHero* GetpHeroByAtkType( XGAME::xtAttack typeAtk );
 	XHero* GetpHeroByUnit( XGAME::xtUnit unit );
@@ -790,7 +791,7 @@ public:
 	void SetspLegion( int idxLegion, XSPLegion spLegion );
 //	XSPLegion CreatespLegion( const XGAME::xLegion& infoLegion );
 #endif // _XSINGLE
-	LegionPtr& GetCurrLegion(void) {
+	XSPLegion& GetCurrLegion(void) {
 		return m_aryLegion[GetCurrLegionIdx()];
 	}
 	int GetCurrLegionIdx(void) {
@@ -799,7 +800,7 @@ public:
 	// 	void SetCurrLegion( XLegion *pLegion ) {
 	// 		m_aryLegion[0] = pLegion;
 	// 	}
-	LegionPtr GetLegionByIdx(int idx) {
+	XSPLegion GetLegionByIdx(int idx) {
 		if (idx < 0 || idx >= m_aryLegion.Size())
 			return nullptr;
 		return m_aryLegion[idx];
@@ -834,6 +835,7 @@ public:
 														LPCTSTR idsHero,
 														XGAME::xtGrade grade,
 														XGAME::xtUnit unit );
+	static XSquadron* sCreateSquadron( XLegion *pLegion, int idxSquad, const _tstring& idsHero, int levelSquad, int tierUnit );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 	// 스팟
 
@@ -1244,7 +1246,7 @@ public:
 	int DeserializeSeq( XArchive& ar, int verEtc );
 	GET_ACCESSOR( const std::string&, idsLastSeq );
 	// xuzhu end
-	ID SetBattleSession( ID snSession, const LegionPtr& spLegion, ID idAccEnemy, ID idSpot, DWORD param = 0 );
+	ID SetBattleSession( ID snSession, const XSPLegion& spLegion, ID idAccEnemy, ID idSpot, DWORD param = 0 );
 	void ClearBattleSession() {
 		m_BattleSession.Clear();
 	}
@@ -1354,7 +1356,7 @@ public:
 	int GetGoldRemainResearch();
 	int GetGoldResearch( int sec );
 	int GetGoldRemainTrain( xTrainSlot *pSlot );
-	int GetCostOpenFog( LegionPtr spLegion );
+	int GetCostOpenFog( XSPLegion spLegion );
 	int GetAPPerBattle();
 	bool IsAbleResearch();
 	bool IsAbleResearchUnit( XHero *pHero );

@@ -544,7 +544,7 @@ void xBattleStartInfo::DeSerialize( XArchive& ar, XWorld *pWorld, int ) {
 	ar >> c0;	m_idxStage = c0;
 	ar >> b0;	m_bRecon = xbyteToBool(b0);
 	ar >> c0;	m_bInitSpot = xbyteToBool(c0);
-	m_spLegion = LegionPtr( XLegion::sCreateDeserializeFull( ar ) );
+	m_spLegion = XSPLegion( XLegion::sCreateDeserializeFull( ar ) );
 	ar >> w0;	m_AP = w0;
 	ar >> w0;	m_apMax = w0;
 	ar >> m_Power;

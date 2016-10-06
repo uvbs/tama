@@ -102,6 +102,6 @@ public:
 private:
 	void ResetResource( int lvSpot, XSPAcc spAcc );
 //	XLegion* CreateLegion( XPropWorld::xNPC *pProp, int lvSpot ) const;
-	LegionPtr CreateLegion( XPropWorld::xNPC *pProp, int lvSpot );
+	XSPLegion CreateLegion( XPropWorld::xNPC *pProp, int lvSpot );
 	BOOL DeSerialize( XArchive& ar, DWORD ver );
 }; // spotnpc

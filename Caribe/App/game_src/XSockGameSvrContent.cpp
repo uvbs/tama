@@ -730,7 +730,7 @@ void XSockGameSvr::RecvJewelBattleInfo( XPacket& p, const xCALLBACK& c )
 		// 이겼을 때 루팅할수 있는 양을 미리 받아둠.
 		//pJewel->SetlootJewel( infoMatch.mloo );
 		pJewel->SetMatch( infoMatch );
-		LegionPtr spLegion = LegionPtr( pLegion );
+		XSPLegion spLegion = XSPLegion( pLegion );
 		ACCOUNT->SetBattleSession( snSession,
 																spLegion,
 																infoMatch.m_idAcc,
@@ -978,7 +978,7 @@ void XSockGameSvr::RecvJewelReconResult( XPacket& p, const xCALLBACK& c )
 		p >> arLegion >> arAbil;
 		p >> infoMatch;
 		pSpot->SetMatch( infoMatch );
-		LegionPtr spLegion( XLegion::sCreateDeserializeFull( arLegion ) );
+		XSPLegion spLegion( XLegion::sCreateDeserializeFull( arLegion ) );
 		pSpot->SetspLegion( spLegion );   // << 추가
 		if( SCENE_WORLD )
 			SCENE_WORLD->OnRecvReconSpot( pSpot->GetidSpot(), spLegion );
@@ -1252,12 +1252,12 @@ void XSockGameSvr::RecvMandrakeLegionResult( XPacket& p, const xCALLBACK& c )
 		arDB >> win;
 		arDB >> reward;
 		arDB >> idxLegion;
-		LegionPtr spLegion;
+		XSPLegion spLegion;
 		{
 			XArchive arLegion;
 			arDB >> arLegion;
 			auto pLegion = XLegion::sCreateDeserializeFull( arLegion );
-			spLegion = LegionPtr( pLegion );
+			spLegion = XSPLegion( pLegion );
 		}
 		XArchive arAbil;
 		arDB >> arAbil;

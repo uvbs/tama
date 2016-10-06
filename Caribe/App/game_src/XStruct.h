@@ -287,7 +287,7 @@ struct xBattleStartInfo {
 	ID m_idEnemy = 0;			// 상대가 pc의 경우.
 	int m_Level = 0;					// 상대의 레벨
 	_tstring m_strName;				// 상대이름
-	LegionPtr m_spLegion;			// 스팟에 군단정보가 없을경우 여기에 들어감.
+	XSPLegion m_spLegion;			// 스팟에 군단정보가 없을경우 여기에 들어감.
 	xtBattle m_typeBattle = XGAME::xBT_NORMAL;
 // 	int m_Defense = 0;				// 방어도(보석광산용)
 	int m_idxStage = -1;				///< 캠페인의 경우 스테이지 인덱스

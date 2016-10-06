@@ -246,7 +246,7 @@ void XSpotSulfur::ResetPower( int lvSpot )
 //	SetseedRandom( ::timeGetTime() );
 	XSeed seed( seedNew );
 	XLegion *pLegion = CreateLegion( GetpProp(), lvSpot );
-	LegionPtr spLegion( pLegion );
+	XSPLegion spLegion( pLegion );
 	// 전투력을 산출한다.
 	UpdatePower( spLegion );
 }

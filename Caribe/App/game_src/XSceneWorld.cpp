@@ -2186,7 +2186,7 @@ int XSceneWorld::OnReconSpot( XWnd* pWnd, DWORD p1, DWORD p2 )
  SendReqReconSpot의 결과
  pEnemy는 지금 안쓰긴 하는데 나중에 적의 특성트리까지 정찰할수 있게 되면 사용되므로 놔둠.
 */
-void XSceneWorld::OnRecvReconSpot( ID idSpot, const LegionPtr& spLegion )
+void XSceneWorld::OnRecvReconSpot( ID idSpot, const XSPLegion& spLegion )
 {
 	SetbUpdate( true );
 	//

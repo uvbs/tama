@@ -210,7 +210,7 @@ public:
 	static void sClearidxSelectedSquad() {
 		s_idxSelectedSquad = -1;
 	}
-	static XWndSquadInLegion* sUpdateCtrl( XWnd *pRoot, int idxSquad, const XE::VEC2& v, LegionPtr spLegion );
+	static XWndSquadInLegion* sUpdateCtrl( XWnd *pRoot, int idxSquad, const XE::VEC2& v, XSPLegion spLegion );
 	static std::string sGetIds( int idxSquad ) {
 		return std::string( XE::Format("squad.idx.%d", idxSquad) );
 	}

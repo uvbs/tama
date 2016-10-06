@@ -38,7 +38,7 @@ private:
 	XSPPropStage _m_spPropStage;		// 왜 언더바 해놨지?
 	int m_numClear = 0;		// 클리어 횟수
 	int m_numTry = 0;			// 도전 횟수
-	LegionPtr m_spLegion;
+	XSPLegion m_spLegion;
 	int m_numSquad = 0;   // 만들어야할 부대수(프로퍼티엔 0으로 들어있을수도 있어서 따로뺌)
 	XList4<xTryer> m_listTryer;		// 이 스테이지에 도전했던 유저의 이름과 레벨들.
 	int m_Power = 0;				// 군단 전투력(한번세팅되면 군단이 바뀌지 않는한 바뀌지 않는다. update속도땜에 이렇게 함.)
@@ -67,7 +67,7 @@ protected:
 public:
 	GET_LOCK_ACCESSOR( int, numClear );
 	GET_SET_LOCK_ACCESSOR( int, numTry );
-	GET_SET_LOCK_ACCESSOR( LegionPtr, spLegion );	// spLegion은 thread safe하지 않음.
+	GET_SET_LOCK_ACCESSOR( XSPLegion, spLegion );	// spLegion은 thread safe하지 않음.
 	GET_LOCK_ACCESSOR( int, numSquad );
 	GET_SET_LOCK_ACCESSOR( int, Power );
 	GET_SET_LOCK_ACCESSOR( int, LevelLegion );
@@ -106,7 +106,7 @@ public:
 	virtual int DeSerialize( const CampObjPtr spCampObj, int idxStage, XArchive& ar, int verCamp );
 	bool CreateLegion( CampObjPtr spCampObj, int lvBase, int idxFloor );
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	LegionPtr CreateLegion2( CampObjPtr spCampObj, int lvBase, int *OutLvLegion, int idxFloor ) const;
+	XSPLegion CreateLegion2( CampObjPtr spCampObj, int lvBase, int *OutLvLegion, int idxFloor ) const;
 #endif
 	void DestroyLegion();
 	void AddTryer( ID idAcc, _tstring& strName, int level, int power ) {

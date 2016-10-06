@@ -28,6 +28,7 @@ public:
 	const XList4<XHero*>& GetlistEnter( int idxSide ) const {
 		return m_aryEnter[ idxSide ];
 	}
+	GET_SET_ACCESSOR2( XSPLegion, spLegionPlayer );
 	// public member
 	bool IsNpc() const override {
 		return true;
@@ -35,7 +36,7 @@ public:
 	bool IsPC() const override {
 		return !IsNpc();
 	}
-	void UpdatePlayerEnterList( const XList4<XHero*>& listHero );
+	void UpdatePlayerEnterList( const XList4<ID>& _listHero, XSPAccConst spAcc );
 #ifdef _SERVER
 private:
 #endif // _SERVER
@@ -52,6 +53,7 @@ private:
 	// private member
 	XVector<XList4<XHero*>> m_aryEnter;			// 출전영웅 리스트
 	XVector<XHero*> m_arySelected;
+	XSPLegion m_spLegionPlayer;							// 이 스팟 전용 플레이어측 군단 정보
 private:
 	// private method
 	void Init() {}
@@ -63,4 +65,5 @@ private:
 	inline XPropWorld::xPrivateRaid* GetpProp(){
 		return static_cast<XPropWorld::xPrivateRaid*>( GetpBaseProp() );
 	}
+	void ProcCreateSquadron( XSPLegion spLegion, XList4<ID>* pOutlistHero, XSPAccConst spAcc ) const;
 }; // class XSpotPrivateRaid
