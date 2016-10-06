@@ -94,7 +94,7 @@ XSceneEquip::XSceneEquip(XGame *pGame, XSPSceneParam& spBaseParam)
 				pWndList->AddItem(pItem->GetsnItem(), pElem);
 
 				if (pItem->GetbEquip()) {
-					XBaseItem *pHeroItem = m_pHero->GetEquipItem(m_BaseParam.idxParts);
+					XBaseItem *pHeroItem = m_pHero->GetsnEquipItem(m_BaseParam.idxParts);
 					if (pHeroItem && pHeroItem->GetsnItem() == pItem->GetsnItem())
 						snEquipItem = pItem->GetsnItem();
 					pImg = new XWndImage(TRUE, XE::MakePath(DIR_UI, _T("armory_bg_item_black.png")), 0.f, 0.f);

@@ -154,7 +154,7 @@ void XPropItem::OnDidFinishReadProp( CToken& token )
 /**
  @brief 영웅아이디 idHero로 해당영웅의 영혼석 프로퍼티를 얻는다.
 */
-XPropItem::xPROP* XPropItem::GetpPropByidHero( ID idHero )
+const XPropItem::xPROP* XPropItem::GetpPropByidHero( ID idHero )
 {
 	const ID idSoul = sGetidHeroToidItemSoul( idHero ); // ID_START_SOUL + idHero;
 	return GetpProp( idSoul );

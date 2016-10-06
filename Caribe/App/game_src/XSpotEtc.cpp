@@ -241,10 +241,10 @@ CampObjPtr XSpotCommon::GetspCampObj( ID idGuild )
 /**
  @brief 스테이지 하나를 클리어하면 스테이지에 드랍아이템 판정을 한다.
 */
-int XSpotCommon::DoDropItem( XSPAcc spAcc, 
-							XArrayLinearN<ItemBox, 256> *pOutAry, 
-							int lvSpot, 
-							float multiplyDropNum/* = 1.f*/ ) const
+int XSpotCommon::DoDropItem( XSPAcc spAcc,
+														 XArrayLinearN<ItemBox, 256> *pOutAry,
+														 int lvSpot,
+														 float multiplyDropNum/* = 1.f*/ ) const
 {
 	// 징표등 기본 드랍.
 	XSpot::DoDropItem( spAcc, pOutAry, lvSpot, multiplyDropNum );
@@ -257,7 +257,7 @@ int XSpotCommon::DoDropItem( XSPAcc spAcc,
 			if( XASSERT(spStageObj) ) {
 				//
 				for( auto& drop : spStageObj->GetaryDrops() ) {
-					auto pPropItem = PROP_ITEM->GetpProp( drop.idDropItem );
+					auto pPropItem = PROP_ITEM->GetpPropMutable( drop.idDropItem );
 					if( XASSERT(pPropItem) ) {
 						ItemBox itemBox;
 						std::get<0>( itemBox ) = pPropItem;

@@ -369,7 +369,7 @@ XPropItem::xPROP* sReadItemIdentifier( XEXmlAttr& attr, LPCTSTR szTag )
 	_tstring strConst = attr.GetTString();
 	if( strConst.empty() )
 		return nullptr;
-	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( strConst );
+	auto pProp = PROP_ITEM->GetpProp( strConst );
 	if( pProp == nullptr ) {
 		CONSOLE( "%s:%s라는 아이템은 없습니다.", szTag, strConst.c_str() );
 	}

@@ -21,7 +21,7 @@ public:
 	XSquadron() { Init(); }
 	XSquadron( XHero *pHero );
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	XSquadron( XPropHero::xPROP *pPropHero, int levelHero, XGAME::xtUnit unit, int levelSquad, bool bCreateHero = true );
+	XSquadron( XSPAccConst spAcc, XPropHero::xPROP *pPropHero, int levelHero, XGAME::xtUnit unit, int levelSquad, bool bCreateHero = true );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 	~XSquadron() { Destroy(); }
 	//

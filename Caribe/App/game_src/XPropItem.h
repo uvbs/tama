@@ -115,10 +115,9 @@ public:
 		XBREAK( pMob == nullptr );			// 위에서 find로 검사했기때문에 nullptr나와선 안됨.
 		return pMob;
 	}
-	xPROP* GetpProp( ID idType ) {
+	const xPROP* GetpProp( ID idType ) const {
 		XBREAK( idType == 0 );
-		std::unordered_map<ID, xPROP*>::iterator itor;
-		itor = m_mapID.find( idType );
+		auto itor = m_mapID.find( idType );
 		if( itor == m_mapID.end() ) {
 			return nullptr;							// 못찾았으면 에러 리턴
 		}
@@ -126,7 +125,17 @@ public:
 		XBREAK( pMob == nullptr );			// 위에서 find로 검사했기때문에 nullptr나와선 안됨.
 		return pMob; 
 	}
-	xPROP* GetpPropByidHero( ID idHero );
+	xPROP* GetpPropMutable( ID idType ) {
+		XBREAK( idType == 0 );
+		auto itor = m_mapID.find( idType );
+		if( itor == m_mapID.end() ) {
+			return nullptr;							// 못찾았으면 에러 리턴
+		}
+		xPROP *pMob = ( *itor ).second;
+		XBREAK( pMob == nullptr );			// 위에서 find로 검사했기때문에 nullptr나와선 안됨.
+		return pMob;
+	}
+	const xPROP* GetpPropByidHero( ID idHero );
 	/// idProp아이템의 아이콘파일의 패스를 얻는다. res패스이므로 img/icon_test.png 이런식이 된다.
 	LPCTSTR GetIconResPath( ID idProp ) {
 		auto pProp = GetpProp( idProp );

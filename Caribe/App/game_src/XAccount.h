@@ -245,7 +245,7 @@ public:
 	static int s_secOfflineForSimul;		// 스팟침공 시뮬레이션시 오프라인 시간.
 	static int s_bTraderArrived;			// 무역상이 도착함.
 	// 헬퍼 함수
-	static XBaseItem* sCreateItem(XPropItem::xPROP *pProp, int num);
+	static XBaseItem* sCreateItem( const XPropItem::xPROP *pProp, int num);
 	static XBaseItem* sCreateItem(ID idItem, int num);
 	static int sGetMaxSquadByLevelForPlayer(int level);
 	static int sGetLevelByUnlockUnit(int numUnits);
@@ -821,7 +821,7 @@ public:
 														LPCTSTR idsHero,
 														XGAME::xtGrade grade,
 														XGAME::xtUnit unit );
-	static XSquadron* sCreateSquadron( XLegion *pLegion, int idxSquad, const _tstring& idsHero, int levelSquad, int tierUnit );
+	static XSquadron* sCreateSquadron( XLegion *pLegion, int idxSquad, const _tstring& idsHero, int levelSquad, int tierUnit, XSPAccConst spAcc );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 	// 스팟
 
@@ -921,14 +921,17 @@ public:
 // 	int GetNumScalp(XGAME::xtClan clan, int grade = XGAME::xGD_NONE);
 // 	int GetNumClanBook(XGAME::xtClan clan, int grade = XGAME::xGD_NONE);
 // 	XINT64 GetExpClanBooks(XGAME::xtClan clan, int grade = XGAME::xGD_NONE);
-	int CreateItemToInven(XPropItem::xPROP *pProp, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr);
+	int CreateItemToInven( const XPropItem::xPROP *pProp, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr);
 	int CreateItemToInven( ID idProp, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr );
 	int CreateItemToInven( const _tstring& idsItem, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr );
-	XBaseItem* CreateItemToInvenForNoStack(XPropItem::xPROP *pProp);
+	XBaseItem* CreateItemToInvenForNoStack( const XPropItem::xPROP *pProp);
 	XBaseItem* CreatePieceItemByidHero( ID idHero, int num );
 	XBaseItem* CreatePieceItem( ID idPropItem, int num );
 	XBaseItem* GetItem(ID snItem);
-	const XBaseItem* GetItemConst( ID snItem ) const;
+	inline XBaseItem* GetpItemBySN( ID snItem ) {
+		return GetItem( snItem );
+	}
+	const XBaseItem* GetpcItemBySN( ID snItem ) const;
 	XBaseItem* GetItem( LPCTSTR idsItem );
 	XBaseItem* GetItem( _tstring& idsItem ) {
 		return GetItem( idsItem.c_str() );
@@ -1182,7 +1185,7 @@ public:
 	bool IsUnlockableUnit( XGAME::xtUnit unit );
 	int GetLevelUnlockableUnit( XGAME::xtUnit unit );
 	bool IsAbleEquipAnyHero();
-	bool IsHaveBetterEquipItem(XBaseItem* pItemEquip);
+	bool IsHaveBetterEquipItem( const XBaseItem* pItemEquip);
 	bool IsHaveBetterThanParts(XHero *pHero);
 	bool IsHaveBetterThanPartsEnteredHero();
 #if defined(_GAME_SERVER) && defined(_DEV)
@@ -1399,6 +1402,9 @@ public:
 	int ProcessCheatCmd( const _tstring& strCmd );
 	bool IsEnoughResource( const XGAME::xRES_NUM& res );
 	bool IsEnoughResourceWithAry( const XVector<XGAME::xRES_NUM>& aryRes );
+	void SerializeHeros( XArchive& ar ) const;
+	bool DeSerializeHeros( XArchive& ar );
+	const XBaseItem* GetpEquipItemWithHero( XHero* pHero, XGAME::xtParts parts ) const;
 //////////////////////////////////////////////////////////////////////////
 private:
 	int GetPowerMaxInHeroes();

@@ -99,10 +99,10 @@ void XSpotPrivateRaid::UpdatePlayerEnterList( const XList4<ID>& _listHero, XSPAc
 {
 	XList4<ID> listHero = _listHero;
 	// 플레이어 군단객체 생성(외부에서의 군단포인터 참조문제로 한번 생성하면 바꾸지 않음)
-// 	if( m_spLegionPlayer == nullptr ) {
-// 		m_spLegionPlayer = std::make_shared<XLegion>();
-// 	}
 	auto spLegionPlayer = _m_spLegionPlayer;
+	if( spLegionPlayer == nullptr ) {
+		spLegionPlayer = std::make_shared<XLegion>();
+	}
 	// 군단내 기존데이타 삭제
 	spLegionPlayer->DestroySquadronAll();
 	// 전체 출전리스트를 건네고 필요한 인원만 부대를 생성하고 생성한 부대는 리스트에서 뺀다.
@@ -304,7 +304,7 @@ void XSpotPrivateRaid::DeSerializeForBattle( XArchive& ar, XArchive& arAdd, XSPA
 	XLegion::sDeSerializeUpdate( GetspLegion(), spAcc, ar );
 	ar >> size;
 	for( int i = 0; i < size; ++i ) {
-		auto pHero = XHero::sCreateDeSerialize2( ar, spAcc );
+		auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
 		if( XASSERT( pHero ) ) {
 			m_aryEnter[1].push_back( pHero );
 		}

@@ -17,7 +17,7 @@ public:
 	}
 	static XBaseItem* sCreateItem( ID idProp );
   static XBaseItem* sCreateItem( ID idProp, ID snItem );
-	static XBaseItem* sCreateItem( XPropItem::xPROP *pProp, ID snItem = 0 );
+	static XBaseItem* sCreateItem( const XPropItem::xPROP *pProp, ID snItem = 0 );
 	static void sSerialize( XArchive& ar, XBaseItem *pItem );
 	static XBaseItem* sCreateDeSerialize( XArchive& ar, int ver );
   static XBaseItem* sCreateDeSerialize( XArchive& ar, ID idProp, ID snItem, int ver );
@@ -28,9 +28,9 @@ private:
 private:
   ID m_idProp = 0;
 	XPropItem::xPROP *_m_pProp = nullptr;
-  ID m_keyProp = 0;
+  //ID m_keyProp = 0;
 	ID m_snItem;			// 아이템 시리얼 번호
-	BOOL  m_bEquip;			// 아이템을 히어로가 사용중이면 TRUE
+//	BOOL  m_bEquip;			// 아이템을 히어로가 사용중이면 TRUE
 	int m_Num;				// 겹칠수 있는 아이템의 경우 개수
 	bool m_bNew;			// 새로 얻은 아이템?
 	union uBook
@@ -50,7 +50,7 @@ private:
 	void Init() {
 		m_snItem = 0;
 		m_Num = 1;
-		m_bEquip = FALSE;
+//		m_bEquip = FALSE;
 		m_bNew = false;
 		XCLEAR_ARRAY(m_uBook.m_Param);
 	}
@@ -59,39 +59,26 @@ public:
 	XBaseItem() { Init(); }
 	XBaseItem( ID idItem, ID snNum );
 	XBaseItem( LPCTSTR szIdentifier, ID snNum );
-	XBaseItem( XPropItem::xPROP *pProp, ID snItem = 0 );
+	XBaseItem( const XPropItem::xPROP *pProp, ID snItem = 0 );
 	virtual ~XBaseItem() { Destroy(); }
 	//
 	bool operator == ( const XBaseItem *pComp ) {
 		return m_snItem == pComp->GetsnItem();
 	}
-  XPropItem::xPROP* GetpProp() {
-    if( m_idProp && m_keyProp != PROP_ITEM->GetidKey() ) {
-      _m_pProp = PROP_ITEM->GetpProp( m_idProp );
-      XBREAK( _m_pProp == nullptr );
-      m_keyProp = PROP_ITEM->GetidKey();
-    }
-    return _m_pProp;
-  }
-  void SetpProp( ID idProp ) {
-    _m_pProp = PROP_ITEM->GetpProp( idProp );
-    if( XBREAK( _m_pProp == nullptr ) )
-      return;
-    m_idProp = idProp;
-    m_keyProp = PROP_ITEM->GetidKey();
-  }
+  const XPropItem::xPROP* GetpProp() const;
+  void SetpProp( ID idProp );
 //	GET_ACCESSOR( XPropItem::xPROP*, pProp );
 	GET_ACCESSOR_CONST( ID, snItem );
 	GET_SET_ACCESSOR( int, Num );
-	GET_ACCESSOR( BOOL, bEquip );
+//	GET_ACCESSOR( BOOL, bEquip );
 	GET_SET_ACCESSOR(bool, bNew);
-	ID getid() {
+	inline ID getid() const {
 		return m_snItem;
 	}
 	XGAME::xtItem GetType( void ) {
 		return GetpProp()->type;
 	}
-	ID GetidProp( void ) {
+	ID GetidProp( void ) const {
 		return GetpProp()->idProp;
 	}
 	LPCTSTR GetszIdentifier( void ) {
@@ -122,24 +109,23 @@ public:
 // 	XGAME::xtClan GetBookClan( void ) {
 // 		return (XGAME::xtClan)GetpProp()->subType1;
 // 	}
-	bool IsBook() {
+	inline bool IsBook() const {
 		return GetpProp()->type == XGAME::xIT_BOOK;
 	}
-	bool IsEquip() {
+	inline bool IsEquipable() const {
 		return GetpProp()->type == XGAME::xIT_EQUIP;
 	}
-	bool IsSoul() {
+	inline bool IsSoul() const {
 		return GetpProp()->type == XGAME::xIT_SOUL;
 	}
 	ID GetidHero();
 	LPCTSTR GetidsHero();
 	LPCTSTR GetResPathIcon( void );
-	void SetbEquip(BOOL bEquip)
-	{
-		//이미 m_bEquip가 TRUE인(다른 히어로가 사용중인) 장비를 사용해선 안된다
-		XBREAK(m_bEquip && bEquip);
-		m_bEquip = bEquip;
-	}
+// 	void SetbEquip(BOOL bEquip)	{
+// 		//이미 m_bEquip가 TRUE인(다른 히어로가 사용중인) 장비를 사용해선 안된다
+// 		XBREAK(m_bEquip && bEquip);
+// 		m_bEquip = bEquip;
+// 	}
 private:
 	// ar << 
 	virtual int Serialize( XArchive& ar );
@@ -148,7 +134,7 @@ private:
 public:
 	// 
 	virtual void MakeFakeOption( void ) {}
-	bool IsBetterThan( XBaseItem* pItemCompare );
-	float GetValAdjParam( XGAME::xtParameter adjParam );
+	bool IsBetterThan( const XBaseItem* pItemCompare );
+	float GetValAdjParam( XGAME::xtParameter adjParam ) const;
 };
 

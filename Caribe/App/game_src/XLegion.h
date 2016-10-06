@@ -153,7 +153,7 @@ public:
 	int GetHerosToAry( XVector<XHero*> *pOutAry );
 //	int GetLevelUpHerosToAry( XArrayLinearN<XHero*, XGAME::MAX_SQUAD> *pAryOut );
 	void AdjustLegion();
-	void DummyDataRechange( int levelAcc, XAccount *pAcc );
+//	void DummyDataRechange( int levelAcc, XAccount *pAcc );
 	//BOOL SetSquadAll(int idx, XLegion *pLegion);
 	int DeserializeForGuildRaid( XArchive& ar );
 	void SetResourceSquad( int numSquad );

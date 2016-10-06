@@ -50,16 +50,16 @@ XSPAcc XAccount::s_spInstance;
 /**
 @brief pProp의 아이템 인스턴스를 하나 만든다.
 */
-XBaseItem* XAccount::sCreateItem(XPropItem::xPROP *pProp, int num)
+XBaseItem* XAccount::sCreateItem( const XPropItem::xPROP *pProp, int num)
 {
-	XBaseItem *pItem = new XBaseItem(pProp);
+	auto pItem = new XBaseItem(pProp);
 	pItem->SetNum(num);
 	return pItem;
 }
 
 XBaseItem* XAccount::sCreateItem(ID idItem, int num)
 {
-	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp(idItem);
+	auto pProp = PROP_ITEM->GetpProp(idItem);
 	if (XBREAK(pProp == nullptr))
 		return nullptr;
 	return XAccount::sCreateItem(pProp, num);
@@ -236,7 +236,6 @@ int XAccount::Serialize(XArchive& ar)
 	XBREAK( ar.GetMaxSizeArchive() < 30000 );	// 계정 아카이브는 큰걸 써야함.
 	//	m_secSaved = 0;
 	//	XBREAK( ar.GetMaxBufferSize() < 0x4000 );
-	XList4<int> listSizes;
 	XDBAccount::Serialize(ar);
 	//
 	ar << VER_SERIALIZE;
@@ -257,59 +256,50 @@ int XAccount::Serialize(XArchive& ar)
 	ar << (char)m_GMLevel;
 	ar << (char)0;
 	ar << m_aryResource;
-	listSizes.Add(ar.size());
 	//   DWORD secSaved = 0;
 	ar << m_Ladder;     // UserDB에서 사용함.
 	ar << m_PowerIncludeEmpty;		// 기존의 m_Power
 	ar << m_PowerExcludeEmpty;	// 빈슬롯을 포함하지 않는값으로 바뀜
 	UpdatePlayTimer();
-	listSizes.Add(ar.size());
 	ar << m_secPlay;
 	ar << m_timerTrader;
 	ar << m_timerShop;
 	ar << m_GuildIndex;
 	ar << (int)m_Guildgrade;
-	listSizes.Add(ar.size());
 
 	SerializeShopList(ar);
-	listSizes.Add(ar.size());
 
 	SerializeAbil(ar);
-	listSizes.Add(ar.size());
 	// 기타 잡스러운 데이타를 DB에 바이너리로 저장한다.
 	if (SerializeEtcData(ar) == 0)
 		return 0;
-	listSizes.Add(ar.size());
 	// 아이템 인벤
 	int sizeItems = SerializeItems(ar);
 	XBREAK(sizeItems >= 16000);
-	listSizes.Add(ar.size());
 	int size = 0;
 	// 영웅 리스트
-	size = m_listHero.size();
-	ar << (BYTE)VER_HERO_SERIALIZE;
-	ar << (BYTE)0;
-	ar << (WORD)size;
-	{
-		int _sizeAr = ar.size();
-		for( auto pHero : m_listHero ) {
-			int sizeAr = pHero->Serialize( ar );
-			sizeAr = 0;
-			XBREAK( sizeAr >= 250 );
-		}
-		int sizeAr = ar.size() - _sizeAr;
-		XBREAK( sizeAr >= 8000 );
-	}
+	SerializeHeros( ar );
+// 	size = m_listHero.size();
+// 	ar << (BYTE)VER_HERO_SERIALIZE;
+// 	ar << (BYTE)0;
+// 	ar << (WORD)size;
+// 	{
+// 		int _sizeAr = ar.size();
+// 		for( auto pHero : m_listHero ) {
+// 			int sizeAr = pHero->Serialize( ar );
+// 			sizeAr = 0;
+// 			XBREAK( sizeAr >= 250 );
+// 		}
+// 		int sizeAr = ar.size() - _sizeAr;
+// 		XBREAK( sizeAr >= 8000 );
+// 	}
 	MAKE_CHECKSUM(ar);
-	listSizes.Add(ar.size());
 
 	SerializeJoinReqGuild(ar);
 	MAKE_CHECKSUM(ar);
-	listSizes.Add(ar.size());
 
 	SerializeSubscribe(ar);
 	MAKE_CHECKSUM(ar);
-	listSizes.Add(ar.size());
 	//
 	ar << (BYTE)VER_LEGION_SERIALIZE;
 	ar << (BYTE)0;
@@ -324,28 +314,17 @@ int XAccount::Serialize(XArchive& ar)
 		}
 	}// END_LOOP;
 	MAKE_CHECKSUM(ar);
-	listSizes.Add(ar.size());
 	//
 	XBREAK(m_pWorld == nullptr);
 	int sizeWorld = m_pWorld->Serialize(ar);
 	// 현재 DB에 8000바이트씩 두개로 쪼개서 저장하므로 이것보다 커지면 안됨.
 	XBREAK(sizeWorld >= 32000);		// 어차피 압축했을때 16k만 안넘어가면 되므로 상관없지만 경고성 차원에서 넣음.
 	MAKE_CHECKSUM(ar);
-	listSizes.Add(ar.size());
 	if (SerializeQuest(ar) == 0)
 		return 0;
-	listSizes.Add( ar.size() );
 	SerializeAttackLog( ar );
 	SerializeDefenseLog( ar );
 	SerializeEncounter( ar );
-	listSizes.Add( ar.size() );
-	//ar << m_bSound;
-	//ar << m_bInvite;
-	//
-	//	ar << m_tickLastCalc;
-
-
-	listSizes.Add(ar.size());
 	return 1;
 }
 
@@ -398,23 +377,24 @@ int XAccount::DeSerialize( XArchive& ar )
 	DeserializeAbil( ar );
 	DeSerializeEtcData( ar );
 	DeSerializeItems( ar );
-	int size;
-	XBREAK( m_listHero.size() != 0 );
-	int verHero = 0;
-	ar >> b0;	verHero = b0;
-	ar >> b0;
-	ar >> w0;	size = w0;
-	for( int i = 0; i < size; ++i )	{
-		XHero *pHero = new XHero;
-		XBREAK( pHero == nullptr );
-		pHero->DeSerialize( ar, GetThis(), verHero );
-		m_listHero.Add( pHero );
-		// DB클리어하면 삭제
-#ifdef _DEV
-		if( pHero->GetstrIdentifer() == _T("unluny") )
-			pHero->SetGrade( XGAME::xGD_RARE );
-#endif // _DEV
-	}
+	DeSerializeHeros( ar );
+// 	int size;
+// 	XBREAK( m_listHero.size() != 0 );
+// 	int verHero = 0;
+// 	ar >> b0;	verHero = b0;
+// 	ar >> b0;
+// 	ar >> w0;	size = w0;
+// 	for( int i = 0; i < size; ++i )	{
+// 		XHero *pHero = new XHero;
+// 		XBREAK( pHero == nullptr );
+// 		pHero->DeSerialize( ar, GetThis(), verHero );
+// 		m_listHero.Add( pHero );
+// 		// DB클리어하면 삭제
+// #ifdef _DEV
+// 		if( pHero->GetstrIdentifer() == _T("unluny") )
+// 			pHero->SetGrade( XGAME::xGD_RARE );
+// #endif // _DEV
+// 	}
 	RESTORE_VERIFY_CHECKSUM( ar );
 	DeSerializeJoinReqGuild( ar );
 	RESTORE_VERIFY_CHECKSUM( ar );
@@ -423,7 +403,7 @@ int XAccount::DeSerialize( XArchive& ar )
 	int verLegion = 0;
 	ar >> b0;	verLegion = b0;
 	ar >> b0;
-	ar >> w0;	size = w0;
+	ar >> w0;	const int size = w0;
 	XBREAK( m_aryLegion.Size() != size );
 	for( int i = 0; i < size; ++i ) {
 		int fill;
@@ -470,6 +450,40 @@ int XAccount::DeSerialize( XArchive& ar )
 	}
 	return 1;
 }
+
+void XAccount::SerializeHeros( XArchive& ar ) const
+{
+	int size = m_listHero.size();
+	ar << (char)VER_HERO_SERIALIZE;
+	ar << (char)0;
+	ar << (WORD)size;
+	int _sizeAr = ar.size();
+	for( auto pHero : m_listHero ) {
+		int sizeAr = pHero->Serialize( ar );
+//		sizeAr = 0;
+		XBREAK( sizeAr >= 250 );		// 용량 경고
+	}
+	int sizeAr = ar.size() - _sizeAr;
+	XBREAK( sizeAr >= 8000 );		// 용량경고
+}
+
+bool XAccount::DeSerializeHeros( XArchive& ar )
+{
+	char c0;
+	short w0;
+	ar >> c0;		const int verHero = c0;
+	ar >> c0;
+	ar >> w0;		const int size = w0;
+	for( int i = 0; i < size; ++i ) {
+		auto pHero = new XHero( GetThis() );
+		pHero->DeSerialize( ar, /*GetThis(), */verHero );
+		pHero->SetidPropToEquip( GetThis() );
+		m_listHero.Add( pHero );
+	}
+	return true;
+}
+
+
 int XAccount::SerializeQuest(XArchive& ar)
 {
 	XBREAK(m_pQuestMng == nullptr);
@@ -1033,7 +1047,7 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 																		int idxSquad,
 																		LPCTSTR szHeroIdentifier,
 																		int levelSquad,
-																		int tierUnit)
+																		int tierUnit )
 {
 // 	auto pPropHero = PROP_HERO->GetpProp(szHeroIdentifier);
 // 	if (XBREAK(pPropHero == nullptr))
@@ -1043,7 +1057,7 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 // 	AddHero(pHero);
 // 	auto pSq = new XSquadron(pHero);
 // 	pLegion->AddSquadron(idxSquad, pSq, false);
-	auto pSq = sCreateSquadron( pLegion, idxSquad, szHeroIdentifier, levelSquad, tierUnit );
+	auto pSq = sCreateSquadron( pLegion, idxSquad, szHeroIdentifier, levelSquad, tierUnit, GetThis() );
 	if( XASSERT(pSq) ) {
 			AddHero( pSq->GetpHero() );
 	}
@@ -1057,13 +1071,14 @@ XSquadron* XAccount::sCreateSquadron( XLegion *pLegion,
 																		 int idxSquad,
 																		 const _tstring& idsHero,
 																		 int levelSquad,
-																		 int tierUnit )
+																		 int tierUnit,
+																		 XSPAccConst spAcc )
 {
 	auto pPropHero = PROP_HERO->GetpProp( idsHero );
 	if( XBREAK( pPropHero == nullptr ) )
 		return nullptr;
 	auto unit = XGAME::GetRandomUnit( pPropHero->typeAtk, ( XGAME::xtSize )tierUnit );
-	auto pHero = XHero::sCreateHero( pPropHero, levelSquad, unit );
+	auto pHero = XHero::sCreateHero( pPropHero, levelSquad, unit, spAcc );
 	auto pSq = pLegion->CreateAddSquadron( idxSquad, pHero, false );
 // 	auto pSq = new XSquadron( pHero );
 // 	pLegion->AddSquadron( idxSquad, pSq, false );
@@ -1388,7 +1403,7 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 	XBREAK(pLegion->GetpSquadronByidxPos(idxSquad) != nullptr);
 	auto pPropHero = PROP_HERO->GetpProp( idsHero );
 	XBREAK( pPropHero == nullptr );
-	auto pHero = XHero::sCreateHero(pPropHero, lvSquad, unit);
+	auto pHero = XHero::sCreateHero(pPropHero, lvSquad, unit, GetThis() );
 	XBREAK(pHero == nullptr);
 	pHero->SetLevel( XGAME::xTR_LEVEL_UP, lvHero);
 	pHero->SetGrade( grade );
@@ -2368,7 +2383,7 @@ int XAccount::DestroyItemBySN(ID snItem, const int num)
 @param pAryOut null이 아니라면 생성한 아이템을 어레이에담아준다.
 @return 생성한 아이템객체의 개수를 리턴한다.
 */
-int XAccount::CreateItemToInven(XPropItem::xPROP *pProp, int num,
+int XAccount::CreateItemToInven( const XPropItem::xPROP *pProp, int num,
 																XArrayLinearN<XBaseItem*, 256> *pAryOut/* = nullptr*/)
 {
 	XBREAK(num <= 0);
@@ -2468,7 +2483,7 @@ int XAccount::CreateItemToInven( const _tstring& idsItem, int num,
 /**
 @brief 안겹치는 아이템 1개 생성 전용 add함수
 */
-XBaseItem* XAccount::CreateItemToInvenForNoStack(XPropItem::xPROP *pProp)
+XBaseItem* XAccount::CreateItemToInvenForNoStack( const XPropItem::xPROP *pProp)
 {
 	if (XBREAK(pProp->maxStack > 1))
 		return nullptr;
@@ -2515,7 +2530,7 @@ XBaseItem* XAccount::GetItem(ID snItem)
 	return nullptr;
 }
 
-const XBaseItem* XAccount::GetItemConst( ID snItem ) const
+const XBaseItem* XAccount::GetpcItemBySN( ID snItem ) const
 {
 	for( auto pItem : m_listItem ) {
 		if( pItem->GetsnItem() == snItem )
@@ -2545,7 +2560,7 @@ XBaseItem* XAccount::GetItemByEquip(XGAME::xtParts parts, bool bExcludeEquiped)
 	{
 		if (pItem->GetpProp()->parts == parts)
 		{
-			XASSERT(pItem->IsEquip());
+			XASSERT(pItem->IsEquipable());
 			// 장착중인템을 제외하는 옵션이면
 			if (bExcludeEquiped)
 			{
@@ -4207,10 +4222,10 @@ int XAccount::DeserializeHeroUpdate( XArchive& ar )
 	auto pHero = GetHero( snHero );
 	if( pHero ) {
 		ar >> verHero;
-		pHero->DeSerialize( ar, GetThis(), verHero );
+		pHero->DeSerialize( ar, /*GetThis(), */verHero );
 	} else {
 		// 인벤에 없으면 새로 생성하고 추가한다.
-		XHero::sCreateDeSerialize( ar, GetThis() );
+		XHero::sCreateDeSerialize2( ar, GetThis() );
 	}
 	return 1;
 }
@@ -4837,14 +4852,15 @@ bool XAccount::IsAbleEquipAnyHero()
 			for( int i = 1; i < XGAME::xPARTS_MAX; ++i ) {
 				auto parts = (XGAME::xtParts)i;
 				if( XASSERT( IsValidParts( parts ) ) ) {
-					auto pSlotItem = pHero->GetEquipItem( parts );
+					auto snItem = pHero->GetsnEquipItem( parts );
 					// 슬롯이 비었고 거기에 넣을수 있는 템을 가지고 있을때는 무조건 true
-					if( pSlotItem == nullptr ) {
+					if( snItem == 0 ) {
 						if( aryNumItems[parts] > 0 )
 							return true;
 					} else {
+						auto pItem = GetpcItemBySN( snItem );
 						// 슬롯이 비어있지는 않지만 없지만 장착한 장비보다 더 좋은게 있다면 true
-						if( IsHaveBetterEquipItem( pSlotItem ) )
+						if( IsHaveBetterEquipItem( pItem ) )
 							return true;
 					}
 				}
@@ -4857,11 +4873,11 @@ bool XAccount::IsAbleEquipAnyHero()
 /**
 @brief pItem보다 더좋은 장착아이템이 있나.
 */
-bool XAccount::IsHaveBetterEquipItem(XBaseItem* pItemEquip)
+bool XAccount::IsHaveBetterEquipItem( const XBaseItem* pItemEquip)
 {
 	if( XBREAK( pItemEquip == nullptr ) )
 		return false;
-	if( XBREAK( !pItemEquip->IsEquip() ) )	// invalid call
+	if( XBREAK( !pItemEquip->IsEquipable() ) )	// invalid call
 		return false;
 	if( XBREAK( pItemEquip->GetpProp()->parts == XGAME::xPARTS_NONE ) ) // missing parts
 		return false;
@@ -4869,7 +4885,7 @@ bool XAccount::IsHaveBetterEquipItem(XBaseItem* pItemEquip)
 		// 장착아이템이고 비교템과 파츠가 같으면
 		if( pItem
 				&& !IsEquip( pItem->GetsnItem() )	// 아직 장착하지 않았고
-				&& pItem->IsEquip()
+				&& pItem->IsEquipable()
 				&& pItem->GetpProp()->parts == pItemEquip->GetpProp()->parts ) {
 			if( pItem->IsBetterThan( pItemEquip ) )
 				return true;
@@ -4886,17 +4902,18 @@ bool XAccount::IsHaveBetterThanParts(XHero *pHero)
 	for( int i = 1; i < XGAME::xPARTS_MAX; ++i ) {
 		auto parts = (XGAME::xtParts)i;
 		if( XASSERT( IsValidParts( parts ) ) ) {
-			auto pSlotItem = pHero->GetEquipItem( parts );
+			auto snItem = pHero->GetsnEquipItem( parts );
 			// 슬롯이 비었고 거기에 넣을수 있는 템을 가지고 있을때는 무조건 true
-			if( pSlotItem == nullptr ) {
+			if( snItem == 0 ) {
 				// 슬롯이 비었을땐 해당파츠 아이템 아무거나 있어도 더 좋은걸로 한다
 				const bool bExcludeEquiped = true;	// 장착중인건 제외시킨다.
 				auto pItemHave = GetItemByEquip( parts, bExcludeEquiped );
 				if( pItemHave )
 					return true;
 			} else {
+				auto pItem = GetpcItemBySN( snItem );
 				// 슬롯이 비어있지는 않지만 없지만 장착한 장비보다 더 좋은게 있다면 true
-				if( IsHaveBetterEquipItem( pSlotItem ) )
+				if( IsHaveBetterEquipItem( pItem ) )
 					return true;
 			}
 		}
@@ -5197,7 +5214,7 @@ XHero* XAccount::CreateAddHero( ID idHero, XGAME::xtUnit unitExtern )
 		unit = units[ idx ];	// 최초 등장은 1레벨부터이므로 소형으로 선택됨.
 	}
 	const int lvSquad = 1;
-	auto pHero = XHero::sCreateHero( pProp, lvSquad, unit );
+	auto pHero = XHero::sCreateHero( pProp, lvSquad, unit, GetThis() );
 	if( XASSERT(pHero) ) {
 		AddHero( pHero );
 	}
@@ -5620,3 +5637,10 @@ void XAccount::SetspLegion( int idxLegion, XSPLegion spLegion )
 // 	df
 // }
 #endif // _XSINGLE
+
+const XBaseItem* XAccount::GetpEquipItemWithHero( XHero* pHero, XGAME::xtParts parts ) const
+{
+	const ID snItem = pHero->GetsnEquipItem( parts );
+	return GetpcItemBySN( snItem );
+
+}

@@ -373,7 +373,7 @@ int XGameUser::RecvCheatCreateItem( XPacket& p )
 	int num;
 	p >> idProp;
 	p >> num;
-	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( idProp );
+	auto pProp = PROP_ITEM->GetpProp( idProp );
 	XVERIFY_BREAK( pProp == nullptr );
 	if ( num > 100 )
 		num = 100;
@@ -1423,7 +1423,7 @@ ItemBox XGameUser::DoDropScalp( void )
 		return nullItem;
 	}
 //	XBaseItem *pItem = XAccount::sCreateItem( idItem, 1 );
-	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( idItem );
+	auto pProp = PROP_ITEM->GetpProp( idItem );
 	XBREAK( pProp == nullptr );
 	return std::make_pair(pProp, 1);
 }

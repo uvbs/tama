@@ -1458,7 +1458,7 @@ void XSceneUnitOrg::UpdateTabEquipment(void)
 			if( pImgSlot )
 			{
 				auto pWndItem = pImgSlot->Find( "wnd.item.elem" );
-				XBaseItem *pItem = pHero->GetEquipItem( parts );
+				XBaseItem *pItem = pHero->GetsnEquipItem( parts );
 				if( pItem )
 				{
 //					pImgSlot->SetbShow( FALSE );
