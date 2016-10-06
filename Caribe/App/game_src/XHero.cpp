@@ -69,7 +69,7 @@ XHero* XHero::sCreateDeSerialize( XArchive& ar, XSPAcc spAcc )
 	return pHero;
 }
 
-XHero* XHero::sCreateDeSerialize2( XArchive& ar, XSPAcc spAcc )
+XHero* XHero::sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc )
 {
 	int ver;
 	ar >> ver;
@@ -143,12 +143,7 @@ void XHero::InitAryAbil()
 
 XPropHero::xPROP* const XHero::GetpProp()
 {
-// 	if( m_keyPropHero != PROP_HERO->GetidKey() ) {
-// 		_m_pProp = PROP_HERO->GetpProp( m_idProp );
-// 		m_keyPropHero = PROP_HERO->GetidKey();
-// 	}
 	return PROP_HERO->GetpProp( m_idProp );
-//	return static_cast<const XPropHero::xPROP*>( _m_pProp );
 }
 
 const XPropHero::xPROP* const XHero::GetpPropConst() const
@@ -158,17 +153,9 @@ const XPropHero::xPROP* const XHero::GetpPropConst() const
 
 void XHero::SetpProp( XPropHero::xPROP* pProp, ID idKey )
 {
-// 	_m_pProp = pProp;
-// 	m_keyPropHero = idKey;
 }
 void XHero::SetpProp( ID idProp )
 {
-// 	auto pProp = PROP_HERO->GetpProp( idProp );
-// 	if( XASSERT( pProp ) ) {
-// 		m_idProp = idProp;
-// 		_m_pProp = pProp;
-// 		m_keyPropHero = PROP_HERO->GetidKey();
-// 	}
 }
 
 int XHero::Serialize( XArchive& ar )
@@ -205,7 +192,7 @@ int XHero::Serialize( XArchive& ar )
 
 	return ar.size() - _sizeAr;
 }
-int XHero::DeSerialize(XArchive& ar, XSPAcc spAcc, int verHero )
+int XHero::DeSerialize(XArchive& ar, XSPAccConst spAcc, int verHero )
 {
 	ID idProp;
 	BYTE b0;
@@ -248,7 +235,8 @@ int XHero::DeSerialize(XArchive& ar, XSPAcc spAcc, int verHero )
 		if( XBREAK( XGAME::IsInvalidParts((XGAME::xtParts)idParts) ) )
 			return 0;
 		if (spAcc && snItem != 0) {
-			m_aryEquip[idParts].Set( spAcc->GetItem(snItem) );
+			auto pItem = spAcc->GetItemConst(snItem);
+			m_aryEquip[idParts].Set( const_cast<XBaseItem*>( pItem ) );
 		}
 	}
 #if defined(_CLIENT) || defined(_GAME_SERVER)

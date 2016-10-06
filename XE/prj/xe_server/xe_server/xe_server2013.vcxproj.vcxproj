@@ -308,7 +308,7 @@
     <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Static</UseOfMfc>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Bot|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -534,6 +534,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -553,6 +554,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -572,6 +574,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -591,6 +594,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -610,6 +614,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -629,6 +634,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -648,6 +654,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -785,6 +792,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -803,6 +811,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -821,6 +830,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -839,6 +849,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -911,6 +922,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -929,6 +941,7 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

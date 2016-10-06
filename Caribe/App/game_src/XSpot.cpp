@@ -33,8 +33,211 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
-//using namespace xCampaign;
 using namespace XGAME;
+
+
+//////////////////////////////////////////////////////////////////////////
+/**
+ 이미 pSpot이 존재할때 사용하는 버전
+*/
+int XSpot::sDeSerialize( XArchive& ar, XSpot *pSpot )
+{
+	BYTE b0;
+	int ver;
+	XGAME::xtSpot typeSpot;
+	ar >> b0;	ver = b0;
+	XBREAK( ver == 0 );
+	ar >> b0;
+	if( b0 == 0 )		// null스팟이 시리얼라이즈됨.
+		return 1;
+	ar >> b0 >> b0;
+	ar >> b0;	typeSpot = ( XGAME::xtSpot )b0;
+	return pSpot->DeSerialize( ar, ver );
+}
+
+int XSpot::sDeserializeUpdate( XWorld *pWorld, ID idSpot, XArchive& ar )
+{
+	XSpot *pBaseSpot = pWorld->GetSpot( idSpot );
+	if( XASSERT(pBaseSpot) )
+	{
+		return XSpot::sDeSerialize( ar, pBaseSpot );
+	}
+	return 0;
+}
+
+XSpot* XSpot::sCreateDeSerialize( XArchive& ar, XWorld *pWorld )
+{
+	BOOL bRet = FALSE;
+	BYTE b0;
+	int verWorld;
+	XGAME::xtSpot typeSpot;
+	ar >> b0;	verWorld = b0;
+	ar >> b0 >> b0 >> b0;
+	ar >> b0;	typeSpot = (XGAME::xtSpot)b0;
+	XSpot *pSpot = nullptr;
+	switch( typeSpot )
+	{
+	case XGAME::xSPOT_CASTLE:
+		pSpot = new XSpotCastle( pWorld, typeSpot );
+		bRet = pSpot->DeSerialize( ar, verWorld );
+		break;
+	case XGAME::xSPOT_JEWEL:
+		pSpot = new XSpotJewel( pWorld, typeSpot );
+		bRet = pSpot->DeSerialize( ar, verWorld );
+		break;
+	case XGAME::xSPOT_SULFUR:
+		pSpot = new XSpotSulfur( pWorld, typeSpot );
+		bRet = pSpot->DeSerialize( ar, verWorld );
+		break;
+	case XGAME::xSPOT_MANDRAKE:
+		pSpot = new XSpotMandrake( pWorld, typeSpot );
+		bRet = pSpot->DeSerialize( ar, verWorld );
+		break;
+	case XGAME::xSPOT_NPC:
+		pSpot = new XSpotNpc( pWorld, typeSpot );
+		bRet = pSpot->DeSerialize( ar, verWorld );
+		break;
+	case XGAME::xSPOT_DAILY:
+		pSpot = new XSpotDaily( pWorld, typeSpot );
+		bRet = pSpot->DeSerialize( ar, verWorld );
+		break;
+// 	case XGAME::xSPOT_SPECIAL:
+// 		pSpot = new XSpotSpecial( pWorld, typeSpot  );
+// 		bRet = pSpot->DeSerialize( ar, verWorld );
+// 		break;
+	case XGAME::xSPOT_CAMPAIGN:
+		pSpot = new XSpotCampaign( pWorld, typeSpot );
+		bRet = pSpot->DeSerialize( ar, verWorld );
+		break;
+	case XGAME::xSPOT_VISIT:
+		pSpot = new XSpotVisit( pWorld, typeSpot );
+		bRet = pSpot->DeSerialize( ar, verWorld );
+		break;
+	case XGAME::xSPOT_CASH:
+		pSpot = new XSpotCash( pWorld, typeSpot );
+		bRet = pSpot->DeSerialize( ar, verWorld );
+		break;
+// 	case XGAME::xSPOT_GUILD_RAID:
+// 		pSpot = new XSpotGuildRaid( pWorld,  );
+// 		bRet = pSpot->DeSerialize( ar, verWorld );
+// 		break;
+  case XGAME::xSPOT_PRIVATE_RAID:
+    pSpot = new XSpotPrivateRaid( pWorld );
+		// 일단 땜빵. 레이드스팟 Deserial할때 계정정보가 있어야해서 임시로 넣음.
+		//pSpot->SetspOwner( spAcc );
+    bRet = pSpot->DeSerialize( ar, verWorld );
+    break;
+	case XGAME::xSPOT_COMMON:
+		pSpot = new XSpotCommon( pWorld, typeSpot );
+		bRet = pSpot->DeSerialize( ar, verWorld );
+		break;
+	default:
+		XBREAKF(1, "unknown spot type:%d", typeSpot );
+		return nullptr;
+		break;
+	}
+//	if( bRet == FALSE )
+	if( XBREAK( pSpot == nullptr ) )
+		return nullptr;
+	if( pSpot->GetpBaseProp() == nullptr )
+	{
+		CONSOLE("deserialize failed:type=%d", typeSpot );
+		SAFE_DELETE(pSpot);
+		 
+		return nullptr;
+	}
+#ifdef _CLIENT
+	pSpot->SetpDelegate( GAME );
+#endif // _CLIENT
+	return pSpot;
+}
+
+XSpot* XSpot::sCreate( XWorld *pWorld, XPropWorld::xBASESPOT *pBaseProp, XSPAcc spAcc, XDelegateSpot *pDelegate )
+{
+	if( XBREAK( pBaseProp == nullptr ) )
+		return nullptr;
+	// 이미 생성된건지 확인.
+	XSpot *pSpot = pWorld->GetSpot( pBaseProp->idSpot );
+	do {
+		if( pSpot ) {
+			XBREAK( pSpot->GetpBaseProp() == nullptr );   // 리스트에서 삭제해야함.
+			break;
+		}
+		switch( pBaseProp->type ) {
+		case XGAME::xSPOT_CASTLE: {
+			auto pProp = static_cast<XPropWorld::xCASTLE*>( pBaseProp );
+			pSpot = new XSpotCastle( pWorld, pProp, pDelegate );
+		} break;
+		case XGAME::xSPOT_JEWEL: {
+			auto pProp = static_cast<XPropWorld::xJEWEL*>( pBaseProp );
+			pSpot = new XSpotJewel( pWorld, pProp );
+		} break;
+		case XGAME::xSPOT_SULFUR: {
+			auto pProp = static_cast<XPropWorld::xSULFUR*>( pBaseProp );
+			pSpot = new XSpotSulfur( pWorld, pProp, pDelegate );
+		} break;
+		case XGAME::xSPOT_MANDRAKE: {
+			auto pProp = static_cast<XPropWorld::xMANDRAKE*>( pBaseProp );
+			pSpot = new XSpotMandrake( pWorld, pProp );
+		} break;
+		case XGAME::xSPOT_NPC: {
+			auto pProp = static_cast<XPropWorld::xNPC*>( pBaseProp );
+			pSpot = new XSpotNpc( pWorld, pProp, pDelegate );
+		} break;
+		case XGAME::xSPOT_DAILY: {
+			auto pProp = static_cast<XPropWorld::xDaily*>( pBaseProp );
+			pSpot = new XSpotDaily( pWorld, pProp, pDelegate );
+		} break;
+// 		case XGAME::xSPOT_SPECIAL: {
+// 			auto pProp = static_cast<XPropWorld::xSpecial*>( pBaseProp );
+// 			pSpot = new XSpotSpecial( pWorld, pProp, pDelegate );
+// 		} break;
+		case XGAME::xSPOT_CAMPAIGN: {
+			auto pPropSpot = static_cast<XPropWorld::xCampaign*>( pBaseProp );
+			auto pPropCamp = XPropCamp::sGet()->GetpProp( pPropSpot->idCamp );
+			if( XASSERT( pPropCamp ) ) {
+				pSpot = new XSpotCampaign( pWorld, pPropSpot, pPropCamp );
+			}
+		} break;
+		case XGAME::xSPOT_VISIT: {
+			auto pProp = static_cast<XPropWorld::xVisit*>( pBaseProp );
+			pSpot = new XSpotVisit( pWorld, pProp );
+		} break;
+		case XGAME::xSPOT_CASH: {
+			auto pProp = static_cast<XPropWorld::xCash*>( pBaseProp );
+			pSpot = new XSpotCash( pWorld, pProp );
+		} break;
+		case XGAME::xSPOT_PRIVATE_RAID: {
+			auto pProp = static_cast<XPropWorld::xPrivateRaid*>( pBaseProp );
+			pSpot = new XSpotPrivateRaid( pWorld, pProp );
+		} break;
+		case XGAME::xSPOT_COMMON: {
+			auto pProp = static_cast<XPropWorld::xCommon*>( pBaseProp );
+			pSpot = new XSpotCommon( pWorld, pProp );
+		} break;
+		default:
+			XBREAKF( 1, "unknown spot type:type=%d", pBaseProp->type );
+			break;
+		}
+		if( pBaseProp && pSpot ) {
+			if( pBaseProp->level > 0 )
+				pSpot->SetLevel( pBaseProp->level );
+			if( pBaseProp->idName )
+				pSpot->SetstrName( XTEXT( pBaseProp->idName ) );
+		}
+	} while( 0 );
+	if( XBREAK( pSpot == nullptr ) )
+		return nullptr;
+	if( pSpot->GetpBaseProp() == nullptr )
+	{
+		SAFE_DELETE( pSpot );
+		return nullptr;
+	}
+	//	pSpot->OnCreate( spAcc );
+	return pSpot;
+}
+// static
+//////////////////////////////////////////////////////////////////////////
 /**
  @brief Deserialize용
  @param typeSpot 지금은 구조상 외부에서 받아야하는데 Deserialize안에서 typeSpot을 읽도록 바꿔서 외부에서 받지 않아도 되도록 해야할듯.
@@ -261,204 +464,6 @@ void XSpot::sSerialize( XArchive& ar, XSpot *pSpot )
 		pSpot->Serialize( ar );
 }
 
-/**
- 이미 pSpot이 존재할때 사용하는 버전
-*/
-int XSpot::sDeSerialize( XArchive& ar, XSpot *pSpot )
-{
-	BYTE b0;
-	int ver;
-	XGAME::xtSpot typeSpot;
-	ar >> b0;	ver = b0;
-	XBREAK( ver == 0 );
-	ar >> b0;
-	if( b0 == 0 )		// null스팟이 시리얼라이즈됨.
-		return 1;
-	ar >> b0 >> b0;
-	ar >> b0;	typeSpot = ( XGAME::xtSpot )b0;
-	return pSpot->DeSerialize( ar, ver );
-}
-
-int XSpot::sDeserializeUpdate( XWorld *pWorld, ID idSpot, XArchive& ar )
-{
-	XSpot *pBaseSpot = pWorld->GetSpot( idSpot );
-	if( XASSERT(pBaseSpot) )
-	{
-		return XSpot::sDeSerialize( ar, pBaseSpot );
-	}
-	return 0;
-}
-
-XSpot* XSpot::sCreateDeSerialize( XArchive& ar, XWorld *pWorld )
-{
-	BOOL bRet = FALSE;
-	BYTE b0;
-	int verWorld;
-	XGAME::xtSpot typeSpot;
-	ar >> b0;	verWorld = b0;
-	ar >> b0 >> b0 >> b0;
-	ar >> b0;	typeSpot = (XGAME::xtSpot)b0;
-	XSpot *pSpot = nullptr;
-	switch( typeSpot )
-	{
-	case XGAME::xSPOT_CASTLE:
-		pSpot = new XSpotCastle( pWorld, typeSpot );
-		bRet = pSpot->DeSerialize( ar, verWorld );
-		break;
-	case XGAME::xSPOT_JEWEL:
-		pSpot = new XSpotJewel( pWorld, typeSpot );
-		bRet = pSpot->DeSerialize( ar, verWorld );
-		break;
-	case XGAME::xSPOT_SULFUR:
-		pSpot = new XSpotSulfur( pWorld, typeSpot );
-		bRet = pSpot->DeSerialize( ar, verWorld );
-		break;
-	case XGAME::xSPOT_MANDRAKE:
-		pSpot = new XSpotMandrake( pWorld, typeSpot );
-		bRet = pSpot->DeSerialize( ar, verWorld );
-		break;
-	case XGAME::xSPOT_NPC:
-		pSpot = new XSpotNpc( pWorld, typeSpot );
-		bRet = pSpot->DeSerialize( ar, verWorld );
-		break;
-	case XGAME::xSPOT_DAILY:
-		pSpot = new XSpotDaily( pWorld, typeSpot );
-		bRet = pSpot->DeSerialize( ar, verWorld );
-		break;
-// 	case XGAME::xSPOT_SPECIAL:
-// 		pSpot = new XSpotSpecial( pWorld, typeSpot  );
-// 		bRet = pSpot->DeSerialize( ar, verWorld );
-// 		break;
-	case XGAME::xSPOT_CAMPAIGN:
-		pSpot = new XSpotCampaign( pWorld, typeSpot );
-		bRet = pSpot->DeSerialize( ar, verWorld );
-		break;
-	case XGAME::xSPOT_VISIT:
-		pSpot = new XSpotVisit( pWorld, typeSpot );
-		bRet = pSpot->DeSerialize( ar, verWorld );
-		break;
-	case XGAME::xSPOT_CASH:
-		pSpot = new XSpotCash( pWorld, typeSpot );
-		bRet = pSpot->DeSerialize( ar, verWorld );
-		break;
-// 	case XGAME::xSPOT_GUILD_RAID:
-// 		pSpot = new XSpotGuildRaid( pWorld,  );
-// 		bRet = pSpot->DeSerialize( ar, verWorld );
-// 		break;
-  case XGAME::xSPOT_PRIVATE_RAID:
-    pSpot = new XSpotPrivateRaid( pWorld );
-    bRet = pSpot->DeSerialize( ar, verWorld );
-    break;
-	case XGAME::xSPOT_COMMON:
-		pSpot = new XSpotCommon( pWorld, typeSpot );
-		bRet = pSpot->DeSerialize( ar, verWorld );
-		break;
-	default:
-		XBREAKF(1, "unknown spot type:%d", typeSpot );
-		return nullptr;
-		break;
-	}
-//	if( bRet == FALSE )
-	if( XBREAK( pSpot == nullptr ) )
-		return nullptr;
-	if( pSpot->GetpBaseProp() == nullptr )
-	{
-		CONSOLE("deserialize failed:type=%d", typeSpot );
-		SAFE_DELETE(pSpot);
-		 
-		return nullptr;
-	}
-#ifdef _CLIENT
-	pSpot->SetpDelegate( GAME );
-#endif // _CLIENT
-	return pSpot;
-}
-
-XSpot* XSpot::sCreate( XWorld *pWorld, XPropWorld::xBASESPOT *pBaseProp, XSPAcc spAcc, XDelegateSpot *pDelegate )
-{
-	if( XBREAK( pBaseProp == nullptr ) )
-		return nullptr;
-	// 이미 생성된건지 확인.
-	XSpot *pSpot = pWorld->GetSpot( pBaseProp->idSpot );
-	do {
-		if( pSpot ) {
-			XBREAK( pSpot->GetpBaseProp() == nullptr );   // 리스트에서 삭제해야함.
-			break;
-		}
-		switch( pBaseProp->type ) {
-		case XGAME::xSPOT_CASTLE: {
-			auto pProp = static_cast<XPropWorld::xCASTLE*>( pBaseProp );
-			pSpot = new XSpotCastle( pWorld, pProp, pDelegate );
-		} break;
-		case XGAME::xSPOT_JEWEL: {
-			auto pProp = static_cast<XPropWorld::xJEWEL*>( pBaseProp );
-			pSpot = new XSpotJewel( pWorld, pProp );
-		} break;
-		case XGAME::xSPOT_SULFUR: {
-			auto pProp = static_cast<XPropWorld::xSULFUR*>( pBaseProp );
-			pSpot = new XSpotSulfur( pWorld, pProp, pDelegate );
-		} break;
-		case XGAME::xSPOT_MANDRAKE: {
-			auto pProp = static_cast<XPropWorld::xMANDRAKE*>( pBaseProp );
-			pSpot = new XSpotMandrake( pWorld, pProp );
-		} break;
-		case XGAME::xSPOT_NPC: {
-			auto pProp = static_cast<XPropWorld::xNPC*>( pBaseProp );
-			pSpot = new XSpotNpc( pWorld, pProp, pDelegate );
-		} break;
-		case XGAME::xSPOT_DAILY: {
-			auto pProp = static_cast<XPropWorld::xDaily*>( pBaseProp );
-			pSpot = new XSpotDaily( pWorld, pProp, pDelegate );
-		} break;
-// 		case XGAME::xSPOT_SPECIAL: {
-// 			auto pProp = static_cast<XPropWorld::xSpecial*>( pBaseProp );
-// 			pSpot = new XSpotSpecial( pWorld, pProp, pDelegate );
-// 		} break;
-		case XGAME::xSPOT_CAMPAIGN: {
-			auto pPropSpot = static_cast<XPropWorld::xCampaign*>( pBaseProp );
-			auto pPropCamp = XPropCamp::sGet()->GetpProp( pPropSpot->idCamp );
-			if( XASSERT( pPropCamp ) ) {
-				pSpot = new XSpotCampaign( pWorld, pPropSpot, pPropCamp );
-			}
-		} break;
-		case XGAME::xSPOT_VISIT: {
-			auto pProp = static_cast<XPropWorld::xVisit*>( pBaseProp );
-			pSpot = new XSpotVisit( pWorld, pProp );
-		} break;
-		case XGAME::xSPOT_CASH: {
-			auto pProp = static_cast<XPropWorld::xCash*>( pBaseProp );
-			pSpot = new XSpotCash( pWorld, pProp );
-		} break;
-		case XGAME::xSPOT_PRIVATE_RAID: {
-			auto pProp = static_cast<XPropWorld::xPrivateRaid*>( pBaseProp );
-			pSpot = new XSpotPrivateRaid( pWorld, pProp );
-		} break;
-		case XGAME::xSPOT_COMMON: {
-			auto pProp = static_cast<XPropWorld::xCommon*>( pBaseProp );
-			pSpot = new XSpotCommon( pWorld, pProp );
-		} break;
-		default:
-			XBREAKF( 1, "unknown spot type:type=%d", pBaseProp->type );
-			break;
-		}
-		if( pBaseProp && pSpot ) {
-			if( pBaseProp->level > 0 )
-				pSpot->SetLevel( pBaseProp->level );
-			if( pBaseProp->idName )
-				pSpot->SetstrName( XTEXT( pBaseProp->idName ) );
-		}
-	} while( 0 );
-	if( XBREAK( pSpot == nullptr ) )
-		return nullptr;
-	if( pSpot->GetpBaseProp() == nullptr )
-	{
-		SAFE_DELETE( pSpot );
-		return nullptr;
-	}
-	//	pSpot->OnCreate( spAcc );
-	return pSpot;
-}
-
 void XSpot::SetpLegion( XLegion *pLegion ) 
 {
 	m_spLegion = XSPLegion( pLegion );
@@ -489,6 +494,7 @@ void XSpot::Process( float dt )
 void XSpot::OnAfterDeSerialize( XWorld *pWorld, XDelegateSpot *pDelegator, ID idAcc, xSec secLastCalc )
 {
 	m_pDelegate = pDelegator;
+	//
 }
 
 /**
@@ -1107,5 +1113,5 @@ void XSpot::DeSerializeForBattle( XArchive& arLegion,
 																	XArchive& arAdd, 
 																	XSPAcc spAcc )
 {
-	XLegion::sDeSerializeUpdate( &m_spLegion, spAcc, arLegion );
+	XLegion::sDeSerializeUpdate( m_spLegion, spAcc, arLegion );
 }

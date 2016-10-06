@@ -47,6 +47,7 @@
 #include "XCampObj.h"
 #include "XDefNetwork.h"
 #include "XHero.h"
+#include "XSpotPrivateRaid.h"
 
 #define BTRACE		XTRACE
 

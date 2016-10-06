@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "XPropHero.h"
+#include "XLegionH.h"
 namespace XGAME {
 struct xSquad;
 struct xLegion;
@@ -20,7 +21,7 @@ public:
 		xMAX_NOT_FOG = 3,	// 안개로가려지지 않는 부대수
 	};
 	static void sSerialize( XSPLegionConst spLegion, XArchive* pOut );
-	static void sDeSerializeUpdate( XSPLegion* pspOut, XSPAcc spAcc, XArchive& ar );
+	static void sDeSerializeUpdate( XSPLegion spLegion, XSPAcc spAcc, XArchive& ar );
 	static int sSerializeFull( XArchive& ar, XSPLegion spLegion );
 	static XLegion* sCreateDeserializeFull( XArchive& ar );
 //	static XLegion* sCreateDeserializeForGuildRaid( XArchive& ar );
@@ -63,6 +64,7 @@ public:
 	static int sGetMilitaryPower( XSPLegion spLegion );
 	static int sGetMilitaryPower( XHero *pHero );
 	static int sGetMilitaryPowerMax( int lvAcc );
+	static XSPLegion sCreateLegionWithDat( const xnLegion::xLegionDat& legionDat, XSPAccConst spAcc );
 private:
 	ID m_snLegion;
 	XHero *m_pLeader = nullptr;		// 널이 될수 있음.
@@ -104,7 +106,7 @@ public:
 	GET_SET_ACCESSOR_CONST( float, RateAtk );
 	void Serialize( XArchive& ar ) const;
 	void SerializeFull( XArchive& ar );
-	BOOL DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion );
+	BOOL DeSerialize( XArchive& ar, XSPAccConst spAcc, int verLegion );
 private:
 	BOOL DeSerializeFull( XArchive& ar, int verLegion );
 	int SerializeFogs( XArchive& ar ) const;
@@ -186,6 +188,7 @@ public:
 	bool IsNpc() const;
 	XSquadron* CreateAddSquadron( int idxSquad, const XHero* pHero, bool bCreateHero );
 	void DestroySquadronAll();
+	void sDeserialize( XSPLegion spLegionTarget, XSPAccConst spAcc, XArchive& ar );
 private:
 };
 

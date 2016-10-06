@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XSpotPrivateRaid.h"
 #include "XGameUser.h"
 #include "XClientConnection.h"
 #include "XDBASvrConnection.h"
@@ -505,39 +506,8 @@ void XGameUser::SuccessLoginBeforeSend( XSPSAcc spAcc, BOOL bReconnect )
 	m_spAcc->UpdateSpots( this );
 	// 퀘가 수정되었거나 해서 스팟퀘는 있는데 스팟이 없는경우 새로 생성시켜줌.
 	UpdateSpotsByQuest();
-	//////////////////////////////////////////////////////////////////////////
-	// 접속직후 요일이벤트 스팟이 오늘자 타입으로 제대로 세팅되어있는지 확인한다.
-	//////////////////////////////////////////////////////////////////////////
-	// 현재 활성화된 요일스팟이 있는지 찾아온다.
-// 	{
-// 		// 요일스팟이 있을때.
-// 		if( GetpWorld()->GetNumSpots( XGAME::xSPOT_DAILY ) > 0 ) {
-// 			// 오늘의 요일을 알아낸다.
-// 			XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
-// 			// 오늘의 요일에 대한 타입을 알아낸다.
-// //			XGAME::xtDailySpot type = XSpotDaily::sGetDowToType( dowToday );
-// 			// 자정으로부터 지나간 시간을 세팅한다.
-// 			int hour, min, sec;
-// 			XSYSTEM::GetHourMinSec( &hour, &min, &sec );
-// 			int secPass = ( hour * 60 * 60 ) + ( min * 60 ) + sec;
-// 			XSpotDaily *pSpot = GetpWorld()->GetActiveDailySpot();
-// 			if( pSpot ) {
-// 				// 읽어온 스팟의 타입과 오늘타입을 비교해서 다르면 바꿔준다.
-// 				if( /*pSpot->GetType() != type ||*/ pSpot->GetdowToday() != dowToday ) {
-// 					// 다르면 이 스팟은 해제시킨다.
-// //					pSpot->ReleaseSpot();
-// 					// 새 스팟을 랜덤위치에 활성화시킨다.
-// 					GetpWorld()->SetActiveDailySpotToRandom( dowToday, secPass, spAcc );
-// 				}
-// 			} else {
-// 				// 요일스팟은 있는데 활성화된 스팟이 없으므로 아무거나 하나 활성화시킴.
-// 				GetpWorld()->SetActiveDailySpotToRandom( dowToday, secPass, spAcc );
-// 			}
-// 		}
-// 	}
 	// 로그인 직후에 각 스팟들의 처리이벤트
-	spAcc->GetpWorld()->OnAfterDeSerialize( this, 
-												spAcc->GetidAccount() );
+	spAcc->GetpWorld()->OnAfterDeSerialize( this, spAcc->GetidAccount() );
 	spAcc->SetpDelegateLevel( this );//		GetLevel().SetpDelegate( this );
 
 	ProcessAttackedJewel( secOffline );		// 정식기능으로 추가
@@ -554,18 +524,10 @@ void XGameUser::SuccessLoginBeforeSend( XSPSAcc spAcc, BOOL bReconnect )
 	ProcessAttackedMandrake( secOffline );
 	// 다른 유저로부터 침공당한것같은 시뮬레이션
 	{
-// 		ProcessAttackedHome( secOffline );
 	}
 #endif // _DEV
 	// 유황 기습했던것 처리.
 	m_spAcc->DoStackEncounter( secOffline );
-
-	// 클라로 계정정보 보내줌
-	if( bReconnect == FALSE )	{	// 재접상황이면 계정정보는 보내지 않음
-		/*CString string1, string2;		string1.Format( _T("SuccessLogin "));		string2.Format( _T("%s"), szIP );		string1 += string2;		DBLog( USER_CONNECT, (TCHAR*)((LPCTSTR)string1));*/
-	}	else	{
-		/*CString string1, string2;		string1.Format( _T("SuccessLogin "));		string2.Format( _T("%s"), szIP );		string1 += string2;		DBLog( USER_RECONNECT, (TCHAR*)((LPCTSTR)string1));*/
-	}
 }
 
 /**
@@ -9770,6 +9732,7 @@ int XGameUser::RecvPrivateRaidEnterList( XPacket& p )
 	for( int i = 0; i < size; ++i ) {
 		ID snHero;
 		p >> snHero;
+		listEnterPlayer.push_back( snHero );
 // 		auto pHero = m_spAcc->GetpHeroBySN( snHero );
 // 		XVERIFY_BREAK( pHero == nullptr );
 // 		listEnterPlayer.push_back( pHero );

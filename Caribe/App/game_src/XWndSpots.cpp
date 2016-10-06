@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XSpotPrivateRaid.h"
 #include "XWndSpots.h"
 //#include "XWindow.h"
 #include "XSpots.h"

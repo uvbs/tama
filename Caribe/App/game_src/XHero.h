@@ -29,8 +29,11 @@ class XHero : public XDelegateLevel
 public:
 	static XPropHero* sGet() { return PROP_HERO; }
 	static int sSerialize( XArchive& ar, XHero *pHero );
+	static int sSerialize( XArchive* pOut, XHero *pHero ) {
+		return sSerialize( *pOut, pHero );
+	}
 	static XHero* sCreateDeSerialize( XArchive& ar, XSPAcc spAcc );
-	static XHero* sCreateDeSerialize2( XArchive& ar, XSPAcc spAcc );
+	static XHero* sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc );
 	static int sGetMaxExpWithLevel( XGAME::xtTrain type, int level );
 #if defined(_XSINGLE) || !defined(_CLIENT)
 	static XHero* sCreateHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit );
@@ -195,7 +198,7 @@ public:
 #endif 
 	//
 	int Serialize( XArchive& ar );
-	int DeSerialize( XArchive& ar, XSPAcc spAcc, int verHero );
+	int DeSerialize( XArchive& ar, XSPAccConst spAcc, int verHero );
 	int SerializeUpgrade( XArchive& ar ) const;
 	int DeSerializeUpgrade( XArchive& ar );
 	//

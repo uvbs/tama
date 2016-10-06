@@ -476,6 +476,7 @@ protected:
 private:
 	virtual void ResetPower( int lvSpot ) {}
 	virtual void ResetLevel( XSPAcc spAcc ) {}
+//	virtual void 
 
 friend class CUserDB;
 

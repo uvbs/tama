@@ -59,7 +59,7 @@ public:
 	}
 	void Serialize( XArchive& ar );
 	void SerializeFull( XArchive& ar );
-	BOOL DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion );
+	BOOL DeSerialize( XArchive& ar, XSPAccConst spAcc, int verLegion );
 private:
 	BOOL DeSerializeFull( XArchive& ar, int verLegion );
 	// 영웅을 교체

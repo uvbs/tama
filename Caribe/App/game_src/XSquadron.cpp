@@ -97,71 +97,35 @@ void XSquadron::Serialize( XArchive& ar )
 /**
  pAccount가 nullptr이면 NPC부대
 */
-BOOL XSquadron::DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion ) 
+BOOL XSquadron::DeSerialize( XArchive& ar, XSPAccConst spAcc, int verLegion ) 
 {
-	if( verLegion <= 9 ) {
-		int isHero;
-		BYTE b0;
-		ar >> b0;	isHero = b0;
-		if( isHero == 11 ) {
-			int verHero = 0;
-			ar >> b0;	m_bCreateHero = xbyteToBool( b0 );
-			ar >> b0;	verHero = b0;
-			ar >> b0;	//m_bResourceSquad = xbyteToBool(b0);
-			XBREAK( spAcc && m_bCreateHero == TRUE );	// 계정이 있는데 NPC플랙인경우
-			XBREAK( spAcc == nullptr && m_bCreateHero == FALSE );	// 계정이 없는데 PC인경우
-			if( m_bCreateHero ) {
-				XBREAK( spAcc != nullptr );
-				m_pHero = new XHero;
-				m_pHero->DeSerialize( ar, spAcc, verHero );
-			} else {
-				// 플레이어의 부대일경우는 계정에서 영웅을 찾아서 링크만 시킨다.
-				ID snHero;
-				ar >> snHero;
-				if( XBREAK( snHero == 0 ) )
-					return FALSE;
-				m_pHero = spAcc->GetHero( snHero );
-				if( XBREAK( m_pHero == nullptr ) )
-					return FALSE;
-
-			}
-		} else {
-			ar >> b0 >> b0 >> b0;
-			// 11이 아니면 0이어야 하는데 다른수면 시리얼라이즈가 잘못된거임.
-			XBREAK( isHero != 0 );
-		}
+	char c0;
+	ar >> c0; m_idxPos = c0;
+	ar >> c0;	m_bCreateHero = xbyteToBool( c0 );
+	ar >> c0;	const int verHero = c0;
+	ar >> c0;	//m_bResourceSquad = xbyteToBool(b0);
+	XBREAK( spAcc && m_bCreateHero );	// 계정이 있는데 NPC플랙인경우
+	XBREAK( spAcc == nullptr && m_bCreateHero == false );	// 계정이 없는데 PC인경우
+	if( m_bCreateHero ) {
+		XBREAK( spAcc != nullptr );
+		m_pHero = new XHero;
+		m_pHero->DeSerialize( ar, spAcc, verHero );
 	} else {
-		char c0;
-		ar >> c0; m_idxPos = c0;
-		ar >> c0;	m_bCreateHero = xbyteToBool( c0 );
-		ar >> c0;	const int verHero = c0;
-		ar >> c0;	//m_bResourceSquad = xbyteToBool(b0);
-		XBREAK( spAcc && m_bCreateHero );	// 계정이 있는데 NPC플랙인경우
-		XBREAK( spAcc == nullptr && m_bCreateHero == false );	// 계정이 없는데 PC인경우
-		if( m_bCreateHero ) {
-			XBREAK( spAcc != nullptr );
-			m_pHero = new XHero;
-			m_pHero->DeSerialize( ar, spAcc, verHero );
-		} else {
-			// 플레이어의 부대일경우는 계정에서 영웅을 찾아서 링크만 시킨다.
-			ID snHero;
-			ar >> snHero;
-			if( XBREAK( snHero == 0 ) )
-				return FALSE;
-			m_pHero = spAcc->GetHero( snHero );
-			if( XBREAK( m_pHero == nullptr ) )
-				return FALSE;
-
-		}
+		// 플레이어의 부대일경우는 계정에서 영웅을 찾아서 링크만 시킨다.
+		ID snHero;
+		ar >> snHero;
+		if( XBREAK( snHero == 0 ) )
+			return FALSE;
+		m_pHero = const_cast<XHero*>( spAcc->GetpcHeroBySN( snHero ) );
+		if( XBREAK( m_pHero == nullptr ) )
+			return FALSE;
 
 	}
-	if( verLegion >= 8 ) {
-		WORD w0;
-		ar >> w0;		m_mulAtk = (float)w0 / 1000.f;
-		ar >> w0;		m_mulHp = (float)w0 / 1000.f;
-		XBREAK( m_mulAtk == 0.f );
-		XBREAK( m_mulHp == 0.f );
-	}
+	WORD w0;
+	ar >> w0;		m_mulAtk = (float)w0 / 1000.f;
+	ar >> w0;		m_mulHp = (float)w0 / 1000.f;
+	XBREAK( m_mulAtk == 0.f );
+	XBREAK( m_mulHp == 0.f );
 	RESTORE_VERIFY_CHECKSUM( ar );
 	return TRUE;
 }

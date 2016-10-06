@@ -8,6 +8,7 @@
 #pragma once
 #include "XSpot.h"
 #include "constGame.h"
+#include "XLegionH.h"
 
 
 /****************************************************************
@@ -28,7 +29,7 @@ public:
 	const XList4<XHero*>& GetlistEnter( int idxSide ) const {
 		return m_aryEnter[ idxSide ];
 	}
-	GET_SET_ACCESSOR2( XSPLegion, spLegionPlayer );
+//	GET_SET_ACCESSOR2( XSPLegion, spLegionPlayer );
 	// public member
 	bool IsNpc() const override {
 		return true;
@@ -37,6 +38,7 @@ public:
 		return !IsNpc();
 	}
 	void UpdatePlayerEnterList( const XList4<ID>& _listHero, XSPAccConst spAcc );
+	XSPLegion GetspLegionPlayer();
 #ifdef _SERVER
 private:
 #endif // _SERVER
@@ -53,7 +55,8 @@ private:
 	// private member
 	XVector<XList4<XHero*>> m_aryEnter;			// 출전영웅 리스트
 	XVector<XHero*> m_arySelected;
-	XSPLegion m_spLegionPlayer;							// 이 스팟 전용 플레이어측 군단 정보
+	XSPLegion _m_spLegionPlayer;							// 이 스팟 전용 플레이어측 군단 정보
+	xnLegion::xLegionDat m_legionDatPlayer;					///< m_spLegionPlayer를 생성할수 있는 기본 데이터
 private:
 	// private method
 	void Init() {}
@@ -66,4 +69,6 @@ private:
 		return static_cast<XPropWorld::xPrivateRaid*>( GetpBaseProp() );
 	}
 	void ProcCreateSquadron( XSPLegion spLegion, XList4<ID>* pOutlistHero, XSPAccConst spAcc ) const;
+	void SerializeForBattle( XArchive* pOut, const XParamObj2& param );
+	void DeSerializeForBattle( XArchive& ar, XArchive& arAdd, XSPAcc spAcc );
 }; // class XSpotPrivateRaid

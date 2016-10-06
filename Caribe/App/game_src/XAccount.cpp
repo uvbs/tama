@@ -2515,6 +2515,15 @@ XBaseItem* XAccount::GetItem(ID snItem)
 	return nullptr;
 }
 
+const XBaseItem* XAccount::GetItemConst( ID snItem ) const
+{
+	for( auto pItem : m_listItem ) {
+		if( pItem->GetsnItem() == snItem )
+			return pItem;
+	}
+	return nullptr;
+}
+
 XBaseItem* XAccount::GetItem( LPCTSTR idsItem )
 {
 	for( auto pItem : m_listItem ) {

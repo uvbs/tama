@@ -7,4 +7,3 @@
 #include "XSpotNpc.h"
 #include "XSpotCampaign.h"
 #include "XSpotEtc.h"
-#include "XSpotPrivateRaid.h"

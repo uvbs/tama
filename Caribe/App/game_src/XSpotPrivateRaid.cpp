@@ -48,9 +48,24 @@ XSpotPrivateRaid::XSpotPrivateRaid( XWorld* pWorld, XPropWorld::xBASESPOT* pProp
 	Init();
 }
 
+XSPLegion XSpotPrivateRaid::GetspLegionPlayer()
+{
+	if( _m_spLegionPlayer == nullptr ) {
+		XBREAK( m_legionDatPlayer.IsInvalid() );
+		auto spAcc = (GetspOwner().expired())? nullptr : GetspOwner().lock();
+		XBREAK( spAcc == nullptr );
+		_m_spLegionPlayer = XLegion::sCreateLegionWithDat( m_legionDatPlayer, spAcc );
+	}
+	return _m_spLegionPlayer;
+}
+
+
+
 void XSpotPrivateRaid::Serialize( XArchive& ar )
 {
 	XSpot::Serialize( ar );
+//	XLegion::sSerialize( m_spLegionPlayer, &ar );
+	ar << m_legionDatPlayer;
 	// 본 부대외에 추가 영웅들 리스트를 풀버전으로 보낸다.
 	ar << m_aryEnter[1].size();
 	for( auto pHero : m_aryEnter[1] ) {
@@ -62,17 +77,17 @@ BOOL XSpotPrivateRaid::DeSerialize( XArchive& ar, DWORD ver )
 {
 	XSpot::DeSerialize( ar, ver );
 	//
-	if( ver >= 32 ) {
-		XLIST4_DESTROY( m_aryEnter[1] );
-		int numEnter;
-		ar >> numEnter;
-		for( int k = 0; k < numEnter; ++k ) {
-// 			auto spAccW = GetspOwner();
-// 			if( XASSERT(!spAccW.expired()) ) {
-				auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
- 				m_aryEnter[1].push_back( pHero );
+//	XSPAcc spAcc;
+//	XLegion::sDeSerializeUpdate( m_spLegionPlayer, spAcc, ar );
+	_m_spLegionPlayer = nullptr;
+	ar >> m_legionDatPlayer;			// 일단 데이터로만 읽어두고 Deserial이 끝나면 객체를 만든다.
+	XLIST4_DESTROY( m_aryEnter[1] );
+	int numEnter;
+	ar >> numEnter;
+	for( int k = 0; k < numEnter; ++k ) {
+			auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
+ 			m_aryEnter[1].push_back( pHero );
 //			}
-		}
 	}
 	return TRUE;
 }
@@ -84,15 +99,14 @@ void XSpotPrivateRaid::UpdatePlayerEnterList( const XList4<ID>& _listHero, XSPAc
 {
 	XList4<ID> listHero = _listHero;
 	// 플레이어 군단객체 생성(외부에서의 군단포인터 참조문제로 한번 생성하면 바꾸지 않음)
-	XSPLegion spLegion = GetspLegion();
-	if( spLegion == nullptr ) {
-		spLegion = std::make_shared<XLegion>();
-		m_spLegionPlayer = spLegion;
-	}
+// 	if( m_spLegionPlayer == nullptr ) {
+// 		m_spLegionPlayer = std::make_shared<XLegion>();
+// 	}
+	auto spLegionPlayer = _m_spLegionPlayer;
 	// 군단내 기존데이타 삭제
-	spLegion->DestroySquadronAll();
+	spLegionPlayer->DestroySquadronAll();
 	// 전체 출전리스트를 건네고 필요한 인원만 부대를 생성하고 생성한 부대는 리스트에서 뺀다.
-	ProcCreateSquadron( spLegion, &listHero, spAcc );
+	ProcCreateSquadron( spLegionPlayer, &listHero, spAcc );
 	// 나머지 인원은 대기열 리스트에 넣는다.
 	m_aryEnter[0].clear();
 	for( auto snHero : listHero ) {
@@ -246,5 +260,56 @@ void XSpotPrivateRaid::CreateEnemyEnterHeroes( int lvSpot )
 		}
 	}
 #endif // #if defined(_XSINGLE) || !defined(_CLIENT)
+}
+
+void XSpotPrivateRaid::SerializeForBattle( XArchive* pOut, const XParamObj2& param )
+{
+	XSpot::SerializeForBattle( pOut, param );
+	// 플레이어측 군단과 출전리스트를 sn형태로 팩킹
+	XLegion::sSerialize( GetspLegionPlayer(), pOut );
+	//
+	*pOut << m_aryEnter[0].size();
+	for( auto pHero : m_aryEnter[0] ) {
+		*pOut << pHero->GetsnHero();
+	}
+	// 적측 군단과 출전리스트 팩킹
+	XBREAK( GetspLegion() == nullptr );
+	XLegion::sSerialize( GetspLegion(), pOut );
+	// 적측 영웅정보는 풀버전으로 받는다.
+	*pOut << m_aryEnter[1].size();
+	for( auto pHero : m_aryEnter[1] ) {
+		XHero::sSerialize( pOut, pHero );
+	}
+	MAKE_CHECKSUM(*pOut);
+}
+
+void XSpotPrivateRaid::DeSerializeForBattle( XArchive& ar, XArchive& arAdd, XSPAcc spAcc )
+{
+	XSpot::DeSerializeForBattle( ar, arAdd, spAcc );
+	//
+	m_aryEnter[0].clear();
+	XLIST4_DESTROY( m_aryEnter[1] );
+	XLegion::sDeSerializeUpdate( GetspLegionPlayer(), spAcc, ar );
+	int size;
+	ar >> size;
+	for( int i = 0; i < size; ++i ) {
+		ID snHero;
+		ar >> snHero;
+		auto pHero = spAcc->GetpcHeroBySN( snHero );
+		if( XASSERT(pHero) ) {
+			m_aryEnter[0].push_back( const_cast<XHero*>( pHero ) );
+		}
+	}
+	// 적측
+	XLegion::sDeSerializeUpdate( GetspLegion(), spAcc, ar );
+	ar >> size;
+	for( int i = 0; i < size; ++i ) {
+		auto pHero = XHero::sCreateDeSerialize2( ar, spAcc );
+		if( XASSERT( pHero ) ) {
+			m_aryEnter[1].push_back( pHero );
+		}
+	}
+	
+
 }
 

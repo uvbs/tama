@@ -26,6 +26,55 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace XGAME;
 
+//////////////////////////////////////////////////////////////////////////
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 
+*/
+void xnLegion::xSquadDat::Serialize( XArchive& ar ) const {
+	ar << (char)m_idxPos;
+	ar << (char)0;
+	ar << (char)0;
+	ar << (char)0;
+	ar << m_snHero;
+}
+void xnLegion::xSquadDat::DeSerialize( XArchive& ar, DWORD ver ) {
+	char c0;
+	ar >> c0;		m_idxPos = c0;
+	ar >> c0 >> c0 >> c0;
+	ar >> m_snHero;
+}
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 
+*/
+void xnLegion::xLegionDat::Serialize( XArchive& ar ) const {
+	ar << m_listSquad;
+	ar << m_snLeader;
+}
+void xnLegion::xLegionDat::DeSerialize( XArchive& ar, DWORD ver ) {
+	ar >> m_listSquad;
+	ar >> m_snLeader;
+}
+
+
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 군단데이터로 군단객체를 생성한다.
+*/
+XSPLegion XLegion::sCreateLegionWithDat( const xnLegion::xLegionDat& dat, 
+																				 XSPAccConst spAcc ) 
+{
+	auto spLegion = std::make_shared<XLegion>();
+	// 부대들의 정보
+	for( const auto& datSq : dat.m_listSquad ) {
+		auto pHero = spAcc->GetpcHeroBySN( datSq.m_snHero );
+		if( pHero ) {		///< 영웅을 삭제하거나 했으면 없을수도 있다.
+			auto pSq = spLegion->CreateAddSquadron( datSq.m_idxPos, pHero, false );
+		}
+	}
+	auto pLeader = spAcc->GetpcHeroBySN( dat.m_snLeader );
+	spLegion->SetpLeader( const_cast<XHero*>( pLeader ) );
+	return spLegion;
+}
+
 /**
  @brief lvHero가 가질수 있는 최대부대레벨
 */
@@ -856,28 +905,42 @@ XLegion* XLegion::sCreateDeserializeFull( XArchive& ar )
 		SAFE_DELETE( pLegion );
 	return pLegion;
 }
-
-void XLegion::sSerialize( XSPLegionConst pLegion, XArchive* pOut ) {
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 
+*/
+void XLegion::sSerialize( XSPLegionConst spcLegion, XArchive* pOut ) {
 	XArchive& ar = *pOut;
-	ar << VER_LEGION_SERIALIZE;
-	pLegion->Serialize( ar );
+	if( spcLegion )
+		ar << VER_LEGION_SERIALIZE;
+	else
+		ar << 0;
+	if( spcLegion )
+		spcLegion->Serialize( ar );
+}
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 
+*/
+void XLegion::sDeserialize( XSPLegion spLegionTarget, XSPAccConst spAcc, XArchive& ar ) {
+	DWORD ver;
+	ar >> ver;
+	XBREAK( ver < 0 );
+	if( ver == 0 )
+		return;
+	spLegionTarget->DeSerialize( ar, spAcc, ver );
 }
 
 /** //////////////////////////////////////////////////////////////////
  @brief 아카이브에 있는 군단정보를 pOut에 갱신한다.
  군단객체를 통째로 삭제하고 생성해서 하지 않기 위해 만듬.
 */
-void XLegion::sDeSerializeUpdate( XSPLegion* pspOut, XSPAcc spAcc, XArchive& ar ) {
+void XLegion::sDeSerializeUpdate( XSPLegion spOut, XSPAcc spAcc, XArchive& ar ) {
 	int ver;
 	ar >> ver;
 	XBREAK( ver < 0 );
 	if( ver == 0 )
 		return;
-	if( *pspOut == nullptr ) {
-		*pspOut = std::make_shared<XLegion>( 0 );
-	}
-	(*pspOut)->Destroy();
-	(*pspOut)->DeSerialize( ar, spAcc, ver );
+	spOut->Destroy();
+	spOut->DeSerialize( ar, spAcc, ver );
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -931,58 +994,35 @@ void XLegion::Serialize( XArchive& ar ) const
 	MAKE_CHECKSUM( ar );
 }
 
-BOOL XLegion::DeSerialize( XArchive& ar, XSPAcc spAcc, int verLegion ) 
+BOOL XLegion::DeSerialize( XArchive& ar, XSPAccConst spAcc, int verLegion ) 
 {
 	BYTE b0;
 	ar >> b0;	const int size = b0;
 	ar >> b0;	m_gradeLegion = (XGAME::xtGradeLegion)b0;
 	ar >> b0 >> b0;
 	ar >> m_snLegion;
-	if( verLegion >= 7 ) {
-		ar >> m_RateAtk;
-		ar >> m_RateHp;
-	}
-	if( verLegion >= 5 )
-		ar >> m_aryResourceHero;
+	ar >> m_RateAtk;
+	ar >> m_RateHp;
+	ar >> m_aryResourceHero;
 	XLIST4_DESTROY( m_listSquadrons );
-	if( verLegion <= 9 ) {
-		int fill = 0;
-		XLIST4_DESTROY( m_listSquadrons );
-		for( int i = 0; i < size; ++i )  {
-			ar >> fill;
-			if( fill == 1 ) {
-				auto pSquad = new XSquadron();
-				if( !pSquad->DeSerialize( ar, spAcc, verLegion ) )
-					return FALSE;
-				pSquad->SetidxPos( i );
-				m_listSquadrons.push_back( pSquad );
-	//			m_arySquadrons[ i ] = pSquad;
-			} else {
-				XBREAK( fill != 0 );
-			}
-		}
-	} else {
-		for( int i = 0; i < size; ++i ) {
-			auto pSquad = new XSquadron();
-			if( !pSquad->DeSerialize( ar, spAcc, verLegion ) )
-				return FALSE;
-			m_listSquadrons.push_back( pSquad );
-		}
+	for( int i = 0; i < size; ++i ) {
+		auto pSquad = new XSquadron();
+		if( !pSquad->DeSerialize( ar, spAcc, verLegion ) )
+			return FALSE;
+		m_listSquadrons.push_back( pSquad );
 	}
 	{
 		ID snLeader;
 		ar >> snLeader;
 		if( snLeader ) {
-			XHero *pHero = spAcc->GetHero( snLeader );
+			auto pHero = spAcc->GetpcHeroBySN( snLeader );
 			if( XBREAK( pHero == nullptr ) )
 				return FALSE;
-			SetpLeader( pHero );
+			SetpLeader( const_cast<XHero*>( pHero ) );
 		} else
 			SetpLeader( nullptr );
 	}
-	if( verLegion >= 6 ) {
-		DeSerializeFogs( ar, verLegion );
-	}
+	DeSerializeFogs( ar, verLegion );
 	RESTORE_VERIFY_CHECKSUM( ar );
 	return TRUE;
 }

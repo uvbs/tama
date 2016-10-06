@@ -763,28 +763,14 @@ public:
 	bool IsAbleUpgradeHeroAny(XHero *pHero);
 	bool IsAbleLevelUpHero();
 	bool IsAbleLevelUpHero(XHero *pHero);
-	// 	bool IsAbleProvideSquad( XHero *pHero, ID *pOutID = nullptr, int *pOutNum = nullptr );
-	// 	bool IsAbleProvideSquad();
-//	bool IsAbleLevelUpSquad(XHero *pHero, ID *pOutID = nullptr, int *pOutNum = nullptr);
 	bool IsAbleLevelUpSquad( XHero *pHero );
 	bool IsUpdateHero();
 	bool IsAbleLevelUpSquad();
-	// 	bool GetItemLevelUpSquad( XHero *pHero, ID *pOutID, int *pOutNum );
-	// 	void GetItemLevelUpSkill( XHero *pHero, XGAME::xtTrain type, ID *pOutId, int *pOutNum );
 	bool GetAbleLevelupSkill();
-// 	bool IsHaveTechPoint() {
-// 		for (int i = 1; i < XGAME::xUNIT_MAX; ++i)
-// 			if (GetTechPoint((XGAME::xtUnit)i) > 0)
-// 				return true;
-// 		return false;
-// 	}
 #endif // CLIENT or GAME_SERVER
 #ifdef _GAME_SERVER
 	int DoCompleteCurrResearch();
 #endif // _GAME_SERVER
-// 	int GetNumSetAbilPoint();
-// 	int GetNumSetAbilPoint(XGAME::xtUnit unit);
-// 	void InitAbilMap();
 
 	// Legion
 #ifdef _XSINGLE
@@ -942,6 +928,7 @@ public:
 	XBaseItem* CreatePieceItemByidHero( ID idHero, int num );
 	XBaseItem* CreatePieceItem( ID idPropItem, int num );
 	XBaseItem* GetItem(ID snItem);
+	const XBaseItem* GetItemConst( ID snItem ) const;
 	XBaseItem* GetItem( LPCTSTR idsItem );
 	XBaseItem* GetItem( _tstring& idsItem ) {
 		return GetItem( idsItem.c_str() );
