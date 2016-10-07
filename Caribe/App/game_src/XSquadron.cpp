@@ -24,7 +24,7 @@ static char THIS_FILE[] = __FILE__;
 /**
  플레이어 부대를 생성
 */
-XSquadron::XSquadron( XHero *pHero )
+XSquadron::XSquadron( XSPHero pHero )
 {
 	Init();
 	m_bCreateHero = FALSE;
@@ -70,8 +70,8 @@ XSquadron::XSquadron( XPropHero::xPROP *pPropHero,
 
 void XSquadron::Destroy()
 {
-	if( m_bCreateHero )
-		SAFE_DELETE( m_pHero );
+// 	if( m_bCreateHero )
+// 		SAFE_DELETE( m_pHero );
 }
 
 /**
@@ -115,7 +115,7 @@ BOOL XSquadron::DeSerialize( XArchive& ar, XSPAccConst spAcc, int verLegion )
 	XBREAK( spAcc == nullptr && m_bCreateHero == false );	// 계정이 없는데 PC인경우
 	if( m_bCreateHero ) {
 		XBREAK( spAcc != nullptr );
-		m_pHero = new XHero( spAcc );
+		m_pHero = std::make_shared<XHero>( spAcc );
 		m_pHero->DeSerialize( ar/*, spAcc*/, verHero );
 	} else {
 		// 플레이어의 부대일경우는 계정에서 영웅을 찾아서 링크만 시킨다.
@@ -123,7 +123,7 @@ BOOL XSquadron::DeSerialize( XArchive& ar, XSPAccConst spAcc, int verLegion )
 		ar >> snHero;
 		if( XBREAK( snHero == 0 ) )
 			return FALSE;
-		m_pHero = const_cast<XHero*>( spAcc->GetpcHeroBySN( snHero ) );
+		m_pHero = std::const_pointer_cast<XHero>( spAcc->GetpcHeroBySN( snHero ) );
 		if( XBREAK( m_pHero == nullptr ) )
 			return FALSE;
 
@@ -168,7 +168,7 @@ BOOL XSquadron::DeSerializeFull( XArchive& ar, int verLegion )
 	ar >> c0;
 	ar >> c0;	const int verHero = c0;
 	ar >> c0;	//
-	m_pHero = new XHero( nullptr );
+	m_pHero = std::make_shared<XHero>( nullptr );
 	m_pHero->DeSerialize( ar/*, nullptr*/, verHero );
 	WORD w0;
 	ar >> w0;		m_mulAtk = (float)w0 / 1000.f;

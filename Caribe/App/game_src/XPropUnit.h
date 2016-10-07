@@ -138,23 +138,23 @@ public:
 	}
 	//////////////////////////////////////////////////////////////////////////
 	// 스탯
-// 	float GetSquadPower( XHero *pHero, float stat, XGAME::xtSize size, int levelSquad );
-// 	float GetAttackMeleePowerSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
+// 	float GetSquadPower( XSPHero pHero, float stat, XGAME::xtSize size, int levelSquad );
+// 	float GetAttackMeleePowerSquad( XSPHero pHero, xPROP *pProp, int levelSquad ) {
 // 		return GetSquadPower( pHero, pProp->atkMelee, pProp->size, levelSquad );
 // 	}
-// 	float GetAttackMeleePowerSquad( XHero *pHero, int levelSuqad );
-// 	float GetAttackRangePowerSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
+// 	float GetAttackMeleePowerSquad( XSPHero pHero, int levelSuqad );
+// 	float GetAttackRangePowerSquad( XSPHero pHero, xPROP *pProp, int levelSquad ) {
 // 		return GetSquadPower( pHero, pProp->atkRange, pProp->size, levelSquad );
 // 	}
-// 	float GetAttackRangePowerSquad( XHero *pHero, int levelSquad );
-// 	int GetMaxHpSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
+// 	float GetAttackRangePowerSquad( XSPHero pHero, int levelSquad );
+// 	int GetMaxHpSquad( XSPHero pHero, xPROP *pProp, int levelSquad ) {
 // 		return (int)GetSquadPower( pHero, pProp->hpMax, pProp->size, levelSquad );
 // 	}
-// 	int GetMaxHpSquad( XHero *pHero, int levelSquad );
-// 	float GetDefensePowerSquad( XHero *pHero, xPROP *pProp, int levelSquad ) {
+// 	int GetMaxHpSquad( XSPHero pHero, int levelSquad );
+// 	float GetDefensePowerSquad( XSPHero pHero, xPROP *pProp, int levelSquad ) {
 // 		return GetSquadPower( pHero, pProp->def, pProp->size, levelSquad );
 // 	}
-// 	float GetDefensePowerSquad( XHero *pHero, int levelSquad );
+// 	float GetDefensePowerSquad( XSPHero pHero, int levelSquad );
 	float GetAttackSpeed( ID idProp ) {
 		xPROP *pProp = GetpProp( idProp );
 		if( XBREAK( pProp == nullptr ) )

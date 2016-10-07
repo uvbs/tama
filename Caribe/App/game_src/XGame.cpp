@@ -2544,7 +2544,7 @@ int XGame::OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 )
 /** //////////////////////////////////////////////////////////////////
  @brief 특성연구 완료 핸들러
 */
-void XGame::OnRecvResearchCompleted( XHero* pHero, ID idAbil, int point )
+void XGame::OnRecvResearchCompleted( XSPHero pHero, ID idAbil, int point )
 {
 	auto pProp = XPropTech::sGet()->GetpNode( idAbil );
 	if( XBREAK( pProp == nullptr ) )
@@ -2568,7 +2568,7 @@ void XGame::OnRecvResearchCompleted( XHero* pHero, ID idAbil, int point )
 /** //////////////////////////////////////////////////////////////////
  @brief 타입에 따라 훈련완료창을 띄운다.
 */
-void XGame::DoPopupTrainComplete( xtTrain train, XHero* pHero, int level )
+void XGame::DoPopupTrainComplete( xtTrain train, XSPHero pHero, int level )
 {
 	switch( train ) {
 	case XGAME::xTR_LEVEL_UP: {

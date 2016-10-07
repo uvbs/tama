@@ -42,8 +42,8 @@ void XWndBattleAfterHeroExp::Update()
 {
 	XLegion *pLegion = ACCOUNT->GetLegionByIdx( m_idxLegion ).get();
 	if( XASSERT( pLegion ) ) {
-// 		XArrayLinearN<XHero*, XGAME::MAX_SQUAD> ary;
-		XVector<XHero*> ary;
+// 		XArrayLinearN<XSPHero, XGAME::MAX_SQUAD> ary;
+		XVector<XSPHero> ary;
 		pLegion->GetHerosToAry( &ary );
 		int nAdjustY = 0, size = ary.size();
 		nAdjustY = ary.size() / 5;
@@ -55,7 +55,7 @@ void XWndBattleAfterHeroExp::Update()
 		auto sizePopup = GetSizeLocal();
 		XE::VEC2 vStart( ( 316 - 70 ) / 2 + 114 - 43 * ( size - 1 ), ( 250 - 81 ) / 2 + 45 - nAdjustY );
 		int idx = 0;
-//		XARRAYLINEARN_LOOP( ary, XHero*, pHero ) {
+//		XARRAYLINEARN_LOOP( ary, XSPHero, pHero ) {
 		for( auto pHero : ary ) {
 			if( idx != 0 && idx % 5 == 0 ) {
 				if( idx == ary.size() - ( ary.size() % 5 ) )

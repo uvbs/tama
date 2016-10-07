@@ -47,7 +47,7 @@ public:
 	int OnClickSetLeader(XWnd *pWnd, DWORD p1, DWORD p2); //군단장 지정
 	int OnClickDecide(XWnd* pWnd, DWORD p1, DWORD p2);
 	int OnDropSquad(XWnd* pWnd, DWORD p1, DWORD p2);
-	void CreateSquadToLegion( XHero *pHero, XLegion *pLegion, int idxSlot );
+	void CreateSquadToLegion( XSPHero pHero, XLegion *pLegion, int idxSlot );
 	XWndSquadInLegion* GetWndSquadSlot( int idxSlot );
 	void MoveSquadInLegion( int idxSrc, int idxDst, ID snHeroSrc, ID snHeroDst );
 	BOOL IsAbleAddHero( void );

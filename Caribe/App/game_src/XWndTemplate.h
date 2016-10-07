@@ -78,7 +78,7 @@ class XWndCircleUnit : public XWndImage
 {
 public:
 	XWndCircleUnit();
-	XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XHero *pHero );
+	XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XSPHero pHero );
 	virtual ~XWndCircleUnit() { Destroy(); }
 	// get/setter
 	GET_SET_BOOL_ACCESSOR( bShowLevelSquad );
@@ -90,7 +90,7 @@ public:
 private:
 	// private member
 	XGAME::xtUnit m_Unit = XGAME::xUNIT_NONE;
-	XHero *m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	bool m_bShowLevelSquad = false;
 private:
 	// private method
@@ -111,7 +111,7 @@ inline XWndCircleUnit* xGetCtrlUnit( XWnd* pRoot, const std::string& key ) {
 class XWndCircleUnit2 : public XWnd {
 public:
 //	XWndCircleUnit2();
-	XWndCircleUnit2( XGAME::xtUnit unit, const XE::VEC2& vPos, XHero *pHero );
+	XWndCircleUnit2( XGAME::xtUnit unit, const XE::VEC2& vPos, XSPHero pHero );
 	~XWndCircleUnit2() {		Destroy();	}
 	// get/setter
 //	GET_SET_ACCESSOR_CONST( int, Level );
@@ -120,7 +120,7 @@ public:
 private:
 	// private member
 	XGAME::xtUnit m_Unit = XGAME::xUNIT_NONE;
-	const XHero *m_pHero = nullptr;
+	XSPHeroConst m_pHero = nullptr;
 	int m_Level = 0;
 private:
 	// private method
@@ -140,7 +140,7 @@ inline XWndCircleUnit2* xGetCtrlUnit2( XWnd* pRoot, const std::string& key ) {
 *****************************************************************/
 class XWndCircleSkill : public XWnd {
 public:
-	XWndCircleSkill( const XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XHero *pHero );
+	XWndCircleSkill( const XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XSPHero pHero );
 	~XWndCircleSkill() {
 		Destroy();
 	}
@@ -152,7 +152,7 @@ public:
 private:
 	// private member
 	const XSKILL::XSkillDat *m_pSkillDat = nullptr;
-	XHero *m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 //	bool m_bShowLevel = false;
 	int m_Level = 0;
 private:
@@ -174,7 +174,7 @@ inline XWndCircleSkill* xGetCtrlSkill( XWnd* pRoot, const std::string& key ) {
 class XWndTechAbil : public XWnd
 {
 public:
-	XWndTechAbil( const XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XHero *pHero);
+	XWndTechAbil( const XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XSPHero pHero);
 	~XWndTechAbil() { Destroy(); }
 	// get/setter
 	GET_SET_BOOL_ACCESSOR( bShowLevel );
@@ -184,7 +184,7 @@ public:
 private:
 	// private member
 	const XSKILL::XSkillDat *m_pSkillDat = nullptr;
-	XHero *m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	bool m_bShowLevel = false;
 	int m_Level = 0;
 private:

@@ -16,7 +16,7 @@ XE_NAMESPACE_START( XGAME )
 @brief
 */
 struct xPrivateRaidParam : public xSceneBattleParam {
-	XVector<XList4<XHero*>> m_aryEnter;		// 출전영웅 리스트
+	XVector<XList4<XSPHero>> m_aryEnter;		// 출전영웅 리스트
 	xPrivateRaidParam( ID idEnemy,
 										 xtSpot typeSpot,
 										 ID idSpot,

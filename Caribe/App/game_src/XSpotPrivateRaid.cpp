@@ -143,7 +143,8 @@ void XSpotPrivateRaid::DeSerializeEnterEnemy( XArchive& ar, int verWorld )
 			}
 		}
 	} else {
-		XLIST4_DESTROY( m_listEnterEnemy );
+		//XLIST4_DESTROY( m_listEnterEnemy );
+		m_listEnterEnemy.clear();
 	}
 }
 
@@ -181,7 +182,7 @@ void XSpotPrivateRaid::ProcCreateSquadron( xLegionDat* pOutDat,
 
 
 #ifdef _CLIENT
-void XSpotPrivateRaid::AddEnterHero( XHero* pHero, int idxSide )
+void XSpotPrivateRaid::AddEnterHero( XSPHero pHero, int idxSide )
 {
 	if( !pHero )
 		return;
@@ -195,7 +196,7 @@ void XSpotPrivateRaid::AddEnterHero( XHero* pHero, int idxSide )
 //	m_aryEnter[idxSide].push_back( pHero );
 
 }
-bool XSpotPrivateRaid::IsExistEnterHero( XHero* pHero, int idxSide )
+bool XSpotPrivateRaid::IsExistEnterHero( XSPHero pHero, int idxSide )
 {
 	if( !pHero )
 		return false;
@@ -206,7 +207,7 @@ bool XSpotPrivateRaid::IsExistEnterHero( XHero* pHero, int idxSide )
 	//return m_aryEnter[idxSide].FindByID( pHero->GetsnHero() ) != nullptr;
 }
 
-void XSpotPrivateRaid::DelEnterHero( XHero* pHero, int idxSide )
+void XSpotPrivateRaid::DelEnterHero( XSPHero pHero, int idxSide )
 {
 	if( !pHero )
 		return;
@@ -220,7 +221,7 @@ void XSpotPrivateRaid::DelEnterHero( XHero* pHero, int idxSide )
 /** ////////////////////////////////////////////////////////////////////////////////////
  @brief 출전영웅들 간에 교환을 한다.
 */
-void XSpotPrivateRaid::ChangeEnterHero( XHero* pHero1, XHero* pHero2, int idxSide )
+void XSpotPrivateRaid::ChangeEnterHero( XSPHero pHero1, XSPHero pHero2, int idxSide )
 {
 	// 둘중에 하나라도 널이면 안됨
 	if( !IsExistEnterHero(pHero1, idxSide) )
@@ -247,7 +248,7 @@ void XSpotPrivateRaid::ChangeEnterHero( XHero* pHero1, XHero* pHero2, int idxSid
 /** ////////////////////////////////////////////////////////////////////////////////////
  @brief 리스트에 없는 pHeroNew영웅을 pExistHero가 있던 위치에 삽업하고 기존 영웅은 삭제
 */
-void XSpotPrivateRaid::ReplaceEnterHero( XHero* pHeroNew, XHero* pExistHero, int idxSide )
+void XSpotPrivateRaid::ReplaceEnterHero( XSPHero pHeroNew, XSPHero pExistHero, int idxSide )
 {
 	if( !IsExistEnterHero( pExistHero, idxSide ) )
 		return;
@@ -265,7 +266,7 @@ void XSpotPrivateRaid::ReplaceEnterHero( XHero* pHeroNew, XHero* pExistHero, int
 #endif // _CLIENT
 
 
-int XSpotPrivateRaid::GetidxEnterHero( XHero* pHero, int idxSide )
+int XSpotPrivateRaid::GetidxEnterHero( XSPHero pHero, int idxSide )
 {
 	if( idxSide == 0 ) {
 		return m_listEnterPlayer.GetIndex( pHero->GetsnHero() );
@@ -273,16 +274,16 @@ int XSpotPrivateRaid::GetidxEnterHero( XHero* pHero, int idxSide )
 	return m_listEnterEnemy.GetIndexByID( pHero );
 }
 
-XHero* XSpotPrivateRaid::GetSelectEnterHero( int idxSide )
+XSPHero XSpotPrivateRaid::GetSelectEnterHero( int idxSide )
 {
 	return m_arySelected[ idxSide ];
 }
-void XSpotPrivateRaid::SetSelectEnterHero( XHero* pHero, int idxSide )
+void XSpotPrivateRaid::SetSelectEnterHero( XSPHero pHero, int idxSide )
 {
 	m_arySelected[idxSide] = pHero;
 }
 
-bool XSpotPrivateRaid::IsSelectedHero( XHero* pHero, int idxSide )
+bool XSpotPrivateRaid::IsSelectedHero( XSPHero pHero, int idxSide )
 {
 	auto pSelected = m_arySelected[ idxSide ];
 	if( pSelected && pSelected->GetsnHero() == pHero->GetsnHero() )
@@ -296,16 +297,16 @@ void XSpotPrivateRaid::OnAfterBattle( XSPAcc spAccWin
 																			, int numStar
 																			, bool bRetreat )
 {
-	const int numSquad = GetspLegion()->GetNumSquadrons();
+//	const int numSquad = GetspLegion()->GetNumSquadrons();
 	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, numStar, bRetreat );
 	if( bWin ) {
-		int i = 0;
-		for( auto pHero : m_listEnterEnemy ) {
-			if( i >= numSquad ) {
-				SAFE_DELETE( pHero );
-			}
-			++i;
-		}
+// 		int i = 0;
+// 		for( auto pHero : m_listEnterEnemy ) {
+// 			if( i >= numSquad ) {
+// 				//SAFE_DELETE( pHero );
+// 			}
+// 			++i;
+// 		}
 		m_listEnterEnemy.clear();
 	}
 }
@@ -404,7 +405,7 @@ void XSpotPrivateRaid::DeSerializeForBattle( XArchive& ar, XArchive& arAdd, XSPA
 // 		ar >> snHero;
 // 		auto pHero = spAcc->GetpcHeroBySN( snHero );
 // 		if( XASSERT(pHero) ) {
-// 			m_aryEnter[0].push_back( const_cast<XHero*>( pHero ) );
+// 			m_aryEnter[0].push_back( std::const_pointer_cast<XHero>( pHero ) );
 // 		}
 // 	}
 	// 적측
@@ -421,11 +422,11 @@ void XSpotPrivateRaid::DeSerializeForBattle( XArchive& ar, XArchive& arAdd, XSPA
 	RESTORE_VERIFY_CHECKSUM_NO_RETURN(ar);
 }
 
-XList4<XHero*> XSpotPrivateRaid::GetlistEnter( int idxSide )
+XList4<XSPHero> XSpotPrivateRaid::GetlistEnter( int idxSide )
 {
 	if( idxSide == 0 ) {
 		if( XASSERT(!GetspOwner().expired()) ) {
-			XList4<XHero*> listEnter;
+			XList4<XSPHero> listEnter;
 			for( auto snHero : m_listEnterPlayer ) {
 				auto pHero = GetspOwner().lock()->GetpHeroBySN( snHero );
 				listEnter.push_back( pHero );

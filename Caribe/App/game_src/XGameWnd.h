@@ -217,7 +217,7 @@ public:
 private:
 	static int s_idxSelectedSquad;
 	//
-	XHero *m_pHero;
+	XSPHero m_pHero;
 	XGAME::xtUnit m_Unit = XGAME::xUNIT_NONE;
 	int m_idxSquad = -1;	// 이값은 한번 세팅되면 변경되지 않음.
 	XLegion *m_pLegion;
@@ -246,18 +246,18 @@ private:
 	}
 	void Destroy();
 public:
-	XWndSquadInLegion( XHero *pHero, const XE::VEC2& vPos, XLegion *pLegion, bool bDrawFrame = true, bool bDragDrop = true, bool bQuestion = false );
+	XWndSquadInLegion( XSPHero pHero, const XE::VEC2& vPos, XLegion *pLegion, bool bDrawFrame = true, bool bDragDrop = true, bool bQuestion = false );
 	XWndSquadInLegion( int idxSquad, const XE::VEC2& vPos, XLegion *pLegion, bool bDrawFrame = true, bool bDragDrop = true );
 	virtual ~XWndSquadInLegion() { Destroy(); }
 	///< 
-	GET_ACCESSOR( XHero*, pHero );
+	GET_ACCESSOR( XSPHero, pHero );
 	GET_SET_ACCESSOR( bool, bPlayer );
 	GET_SET_ACCESSOR( int, nSuperior);
 	GET_ACCESSOR( int, idxSquad );
 	//
 	void Draw( void );
 //	int OnDrop( XWnd* pWnd, DWORD p1, DWORD p2 );
-	void SetFace( XHero *pHero, bool bQuestion = false );
+	void SetFace( XSPHero pHero, bool bQuestion = false );
 	void DrawDrag( const XE::VEC2& vMouse );
 	BOOL IsFree() {
 		if (m_pHero)
@@ -421,7 +421,7 @@ class XWndTrainingCenter;
 class XWndSlotByTrain : public XWnd
 {
 public:
-	XWndSlotByTrain( XHero *pHero, XGAME::xtTrain type, ID snSlot, XLayout *pLayout, XWndTrainingCenter *pWndPopup );
+	XWndSlotByTrain( XSPHero pHero, XGAME::xtTrain type, ID snSlot, XLayout *pLayout, XWndTrainingCenter *pWndPopup );
 	virtual ~XWndSlotByTrain() { Destroy(); }
 	// get/setter
 	// public member
@@ -430,7 +430,7 @@ private:
 	XLayout *m_pLayout = nullptr;
 	XWndTrainingCenter *m_pPopup = nullptr;
 	XGAME::xtTrain m_Type = XGAME::xTR_NONE;
-	XHero *m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	ID m_snSlot = 0;
 private:
 	// private method
@@ -464,13 +464,13 @@ public:
 	void Update() override;
 //	void OnAutoUpdate() override;
 	int OnClickUnlockSlot( XWnd* pWnd, DWORD p1, DWORD p2 );
-	void UpdateSlot( XHero *pHero, const XAccount::xTrainSlot& slot, ID idWnd );
+	void UpdateSlot( XSPHero pHero, const XAccount::xTrainSlot& slot, ID idWnd );
 	int OnClickComplete( XWnd* pWnd, DWORD p1, DWORD p2 );
 private:
 	BOOL OnCreate() override;
-//	void DelegateTrainComplete( XGAME::xtTrain type, XHero* pHero ) override;
+//	void DelegateTrainComplete( XGAME::xtTrain type, XSPHero pHero ) override;
 	void DelegateUnlockTrainSlot( const std::string& idsEvent );
-	void DelegateTrainComplete( const std::string& idsEvent, XGAME::xtTrain type, XHero* pHero );
+	void DelegateTrainComplete( const std::string& idsEvent, XGAME::xtTrain type, XSPHero pHero );
 	void CreateSlots();
 }; // class XWndTrainingCenter
 
@@ -485,7 +485,7 @@ class XWndTrainCompleInWorld : public XWndImage
 	void Init() {}
 	void Destroy();
 public:
-	XWndTrainCompleInWorld( XHero *pHero );
+	XWndTrainCompleInWorld( XSPHero pHero );
 	virtual ~XWndTrainCompleInWorld() { Destroy(); }
 	//
 	void Update() override;
@@ -518,7 +518,7 @@ public:
 // 	void Init() {}
 // 	void Destroy();
 // public:
-// 	XWndTrainComplete( XHero *pHero, XGAME::xtTrain type );
+// 	XWndTrainComplete( XSPHero pHero, XGAME::xtTrain type );
 // 	virtual ~XWndTrainComplete() { Destroy(); }
 // 	//
 // 	void Update() override;
@@ -547,12 +547,12 @@ public:
 *****************************************************************/
 class XWndUnitinfo : public XWndPopup
 {
-	XHero *m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	XGAME::xtUnit m_Unit = XGAME::xUNIT_NONE;
 	void Init() {}
 	void Destroy() {}
 public:
-	XWndUnitinfo( XHero *pHero, LPCTSTR szTitle );
+	XWndUnitinfo( XSPHero pHero, LPCTSTR szTitle );
 	XWndUnitinfo( XGAME::xtUnit unit, LPCTSTR szTitle );
 	virtual ~XWndUnitinfo() { Destroy(); }
 	//
@@ -607,10 +607,10 @@ class XWndOrderDialog : public XWndView
 {
 public:
 //	XWndOrderDialog( std::shared_ptr<xHelp::XOrderDialog> spOrder, float x, float y );
-	XWndOrderDialog( xHelp::OrderPtr spOrder, float x, float y, ID idHero, XHero *pHero );
+	XWndOrderDialog( xHelp::OrderPtr spOrder, float x, float y, ID idHero, XSPHero pHero );
 	XWndOrderDialog( xHelp::OrderPtr spOrder, const XE::VEC2& vPos ) 
 		: XWndOrderDialog( spOrder, vPos.x, vPos.y, 0, nullptr ) {}
-	XWndOrderDialog( xHelp::OrderPtr spOrder, const XE::VEC2& vPos, ID idHero, XHero *pHero )
+	XWndOrderDialog( xHelp::OrderPtr spOrder, const XE::VEC2& vPos, ID idHero, XSPHero pHero )
 		: XWndOrderDialog( spOrder, vPos.x, vPos.y, idHero, pHero ) {}
 	virtual ~XWndOrderDialog() { Destroy(); }
 	// get/setter
@@ -619,7 +619,7 @@ public:
 //	GET_SET_ACCESSOR( const _tstring&, strFaceRes );
 	GET_SET_ACCESSOR( const _tstring&, strText );
 	GET_SET_ACCESSOR( bool, bTouch );
-	GET_SET_ACCESSOR_CONST( XHero*, pHero );
+	GET_SET_ACCESSOR_CONST( XSPHero, pHero );
 	GET_SET_ACCESSOR_CONST( ID, idHero );
 // private member
 private:
@@ -628,7 +628,7 @@ private:
 //	_tstring m_strFaceRes;
 	_tstring m_strText;
 	bool m_bTouch = false;		// 손가락 touch ui
-	XHero *m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	ID m_idHero = 0;		// m_pHero가 비어있으면 idHero라도 있다.
 private:
 	void Init() {}
@@ -752,16 +752,16 @@ private:
 class XWndSelectHeroesInReady : public XWndPopup
 {
 public:
-	XWndSelectHeroesInReady( XHero *pHeroFrom );
+	XWndSelectHeroesInReady( XSPHero pHeroFrom );
 	virtual ~XWndSelectHeroesInReady() { Destroy(); }
 	// get/setter
-	GET_ACCESSOR( XHero*, pHeroFrom );
-	void SetHeroFrom( XHero* pHero );
+	GET_ACCESSOR( XSPHero, pHeroFrom );
+	void SetHeroFrom( XSPHero pHero );
 	// public member
 private:
 	// private member
-	XHero *m_pHeroFrom = nullptr;
-	XHero *m_pHeroSelected = nullptr;
+	XSPHero m_pHeroFrom = nullptr;
+	XSPHero m_pHeroSelected = nullptr;
 private:
 	// private method
 	void Init() {}
@@ -769,7 +769,7 @@ private:
 	void Update() override;
 	BOOL OnCreate() override;
 	int OnClickHero( XWnd* pWnd, DWORD p1, DWORD p2 );
-	void CreatePopupSelectUnit( XHero *pHero );
+	void CreatePopupSelectUnit( XSPHero pHero );
 }; // class XWndSelectHeroesInReady
 
 /****************************************************************
@@ -781,13 +781,13 @@ class XWndSelectUnitsInReady : public XWndPopup
 {
 public:
 public:
-	XWndSelectUnitsInReady( XHero *pHero );
+	XWndSelectUnitsInReady( XSPHero pHero );
 	virtual ~XWndSelectUnitsInReady() { Destroy(); }
 	// get/setter
 	// public member
 private:
 	// private member
-	XHero *m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 private:
 	// private method
 	void Init() {}

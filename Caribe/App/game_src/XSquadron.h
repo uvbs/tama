@@ -10,7 +10,7 @@ class XSquadron
 	ID m_snSquad = 0;					/// 부대 고유번호
 	int m_idxPos = -99;			/// 전장에서 부대의 위치인덱스 0 ~ 15. -1은 특별히 정해진 위치가 없다. 99는 초기값
 	bool m_bCreateHero = false;			// NPC부대인가?
-	XHero *m_pHero = nullptr;			// m_bNPC가 TRUE면 여기서 m_pHero를 삭제하지 않는다.
+	XSPHero m_pHero = nullptr;			// m_bNPC가 TRUE면 여기서 m_pHero를 삭제하지 않는다.
 	//ID m_snHero = 0;
 	float m_mulAtk = 1.f;
 	float m_mulHp = 1.f;
@@ -20,7 +20,7 @@ class XSquadron
 	void Destroy();
 public:
 	XSquadron() { Init(); }
-	XSquadron( XHero *pHero );
+	XSquadron( XSPHero pHero );
 #if defined(_XSINGLE) || !defined(_CLIENT)
 // 	XSquadron( XSPAccConst spAcc, XPropHero::xPROP *pPropHero, int levelHero, XGAME::xtUnit unit, int levelSquad, bool bCreateHero = true );
 	XSquadron( XPropHero::xPROP *pPropHero, int levelHero, XGAME::xtUnit unit, int levelSquad );
@@ -29,7 +29,7 @@ public:
 	//
 	GET_ACCESSOR_CONST( ID, snSquad );
 	GET_SET_ACCESSOR_CONST( int, idxPos );
-	GET_ACCESSOR_CONST( XHero*, pHero );
+	GET_ACCESSOR_CONST( XSPHero, pHero );
 	GET_SET_ACCESSOR( bool, bCreateHero );
 	GET_SET_ACCESSOR_CONST( float, mulAtk );
 	GET_SET_ACCESSOR_CONST( float, mulHp );
@@ -66,7 +66,7 @@ public:
 private:
 	BOOL DeSerializeFull( XArchive& ar, int verLegion );
 	// 영웅을 교체
-	void ChangeHero( XHero *pHeroNew ) {
+	void ChangeHero( XSPHero pHeroNew ) {
 		XBREAK( m_bCreateHero );		// 이런경우가 있음?
 		m_pHero = pHeroNew;
 		//m_snHero = pHeroNew->GetsnHero();

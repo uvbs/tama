@@ -244,7 +244,7 @@ void XBattleField::SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit,
 	if( pPropHero == nullptr )
 		return;
 	int numUnit = 1;
-	auto pHero = new XHero( pPropHero, 1, unit );
+	auto pHero = std::make_shared<XHero>( pPropHero, 1, unit );
 	auto pSquadObj = new XSquadObj( spLegionObj, pHero, vwPos );
 	pSquadObj->CreateUnitAndHero( XWndBattleField::sGet(), spLegionObj->GetCamp() );
 	spLegionObj->AddSquad( XSPSquad( pSquadObj ) );

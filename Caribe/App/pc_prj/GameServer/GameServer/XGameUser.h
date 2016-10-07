@@ -303,7 +303,7 @@ public:
 	int RecvUpdateSpotForBattle( XPacket& p );
 	void SendAddBattleLog( bool bAttack, XGAME::xBattleLog& log );
 	int RecvWithdrawMandrake( XPacket& p );
-	void SendCreateHero( XHero *pHero );
+	void SendCreateHero( XSPHero pHero );
 	int RecvResearchCompleteNow( XPacket& p );
 	void SendBaseInfo( void );
 //	XPropItem::xPROP* DoDropEquip();
@@ -317,9 +317,9 @@ public:
 	
 	void AddLog(int logtype, _tstring strLog );
 // 	int RecvTrainHero( XPacket& p );
-// 	int RecvTrainHeroLevel( XHero *pHero, int& time );
-// 	int RecvTrainHeroSquad( XHero *pHero, int& time );
-// 	int RecvTrainHeroSkill( XHero *pHero, XGAME::xtTrain type );
+// 	int RecvTrainHeroLevel( XSPHero pHero, int& time );
+// 	int RecvTrainHeroSquad( XSPHero pHero, int& time );
+// 	int RecvTrainHeroSkill( XSPHero pHero, XGAME::xtTrain type );
 	int RecvCheckTrainComplete( XPacket& p );
 	int SendTrainingComplete( ID snSlot, xErrorCode result, XGAME::xtQuickComplete typeComplete = XGAME::xQCT_NONE );
 //	int RecvTrainCompleteTouch( XPacket& p );

@@ -301,7 +301,7 @@ int xBattleResult::DeSerializeHeroes( XArchive& ar, XSPAcc spAcc )
 	ID snHero;
 	for( int i = 0; i < size; ++i ) {
 		ar >> snHero;
-		XHero *pHero = spAcc->GetHero( snHero );
+		XSPHero pHero = spAcc->GetHero( snHero );
 		if( XASSERT(pHero) )
 			pHero->DeSerializeUpgrade( ar );
 		else
@@ -564,7 +564,7 @@ void xBattleStartInfo::DeSerialize( XArchive& ar, XWorld *pWorld, int ) {
 /**
  @brief XML 노드로부터 reward를 읽어들인다.
 */
-xReward::xReward( XHero* pHero ) {
+xReward::xReward( XSPHero pHero ) {
 	XBREAK( pHero == nullptr );
 	SetHero( pHero->GetidProp(), 0 );
 }

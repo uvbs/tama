@@ -36,7 +36,7 @@ class XSceneStorage;
 //////////////////////////////////////////////////////////////////////////
 XWndStoragyItemElem* XWndStoragyItemElem::sUpdateCtrl( XWnd* pParent, 
 																											 const XE::VEC2& vPos, 
-																											 XHero* pHero, 
+																											 XSPHero pHero, 
 																											 const std::string& ids )
 {
 	XWndStoragyItemElem* pWndHero = nullptr;
@@ -56,7 +56,7 @@ XWndStoragyItemElem* XWndStoragyItemElem::sUpdateCtrl( XWnd* pParent,
  @brief pHero초상화 UI를 pWndList에 추가시킨다.
 */
 XWndStoragyItemElem* XWndStoragyItemElem::sUpdateCtrlToList( XWndList *pWndList, 
-																														 XHero *pHero )
+																														 XSPHero pHero )
 {
 	if( pHero == nullptr )
 		return nullptr;
@@ -148,14 +148,14 @@ XWndStoragyItemElem::XWndStoragyItemElem( const XE::VEC2& vPos,
 	: XWndStoragyItemElem( vPos, reward, false ) { }
 
 
-XWndStoragyItemElem::XWndStoragyItemElem( const XE::VEC2& vPos, XHero *pHero )
+XWndStoragyItemElem::XWndStoragyItemElem( const XE::VEC2& vPos, XSPHero pHero )
 	: XWndStoragyItemElem( vPos, XGAME::xReward(pHero) )
 {
 	SetHero( pHero );
 }
 
 XWndStoragyItemElem::XWndStoragyItemElem( const XE::VEC2& vPos, 
-																					XHero *pHero,
+																					XSPHero pHero,
 																					bool bBatch )
 	: XWndStoragyItemElem( XE::VEC2(0,0), XGAME::xReward( pHero ), bBatch )
 {
@@ -277,7 +277,7 @@ void XWndStoragyItemElem::SetHero( ID idProp )
 // 	}
 // }
 
-void XWndStoragyItemElem::SetHero( const XHero* pHero )
+void XWndStoragyItemElem::SetHero( XSPHeroConst pHero )
 {
 	if( pHero ) {
 		SetbShowNum( false );

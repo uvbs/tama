@@ -1068,7 +1068,7 @@ int XWndRegistAcc::OnClickRegist( XWnd* pWnd, DWORD p1, DWORD p2 )
 }
 
 ////////////////////////////////////////////////////////////////
-XWndSkillTrainComplete::XWndSkillTrainComplete( XHero* pHero, 
+XWndSkillTrainComplete::XWndSkillTrainComplete( XSPHero pHero, 
 																								const _tstring& idsSkill, 
 																								int level )
 	: XWndPopup( _T( "train_skill_end.xml" ), "popup" )
@@ -1113,7 +1113,7 @@ void XWndSkillTrainComplete::Update()
 }
 
 ////////////////////////////////////////////////////////////////
-XWndTrainCompleteLevel::XWndTrainCompleteLevel( XHero* pHero )
+XWndTrainCompleteLevel::XWndTrainCompleteLevel( XSPHero pHero )
 	: XWndPopup( _T( "train_level_end.xml" ), "popup" )
 {
 	Init();
@@ -1137,7 +1137,7 @@ void XWndTrainCompleteLevel::Update()
 }
 
 ////////////////////////////////////////////////////////////////
-XWndTrainCompleteSquad::XWndTrainCompleteSquad( XHero* pHero, 
+XWndTrainCompleteSquad::XWndTrainCompleteSquad( XSPHero pHero, 
 																								xtUnit unit, 
 																								int level )
 	: XWndPopup( _T( "train_squad_end.xml" ), "popup" )

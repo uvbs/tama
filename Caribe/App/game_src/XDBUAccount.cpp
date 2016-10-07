@@ -193,7 +193,7 @@ XLegion* XDBUAccount::RestoreLegionPacketFull( XArchive& arFull, int idxLegion )
 // 	ar >> size ;
 // 	for( int i = 0; i < size; ++i )
 // 	{
-// 		XHero *pHero = new XHero( this );
+// 		XSPHero pHero = std::make_shared<XHero>( this );
 // 		pHero->DeSerialize( ar, GetThis(), verHero );
 // 		m_listHero.Add( pHero );
 // 	}

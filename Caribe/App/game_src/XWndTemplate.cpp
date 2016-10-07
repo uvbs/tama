@@ -395,7 +395,7 @@ XWndCircleUnit::XWndCircleUnit()
 {
 	Init();
 }
-XWndCircleUnit::XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XHero *pHero )
+XWndCircleUnit::XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XSPHero pHero )
 	: XWndImage( PATH_UI("corps_legionnaire_bg.png"), vPos )
 {
 	Init();
@@ -447,7 +447,7 @@ void XWndCircleUnit::Update()
 */
 XWndCircleUnit2::XWndCircleUnit2( XGAME::xtUnit unit, 
 																	const XE::VEC2& vPos, 
-																	XHero *pHero )
+																	XSPHero pHero )
 	: XWnd( vPos )
 	, m_Unit( unit )
 	, m_pHero( pHero )
@@ -477,7 +477,7 @@ void XWndCircleUnit2::Update()
 */
 XWndCircleSkill::XWndCircleSkill( const XSKILL::XSkillDat *pDat
 																	, const XE::VEC2& vPos
-																	, XHero *pHero )
+																	, XSPHero pHero )
 	: XWnd( vPos )
 	, m_pSkillDat( pDat )
 {
@@ -659,7 +659,7 @@ XWndPopup* XGAME::DoPopupBattleResult( XGAME::xBattleResult& result, XWnd* pPare
 */
 XWndTechAbil::XWndTechAbil( const XSKILL::XSkillDat *pDat
 														, const XE::VEC2& vPos
-														, XHero *pHero )
+														, XSPHero pHero )
 	: XWnd( vPos )
 	, m_pSkillDat( pDat )
 {

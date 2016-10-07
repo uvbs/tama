@@ -174,7 +174,7 @@ int XSceneEquip::OnBack(XWnd *pWnd, DWORD p1, DWORD p2)
 
 void XSceneEquip::RecvReqHeroEquip(ID snHero, ID snItem, ID typeAction)
 {
-	XHero *pHero = ACCOUNT->GetHero(snHero);
+	XSPHero pHero = ACCOUNT->GetHero(snHero);
 	XBaseItem *pItem = ACCOUNT->GetItem(snItem);
 	if (pHero && pItem && 
 		pItem->GetpProp()->parts == m_BaseParam.idxParts)

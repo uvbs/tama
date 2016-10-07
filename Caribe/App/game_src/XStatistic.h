@@ -13,7 +13,7 @@ class XStatistic
 {
 public:
 	struct xSquad {
-		XHero *pHero = nullptr;
+		XSPHero pHero = nullptr;
 		float damageDeal = 0;		// 총 데미지 딜링양
 		float damageAttacked = 0;	// 총 맞은 양
 		float damageDealByCritical = 0;	// 총 치명타 딜링양
@@ -33,7 +33,7 @@ public:
 	//
 	GET_ACCESSOR( XList4<xSquad*>&, listSquads );
 
-	void AddSquad( const XHero *pHero );
+	void AddSquad( XSPHeroConst pHero );
 	float AddDamageDeal( ID snHero, float damage );
 	float AddDamageAttacked( ID snHero, float damage );
 	float AddDamageDealByCritical( ID snHero, float damage );

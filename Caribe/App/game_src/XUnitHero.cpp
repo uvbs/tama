@@ -27,7 +27,7 @@ using namespace XSKILL;
 
 ////////////////////////////////////////////////////////////////
 XUnitHero::XUnitHero( XSPSquad spSquadObj,
-					XHero *pHero,
+					XSPHero pHero,
 					ID idPropUnit, 
 					BIT bitSide, 
 					const XE::VEC3& vPos,

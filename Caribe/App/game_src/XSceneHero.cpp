@@ -277,7 +277,7 @@ int XSceneHero::OnSummonFinish(XWnd* pWnd, DWORD p1, DWORD p2)
 		_tstring strName = XE::Format(XTEXT(2158), pPropHero->GetstrName().c_str() );
 		xSET_TEXT( this, "text.hero.name", strName );
 	} else {
-		XHero* pHero = ACCOUNT->GetHero( _m_snHero );
+		XSPHero pHero = ACCOUNT->GetHero( _m_snHero );
 		XBREAK( pHero == NULL );
 		auto pPropHero = pHero->GetpProp();
 		gradeCurr = pHero->GetGrade();

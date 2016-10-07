@@ -82,7 +82,7 @@ BOOL XSockGameSvr::SendCheat( XWnd *pTimeoutCallback, int type, DWORD param1, DW
 	} else
 	if( type == 2 ) {
 		ID snHero = param1;
-		XHero *pHero = ACCOUNT->GetHero( snHero );
+		XSPHero pHero = ACCOUNT->GetHero( snHero );
 		if( XASSERT(pHero) ) {
 			int level = (int)param2;
 			auto type = (XGAME::xtTrain)param3;
@@ -622,7 +622,7 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 				for( int i = 0; i < numEnter; ++i ) {
 					ID snHero;
 					arParam >> snHero;
-					XHero* pHero = nullptr;
+					XSPHero pHero = nullptr;
 					auto spParam = std::static_pointer_cast<XGAME::xPrivateRaidParam>(spSceneParam);
 					if( idxSide == 0 ) {
 						pHero = ACCOUNT->GetpHeroBySN( snHero );
@@ -1499,7 +1499,7 @@ void XSockGameSvr::RecvUnlockMenu( XPacket& p, const xCALLBACK& c )
 // 	p >> dw0;	//idWnd;
 // 	p >> snHero;
 // 	p >> ary;			// 삭제해야할 책 리스트
-// 	XHero *pHero = ACCOUNT->GetHero( snHero );
+// 	XSPHero pHero = ACCOUNT->GetHero( snHero );
 // 	pHero->DeSerializeLevel( p );
 // 	pHero->DeSerializeLevelupReady( p );
 // 	XBREAK( pHero->GetXFLevelObj().IsFullExp() && !pHero->IsLevelupLevelReady() );
@@ -1544,12 +1544,12 @@ void XSockGameSvr::RecvChangeHeroLegion( XPacket& p, const xCALLBACK& c )
 	p >> dw0;	unit = (XGAME::xtUnit) dw0;
 	p >> numUnit;
 
-	XHero *pHero = ACCOUNT->GetHero( snHero );
+	XSPHero pHero = ACCOUNT->GetHero( snHero );
 	pHero->SetUnit( unit );
 //	pHero->SetnumUnit( numUnit );
-// 	XList<XHero*> listHero;
+// 	XList<XSPHero> listHero;
 // 	ACCOUNT->GetInvenHero(listHero);
-// 	XLIST_LOOP(listHero, XHero*, pHero)
+// 	XLIST_LOOP(listHero, XSPHero, pHero)
 // 	{
 // 		if (snHero == pHero->GetsnHero())
 // 			pHero->SetUnit((XGAME::xtUnit)idLegion);
@@ -1590,7 +1590,7 @@ BOOL XSockGameSvr::SendReqSummonHero( XWnd *pTimeoutCallback, XGAME::xtGatha typ
 void XSockGameSvr::RecvSummonHero( XPacket& p, const xCALLBACK& c )
 {
 	DWORD gold, cashtem;
-	XHero *pHero = nullptr;
+	XSPHero pHero = nullptr;
 	ID idPropHero = 0;
 	BYTE b0;
 	p >> idPropHero;
@@ -1656,7 +1656,7 @@ void XSockGameSvr::RecvNewSquad( XPacket& p, const xCALLBACK& c )
 	ID snHero;
 	int idxSlot, idxLegion;
 	p >> snHero >> idxSlot >> idxLegion;
-	XHero *pHero = ACCOUNT->GetHero( snHero );
+	XSPHero pHero = ACCOUNT->GetHero( snHero );
 	if( XBREAK( pHero == NULL ) )
 		return;
 	XLegion *pLegion = ACCOUNT->GetLegionByIdx( idxLegion ).get();
@@ -2028,7 +2028,7 @@ void XSockGameSvr::RecvItemItemsSync( XPacket& p, const xCALLBACK& c )
 // 	ID idItem, snHero;
 // 	int numDel;
 // 	p >> snHero;
-// 	XHero *pHero = ACCOUNT->GetHero( snHero );
+// 	XSPHero pHero = ACCOUNT->GetHero( snHero );
 // 	XBREAK(pHero == nullptr);
 // 	p >> b0;	
 // 	if( b0 == 0 )
@@ -3012,7 +3012,7 @@ void XSockGameSvr::RecvResearch( XPacket& p, const xCALLBACK& c )
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
  @see AddResponse()
 */
-// BOOL XSockGameSvr::SendReqTrainHero( XWnd *pTimeoutCallback, XHero *pHero, XGAME::xtTrain type )
+// BOOL XSockGameSvr::SendReqTrainHero( XWnd *pTimeoutCallback, XSPHero pHero, XGAME::xtTrain type )
 // {
 // 	_XCHECK_CONNECT(0);
 // 	//
@@ -3670,7 +3670,7 @@ void XSockGameSvr::RecvResearchComplete( XPacket& p, const xCALLBACK& c )
  @see AddResponse()
 */
 BOOL XSockGameSvr::SendReqResearchCompleteNow( XWnd *pTimeoutCallback
-																							, XHero *pHero
+																							, XSPHero pHero
 																							, ID idAbil )
 {
 	_XCHECK_CONNECT(0);
@@ -4088,7 +4088,7 @@ BOOL XSockGameSvr::SendReqTrainCompleteQuick( XWnd *pTimeoutCallback, ID snSlot,
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
  @see AddResponse()
 */
-BOOL XSockGameSvr::SendReqPromotionHero( XWnd *pTimeoutCallback, XHero *pHero )
+BOOL XSockGameSvr::SendReqPromotionHero( XWnd *pTimeoutCallback, XSPHero pHero )
 {
 	_XCHECK_CONNECT(0);
 	//
@@ -5348,7 +5348,7 @@ void XSockGameSvr::RecvCampaignReward( XPacket& p, const xCALLBACK& c )
  @see AddResponse()
 */
 BOOL XSockGameSvr::SendReqTrainHeroByGold( XWnd *pTimeoutCallback, 
-											XHero *pHero, 
+											XSPHero pHero, 
 											int gold, 
 											XGAME::xtTrain typeTrain )
 {
@@ -5535,7 +5535,7 @@ BOOL XSockGameSvr::SendTouchSquadInReadyScene( int idxSquad )
  @param param 사용자가 정의해서 쓰시오
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
 */
-BOOL XSockGameSvr::SendControlSquadInBattle( const XHero *pHero )
+BOOL XSockGameSvr::SendControlSquadInBattle( XSPHeroConst pHero )
 {
 	_XCHECK_CONNECT(0);
 	//
@@ -5945,7 +5945,7 @@ void XSockGameSvr::DelegateGuildUpdate( XGuild* pGuild, const xnGuild::xMember& 
  @see AddResponse()
 */
 BOOL XSockGameSvr::SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, 
-																								const XList4<XHero*>& listHero, 
+																								const XList4<XSPHero>& listHero, 
 																								ID idSpot )
 {
 	_XCHECK_CONNECT(0);
@@ -6033,8 +6033,9 @@ void XSockGameSvr::RecvEnterReadyScene( XPacket& p, const xCALLBACK& c )
 	for( int i = 0; i < 2; ++i ) {
 		for( auto pHero : pSpot->GetlistEnter( i ) ) {
 			// 군단소속 영웅은 리스트에 넣지 않는다.
-			if( false == aryLegion[i]->IsEnteredHero( pHero->GetsnHero()) )
+			if( false == aryLegion[i]->IsEnteredHero( pHero->GetsnHero()) ) {
 				spParam->m_aryEnter[i].push_back( pHero );
+			}
 		}
 	}
 	SCENE_WORLD->DoExit( xSC_READY, spParam );

@@ -37,7 +37,7 @@ private:
 	XLayoutObj m_Layout;
 	XLayoutObj m_LayoutTooltip;
 	XWndStoragyItemElem *m_pSelectItem;		// 선택된 리스트 아이템
-	XHero *m_pHero;
+	XSPHero m_pHero;
 	xSPM_EQUIP m_BaseParam;
 	//
 	void Init()  {

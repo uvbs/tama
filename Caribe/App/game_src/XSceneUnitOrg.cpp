@@ -41,8 +41,7 @@ XSceneUnitOrg::xTab XSceneUnitOrg::s_tabCurr = xTAB_NONE;		// 현재 선택된 �
 
 void XSceneUnitOrg::Destroy() 
 {	
-	SAFE_DELETE(m_pKeepHero);
-//	SAFE_DELETE(m_pLayout);
+//	SAFE_DELETE(m_pKeepHero);
 	XBREAK( SCENE_UNITORG == nullptr );
 	XBREAK( SCENE_UNITORG != this );
 	SCENE_UNITORG = nullptr;
@@ -188,7 +187,7 @@ void XSceneUnitOrg::Update(void)
 	UpdateHeroInven();
 	//
 	XBREAK( m_pSelHero == nullptr );
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 
 	{
 		if( s_tabCurr == xTAB_SKILL ) {
@@ -293,7 +292,7 @@ void XSceneUnitOrg::UpdateHeroInven()
 	ID snSelected = (m_pSelHero )? m_pSelHero->GetsnHero() : 0;
 	m_pSelHero = nullptr;
 	pWndList->DestroyAllItem();
-	XList4<XHero*> listHero;
+	XList4<XSPHero> listHero;
 	ACCOUNT->_GetInvenHero(listHero);
 	listHero.sort(XSceneUnitOrg::CompParty);
 	std::map<ID,int> mapIdxHero;
@@ -423,7 +422,7 @@ void XSceneUnitOrg::UpdateHeroInfo(void)
 {
 	if( m_pSelHero == nullptr )
 		return;
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	/*if( XBREAK( pHero == nullptr ) )
 		return;*/
 	if (pHero == nullptr && m_pSelHero->IsSoulStone() == false)
@@ -469,7 +468,7 @@ void XSceneUnitOrg::UpdateHeroBasic()
 {
 	if( m_pSelHero == nullptr )
 		return;
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	/*if (XBREAK(pHero == nullptr))
 		return;*/
 	// 별
@@ -616,7 +615,7 @@ void XSceneUnitOrg::UpdateHeroBasic()
 /**
  @brief 영웅 렙업버튼(+) 관련 업데이트
 */
-void XSceneUnitOrg::UpdateHeroLevelUpgrade( XHero *pHero )
+void XSceneUnitOrg::UpdateHeroLevelUpgrade( XSPHero pHero )
 {
 	if (pHero == nullptr)
 		return;
@@ -682,7 +681,7 @@ void XSceneUnitOrg::UpdateSquadInfo()
 {
 	if( m_pSelHero == nullptr )
 		return;
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	auto pPropHero = m_pSelHero->GetpProp();
 	const auto type = XGAME::xTR_SQUAD_UP;
 	/*if( XBREAK( pHero == nullptr ) )
@@ -747,7 +746,7 @@ void XSceneUnitOrg::UpdateSquadInfo()
 /**
  @brief 부대업버튼(+)관련 업데이트.
 */
-void XSceneUnitOrg::UpdateSquadUpgradeButton( XHero *pHero )
+void XSceneUnitOrg::UpdateSquadUpgradeButton( XSPHero pHero )
 {
 	const XGAME::xtTrain typeTrain = XGAME::xTR_SQUAD_UP;
 	// 부대업글(+)버튼
@@ -813,7 +812,7 @@ void XSceneUnitOrg::UpdateSquadUpgradeButton( XHero *pHero )
 /**
  @brief 훈련소 버튼 업데이트
 */
-void XSceneUnitOrg::UpdateTrainingCenterButton( XHero *pHero )
+void XSceneUnitOrg::UpdateTrainingCenterButton( XSPHero pHero )
 {
 	auto pButt = Find( "butt.train_center" );
 	if( XBREAK(pButt == nullptr) )
@@ -849,7 +848,7 @@ void XSceneUnitOrg::UpdateTrainingCenterButton( XHero *pHero )
 
 void XSceneUnitOrg::OnAutoUpdate() 
 {
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	//
 	auto pText = xGET_TEXT_CTRL( this, "text.time.train.level" );
 	if( pText && pHero )
@@ -944,7 +943,7 @@ int XSceneUnitOrg::OnClickLegionSelect(XWnd *pWnd, DWORD p1, DWORD p2)
 		xSET_BUTT_HANDLER( pPopup, "butt.legion.exit", &XSceneUnitOrg::OnSelectExit );
 		auto pListLegion = xGET_LIST_CTRL( pPopup, "list.legion");
 		pListLegion->SetTypeHoriz();
-		XHero *pHero = m_pSelHero->GetpHero();
+		XSPHero pHero = m_pSelHero->GetpHero();
 		auto unitSel = XGAME::xUNIT_NONE;
 		int typeSize = 0;
 		for (int i = 1; i < XGAME::xUNIT_MAX; ++i) {
@@ -1103,7 +1102,7 @@ int XSceneUnitOrg::OnClickLevelupHero(XWnd *pWnd, DWORD p1, DWORD p2)
 		XWND_ALERT_T(XTEXT(2241), 5, XTEXT(2133));		// 5레벨에 열립니다. 하드코딩
 		return 1;
 	}
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	auto pPopup = new XWndLevelupHero( pHero, XGAME::xTR_LEVEL_UP );
 	pPopup->SetbModal( TRUE );
 	Add( pPopup );
@@ -1123,7 +1122,7 @@ int XSceneUnitOrg::OnClickLevelupHero(XWnd *pWnd, DWORD p1, DWORD p2)
 // 	//
 // 	XBREAK( m_pSelHero == nullptr );
 // 	XBREAK( m_pSelHero->GetpHero() == nullptr );
-// 	XHero *pHero = m_pSelHero->GetpHero();
+// 	XSPHero pHero = m_pSelHero->GetpHero();
 // 	auto pPopup = new XWndNewHeroLevelup( pHero );
 // 	pPopup->SetbModal( TRUE );
 // 	Add( pPopup );
@@ -1143,7 +1142,7 @@ int XSceneUnitOrg::OnClickProvideSkill(XWnd *pWnd, DWORD p1, DWORD p2)
 		XWND_ALERT_T( XTEXT( 2241 ), 5, XTEXT(2133) );		// 5레벨에 열립니다.
 		return 1;
 	}
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	if( XBREAK( pHero == nullptr ) )
 		return 1;
 	auto type = (XGAME::xtTrain)p1;
@@ -1173,7 +1172,7 @@ int XSceneUnitOrg::OnClickProvideSkill(XWnd *pWnd, DWORD p1, DWORD p2)
 	return 1;
 }
 
-void XSceneUnitOrg::OnRecvAddHeroExp( ID idWnd, XHero *pHero, BOOL bLevelup )
+void XSceneUnitOrg::OnRecvAddHeroExp( ID idWnd, XSPHero pHero, BOOL bLevelup )
 {
 	if( XBREAK( pHero == nullptr ) )
 		return;
@@ -1270,7 +1269,7 @@ void XSceneUnitOrg::UpdateSkillInfo(void)
 {
 	if( XBREAK( m_pSelHero == nullptr ) )
 		return;
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	auto pPropHero = m_pSelHero->GetpProp();
 	if (pHero) {
 		xSET_ENABLE(this, "butt.upgrade.active", true);
@@ -1352,7 +1351,7 @@ void XSceneUnitOrg::UpdateSkillInfo(void)
 /**
  @brief 스킬탭의 스킬보옥 관련 표시
 */
-void XSceneUnitOrg::UpdateSkillScroll( XHero *pHero, 
+void XSceneUnitOrg::UpdateSkillScroll( XSPHero pHero, 
 										XGAME::xtIdxSkilltype typeSkill,
 										XGAME::xtTrain typeTrain,
 										const char *cSuffix )
@@ -1365,7 +1364,7 @@ void XSceneUnitOrg::UpdateSkillScroll( XHero *pHero,
  @brief 스킬 업그레이드(+)버튼에 관한 업데이트.
  @param pHero 값이있으면 보유한 영웅, null이면 보유하지 않은 영웅
 */
-void XSceneUnitOrg::UpdateSkillUpgradeButton( XHero *pHero, 
+void XSceneUnitOrg::UpdateSkillUpgradeButton( XSPHero pHero, 
 										XGAME::xtIdxSkilltype typeSkill,
 										XGAME::xtTrain typeTrain,
 										const char *cSuffix )
@@ -1503,7 +1502,7 @@ int XSceneUnitOrg::OnClickSquadUpgrade( XWnd* pWnd, DWORD p1, DWORD p2 )
 		XWND_ALERT_T(XTEXT(2241), 6, XTEXT(2134));		// 6레벨 병사집합소를 열면 열립니다.
 		return 1;
 	}
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	if( XBREAK( pHero == nullptr) )
 		return 1;
 
@@ -1529,7 +1528,7 @@ int XSceneUnitOrg::OnClickCheatHeroLvUp( XWnd* pWnd, DWORD p1, DWORD p2 )
 	//
 	if( XBREAK( m_pSelHero == nullptr ) )
 		return 1;
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	XBREAK( pHero == nullptr );
 	auto type = (XGAME::xtTrain)p1;
 	int lvCurr = pHero->GetLevel( type );
@@ -1611,7 +1610,7 @@ void XSceneUnitOrg::OnRecvLevelupSquad(ID snHero)
 	if (pBar)
 		pBar->SetbDestroy(TRUE);
 
-	XHero *pHero = ACCOUNT->GetHero(snHero);
+	XSPHero pHero = ACCOUNT->GetHero(snHero);
 	XPropUnit::xPROP *pProp = PROP_UNIT->GetpProp(pHero->GetUnit());
 	if (pHero && pProp)
 	{
@@ -1636,7 +1635,7 @@ int XSceneUnitOrg::OnClickUnitInfo(XWnd *pWnd, DWORD p1, DWORD p2)
 	//
 	if (XBREAK(m_pSelHero == nullptr))
 		return 1;
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	if (XBREAK(pHero == nullptr))
 		return 1;
 	auto pPopup = new XWndUnitinfo( pHero, XTEXT(80061) );
@@ -1645,10 +1644,10 @@ int XSceneUnitOrg::OnClickUnitInfo(XWnd *pWnd, DWORD p1, DWORD p2)
 	return 1;
 }
 
-void XSceneUnitOrg::SetpKeepHero(XHero *pHero)
+void XSceneUnitOrg::SetpKeepHero(XSPHero pHero)
 {
-	SAFE_DELETE(m_pKeepHero);
-	m_pKeepHero = new XHero(*pHero);
+//	SAFE_DELETE(m_pKeepHero);
+	m_pKeepHero = std::make_shared<XHero>(*pHero);
 }
 
 /**
@@ -1664,7 +1663,7 @@ int XSceneUnitOrg::OnClickEquipSlot(XWnd *pWnd, DWORD p1, DWORD p2)
 	return 1;
 }
 
-void XSceneUnitOrg::SetSprSquad(XWnd *pWnd, XHero *pHero)
+void XSceneUnitOrg::SetSprSquad(XWnd *pWnd, XSPHero pHero)
 {
 	XPropUnit::xPROP *pPropUnit = PROP_UNIT->GetpProp(pHero->GetUnit());
 	XE::VEC2 vDist;
@@ -1737,10 +1736,10 @@ void XSceneUnitOrg::SetSprSquad(XWnd *pWnd, XHero *pHero)
 	}
 }
 
-bool XSceneUnitOrg::CompParty(XHero *p1, XHero *p2)
+bool XSceneUnitOrg::CompParty(XSPHero p1, XSPHero p2)
 {
-	XHero *pHero1 = p1;
-	XHero *pHero2 = p2;
+	XSPHero pHero1 = p1;
+	XSPHero pHero2 = p2;
 	int value1 = 0, value2 = 0;
 	if (ACCOUNT->GetCurrLegion()->GetSquadronByHeroSN(pHero1->GetsnHero()))
 		value1 = 1;
@@ -1752,7 +1751,7 @@ bool XSceneUnitOrg::CompParty(XHero *p1, XHero *p2)
 int XSceneUnitOrg::OnClickReleaseHeroOk(XWnd *pWnd, DWORD p1, DWORD p2)
 {
 	if (m_pSelHero)	{
-		XHero *pHero = m_pSelHero->GetpHero();
+		XSPHero pHero = m_pSelHero->GetpHero();
 		if (pHero)		{
 			GAMESVR_SOCKET->SendReqReleaseHero(this, pHero->GetsnHero());
 			pWnd->SetbEnable(FALSE);
@@ -1772,7 +1771,7 @@ int XSceneUnitOrg::OnClickInfoSquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 	//
 	if( XBREAK(m_pSelHero == nullptr) )
 		return 1;
-	XHero *pHero = m_pSelHero->GetpHero();
+	XSPHero pHero = m_pSelHero->GetpHero();
 	if( XBREAK( pHero == nullptr ) )
 		return 1;
 	auto pPopup = new XWndPopup( _T( "squad_info.xml" ), "squad_info" );
@@ -1828,7 +1827,7 @@ int XSceneUnitOrg::OnClickInfoSquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 // 	auto type = (XGAME::xtTrain) p1;
 // 	if( m_pSelHero )
 // 	{
-// 		XHero *pHero = m_pSelHero->GetpHero();
+// 		XSPHero pHero = m_pSelHero->GetpHero();
 // 		if( pHero )
 // 		{
 // 			GAMESVR_SOCKET->SendReqTrainCompleteTouch( GAME, type, pHero );
@@ -1850,7 +1849,7 @@ int XSceneUnitOrg::OnClickInfoSquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 // 	XBREAK( XGAME::IsInvalidTrainType(type) );
 // 	if( m_pSelHero )
 // 	{
-// 		XHero *pHero = m_pSelHero->GetpHero();
+// 		XSPHero pHero = m_pSelHero->GetpHero();
 // 		if( pHero ) {
 // 			GAMESVR_SOCKET->SendReqLevelupConfirm( GAME, type, pHero );
 // 		}
@@ -1860,7 +1859,7 @@ int XSceneUnitOrg::OnClickInfoSquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 // }
 
 
-// void XSceneUnitOrg::OnRecvLevelupConfirm( XHero *pHero, XGAME::xtTrain type )
+// void XSceneUnitOrg::OnRecvLevelupConfirm( XSPHero pHero, XGAME::xtTrain type )
 // {
 // 	XWnd *pWndLv = nullptr;
 // 	_tstring str;

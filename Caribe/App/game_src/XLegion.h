@@ -28,7 +28,7 @@ public:
 	static XLegion* sCreateLegionForNPC( int lvAcc, int adjDiff, 
 																		XGAME::xLegionParam& legionInfo );
 	static XSPLegion sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, bool bAdjustLegion );
-//	static XSPLegion sCreatespLegion( const XGAME::xLegion& legion, int lvExtern, bool bReArrangeSquad, XVector<XHero*>* pOutAry );
+//	static XSPLegion sCreatespLegion( const XGAME::xLegion& legion, int lvExtern, bool bReArrangeSquad, XVector<XSPHero>* pOutAry );
 #if defined(_XSINGLE) || !defined(_CLIENT)
 	static XSquadron* sCreateSquadronForNPC( int levelLegion, int adjDiff, XGAME::xtUnit unit, ID idHero=0, int _levelHero=0, int levelSkill=0, int _levelSquad=0, XGAME::xtGradeLegion gradeLegion = XGAME::xGL_NORMAL, const XGAME::xLegionParam *pLegionInfo = nullptr );
 	static XSquadron* sCreateSquadronForNPC2( const int levelLegion
@@ -62,12 +62,12 @@ public:
 	static int sGetAvailableUnitByLevel( int level, XArrayLinearN<XGAME::xtUnit, XGAME::xUNIT_MAX> *pOutAry );
 	static int sGetAvailableUnitByLevel( int level, XVector<XGAME::xtUnit> *pOutAry );
 	static int sGetMilitaryPower( XSPLegion spLegion );
-	static int sGetMilitaryPower( XHero *pHero );
+	static int sGetMilitaryPower( XSPHero pHero );
 	static int sGetMilitaryPowerMax( int lvAcc );
 //	static XSPLegion sCreateLegionWithDat( const xnLegion::xLegionDat& legionDat, XSPAccConst spAcc );
 private:
 	ID m_snLegion;
-	XHero *m_pLeader = nullptr;		// 널이 될수 있음.
+	XSPHero m_pLeader = nullptr;		// 널이 될수 있음.
 	XList4<XSquadron*> m_listSquadrons;		// 부대 리스트
 	XList4<XSquadron*> m_listFogs;
 	XGAME::xtGradeLegion m_gradeLegion = XGAME::xGL_NORMAL;
@@ -91,7 +91,7 @@ public:
 // 	GET_ACCESSOR( const XVector<XSquadron*>&, arySquadrons );
 	GET_ACCESSOR_CONST( const XList4<XSquadron*>&, listSquadrons );
 	GET_ACCESSOR_CONST( ID, snLegion );
-	GET_SET_ACCESSOR( XHero*, pLeader );
+	GET_SET_ACCESSOR( XSPHero, pLeader );
 	GET_ACCESSOR_CONST( XGAME::xtGradeLegion, gradeLegion );
 	GET_ACCESSOR_CONST( const std::vector<ID>&, aryResourceHero );
 	int GetPower() const;
@@ -126,12 +126,12 @@ public:
 	void DestroySquadron( ID idSquad );
 	XSquadron* GetSquadronByHeroSN( ID snHero ) const;
 	int _GetIdxSquadByHeroSN( ID snHero ) const;
-	void SwapSlotSquad( XHero *pHeroSrc, XHero *pHeroDst );
+	void SwapSlotSquad( XSPHero pHeroSrc, XSPHero pHeroDst );
 	void SwapSlotSquad( int idxSrc, int idxDst );
 	void DestroySquadBysnHero( ID snHero );
 	void DestroySquadByIdxPos( int idx );
-	int GetHerosToAry( XVector<XHero*> *pOutAry );
-	int GetHeroesToList( XList4<XHero*>* pOutList );
+	int GetHerosToAry( XVector<XSPHero> *pOutAry );
+	int GetHeroesToList( XList4<XSPHero>* pOutList );
 	void AdjustLegion();
 	int DeserializeForGuildRaid( XArchive& ar );
 	void SetResourceSquad( int numSquad );
@@ -149,10 +149,10 @@ public:
 	int GetNumFogs();
 	int GetMaxFogs( int numVisible );
 	bool DelFogSquad( ID snHero );
-	XHero* GetpHeroBySN( ID snHero ) const;
-	XHero* GetpHeroByIdxPos( int idxSquad );
+	XSPHero GetpHeroBySN( ID snHero ) const;
+	XSPHero GetpHeroByIdxPos( int idxSquad );
 	int GetIdxSquadByLeader();
-	bool ChangeHeroInSquad( XHero *pHeroFrom, XHero *pHeroTo );
+	bool ChangeHeroInSquad( XSPHero pHeroFrom, XSPHero pHeroTo );
 	/// 영웅이 군단에 속해있는지.
 	inline bool IsEnteredHero( ID snHero ) const {
 		return GetpHeroBySN( snHero ) != nullptr;
@@ -164,7 +164,7 @@ public:
 	float GethpMaxEach( ID snSquadHero, bool bHero ) const;
 //	bool IsValid() const;
 	bool IsNpc() const;
-	XSquadron* CreateAddSquadron( int idxSquad, const XHero* pHero, bool bCreateHero );
+	XSquadron* CreateAddSquadron( int idxSquad, XSPHeroConst pHero, bool bCreateHero );
 	void DestroySquadronAll();
 	void sDeserialize( XSPLegion spLegionTarget, XSPAccConst spAcc, XArchive& ar );
 private:

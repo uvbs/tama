@@ -61,33 +61,33 @@ void XHero::xEquip::DeSerialize( XArchive& ar, int verHero ) {
 
 //////////////////////////////////////////////////////////////////////////
 // static
-int XHero::sSerialize( XArchive& ar, XHero *pHero )
+int XHero::sSerialize( XArchive& ar, XSPHero pHero )
 {
 	ar << VER_HERO_SERIALIZE;
 	pHero->Serialize( ar );
 	return 1;
 }
 
-// XHero* XHero::sCreateDeSerialize( XArchive& ar/*, XSPAcc spAcc*/ )
+// XSPHero XHero::sCreateDeSerialize( XArchive& ar/*, XSPAcc spAcc*/ )
 // {
 // 	int ver;
 // 	ar >> ver;
-// 	XHero *pHero = new XHero();
+// 	XSPHero pHero = std::make_shared<XHero>();
 // 	pHero->DeSerialize( ar/*, spAcc*/, ver );
 // 	spAcc->AddHero( pHero );
 // 	return pHero;
 // }
 
-XHero* XHero::sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc )
+XSPHero XHero::sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc )
 {
 	int ver;
 	ar >> ver;
-	XHero *pHero = new XHero( spAcc );
+	XSPHero pHero = std::make_shared<XHero>( spAcc );
 	pHero->DeSerialize( ar/*, spAcc*/, ver );
 	return pHero;
 }
 
-XHero* XHero::sDeSerializeUpdate( XArchive& ar, XHero* pHero, XSPAccConst spAcc )
+XSPHero XHero::sDeSerializeUpdate( XArchive& ar, XSPHero pHero, XSPAccConst spAcc )
 {
 	int ver;
 	ar >> ver;
@@ -98,7 +98,7 @@ XHero* XHero::sDeSerializeUpdate( XArchive& ar, XHero* pHero, XSPAccConst spAcc 
 }
 
 #if defined(_XSINGLE) || !defined(_CLIENT)
-XHero* XHero::sCreateHero( const XPropHero::xPROP *pProp,
+XSPHero XHero::sCreateHero( const XPropHero::xPROP *pProp,
 													 int levelSquad,
 													 XGAME::xtUnit unit,
 													 XSPAccConst spAcc )
@@ -107,7 +107,7 @@ XHero* XHero::sCreateHero( const XPropHero::xPROP *pProp,
 #else
 	XBREAK( 1 );	// 클라에선 이걸 사용하면 안됨.
 #endif // XSINGLE || not CLIENT
-	XHero *pHero = new XHero( pProp, levelSquad, unit, spAcc );
+	XSPHero pHero = std::make_shared<XHero>( pProp, levelSquad, unit, spAcc );
 	return pHero;
 }
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
@@ -1419,7 +1419,7 @@ float XHero::GetSquadPower( float statBase, XGAME::xtSize size, int levelSquad )
 }
 // 스탯
 //////////////////////////////////////////////////////////////////////////
-// static float GetAttackMeleePowerSquad( XHero* pHero, XPropUnit::xPROP *pProp, int levelSquad ) {
+// static float GetAttackMeleePowerSquad( XSPHero pHero, XPropUnit::xPROP *pProp, int levelSquad ) {
 // 	return pHero->GetSquadPower( pProp->atkMelee, pProp->size, levelSquad );
 // }
 // static float GetAttackRangePowerSquad( XPropUnit::xPROP *pProp, int levelSquad ) {

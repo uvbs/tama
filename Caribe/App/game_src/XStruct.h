@@ -201,7 +201,7 @@ struct xBattleResult {
 	int m_totalStar = 0;		// 계정이 가진 총 별개수.
 	XArrayLinearN<XBaseItem*, 256> aryUpdated;
 	XArrayLinearN<ItemBox, 256> aryDrops;
-	XVector<XHero*> aryHeroes;
+	XVector<XSPHero> aryHeroes;
 	XVector<ID> m_aryLevelUpHeroes;		// 레벨업한 영웅들의 sn
 	xBattleLog logForAttacker;
 	int ladder = 0;
@@ -349,7 +349,7 @@ struct xReward {
 #endif // WIN32
 	static int sLoadResFromXMLToAry( XEXmlNode& nodeRoot, LPCTSTR szNodeName, LPCTSTR szTag, std::vector<xReward> *pOutAry );
 	xReward() : rewardType( xtReward::xRW_NONE ), idReward( 0 ), num( 1 ) {}
-	xReward( XHero* pHero );
+	xReward( XSPHero pHero );
 	inline void SetItem( ID idProp, int _num = 1 ) {
 		rewardType = xtReward::xRW_ITEM;
 		idReward = idProp;

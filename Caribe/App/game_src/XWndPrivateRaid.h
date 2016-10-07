@@ -27,7 +27,7 @@ public:
 private:
 	// private member
 	XSpotPrivateRaid* m_pSpot = nullptr;
-//	XVector<XHero*> m_arySelectedEnter;
+//	XVector<XSPHero> m_arySelectedEnter;
 private:
 	// private method
 	void Init() {}

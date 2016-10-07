@@ -446,7 +446,7 @@ public:
 	bool IsQuestDirectionToArea( XPropCloud::xCloud* pPropArea );
 	XE::VEC2 GetvwCamera();
 	void SetvwCamera( const XE::VEC2& vwCamera );
-	XHero* GetpHero( ID idHero ) override;
+	XSPHero GetpHero( ID idHero ) override;
 //	void UpdateOptionPopup();
 //	void UpdateSpotProfilePicture( XSpotCastle *pSpot, const std::string& strFbUserId, const XE::xImage& imgInfo );
 	/// 프로필사진 레이어를 얻는다.

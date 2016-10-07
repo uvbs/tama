@@ -28,7 +28,7 @@ using namespace XGAME;
 /**
  @brief 
 */
-XWndLevelupHero::XWndLevelupHero( XHero *pHero, XGAME::xtTrain typeTrain )
+XWndLevelupHero::XWndLevelupHero( XSPHero pHero, XGAME::xtTrain typeTrain )
 	: XWndPopup( _T("layout_book_hero.xml"), "popup_training_base" )
 {
 	Init();

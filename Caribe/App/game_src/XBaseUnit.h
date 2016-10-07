@@ -51,7 +51,7 @@ class XBaseUnit : public XEBaseWorldObj, public XEControllerFSM
 {
 public:
 	static XSPUnit sCreateUnit( XSPSquad spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
-	static XSPUnit sCreateHero( XSPSquad spSquadObj, XHero *pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
+	static XSPUnit sCreateHero( XSPSquad spSquadObj, XSPHero pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
 	static BOOL sGetMoveDstDelta( const XE::VEC3& vwCurr, const XE::VEC3& vwDst, float speedMove, XE::VEC3 *pOutDelta );
 	static bool s_bNotUseActiveByEnemy;		// 적영웅 스킬사용금지
 #ifdef WIN32
@@ -72,7 +72,7 @@ private:
 	std::string m_strcIds;
 //#endif // WIN32
 	ID m_idProp;			// 자주쓰는거라 최적화를 위해 변수로 빼놓음. 
-	XHero* m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	XECompCamp m_Camp;
 	XE::VEC3 m_vDelta;
 	CTimer m_Timer;
@@ -161,8 +161,8 @@ public:
 	GET_ACCESSOR_CONST( const XE::VEC2&, vsPos );
 	GET_ACCESSOR_PTR( XPropUnit::xPROP*, pPropUnit );
 	GET_SET_ACCESSOR_CONST( const std::string&, strcIds );
-	GET_ACCESSOR_CONST( const XHero*, pHero );
-	inline XHero* GetpHeroMutable() {
+	GET_ACCESSOR_CONST( XSPHeroConst, pHero );
+	inline XSPHero GetpHeroMutable() {
 		return m_pHero;
 	}
  	GET_ACCESSOR_CONST( float, multipleAbility );
@@ -196,11 +196,11 @@ public:
 		return !IsHero();
 	}
 	const XPropHero::xPROP* GetpPropHero();
-//	XHero* GetpHero();
-// 	inline XHero* GetpHero() {
+//	XSPHero GetpHero();
+// 	inline XSPHero GetpHero() {
 // 		return GetHero();
 // 	}
-//	const XHero* GetpHeroConst() const;
+//	XSPHeroConst GetpHeroConst() const;
 	ID GetsnHero() const;
 	virtual bool IsLeader() {return FALSE;}
 	XSPUnit GetspLeader();

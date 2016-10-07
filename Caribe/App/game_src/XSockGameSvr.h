@@ -325,7 +325,7 @@ public:
 	void RecvCheckAPTimeOver(XPacket& p, const xCALLBACK& c);
 // 	BOOL SendReqProvideBooty(XWnd *pTimeoutCallback, ID snHero, XGAME::xtTrain type, int num);
 // 	void RecvProvideBooty(XPacket& p, const xCALLBACK& c);
-	BOOL SendReqPromotionHero( XWnd *pTimeoutCallback, XHero *pHero );
+	BOOL SendReqPromotionHero( XWnd *pTimeoutCallback, XSPHero pHero );
 	void RecvPromotionHero( XPacket& p, const xCALLBACK& c );
 	BOOL SendReqSummonHeroByPiece( XWnd *pTimeoutCallback, XPropHero::xPROP* pPropHero );
 	void RecvSummonHeroByPiece( XPacket& p, const xCALLBACK& c );
@@ -365,18 +365,18 @@ public:
 	void RecvChangeMemberGrade(XPacket& p, const xCALLBACK& c);
 	//
 	void RecvCreateHero(XPacket& p, const xCALLBACK& c);
-	BOOL SendReqResearchCompleteNow(XWnd *pTimeoutCallback, XHero *pHero, ID idAbil);
+	BOOL SendReqResearchCompleteNow(XWnd *pTimeoutCallback, XSPHero pHero, ID idAbil);
 	void RecvSyncBaseInfo(XPacket& p, const xCALLBACK& c);
-// 	BOOL SendReqTrainHero(XWnd *pTimeoutCallback, XHero *pHero, XGAME::xtTrain type);
+// 	BOOL SendReqTrainHero(XWnd *pTimeoutCallback, XSPHero pHero, XGAME::xtTrain type);
 // 	void RecvTrainHero(XPacket& p, const xCALLBACK& c);
 	BOOL SendReqCheckTrainComplete(XWnd *pTimeoutCallback, ID snSlot);
 	void RecvCheckTrainComplete(XPacket& p, const xCALLBACK& c);
-	BOOL SendReqTrainCompleteTouch(XWnd *pTimeoutCallback, XGAME::xtTrain typeTrain, XHero *pHero);
+	BOOL SendReqTrainCompleteTouch(XWnd *pTimeoutCallback, XGAME::xtTrain typeTrain, XSPHero pHero);
 	void RecvTrainCompleteTouch(XPacket& p, const xCALLBACK& c);
 	BOOL SendAccepLevelUp();
 	void RecvSyncTrainSlot(XPacket& p, const xCALLBACK& c);
 	BOOL SendFlagTutorial();
-// 	BOOL SendReqLevelupConfirm( XWnd *pTimeoutCallback, XGAME::xtTrain typeTrain, XHero *pHero );
+// 	BOOL SendReqLevelupConfirm( XWnd *pTimeoutCallback, XGAME::xtTrain typeTrain, XSPHero pHero );
 // 	void RecvLevelupConfirm( XPacket& p, const xCALLBACK& c );
 	void RecvIsOnline( XPacket& p, const xCALLBACK& c );
 	void RecvUnlockLoginForBattle( XPacket& p, const xCALLBACK& c );
@@ -398,7 +398,7 @@ public:
 	BOOL SendReqCampaignReward( XWnd *pTimeoutCallback, ID idSpot, ID idCamp, int idxStage );
 	void RecvCampaignReward( XPacket& p, const xCALLBACK& c );
 	void RecvSyncResource( XPacket& p, const xCALLBACK& c );
-	BOOL SendReqTrainHeroByGold( XWnd *pTimeoutCallback, XHero *pHero, int gold, XGAME::xtTrain typeTrain );
+	BOOL SendReqTrainHeroByGold( XWnd *pTimeoutCallback, XSPHero pHero, int gold, XGAME::xtTrain typeTrain );
 	void RecvTrainHeroByGold( XPacket& p, const xCALLBACK& c );
 	BOOL SendReqClickFogSquad( XWnd *pTimeoutCallback, ID idSpot, ID snHero, int idxStage );
 	void RecvSendReqClickFogSquad( XPacket& p, const xCALLBACK& c );
@@ -406,7 +406,7 @@ public:
 	BOOL SendUnregistPushMsg(XWnd *pTimeoutCallback, int idacc, int type1, int type2);
 	BOOL SendCheckUnlockUnit( XGAME::xtUnit unit );
 	BOOL SendTouchSquadInReadyScene( int idxSquad );
-	BOOL SendControlSquadInBattle( const XHero *pHero );
+	BOOL SendControlSquadInBattle( XSPHeroConst pHero );
 	BOOL SendCheckEncounterLog( ID idSpot );
 	BOOL SendGotoHome( int secTimeout );
 	BOOL SendReqRegisterFacebook( XWnd *pTimeoutCallback, const std::string& strcFbUserId, const std::string& strFbUsername );
@@ -418,7 +418,7 @@ public:
 	BOOL SendReqSync( XWnd *pTimeoutCallback, XGAME::xtParamSync type, int param = 0 );
 	//	BOOL SendReqAllGuildInfo( XWnd *pTimeoutCallback );
 	BOOL SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, XGAME::xtPaymentRes typeAsset, bool bByItem );
-	BOOL SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, const XList4<XHero*>& listHero, ID idSpot );
+	BOOL SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, const XList4<XSPHero>& listHero, ID idSpot );
 	BOOL SendReqEnterReadyScene( XWnd *pTimeoutCallback, ID idSpot );
 private:
 	void RecvAttackedSimulByHome( XPacket& p, const xCALLBACK& c );

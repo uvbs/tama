@@ -26,7 +26,7 @@ public:
 		Destroy();
 	}
 	// get/setter
-	const XList4<XHero*>& GetlistEnterEnemy() const {
+	const XList4<XSPHero>& GetlistEnterEnemy() const {
 		return m_listEnterEnemy;
 	}
 	GET_ACCESSOR_CONST( const XList4<ID>&, listEnterPlayer );
@@ -44,30 +44,30 @@ public:
 		return m_legionDatPlayer.m_listSquad.empty();
 	}
 	void SerializeForBattle( XArchive* pOut, const XParamObj2& param );
-	XList4<XHero*> GetlistEnter( int idxSide );
+	XList4<XSPHero> GetlistEnter( int idxSide );
 //	XSPLegion GetspLegionPlayer();
 //////////////////////////////////////////////////////////////////////////
 #ifdef _SERVER
 private:
 #endif // _SERVER
 #ifdef _CLIENT
-	void AddEnterHero( XHero* pHero, int idxSide );
-	bool IsExistEnterHero( XHero* pHero, int idxSide );
-	void DelEnterHero( XHero* pHero, int idxSide );
-	void ChangeEnterHero( XHero* pHero1, XHero* pHero2, int idxSide );
-	void ReplaceEnterHero( XHero* pHeroNew, XHero* pExistHero, int idxSide );
+	void AddEnterHero( XSPHero pHero, int idxSide );
+	bool IsExistEnterHero( XSPHero pHero, int idxSide );
+	void DelEnterHero( XSPHero pHero, int idxSide );
+	void ChangeEnterHero( XSPHero pHero1, XSPHero pHero2, int idxSide );
+	void ReplaceEnterHero( XSPHero pHeroNew, XSPHero pExistHero, int idxSide );
 #endif // _CLIENT
-	int GetidxEnterHero( XHero* pHero, int idxSide );
-	void SetSelectEnterHero( XHero* pHero, int idxSide );		// 현재 선택된 영웅
-	bool IsSelectedHero( XHero* pHero, int idxSide );
-	XHero* GetSelectEnterHero( int idxSide );
+	int GetidxEnterHero( XSPHero pHero, int idxSide );
+	void SetSelectEnterHero( XSPHero pHero, int idxSide );		// 현재 선택된 영웅
+	bool IsSelectedHero( XSPHero pHero, int idxSide );
+	XSPHero GetSelectEnterHero( int idxSide );
 //////////////////////////////////////////////////////////////////////////
 private:
 	// private member
 	// 출전영웅 리스트(군단소속영웅포함)
 	XList4<ID> m_listEnterPlayer;
-	XList4<XHero*> m_listEnterEnemy;			
-	XVector<XHero*> m_arySelected;
+	XList4<XSPHero> m_listEnterEnemy;			
+	XVector<XSPHero> m_arySelected;
 //	XSPLegion m_spLegionPlayer;							// 이 스팟 전용 플레이어측 군단 정보
 	xnLegion::xLegionDat m_legionDatPlayer;					///< 스팟엔 플레이어의 군단객체(XLegion)을 두지 않는다. 데이터 형태로만 보관한다.
 //////////////////////////////////////////////////////////////////////////

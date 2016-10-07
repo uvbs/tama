@@ -26,16 +26,16 @@ class XHero : public XDelegateLevel
 {
 public:
 	static XPropHero* sGet() { return PROP_HERO; }
-	static int sSerialize( XArchive& ar, XHero *pHero );
-	static int sSerialize( XArchive* pOut, XHero *pHero ) {
+	static int sSerialize( XArchive& ar, XSPHero pHero );
+	static int sSerialize( XArchive* pOut, XSPHero pHero ) {
 		return sSerialize( *pOut, pHero );
 	}
-//	static XHero* sCreateDeSerialize( XArchive& ar, XSPAcc spAcc );
-	static XHero* sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc );
-	static XHero* sDeSerializeUpdate( XArchive& ar, XHero* pHero, XSPAccConst spAcc );
+//	static XSPHero sCreateDeSerialize( XArchive& ar, XSPAcc spAcc );
+	static XSPHero sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc );
+	static XSPHero sDeSerializeUpdate( XArchive& ar, XSPHero pHero, XSPAccConst spAcc );
 	static int sGetMaxExpWithLevel( XGAME::xtTrain type, int level );
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	static XHero* sCreateHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit, XSPAccConst spAcc );
+	static XSPHero sCreateHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit, XSPAccConst spAcc );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 // 	struct xItem {
 // 	private:
