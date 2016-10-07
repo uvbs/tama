@@ -24,7 +24,7 @@ static char THIS_FILE[] = __FILE__;
 // }
 
 ////////////////////////////////////////////////////////////////
-// void XDelegator::DelegateTrainComplete( XGAME::xtTrain type, XHero *pHero )
+// void XDelegator::DelegateTrainComplete( XGAME::xtTrain type, XSPHero pHero )
 // {
 // 	
 // 	for( auto itor = m_listWnd.begin(); itor != m_listWnd.end(); )	{

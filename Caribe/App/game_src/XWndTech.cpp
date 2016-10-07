@@ -73,7 +73,7 @@ void XWndArrow4Abil::Draw()
 ID XWndAbilButton::s_idSelected = 0;
 ID XWndAbilButton::s_idResearching = 0;
 ID XWndAbilButton::s_snHeroResearching = 0;
-XWndAbilButton::XWndAbilButton( XHero *pHero
+XWndAbilButton::XWndAbilButton( XSPHero pHero
 															, XGAME::xtUnit unit
 															, XPropTech::xNodeAbil *pNodeAbil
 															, const XE::VEC2& vPos )
@@ -302,7 +302,7 @@ void XWndResearchConfirm::Update()
 }
 
 ////////////////////////////////////////////////////////////////
-XWndResearchComplete::XWndResearchComplete( XHero* pHero, ID idAbil, int point )
+XWndResearchComplete::XWndResearchComplete( XSPHero pHero, ID idAbil, int point )
 	: XWndPopup( _T( "research_end.xml" ), "popup" )
 {
 	Init();

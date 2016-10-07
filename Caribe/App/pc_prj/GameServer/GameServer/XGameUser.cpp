@@ -184,7 +184,7 @@ int XGameUser::RecvCheat( XPacket& p )
 		DWORD dw0;
 		p >> snHero >> level >> dw0;
 		auto type = (XGAME::xtTrain)dw0;
-		XHero *pHero = m_spAcc->GetHero(snHero);
+		XSPHero pHero = m_spAcc->GetHero(snHero);
 		if( XASSERT(pHero) ) {
 			pHero->SetLevel( type, level );
 		}
@@ -234,14 +234,12 @@ int XGameUser::RecvCheat( XPacket& p )
 		int num;
 		p >> idProp;
 		p >> num;
-		for( int i = 0; i < num; ++i )
-		{
+		for( int i = 0; i < num; ++i ) {
 			auto pProp = PROP_HERO->GetpProp( idProp );
-			if( pProp )
-			{
+			if( pProp ) {
 				XGAME::xtSize tierUnit = XGAME::xSIZE_SMALL;
 				auto unit = XGAME::GetRandomUnit( pProp->typeAtk, tierUnit );
-				auto pHero = XHero::sCreateHero( pProp, 1, unit );
+				auto pHero = XHero::sCreateHero( pProp, 1, unit, m_spAcc );
 				m_spAcc->AddHero( pHero );
 				SendCreateHero( pHero );
 			}
@@ -373,7 +371,7 @@ int XGameUser::RecvCheatCreateItem( XPacket& p )
 	int num;
 	p >> idProp;
 	p >> num;
-	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( idProp );
+	auto pProp = PROP_ITEM->GetpProp( idProp );
 	XVERIFY_BREAK( pProp == nullptr );
 	if ( num > 100 )
 		num = 100;
@@ -1423,7 +1421,7 @@ ItemBox XGameUser::DoDropScalp( void )
 		return nullItem;
 	}
 //	XBaseItem *pItem = XAccount::sCreateItem( idItem, 1 );
-	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( idItem );
+	auto pProp = PROP_ITEM->GetpProp( idItem );
 	XBREAK( pProp == nullptr );
 	return std::make_pair(pProp, 1);
 }
@@ -2014,7 +2012,7 @@ int XGameUser::DispatchQuestEventByBattle( XSpot *pBaseSpot,
 	// 스팟전투 승리후에 들어오는 곳이므로 군단정보가 반드시 있어야 함.
 	XBREAK( spLegion == nullptr );
 	if( spLegion != nullptr ) {
-		XVector<XHero*> aryHeros;
+		XVector<XSPHero> aryHeros;
 		spLegion->GetHerosToAry( &aryHeros );
 		for( auto pHero : aryHeros ) {
 			infoQuest.SetidHero( pHero->GetidProp() );
@@ -3936,7 +3934,7 @@ void XGameUser::SendUnlockMenu( XGAME::xtMenus bitUnlock )
 // 	p >> snHero;
 // 	XVERIFY_BREAK(snHero == 0);
 // 	p >> aryItems;
-// 	XHero *pHero = m_spAcc->GetHero( snHero );
+// 	XSPHero pHero = m_spAcc->GetHero( snHero );
 // 	XVERIFY_BREAK( pHero == NULL );
 // 	XVERIFY_BREAK( pHero->IsMaxLevel(XGAME::xTR_LEVEL_UP) );
 // 	XVERIFY_BREAK( pHero->GetLevel() >= m_spAcc->GetLevel() );
@@ -3990,7 +3988,7 @@ int XGameUser::RecvChageHeroLegion(XPacket& p)
 	p >> idUnit;
 	XVERIFY_BREAK(idUnit == 0);
 
-	XHero *pHero = m_spAcc->GetHero( snHero );
+	XSPHero pHero = m_spAcc->GetHero( snHero );
 	XVERIFY_BREAK( pHero == NULL );
 	XGAME::xtUnit unit = (XGAME::xtUnit) idUnit;
 	pHero->SetUnit( unit );
@@ -4032,7 +4030,7 @@ int XGameUser::RecvChageHeroEquip(XPacket& p)
 	BOOL bSuccess = TRUE;
 	XVERIFY_BREAK(snHero == 0);
 	XVERIFY_BREAK(snItem == 0);
-	XHero* pHero = m_spAcc->GetHero(snHero);
+	XSPHero pHero = m_spAcc->GetHero(snHero);
 	if (pHero) {			
 		XBaseItem* pItem = m_spAcc->GetItem(snItem);
 		if (pItem) {
@@ -4198,9 +4196,9 @@ int XGameUser::RecvSummonHero( XPacket& p )
 			idx = 2;
 		auto unit = units[ idx ];	// 최초 등장은 1레벨부터이므로 소형으로 선택됨.
 //		int numUnit = 5; //1레벨이니까 기본 숫자제공.
-//		XHero *pHero = XHero::sCreateHero( pPropHero, unit, numUnit );
+//		XSPHero pHero = XHero::sCreateHero( pPropHero, unit, numUnit );
 		int lvSuqad = 1;
-		XHero *pHero = XHero::sCreateHero( pProp, lvSuqad, unit );
+		XSPHero pHero = XHero::sCreateHero( pProp, lvSuqad, unit, m_spAcc );
 		XVERIFY_BREAK( pHero == nullptr );
 		pHero->SetGrade( grade );
 		m_spAcc->AddHero( pHero );
@@ -4269,7 +4267,7 @@ int XGameUser::RecvNewSquad( XPacket& p )
 	ID snHero;
 	int idxSlot, idxLegion;
 	p >> snHero >> idxSlot >> idxLegion;
-	XHero *pHero = m_spAcc->GetHero( snHero );
+	XSPHero pHero = m_spAcc->GetHero( snHero );
 	XVERIFY_BREAK( pHero == NULL );
 	XLegion *pLegion = m_spAcc->GetLegionByIdx( idxLegion ).get();
 	XVERIFY_BREAK( pLegion == NULL );
@@ -4352,7 +4350,7 @@ int XGameUser::RecvChangeSquad(XPacket& p)
 		data tmp;
 		p >> tmp.spos;
 		p >> (ID)tmp.ssnhero;
-		XHero* pHero = m_spAcc->GetHero(tmp.ssnhero);
+		XSPHero pHero = m_spAcc->GetHero(tmp.ssnhero);
 		// 이런경우는 정상적이라면 일어나선 안되는 경우이므로 더이상 처리할필요 없습니다. 
 		// 이 경우 클라는 해킹이거나 비동기상태이므로 XVERYFY_BREAK로 리턴하여 재접속하도록 하고 있습니다.
 		XVERIFY_BREAK(pHero == nullptr);
@@ -4653,7 +4651,7 @@ int XGameUser::RecvChangeScalpToBook( XPacket& p )
 // 	ID snHero;
 // 	p >> snHero;
 // 	XVERIFY_BREAK( snHero == 0 );
-// 	XHero *pHero = m_spAcc->GetHero( snHero );
+// 	XSPHero pHero = m_spAcc->GetHero( snHero );
 // 	XVERIFY_BREAK( pHero == nullptr );
 // 	XVERIFY_BREAK( pHero->GetlevelSquad() >= PROP_SQUAD->GetMaxLevel() );
 // 	int levelNext = pHero->GetlevelSquad() + 1;
@@ -4702,7 +4700,7 @@ int XGameUser::RecvReleaseHero( XPacket& p )
 {
 	ID snHero;
 	p >> snHero;
-	XHero *pHero = m_spAcc->GetHero( snHero );
+	XSPHero pHero = m_spAcc->GetHero( snHero );
 	XVERIFY_BREAK( pHero == nullptr );
 	// 영웅의 토탈 exp를 얻는다.
 	XINT64 expTotal = pHero->GetExpSum();
@@ -5720,7 +5718,7 @@ int XGameUser::DoRewardQuest( ID idQuest )
 			auto pPropHero = PROP_HERO->GetpProp( pReward->idReward );
 			if( XASSERT(pPropHero) ) {
 				auto unit = XGAME::GetUnitBySizeAndAtkType( xSIZE_SMALL, pPropHero->typeAtk );
-				auto pHero = XHero::sCreateHero( pPropHero, 1, unit );
+				auto pHero = XHero::sCreateHero( pPropHero, 1, unit, m_spAcc );
 				if( XASSERT(pHero) ) {
 					m_spAcc->AddHero( pHero );
 					XHero::sSerialize( ar, pHero );
@@ -7452,7 +7450,7 @@ int XGameUser::RecvSummonHeroByPiece( XPacket& p )
 	XVERIFY_BREAK( pPropHero == nullptr );
 	auto pItemPiece = m_spAcc->GetSoulStoneByHero( pPropHero->strIdentifier );
 	XVERIFY_BREAK( pItemPiece == nullptr );
-	XHero *pHero = nullptr;
+	XSPHero pHero = nullptr;
 	auto bOk = m_spAcc->DoSummonHeroByPiece( idPropHero, &pHero );
 	XVERIFY_BREAK( bOk != XGAME::xE_OK );
 	{
@@ -7484,7 +7482,7 @@ int XGameUser::RecvEndSeq( XPacket& p )
 	m_spAcc->AddCompleteSeq( idsSeq );
 	// 튜토기사 편입컷씬이 끝나면 튜토리얼 기사를 제공한다.
 	_tstring idsHero = _T("donkeyxote");
-// 	XHero *pHero = nullptr;
+// 	XSPHero pHero = nullptr;
 	if( idsSeq == "visit.tavern" ) {
 		if( !m_spAcc->IsHaveHero( idsHero ) ) {
 			auto pHero = m_spAcc->CreateAddHero( idsHero );
@@ -8683,8 +8681,19 @@ x전투시작
 */
 int XGameUser::RecvBattleStart( XPacket& p )
 {
-	// 그냥 바로 답장줌.
+	ID idSpot;
+	p >> idSpot;
+	auto pSpot = GetpWorld()->GetpSpot( idSpot );
+	XVERIFY_BREAK( pSpot == nullptr );
+	ID snSession = m_spAcc->SetBattleSession( 0,      // auto generate
+																						nullptr,	// spLegion
+																						0,				// idAcc
+																						idSpot );
+
+	// 돌려보냄
 	XPacket ar( (ID)xCL2GS_INGAME_BATTLE_START );
+	ar << snSession;
+	ar << idSpot;
 	Send( ar );
 	return 1;
 }
@@ -8732,7 +8741,7 @@ void XGameUser::SendAddBattleLog( bool bAttack, XGAME::xBattleLog& log )
 /**
  @brief 생성한 영웅을 클라에 동기화시킨다.
 */
-void XGameUser::SendCreateHero( XHero *pHero )
+void XGameUser::SendCreateHero( XSPHero pHero )
 {
 	XPacket ar( (ID)xCL2GS_CREATE_HERO );
 	XHero::sSerialize( ar, pHero );
@@ -8980,7 +8989,7 @@ int XGameUser::RecvCampaignReward( XPacket& p )
 				auto pPropHero = PROP_HERO->GetpProp( reward.idReward );
 				if( XASSERT( pPropHero ) ) {
 					auto unit = XGAME::GetRandomUnit( pPropHero->typeAtk, XGAME::xSIZE_SMALL );
-					auto pHero = XHero::sCreateHero( pPropHero, 1, unit );
+					auto pHero = XHero::sCreateHero( pPropHero, 1, unit, m_spAcc );
 					XVERIFY_BREAK( pHero == nullptr );
 					m_spAcc->AddHero( pHero );
 					infoQuest.SetidHero( reward.idReward );
@@ -9737,12 +9746,16 @@ int XGameUser::RecvPrivateRaidEnterList( XPacket& p )
 // 		XVERIFY_BREAK( pHero == nullptr );
 // 		listEnterPlayer.push_back( pHero );
 	}
-	pSpot->UpdatePlayerEnterList( listEnterPlayer, m_spAcc );
-	XBREAK( pSpot->GetspLegionPlayer() == nullptr );
+	// 이 리스트는 군단에 속한 영웅과 관계없이 UI상에서 늘어놓은 영웅은 모두 온다.
+	// UI에 처럼 배치할때 는 군단이 있을때 군단영웅먼저 넣는다.
+	pSpot->UpdatePlayerEnterList( listEnterPlayer, m_spAcc->GetLevel() );
+	XBREAK( pSpot->IsEmptyLegionPlayer() );
 	// 클라로 전송(echo)
 	XPacket ar( p.GetidPacket() );
 	ar << idSpot;
-	XLegion::sSerialize( pSpot->GetspLegionPlayer(), &ar );
+	//XLegion::sSerialize( pSpot->GetspLegionPlayer(), &ar );
+	//ar << pSpot->GetlegionDatPlayer();
+	pSpot->SerializeForBattle( &ar, XParamObj2() );
 	Send(ar);
 
 // 	XGAME::xBattleStartInfo info( false, pSpot );

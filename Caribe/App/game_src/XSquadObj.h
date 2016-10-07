@@ -48,7 +48,7 @@ private:
 	float m_Radius/* = 150.f*/;
 	ID m_snSquadObj;
 	XSquadron *m_pSquadron;
-	XHero *m_pHero;
+	XSPHero m_pHero;
 	XList4<XSPUnit> m_listUnit;			// 오브젝트매니저에서 유닛이 삭제되어도 스쿼드에는 보관하기로 함. 자기 분대원객체를 끝까지 알 필요가 있을거 같아서.
 	XE::VEC3 m_vwPos;		// 분대의 중앙 지점
 	BOOL m_bMove;			// 부대 이동모드
@@ -95,7 +95,7 @@ private:
 	void Destroy();
 public:
 	XSquadObj( XSPLegionObj spLegion, const XSquadron *pSquad, const XE::VEC3& vwPos );
-	XSquadObj( XSPLegionObj spLegion, XHero *pHero, const XE::VEC3& vwPos );
+	XSquadObj( XSPLegionObj spLegion, XSPHero pHero, const XE::VEC3& vwPos );
 	virtual ~XSquadObj() { Destroy(); --s_numObj; }
 	//
 	void Release();
@@ -134,7 +134,7 @@ public:
 	XSPLegionObjConst GetspLegionObjConst() const {
 		return m_spLegionObj;
 	}
-	GET_ACCESSOR_CONST( XHero*, pHero );
+	GET_ACCESSOR_CONST( XSPHero, pHero );
 	GET_ACCESSOR_CONST( float, Radius );
 	GET_SET_ACCESSOR_CONST( BOOL, bNearOther );
 	GET_ACCESSOR( const XSPUnit, spHeroUnit );

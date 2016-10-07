@@ -330,7 +330,7 @@ private:
 class XWndSkillTrainComplete : public XWndPopup
 {
 public:
-	XWndSkillTrainComplete( XHero* pHero, 
+	XWndSkillTrainComplete( XSPHero pHero, 
 													const _tstring& idsSkill,
 													int level );
 	~XWndSkillTrainComplete() { Destroy(); }
@@ -354,7 +354,7 @@ private:
 class XWndTrainCompleteLevel : public XWndPopup
 {
 public:
-	XWndTrainCompleteLevel( XHero* pHero );
+	XWndTrainCompleteLevel( XSPHero pHero );
 	~XWndTrainCompleteLevel() { Destroy(); }
 	// get/setter
 	// public member
@@ -376,7 +376,7 @@ private:
 class XWndTrainCompleteSquad : public XWndPopup
 {
 public:
-	XWndTrainCompleteSquad( XHero* pHero, XGAME::xtUnit unit, int level );
+	XWndTrainCompleteSquad( XSPHero pHero, XGAME::xtUnit unit, int level );
 	~XWndTrainCompleteSquad() { Destroy(); }
 	// get/setter
 	// public member

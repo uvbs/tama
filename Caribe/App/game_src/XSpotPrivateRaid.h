@@ -26,9 +26,11 @@ public:
 		Destroy();
 	}
 	// get/setter
-	const XList4<XHero*>& GetlistEnter( int idxSide ) const {
-		return m_aryEnter[ idxSide ];
+	const XList4<XSPHero>& GetlistEnterEnemy() const {
+		return m_listEnterEnemy;
 	}
+	GET_ACCESSOR_CONST( const XList4<ID>&, listEnterPlayer );
+	GET_ACCESSOR_CONST( const xnLegion::xLegionDat&, legionDatPlayer );
 //	GET_SET_ACCESSOR2( XSPLegion, spLegionPlayer );
 	// public member
 	bool IsNpc() const override {
@@ -37,26 +39,38 @@ public:
 	bool IsPC() const override {
 		return !IsNpc();
 	}
-	void UpdatePlayerEnterList( const XList4<ID>& _listHero, XSPAccConst spAcc );
-	XSPLegion GetspLegionPlayer();
+	void UpdatePlayerEnterList( const XList4<ID>& _listHero, int lvAcc );
+	inline bool IsEmptyLegionPlayer() const {
+		return m_legionDatPlayer.m_listSquad.empty();
+	}
+	void SerializeForBattle( XArchive* pOut, const XParamObj2& param );
+	XList4<XSPHero> GetlistEnter( int idxSide );
+//	XSPLegion GetspLegionPlayer();
+//////////////////////////////////////////////////////////////////////////
 #ifdef _SERVER
 private:
 #endif // _SERVER
-	void AddEnterHero( XHero* pHero, int idxSide );
-	bool IsExistEnterHero( XHero* pHero, int idxSide );
-	void DelEnterHero( XHero* pHero, int idxSide );
-	void ChangeEnterHero( XHero* pHero1, XHero* pHero2, int idxSide );
-	void ReplaceEnterHero( XHero* pHeroNew, XHero* pExistHero, int idxSide );
-	int GetidxEnterHero( XHero* pHero, int idxSide );
-	void SetSelectEnterHero( XHero* pHero, int idxSide );		// 현재 선택된 영웅
-	bool IsSelectedHero( XHero* pHero, int idxSide );
-	XHero* GetSelectEnterHero( int idxSide );
+#ifdef _CLIENT
+	void AddEnterHero( XSPHero pHero, int idxSide );
+	bool IsExistEnterHero( XSPHero pHero, int idxSide );
+	void DelEnterHero( XSPHero pHero, int idxSide );
+	void ChangeEnterHero( XSPHero pHero1, XSPHero pHero2, int idxSide );
+	void ReplaceEnterHero( XSPHero pHeroNew, XSPHero pExistHero, int idxSide );
+#endif // _CLIENT
+	int GetidxEnterHero( XSPHero pHero, int idxSide );
+	void SetSelectEnterHero( XSPHero pHero, int idxSide );		// 현재 선택된 영웅
+	bool IsSelectedHero( XSPHero pHero, int idxSide );
+	XSPHero GetSelectEnterHero( int idxSide );
+//////////////////////////////////////////////////////////////////////////
 private:
 	// private member
-	XVector<XList4<XHero*>> m_aryEnter;			// 출전영웅 리스트
-	XVector<XHero*> m_arySelected;
-	XSPLegion _m_spLegionPlayer;							// 이 스팟 전용 플레이어측 군단 정보
-	xnLegion::xLegionDat m_legionDatPlayer;					///< m_spLegionPlayer를 생성할수 있는 기본 데이터
+	// 출전영웅 리스트(군단소속영웅포함)
+	XList4<ID> m_listEnterPlayer;
+	XList4<XSPHero> m_listEnterEnemy;			
+	XVector<XSPHero> m_arySelected;
+//	XSPLegion m_spLegionPlayer;							// 이 스팟 전용 플레이어측 군단 정보
+	xnLegion::xLegionDat m_legionDatPlayer;					///< 스팟엔 플레이어의 군단객체(XLegion)을 두지 않는다. 데이터 형태로만 보관한다.
+//////////////////////////////////////////////////////////////////////////
 private:
 	// private method
 	void Init() {}
@@ -68,7 +82,9 @@ private:
 	inline XPropWorld::xPrivateRaid* GetpProp(){
 		return static_cast<XPropWorld::xPrivateRaid*>( GetpBaseProp() );
 	}
-	void ProcCreateSquadron( XSPLegion spLegion, XList4<ID>* pOutlistHero, XSPAccConst spAcc ) const;
-	void SerializeForBattle( XArchive* pOut, const XParamObj2& param );
+	void ProcCreateSquadron( xnLegion::xLegionDat*, const XList4<ID>& listHero, int lvAcc ) const;
 	void DeSerializeForBattle( XArchive& ar, XArchive& arAdd, XSPAcc spAcc );
+	void SerializeEnterEnemy( XArchive& ar ) const;
+	void DeSerializeEnterEnemy( XArchive& ar, int verWorld );
+	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat ) override;
 }; // class XSpotPrivateRaid

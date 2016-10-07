@@ -147,18 +147,18 @@ public:
 	float OnDelegateGetScaleViewport() override;
 	void OnReload() override;
 	void CreateParticleSfx();
-	void OnControlSquad( const XHero *pHero );
+	void OnControlSquad( XSPHeroConst pHero );
 //	int OnClickOkByTutorialPopup( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnEndCutScene( const std::string& idsEndSeq ) override;
 	bool IsDialogMsg( DWORD idSeqPopup );
 	void DoMoveCamera( const XE::VEC2& vwDstCenter, float secMove = 0.f);
 	XE::VEC2 GetvwCamera();
 	void OnCreateOrderDialog( ID idHero ) override;
-	XHero* GetpHero( ID idHero ) override;
+	XSPHero GetpHero( ID idHero ) override;
 	virtual void OnDieSquad( XSPSquad spSquadObj );
 #ifdef _XSINGLE
 	static void sSetAbilHeroes();
-	static void sSetAbilHero( XHero *pHero, XGAME::xtUnit unit, LPCTSTR idsAbil, int point );
+	static void sSetAbilHero( XSPHero pHero, XGAME::xtUnit unit, LPCTSTR idsAbil, int point );
 	static XSPAcc sCreateAcc();
 	void SaveSingle();
 	void SetAI( bool bFlag );

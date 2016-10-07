@@ -116,7 +116,7 @@ void XSAccount::Load( )
 // 		{
 // 			if (pPostinfo->ReceiveItem(itempos, itempropid) > 0)
 // 			{				
-// 				XPropItem::xPROP *pProp = PROP_ITEM->GetpProp(itempropid);
+// 				auto pProp = PROP_ITEM->GetpProp(itempropid);
 // 				XBREAK(pProp == nullptr);
 // 				int num = 1;				
 // 				CreateItemToInven(pProp, num);
@@ -151,7 +151,7 @@ void XSAccount::Load( )
 // 				{
 // 					if (pItems->GetItemType() == XGAME::xtPOSTResource::xPOSTRES_ITEMS )
 // 					{
-// 						XPropItem::xPROP *pProp = PROP_ITEM->GetpProp(pItems->GetItemID());
+// 						auto pProp = PROP_ITEM->GetpProp(pItems->GetItemID());
 // 						XBREAK(pProp == nullptr);
 // 
 // 						XBaseItem *pBaseItem = sCreateItem(pProp, pItems->GetnCount());

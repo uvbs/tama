@@ -24,13 +24,14 @@ static char THIS_FILE[] = __FILE__;
 /**
  플레이어 부대를 생성
 */
-XSquadron::XSquadron( XHero *pHero )
+XSquadron::XSquadron( XSPHero pHero )
 {
 	Init();
 	m_bCreateHero = FALSE;
 	XBREAK( pHero == NULL );
 	m_pHero = pHero;
-	XPropUnit::xPROP *pPropUnit = PROP_UNIT->GetpProp( pHero->GetUnit() );
+	//m_snHero = pHero->GetsnHero();
+	auto pPropUnit = PROP_UNIT->GetpProp( pHero->GetUnit() );
 	XBREAK( pPropUnit == NULL );
 	XBREAK( m_pHero->IsRange() && pPropUnit->IsRange() == FALSE );
 }
@@ -39,17 +40,23 @@ XSquadron::XSquadron( XHero *pHero )
  @brief 
  @param bCreateHero Hero를 내부에서 직접 생성하
 */
-XSquadron::XSquadron( XPropHero::xPROP *pPropHero
-											, int levelHero
-											, XGAME::xtUnit unit
-											, int levelSquad
-											, bool bCreateHero )
+// XSquadron::XSquadron( XSPAccConst spAcc, 
+// 											XPropHero::xPROP *pPropHero, 
+// 											int levelHero, 
+// 											XGAME::xtUnit unit, 
+// 											int levelSquad, 
+// 											bool bCreateHero )
+XSquadron::XSquadron( XPropHero::xPROP *pPropHero,
+											int levelHero,
+											XGAME::xtUnit unit,
+											int levelSquad )
 {
 	Init();
 	XBREAK( pPropHero == nullptr );
 //	const auto& prop = PROP_SQUAD->GetTable( levelSquad );
-	m_bCreateHero = (bCreateHero)? TRUE : FALSE;
-	m_pHero = XHero::sCreateHero( pPropHero, levelSquad, unit );
+//	m_bCreateHero = (bCreateHero)? TRUE : FALSE;
+	m_bCreateHero = true;
+	m_pHero = XHero::sCreateHero( pPropHero, levelSquad, unit, nullptr );
 	XBREAK( m_pHero == nullptr );
 	XBREAK( levelHero <= 0 );
 	m_pHero->SetLevel(levelHero);
@@ -63,8 +70,8 @@ XSquadron::XSquadron( XPropHero::xPROP *pPropHero
 
 void XSquadron::Destroy()
 {
-	if( m_bCreateHero )
-		SAFE_DELETE( m_pHero );
+// 	if( m_bCreateHero )
+// 		SAFE_DELETE( m_pHero );
 }
 
 /**
@@ -108,15 +115,15 @@ BOOL XSquadron::DeSerialize( XArchive& ar, XSPAccConst spAcc, int verLegion )
 	XBREAK( spAcc == nullptr && m_bCreateHero == false );	// 계정이 없는데 PC인경우
 	if( m_bCreateHero ) {
 		XBREAK( spAcc != nullptr );
-		m_pHero = new XHero;
-		m_pHero->DeSerialize( ar, spAcc, verHero );
+		m_pHero = std::make_shared<XHero>( spAcc );
+		m_pHero->DeSerialize( ar/*, spAcc*/, verHero );
 	} else {
 		// 플레이어의 부대일경우는 계정에서 영웅을 찾아서 링크만 시킨다.
 		ID snHero;
 		ar >> snHero;
 		if( XBREAK( snHero == 0 ) )
 			return FALSE;
-		m_pHero = const_cast<XHero*>( spAcc->GetpcHeroBySN( snHero ) );
+		m_pHero = std::const_pointer_cast<XHero>( spAcc->GetpcHeroBySN( snHero ) );
 		if( XBREAK( m_pHero == nullptr ) )
 			return FALSE;
 
@@ -156,37 +163,18 @@ void XSquadron::SerializeFull( XArchive& ar )
 
 BOOL XSquadron::DeSerializeFull( XArchive& ar, int verLegion ) 
 {
-	if( verLegion <= 9 ) {
-		int isHero;
-		BYTE b0;
-		ar >> b0;	isHero = b0;		// 부대가 있느냐
-		if( verLegion >= 2 && isHero == 22 ) {
-			int verHero = 0;
-			ar >> b0;
-			ar >> b0;	verHero = b0;
-			ar >> b0;	
-			m_pHero = new XHero;
-			m_pHero->DeSerialize( ar, nullptr, verHero );
-		} else {
-			ar >> b0 >> b0 >> b0;
-			XBREAK( isHero != 0 );
-		}
-	} else {
-		char c0;
-		ar >> c0;	m_idxPos = c0;
-		ar >> c0;
-		ar >> c0;	const int verHero = c0;
-		ar >> c0;	//
-		m_pHero = new XHero;
-		m_pHero->DeSerialize( ar, nullptr, verHero );
-	}
-	if( verLegion >= 9 ) {
-		WORD w0;
-		ar >> w0;		m_mulAtk = (float)w0 / 1000.f;
-		ar >> w0;		m_mulHp = (float)w0 / 1000.f;
-		XBREAK( m_mulAtk == 0.f );
-		XBREAK( m_mulHp == 0.f );
-	}
+	char c0;
+	ar >> c0;	m_idxPos = c0;
+	ar >> c0;
+	ar >> c0;	const int verHero = c0;
+	ar >> c0;	//
+	m_pHero = std::make_shared<XHero>( nullptr );
+	m_pHero->DeSerialize( ar/*, nullptr*/, verHero );
+	WORD w0;
+	ar >> w0;		m_mulAtk = (float)w0 / 1000.f;
+	ar >> w0;		m_mulHp = (float)w0 / 1000.f;
+	XBREAK( m_mulAtk == 0.f );
+	XBREAK( m_mulHp == 0.f );
 	RESTORE_VERIFY_CHECKSUM( ar );
 	m_bCreateHero = true;
 	return TRUE;

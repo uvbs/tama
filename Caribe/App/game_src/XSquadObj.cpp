@@ -50,7 +50,7 @@ XSquadObj::XSquadObj( XSPLegionObj spLegionObj,
 }
 
 XSquadObj::XSquadObj( XSPLegionObj spLegionObj,
-											XHero *pHero,
+											XSPHero pHero,
 											const XE::VEC3& vwPos )
 {
 	Init();

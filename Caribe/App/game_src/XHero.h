@@ -2,8 +2,6 @@
 #include "XHeroH.h"
 #include "XFramework/Game/XFLevelH.h"
 #include "XPropHero.h"
-//#include "skill/XSkillDat.h"
-//#include "skill/XAdjParam.h"
 #include "XPropSquad.h"
 #include "XPropUpgrade.h"
 #include "XStruct.h"
@@ -28,40 +26,43 @@ class XHero : public XDelegateLevel
 {
 public:
 	static XPropHero* sGet() { return PROP_HERO; }
-	static int sSerialize( XArchive& ar, XHero *pHero );
-	static int sSerialize( XArchive* pOut, XHero *pHero ) {
+	static int sSerialize( XArchive& ar, XSPHero pHero );
+	static int sSerialize( XArchive* pOut, XSPHero pHero ) {
 		return sSerialize( *pOut, pHero );
 	}
-	static XHero* sCreateDeSerialize( XArchive& ar, XSPAcc spAcc );
-	static XHero* sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc );
+//	static XSPHero sCreateDeSerialize( XArchive& ar, XSPAcc spAcc );
+	static XSPHero sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc );
+	static XSPHero sDeSerializeUpdate( XArchive& ar, XSPHero pHero, XSPAccConst spAcc );
 	static int sGetMaxExpWithLevel( XGAME::xtTrain type, int level );
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	static XHero* sCreateHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit );
+	static XSPHero sCreateHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit, XSPAccConst spAcc );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
-	struct xItem {
-	private:
-		ID snItem = 0;
-		XBaseItem *pItem = nullptr;
-	public:
-		void Set( XBaseItem *_pItem );
-		XBaseItem* GetpItem() const;
-		ID GetsnItem() const {
-			return snItem;
-		}
+// 	struct xItem {
+// 	private:
+// 		ID snItem = 0;
+// 		XBaseItem *pItem = nullptr;
+// 	public:
+// 		void Set( XBaseItem *_pItem );
+// 		XBaseItem* GetpItem() const;
+// 		ID GetsnItem() const {
+// 			return snItem;
+// 		}
+// 	};
+	struct xEquip {
+		ID m_idProp = 0;		// 장착아이템의 프롭아이디
+		ID m_snItem = 0;		// 계정에서의 고유번호
+		void Serialize( XArchive& ar ) const;
+		void DeSerialize( XArchive& ar, int verHero );
 	};
-#ifdef _CLIENT
-//	static volatile float s_fMultiply;				// 메모리 치팅방지
-#endif // _CLIENT
 private:
-//	std::shared_ptr<XSKILL::XAdjParam> m_spAdjParam;
 	//
 	ID m_idProp = 0;      // m_pProp을 교체해야할때 필요함.
-//	ID m_keyPropHero = 0;
-// 	XPropHero::xPROP *_m_pProp = nullptr;
 	ID m_snHero;
+	XSPAccConst m_spAcc;			// 어떤 계정에 속한 영웅인지. npc는 null
 	std::vector<xnHero::xUpgrade> m_aryUpgrade;		// 업글3종세트의 정보가 담김
 	XGAME::xtGrade m_Grade = XGAME::xGD_COMMON;		// 생성되면 1성부터 시작함.
-	XVector<xItem> m_aryEquip;
+	//XVector<xItem> m_aryEquip;
+	XVector<xEquip> m_aryEquip;
 	XGAME::xtUnit m_Unit;		// 인솔중인 유닛
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 	ID m_keySkillMng = 0;
@@ -78,8 +79,6 @@ private:
 		m_snHero = 0;
 		m_Unit = XGAME::xUNIT_NONE;
 		InitAryAbil();
-//  		for (int i = 0; i < XGAME::xPARTS_MAX; ++i)
-//  			m_aryEquip[i].Set( nullptr );
 		for( int i = 0; i < XGAME::xTR_MAX; ++i ) {
 			if( i > 0 ) {
 				m_aryUpgrade[ i ].SetpDelegateLevel( this, i );
@@ -88,11 +87,12 @@ private:
 	}
 	void Destroy();
 public:
-	XHero();
-	XHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit );
-	virtual ~XHero() { Destroy(); }
+	XHero( XSPAccConst spAcc );
+	XHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit, XSPAccConst spAcc );
+	~XHero() { Destroy(); }
 	//
 //	GET_ACCESSOR( std::shared_ptr<XSKILL::XAdjParam>, spAdjParam );
+	GET_ACCESSOR_CONST( XSPAccConst, spAcc );
 	GET_SET_ACCESSOR_CONST( XGAME::xtUnit, Unit );
 	int GetnumUnit() const;
 	GET_SET_ACCESSOR_CONST( bool, bLive );
@@ -122,7 +122,7 @@ public:
 	ID getid() const {
 		return m_snHero;
 	}
-  XPropHero::xPROP* const GetpProp();
+  const XPropHero::xPROP* const GetpProp() const;
 	const XPropHero::xPROP* const GetpPropConst() const;
 	void SetpProp( XPropHero::xPROP* pProp, ID idKey );
   void SetpProp( ID idProp );
@@ -198,14 +198,18 @@ public:
 #endif 
 	//
 	int Serialize( XArchive& ar );
-	int DeSerialize( XArchive& ar, XSPAccConst spAcc, int verHero );
+	int DeSerialize( XArchive& ar, int verHero );
 	int SerializeUpgrade( XArchive& ar ) const;
 	int DeSerializeUpgrade( XArchive& ar );
 	//
 	void SetUnequipAll( void );
-	BOOL SetUnequip(XBaseItem *pItem);
-	BOOL SetEquip(XBaseItem *pItem);
-	XBaseItem* GetEquipItem(XGAME::xtParts parts);
+	void SetUnequip(XBaseItem *pItem);
+	void SetEquip(XBaseItem *pItem);
+	//XBaseItem* GetsnEquipItem(XGAME::xtParts parts);
+	inline ID GetsnEquipItem(XGAME::xtParts parts) const {
+		return m_aryEquip[ parts ].m_snItem;
+	}
+	const XPropItem::xPROP* GetpPropEquipItem( XGAME::xtParts parts ) const;
 
 	///< level에서의 최대 exp의 값을 돌려줘야 한다.
 	DWORD OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const;
@@ -366,6 +370,7 @@ public:
 	float GetAttackRangePowerSquad( int levelSquad );
 	int GetMaxHpSquad( int levelSquad );
 	float GetDefensePowerSquad( int levelSquad );
+	void SetidPropToEquip( XSPAccConst spAcc );
 private:
 	void InitAryAbil();
 	BOOL IsEmptyAbilMap();

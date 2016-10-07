@@ -76,7 +76,7 @@ public:
 class XWndFaceInBattle : public XWndStoragyItemElem 
 												, public XDelegateSprObj
 {
-	XHero* m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	int m_Side = 0;		// 1은 아군 2는 적군
 	XSPSquad m_spSquadObj;
 	XSprObj* m_psoSkill = nullptr;

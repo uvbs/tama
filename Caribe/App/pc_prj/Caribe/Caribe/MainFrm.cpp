@@ -871,7 +871,7 @@ void CMainFrame::OnCreateItem()
 	CDlgCreateItem dlg;
 	if( dlg.DoModal() == IDOK )
 	{
-		XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( dlg.m_strIdentifier );
+		auto pProp = PROP_ITEM->GetpProp( dlg.m_strIdentifier );
 		if( pProp == nullptr )
 			pProp = PROP_ITEM->GetpPropFromName( dlg.m_strIdentifier );
 		if( pProp )

@@ -27,15 +27,16 @@ using namespace XSKILL;
 
 ////////////////////////////////////////////////////////////////
 XUnitHero::XUnitHero( XSPSquad spSquadObj,
-					XHero *pHero,
+					XSPHero pHero,
 					ID idPropUnit, 
 					BIT bitSide, 
 					const XE::VEC3& vPos,
 					float multipleAbility )
-	: XBaseUnit( spSquadObj, pHero->GetidProp(), bitSide, vPos, multipleAbility ) {
+	: XBaseUnit( spSquadObj, pHero->GetidProp(), bitSide, vPos, multipleAbility )
+	, m_pProp( pHero->GetpProp() ) {
 	Init();
 	m_pHero = pHero;
-	m_pProp = pHero->GetpProp();
+	//m_pProp = pHero->GetpProp();
 	XBREAK( m_pProp == NULL );
 #ifdef WIN32
 	SetstrcIds( SZ2C( m_pProp->strIdentifier ) );

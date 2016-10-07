@@ -174,31 +174,31 @@ XLegion* XDBUAccount::RestoreLegionPacketFull( XArchive& arFull, int idxLegion )
 }
 
 
-void XDBUAccount::MakeArchiveHeros( XArchive& ar )
-{
-	ar << VER_HERO_SERIALIZE;
-	int size = m_listHero.size();
-	ar << size;
-	for( auto pHero : m_listHero )
-	{
-		pHero->Serialize( ar );
-	}
-}
-
-BOOL XDBUAccount::RestoreArchiveHeros( XArchive& ar )
-{
-	int verHero;
-	int size;
-	ar >> verHero;
-	ar >> size ;
-	for( int i = 0; i < size; ++i )
-	{
-		XHero *pHero = new XHero;
-		pHero->DeSerialize( ar, GetThis(), verHero );
-		m_listHero.Add( pHero );
-	}
-	return TRUE;
-}
+// void XDBUAccount::MakeArchiveHeros( XArchive& ar )
+// {
+// 	ar << VER_HERO_SERIALIZE;
+// 	int size = m_listHero.size();
+// 	ar << size;
+// 	for( auto pHero : m_listHero )
+// 	{
+// 		pHero->Serialize( ar );
+// 	}
+// }
+// 
+// BOOL XDBUAccount::RestoreArchiveHeros( XArchive& ar )
+// {
+// 	int verHero;
+// 	int size;
+// 	ar >> verHero;
+// 	ar >> size ;
+// 	for( int i = 0; i < size; ++i )
+// 	{
+// 		XSPHero pHero = std::make_shared<XHero>( this );
+// 		pHero->DeSerialize( ar, GetThis(), verHero );
+// 		m_listHero.Add( pHero );
+// 	}
+// 	return TRUE;
+// }
 
 /// XNEW_DBUACC
 //////////////////////////////////////////////////////////////////////////

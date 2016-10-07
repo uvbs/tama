@@ -44,7 +44,7 @@ public:
 	/**
 	 @brief 씬에게 idHero의 XHero객체가 있는지 요청이 들어온다면 각 씬의 구조에 맞춰 XHero객체를 찾아서 돌려준다.
 	*/
-	virtual XHero* GetpHero( ID idHero ) { return nullptr; }
+	virtual XSPHero GetpHero( ID idHero ) { return nullptr; }
 	virtual void OnRecvSyncAcc( XGAME::xtParamSync type ) {}
 // private member
 private:

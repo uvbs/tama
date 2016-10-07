@@ -215,7 +215,7 @@ int XWndResParticle::Process(float dt)
  @brief pWndList에 pHero의 XWndInvenHeroElem객체를 생성하거나 업데이트하는 표준함수.
  @param pHero 코딩의 편의상 null이 될수도 있어야 함.
 */
-XWndInvenHeroElem* XWndInvenHeroElem::sUpdateCtrl( XWndList *pWndList, XHero *pHero )
+XWndInvenHeroElem* XWndInvenHeroElem::sUpdateCtrl( XWndList *pWndList, XSPHero pHero )
 {
 	if( pHero == nullptr )
 		return nullptr;
@@ -232,7 +232,7 @@ XWndInvenHeroElem* XWndInvenHeroElem::sUpdateCtrl( XWndList *pWndList, XHero *pH
 /**
  @brief 
 */
-XWndInvenHeroElem::XWndInvenHeroElem( XHero* pHero, XLegion *pLegion )
+XWndInvenHeroElem::XWndInvenHeroElem( XSPHero pHero, XLegion *pLegion )
 	: m_pProp( pHero->GetpProp() )
 {
 	Init();
@@ -351,7 +351,7 @@ void XWndInvenHeroElem::SetUnitFace( void )
 	SetSizeLocal( 87, 50 );
 }
 
-XPropHero::xPROP* XWndInvenHeroElem::GetpProp()
+const XPropHero::xPROP* XWndInvenHeroElem::GetpProp()
 {
 	if( m_pProp )
 		return m_pProp;

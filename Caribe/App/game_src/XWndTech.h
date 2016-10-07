@@ -65,7 +65,7 @@ private:
 	}
 	void Destroy();
 public:
-	XWndAbilButton( XHero *pHero, XGAME::xtUnit unit, XPropTech::xNodeAbil *pNodeAbil, const XE::VEC2& vPos );
+	XWndAbilButton( XSPHero pHero, XGAME::xtUnit unit, XPropTech::xNodeAbil *pNodeAbil, const XE::VEC2& vPos );
 	virtual ~XWndAbilButton() { Destroy(); }
 	//
 	GET_SET_ACCESSOR( bool, bInRightPanel );
@@ -108,7 +108,7 @@ private:
 class XWndResearchComplete : public XWndPopup
 {
 public:
-	XWndResearchComplete( XHero* pHero, ID idAbil, int point );
+	XWndResearchComplete( XSPHero pHero, ID idAbil, int point );
 	~XWndResearchComplete() { Destroy(); }
 	// get/setter
 	// public member

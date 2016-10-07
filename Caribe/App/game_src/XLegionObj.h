@@ -60,7 +60,7 @@ public:
 	}
 	GET_ACCESSOR_CONST( const XList4<XSPSquad>&, listSquad );
   GET_SET_ACCESSOR( float, Def );
-	XHero* GetpLeader();
+	XSPHero GetpLeader();
 	BOOL IsPlayer() const {
 		return m_Camp == XGAME::xSIDE_PLAYER;
 	}

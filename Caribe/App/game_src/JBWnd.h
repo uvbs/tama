@@ -77,10 +77,10 @@ public:
 class XWndInvenHeroElem : public XWnd
 {
 public:
-	static XWndInvenHeroElem* sUpdateCtrl( XWndList *pWndList, XHero *pHero );
+	static XWndInvenHeroElem* sUpdateCtrl( XWndList *pWndList, XSPHero pHero );
 private:
-	XHero *m_pHero;
-	XPropHero::xPROP *m_pProp = nullptr;
+	XSPHero m_pHero;
+	const XPropHero::xPROP *m_pProp = nullptr;
 	XSurface *m_pBG;
 	XSurface *m_pFace;
 	XSurface *m_psfcBgGradation = nullptr;
@@ -115,13 +115,13 @@ private:
 	void Destory();
 
 public:
-	XWndInvenHeroElem(XHero* pHero, XLegion *pLegion = nullptr);
+	XWndInvenHeroElem(XSPHero pHero, XLegion *pLegion = nullptr);
 	XWndInvenHeroElem(XPropHero::xPROP *pProp);	//이건 영혼석용 
 	virtual ~XWndInvenHeroElem(){ Destory(); }
-	XHero* GetpHero( void ) {
+	XSPHero GetpHero( void ) {
 		return m_pHero;
 	}
-	XPropHero::xPROP* GetpProp();
+	const XPropHero::xPROP* GetpProp();
 	ID GetsnHero( void );
 	int GetnumStars();
 	GET_SET_BOOL_ACCESSOR( bSelected );

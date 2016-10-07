@@ -129,7 +129,7 @@ void XScenePrivateRaid::OnDieSquadPrivateRaid( XSPSquad spSquadObj )
 	auto spParam = std::static_pointer_cast<xPrivateRaidParam>(GetspSceneParam());
 	// 다음 영웅 꺼냄
 	auto& listHero = spParam->m_aryEnter[idx];
-	XHero* pHeroNext = nullptr;
+	XSPHero pHeroNext = nullptr;
 	if( listHero.size() ) {
 		pHeroNext = listHero.front();
 		listHero.pop_front();

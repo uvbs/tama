@@ -56,12 +56,12 @@ XSceneLegion::XSceneLegion( XGame *pGame )
 	XWndList *pWndList = SafeCast<XWndList*, XWnd*>(Find("list.inven.hero"));
 	if( pWndList )
 	{
-//		XList<XHero*> listHero;
+//		XList<XSPHero> listHero;
 //		ACCOUNT->GetInvenHero( listHero );
 		// 현재 구단에 배정된 장군을 제외한 장군리스트를 얻는다.
-		XArrayLinearN<XHero*, 1024> ary;
+		XArrayLinearN<XSPHero, 1024> ary;
 		ACCOUNT->GetHerosListExceptLegion(&ary, m_pLegion);
-		XARRAYLINEARN_LOOP_IDX( ary, XHero*, i, pHero )		{
+		XARRAYLINEARN_LOOP_IDX( ary, XSPHero, i, pHero )		{
 			auto pElem = new XWndInvenHeroElem(pHero, m_pLegion);
 			pElem->SetUnitFace();
 			pWndList->AddItem( pHero->GetsnHero(), pElem );
@@ -84,7 +84,7 @@ XSceneLegion::XSceneLegion( XGame *pGame )
 				v.y = vStart.y + 57.f * k;
 				int idx = ( i * 5 + k );
 				auto pSquad = m_pLegion->GetpSquadronByidxPos( idx );
-				XHero *pHero = NULL;
+				XSPHero pHero = NULL;
 				if( pSquad )
 					pHero = pSquad->GetpHero();
 				auto pWnd = new XWndSquadInLegion( pHero, v, m_pLegion );
@@ -176,7 +176,7 @@ int XSceneLegion::OnClickSquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 	XWndSquadInLegion *pElem = SafeCast<XWndSquadInLegion*, XWnd*>(pWnd);
 	if (pElem && pElem->GetpHero())
 	{
-		XHero *pHero = pElem->GetpHero();
+		XSPHero pHero = pElem->GetpHero();
 		XWnd *pPopup = new XWndPopup(m_Layout.GetpLayout(), "popup_hero_detail", nullptr);
 		pPopup->SetbModal(TRUE);
 		Add(pPopup);
@@ -282,7 +282,7 @@ int XSceneLegion::OnDropSquad( XWnd* pDropWnd, DWORD p1, DWORD p2 )
 		auto pHeroElem = dynamic_cast<XWndInvenHeroElem*>( pDragWnd );
 		if( pHeroElem ) {
 			// 왼쪽 영웅리스트에서 드래그해서 슬롯에 드랍함.
-			XHero *pHero = pHeroElem->GetpHero();
+			XSPHero pHero = pHeroElem->GetpHero();
 			XBREAK( pHero == NULL );
 			auto pSlot = dynamic_cast<XWndSquadInLegion*>( pDropWnd );
 			if( pSlot ) {
@@ -321,7 +321,7 @@ int XSceneLegion::OnDropSquad( XWnd* pDropWnd, DWORD p1, DWORD p2 )
 								snHeroDst = pSlotDst->GetpHero()->GetsnHero();
 							MoveSquadInLegion( idxSrc, idxDst, pSlotSrc->GetpHero()->GetsnHero(),
 												snHeroDst );
-//  							XHero *pHeroDst = pSlotDst->GetpHero();
+//  							XSPHero pHeroDst = pSlotDst->GetpHero();
 // 							pSlotDst->SetFace( pSlotSrc->GetpHero() );
 // 							pSlotSrc->SetFace( pHeroDst );
 // 							pLegion->SwapSlotSquad( idxSrc, idxDst );
@@ -352,7 +352,7 @@ XWndSquadInLegion* XSceneLegion::GetWndSquadSlot( int idxSlot )
 /**
  @brief 새 부대를 생성해서 idxLegion군단의 슬롯에 넣는다.
 */
-void XSceneLegion::CreateSquadToLegion( XHero *pHeroNew, XLegion *pLegion, int idxSlot )
+void XSceneLegion::CreateSquadToLegion( XSPHero pHeroNew, XLegion *pLegion, int idxSlot )
 {
 	auto pSlot = GetWndSquadSlot( idxSlot );
 	if( XBREAK(pSlot == NULL) )
@@ -380,8 +380,8 @@ void XSceneLegion::MoveSquadInLegion( int idxSrc, int idxDst, ID snHeroSrc, ID s
 	else
 		m_pLegion->SwapSlotSquad(idxSrc, idxDst);
 
-	XHero *pHeroSrc = ACCOUNT->GetHero( snHeroSrc );
-	XHero *pHeroDst = ACCOUNT->GetHero( snHeroDst );
+	XSPHero pHeroSrc = ACCOUNT->GetHero( snHeroSrc );
+	XSPHero pHeroDst = ACCOUNT->GetHero( snHeroDst );
 	XWndSquadInLegion *pSlotSrc = GetWndSquadSlot( idxSrc );
 	// 소스측 wnd가 없을순 없다.
 	if( XBREAK( pSlotSrc == NULL ) )
@@ -390,7 +390,7 @@ void XSceneLegion::MoveSquadInLegion( int idxSrc, int idxDst, ID snHeroSrc, ID s
 	{
 		// swap slot상황
 		XWndSquadInLegion *pSlotDst = GetWndSquadSlot( idxDst );
-		XHero *pHeroDst = pSlotDst->GetpHero();
+		XSPHero pHeroDst = pSlotDst->GetpHero();
 		pSlotDst->SetFace( pSlotSrc->GetpHero() );
 		pSlotSrc->SetFace( pHeroDst );
 	} else
@@ -431,7 +431,7 @@ int XSceneLegion::OnClickPopupClose(XWnd *pWnd, DWORD p1, DWORD p2)
 
 int XSceneLegion::OnClickSetLeader(XWnd *pWnd, DWORD p1, DWORD p2)
 {
-	XHero *pHero = ACCOUNT->GetHero(p1);
+	XSPHero pHero = ACCOUNT->GetHero(p1);
 	if (pHero && m_pLegion->GetpLeader() != pHero)
 	{
 		m_pLegion->SetpLeader(pHero);

@@ -36,7 +36,7 @@ class XSceneStorage;
 //////////////////////////////////////////////////////////////////////////
 XWndStoragyItemElem* XWndStoragyItemElem::sUpdateCtrl( XWnd* pParent, 
 																											 const XE::VEC2& vPos, 
-																											 XHero* pHero, 
+																											 XSPHero pHero, 
 																											 const std::string& ids )
 {
 	XWndStoragyItemElem* pWndHero = nullptr;
@@ -56,7 +56,7 @@ XWndStoragyItemElem* XWndStoragyItemElem::sUpdateCtrl( XWnd* pParent,
  @brief pHero초상화 UI를 pWndList에 추가시킨다.
 */
 XWndStoragyItemElem* XWndStoragyItemElem::sUpdateCtrlToList( XWndList *pWndList, 
-																														 XHero *pHero )
+																														 XSPHero pHero )
 {
 	if( pHero == nullptr )
 		return nullptr;
@@ -115,7 +115,7 @@ XWndStoragyItemElem::XWndStoragyItemElem( const XE::VEC2& vPos,
 	switch( reward.rewardType ) {
 	case xtReward::xRW_ITEM: {
 		if( XASSERT(reward.idReward) )
-			m_pProp = PROP_ITEM->GetpProp( reward.idReward );
+			m_pProp = PROP_ITEM->GetpPropMutable( reward.idReward );
 	} break;
 	case xtReward::xRW_GOLD: {
 		XBREAK(1);
@@ -148,14 +148,14 @@ XWndStoragyItemElem::XWndStoragyItemElem( const XE::VEC2& vPos,
 	: XWndStoragyItemElem( vPos, reward, false ) { }
 
 
-XWndStoragyItemElem::XWndStoragyItemElem( const XE::VEC2& vPos, XHero *pHero )
+XWndStoragyItemElem::XWndStoragyItemElem( const XE::VEC2& vPos, XSPHero pHero )
 	: XWndStoragyItemElem( vPos, XGAME::xReward(pHero) )
 {
 	SetHero( pHero );
 }
 
 XWndStoragyItemElem::XWndStoragyItemElem( const XE::VEC2& vPos, 
-																					XHero *pHero,
+																					XSPHero pHero,
 																					bool bBatch )
 	: XWndStoragyItemElem( XE::VEC2(0,0), XGAME::xReward( pHero ), bBatch )
 {
@@ -169,7 +169,7 @@ XWndStoragyItemElem::XWndStoragyItemElem(XBaseItem* pItem)
 	if( pItem ) {
  		m_pItem = pItem;
 		m_Reward.SetItem( pItem->GetidProp(), pItem->GetNum() );
-		m_pProp = pItem->GetpProp();
+		m_pProp = const_cast<XPropItem::xPROP*>( pItem->GetpProp() );
 		m_snItem = pItem->GetsnItem();
 	}
 	SetbUpdate( true );
@@ -180,7 +180,7 @@ XWndStoragyItemElem::XWndStoragyItemElem(ID idItem)
 	Init();
 	m_Reward.SetItem( idItem, 1 );
 	if (idItem) {
-		m_pProp = PROP_ITEM->GetpProp( idItem );
+		m_pProp = const_cast<XPropItem::xPROP*>( PROP_ITEM->GetpProp( idItem ));
 	}
 	SetbUpdate( true );
 }
@@ -277,7 +277,7 @@ void XWndStoragyItemElem::SetHero( ID idProp )
 // 	}
 // }
 
-void XWndStoragyItemElem::SetHero( const XHero* pHero )
+void XWndStoragyItemElem::SetHero( XSPHeroConst pHero )
 {
 	if( pHero ) {
 		SetbShowNum( false );

@@ -72,7 +72,7 @@ public:
 
 extern XSceneArmory *SCENE_ARMORY;
 namespace XGAME {
-	void UpdateItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int cost );
+	void UpdateItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot, int cost );
 // 	void UpdateEquipItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int cost );
 // 	void UpdateEtcItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int cost );
 };

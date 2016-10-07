@@ -164,7 +164,7 @@ void XSceneShop::UpdateList()
 			int i = 0;
 			for (auto it = etcItems.begin(); it != etcItems.end(); it++)
 			{
-				XPropItem::xPROP *prop = PROP_ITEM->GetpProp(*it);
+				auto prop = PROP_ITEM->GetpProp(*it);
 
 				XWndShopElem *pElem = new XWndShopElem( prop );
 				//pElem->SetSizeLocal(pElem->GetpSurface()->GetWidth(), pElem->GetpSurface()->GetHeight());

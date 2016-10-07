@@ -205,7 +205,7 @@ void XWndSpotRecon::Update()
 			v.y = vStart.y + 52.f * k;
 			int idx = ( i * 5 + k );
 			ID idWnd = 100 + idx;
-			XHero *pHero = nullptr;
+			XSPHero pHero = nullptr;
 			auto pSquad = spLegion->GetpSquadronByidxPos( idx );
 			bool bFog = false;
 			auto vCenter = v + vSize * 0.5f;
@@ -334,7 +334,7 @@ XWndSquadInLegion* XWndSquadInLegion::sUpdateCtrl( XWnd *pRoot, int idxSquad, co
  @param bDrawFrame 영웅 외곽 프레임을 그릴건지 말건지
 */
 int XWndSquadInLegion::s_idxSelectedSquad = -1;
-XWndSquadInLegion::XWndSquadInLegion( XHero *pHero, const XE::VEC2& vPos, XLegion *pLegion, bool bDrawFrame, bool bDragDrop, bool bQuestion )
+XWndSquadInLegion::XWndSquadInLegion( XSPHero pHero, const XE::VEC2& vPos, XLegion *pLegion, bool bDrawFrame, bool bDragDrop, bool bQuestion )
 	: XWnd( vPos.x, vPos.y )
 {
 	Init();
@@ -509,7 +509,7 @@ XWndImage* XWndSquadInLegion::CreateGlowSelected()
 	return pImgSel;
 }
 
-void XWndSquadInLegion::SetFace( XHero *pHero, bool bQuestion )
+void XWndSquadInLegion::SetFace( XSPHero pHero, bool bQuestion )
 {
 	if( pHero == nullptr && pHero == m_pHero )
 		if( m_bQuestion == bQuestion )
@@ -1348,7 +1348,7 @@ int XWndStatistic::OnClickNext( XWnd* pWnd, DWORD p1, DWORD p2 )
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
-XWndSlotByTrain::XWndSlotByTrain( XHero *pHero, XGAME::xtTrain type, ID snSlot, XLayout *pLayout, XWndTrainingCenter *pWndPopup )
+XWndSlotByTrain::XWndSlotByTrain( XSPHero pHero, XGAME::xtTrain type, ID snSlot, XLayout *pLayout, XWndTrainingCenter *pWndPopup )
 {
 	Init();
 	m_Type = type;
@@ -1504,7 +1504,7 @@ void XWndSlotByTrain::UpdateSlotLvUp( XWnd* pWndRoot )
 	auto pRootLeft = pWndRoot->Findf("wnd.stat.%d", 1);
 	auto pRootRight = pWndRoot->Findf("wnd.stat.%d", 2);
 	if( pRootLeft && pRootRight ) {
-		XHero *pHero = m_pHero;
+		XSPHero pHero = m_pHero;
 		//
 		const auto type = m_Type;
 		auto pSlot = ACCOUNT->GetpTrainingSlot( m_snSlot );
@@ -1551,7 +1551,7 @@ void XWndSlotByTrain::UpdateSlotSquadUp( XWnd* pWndRoot )
 	auto pRootRight = pWndRoot->Findf( "wnd.stat.%d", 2 );
 	if( !pRootLeft || !pRootRight )
 		return;
-	XHero *pHero = m_pHero;
+	XSPHero pHero = m_pHero;
 	auto pPropUnit = PROP_UNIT->GetpProp( pHero->GetUnit() );
 	if( XASSERT( pPropUnit ) ) {
 		const auto type = m_Type;
@@ -1597,7 +1597,7 @@ void XWndSlotByTrain::UpdateSlotSkillUp( XWnd* pWndRoot )
 	if( !pRootLeft || !pRootRight )
 		return;
 	const auto type = m_Type;
-	XHero *pHero = m_pHero;
+	XSPHero pHero = m_pHero;
 	auto pSkillDat = m_pHero->GetSkillDat( type );
 	if( XASSERT(pSkillDat) ) {
 		const _tstring resIcon = XE::MakePath( DIR_IMG, pSkillDat->GetstrIcon() );
@@ -1692,7 +1692,7 @@ void XWndTrainingCenter::Update()
 	XWndPopup::Update();
 }
 
-void XWndTrainingCenter::UpdateSlot( XHero *pHero, const XAccount::xTrainSlot& slot, ID idWnd )
+void XWndTrainingCenter::UpdateSlot( XSPHero pHero, const XAccount::xTrainSlot& slot, ID idWnd )
 {
 	auto pList = xGET_LIST_CTRL( this, "list.slot" );
 	XWnd *pWndSlot = pList->Findf( "wnd.slot.0x%x", idWnd );
@@ -1719,7 +1719,7 @@ void XWndTrainingCenter::DelegateUnlockTrainSlot( const std::string& idsEvent )
 
 void XWndTrainingCenter::DelegateTrainComplete( const std::string& idsEvent
 																							, XGAME::xtTrain type
-																							, XHero* pHero )
+																							, XSPHero pHero )
 {
 	// 리스트 클리어하고 다시 생성
 	CONSOLE( "0x%08x", ( DWORD )this );
@@ -1770,7 +1770,7 @@ int XWndTrainingCenter::OnClickComplete( XWnd* pWnd, DWORD p1, DWORD p2 )
 }
 
 ////////////////////////////////////////////////////////////////
-XWndTrainCompleInWorld::XWndTrainCompleInWorld( XHero *pHero )
+XWndTrainCompleInWorld::XWndTrainCompleInWorld( XSPHero pHero )
 	: XWndImage( nullptr, 0, 0 )
 {
 	Init();
@@ -1855,7 +1855,7 @@ XWndLevelup::XWndLevelup()
 /**
  @brief 영웅의 능력이 반영된 부대능력치를 보여주는 버전
 */
-XWndUnitinfo::XWndUnitinfo( XHero *pHero, LPCTSTR szTitle )
+XWndUnitinfo::XWndUnitinfo( XSPHero pHero, LPCTSTR szTitle )
 	: XWndPopup(_T("layout_unit_info.xml"), "popup_unit")
 {
 	Init();
@@ -2106,7 +2106,7 @@ void XWndPaymentByCash::SetFillTryByDailySpot()
 }
 
 ////////////////////////////////////////////////////////////////
-XWndOrderDialog::XWndOrderDialog( OrderPtr spOrder, float x, float y, ID idHero, XHero *pHero )
+XWndOrderDialog::XWndOrderDialog( OrderPtr spOrder, float x, float y, ID idHero, XSPHero pHero )
 	: XWndView( x, y, _T("bg_dialog.png"))
 {
 	Init();
@@ -2292,7 +2292,7 @@ void XWndHeroPortrait::Update()
  @brief 영웅을 선택하는 창을 생성한다.
  @param pHeroFrom 바꿔야할 영웅.
 */
-XWndSelectHeroesInReady::XWndSelectHeroesInReady( XHero *pHeroFrom )
+XWndSelectHeroesInReady::XWndSelectHeroesInReady( XSPHero pHeroFrom )
 	: XWndPopup( _T( "layout_ready_battle.xml" ), "popup_select_hero" )
 {
 	Init();
@@ -2322,7 +2322,7 @@ void XWndSelectHeroesInReady::Update()
 	const ID snHeroSelected = (m_pHeroSelected)? m_pHeroSelected->GetsnHero() : 0;
 	const ID snHeroFrom = (m_pHeroFrom)? m_pHeroFrom->GetsnHero() : 0;
 	// 모든 영웅의 리스트를 받아옴
-	XList4<XHero*> listHero;
+	XList4<XSPHero> listHero;
 	ACCOUNT->_GetInvenHero( listHero );
 	// 
 //	listHero.sort( XSceneUnitOrg::CompParty );
@@ -2387,14 +2387,14 @@ int XWndSelectHeroesInReady::OnClickHero( XWnd* pWnd, DWORD p1, DWORD p2 )
 /**
  @brief From영웅을 교체하고 다시 업데이트한다.
 */
-void XWndSelectHeroesInReady::SetHeroFrom( XHero* pHero )
+void XWndSelectHeroesInReady::SetHeroFrom( XSPHero pHero )
 {
 	m_pHeroFrom = pHero;
 	m_pHeroSelected = pHero;
 	SetbUpdate( true );
 }
 
-void XWndSelectHeroesInReady::CreatePopupSelectUnit( XHero *pHero )
+void XWndSelectHeroesInReady::CreatePopupSelectUnit( XSPHero pHero )
 {
 	XBREAK( GetpParent() == nullptr );
 	GetpParent()->DestroyWndByIdentifier( "wnd.units" );
@@ -2406,7 +2406,7 @@ void XWndSelectHeroesInReady::CreatePopupSelectUnit( XHero *pHero )
 }
 
 ////////////////////////////////////////////////////////////////
-XWndSelectUnitsInReady::XWndSelectUnitsInReady( XHero *pHero )
+XWndSelectUnitsInReady::XWndSelectUnitsInReady( XSPHero pHero )
 	: XWndPopup( _T( "layout_ready_battle.xml" ), "popup_select_unit" )
 {
 	Init();

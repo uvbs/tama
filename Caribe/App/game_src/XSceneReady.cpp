@@ -81,7 +81,7 @@ XSceneReady::XSceneReady( XGame *pGame, XSPSceneParam& spBaseParam )
 				v.y = vStart.y + 58.f * k;
 				int idx = ( i * 5 + k );
 				auto pSquad = spLegion->GetpSquadronByidxPos( idx );
-				XHero *pHero = nullptr;
+				XSPHero pHero = nullptr;
 				bool bFog = false;
 				if( pSquad ) {
 					pHero = pSquad->GetpHero();
@@ -135,7 +135,7 @@ void XSceneReady::UpdateMyLegion()
 			v.y = vStart.y + 58.f * k;
 			int idx = ( i * 5 + k );
 			auto pSquad = spLegion->GetpSquadronByidxPos( idx );
-			XHero *pHero = nullptr;
+			XSPHero pHero = nullptr;
 			if( pSquad )
 				pHero = pSquad->GetpHero();
 			auto pWndSquad = XWndSquadInLegion::sUpdateCtrl( this, idx, v, spLegion );
@@ -190,7 +190,7 @@ void XSceneReady::Update()
 	// 리더스킬 표시
 	xSET_SHOW( this, "wnd.leader.skill", true );
 	xSET_SHOW( this, "text.no.leader", false );
-	XHero *pLeader = m_spParam->m_spLegion[0]->GetpLeader();
+	XSPHero pLeader = m_spParam->m_spLegion[0]->GetpLeader();
 	if( pLeader ) {
 		auto strPassive = pLeader->GetpProp()->strPassive;
 		if( !strPassive.empty() ) {
@@ -354,8 +354,8 @@ void XSceneReady::MoveSquadInLegion( int idxSrc, int idxDst, ID snHeroSrc, ID sn
 	//auto& bs = XSceneBattle::sGetBattleStart();
 	m_spParam->m_spLegion[0]->SwapSlotSquad( idxSrc, idxDst );
 
-	XHero *pHeroSrc = ACCOUNT->GetHero( snHeroSrc );
-	XHero *pHeroDst = ACCOUNT->GetHero( snHeroDst );
+	XSPHero pHeroSrc = ACCOUNT->GetHero( snHeroSrc );
+	XSPHero pHeroDst = ACCOUNT->GetHero( snHeroDst );
 	XWndSquadInLegion *pSlotSrc = GetWndSquadSlot( idxSrc );
 	// 소스측 wnd가 없을순 없다.
 	if( XBREAK( pSlotSrc == NULL ) )
@@ -444,10 +444,10 @@ int XSceneReady::OnClickStart( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("OnClickStart");
 	//
-	GAMESVR_SOCKET->SendReqChangeSquad( GAME, 
-										ACCOUNT->GetCurrLegionIdx(), 
-										ACCOUNT->GetCurrLegion().get() );
-	GAMESVR_SOCKET->SendReqBattleStart( GAME );
+	GAMESVR_SOCKET->SendReqChangeSquad( GAME,
+																			ACCOUNT->GetCurrLegionIdx(),
+																			ACCOUNT->GetCurrLegion().get() );
+	GAMESVR_SOCKET->SendReqBattleStart( GAME, m_spParam->m_idSpot );
 	return 1;
 }
 

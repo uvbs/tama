@@ -597,7 +597,7 @@ void XLegionObj::DoDamage()
 #endif // _CHEAT
 }
 
-XHero* XLegionObj::GetpLeader() 
+XSPHero XLegionObj::GetpLeader() 
 {
 	return m_spLegion->GetpLeader();
 }

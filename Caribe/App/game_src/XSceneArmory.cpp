@@ -582,7 +582,7 @@ void XSceneArmory::UpdateToolTipBySoul( XPropItem::xPROP *pProp )
  @param cost 아이템 가격을 표시해야할때 가격을 넘겨준다.
 */
 
-static void sUpdateEquipItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int cost )
+static void sUpdateEquipItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot, int cost )
 {
 	// 아이템 이미지
 	if( pProp == nullptr )
@@ -656,7 +656,7 @@ static void sUpdateEquipItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int c
 		xSET_SHOW( pRoot, "wnd.sell", FALSE );
 }
 
-static void sUpdateEtcItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int cost )
+static void sUpdateEtcItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot, int cost )
 {
 	// 아이템 이미지
 	if( pProp == nullptr )
@@ -740,7 +740,7 @@ static void sUpdateEtcItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int cos
 		xSET_SHOW( pRoot, "wnd.sell", FALSE );
 }
 
-void XGAME::UpdateItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int cost )
+void XGAME::UpdateItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot, int cost )
 {
 	if( pProp->type == XGAME::xIT_EQUIP )
 		sUpdateEquipItemTooltip( pProp, pRoot, cost );

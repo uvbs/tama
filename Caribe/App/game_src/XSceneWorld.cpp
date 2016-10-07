@@ -4143,7 +4143,7 @@ void XSceneWorld::OnRecvUnlockMenu( XGAME::xtMenus bitUnlock )
 /**
  @brief 씬에게 idHero의 XHero객체가 있는지 요청받는다.
 */
-XHero* XSceneWorld::GetpHero( ID idHero ) 
+XSPHero XSceneWorld::GetpHero( ID idHero ) 
 { 
 	return m_spAcc->GetHeroByidProp( idHero );
 }

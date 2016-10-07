@@ -16,24 +16,22 @@ class XWndShopElem : public XWndImage
 	XWndTextString *m_pName;
 	XWndTextString *m_pPrice;
 //	XGlobalConst::cashItem* m_pCashItem;	// 포인터엔 p를 붙일것.
-	XPropItem::xPROP *m_pEtcItemProp;
+	const XPropItem::xPROP *m_pEtcItemProp;
 	_tstring m_idsProduct;
 	void Init()	{
 		m_pIcon = nullptr;
 		m_pName = nullptr;
 		m_pPrice = nullptr;
-//		m_pCashItem = nullptr;
-		m_pEtcItemProp = 0;
 	}
 	void Destroy(){}
 public:
 	//아이템 정보를 받아와야함 : 아이콘, 이름, 가격 / 프랍을 통채로 받아오면 될듯
 	XWndShopElem( const _tstring& idsProduct );
-	XWndShopElem( XPropItem::xPROP* pEtcItemProp );
+	XWndShopElem( const XPropItem::xPROP* pEtcItemProp );
 	virtual ~XWndShopElem(){ Destroy(); }
 
 	GET_ACCESSOR_CONST( const _tstring&, idsProduct );
-	GET_ACCESSOR_CONST( XPropItem::xPROP*, pEtcItemProp );
+	GET_ACCESSOR_CONST( const XPropItem::xPROP*, pEtcItemProp );
 // 	const _tstring& GetidsProduct() const {
 // 		return m_pCashItem->m_productID;
 // 	}
@@ -44,8 +42,8 @@ public:
 // class XWndStoragyItemElem : public XWnd
 // {
 // public:
-// 	static XWndStoragyItemElem* sUpdateCtrl( XWnd* pParent, const XE::VEC2& vPos, XHero* pHero, const std::string& ids );
-// 	static XWndStoragyItemElem* sUpdateCtrlToList( XWndList *pWndList, XHero *pHero );
+// 	static XWndStoragyItemElem* sUpdateCtrl( XWnd* pParent, const XE::VEC2& vPos, XSPHero pHero, const std::string& ids );
+// 	static XWndStoragyItemElem* sUpdateCtrlToList( XWndList *pWndList, XSPHero pHero );
 // private:
 // 	XGAME::xReward m_Reward;
 // // 	ID m_idItem = 0;
@@ -94,7 +92,7 @@ public:
 // 	XWndStoragyItemElem( const XE::VEC2& vPos, const XGAME::xReward& reward );
 // 	XWndStoragyItemElem( const XGAME::xReward& reward )
 // 		: XWndStoragyItemElem( XE::VEC2(0), reward ) {}
-// 	XWndStoragyItemElem( const XE::VEC2& vPos, XHero *pHero );
+// 	XWndStoragyItemElem( const XE::VEC2& vPos, XSPHero pHero );
 // 	XWndStoragyItemElem(XBaseItem* pItem);
 // 	XWndStoragyItemElem(ID idItem);
 // 	XWndStoragyItemElem( const XE::VEC2& vPos, const _tstring& idsItem );
@@ -133,7 +131,7 @@ public:
 // 	}
 // 	void SetItemImg( LPCTSTR szImg );
 // 	void SetHero( ID idProp );
-// 	void SetHero( XHero* pHero );
+// 	void SetHero( XSPHero pHero );
 // 	void SetLockButt();
 // 	XWndButton* GetLockButt() { return m_lockButt; }
 // 	void SetSlotLock();

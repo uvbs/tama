@@ -282,7 +282,8 @@ int xBattleResult::DeSerialize( XArchive& ar, int ) {
 			ar >> sw0;  int num = sw0;
 			auto pProp = PROP_ITEM->GetpProp( idProp );
 			if( XASSERT( pProp ) ) {
-				ItemBox itembox = std::make_pair( pProp, num );
+				//ItemBox itembox = std::make_pair( pProp, num );
+				ItemBox itembox( std::make_pair( pProp, num ) );
 				aryDrops.Add( itembox );
 			}
 		}
@@ -300,7 +301,7 @@ int xBattleResult::DeSerializeHeroes( XArchive& ar, XSPAcc spAcc )
 	ID snHero;
 	for( int i = 0; i < size; ++i ) {
 		ar >> snHero;
-		XHero *pHero = spAcc->GetHero( snHero );
+		XSPHero pHero = spAcc->GetHero( snHero );
 		if( XASSERT(pHero) )
 			pHero->DeSerializeUpgrade( ar );
 		else
@@ -369,7 +370,7 @@ XPropItem::xPROP* sReadItemIdentifier( XEXmlAttr& attr, LPCTSTR szTag )
 	_tstring strConst = attr.GetTString();
 	if( strConst.empty() )
 		return nullptr;
-	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( strConst );
+	auto pProp = PROP_ITEM->GetpProp( strConst );
 	if( pProp == nullptr ) {
 		CONSOLE( "%s:%s라는 아이템은 없습니다.", szTag, strConst.c_str() );
 	}
@@ -563,7 +564,7 @@ void xBattleStartInfo::DeSerialize( XArchive& ar, XWorld *pWorld, int ) {
 /**
  @brief XML 노드로부터 reward를 읽어들인다.
 */
-xReward::xReward( XHero* pHero ) {
+xReward::xReward( XSPHero pHero ) {
 	XBREAK( pHero == nullptr );
 	SetHero( pHero->GetidProp(), 0 );
 }

@@ -19,7 +19,7 @@ class XWndLevelupHero : public XWndPopup
 {
 //	const int c_minGold = 1000;
 public:
-	XWndLevelupHero( XHero *pHero, XGAME::xtTrain typeTrain );
+	XWndLevelupHero( XSPHero pHero, XGAME::xtTrain typeTrain );
 	virtual ~XWndLevelupHero() { Destroy(); }
 	// get/setter
 	// public member
@@ -27,7 +27,7 @@ public:
 // private member
 private:
 // private method
-	XHero *m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	int m_GoldUse = 0;
 	int m_ExpByGold = 0;	// m_Gold에 의해 받게될 경험치총량
 	int m_Level = 0;	// m_Gold에 의해서 exp를 받았을때 업그레이드될 레벨

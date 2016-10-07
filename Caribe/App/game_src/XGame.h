@@ -407,8 +407,8 @@ public:
 	// 	static bool sDoAlertCampaignByError( XGAME::xtError errCode );
 // 	static void sDoPopupSpotWithStageObj( XSpot* pBaseSpot, XSPCampObj spCampObj, XSPStageObj spStageObj );
 	int OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 );
-	void OnRecvResearchCompleted( XHero* pHero, ID idAbil, int point );
-	void DoPopupTrainComplete( XGAME::xtTrain train, XHero* pHero, int level );
+	void OnRecvResearchCompleted( XSPHero pHero, ID idAbil, int point );
+	void DoPopupTrainComplete( XGAME::xtTrain train, XSPHero pHero, int level );
 }; // class XGame
 
 
