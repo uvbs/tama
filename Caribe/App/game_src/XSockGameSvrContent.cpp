@@ -1194,6 +1194,11 @@ void XSockGameSvr::RecvSyncAcc( XPacket& p, const xCALLBACK& c )
 			XAccount::s_bTraderArrived = ( i0 != 0 );
 		}
 		ACCOUNT->DeserializeTimerByTrader( p );		break;
+	case xPS_SPOT: {
+		ID idSpot;
+		p >> idSpot;
+		XSpot::sDeserializeUpdate( sGetpWorld(), idSpot, p );
+	} break;
 	default:
 		break;
 	}

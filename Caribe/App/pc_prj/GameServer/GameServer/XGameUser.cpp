@@ -350,7 +350,7 @@ int XGameUser::RecvCheat( XPacket& p )
 			if( paramSync == xPS_NONE ) {
 				XConsole( _T("치트명령 처리하지 못함.") );
 			}
-			SendSyncAcc( paramSync );
+			SendSyncAcc( paramSync, 0 );
 		}
 	} else
 	// 용맹포인트 증가.
@@ -404,6 +404,10 @@ int XGameUser::RecvCheatCreateItem( XPacket& p )
 	return 1;
 }
 
+XSpot* XGameUser::GetpSpot( ID idSpot )
+{
+	return GetpWorld()->GetpSpot( idSpot );
+}
 
 // 로그인서버로 계정정보를 보낸다
 BOOL XGameUser::Save( void )
@@ -1026,7 +1030,7 @@ int XGameUser::RecvSpotAttack( XPacket& p )
 	const int ap = pBaseSpot->GetNeedAP( m_spAcc );
 //	XVERIFY_BREAK( m_spAcc->GetAP() < ap );
 	if( m_spAcc->GetAP() < ap ) {
-		SendSyncAcc( xPS_AP );
+		SendSyncAcc( xPS_AP, 0 );
 		return 1;
 	}
 	m_spAcc->AddAP( -ap );
@@ -1653,10 +1657,7 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 		}
 	}
 	// 전투세션아이디가 다르면 
-//#ifdef _CHEAT
-	if( !battle.bCheatKill )
-//#endif // _CHEAT
-	{
+	if( !battle.bCheatKill ) {
 		// 모든 전투는 전투세션이 있어야 한다. 상대하던 부대의 정보원본을 갖고 있어야 하기때문.
 		XVERIFY_BREAK( battle.snSession == 0 );
 		XVERIFY_BREAK( m_spAcc->GetsnSession() == 0 );
@@ -1672,20 +1673,12 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 	XBREAK( lvEnemy == 0 );
 	//////////////////////////////////////////////////////////////////////////
 	{
-//#ifdef _CHEAT
 		// 스팟소탕했는데 군단이 없으면 급 만듬.
 		if( battle.bCheatKill && pBaseSpot->GetspLegion() == nullptr ) {
 			// 어차피 소탕이면 무조건 이기기때문에 상대의 군단정보가 필요없을듯 하다.
 			// 가라로 군단 만들어도 상관없을듯. 만약 상대를 정찰해놓은 상대라면 군단이 있으므로 괜찮음.
 			pBaseSpot->CreateLegion( m_spAcc );
 		}
-// 		// 정상적인 경우라면 이런경우는 생기지 않아야 함.
-// 		if( XBREAK(battle.bCheatKill && pBaseSpot->GetspLegion() == nullptr) ) {
-// 			m_spAcc->ClearBattleSession();
-// 			SendCancelKill();
-// 			return 1;
-// 		}
-//#endif // _CHEAT
 		// 후퇴
 		if( battle.ebCode == XGAME::xEB_RETREAT ) {
 			// 그냥 패배로 간주하면 됨
@@ -1709,7 +1702,6 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 			XVERIFY_BREAK( m_spAcc->IsNotEnoughCash( cost ) );
 			m_spAcc->AddCashtem( -cost );
 		}
-//		if( result.IsWin() && (!pBaseSpot->IsEventSpot() || pBaseSpot->IsCampaignType()) ) {
 		if( result.IsWin() ) {	// 어떤 전투든 이기면 별점은 나와야 함.
 			// 이긴게임에 한하여 별점 산출	// 15초이내 클리어 3별// 30초이내 클리어 2별// 그 외 1별
 			if( battle.bCheatKill ) {
@@ -1723,7 +1715,6 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 					result.numStar = 1;
 			}
 			// 별퀘를 갖고 있어야만 별을 모을수 있음.
-//			if( m_spAcc->GetpQuestMng()->IsHaveGetStarQuest() ) {
 			if( m_spAcc->IsAbleGetStar() ) {
 				DoCollectingSpotStar( result.numStar, pBaseSpot );
 			}
@@ -1738,12 +1729,6 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 	XSPLegion spLegion = pBaseSpot->GetspLegion();
 	// 소탕치트 했는데 군단이 없으면 급 만듬.
 	if( spLegion == nullptr ) {
-//#ifdef _CHEAT
-// 		if( battle.bCheatKill ) {
-// 			pBaseSpot->CreateLegion( m_spAcc );
-// 			spLegion = pBaseSpot->GetspLegion();
-// 		}
-//#endif // _CHEAT
 		// npc류 스팟에서는 이런게 나와선 안된다. 현재 유저중엔 군단이없는 유저가 있는듯.
 		XVERIFY_BREAK( spLegion == nullptr );	// 현재 유저데이타에서도 군단없는 유저가 있나?
 	}
@@ -9674,7 +9659,7 @@ void XGameUser::DoCollectingSpotStar( int clearStar, XSpot* pBaseSpot )
 /**
  @brief 각종값 동기화 통합판.
 */
-void XGameUser::SendSyncAcc( xtParamSync type )
+void XGameUser::SendSyncAcc( xtParamSync type, int param )
 {
 	if( type == xPS_NO_SYNC || type == xPS_NONE )
 		return;
@@ -9699,6 +9684,14 @@ void XGameUser::SendSyncAcc( xtParamSync type )
 			ar << 0;
 		m_spAcc->SerializeTimerByTrader( ar );
 	} break;
+	case xPS_SPOT: {
+		ID idSpot = (ID)param;
+		ar << idSpot;
+		auto pSpot = GetpSpot( idSpot );
+		if( XASSERT( pSpot ) ) {
+			XSpot::sSerialize( ar, pSpot );
+		}
+	} break;
 	default:
 		break;
 	}
@@ -9718,7 +9711,7 @@ int XGameUser::RecvSync( XPacket& p )
 	p >> param;
 
 	// 클라로 전송
-	SendSyncAcc( type );
+	SendSyncAcc( type, param );
 	return 1;
 }
 

@@ -1,4 +1,7 @@
 ﻿#include "stdafx.h"
+#include "XDefNetwork.h"
+#include "XSockGameSvr.h"
+#include "_Wnd2/XWndText.h"
 #include "XLegion.h"
 #include "XSquadron.h"
 #include "XWndPrivateRaid.h"
@@ -18,6 +21,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+using namespace XGAME;
 ////////////////////////////////////////////////////////////////
 XWndPrivateRaid::XWndPrivateRaid(XSpotPrivateRaid* pSpot)
 	: XWndPopup( _T( "raid_private.xml" ), "popup" )
@@ -205,13 +209,6 @@ void XWndPrivateRaid::Update()
 			UpdateEnterHeroes( pWndList, i );
 		}
 	}
-// 	{
-// 		auto pWndList = xGET_LIST_CTRL( this, "list.my" );
-// 		if( pWndList ) {
-// 			pWndList->SetEvent( XWM_SELECT_ELEM, this, &XWndPrivateRaid::OnClickedEnterHeroLeft, 0 );
-// 			UpdateEnterHeroes( pWndList, m_pSpot->GetlistEnter() );
-// 		}
-// 	}
 	// 보유한 영웅리스트를 하단에 표시한다.
 	const auto spAcc = XAccount::sGetPlayerConst();
 	if( spAcc ) {
@@ -250,6 +247,31 @@ void XWndPrivateRaid::Update()
 			}
 		}
 	}
+	// 승리횟수 표시
+	for( int i = 0; i < 2; ++i ) {
+		const bool bShow = !(i < m_pSpot->GetnumWins());
+		xSET_SHOWF( this, bShow, "img.win.%d", i + 1 );
+	}
+	// 리셋까지 남은 시간 표시
+	xSET_SHOW( this, "wnd.remain.reset", m_pSpot->GetwinRemain() == 0 );
+	if( m_pSpot->GetwinRemain() == 0 ) {
+		const xSec secRemain = m_pSpot->GetsecRemainUntilReset();
+		if( secRemain <= 0 ) {
+			GAMESVR_SOCKET->SendReqSync( GAME, XGAME::xPS_SPOT, (int)m_pSpot->GetidSpot() );
+		}
+		auto str = XGAME::GetstrResearchTime( secRemain );
+		xSET_TEXT( this, "text.remain.reset", str );
+		SetAutoUpdate( 0.2f );
+	} else {
+		ClearAutoUpdate();
+	}
+	
 	XWndPopup::Update();
 }
 
+void XWndPrivateRaid::OnAutoUpdate()
+{
+	const xSec secRemain = m_pSpot->GetsecRemainUntilReset();
+	auto str = XGAME::GetstrResearchTime( secRemain );
+	xSET_TEXT( this, "text.remain.reset", str );
+}

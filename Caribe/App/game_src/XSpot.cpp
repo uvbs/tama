@@ -58,8 +58,7 @@ int XSpot::sDeSerialize( XArchive& ar, XSpot *pSpot )
 int XSpot::sDeserializeUpdate( XWorld *pWorld, ID idSpot, XArchive& ar )
 {
 	XSpot *pBaseSpot = pWorld->GetSpot( idSpot );
-	if( XASSERT(pBaseSpot) )
-	{
+	if( XASSERT(pBaseSpot) ) {
 		return XSpot::sDeSerialize( ar, pBaseSpot );
 	}
 	return 0;
@@ -670,10 +669,10 @@ XPropItem::xPROP* XSpot::sDoDropEquip( int level )
 /**
  @brief 스팟 승리후 드랍처리의 기본형
 */
-int XSpot::DoDropItem( XSPAcc spAcc, 
-					XArrayLinearN<ItemBox,256> *pOutAry, 
-					int lvSpot,
-					float multiplyDropNum ) const
+int XSpot::DoDropItem( XSPAcc spAcc,
+											 XArrayLinearN<ItemBox, 256> *pOutAry,
+											 int lvSpot,
+											 float multiplyDropNum ) const
 {
 	// 드랍아이템목록이 있다면 확률검사 해서 드랍시킨다.
 	DoDropList( spAcc, pOutAry, multiplyDropNum );

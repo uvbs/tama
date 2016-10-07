@@ -16,6 +16,7 @@ enum xtParamSync : int {
 	xPS_RESROUCE,
 	xPS_TRADER,
 	xPS_GM_LEVEL,
+	xPS_SPOT,
 };	
 
 XE_NAMESPACE_END;

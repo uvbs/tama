@@ -397,7 +397,8 @@ private:
 	void SendResultOpenCloud( ID idCloud, XGAME::xtError err, XGAME::xtTermsPayment termsPay );
 	XGAME::xtError IsAblePayment( int goldCostOpen, XGAME::xtError err, XGAME::xtTermsPayment termsPay, int* pOutGold, int* pOutCash );
 	XGAME::xtError GetPaymentCost( int goldCost, XGAME::xtError err, XGAME::xtTermsPayment termsPay, int* pOutGold, int* pOutCash );
-	void SendSyncAcc( XGAME::xtParamSync type );
+	void SendSyncAcc( XGAME::xtParamSync type, int param );
+	XSpot* GetpSpot( ID idSpot );
 };
 
 

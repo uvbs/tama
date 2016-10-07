@@ -34,6 +34,7 @@ private:
 	void Destroy() {}
 	BOOL OnCreate() override;
 	void Update() override;
+	void OnAutoUpdate();
 	void UpdateEnterHeroes( XWndList* pList, int idxSide );
 	int OnSelectHeroAtHave( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnClickedEnterHeroLeft( XWnd* pWnd, DWORD p1, DWORD p2 );

@@ -645,17 +645,6 @@ bool XPropWorld::Save( LPCTSTR szXml )
 			AddBaseAttribute( pBaseProp, node );
 			node.AddAttribute( "secRegen", pProp->secRegen );
 			node.AddAttribute( "legion", pProp->m_idsLegion );
-// 			if( !pProp->legion.IsEmpty() )
-// 				pProp->legion.SaveXML( node );
-// 			if( pProp->unit )
-// 				node.AddAttribute( "unit", XGAME::GetstrEnumUnit(pProp->unit) );
-// 			if( pProp->gradeLegion > XGAME::xGL_NONE )	// 값이 있을때만 저장한다.
-// 				if( pProp->gradeLegion != XGAME::xGL_NORMAL )	// 일반은 굳이 저장하지 않는다. 0이면 일반으로 인식한다.
-// 					node.AddAttribute( "elite", (int)pProp->gradeLegion - 1 );
-// 			if( pProp->unit ) {
-// 				std::string cStr = XGAME::GetstrEnumUnit(pProp->unit);
-// 				node.AddAttribute( "unit", cStr.c_str() );
-// 			}
 		} break;
 		case XGAME::xSPOT_DAILY: {
 			auto pProp = static_cast<xDaily*>( pBaseProp );
@@ -663,11 +652,6 @@ bool XPropWorld::Save( LPCTSTR szXml )
 			AddBaseAttribute( pBaseProp, node );
 			SaveDaily( pProp, node );
 		} break;
-// 		case XGAME::xSPOT_SPECIAL: {
-// 			auto pProp = static_cast<xSpecial*>( pBaseProp );
-// 			XEXmlNode node = nodeSpots.AddNode( "special" );
-// 			AddBaseAttribute( pBaseProp, node );
-// 		} break;
 		case XGAME::xSPOT_CAMPAIGN: {
 			auto pProp = static_cast<xCampaign*>( pBaseProp );
 			XEXmlNode node = nodeSpots.AddNode( "camp" );
@@ -691,21 +675,27 @@ bool XPropWorld::Save( LPCTSTR szXml )
 			node.AddAttribute( "numMax", pProp->produceMax );
 		} break;
     case XGAME::xSPOT_COMMON: {
-		auto pProp = static_cast<xCommon*>( pBaseProp );
-		XEXmlNode node = nodeSpots.AddNode( "common" );
-		AddBaseAttribute( pBaseProp, node );
-		node.AddAttribute( "type", pProp->strType.c_str() );
-		if( !pProp->strParam.empty() )
-			node.AddAttribute( "str", pProp->strParam.c_str() );
-		if( pProp->nParam[ 0 ] )
-			node.AddAttribute( "p1", pProp->nParam[ 0 ] );
-		if( pProp->nParam[ 1 ] )
-			node.AddAttribute( "p2", pProp->nParam[ 1 ] );
-		if( pProp->nParam[ 2 ] )
-			node.AddAttribute( "p3", pProp->nParam[ 2 ] );
-		if( pProp->nParam[ 3 ] )
-			node.AddAttribute( "p4", pProp->nParam[ 3 ] );
+			auto pProp = static_cast<xCommon*>( pBaseProp );
+			XEXmlNode node = nodeSpots.AddNode( "common" );
+			AddBaseAttribute( pBaseProp, node );
+			node.AddAttribute( "type", pProp->strType.c_str() );
+			if( !pProp->strParam.empty() )
+				node.AddAttribute( "str", pProp->strParam.c_str() );
+			if( pProp->nParam[ 0 ] )
+				node.AddAttribute( "p1", pProp->nParam[ 0 ] );
+			if( pProp->nParam[ 1 ] )
+				node.AddAttribute( "p2", pProp->nParam[ 1 ] );
+			if( pProp->nParam[ 2 ] )
+				node.AddAttribute( "p3", pProp->nParam[ 2 ] );
+			if( pProp->nParam[ 3 ] )
+				node.AddAttribute( "p4", pProp->nParam[ 3 ] );
     } break;
+		case XGAME::xSPOT_PRIVATE_RAID: {
+			auto pProp = static_cast<xPrivateRaid*>( pBaseProp );
+			XEXmlNode node = nodeSpots.AddNode( "private_raid" );
+			AddBaseAttribute( pBaseProp, node );
+			node.AddAttribute( "legion", pProp->m_idsLegion );
+		} break;
 		default:
 			XBREAK(1);
 			break;

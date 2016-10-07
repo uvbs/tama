@@ -160,7 +160,7 @@ void XScenePrivateRaid::OnDieSquadPrivateRaid( XSPSquad spSquadObj )
 	auto spUnit = spNewSquadObj->GetspLeaderUnit();
 	const auto sizeUnit = spUnit->GetSize();
 	const auto vwPos = spUnit->GetvwPos() + XE::VEC3( 0, 0, -150 );
-	auto spObjText = std::make_shared<XObjYellSkill>( _T("지원군 등장!"), 
+	auto spObjText = std::make_shared<XObjYellSkill>( XTEXT(2347),		// 지원군!
 																										spUnit, 
 																										vwPos, 
 																										XCOLOR_WHITE );

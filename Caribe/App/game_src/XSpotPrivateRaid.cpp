@@ -31,6 +31,7 @@ using namespace XGAME;
 using namespace xnLegion;
 
 const int XSpotPrivateRaid::c_maxSquad = 30;
+const int XSpotPrivateRaid::c_maxWins = 2;
 
 ////////////////////////////////////////////////////////////////
 XSpotPrivateRaid::XSpotPrivateRaid( XWorld* pWorld )
@@ -67,15 +68,15 @@ void XSpotPrivateRaid::Serialize( XArchive& ar )
 		// 랜덤목록이므로 DB에 저장하지 않는다.
 		// 적부대추가 출전인원 
 		// 본 부대외에 추가 영웅들 리스트를 풀버전으로 보낸다.
-// 		ar << m_listEnterEnemy.size();
-// 		for( auto pHero : m_listEnterEnemy ) {
-// 			ar << pHero->GetsnHero();
-// 			XHero::sSerialize( ar, pHero );
-// 		}
 		SerializeEnterEnemy( ar );
 	} else {
 		ar << 0;
 	}
+	ar << (char)m_numWins;
+	ar << (char)0;
+	ar << (char)0;
+	ar << (char)0;
+	ar << m_secTimer;
 
 }
 
@@ -96,26 +97,10 @@ BOOL XSpotPrivateRaid::DeSerialize( XArchive& ar, DWORD ver )
 	ar >> m_legionDatPlayer;			// 
 	ar >> m_listEnterPlayer;
 	DeSerializeEnterEnemy( ar, ver );
-//	XLIST4_DESTROY( m_listEnterEnemy );
-// 	bool bEmpty = m_listEnterEnemy.empty();
-// 	int numEnter;
-// 	ar >> numEnter;
-// 	for( int k = 0; k < numEnter; ++k ) {
-// 		ID snHero;
-// 		ar >> snHero;
-// 		if( bEmpty ) {
-// 			auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
-// 			m_listEnterEnemy.push_back( pHero );
-// 		} else {
-// 			auto ppHero = m_listEnterEnemy.GetpByIndex( k );
-// 			if( ppHero && ( *ppHero )->GetsnHero() == snHero ) {
-// 				auto pHero = *ppHero;
-// 				XHero::sDeSerializeUpdate( ar, pHero, nullptr );
-// 			}
-// 		}
-// // 			auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
-// //  			m_listEnterEnemy.push_back( pHero );
-// 	}
+	char c0;
+	ar >> c0;		m_numWins = c0;
+	ar >> c0 >> c0 >> c0;
+	ar >> m_secTimer;
 	return TRUE;
 }
 
@@ -297,35 +282,49 @@ void XSpotPrivateRaid::OnAfterBattle( XSPAcc spAccWin
 																			, int numStar
 																			, bool bRetreat )
 {
-//	const int numSquad = GetspLegion()->GetNumSquadrons();
 	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, numStar, bRetreat );
 	if( bWin ) {
-// 		int i = 0;
-// 		for( auto pHero : m_listEnterEnemy ) {
-// 			if( i >= numSquad ) {
-// 				//SAFE_DELETE( pHero );
-// 			}
-// 			++i;
-// 		}
 		m_listEnterEnemy.clear();
+		if( m_numWins < c_maxWins )
+			++m_numWins;
+
 	}
 }
 
 
+// int XSpotPrivateRaid::DoDropItem( XSPAcc spAcc, 
+// 																	XArrayLinearN<ItemBox, 256> *pOutAry, 
+// 																	int lvSpot, 
+// 																	float multiplyDropNum ) const
+// {
+// }
+
 bool XSpotPrivateRaid::Update( XSPAcc spAcc )
 {
 #if defined(_XSINGLE) || !defined(_CLIENT)
-
 	if( m_listEnterEnemy.empty() || GetspLegion() == nullptr) {
 		SetLevel( GetpProp()->level );
 		CreateEnemyEnterHeroes( GetLevel() );
+		//
+		auto pProp = PROP_ITEM->GetpProp( _T( "scalp_crow" ) );
+		if( XASSERT( pProp ) ) {
+			int num = 20 + xRandom( -5, 5 );
+			xDropItem drop( pProp->idProp, num, 1.f );;
+			AddDropItem( drop );
+		}
 	}
-// 		auto& listEnemy = m_aryEnter[1];
-// 		if( listEnemy.empty() ) {
-// 			XBREAK( GetLevel() == 0 );
-// 			CreateEnemyEnterHeroes( GetLevel() );
-// 		}
-//	}
+	// 타이머 세팅 안되어 있으면 타이머 켜고 도전회수 채움
+	if( m_secTimer == 0 ) {
+		m_secTimer = XTimer2::sGetTime();
+		m_numWins = c_maxWins;
+	} else {
+		// 타이머가 켜져있고 한시간이 지났으면 도전회수 다시 채우고 타이머 리셋
+		if( XTimer2::sGetTime() - m_secTimer > xHOUR_TO_SEC( 1 ) ) {
+			m_secTimer = XTimer2::sGetTime();
+			m_numWins = 0;
+		}
+	}
+
 #endif // #if defined(_XSINGLE) || !defined(_CLIENT)
 
 	return true;
@@ -436,3 +435,4 @@ XList4<XSPHero> XSpotPrivateRaid::GetlistEnter( int idxSide )
 	}
 	return m_listEnterEnemy;
 }
+

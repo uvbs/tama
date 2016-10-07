@@ -20,6 +20,7 @@ class XSpotPrivateRaid : public XSpot
 {
 public:
 	static const int c_maxSquad;
+	static const int c_maxWins;
 	XSpotPrivateRaid( XWorld* pWorld );
 	XSpotPrivateRaid( XWorld* pWorld, XPropWorld::xBASESPOT* pProp );
 	virtual ~XSpotPrivateRaid() {
@@ -31,8 +32,21 @@ public:
 	}
 	GET_ACCESSOR_CONST( const XList4<ID>&, listEnterPlayer );
 	GET_ACCESSOR_CONST( const xnLegion::xLegionDat&, legionDatPlayer );
-//	GET_SET_ACCESSOR2( XSPLegion, spLegionPlayer );
+	GET_ACCESSOR_CONST( int, numWins );
+	GET_ACCESSOR_CONST( xSec, secTimer );
 	// public member
+	// 남은 승리횟수
+	inline int GetwinRemain() const {
+		return c_maxWins - m_numWins;
+	}
+	// 리셋주기
+	inline xSec GetsecReset() const {
+		return xHOUR_TO_SEC(1);
+	}
+	// 리셋까지 남은 시간(초)
+	xSec GetsecRemainUntilReset() const {
+		return GetsecReset() - (XTimer2::sGetTime() - m_secTimer);
+	}
 	bool IsNpc() const override {
 		return true;
 	}
@@ -70,6 +84,8 @@ private:
 	XVector<XSPHero> m_arySelected;
 //	XSPLegion m_spLegionPlayer;							// 이 스팟 전용 플레이어측 군단 정보
 	xnLegion::xLegionDat m_legionDatPlayer;					///< 스팟엔 플레이어의 군단객체(XLegion)을 두지 않는다. 데이터 형태로만 보관한다.
+	int m_numWins = 0;				// 승리가능한 회수
+	xSec m_secTimer = 0;					// 1시간 체크를 위한 타이머
 //////////////////////////////////////////////////////////////////////////
 private:
 	// private method
@@ -87,4 +103,6 @@ private:
 	void SerializeEnterEnemy( XArchive& ar ) const;
 	void DeSerializeEnterEnemy( XArchive& ar, int verWorld );
 	void OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int numStar, bool bRetreat ) override;
+	
+//	int DoDropItem( XSPAcc spAcc, XArrayLinearN<ItemBox, 256> *pOutAry, int lvSpot, float multiplyDropNum ) const override;
 }; // class XSpotPrivateRaid

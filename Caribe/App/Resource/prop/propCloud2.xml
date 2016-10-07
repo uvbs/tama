@@ -17,7 +17,6 @@
     <cloud id="16" ids="area.001" level="3" lv_open="3" cost="405" cost_pos_x="-24" cost_pos_y="45" ids_precede="area.labor" name="39001" unlock="xUNIT_PALADIN" idx="254 255 233 211 212 232 ">
         <spot id="608" />
         <spot id="617" />
-        <spot id="826" />
     </cloud>
     <cloud id="1041" ids="area.1041" level="3" cost="405" cost_pos_y="10" ids_precede="area.001" idx="231 210 209 230 ">
         <spot id="618" />
@@ -151,6 +150,7 @@
         <spot id="665" />
         <spot id="666" />
         <spot id="667" />
+        <spot id="826" />
     </cloud>
     <cloud id="1039" ids="area.1039" level="19" cost="651605" ids_precede="area.1038" idx="366 368 367 ">
         <spot id="645" />
