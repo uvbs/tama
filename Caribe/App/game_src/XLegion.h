@@ -64,7 +64,7 @@ public:
 	static int sGetMilitaryPower( XSPLegion spLegion );
 	static int sGetMilitaryPower( XHero *pHero );
 	static int sGetMilitaryPowerMax( int lvAcc );
-	static XSPLegion sCreateLegionWithDat( const xnLegion::xLegionDat& legionDat, XSPAccConst spAcc );
+//	static XSPLegion sCreateLegionWithDat( const xnLegion::xLegionDat& legionDat, XSPAccConst spAcc );
 private:
 	ID m_snLegion;
 	XHero *m_pLeader = nullptr;		// 널이 될수 있음.
@@ -122,39 +122,17 @@ public:
 	const XSquadron* GetpSquadronByidxPos( int idxSquad ) const;
 	const XSquadron* GetpSquadronBySN( ID snSquad ) const;
 	XSquadron* GetpmSquadronBySN( ID snSquad );
-	// 	XSquadron* GetSquadron( int idx ) {
-// 		if( idx == -1 )
-// 			return nullptr;
-// 		if( idx < 0 || idx >= m_arySquadrons.GetMax() )
-// 			return nullptr;
-// 		return m_arySquadrons[idx];
-// 	}
-// 	inline XSquadron* GetpSquadronByIdx( int idx ) {
-// 		return GetSquadron( idx );
-// 	}
-// 	void SetSquadron( int idx, XSquadron *pSq, BOOL bCreateHero );
-// 	void SetSquadron( int idx, XSquadron *pSq, bool bCreateHero ) {
-// 		return SetSquadron( idx, pSq, xboolToBOOL(bCreateHero) ) != FALSE;
-// 	}
 	void AddSquadron( int idxPos, XSquadron *pSq, bool bCreateHero );
 	void DestroySquadron( ID idSquad );
 	XSquadron* GetSquadronByHeroSN( ID snHero ) const;
 	int _GetIdxSquadByHeroSN( ID snHero ) const;
-// 	inline int GetIdxSquadByHeroSN( ID snHero ) const {
-// 		return GetIdxSquadByHeroSN( snHero );
-// 	}
 	void SwapSlotSquad( XHero *pHeroSrc, XHero *pHeroDst );
 	void SwapSlotSquad( int idxSrc, int idxDst );
-//	void MoveSlotSquad( XHero *pHero, int idx )
-//	BOOL DestroySquad( XHero *pHero );
 	void DestroySquadBysnHero( ID snHero );
 	void DestroySquadByIdxPos( int idx );
-//	int GetHerosToAry( XArrayLinearN<XHero*, XGAME::MAX_SQUAD>& aryOut );
 	int GetHerosToAry( XVector<XHero*> *pOutAry );
-//	int GetLevelUpHerosToAry( XArrayLinearN<XHero*, XGAME::MAX_SQUAD> *pAryOut );
+	int GetHeroesToList( XList4<XHero*>* pOutList );
 	void AdjustLegion();
-//	void DummyDataRechange( int levelAcc, XAccount *pAcc );
-	//BOOL SetSquadAll(int idx, XLegion *pLegion);
 	int DeserializeForGuildRaid( XArchive& ar );
 	void SetResourceSquad( int numSquad );
 	void ClearResourceSquad();

@@ -11,6 +11,7 @@ class XSquadron
 	int m_idxPos = -99;			/// 전장에서 부대의 위치인덱스 0 ~ 15. -1은 특별히 정해진 위치가 없다. 99는 초기값
 	bool m_bCreateHero = false;			// NPC부대인가?
 	XHero *m_pHero = nullptr;			// m_bNPC가 TRUE면 여기서 m_pHero를 삭제하지 않는다.
+	//ID m_snHero = 0;
 	float m_mulAtk = 1.f;
 	float m_mulHp = 1.f;
 	void Init() {
@@ -21,7 +22,8 @@ public:
 	XSquadron() { Init(); }
 	XSquadron( XHero *pHero );
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	XSquadron( XSPAccConst spAcc, XPropHero::xPROP *pPropHero, int levelHero, XGAME::xtUnit unit, int levelSquad, bool bCreateHero = true );
+// 	XSquadron( XSPAccConst spAcc, XPropHero::xPROP *pPropHero, int levelHero, XGAME::xtUnit unit, int levelSquad, bool bCreateHero = true );
+	XSquadron( XPropHero::xPROP *pPropHero, int levelHero, XGAME::xtUnit unit, int levelSquad );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 	~XSquadron() { Destroy(); }
 	//
@@ -51,11 +53,12 @@ public:
 	XGAME::xtAttack GetAtkType() const;
 	int GetnumUnit() const;
 	//
-	BOOL IsEmpty() const {
+	inline bool IsEmpty() const {
+		//return m_snHero == 0;
 		return m_pHero == nullptr;
 	}
-	BOOL IsFill() const {
-		return m_pHero != nullptr;
+	inline bool IsFill() const {
+		return !IsEmpty();
 	}
 	void Serialize( XArchive& ar );
 	void SerializeFull( XArchive& ar );
@@ -66,10 +69,9 @@ private:
 	void ChangeHero( XHero *pHeroNew ) {
 		XBREAK( m_bCreateHero );		// 이런경우가 있음?
 		m_pHero = pHeroNew;
+		//m_snHero = pHeroNew->GetsnHero();
 	}
 public:
 	//
-// friend BOOL XLegion::DeSerializeFull( XArchive&, int );
-// friend bool XLegion::ChangeHeroInSquad( XHero*pHeroFrom, XHero *pHeroTo );
 	friend class XLegion;
 };

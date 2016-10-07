@@ -32,6 +32,7 @@ public:
 	}
 //	static XHero* sCreateDeSerialize( XArchive& ar, XSPAcc spAcc );
 	static XHero* sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc );
+	static XHero* sDeSerializeUpdate( XArchive& ar, XHero* pHero, XSPAccConst spAcc );
 	static int sGetMaxExpWithLevel( XGAME::xtTrain type, int level );
 #if defined(_XSINGLE) || !defined(_CLIENT)
 	static XHero* sCreateHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit, XSPAccConst spAcc );
@@ -53,11 +54,7 @@ public:
 		void Serialize( XArchive& ar ) const;
 		void DeSerialize( XArchive& ar, int verHero );
 	};
-#ifdef _CLIENT
-//	static volatile float s_fMultiply;				// 메모리 치팅방지
-#endif // _CLIENT
 private:
-//	std::shared_ptr<XSKILL::XAdjParam> m_spAdjParam;
 	//
 	ID m_idProp = 0;      // m_pProp을 교체해야할때 필요함.
 	ID m_snHero;
@@ -95,6 +92,7 @@ public:
 	~XHero() { Destroy(); }
 	//
 //	GET_ACCESSOR( std::shared_ptr<XSKILL::XAdjParam>, spAdjParam );
+	GET_ACCESSOR_CONST( XSPAccConst, spAcc );
 	GET_SET_ACCESSOR_CONST( XGAME::xtUnit, Unit );
 	int GetnumUnit() const;
 	GET_SET_ACCESSOR_CONST( bool, bLive );

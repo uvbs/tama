@@ -115,7 +115,7 @@ public:
 	//
 	virtual int Process( float dt );
 	int GetidxCurrDownload() {
-		return m_listReq.GetIndex( m_itor );
+		return m_listReq.GetIndexByItor( m_itor );
 	}
 };
 

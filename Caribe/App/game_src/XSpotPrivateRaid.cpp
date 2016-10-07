@@ -28,13 +28,13 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 using namespace XGAME;
+using namespace xnLegion;
 
 const int XSpotPrivateRaid::c_maxSquad = 30;
 
 ////////////////////////////////////////////////////////////////
 XSpotPrivateRaid::XSpotPrivateRaid( XWorld* pWorld )
 	: XSpot( pWorld, xSPOT_PRIVATE_RAID )
-	, m_aryEnter(2)
 	, m_arySelected(2)
 {
 	Init();
@@ -42,128 +42,181 @@ XSpotPrivateRaid::XSpotPrivateRaid( XWorld* pWorld )
 
 XSpotPrivateRaid::XSpotPrivateRaid( XWorld* pWorld, XPropWorld::xBASESPOT* pProp )
 	: XSpot( pProp, xSPOT_PRIVATE_RAID, pWorld )
-	, m_aryEnter( 2 )
 	, m_arySelected( 2 )
 {
 	Init();
 }
 
-XSPLegion XSpotPrivateRaid::GetspLegionPlayer()
-{
-	if( _m_spLegionPlayer == nullptr ) {
-		XBREAK( m_legionDatPlayer.IsInvalid() );
-		auto spAcc = (GetspOwner().expired())? nullptr : GetspOwner().lock();
-		XBREAK( spAcc == nullptr );
-		_m_spLegionPlayer = XLegion::sCreateLegionWithDat( m_legionDatPlayer, spAcc );
-	}
-	return _m_spLegionPlayer;
-}
-
-
 
 void XSpotPrivateRaid::Serialize( XArchive& ar )
 {
+	XBREAK( m_listEnterEnemy.empty() && GetspLegion() );
+	// 적군단
+	if( ar.IsForDB() ) {
+		// db저장시에는 적군단 정보를 저장하지 않는다. 출전리스트가 있으므로.
+		DestroyLegion();	
+	}
+	//
 	XSpot::Serialize( ar );
-//	XLegion::sSerialize( m_spLegionPlayer, &ar );
+	//
+	// 플레이어 군단
 	ar << m_legionDatPlayer;
-	// 본 부대외에 추가 영웅들 리스트를 풀버전으로 보낸다.
-	ar << m_aryEnter[1].size();
-	for( auto pHero : m_aryEnter[1] ) {
+	// 플레이어측 전체 출전영웅
+	ar << m_listEnterPlayer;
+	if( !ar.IsForDB() ) {
+		// 랜덤목록이므로 DB에 저장하지 않는다.
+		// 적부대추가 출전인원 
+		// 본 부대외에 추가 영웅들 리스트를 풀버전으로 보낸다.
+// 		ar << m_listEnterEnemy.size();
+// 		for( auto pHero : m_listEnterEnemy ) {
+// 			ar << pHero->GetsnHero();
+// 			XHero::sSerialize( ar, pHero );
+// 		}
+		SerializeEnterEnemy( ar );
+	} else {
+		ar << 0;
+	}
+
+}
+
+void XSpotPrivateRaid::SerializeEnterEnemy( XArchive& ar ) const
+{
+	ar << m_listEnterEnemy.size();
+	for( auto pHero : m_listEnterEnemy ) {
+		ar << pHero->GetsnHero();
 		XHero::sSerialize( ar, pHero );
 	}
 }
+
 
 BOOL XSpotPrivateRaid::DeSerialize( XArchive& ar, DWORD ver )
 {
 	XSpot::DeSerialize( ar, ver );
 	//
-//	XSPAcc spAcc;
-//	XLegion::sDeSerializeUpdate( m_spLegionPlayer, spAcc, ar );
-	_m_spLegionPlayer = nullptr;
-	ar >> m_legionDatPlayer;			// 일단 데이터로만 읽어두고 Deserial이 끝나면 객체를 만든다.
-	XLIST4_DESTROY( m_aryEnter[1] );
+	ar >> m_legionDatPlayer;			// 
+	ar >> m_listEnterPlayer;
+	DeSerializeEnterEnemy( ar, ver );
+//	XLIST4_DESTROY( m_listEnterEnemy );
+// 	bool bEmpty = m_listEnterEnemy.empty();
+// 	int numEnter;
+// 	ar >> numEnter;
+// 	for( int k = 0; k < numEnter; ++k ) {
+// 		ID snHero;
+// 		ar >> snHero;
+// 		if( bEmpty ) {
+// 			auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
+// 			m_listEnterEnemy.push_back( pHero );
+// 		} else {
+// 			auto ppHero = m_listEnterEnemy.GetpByIndex( k );
+// 			if( ppHero && ( *ppHero )->GetsnHero() == snHero ) {
+// 				auto pHero = *ppHero;
+// 				XHero::sDeSerializeUpdate( ar, pHero, nullptr );
+// 			}
+// 		}
+// // 			auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
+// //  			m_listEnterEnemy.push_back( pHero );
+// 	}
+	return TRUE;
+}
+
+void XSpotPrivateRaid::DeSerializeEnterEnemy( XArchive& ar, int verWorld )
+{
+	const bool bEmpty = m_listEnterEnemy.empty();
 	int numEnter;
 	ar >> numEnter;
-	for( int k = 0; k < numEnter; ++k ) {
-			auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
- 			m_aryEnter[1].push_back( pHero );
-//			}
+	if( numEnter ) {
+		for( int k = 0; k < numEnter; ++k ) {
+			ID snHero;
+			ar >> snHero;
+			if( bEmpty ) {
+				auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
+				m_listEnterEnemy.push_back( pHero );
+			} else {
+				auto ppHero = m_listEnterEnemy.GetpByIndex( k );
+				if( ppHero && ( *ppHero )->GetsnHero() == snHero ) {
+					auto pHero = *ppHero;
+					XHero::sDeSerializeUpdate( ar, pHero, nullptr );
+				} else {
+					auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
+					m_listEnterEnemy.push_back( pHero );
+				}
+			}
+		}
+	} else {
+		XLIST4_DESTROY( m_listEnterEnemy );
 	}
-	return TRUE;
 }
 
 /** ////////////////////////////////////////////////////////////////////////////////////
  @brief 플레이어의 전체 출전리스트를 받아 앞부분은 군단으로 생성하고 나머지는 대기열에 넣는다.
 */
-void XSpotPrivateRaid::UpdatePlayerEnterList( const XList4<ID>& _listHero, XSPAccConst spAcc )
+void XSpotPrivateRaid::UpdatePlayerEnterList( const XList4<ID>& listHero, int lvAcc )
 {
-	XList4<ID> listHero = _listHero;
-	// 플레이어 군단객체 생성(외부에서의 군단포인터 참조문제로 한번 생성하면 바꾸지 않음)
-	auto spLegionPlayer = _m_spLegionPlayer;
-	if( spLegionPlayer == nullptr ) {
-		spLegionPlayer = std::make_shared<XLegion>();
-	}
-	// 군단내 기존데이타 삭제
-	spLegionPlayer->DestroySquadronAll();
-	// 전체 출전리스트를 건네고 필요한 인원만 부대를 생성하고 생성한 부대는 리스트에서 뺀다.
-	ProcCreateSquadron( spLegionPlayer, &listHero, spAcc );
+	// 리스트가 올라올때마다 군단과 리스트를 모두 갱신한다.
+	m_listEnterPlayer.clear();
+	m_legionDatPlayer.Clear();
+	m_listEnterPlayer = listHero;		// 군단소속영웅 포함해서 모두 리스트에 넣는다.
+	// 전체 출전리스트를 건네고 필요한 인원만 부대에 포함시킨다.
+	ProcCreateSquadron( &m_legionDatPlayer, listHero, lvAcc );
 	// 나머지 인원은 대기열 리스트에 넣는다.
-	m_aryEnter[0].clear();
-	for( auto snHero : listHero ) {
-		auto pHero = spAcc->GetpcHeroBySN( snHero );
-		if( XASSERT( pHero ) ) {
-			m_aryEnter[0].push_back( const_cast<XHero*>( pHero ) );
-		}
-	}
 }
 
 /** ////////////////////////////////////////////////////////////////////////////////////
  @brief 영웅리스트를 바탕으로 플레이어측 군단객체를 생성한다.
 */
-void XSpotPrivateRaid::ProcCreateSquadron( XSPLegion spLegion, XList4<ID>* pOutlistHero, XSPAccConst spAcc ) const
+void XSpotPrivateRaid::ProcCreateSquadron( xLegionDat* pOutDat,
+																					 const XList4<ID>& listHero, 
+																					 int lvAcc ) const
 {
 	// 플레이어의 현재 레벨에서 가질수 있는 최대 부대수
-	const int maxHero = XAccount::sGetMaxSquadByLevelForPlayer( spAcc->GetLevel() );
+	const int maxHero = XAccount::sGetMaxSquadByLevelForPlayer( lvAcc );
 	// 영웅리스트를 바탕으로 군단객체를 생성한다. 영웅은 반드시 보유중인 영웅이어야 한다.
-	auto& listHero = (*pOutlistHero);
 	int idx = 0;
-	for( auto itor = listHero.begin(); itor != listHero.end(); ) {
-		const ID snHero = ( *itor );
-		auto pHero = spAcc->GetpcHeroBySN( snHero );
-		if( XASSERT( pHero ) ) {
-			spLegion->CreateAddSquadron( idx, pHero, false );
-			// 생성한건 리스트에서 뺀다.
-			listHero.erase( itor++ );
-			if( ++idx >= maxHero )
-				break;
-		}
+	for( const auto snHero : listHero ) {
+		pOutDat->AddSquad( idx, snHero );
+		if( ++idx >= maxHero )
+			break;
 	}
 }
 
 
+#ifdef _CLIENT
 void XSpotPrivateRaid::AddEnterHero( XHero* pHero, int idxSide )
 {
 	if( !pHero )
 		return;
 	if( IsExistEnterHero( pHero, idxSide ) )
 		return;
-	m_aryEnter[idxSide].push_back( pHero );
+	if( idxSide == 0 ) {
+		m_listEnterPlayer.push_back( pHero->GetsnHero() );
+	} else {
+		m_listEnterEnemy.push_back( pHero );
+	}
+//	m_aryEnter[idxSide].push_back( pHero );
 
 }
 bool XSpotPrivateRaid::IsExistEnterHero( XHero* pHero, int idxSide )
 {
 	if( !pHero )
 		return false;
-	return m_aryEnter[idxSide].FindByID( pHero->GetsnHero() ) != nullptr;
+	if( idxSide == 0 ) {
+		return m_listEnterPlayer.IsExist( pHero->GetsnHero() );
+	}
+	return m_listEnterEnemy.FindByID( pHero->GetsnHero() ) != nullptr;
+	//return m_aryEnter[idxSide].FindByID( pHero->GetsnHero() ) != nullptr;
 }
 
 void XSpotPrivateRaid::DelEnterHero( XHero* pHero, int idxSide )
 {
 	if( !pHero )
 		return;
-	m_aryEnter[idxSide].DelByID( pHero->GetsnHero() );
+	if( idxSide == 0 ) {
+		m_listEnterPlayer.Del( pHero->GetsnHero() );
+	} else {
+		m_listEnterEnemy.DelByID( pHero->GetsnHero() );
+	}
+	//m_aryEnter[idxSide].DelByID( pHero->GetsnHero() );
 }
-
 /** ////////////////////////////////////////////////////////////////////////////////////
  @brief 출전영웅들 간에 교환을 한다.
 */
@@ -178,12 +231,19 @@ void XSpotPrivateRaid::ChangeEnterHero( XHero* pHero1, XHero* pHero2, int idxSid
 	// 두번째 원소를 빼고 다음 이터레이터를(B) 받는다.
 	// 첫번째 원소를 B에 인서트 한다. b가 end면 맨뒤에 넣는다.
 	// 두번째 원소를 A에 인서트 한다. a가 end면 맨뒤에 넣는다.
-	auto itor1 = m_aryEnter[idxSide].GetItorByID( pHero1->GetsnHero() );
-	auto itor2 = m_aryEnter[idxSide].GetItorByID( pHero2->GetsnHero() );
-	(*itor1) = pHero2;
-	(*itor2) = pHero1;
+	if( idxSide == 0 ) {
+		auto itor1 = m_listEnterPlayer.GetItor( pHero1->GetsnHero() );
+		auto itor2 = m_listEnterPlayer.GetItor( pHero2->GetsnHero() );
+		( *itor1 ) = pHero2->GetsnHero();
+		( *itor2 ) = pHero1->GetsnHero();
+	} else {
+		auto itor1 = m_listEnterEnemy.GetItorByID( pHero1->GetsnHero() );
+		auto itor2 = m_listEnterEnemy.GetItorByID( pHero2->GetsnHero() );
+		(*itor1) = pHero2;
+		(*itor2) = pHero1;
+	}
 }
-
+	
 /** ////////////////////////////////////////////////////////////////////////////////////
  @brief 리스트에 없는 pHeroNew영웅을 pExistHero가 있던 위치에 삽업하고 기존 영웅은 삭제
 */
@@ -193,14 +253,24 @@ void XSpotPrivateRaid::ReplaceEnterHero( XHero* pHeroNew, XHero* pExistHero, int
 		return;
 	if( !IsExistEnterHero( pHeroNew, idxSide ) )
 		return;
-
-	auto itorExist = m_aryEnter[idxSide].GetItorByID( pExistHero->GetsnHero() );
-	(*itorExist) = pHeroNew;
+	if( idxSide == 0 ) {
+		auto itorExist = m_listEnterPlayer.GetItor( pExistHero->GetsnHero() );
+		( *itorExist ) = pHeroNew->GetsnHero();
+	} else {
+		auto itorExist = m_listEnterEnemy.GetItorByID( pExistHero->GetsnHero() );
+		( *itorExist ) = pHeroNew;
+	}
 }
+
+#endif // _CLIENT
+
 
 int XSpotPrivateRaid::GetidxEnterHero( XHero* pHero, int idxSide )
 {
-	return m_aryEnter[idxSide].GetIndex( pHero );
+	if( idxSide == 0 ) {
+		return m_listEnterPlayer.GetIndex( pHero->GetsnHero() );
+	}
+	return m_listEnterEnemy.GetIndexByID( pHero );
 }
 
 XHero* XSpotPrivateRaid::GetSelectEnterHero( int idxSide )
@@ -209,7 +279,7 @@ XHero* XSpotPrivateRaid::GetSelectEnterHero( int idxSide )
 }
 void XSpotPrivateRaid::SetSelectEnterHero( XHero* pHero, int idxSide )
 {
-	m_arySelected[ idxSide ] = pHero;
+	m_arySelected[idxSide] = pHero;
 }
 
 bool XSpotPrivateRaid::IsSelectedHero( XHero* pHero, int idxSide )
@@ -220,14 +290,41 @@ bool XSpotPrivateRaid::IsSelectedHero( XHero* pHero, int idxSide )
 	return false;
 }
 
+void XSpotPrivateRaid::OnAfterBattle( XSPAcc spAccWin
+																			, ID idAccLose
+																			, bool bWin
+																			, int numStar
+																			, bool bRetreat )
+{
+	const int numSquad = GetspLegion()->GetNumSquadrons();
+	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, numStar, bRetreat );
+	if( bWin ) {
+		int i = 0;
+		for( auto pHero : m_listEnterEnemy ) {
+			if( i >= numSquad ) {
+				SAFE_DELETE( pHero );
+			}
+			++i;
+		}
+		m_listEnterEnemy.clear();
+	}
+}
+
+
 bool XSpotPrivateRaid::Update( XSPAcc spAcc )
 {
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	auto& listEnemy = m_aryEnter[ 1 ];
-	if( listEnemy.empty() ) {
-		XBREAK( GetLevel() == 0 );
+
+	if( m_listEnterEnemy.empty() || GetspLegion() == nullptr) {
+		SetLevel( GetpProp()->level );
 		CreateEnemyEnterHeroes( GetLevel() );
 	}
+// 		auto& listEnemy = m_aryEnter[1];
+// 		if( listEnemy.empty() ) {
+// 			XBREAK( GetLevel() == 0 );
+// 			CreateEnemyEnterHeroes( GetLevel() );
+// 		}
+//	}
 #endif // #if defined(_XSINGLE) || !defined(_CLIENT)
 
 	return true;
@@ -246,6 +343,9 @@ void XSpotPrivateRaid::CreateEnemyEnterHeroes( int lvSpot )
 		// 일반 NPC군단 생성알고리즘으로 레벨에 맞는 부대를 생성함
 		auto spLegion = XLegion::sCreateLegionForNPC2( propLegion, lvSpot, true );
 		SetspLegion( spLegion );
+		m_listEnterEnemy.clear();
+		// 군단소속 영웅들을 리스트에 넣는다.
+		spLegion->GetHeroesToList( &m_listEnterEnemy );
 		// 생성후 모자라는 수는 랜덤으로 생성.
 		const auto& tblLegion = XGC->GetLegionTable( lvSpot );
 		const int lvSquad = tblLegion.m_lvSquad;
@@ -256,7 +356,7 @@ void XSpotPrivateRaid::CreateEnemyEnterHeroes( int lvSpot )
 			auto pPropHero = XHero::sGet()->GetpPropRandomByGetType( bit );
 			const auto unit = XGAME::GetRandomUnit( pPropHero->typeAtk, (xtSize)xRandom( 1, 3 ) );
 			auto pHero = XHero::sCreateHero( pPropHero, lvSquad, unit, nullptr );
-			m_aryEnter[1].push_back( pHero );
+			m_listEnterEnemy.push_back( pHero );
 		}
 	}
 #endif // #if defined(_XSINGLE) || !defined(_CLIENT)
@@ -266,20 +366,24 @@ void XSpotPrivateRaid::SerializeForBattle( XArchive* pOut, const XParamObj2& par
 {
 	XSpot::SerializeForBattle( pOut, param );
 	// 플레이어측 군단과 출전리스트를 sn형태로 팩킹
-	XLegion::sSerialize( GetspLegionPlayer(), pOut );
-	//
-	*pOut << m_aryEnter[0].size();
-	for( auto pHero : m_aryEnter[0] ) {
-		*pOut << pHero->GetsnHero();
-	}
+//	XLegion::sSerialize( m_spLegionPlayer, pOut );
+	// 플레이어측 군단정보
+	*pOut << m_legionDatPlayer;
+	// 플레이어측 추가 출전정보
+	*pOut << m_listEnterPlayer;
+// 	*pOut << m_listEnterPlayer.size();
+// 	for( auto snHero : m_listEnterPlayer ) {
+// 		*pOut << snHero;
+// 	}
 	// 적측 군단과 출전리스트 팩킹
 	XBREAK( GetspLegion() == nullptr );
 	XLegion::sSerialize( GetspLegion(), pOut );
 	// 적측 영웅정보는 풀버전으로 받는다.
-	*pOut << m_aryEnter[1].size();
-	for( auto pHero : m_aryEnter[1] ) {
-		XHero::sSerialize( pOut, pHero );
-	}
+	SerializeEnterEnemy( *pOut );
+// 	*pOut << m_listEnterEnemy.size();
+// 	for( auto pHero : m_listEnterEnemy ) {
+// 		XHero::sSerialize( pOut, pHero );
+// 	}
 	MAKE_CHECKSUM(*pOut);
 }
 
@@ -287,29 +391,47 @@ void XSpotPrivateRaid::DeSerializeForBattle( XArchive& ar, XArchive& arAdd, XSPA
 {
 	XSpot::DeSerializeForBattle( ar, arAdd, spAcc );
 	//
-	m_aryEnter[0].clear();
-	XLIST4_DESTROY( m_aryEnter[1] );
-	XLegion::sDeSerializeUpdate( GetspLegionPlayer(), spAcc, ar );
-	int size;
-	ar >> size;
-	for( int i = 0; i < size; ++i ) {
-		ID snHero;
-		ar >> snHero;
-		auto pHero = spAcc->GetpcHeroBySN( snHero );
-		if( XASSERT(pHero) ) {
-			m_aryEnter[0].push_back( const_cast<XHero*>( pHero ) );
-		}
-	}
+//	XLegion::sDeSerializeUpdate( m_spLegionPlayer, spAcc, ar );
+	// 플레이어측 군단정보
+	ar >> m_legionDatPlayer;
+	// 플레이어측 추가 출전 정보
+	ar >> m_listEnterPlayer;
+// 	m_listEnterPlayer.clear();
+//	XLIST4_DESTROY( m_listEnterEnemy );
+// 	ar >> size;
+// 	for( int i = 0; i < size; ++i ) {
+// 		ID snHero;
+// 		ar >> snHero;
+// 		auto pHero = spAcc->GetpcHeroBySN( snHero );
+// 		if( XASSERT(pHero) ) {
+// 			m_aryEnter[0].push_back( const_cast<XHero*>( pHero ) );
+// 		}
+// 	}
 	// 적측
 	XLegion::sDeSerializeUpdate( GetspLegion(), spAcc, ar );
-	ar >> size;
-	for( int i = 0; i < size; ++i ) {
-		auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
-		if( XASSERT( pHero ) ) {
-			m_aryEnter[1].push_back( pHero );
-		}
-	}
-	
-
+	DeSerializeEnterEnemy( ar, 0 );
+// 	int size;
+// 	ar >> size;
+// 	for( int i = 0; i < size; ++i ) {
+// 		auto pHero = XHero::sCreateDeSerialize2( ar, nullptr );
+// 		if( XASSERT( pHero ) ) {
+// 			m_listEnterEnemy.push_back( pHero );
+// 		}
+// 	}
+	RESTORE_VERIFY_CHECKSUM_NO_RETURN(ar);
 }
 
+XList4<XHero*> XSpotPrivateRaid::GetlistEnter( int idxSide )
+{
+	if( idxSide == 0 ) {
+		if( XASSERT(!GetspOwner().expired()) ) {
+			XList4<XHero*> listEnter;
+			for( auto snHero : m_listEnterPlayer ) {
+				auto pHero = GetspOwner().lock()->GetpHeroBySN( snHero );
+				listEnter.push_back( pHero );
+			}
+			return listEnter;
+		}
+	}
+	return m_listEnterEnemy;
+}

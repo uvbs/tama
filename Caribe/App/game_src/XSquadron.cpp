@@ -30,7 +30,8 @@ XSquadron::XSquadron( XHero *pHero )
 	m_bCreateHero = FALSE;
 	XBREAK( pHero == NULL );
 	m_pHero = pHero;
-	XPropUnit::xPROP *pPropUnit = PROP_UNIT->GetpProp( pHero->GetUnit() );
+	//m_snHero = pHero->GetsnHero();
+	auto pPropUnit = PROP_UNIT->GetpProp( pHero->GetUnit() );
 	XBREAK( pPropUnit == NULL );
 	XBREAK( m_pHero->IsRange() && pPropUnit->IsRange() == FALSE );
 }
@@ -39,18 +40,23 @@ XSquadron::XSquadron( XHero *pHero )
  @brief 
  @param bCreateHero Hero를 내부에서 직접 생성하
 */
-XSquadron::XSquadron( XSPAccConst spAcc, 
-											XPropHero::xPROP *pPropHero, 
-											int levelHero, 
-											XGAME::xtUnit unit, 
-											int levelSquad, 
-											bool bCreateHero )
+// XSquadron::XSquadron( XSPAccConst spAcc, 
+// 											XPropHero::xPROP *pPropHero, 
+// 											int levelHero, 
+// 											XGAME::xtUnit unit, 
+// 											int levelSquad, 
+// 											bool bCreateHero )
+XSquadron::XSquadron( XPropHero::xPROP *pPropHero,
+											int levelHero,
+											XGAME::xtUnit unit,
+											int levelSquad )
 {
 	Init();
 	XBREAK( pPropHero == nullptr );
 //	const auto& prop = PROP_SQUAD->GetTable( levelSquad );
-	m_bCreateHero = (bCreateHero)? TRUE : FALSE;
-	m_pHero = XHero::sCreateHero( pPropHero, levelSquad, unit, spAcc );
+//	m_bCreateHero = (bCreateHero)? TRUE : FALSE;
+	m_bCreateHero = true;
+	m_pHero = XHero::sCreateHero( pPropHero, levelSquad, unit, nullptr );
 	XBREAK( m_pHero == nullptr );
 	XBREAK( levelHero <= 0 );
 	m_pHero->SetLevel(levelHero);

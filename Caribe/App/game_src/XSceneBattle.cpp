@@ -836,30 +836,32 @@ int XSceneBattle::Process( float dt )
 	}
 	if( XBattleField::sGet()->GetLegionObj( 0 ) 
 			&& XBattleField::sGet()->GetLegionObj( 1 ) ) {
-		for( int i = 0; i < 2; ++i ) {
-			auto pLegionObj = XBattleField::sGet()->GetLegionObj( i );
-			if( pLegionObj )
-				m_hpMaxLegion[ i ] = pLegionObj->GetMaxHpAllSquad();
-		}
-		float hpLegion[2];
-		hpLegion[0] = XBattleField::sGet()->GetLegionObj(0)->GetSumHpAllSquad();
-		hpLegion[1] = XBattleField::sGet()->GetLegionObj(1)->GetSumHpAllSquad();
-		float hpMax[2];
-		hpMax[0] = m_hpMaxLegion[0];
-		hpMax[1] = m_hpMaxLegion[1];
-		// 일시적으로 hp가 max치를 넘어가는일이 생기면 hp치를 잠시 바꿔서 계산함.
-		if( hpLegion[0] > hpMax[0] )
-			hpMax[0] = hpLegion[0];
-		if( hpLegion[1] > hpMax[1] )
-			hpMax[1] = hpLegion[1];
-		if( m_aryBar[0] ) {
-			for( int i = 0; i < 2; ++i ) {
-				m_aryBar[i]->SetLerp( hpLegion[i] / hpMax[i] );
-			}
-		}
 
 		// 이미 전투가 끝났으면 다시 들어가지 않음.
 		if( m_bFinish == false ) {
+			if( m_spSceneParam->m_spLegion[0] && m_spSceneParam->m_spLegion[1] ) {
+				for( int i = 0; i < 2; ++i ) {
+					auto pLegionObj = XBattleField::sGet()->GetLegionObj( i );
+					if( pLegionObj )
+						m_hpMaxLegion[i] = pLegionObj->GetMaxHpAllSquad();
+				}
+				float hpLegion[2];
+				hpLegion[0] = XBattleField::sGet()->GetLegionObj( 0 )->GetSumHpAllSquad();
+				hpLegion[1] = XBattleField::sGet()->GetLegionObj( 1 )->GetSumHpAllSquad();
+				float hpMax[2];
+				hpMax[0] = m_hpMaxLegion[0];
+				hpMax[1] = m_hpMaxLegion[1];
+				// 일시적으로 hp가 max치를 넘어가는일이 생기면 hp치를 잠시 바꿔서 계산함.
+				if( hpLegion[0] > hpMax[0] )
+					hpMax[0] = hpLegion[0];
+				if( hpLegion[1] > hpMax[1] )
+					hpMax[1] = hpLegion[1];
+				if( m_aryBar[0] ) {
+					for( int i = 0; i < 2; ++i ) {
+						m_aryBar[i]->SetLerp( hpLegion[i] / hpMax[i] );
+					}
+				}
+			}
 			// 시간 업데이트
 			xSec sec = (DWORD)m_timerPlay.GetRemainSec();
 			int h, m, s;

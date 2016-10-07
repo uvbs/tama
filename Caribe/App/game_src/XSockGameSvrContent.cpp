@@ -1092,6 +1092,7 @@ void XSockGameSvr::RecvSpotSync( XPacket& p, const xCALLBACK& c )
 		if( pBaseSpot == nullptr ) {
 			// 없으면 만듬.
 			pBaseSpot = XSpot::sCreateDeSerialize( p, sGetpWorld() );
+			pBaseSpot->OnCreate( ACCOUNT );
 			ACCOUNT->AddSpot( pBaseSpot );
 			ACCOUNT->AddSpotStar( idSpot );
 		} else {
@@ -3890,19 +3891,19 @@ void XSockGameSvr::RecvFinishBuff( XPacket& p, const xCALLBACK& c )
 }
 
 /**
- @brief 
- 전송하고 응답을 기다려야 하는 류의 구현에 사용.
- _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
+ @brief 전투시작 요청. 전투세션값을 요청한다.
  @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
  @param param 사용자가 정의해서 쓰시오
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
  @see AddResponse()
 */
-BOOL XSockGameSvr::SendReqBattleStart( XWnd *pTimeoutCallback )
+BOOL XSockGameSvr::SendReqBattleStart( XWnd *pTimeoutCallback, ID idSpot )
 {
 	_XCHECK_CONNECT(0);
 	//
 	XPacket ar( (ID)xCL2GS_INGAME_BATTLE_START );
+	ar << idSpot;
+
 
 	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
 	ID idKey = 
@@ -3920,6 +3921,16 @@ BOOL XSockGameSvr::SendReqBattleStart( XWnd *pTimeoutCallback )
 */
 void XSockGameSvr::RecvBattleStart( XPacket& p, const xCALLBACK& c )
 {
+	ID snSession;
+	ID idSpot;
+	p >> snSession;
+	p >> idSpot;
+
+	XBREAK( snSession == 0 );
+	ACCOUNT->SetBattleSession( snSession,
+														 nullptr,
+														 0,
+														 idSpot );
 	if( SCENE_READY )
 		SCENE_READY->RecvBattleStart();
 }
@@ -6021,7 +6032,9 @@ void XSockGameSvr::RecvEnterReadyScene( XPacket& p, const xCALLBACK& c )
 	// 추가로 추가부대의 리스트를 파라메터에 넣는다.
 	for( int i = 0; i < 2; ++i ) {
 		for( auto pHero : pSpot->GetlistEnter( i ) ) {
-			spParam->m_aryEnter[i].push_back( pHero );
+			// 군단소속 영웅은 리스트에 넣지 않는다.
+			if( false == aryLegion[i]->IsEnteredHero( pHero->GetsnHero()) )
+				spParam->m_aryEnter[i].push_back( pHero );
 		}
 	}
 	SCENE_WORLD->DoExit( xSC_READY, spParam );

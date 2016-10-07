@@ -1717,12 +1717,34 @@ public:
 			return &( *iter );
 		return nullptr;
 	}
-	T* FindByIDNonPtr( ID idNode ) {		// ?? NonPtr인데 왜 *를 리턴하징?
+	const T* FindpcByID( ID idNode ) const {
+		auto iter = std::find_if( this->begin(), this->end(),
+															[idNode]( T pElem )->bool {
+			return pElem->getid() == idNode;
+		} );
+		if( iter != this->end() )
+			return &( *iter );
+		return nullptr;
+	}
+	/// elem들이 비 포인터형이다
+	inline T* FindByIDNonPtr( ID idNode ) {		// 
 		auto iter = std::find_if(this->begin(), this->end(),
 			[idNode](T pElem)->bool {  
 			return pElem.getid() == idNode;
 		} );
 		if (iter != this->end())
+			return &( *iter );
+		return nullptr;
+	}
+	inline T* FindpByIDNonPtr( ID idNode ) {		// 
+		return FindByIDNonPtr( idNode );
+	}
+	inline const T* FindpcByIDNonPtr( ID idNode ) const {		// 
+		auto iter = std::find_if( this->begin(), this->end(),
+															[idNode]( T pElem )->bool {
+			return pElem.getid() == idNode;
+		} );
+		if( iter != this->end() )
 			return &( *iter );
 		return nullptr;
 	}
@@ -1745,7 +1767,7 @@ public:
 			return (*iter);
 		return T();
 	}
-	int GetIndex( T& elem ) {
+	int GetIndex( const T& elem ) {
 		int idx = 0;
 		for (auto iter = this->begin(); iter != this->end(); ++iter) {
 			if( (*iter) == elem )
@@ -1754,8 +1776,26 @@ public:
 		}
 		return idx;
 	}
+	int GetIndexByID( T& elem ) {
+		int idx = 0;
+		for( auto iter = this->begin(); iter != this->end(); ++iter ) {
+			if( ( *iter )->getid() == elem->getid() )
+				break;
+			++idx;
+		}
+		return idx;
+	}
+	int GetIndexByIDNonPtr( T& elem ) {
+		int idx = 0;
+		for( auto iter = this->begin(); iter != this->end(); ++iter ) {
+			if( ( *iter ).getid() == elem.getid() )
+				break;
+			++idx;
+		}
+		return idx;
+	}
 	// itorComp가 현재 리스트의 몇번째인지 얻는다.
-	int GetIndex(const typename std::list<T>::iterator& itorComp) {
+	int GetIndexByItor(const typename std::list<T>::iterator& itorComp) {
 		int idx = 0;
 		for( auto itor = this->begin(); itor != this->end(); ++itor ) {
 			if( itor == itorComp )
@@ -1817,6 +1857,13 @@ public:
 				return ( *iter );
 		}
 		return nullptr;
+	}
+	typename XList4<T>::iterator GetItor( ID idElem ) {
+		for( auto iter = this->begin(); iter != this->end(); ++iter ) {
+			if( ( *iter ) == idElem )
+				return iter;
+		}
+		return this->end();
 	}
 	typename XList4<T>::iterator GetItorByIndex( int idx ) {
 		int i = 0;

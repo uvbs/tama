@@ -59,21 +59,21 @@ void xnLegion::xLegionDat::DeSerialize( XArchive& ar, DWORD ver ) {
 /** ////////////////////////////////////////////////////////////////////////////////////
  @brief 군단데이터로 군단객체를 생성한다.
 */
-XSPLegion XLegion::sCreateLegionWithDat( const xnLegion::xLegionDat& dat, 
-																				 XSPAccConst spAcc ) 
-{
-	auto spLegion = std::make_shared<XLegion>();
-	// 부대들의 정보
-	for( const auto& datSq : dat.m_listSquad ) {
-		auto pHero = spAcc->GetpcHeroBySN( datSq.m_snHero );
-		if( pHero ) {		///< 영웅을 삭제하거나 했으면 없을수도 있다.
-			auto pSq = spLegion->CreateAddSquadron( datSq.m_idxPos, pHero, false );
-		}
-	}
-	auto pLeader = spAcc->GetpcHeroBySN( dat.m_snLeader );
-	spLegion->SetpLeader( const_cast<XHero*>( pLeader ) );
-	return spLegion;
-}
+// XSPLegion XLegion::sCreateLegionWithDat( const xnLegion::xLegionDat& dat, 
+// 																				 XSPAccConst spAcc ) 
+// {
+// 	auto spLegion = std::make_shared<XLegion>();
+// 	// 부대들의 정보
+// 	for( const auto& datSq : dat.m_listSquad ) {
+// 		auto pHero = spAcc->GetpcHeroBySN( datSq.m_snHero );
+// 		if( pHero ) {		///< 영웅을 삭제하거나 했으면 없을수도 있다.
+// 			auto pSq = spLegion->CreateAddSquadron( datSq.m_idxPos, pHero, false );
+// 		}
+// 	}
+// 	auto pLeader = spAcc->GetpcHeroBySN( dat.m_snLeader );
+// 	spLegion->SetpLeader( const_cast<XHero*>( pLeader ) );
+// 	return spLegion;
+// }
 
 /**
  @brief lvHero가 가질수 있는 최대부대레벨
@@ -330,7 +330,7 @@ XSquadron* XLegion::sCreateSquadronForNPC( int levelLegion,
 // 	if( pLegionInfo && pLegionInfo->unit )	이걸 propHero결정보다 밑에서하면 외부에서 unit을 직접 지정했을때 버그 난다.
 // 		unit = pLegionInfo->unit;
 // 	XBREAK( unit == XGAME::xUNIT_NONE );
-	auto pSquad = new XSquadron( nullptr, pPropHero, levelHero, unit, levelSquad );
+	auto pSquad = new XSquadron( pPropHero, levelHero, unit, levelSquad );
 	pSquad->GetpHero()->SetGrade( grade );
 	return pSquad;
 }
@@ -349,7 +349,7 @@ XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
 	XASSERT( sqParam.lvSkill > 0 && sqParam.lvSkill < XGAME::MAX_SKILL_LEVEL );
 	XASSERT( sqParam.lvSquad > 0 && sqParam.lvSquad <= XGAME::MAX_SQUAD_LEVEL );
 	XASSERT( !IsInvalidGrade(sqParam.grade) );
-	auto pSquad = new XSquadron( nullptr, pPropHero, sqParam.lvHero, sqParam.unit, sqParam.lvSquad );
+	auto pSquad = new XSquadron( pPropHero, sqParam.lvHero, sqParam.unit, sqParam.lvSquad );
 	auto pHero = pSquad->GetpHero();
 	if( sqParam.lvSkill > 0 ) {
 		pHero->SetlvActive( sqParam.lvSkill );
@@ -1357,19 +1357,6 @@ void XLegion::DestroySquadron( ID snSquad )
 	}
 }
 
-/**
- @brief 군단내 영웅들의 리스트를 돌려준다.
-*/
-// int XLegion::GetHerosToAry( XArrayLinearN<XHero*, XGAME::MAX_SQUAD>& aryOut )
-// {
-// 	XARRAYN_LOOP( m_arySquadrons, XSquadron*, pSq ) {
-// 		if( pSq ) {
-// 			XBREAK( pSq->GetpHero() == NULL );
-// 			aryOut.Add( pSq->GetpHero() );
-// 		}
-// 	} END_LOOP;
-// 	return aryOut.size();
-// }
 int XLegion::GetHerosToAry( XVector<XHero*> *pOutAry )
 {
 	for( auto pSq : m_listSquadrons ) {
@@ -1378,40 +1365,14 @@ int XLegion::GetHerosToAry( XVector<XHero*> *pOutAry )
 	return pOutAry->size();
 }
 
-/**
- @brief 방금 레벨업한 영웅들 리스트를 받아준다.
- 만약 pAryOut이 NULL이면 렙업한 영웅들 수만 돌려준다.
- 이 함수를 수행하고 나면 XHero::m_Level::m_bLevelUp 은 자동으로 false가 된다.
-*/
-// int XLegion::GetLevelUpHerosToAry( XArrayLinearN<XHero*, XGAME::MAX_SQUAD> *pAryOut )
-// {
-// 	int num = 0;
-// 	XARRAYN_LOOP( m_arySquadrons, XSquadron*, pSq ) {
-// 		if( pSq ) {
-// 			XBREAK( pSq->GetpHero() == NULL );
-// 			BOOL bLvUp = pSq->GetpHero()->GetbLevelUpAndClear( XGAME::xTR_LEVEL_UP );
-// 			if( bLvUp ) {
-// 				++num;
-// 				if( pAryOut )
-// 					pAryOut->Add( pSq->GetpHero() );
-// 			}
-// 		}
-// 	} END_LOOP;
-// 	return num;
-// }
-
-/**
- @brief 더미용 함수
- 지나치게 높은 레벨의 더미유저가 나오는걸 방지
- 유저의 경우에도 버그등으로 인해 최대치보다 높은레벨을 가지고 있는 유저가 있다면 레벨을 보정해준다.
-*/
-// void XLegion::DummyDataRechange( int levelAcc, XAccount *pAcc )
-// {
-// #if defined(_DEV) && defined(_GAME_SERVER)
-// 
-// #endif // _DEV
-// }
-
+int XLegion::GetHeroesToList( XList4<XHero*>* pOutList ) 
+{
+	pOutList->clear();
+	for( auto pSq : m_listSquadrons ) {
+		pOutList->push_back( pSq->GetpHero() );
+	}
+	return pOutList->size();
+}
 /**
  @brief spLegion의 군사력을 얻는다.
 */
@@ -1431,14 +1392,6 @@ int XLegion::sGetMilitaryPower( XSPLegion spLegion )
 			scoreMax = scoreHero;     // 가장 전투력이 쎈 영웅의 값을 받아둔다.
 		score += scoreHero;
 	}
-	// 만약 부대를 다채우지 않았다면 가장쎈 영웅의 전투력으로 메운다.
-// 	if( pAcc ) {
-// 		// 이거는 여기들어오면 안될것같다. 내 계정 저장할때만 쓰이는거라...
-// 		int numRemain = XAccount::sGetMaxSquadByLevel( pAcc->GetLevel() ) - spLegion->GetNumSquadrons();
-// 		if( numRemain > 0 ) {
-// 			score += ( scoreMax * numRemain );
-// 		}
-// 	}
 	return (int)score;
 }
 

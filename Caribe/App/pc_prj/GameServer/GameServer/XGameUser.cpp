@@ -8681,8 +8681,19 @@ x전투시작
 */
 int XGameUser::RecvBattleStart( XPacket& p )
 {
-	// 그냥 바로 답장줌.
+	ID idSpot;
+	p >> idSpot;
+	auto pSpot = GetpWorld()->GetpSpot( idSpot );
+	XVERIFY_BREAK( pSpot == nullptr );
+	ID snSession = m_spAcc->SetBattleSession( 0,      // auto generate
+																						nullptr,	// spLegion
+																						0,				// idAcc
+																						idSpot );
+
+	// 돌려보냄
 	XPacket ar( (ID)xCL2GS_INGAME_BATTLE_START );
+	ar << snSession;
+	ar << idSpot;
 	Send( ar );
 	return 1;
 }
@@ -9735,12 +9746,16 @@ int XGameUser::RecvPrivateRaidEnterList( XPacket& p )
 // 		XVERIFY_BREAK( pHero == nullptr );
 // 		listEnterPlayer.push_back( pHero );
 	}
-	pSpot->UpdatePlayerEnterList( listEnterPlayer, m_spAcc );
-	XBREAK( pSpot->GetspLegionPlayer() == nullptr );
+	// 이 리스트는 군단에 속한 영웅과 관계없이 UI상에서 늘어놓은 영웅은 모두 온다.
+	// UI에 처럼 배치할때 는 군단이 있을때 군단영웅먼저 넣는다.
+	pSpot->UpdatePlayerEnterList( listEnterPlayer, m_spAcc->GetLevel() );
+	XBREAK( pSpot->IsEmptyLegionPlayer() );
 	// 클라로 전송(echo)
 	XPacket ar( p.GetidPacket() );
 	ar << idSpot;
-	XLegion::sSerialize( pSpot->GetspLegionPlayer(), &ar );
+	//XLegion::sSerialize( pSpot->GetspLegionPlayer(), &ar );
+	//ar << pSpot->GetlegionDatPlayer();
+	pSpot->SerializeForBattle( &ar, XParamObj2() );
 	Send(ar);
 
 // 	XGAME::xBattleStartInfo info( false, pSpot );

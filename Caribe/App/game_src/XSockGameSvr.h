@@ -316,7 +316,7 @@ public:
 	void RecvSulfurRetreat(XPacket& p, const xCALLBACK& c);
 	void RecvOccurBuff(XPacket& p, const xCALLBACK& c);
 	void RecvFinishBuff(XPacket& p, const xCALLBACK& c);
-	BOOL SendReqBattleStart(XWnd *pTimeoutCallback);
+	BOOL SendReqBattleStart(XWnd *pTimeoutCallback, ID idSpot);
 	void RecvBattleStart(XPacket& p, const xCALLBACK& c);
 	void RecvAddBattleLog(XPacket& p, const xCALLBACK& c);
 	BOOL SendReqWithdrawMandrake(XWnd *pTimeoutCallback, ID idSpot);

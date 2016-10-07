@@ -87,6 +87,16 @@ XHero* XHero::sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc )
 	return pHero;
 }
 
+XHero* XHero::sDeSerializeUpdate( XArchive& ar, XHero* pHero, XSPAccConst spAcc )
+{
+	int ver;
+	ar >> ver;
+	XHero hero( pHero->m_spAcc );		// 복사
+	*pHero = hero;		// 초기화
+	pHero->DeSerialize( ar/*, spAcc*/, ver );
+	return pHero;
+}
+
 #if defined(_XSINGLE) || !defined(_CLIENT)
 XHero* XHero::sCreateHero( const XPropHero::xPROP *pProp,
 													 int levelSquad,

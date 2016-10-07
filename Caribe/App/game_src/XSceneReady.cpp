@@ -444,10 +444,10 @@ int XSceneReady::OnClickStart( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("OnClickStart");
 	//
-	GAMESVR_SOCKET->SendReqChangeSquad( GAME, 
-										ACCOUNT->GetCurrLegionIdx(), 
-										ACCOUNT->GetCurrLegion().get() );
-	GAMESVR_SOCKET->SendReqBattleStart( GAME );
+	GAMESVR_SOCKET->SendReqChangeSquad( GAME,
+																			ACCOUNT->GetCurrLegionIdx(),
+																			ACCOUNT->GetCurrLegion().get() );
+	GAMESVR_SOCKET->SendReqBattleStart( GAME, m_spParam->m_idSpot );
 	return 1;
 }
 

@@ -1,4 +1,6 @@
 ﻿#include "stdafx.h"
+#include "XLegion.h"
+#include "XSquadron.h"
 #include "XWndPrivateRaid.h"
 #include "XSpotPrivateRaid.h"
 #include "_Wnd2/XWndList.h"
@@ -123,7 +125,32 @@ void XWndPrivateRaid::ClearEnterHeroes( const std::string& strKey )
 */
 void XWndPrivateRaid::UpdateEnterHeroes( XWndList* pWndList, int idxSide )
 {
-	const auto& listEnterHero = m_pSpot->GetlistEnter( idxSide );
+	// 전체 출전리스트를 모두 표시한다.
+	XList4<XHero*> listEnterHero = m_pSpot->GetlistEnter( idxSide );
+// 	// 군단이 있으면 군단영웅먼저 리스트에 넣는다.
+// 	if( idxSide == 0 ) {
+// 		for( auto& sq : m_pSpot->GetlegionDatPlayer().m_listSquad ) {
+// 			auto pHero = ACCOUNT->GetpHeroBySN( sq.m_snHero );
+// 			if( XASSERT(pHero) )
+// 				listEnterHero.push_back( pHero );
+// 		}
+// 	} else {
+// 		for( XSquadron* pSq : m_pSpot->GetspLegion()->GetlistSquadrons() ) {
+// 			listEnterHero.push_back( pSq->GetpHero() );
+// 		}
+// 	}
+	// 추가리스트에 있는것을 더한다.
+// 	for( auto pHero : m_pSpot->GetlistEnter( idxSide ) ) {
+// 		listEnterHero.push_back( pHero );
+// 	}
+// 	if( idxSide == 0 ) {
+// 		for( auto snHero : m_pSpot->GetlistEnterPlayer() ) {
+// 			auto pHero = ACCOUNT->GetpHeroBySN( snHero );
+// 			listEnterHero.push_back( pHero );
+// 		}
+// 	} else {
+// 		listEnterHero = m_pSpot->GetlistEnterEnemy();
+// 	}
 	XBREAK( listEnterHero.size() > 30 );
  	int i = 0;
 	for( auto pHero : listEnterHero ) {
