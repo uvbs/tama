@@ -112,29 +112,6 @@ void XMain::UpdateSleepMain( const XEOption* pEnv )
 	APP->SetmsecSleepMain( msec );
 }
 
-/**
- 
-*/
-// BOOL XMain::LoadINI( CToken &token )
-// {	
-// 	m_maxGSvrConnect = token.GetNumber();
-// 	m_maxConnect = token.GetNumber();
-// #ifdef _DUMMY_GENERATOR
-// 	m_maxConnect = 5000;
-// #endif
-// 	m_portGameSvr = token.GetNumber();
-// 	m_Port = token.GetNumber();	
-// 	LPCTSTR szKey = token.GetToken();
-// 	if( szKey )
-// 		m_strPublicKey = SZ2C(szKey);
-// 	TRACE("publicKey=%s\n", m_strPublicKey.c_str() );
-// 
-// 	// 로긴시뮬에선 게임서버 아이피가 있었지만
-// 	// 실제서버에선 접속하는 게임서버의 아이피를 따로 받아둬야 한다.
-// 	CONSOLE( "max connect=%d", m_maxConnect );
-// 	return TRUE;
-// }
-
 bool XMain::DelegateDidFinishLoad( const XParamObj2& param )
 {
 //	m_maxGSvrConnect = param.GetWord( "max_gamesvr" );
@@ -301,14 +278,6 @@ void XMain::Process( void )
 							strName,
 							strFbId,
 							m_cntCreateAcc );
-// 		DBMNG->DoAsyncCall( this,
-// 							&XMain::cbCreateNewAccount,
-// 							pAccountBuff,
-// 							tstrUUID,
-// 							strName, //DUMMY_NAME,
-// 							m_cntCreateAcc );
-//		CONSOLE( "creae dummy account:%d........", m_cntCreateAcc );
-
 		--m_cntCreateAcc;
  		if( m_cntCreateAcc == 0 )  {
  			CONSOLE( "send create dummy account:............please wait.");

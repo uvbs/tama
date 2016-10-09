@@ -68,7 +68,7 @@ public:
 		*this << m_idKey;
 	}
 	void SetPacketHeader3( ID idPacket, ID idKey ) {
-		XBREAK( !IsStart() );
+		XBREAK( !IsStart() );		// 갑자기 여기서 죽으면 솔루션정리후 리빌드.
 		m_idPacket = idPacket;
 		*this << idPacket;
 		m_idKey = idKey;

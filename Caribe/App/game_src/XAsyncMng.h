@@ -14,7 +14,7 @@ struct xAsync {
 friend class XAsyncMng;
 	xSec m_secAfter;			// 몇초후에 실행할건지
 	std::function<void()> m_funcAsync;
-private:
+//private:
 	CTimer m_Timer;
 };
 
