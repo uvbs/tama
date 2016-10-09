@@ -561,7 +561,6 @@ void XSceneBattle::ArrangeAry( XVector<XVector<XWnd*>>* pOut,
 void XSceneBattle::CreateFaceWnds( const XLegionObj* pLegionObj, 
 																	 int idxSide, XWnd* pWndLayer )
 {
-	int idxSide = 0;
 	for( const auto spSquadObj : pLegionObj->GetlistSquad() ) {
 		auto pHero = spSquadObj->GetpHero();
 		if( pHero ) {
