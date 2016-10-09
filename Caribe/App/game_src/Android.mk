@@ -8,6 +8,11 @@ LOCAL_MODULE := gamesrc_static
 LOCAL_MODULE_FILENAME := libgamesrc
 
 LOCAL_SRC_FILES := \
+XWndPrivateRaid.cpp \
+XAsyncMng.cpp \
+XSceneBattleSub.cpp \
+XSpotPrivateRaid.cpp \
+XScenePrivateRaid.cpp \
 XSceneTest2.cpp \
 XSceneTest.cpp \
 XWndStorageItemElem.cpp \
