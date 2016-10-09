@@ -172,7 +172,7 @@ void XSceneGuildShop::UpdateToolTip()
 			if( pRoot == nullptr )
 				return;
 			ShowRootItemTooltip( true );
-			XGAME::UpdateItemTooltip( pProp, pRoot, 0 );
+			XGAME::UpdateItemTooltip( pProp, pRoot, _T(""), 0 );
 			if( slot.cost > 0 ) {
 				xSET_SHOW( pRoot, "wnd.sell", true );
 				auto pText = xSET_TEXT( pRoot, "text.cost", XE::NumberToMoneyString( slot.cost ) );

@@ -217,8 +217,8 @@ void XGameCommon::CreateCommon()
 		XERROR( "%s load error", XQuestProp::sGet()->GetstrFilename().c_str() );
 	if( XQuestProp::sGet()->Load( _T( "quest_main001.xml" ) ) == FALSE )
 		XERROR( "%s load error", XQuestProp::sGet()->GetstrFilename().c_str() );
-	if( XQuestProp::sGet()->Load( _T( "quest_repeat.xml" ) ) == FALSE )
-		XERROR( "%s load error", XQuestProp::sGet()->GetstrFilename().c_str() );
+// 	if( XQuestProp::sGet()->Load( _T( "quest_repeat.xml" ) ) == FALSE )
+// 		XERROR( "%s load error", XQuestProp::sGet()->GetstrFilename().c_str() );
 	XQuestProp::sGet()->CheckValidQuest();
 	//
 	XPropHelp::sGet()->Load( _T( "propHelp.xml" ) );

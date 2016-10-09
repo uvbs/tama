@@ -912,14 +912,14 @@ public:
 	BOOL IsSaleItemidProp(ID idItemProp);
 //	ID ChangeScalpToBook(XGAME::xtClan clan, XArrayLinearN<XBaseItem*, 256> *pOutAry = nullptr);
 	int GetNumItems(LPCTSTR szIdentifier);
+	inline int GetNumItems( const _tstring& idsItem ) {
+		return GetNumItems( idsItem.c_str() );
+	}
 	int GetNumItems(ID idProp);
-	int DestroyItem(LPCTSTR szIdentifier, int num);
+//	int DestroyItem(LPCTSTR szIdentifier, int num);
 	int DestroyItem(ID idProp, int num);
-	int DestroyItemBySN(ID snProp, const int num = 1);
-	//	LPCTSTR GetClanScalpIdentifier( XGAME::xtClan clan ) const;
-// 	int GetNumScalp(XGAME::xtClan clan, int grade = XGAME::xGD_NONE);
-// 	int GetNumClanBook(XGAME::xtClan clan, int grade = XGAME::xGD_NONE);
-// 	XINT64 GetExpClanBooks(XGAME::xtClan clan, int grade = XGAME::xGD_NONE);
+	int DestroyItem( const _tstring& ids, int num );
+	int DestroyItemBySN( ID snProp, const int num = 1 );
 	int CreateItemToInven( const XPropItem::xPROP *pProp, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr);
 	int CreateItemToInven( ID idProp, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr );
 	int CreateItemToInven( const _tstring& idsItem, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr );
@@ -939,30 +939,12 @@ public:
 		return GetItem(snItem) != nullptr;
 	}
 	XBaseItem* GetItemByEquip(XGAME::xtParts parts, bool bExcludeEquiped = false);
-// 	bool IsEnoughResourceForAbil(xAbil *pAbil, XPropTech::xNodeAbil* pProp);
-//	bool IsEnoughGoldForAbil(xAbil *pAbil, XPropTech::xNodeAbil* pProp);
-// 	bool IsEnoughSubResourceForAbil(xAbil *pAbil, XPropTech::xNodeAbil* pProp, int idx);
 	bool IsCompleteResearch() const {
 		return m_Researching.IsComplete();
 	}
 	// 퀘스트
 	void CreateQuestMng(void);
 	void SetQuestDelegate(XDelegateQuestMng *pDelegate);
-	//옵션 조정. 일단 사용이 확실시되는 옵션만 구현해둠
-// 	void SetbSound(BOOL bOption) {
-// 		m_xOption.bSound = bOption;
-// 		m_xOption.Save();
-// 	}
-// 	BOOL GetbSound(void) {
-// 		return m_xOption.bSound;
-// 	}
-// 	void SetLanguage(int nLang) {
-// 		m_xOption.nLang = nLang;
-// 		m_xOption.Save();
-// 	}
-// 	int GetLanguage(void) {
-// 		return m_xOption.nLang;
-// 	}
 #if defined(_DB_SERVER) || defined(_LOGIN_SERVER)
 	friend class CUserDB;
 	friend class XDatabase;
@@ -1404,7 +1386,10 @@ public:
 	void SerializeHeros( XArchive& ar ) const;
 	bool DeSerializeHeros( XArchive& ar );
 	const XBaseItem* GetpEquipItemWithHero( XSPHero pHero, XGAME::xtParts parts ) const;
-//////////////////////////////////////////////////////////////////////////
+	bool IsPayable( ID idPropItemBuy, int num, int* pOutLack );
+	bool IsPayable( const XPropItem::xPROP* pProp, int num, int* pOutLack );
+	bool IsPayable( const _tstring& idsItemBuy, int num, int* pOutLack );
+	//////////////////////////////////////////////////////////////////////////
 private:
 	int GetPowerMaxInHeroes();
 	void OnHeroLevelup( XGAME::xtTrain type, XSPHero pHero );

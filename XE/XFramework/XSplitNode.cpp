@@ -12,7 +12,7 @@ static char THIS_FILE[] = __FILE__;
 
 XE_NAMESPACE_START( xSplit )
 
-float XNode::c_spaceBorder = 2.f;		// 아틀라스간 경계 너비
+float XNode::c_spaceBorder = 1.f;		// 아틀라스간 경계 너비
 
 void XNode::Destroy()
 {

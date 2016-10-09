@@ -19,8 +19,8 @@
 class XSpotPrivateRaid : public XSpot
 {
 public:
-	static const int c_maxSquad;
-	static const int c_maxWins;
+// 	static const int c_maxSquad;
+// 	static const int c_maxWins;
 	XSpotPrivateRaid( XWorld* pWorld );
 	XSpotPrivateRaid( XWorld* pWorld, XPropWorld::xBASESPOT* pProp );
 	virtual ~XSpotPrivateRaid() {
@@ -37,7 +37,8 @@ public:
 	// public member
 	// 남은 승리횟수
 	inline int GetwinRemain() const {
-		return c_maxWins - m_numWins;
+		const int maxWins = GetpBaseProp()->m_Param.GetInt( "num_win" );
+		return maxWins - m_numWins;
 	}
 	// 리셋주기
 	inline xSec GetsecReset() const {

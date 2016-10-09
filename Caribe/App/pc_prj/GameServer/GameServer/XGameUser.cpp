@@ -4601,79 +4601,10 @@ int XGameUser::RecvTrade( XPacket& p )
 */
 int XGameUser::RecvChangeScalpToBook( XPacket& p )
 {
-// 	int i0;
-// 	XGAME::xtClan clan;
-// 	p >> i0;	clan = (XGAME::xtClan)i0;
-// 	XVERIFY_BREAK( clan <= XGAME::xCL_NONE || clan >= XGAME::xCL_MAX );
-// 	XArrayLinearN<XBaseItem*, 256> ary;
-// 	ID idScalp = m_spAcc->ChangeScalpToBook( clan, &ary );
-// 	// 클라에서 이미 징표개수 확인해서 보낸것이므로 0이나와선 안됨
-// 	XVERIFY_BREAK( idScalp == 0 );
-// 	//
-// 	//결과를 클라에 보냄
-// 	XPacket ar( (ID)xCL2GS_LOBBY_CHANGE_SCALP_TO_BOOK );
-// 	ar << (BYTE)clan;
-// 	ar << (BYTE)ary.size();
-// 	ar << (BYTE)VER_ITEM_SERIALIZE;
-// 	ar << (BYTE)(ary.size() * 10);
-// 	XARRAYLINEARN_LOOP( ary, XBaseItem*, pItem )
-// 	{
-// 		XBaseItem::sSerialize( ar, pItem );
-// 	} END_LOOP;
-// 	ar << idScalp;
-// 	Send( ar );
+
 	return 1;
 }
 
-/**
- 클라이언트의 SendReqUpgradeSquad()에 대한 서버측의 Receive함수
- @param p 패킷이 들어있는 아카이브
- @return 오류없이 완료되었다면 1을 리턴한다.
- @see SendReqUpgradeSquad()
-*/
-// int XGameUser::RecvUpgradeSquad( XPacket& p )
-// {
-// 	ID snHero;
-// 	p >> snHero;
-// 	XVERIFY_BREAK( snHero == 0 );
-// 	XSPHero pHero = m_spAcc->GetHero( snHero );
-// 	XVERIFY_BREAK( pHero == nullptr );
-// 	XVERIFY_BREAK( pHero->GetlevelSquad() >= PROP_SQUAD->GetMaxLevel() );
-// 	int levelNext = pHero->GetlevelSquad() + 1;
-// 	auto& propSquad = PROP_SQUAD->GetTable( levelNext );
-// 	XVERIFY_BREAK( m_spAcc->GetJewel() < propSquad.numRes );
-// 	XVERIFY_BREAK( m_spAcc->IsTrainingSquadupHero( snHero ) );
-// 	XVERIFY_BREAK( m_spAcc->GetNumRemainFreeSlot() <= 0 );
-// 	// 유닛의 공격타입에 따라 필요한 업글템의 아이디를 얻음.
-// 	ID idNeed = XGAME::GetSquadLvupItem( XGAME::GetTypeUnit( pHero->GetUnit() ) );
-// 	XBREAK( idNeed == 0 );
-// 	XBREAK( propSquad.gradeNeed <= XGAME::xGD_NONE || propSquad.gradeNeed >= XGAME::xGD_MAX );
-// 	idNeed += ( propSquad.gradeNeed - 1 );
-// 	// 소지한 업글템의 개수를 셈
-// 	int num = m_spAcc->GetNumItems( idNeed );
-// 	XVERIFY_BREAK( num < propSquad.numItem );
-// 	m_spAcc->DestroyItem( idNeed, propSquad.numItem );
-// 	m_spAcc->AddResource( XGAME::xRES_JEWEL, -propSquad.numRes );
-// 	// 훈련시작
-// 	XAccount::xTrainSlot slot;
-// 	slot.DoStartSquadup( snHero, (float)propSquad.secTrain );
-// 	m_spAcc->AddTrainSlot( slot );
-// 	//결과를 클라에 보냄
-// 	XPacket ar( (ID)xCL2GS_LOOBY_UPGRADE_SQUAD );
-// 	ar << snHero;
-// 	ar << idNeed;
-// 	ar << propSquad.numItem;
-// 	ar << 0;	// levelsquad
-// 	ar << (BYTE)VER_ETC_SERIALIZE;
-// 	ar << (BYTE)0;
-// 	ar << (WORD)0;
-// 	m_spAcc->SerializeTrainSlot( ar );
-// 	m_spAcc->SerializeResource( ar );
-// 	Send( ar );
-// 
-// 
-// 	return 1;
-// }
 
 /**
  클라이언트의 SendReqReleaseHero()에 대한 서버측의 Receive함수
@@ -5069,99 +5000,20 @@ void XGameUser::SendCashItemBuyGoogle( XGAME::xtErrorIAP errCode
 int XGameUser::RecvBuyItem(XPacket& p)					//아이템 구매
 {
 	ID idProp;
-// 	int shoptype; 
-	int num = 1;
 	int  i0;
 	p >> i0;	auto shoptype = (XGAME::xtShopType)i0;
 	p >> idProp;
 	XVERIFY_BREAK( shoptype <= XGAME::xSHOP_NONE || shoptype >= XGAME::xSHOP_MAX );
-	auto pProp = PROP_ITEM->GetpProp(idProp);
-	XVERIFY_BREAK(pProp == nullptr);
 	XVERIFY_BREAK( m_spAcc->IsSaleItemidProp( idProp ) == FALSE );
-	XPacket ar((ID)xCL2GS_LOBBY_ITEM_BUY);
 	p >> i0;	auto costType = (XGAME::xtCoin)i0;
 	XVERIFY_BREAK( costType <= xCOIN_NONE || costType >= xCOIN_MAX );
-	int cost = 0;
-	int HaveGold = m_spAcc->GetGold();
-	int Havecash = m_spAcc->GetCashtem();
 	//무기상.
 	if (shoptype == XGAME::xSHOP_ARMORY) {
-// 		if (m_spAcc->IsSaleItemidProp(idProp)) {	
-// 			p >> costType;
-			if( costType == XGAME::xCOIN_GOLD ) {
-				// 장착템은 템 가격을 직접 계산한다.
-				cost = (int)pProp->GetBuyCost( GetLevel() );
-				XVERIFY_BREAK(cost < 0 );
-				m_spAcc->AddGold(-cost);		// Cost 비용 삭제 해주고.			
-			} else
-			if( costType == XGAME::xCOIN_CASH ) {
-				cost = (int)pProp->cashCost;
-				XVERIFY_BREAK( cost < 0 );
-				m_spAcc->AddCashtem( -cost );
-			} else
-			if( costType == XGAME::xCOIN_MEDAL ) {
-				int costMedal = XGC->m_costMedalForArmoryHero;
-				XVERIFY_BREAK( costMedal < 0 );
-				const _tstring idsMedal( _T("medal_tanker01") );
-				int numMedal = m_spAcc->GetNumItems( idsMedal.c_str() );
-				XVERIFY_BREAK( numMedal < costMedal );
-				m_spAcc->DestroyItem( idsMedal.c_str(), costMedal );
-			}
-			// 상점 리스트에서 상품 목록도 지워주고.
-			m_spAcc->RemoveListShopSell(idProp);
-			m_spAcc->CreateItemToInven(pProp, num);
-			DispatchQuestEvent( XGAME::xQC_EVENT_BUY_ITEM, pProp->idProp );
-// 		}		
-		ar << num;  //(성공의 경우 1 반환)
-		ar << m_spAcc->GetGold();
-		ar << m_spAcc->GetCashtem();
-		m_spAcc->SerializeItems(ar);
-		Send(ar);
-		DispatchQuestEvent( xQC_EVENT_UI_ACTION, xUA_BUY_ARMOR );
-		_tstring strLog = XE::Format(_T("Buy_Item(XGAME::xSHOP_ARMORY): BuyType:%d, BuyIdProp:%d, Cost:%d, HaveGold:%d, RemainGold:%d, HaveCash:%d, RemainCash:%d"), costType, idProp, cost, HaveGold, m_spAcc->GetGold(), Havecash, m_spAcc->GetCashtem());
-		AddLog(XGAME::xULog_Buy_Items, strLog);
+		XVERIFY_BREAK( ProcBuyItemAtArmory( idProp, costType ) == 0 );
 	} else 
-	// 귀중품상점
 	if( shoptype == XGAME::xSHOP_CASHSHOP ) {		
-		DWORD goldCost = pProp->GetBuyCost( GetLevel() );
-		XVERIFY_BREAK((goldCost == 0) && (pProp->cashCost == 0));
-//		XVERIFY_BREAK((pProp->GetCost(ACCOUNT->GetLevel()) != 0) && (pProp->cashCost != 0));
-		if (goldCost > 0) {
-			cost = (int)goldCost;
-			if (goldCost > (DWORD)HaveGold) {
-				ar << 0;  //(성공의 경우 1 반환)
-				Send(ar);
-				_tstring strLog = XE::Format(_T("Buy_Item_gold_Failed(XGAME::xSHOP_CASHSHOP): shoptype:%d, BuyIdProp:%d, Cost:%d, HaveCash:%d"), shoptype, idProp, cost, HaveGold);
-				AddLog(XGAME::xULog_Buy_Items, strLog);
-				return 1;
-			} else {
-				m_spAcc->AddGold(-cost);		// Cost 비용 삭제 해주고.
-			}
-		} else if (pProp->cashCost > 0) {
-			cost = pProp->cashCost;
-			if (pProp->cashCost  >(DWORD)Havecash) {
-				ar << 0;  //(성공의 경우 1 반환)
-				Send(ar);
-				_tstring strLog = XE::Format(_T("Buy_Item_cash_Failed(XGAME::xSHOP_CASHSHOP): shoptype:%d, BuyIdProp:%d, Cost:%d, HaveCash:%d"), shoptype, idProp, cost, Havecash);
-				AddLog(XGAME::xULog_Buy_Items, strLog);
-				return 1;
-			} else {
-				m_spAcc->AddCashtem(-cost);		// Cost 비용 삭제 해주고.
-			}
-			//뺄꺼 빼주고
-		}
-		m_spAcc->CreateItemToInven(pProp, num);
-		ar << num;  //(성공의 경우 1 반환)
-		ar << m_spAcc->GetGold();
-		ar << m_spAcc->GetCashtem();
-		m_spAcc->SerializeItems(ar);
-		Send(ar);
-		_tstring strLog = XE::Format(_T("Buy_Item(XGAME::xSHOP_CASHSHOP): BuyIdProp:%d, Cost:%d, HaveGold:%d, RemainGold:%d, HaveCash:%d, RemainCash:%d"), idProp, cost, HaveGold, m_spAcc->GetGold(), Havecash, m_spAcc->GetCashtem());
-		AddLog(XGAME::xULog_Buy_Items, strLog);
-		//Cash 사용 정보 Update 해주자.	
-		if (DBA_SVR) {
-			DBA_SVR->SendCashInfoUpdate(GetidAcc(), m_spAcc->GetCashtem());
-		}
+		// 귀중품상점
+		XVERIFY_BREAK( ProcBuyItemAtCashShop( idProp ) == 0 );
 	} else {
 		// 알수없는 구입메시지
 		XVERIFY_BREAK(1);
@@ -5170,6 +5022,112 @@ int XGameUser::RecvBuyItem(XPacket& p)					//아이템 구매
 	return 1;
 }
 
+/** //////////////////////////////////////////////////////////////////
+ @brief 무기상점에서 아이템 구입
+*/
+int XGameUser::ProcBuyItemAtArmory( ID idProp, XGAME::xtCoin costType )
+{
+	const int num = 1;
+	auto pPropBuy = PROP_ITEM->GetpProp( idProp );
+	XVERIFY_BREAK( pPropBuy == nullptr );
+	// 프로퍼티에 명시된 지불아이템으로 사기
+	if( costType == XGAME::xCOIN_PROP ) {
+		const int numCost = (int)pPropBuy->GetBuyCost( GetLevel() );
+		XBREAK( numCost < 0 );
+		const int numCurr = m_spAcc->GetNumItems( pPropBuy->m_strPayItem );
+		XVERIFY_BREAK( numCurr < numCost );		// 이미 클라에서 비교해본것이기때문에 비정상으로 간주함.
+		// gold/guild_coin도 아이템아이디를 가져 같은 함수를 쓸수 있도록 함.
+		m_spAcc->DestroyItem( pPropBuy->m_strPayItem, numCost );
+	} else
+	// 젬으로 사기
+	if( costType == XGAME::xCOIN_CASH ) {
+		// 지불템의 속성 꺼냄
+		const int numLack = pPropBuy->m_numCost;		// 편의상 지불템 필요개수만큼을 모두 캐시로 산다.
+		auto pPropPaytem = PROP_ITEM->GetpProp( pPropBuy->m_strPayItem );
+		if( pPropPaytem ) {
+			// 지불템의 개당캐시가격 * 모자르는 수
+			const int numGems = pPropPaytem->cashCost * numLack;		// 모자르는 만큼을 젬으로 사야할때 필요한 젬개수.
+//			const int cost = (int)pPropBuy->cashCost;
+			XVERIFY_BREAK( numGems < 0 );
+			m_spAcc->AddCashtem( -numGems );
+		}
+	} else
+	// 메달로 사기
+	if( costType == XGAME::xCOIN_MEDAL ) {
+		int costMedal = XGC->m_costMedalForArmoryHero;
+		XVERIFY_BREAK( costMedal < 0 );
+		const _tstring idsMedal( _T( "medal_tanker01" ) );
+		int numMedal = m_spAcc->GetNumItems( idsMedal.c_str() );
+		XVERIFY_BREAK( numMedal < costMedal );
+		m_spAcc->DestroyItem( idsMedal.c_str(), costMedal );
+	}
+	_tstring strLog = XE::Format( _T( "Buy_Item(XGAME::xSHOP_ARMORY): BuyType:%d, BuyIdProp:%d, HaveGold:%d, RemainCash:%d" ), costType, idProp, m_spAcc->GetGold(), m_spAcc->GetCashtem() );
+	AddLog( XGAME::xULog_Buy_Items, strLog );
+	// 상점 리스트에서 상품 목록도 지워주고.
+	m_spAcc->RemoveListShopSell( idProp );
+	m_spAcc->CreateItemToInven( pPropBuy, num );
+	DispatchQuestEvent( XGAME::xQC_EVENT_BUY_ITEM, pPropBuy->idProp );
+	// 		}		
+	XPacket ar( (ID)xCL2GS_LOBBY_ITEM_BUY );
+	ar << num;  //(성공의 경우 1 반환)
+	ar << m_spAcc->GetGold();
+	ar << m_spAcc->GetCashtem();
+	m_spAcc->SerializeItems( ar );
+	Send( ar );
+	DispatchQuestEvent( xQC_EVENT_UI_ACTION, xUA_BUY_ARMOR );
+	return 1;
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 캐시상점에서 아이템 구입
+*/
+int XGameUser::ProcBuyItemAtCashShop( ID idProp )
+{
+	auto pProp = PROP_ITEM->GetpProp( idProp );
+	XVERIFY_BREAK( pProp == nullptr );
+	//
+	XPacket ar( (ID)xCL2GS_LOBBY_ITEM_BUY );
+	//
+	int HaveGold = m_spAcc->GetGold();
+	const int Havecash = m_spAcc->GetCashtem();
+	const int num = 1;
+	DWORD goldCost = pProp->GetBuyCost( GetLevel() );
+	XVERIFY_BREAK( (goldCost == 0) && (pProp->cashCost == 0) );
+	//		XVERIFY_BREAK((pProp->GetCost(ACCOUNT->GetLevel()) != 0) && (pProp->cashCost != 0));
+	if( goldCost > 0 ) {
+		const int cost = (int)goldCost;
+		if( goldCost > (DWORD)HaveGold ) {
+			ar << 0;  //(성공의 경우 1 반환)
+			Send( ar );
+			_tstring strLog = XE::Format( _T( "Buy_Item_gold_Failed(XGAME::xSHOP_CASHSHOP):BuyIdProp:%d, Cost:%d, HaveCash:%d" ), idProp, cost, HaveGold );
+			AddLog( XGAME::xULog_Buy_Items, strLog );
+			return 1;
+		} else {
+			m_spAcc->AddGold( -cost );		// Cost 비용 삭제 해주고.
+		}
+	} else if( pProp->cashCost > 0 ) {
+		const int cost = pProp->cashCost;
+		if( pProp->cashCost > (DWORD)Havecash ) {
+			ar << 0;  //(성공의 경우 1 반환)
+			Send( ar );
+			_tstring strLog = XE::Format( _T( "Buy_Item_cash_Failed(XGAME::xSHOP_CASHSHOP):BuyIdProp:%d, Cost:%d, HaveCash:%d" ), idProp, cost, Havecash );
+			AddLog( XGAME::xULog_Buy_Items, strLog );
+			return 1;
+		} else {
+			m_spAcc->AddCashtem( -cost );		// Cost 비용 삭제 해주고.
+		}
+		//뺄꺼 빼주고
+	}
+	m_spAcc->CreateItemToInven( pProp, num );
+	ar << num;  //(성공의 경우 1 반환)
+	ar << m_spAcc->GetGold();
+	ar << m_spAcc->GetCashtem();
+	m_spAcc->SerializeItems( ar );
+	Send( ar );
+	//Cash 사용 정보 Update 해주자.	
+	DBA_SVR->SendCashInfoUpdate( GetidAcc(), m_spAcc->GetCashtem() );
+	return 1;
+}
 /**
  @brief 아이템 상점에 판매
 */
@@ -9727,9 +9685,9 @@ int XGameUser::RecvPrivateRaidEnterList( XPacket& p )
 	int size;
 	p >> idSpot;
 	p >> size;
-	XVERIFY_BREAK( size > XSpotPrivateRaid::c_maxSquad );
 	auto pSpot = SafeCast<XSpotPrivateRaid*>( GetpWorld()->GetpSpot( idSpot ) );
 	XVERIFY_BREAK( pSpot == nullptr );
+	XVERIFY_BREAK( size > pSpot->GetPropParam().GetInt("max_squad") );
 	XList4<ID> listEnterPlayer;
 	for( int i = 0; i < size; ++i ) {
 		ID snHero;

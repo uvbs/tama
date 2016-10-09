@@ -30,8 +30,8 @@ static char THIS_FILE[] = __FILE__;
 using namespace XGAME;
 using namespace xnLegion;
 
-const int XSpotPrivateRaid::c_maxSquad = 30;
-const int XSpotPrivateRaid::c_maxWins = 2;
+// const int XSpotPrivateRaid::c_maxSquad = 30;
+// const int XSpotPrivateRaid::c_maxWins = 2;
 
 ////////////////////////////////////////////////////////////////
 XSpotPrivateRaid::XSpotPrivateRaid( XWorld* pWorld )
@@ -285,7 +285,8 @@ void XSpotPrivateRaid::OnAfterBattle( XSPAcc spAccWin
 	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, numStar, bRetreat );
 	if( bWin ) {
 		m_listEnterEnemy.clear();
-		if( m_numWins < c_maxWins )
+		const int maxWins = GetPropParam().GetInt( "num_win" );
+		if( m_numWins < maxWins )
 			++m_numWins;
 
 	}
@@ -306,9 +307,9 @@ bool XSpotPrivateRaid::Update( XSPAcc spAcc )
 		SetLevel( GetpProp()->level );
 		CreateEnemyEnterHeroes( GetLevel() );
 		//
-		auto pProp = PROP_ITEM->GetpProp( _T( "scalp_crow" ) );
+		auto pProp = PROP_ITEM->GetpProp( GetPropParam().GetStrt("drop") );
 		if( XASSERT( pProp ) ) {
-			int num = 20 + xRandom( -5, 5 );
+			int num = xRandom( GetPropParam().GetInt( "min" ), GetPropParam().GetInt( "max" ) );
 			xDropItem drop( pProp->idProp, num, 1.f );;
 			AddDropItem( drop );
 		}
@@ -316,10 +317,11 @@ bool XSpotPrivateRaid::Update( XSPAcc spAcc )
 	// 타이머 세팅 안되어 있으면 타이머 켜고 도전회수 채움
 	if( m_secTimer == 0 ) {
 		m_secTimer = XTimer2::sGetTime();
-		m_numWins = c_maxWins;
+		m_numWins = 0;
 	} else {
 		// 타이머가 켜져있고 한시간이 지났으면 도전회수 다시 채우고 타이머 리셋
-		if( XTimer2::sGetTime() - m_secTimer > xHOUR_TO_SEC( 1 ) ) {
+		const xSec secReset = GetPropParam().GetInt("sec_reset");
+		if( XTimer2::sGetTime() - m_secTimer > secReset ) {
 			m_secTimer = XTimer2::sGetTime();
 			m_numWins = 0;
 		}
@@ -349,7 +351,8 @@ void XSpotPrivateRaid::CreateEnemyEnterHeroes( int lvSpot )
 		// 생성후 모자라는 수는 랜덤으로 생성.
 		const auto& tblLegion = XGC->GetLegionTable( lvSpot );
 		const int lvSquad = tblLegion.m_lvSquad;
-		const int remain = c_maxSquad - spLegion->GetNumSquadrons();
+		const int maxSquad = GetpBaseProp()->m_Param.GetInt("max_squad");
+		const int remain = maxSquad - spLegion->GetNumSquadrons();
 //		for( int i = 0; i < c_maxSquad; ++i ) {
 		for( int i = 0; i < remain; ++i ) {		// 일단 테스트를 위해서 이렇게
 			const xtGet bit = (xtGet)( xGET_GATHA | xGET_QUEST | xGET_GUILD_RAID | xGET_MEDAL_SPOT );

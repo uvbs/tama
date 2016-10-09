@@ -111,6 +111,9 @@
       <val>3</val>
       <val>5</val>
     </size_cost>
+    <rate_drop_scalp val="10">
+      <!--징표드랍확률-->
+    </rate_drop_scalp>
   </battle>
   <cash>
     <gem_per_ap val="0.35">

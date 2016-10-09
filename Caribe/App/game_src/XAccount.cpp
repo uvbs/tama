@@ -2144,60 +2144,24 @@ void XAccount::AddExpToHeros(int add, XLegion *pLegion, XVector<ID>* pOutAryLeve
 }
 
 /**
-@brief clan징표 모두를 해당 클랜 책으로 교환한다.
-*/
-// ID XAccount::ChangeScalpToBook(XGAME::xtClan clan, XArrayLinearN<XBaseItem*, 256> *pOutAry)
-// {
-// 	// 해당클랜의 징표식별자를 얻는다.
-// 	_tstring strIdentifier = XGAME::GetIdsClanScalp(clan);;
-// 	XPropItem::xPROP *pPropScalp = PROP_ITEM->GetpProp(strIdentifier);
-// 	if (pPropScalp == nullptr)
-// 		return 0;
-// 	// 해당 징표가 몇개나 있는지 검사
-// 	int numTotal = GetNumItems(pPropScalp->idProp);
-// 	// 최소 10개는 있어야 한다.
-// 	if (numTotal >= 10)
-// 	{
-// 
-// 		XPropItem::xPROP *pBookProp = PROP_ITEM->GetClanBookProp(clan);
-// 		if (pBookProp == nullptr)	// recv에서 호출하는것이므로 만약 유저가 조작된 값을 보내서 계속 이함수를 호출할수도 있으므로 xbreak안씌움
-// 			return 0;
-// 		// 10개 단위로 징표 파괴시킴
-// 		int numBook = (numTotal / 10);
-// 		int numDel = numBook * 10;
-// 		DestroyItem(pPropScalp->idProp, numDel);
-// 		// 책 개수만큼 생성시킴
-// 		//		ID idBook = pBookProp->idProp + ( clan - 1 );
-// 		ID idBook = pBookProp->idProp;
-// 		for (int i = 0; i < numBook; ++i)
-// 		{
-// 			XBaseItem *pBook = XBaseItem::sCreateItem(idBook);
-// 			if (XASSERT(pBook))
-// 			{
-// 				//				XBREAK( pBookProp->param[0] <= 0 );
-// 				//				pBook->SetBookExp( (XINT64)pBookProp->param[0] );
-// 				pBook->SetBookExp(XGC->m_expPerBook);
-// 				AddItem(pBook);
-// 				if (pOutAry)
-// 					pOutAry->Add(pBook);
-// 			}
-// 		}
-// 		return pPropScalp->idProp;
-// 	}
-// 	return 0;
-// }
-
-/**
 @brief szIdentifier아이템이 몇개나 있는지 알아낸다.
 */
 int XAccount::GetNumItems(LPCTSTR szIdentifier)
 {
-	int num = 0;
-	for (auto pBaseItem : m_listItem) {
-		if (XE::IsSame(pBaseItem->GetszIdentifier(), szIdentifier))
-			num += pBaseItem->GetNum();
+	if( XE::IsSame(szIdentifier, _T("gold")) ) {
+		return (int)m_Gold;
+	} else
+	if( XE::IsSame( szIdentifier, _T( "guild_coin" ) ) ) {
+		return (int)m_ptGuild;
+	} else {
+		int num = 0;
+		for (auto pBaseItem : m_listItem) {
+			if (XE::IsSame(pBaseItem->GetszIdentifier(), szIdentifier))
+				num += pBaseItem->GetNum();
+		}
+		return num;
 	}
-	return num;
+	return 0;
 }
 int XAccount::GetNumItems(ID idProp)
 {
@@ -2209,21 +2173,37 @@ int XAccount::GetNumItems(ID idProp)
 	return num;
 }
 
+// int XAccount::DestroyItem( LPCTSTR szIdentifier, int num )
+// {
+// 	return DestroyItem( _tstring(szIde)
+// }
 /**
 @brief szIdentifier아이템을 num개 삭제한다.
 성공하면 1을 리턴. 실패하면 0을 리턴한다.
 */
-int XAccount::DestroyItem(LPCTSTR szIdentifier, int num)
+int XAccount::DestroyItem( const _tstring& ids, int num)
 {
-	auto pProp = PROP_ITEM->GetpProp(szIdentifier);
-	if (XASSERT(pProp))
-		return DestroyItem(pProp->idProp, num);
+	if( ids == _T("gold") ) {
+		XBREAK( (int)m_Gold < num );
+		AddGold( -num );
+	} else 
+	if( ids == _T("guild_coin") ) {
+		XBREAK( m_ptGuild < num );
+		AddGuildCoin( -num );
+	} else {
+		auto pProp = PROP_ITEM->GetpProp( ids );
+		if( XASSERT( pProp ) )
+			return DestroyItem( pProp->idProp, num );
+	}
 	return 0;
 }
 
 int XAccount::DestroyItem(ID idProp, int numDel)
 {
-	XBREAK(idProp == 0);
+	if( XBREAK(idProp == 0) )
+		return 0;
+	if(XBREAK( idProp == 3000 || idProp == 3001 ))		// 최소한의 안전장치
+		return 0;
 	// 템 삭제후 퀘스트에 이벤트 발생시킴
 #ifndef _CLIENT
 	if (idProp)
@@ -2306,45 +2286,6 @@ int XAccount::DestroyItemBySN(ID snItem, const int num)
 
 	return (int)bFound;
 }
-
-/**
-@brief 해당 클랜의 징표가 몇개나 있는지 알아낸다.
-*/
-// int XAccount::GetNumScalp(XGAME::xtClan clan, int grade)
-// {
-// 	_tstring strIdentifier = XGAME::GetIdsClanScalp(clan);
-// 	int num = GetNumItems(strIdentifier.c_str());
-// 	return num;
-// }
-// 
-// /**
-// @brief 해당클랜의 징표가 몇개나 있는지 검사.
-// */
-// int XAccount::GetNumClanBook(XGAME::xtClan clan, int grade)
-// {
-// 	_tstring strIdentifier = XGAME::GetIdsClanBook(clan);
-// 	int num = GetNumItems(strIdentifier.c_str());
-// 	return num;
-// }
-// 
-// /**
-// @brief clan의 클랜북의 경험치 총합
-// */
-// XINT64 XAccount::GetExpClanBooks(XGAME::xtClan clan, int grade)
-// {
-// 	XINT64 expSum = 0;
-// 	for (auto pItem : m_listItem)
-// 	{
-// 		if (pItem && pItem->IsBook())
-// 		{
-// 			if (clan == pItem->GetBookClan())
-// 				expSum += pItem->GetBookExp();
-// 		}
-// 	}
-// 	return expSum;
-// }
-
-
 
 /**
 @brief pProp아이템을 num개 만큼 생성해 인벤에 넣는다.
@@ -2524,14 +2465,11 @@ XBaseItem* XAccount::GetItemByEquip(XGAME::xtParts parts, bool bExcludeEquiped)
 {
 	if (XBREAK(parts == XGAME::xPARTS_NONE))	// invalid call
 		return nullptr;
-	for (auto pItem : m_listItem)
-	{
-		if (pItem->GetpProp()->parts == parts)
-		{
+	for (auto pItem : m_listItem)	{
+		if (pItem->GetpProp()->parts == parts)		{
 			XASSERT(pItem->IsEquipable());
 			// 장착중인템을 제외하는 옵션이면
-			if (bExcludeEquiped)
-			{
+			if (bExcludeEquiped)			{
 				// 장착된템인지 한번더 검사한다.
 				if (!IsEquip(pItem->GetsnItem()))
 					return pItem;	// 장착된템도 아니면 이걸로 리턴
@@ -2574,14 +2512,9 @@ void XAccount::ChangeShopItemList()
 */
 BOOL XAccount::IsSaleItemidProp(ID idItemProp)
 {
-// 	std::vector<ID>::iterator begin = m_listShopSell.begin();
-// 	std::vector<ID>::iterator end = m_listShopSell.end();
-// 
-//	for( ; begin != end; ++begin) {
 	for( auto idSell : m_listShopSell ) {
 		if( idSell == idItemProp ) 
 			return TRUE;
-// 		if (*begin == idItemProp) return TRUE;
 	}
 	return FALSE;
 }
@@ -2614,126 +2547,8 @@ XGAME::xtSkillLevelUp XAccount::GetAbleLevelupSkill(XSPHero pHero, XGAME::xtTrai
 	if (pHero->GetLevel() < pProp->levelLimitByHero)
 		return XGAME::xES_LIMITED_BY_HERO_LEVEL;
 	return XGAME::xES_OK;
-// 	ID idItem = SCROLL_GRAY + (pProp->gradeNeed - 1);
-// 	int numHave = GetNumItems(idItem);
-// 	if (numHave >= pProp->numItem)
-// 		return XGAME::xES_OK;
-// 	return XGAME::xES_NOT_ENOUGH_ITEM;
 }
 
-/**
-@brief
-*/
-// BOOL XAccount::IsEmptyAbilMap()
-// {
-// 	if (m_aryUnitsAbil.size() == 0)
-// 		return TRUE;
-// 	return m_aryUnitsAbil[1].size() == 0;
-// }
-
-/**
-@brief 현재 pHero에게 메달제공이 가능하냐
-*/
-// bool XAccount::IsAbleProvideSquad(XSPHero pHero, ID *pOutID, int *pOutNum)
-// {
-// 	if( IsLockHangout() ) {		// 병사집합소가 없으면 업글 안됨
-// 		return false;
-// 	}
-// 	// 업글 아이템이 충분히 있는가.
-// 	auto pPropSquad = pHero->GetpPropSquadupNext();
-// 	if (pPropSquad == nullptr)
-// 		return false;
-// 	if (pHero->IsAbleProvideSquad(pPropSquad) == false)
-// 		return false;
-// 	if (pHero->GetLevel() < pPropSquad->levelLimitByHero)
-// 		return false;
-// 	int numItem = 0;
-// 	// 유닛의 공격타입에 따라 필요한 업글템의 아이디를 얻음.
-// 	ID idNeed = XGAME::GetSquadLvupItem(pHero->GetType());
-// 	if (XBREAK(idNeed == 0))
-// 		return false;
-// 	idNeed += (pPropSquad->gradeNeed - 1);
-// 	if (pOutID)
-// 		*pOutID = idNeed;	// UI등에 사용하기 위해 필요한 아이템의 아이디를 넣어줌.
-// 	if (pOutNum)
-// 		*pOutNum = pPropSquad->numItem;
-// 	// 소지하고 있는 해당메달수를 센다.
-// 	int num = GetNumItems(idNeed);
-// 	// 메달 없으면 안됨.
-// 	if (num <= 0)
-// 		return false;
-// 	return true;
-// }
-// 
-// /**
-// @brief 현재 pHero에게 메달제공이 가능하냐
-// */
-// bool XAccount::IsAbleProvideSkill(XSPHero pHero, XGAME::xtTrain type, ID *pOutID, int *pOutNum)
-// {
-// 	if( IsLockAcademy() ) {		// 병사집합소가 없으면 업글 안됨
-// 		return false;
-// 	}
-// 	// 업글 아이템이 충분히 있는가.
-// 	auto pPropSkill = pHero->GetpPropSkillupNext(type);
-// 	if (pPropSkill == nullptr)
-// 		return false;
-// 	// 먼저 영웅걸로 검사해봄
-// 	if (pHero->IsAbleProvideSkill(pPropSkill, type) == false)
-// 		return false;
-// 	// 통과하면 계정에 필요아이템이 있는지 확인
-// 	int numItem = 0;
-// 	// 유닛의 공격타입에 따라 필요한 업글템의 아이디를 얻음.
-// 	ID idNeed = XGAME::GetSkillLvupItem(pPropSkill->gradeNeed);
-// 	if (XBREAK(idNeed == 0))
-// 		return false;
-// 	if (pOutID)
-// 		*pOutID = idNeed;	// UI등에 사용하기 위해 필요한 아이템의 아이디를 넣어줌.
-// 	if (pOutNum)
-// 		*pOutNum = pPropSkill->numItem;
-// 	// 소지하고 있는 해당메달수를 센다.
-// 	int num = GetNumItems(idNeed);
-// 	// 메달 없으면 안됨.
-// 	if (num <= 0)
-// 		return false;
-// 	return true;
-// }
-
-/**
-@brief pHero가 현재 업그레이드가 가능한 상태인가.
-pHero가 렙업할수 있는 충분한양의 메달을 모은 상태
-*/
-// bool XAccount::IsAbleLevelUpSquad(XSPHero pHero, ID *pOutID, int *pOutNum)
-// {
-// 	if( IsLockHangout() ) {		// 병사집합소가 없으면 업글 안됨
-// 		return false;
-// 	}
-// 	// 업글 아이템이 충분히 있는가.
-// 	auto pPropSquad = pHero->GetpPropSquadupNext();
-// 	if (pPropSquad == nullptr)
-// 		return false;
-// 	// 일단 최대 레벨이면 더이상 업글 안됨
-// 	if (pHero->GetlevelSquad() >= PROP_SQUAD->GetMaxLevel())
-// 		return false;
-// 	// 영웅 렙제에 걸리면 더이상 안됨.
-// 	if (pHero->GetLevel() < pPropSquad->levelLimitByHero)
-// 		return false;
-// 	int numItem = 0;
-// 	// 유닛의 공격타입에 따라 필요한 업글템의 아이디를 얻음.
-// 	ID idNeed = XGAME::GetSquadLvupItem(pHero->GetType(), pPropSquad->gradeNeed);
-// 	XBREAK(idNeed == 0);
-// 	// 	idNeed += (pPropSquad->gradeNeed - 1);
-// 	// 소지한 업글템의 개수를 셈
-// 	if (pOutID)
-// 		*pOutID = idNeed;	// UI등에 사용하기 위해 필요한 아이템의 아이디를 넣어줌.
-// 	if (pOutNum)
-// 		*pOutNum = pPropSquad->numItem;
-// 	// 소지하고 있는 해당메달수를 센다.
-// 	int num = GetNumItems(idNeed);
-// 	// 소지하고 있는걸로 남은 메달을 다 채울 수 있으면 true
-// 	if (num < pPropSquad->numItem - pHero->GetNumProvidedMedal())
-// 		return false;
-// 	return true;
-// }
 bool XAccount::IsAbleLevelUpSquad( XSPHero pHero )
 {
 	if( IsLockHangout() ) {		// 병사집합소가 없으면 업글 안됨
@@ -2745,28 +2560,12 @@ bool XAccount::IsAbleLevelUpSquad( XSPHero pHero )
 	if( pPropSquad == nullptr )
 		return false;
 	// 일단 최대 레벨이면 더이상 업글 안됨
-// 	if( pHero->Getlevel( typeTrain ) >= PROP_SQUAD->GetMaxLevel() )
-// 		return false;
 	if( pHero->GetLevel( typeTrain ) >= pHero->GetMaxLevel( typeTrain ) )
 		return false;
 	// 영웅 렙제에 걸리면 더이상 안됨.
 	if( pHero->GetLevel() < pPropSquad->levelLimitByHero )
 		return false;
 	int numItem = 0;
-	// 유닛의 공격타입에 따라 필요한 업글템의 아이디를 얻음.
-// 	ID idNeed = XGAME::GetSquadLvupItem( pHero->GetType(), pPropSquad->gradeNeed );
-// 	XBREAK( idNeed == 0 );
-// 	// 	idNeed += (pPropSquad->gradeNeed - 1);
-// 	// 소지한 업글템의 개수를 셈
-// 	if( pOutID )
-// 		*pOutID = idNeed;	// UI등에 사용하기 위해 필요한 아이템의 아이디를 넣어줌.
-// 	if( pOutNum )
-// 		*pOutNum = pPropSquad->numItem;
-// 	// 소지하고 있는 해당메달수를 센다.
-// 	int num = GetNumItems( idNeed );
-// 	// 소지하고 있는걸로 남은 메달을 다 채울 수 있으면 true
-// 	if( num < pPropSquad->numItem - pHero->GetNumProvidedMedal() )
-// 		return false;
 	return true;
 }
 
@@ -2805,25 +2604,8 @@ bool XAccount::IsAbleLevelUpHero(XSPHero pHero)
 	const auto typeTrain = XGAME::xTR_LEVEL_UP;
 	if( pHero->IsFullExp( typeTrain ) )		// exp가 가득차면 터치해서 렙옵시킬수 있다.
 		return true;
-// 	/// 현재소지한 이영웅의 클랜북의 exp총합.
-// 	auto expTotal = GetExpClanBooks(pHero->GetClan());
-// 	auto expRemain = pHero->GetXFLevelObj().GetExpRemain();
-// 	if (expTotal > expRemain)
-// 		return true;
 	return false;
 }
-
-/**
-@brief 렙업레디중인 영웅 목록 얻기
-*/
-// int XAccount::GetLevelupReadyHeroes(XArrayLinearN<XSPHero, 256> *pOutAry)
-// {
-// 	for (auto pHero : m_listHero) {
-// 		if (pHero->IsAnyLevelupReady())
-// 			pOutAry->Add(pHero);
-// 	}
-// 	return pOutAry->size();
-// }
 
 /**
 @brief 영웅중 한명이 스킬렙업 가능한 상태가 되었다.
@@ -5612,4 +5394,43 @@ const XBaseItem* XAccount::GetpEquipItemWithHero( XSPHero pHero, XGAME::xtParts 
 	const ID snItem = pHero->GetsnEquipItem( parts );
 	return GetpcItemBySN( snItem );
 
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief pProp 아이템을 사려고 하는데 현재 지불가능한 상태인가.
+ @param num 사려는 개수
+*/
+bool XAccount::IsPayable( const XPropItem::xPROP* pProp, int num, int* pOutLack )
+{
+	if( !pProp )
+		return false;
+	if( pProp->m_strPayItem.empty() ) {
+		// gold로 지불
+		const auto cost = pProp->GetBuyCost( GetLevel() ) * num;
+		return IsEnoughGold( cost );
+	} else {
+		const int numCurr = GetNumItems( pProp->m_strPayItem );
+		const int numCost = pProp->m_numCost * num;
+		if( pOutLack ) {
+			*pOutLack = numCost - numCurr;
+		}
+		return ( numCurr >= numCost );
+	}
+	return false;
+}
+
+bool XAccount::IsPayable( const _tstring& idsItemBuy, int num, int* pOutLack )
+{
+	auto pProp = PROP_ITEM->GetpProp( idsItemBuy );
+	if( !pProp )
+		return false;
+	return IsPayable( pProp, num, pOutLack );
+}
+
+bool XAccount::IsPayable( ID idPropItemBuy, int num, int* pOutLack )
+{
+	auto pProp = PROP_ITEM->GetpProp( idPropItemBuy );
+	if( !pProp )
+		return false;
+	return IsPayable( pProp, num, pOutLack );
 }

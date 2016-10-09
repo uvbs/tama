@@ -189,6 +189,8 @@ namespace XGAME
 		xIT_EVENT,		///< 이벤트
 		xIT_ETC,		///< 기타 잡템
 		xIT_SOUL,
+		xIT_GOLD,		///< 금화(UI표시용)
+		xIT_GUILD_COIN,		///< 길드코인(ui표시용)
 	};
 
 	///< 아이템 사용방식(인벤에서 사용)
@@ -407,6 +409,7 @@ namespace XGAME
 		xCOIN_CASH,			// 캐시
 		xCOIN_GUILD,		// 길드코인
 		xCOIN_MEDAL,		// 메달
+		xCOIN_PROP,			// 프로퍼티의 지불방법
 		xCOIN_MAX,
 
 	};

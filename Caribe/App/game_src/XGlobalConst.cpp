@@ -50,6 +50,8 @@ double FixDouble(double a, int n)
 }
 void XGlobalConst::LoadConst()
 {
+	LoadDynaParam( &m_Param );
+
 	// 누락된 enum이 없는지 검사하기위해 한번씩 콜함.
 	for( int i = 0; i < XGAME::xAE_MAX; ++i )
 		XGAME::GetstrEnumActionEvent( (XGAME::xtActionEvent)i );
@@ -200,7 +202,9 @@ void XGlobalConst::LoadConst()
 	}
 	//
 	m_rateKillDrop = GetFloat( "rate_drop_kill" ) / 100.f;
-	XBREAK( m_rateKillDrop < 0 || m_rateKillDrop > 100.f );
+	XBREAK( m_rateKillDrop < 0 || m_rateKillDrop > 1.f );
+	m_rateScalpDrop = GetFloat( "rate_drop_scalp") / 100.f;
+	XBREAK( m_rateScalpDrop < 0 || m_rateScalpDrop > 1.f);
 	m_cashPerAP = GetFloat( "gem_per_ap" );
 	XBREAK( m_cashPerAP == 0 );
 
@@ -212,7 +216,14 @@ void XGlobalConst::LoadConst()
 	XBREAK( m_arySizeCost.Size() != xSIZE_MAX );
 } // XGlobalConst::LoadConst()
 
-// void XGlobalConst::SetTableByUnlockUnitLevel( )
+/** //////////////////////////////////////////////////////////////////
+ @brief key /val 방식으로 읽어들이고 검색하는 다이나믹 파라메터
+*/
+void XGlobalConst::LoadDynaParam( XParamObj2* pOut )
+{
+// 	XEXmlNode nodeRoot = FindNode( "global" );
+// 	if( nodeRoot.is )
+}
 
 /**
  @brief global.txt

@@ -2,7 +2,7 @@
 #include "XBaseFontDat.h"
 #include "XList.h"
 
-#define FONT_SYSTEM		_T("normal.ttf")
+#define FONT_SYSTEM		XFontMng::s_aryFonts[2].c_str()
 #define FONT_SIZE_DEFAULT	20.f
 
 #define BASE_FONT XE::GetGame()->GetpfdSystem()

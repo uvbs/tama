@@ -117,10 +117,10 @@
         <spot id="548" />
     </cloud>
     <cloud id="1032" ids="area.1032" level="16" cost="218453" ids_precede="area.1029" key_item="item_event_minomeet" idx="407 430 ">
-        <spot id="648" />
-        <spot id="649" />
+        <spot id="826" />
     </cloud>
     <cloud id="1033" ids="area.1033" level="16" cost="218453" ids_precede="area.1032" idx="408 386 431 ">
+        <spot id="648" />
         <spot id="650" />
         <spot id="651" />
     </cloud>
@@ -150,7 +150,6 @@
         <spot id="665" />
         <spot id="666" />
         <spot id="667" />
-        <spot id="826" />
     </cloud>
     <cloud id="1039" ids="area.1039" level="19" cost="651605" ids_precede="area.1038" idx="366 368 367 ">
         <spot id="645" />

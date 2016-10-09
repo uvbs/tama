@@ -1480,7 +1480,7 @@ int XGame::OnClickItemTooltip( XWnd* pWnd, DWORD p1, DWORD p2 )
 	if( pProp->IsSoul() )
 		XGAME::UpdateHeroTooltip( pProp->strIdHero, pPopup, 0 );
 	else
-		XGAME::UpdateItemTooltip( pProp, pPopup, 0 );
+		XGAME::UpdateItemTooltip( pProp, pPopup, _T(""), 0 );
 //	pPopup->SetLayout( _T( "layout_item.xml" ) );
 	AddWndTop( pPopup );
 	return 1;

@@ -214,7 +214,9 @@ ID XTextureAtlas::ArrangeImg( ID idTex,
 		if( XASSERT( pNewNode ) ) {
 			const XE::xRECT rect = pNewNode->GetRectTex();
 			pOut->vLT = rect.vLT;
-			pOut->vRB = rect.vRB + XE::VEC2( 1, 1 );
+			const auto space = xSplit::XNode::c_spaceBorder;
+			pOut->vRB = rect.vRB;		// uv는 공간보다 x픽셀 작은걸로 잡아야 한다.
+			// 			pOut->vRB = rect.vRB + XE::VEC2( 1, 1 );
 			*pOutID = pNewNode->GetidNode();
 			++spAtlas->m_refCnt;
 			// 실제 디바이스 텍스쳐에 갱신.

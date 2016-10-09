@@ -447,6 +447,9 @@ public:
 	virtual _tstring GetstrHello() const { return _tstring(); }		// 일단 이렇게 하고 나중에 리팩토링
 	virtual void SetstrHello( const _tstring& strHello ) {}
 	virtual void OnTouch( XSPAcc spAcc ) {}
+	const XParamObj2& GetPropParam() const {
+		return GetpBaseProp()->m_Param;
+	}
 #ifdef _DEV
 	bool IsDummy() const {
 		return m_strName == _T("TEST_USER");

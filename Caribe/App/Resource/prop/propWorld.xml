@@ -86,15 +86,14 @@
       <produce res="xRES_IRON" num="60" />
       <produce res="xRES_SULFUR" num="60" />
     </castle>
-    <common id="548" x="966" y="1281" name="30115" ids="spot.guildraid.15" spr="spot_guild_raid.spr" opened="yes" type="guild_raid" str="raid.guild.15" />
+    <common id="548" x="969" y="1256" name="30115" ids="spot.guildraid.15" spr="spot_guild_raid.spr" opened="yes" type="guild_raid" str="raid.guild.15" />
     <npc id="647" x="930" y="1386" ids="spot.647" secRegen="180" />
-    <castle id="648" x="1115" y="1304" ids="spot.648">
+    <castle id="648" x="1183" y="1245" ids="spot.648">
       <produce res="xRES_WOOD" num="60" />
       <produce res="xRES_IRON" num="60" />
       <produce res="xRES_SULFUR" num="60" />
     </castle>
-    <sulfur id="649" x="1169" y="1377" ids="spot.649" produce="1" secRegenNpc="300" />
-    <sulfur id="650" x="1212" y="1316" ids="spot.650" opened="yes" produce="1" secRegenNpc="300" />
+    <sulfur id="650" x="1209" y="1323" ids="spot.650" opened="yes" produce="1" secRegenNpc="300" />
     <npc id="651" x="1255" y="1383" ids="spot.651" secRegen="180" />
     <castle id="652" x="1352" y="1392" ids="spot.652">
       <produce res="xRES_WOOD" num="60" />
@@ -482,6 +481,8 @@
     <npc id="822" x="649" y="1891" ids="spot.822" secRegen="180" />
     <npc id="823" x="778" y="1801" ids="spot.823" secRegen="180" />
     <event id="824" x="344" y="734" name="15103" ids="spot.824" when="x.boss5" level="21" spr="unit_treant2.spr" opened="yes" secRegen="180" legion="legion.boss5" />
-    <private_raid id="826" x="1584" y="1321" name="15000" ids="spot.private.raid" level="15" spr="spot_private_raid.spr" legion="legion.private.raid" />
+    <private_raid id="826" x="1117" y="1342" name="15000" ids="spot.private.raid" level="15" spr="spot_private_raid.spr" legion="legion.private.raid" opened="yes">
+      <param drop="scalp_crow01" min="15" max="25" sec_reset="3600" num_win="2" max_squad="20" />
+    </private_raid>
   </spots>
 </world>

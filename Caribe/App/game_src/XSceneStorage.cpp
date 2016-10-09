@@ -620,7 +620,7 @@ void XSceneStorage::UpdateSelItemInfo()
 			// 툴팁 레이아웃모듈을 읽는다.
 			m_LayoutTooltip.CreateLayout( "item_tooltip", pRoot );
 			pRoot->SetbShow( true );
-			XGAME::UpdateItemTooltip( pProp, pRoot, costSell );
+			XGAME::UpdateItemTooltip( pProp, pRoot, _T("gold"), costSell );
 		}
 	}
 	xSET_SHOW( this, "text.storage.title", m_pSelectItem != nullptr );

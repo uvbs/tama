@@ -229,6 +229,6 @@ void XSceneEquip::UpdateItemInfo()
 			xSET_ENABLE(this, "butt.equip", FALSE);
 		XWnd *pRoot = Find( "wnd.item.tooltip" );
 		if( pRoot )
-			XGAME::UpdateItemTooltip( pProp, pRoot, 0 );
+			XGAME::UpdateItemTooltip( pProp, pRoot, _T(""), 0 );
 	}
 }

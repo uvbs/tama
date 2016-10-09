@@ -284,6 +284,22 @@ void XPropWorld::GetBaseSpotAttr( xBASESPOT *pSpot, XEXmlNode& childNode )
 		pSpot->idAct = (ID)nAct;
 	int _size = sizeof(pSpot->m_bitAttr);
 	pSpot->m_bitAttr.bOpened = childNode.GetBool( "opened" );
+
+	XEXmlNode nodeParam = childNode.FindNode( "param" );
+	if( !nodeParam.IsEmpty() ) {
+		GetNodeParam( nodeParam, pSpot );
+	}
+}
+
+void XPropWorld::GetNodeParam( XEXmlNode& node, xBASESPOT* pProp )
+{
+	auto pElem = node.GetFirstAttribute();
+	while( pElem ) {
+		const std::string strAttr = pElem->NameTStr();
+		const std::string strVal = pElem->ValueStr();
+		pProp->m_Param.Set( strAttr, strVal );
+		pElem = pElem->Next();
+	}
 }
 
 /**
@@ -314,15 +330,7 @@ BOOL XPropWorld::LoadSpots( XEXmlNode& node )
 		} else
 		if( childNode.GetstrName() == _T("daily") ) {
 			pBaseProp = LoadDaily( node, childNode );
-// 			xDaily *spot = new xDaily;
-// 			pBaseSpot = spot;
-// 			GetBaseSpotAttr( spot, childNode );
 		} else
-// 		if( childNode.GetstrName() == _T( "special" ) ) {
-// 			xSpecial *spot = new xSpecial;
-// 			pBaseSpot = spot;
-// 			GetBaseSpotAttr( spot, childNode );
-// 		} else
 		if( childNode.GetstrName() == _T("camp") ) {
 			xCampaign *spot = new xCampaign;
 			pBaseProp = spot;

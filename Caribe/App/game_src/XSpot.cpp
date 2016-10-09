@@ -935,6 +935,8 @@ void XSpot::DoDropRegisterItem( int level )
 	// 소탕권
 	if( XGC->m_rateKillDrop > 0 )
 		AddDropItem( _T("item_kill"), 1, XGC->m_rateKillDrop );
+	if( XGC->m_rateScalpDrop > 0 )
+		AddDropItem( _T("scalp_crow01" ), 1, XGC->m_rateScalpDrop );
 }
 
 /**

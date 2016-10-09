@@ -2,7 +2,7 @@
 #include "XPropItem.h"
 #include "XArchive.h"
 
-#define VER_ITEM_SERIALIZE		2
+#define VER_ITEM_SERIALIZE		3
 #if VER_ITEM_SERIALIZE > 0xff
 #error "버전값은 255이상을 넘을 수 없습니다."
 #endif

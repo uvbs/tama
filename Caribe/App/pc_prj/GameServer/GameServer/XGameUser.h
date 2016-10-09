@@ -121,7 +121,7 @@ public:
 
 	int RecvItemSellList(XPacket& p);				//아이템 상점 판매 목록
 	int RecvBuyItem(XPacket& p);					//아이템 구매
-	int	RecvSellItem(XPacket& p); 					///< 아이템 상점에 판매
+	int	RecvSellItem( XPacket& p ); 					///< 아이템 상점에 판매
 	int RecvItemSpent(XPacket& p);					///< 아이템 사용
 	int RecvInventoryExpand(XPacket& p);			///< 인벤토리 확장
 
@@ -399,6 +399,8 @@ private:
 	XGAME::xtError GetPaymentCost( int goldCost, XGAME::xtError err, XGAME::xtTermsPayment termsPay, int* pOutGold, int* pOutCash );
 	void SendSyncAcc( XGAME::xtParamSync type, int param );
 	XSpot* GetpSpot( ID idSpot );
+	int ProcBuyItemAtArmory( ID idProp, XGAME::xtCoin costType );
+	int ProcBuyItemAtCashShop( ID idProp );
 };
 
 

@@ -14,8 +14,8 @@ XE_NAMESPACE_START( xSplit )
 class XNode;
 // 벽(?)과 공간을 나타내는 노드
 class XNode {
-	static float c_spaceBorder;		// 아틀라스간 경계 너비
 public:
+	static float c_spaceBorder;		// 아틀라스간 경계 너비
 	XNode() {
 		memset( m_Child, 0, sizeof( m_Child ) );
 	}

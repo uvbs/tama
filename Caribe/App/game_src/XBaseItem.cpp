@@ -201,11 +201,9 @@ int XBaseItem::Serialize( XArchive& ar )
 	int numAry = XNUM_ARRAY(m_uBook.m_Param);
 	ar << numAry;
 	XBREAK( GetpProp()->type == XGAME::xIT_BOOK && GetBookExp() == 0 );
-	for( int i = 0; i < numAry; ++i )
-	{
+	for( int i = 0; i < numAry; ++i )	{
 		ar << m_uBook.m_Param[i];
 	}
-//	ar << (DWORD)m_bEquip;
 	ar << (DWORD)0;
 	return 1;
 }

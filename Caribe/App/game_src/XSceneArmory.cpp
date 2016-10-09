@@ -43,24 +43,11 @@ XSceneArmory::XSceneArmory(XGame *pGame)
 	Init(); 
 	
 	m_Layout.CreateLayout("common_bg", this);
-//	m_Layout.CreateLayout("common_bg_goldcash", this);
 	m_Layout.CreateLayout("armory", this);
 	m_Layout.CreateLayout("itemtab", this);
-
-	// 최대값 테스트
-	//xSET_TEXT(this, "text.common.gold", XE::Format(_T("%d"), 1000000000));
-	//xSET_TEXT(this, "text.common.cash", XE::Format(_T("%d"), 1000000000));
-
 	xSET_BUTT_HANDLER(this, "butt.back", &XSceneArmory::OnBack);
-
-// 	// 상점 목록이 있는지 체크
-// 	std::vector<ID> listItem;
-// 	ACCOUNT->GetListShopSell(listItem);
-
-// 	NewListRecvUpdate(true);
 	xSET_BUTT_HANDLER(this, "butt.armory.new", &XSceneArmory::OnClickNewItemChange);
 	// 아이템 설명부 레이아웃 생성
-// 	m_Layout.CreateLayout( "itemtab", this );
 	// 아이템 툴팁모듈이 들어갈 루트 윈도우
 	XWnd *pRoot = Find( "wnd.item.tooltip" );
 	if( pRoot ) {
@@ -74,7 +61,6 @@ XSceneArmory::XSceneArmory(XGame *pGame)
 		pRoot->SetbShow( false );
 	}
 	SetbUpdate( true );		// Update()가 호출 됩니다.
-// 	SOUNDMNG->OpenPlaySound(15, true);
 }
 
 void XSceneArmory::Create(void)
@@ -93,9 +79,6 @@ void XSceneArmory::Update()
 	XGAME::CreateUpdateTopResource( this );
 	if( m_idSelected == 0 )
 		m_pSelectItem = nullptr;
-	// 텍스트
-// 	xSET_TEXT( this, "text.common.gold", XE::NumberToMoneyString(ACCOUNT->GetGold()) );
-// 	xSET_TEXT( this, "text.common.cash", XE::NumberToMoneyString(ACCOUNT->GetCashtem()) );
 	// 상점 목록이 있는지 체크
 	std::vector<ID> listItem;
 	ACCOUNT->GetListShopSell( listItem );
@@ -201,18 +184,6 @@ int XSceneArmory::OnClickNewItemChange(XWnd *pWnd, DWORD p1, DWORD p2)
 			pAlert->SetEvent( XWM_YES, this, 
 												&XSceneArmory::OnClickNewItemChangeOK, XGAME::xSC_SPENT_ITEM );
 		}
-		// 팝업
-// 		m_Layout.CreateLayout("commonitemtextpopup", this);
-// 		XWnd *pPopup = Find("img.common.popupitemtext");
-// 		if (pPopup) {
-// 			pPopup->SetbModal(TRUE);
-// 			xSET_TEXT(this, "text.title", XTEXT(80065));			// "새로배치"
-// 			xSET_TEXT(this, "text.common.ask", XTEXT(80066));		// "아이템을 사용하여 새로배치하시겠습니까?"
-// 			xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80065));			// "새로배치"
-// 			xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_IMG, PROP_ITEM->GetpProp(ticketItemID)->strIcon.c_str()));
-// 			xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickNewItemChangeOK, XGAME::xSC_SPENT_ITEM);
-// 			xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-// 		}
 	} else {
 		// 티켓이 없으면 캐시로 구매여부를 물어본다.
 		auto pPopup = new XWndPaymentByCash( XTEXT( 80068 ), XTEXT( 80065 ) );
@@ -222,52 +193,13 @@ int XSceneArmory::OnClickNewItemChange(XWnd *pWnd, DWORD p1, DWORD p2)
 											this,
 											&XSceneArmory::OnClickNewItemChangeOK, 
 											XGAME::xSC_SPENT_GEM );
-		// 			if (ACCOUNT->GetCashtem() >= gemNum) {		// 캐쉬 검사
-// 				m_Layout.CreateLayout("commonitemtextpopup", this);
-// 				XWnd *pPopup = Find("img.common.popupitemtext");
-// 				if (pPopup) {
-// 					pPopup->SetbModal(TRUE);
-// 					xSET_TEXT(this, "text.title", XTEXT(80065));			// "새로배치"
-// 					xSET_TEXT(this, "text.common.ask", XE::Format(XTEXT(80068), gemNum));		// "아이템이 부족합니다. 캐쉬 %d개를 사용하여 새로배치하시겠습니까?"
-// 					xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80065));			// "새로배치"
-// 					xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_IMG, PROP_ITEM->GetpProp(ticketItemID)->strIcon.c_str()));
-// 					xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickNewItemChangeOK, XGAME::xSC_SPENT_GEM);
-// 					xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-// 				}
 		}
-// 	else {
-// 				// 티켓 아이템도 없고 캐쉬도 부족
-// 				XWND_ALERT_T( _T("%s"), XTEXT(80150) );
-			// 팝업
-// 				m_Layout.CreateLayout("commontextpopup", this);
-// 
-// 				XWnd *pPopup = Find("img.common.popuptext");
-// 				if (pPopup)
-// 				{
-// 					pPopup->SetbModal(TRUE);
-// 
-// 					xSET_TEXT(this, "text.title", XTEXT(80130));			// "즉시호출"
-// 					xSET_TEXT(this, "text.common.ask", XTEXT(80150));		// "아이템과 캐쉬가 부족합니다. 구매해주세요"
-				//xSET_BUTT_TEXT(this, "butt.ok", XTEXT(2));
-
-// 					xSET_SHOW(this, "butt.ok1", TRUE);
-// 					xSET_SHOW(this, "butt.ok", FALSE);
-//					xSET_SHOW(this, "butt.cancel", FALSE);
-
-//					xSET_BUTT_HANDLER(this, "butt.ok1", &XSceneStorage::OnClickPopupCancel);
-
-				//xSET_BUTT_HANDLER(this, "butt.ok", &XSceneArmory::OnClickPopupCancel);
-//					xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-//				}
-//			}
-//		}
 	return 1;
 }
 
 int XSceneArmory::OnClickNewItemChangeOK(XWnd *pWnd, DWORD p1, DWORD p2)
 {
-	if (GAMESVR_SOCKET)
-	{
+	if (GAMESVR_SOCKET)	{
 		m_idSelected = 0;
 		if ((XGAME::xtSpentCall)p1 == XGAME::xSC_SPENT_ITEM)
 			GAMESVR_SOCKET->SendArmoryListCashChange(this, (XGAME::xtSpentCall)p1);
@@ -290,90 +222,38 @@ int XSceneArmory::OnClickBuy(XWnd *pWnd, DWORD p1, DWORD p2)
 				pAlert->SetEvent( XWM_YES, this,
 													&XSceneArmory::OnClickBuyOK, XGAME::xCOIN_MEDAL );
 			}
-			// 			// 팝업
-// 			m_Layout.CreateLayout( "commontextpopup", this );
-// 			XWnd *pPopup = Find( "img.common.popuptext" );
-// 			if( pPopup ) {
-// 				pPopup->SetbModal( TRUE );
-// 				xSET_TEXT( this, "text.title", XTEXT( 80043 ) );				// "구입"
-// 				xSET_TEXT( this, "text.common.ask", XTEXT( 80071 ) );			// "정말로 구매하시겠습니까?"
-// 				xSET_BUTT_TEXT( this, "butt.ok", XTEXT( 80043 ) );				// "구입"
-// 				xSET_BUTT_HANDLER_PARAM( this, "butt.ok", this, &XSceneArmory::OnClickBuyOK, XGAME::xCOIN_MEDAL );
-// 				xSET_BUTT_HANDLER( this, "butt.cancel", &XSceneArmory::OnClickPopupCancel );
-// 			}
 		} else {
 			// 캐시로 구입하시겠습니까?
 			XWND_ALERT_T( _T("%s"), XTEXT(2262) );
 		}
 	} else {
-		if (ACCOUNT->GetGold() >= price) {
+//		if (ACCOUNT->GetGold() >= price) {
+		int numLack = 0;		// 부족한 개수
+		if( ACCOUNT->IsPayable( pPropItem, 1, &numLack ) ) {
+			// 아이템 가격을 지불가능함.
 			auto pAlert = XWND_ALERT_YESNO_T( "alert.confirm", XTEXT( 80071 ) );
 			if( pAlert ) {
 				pAlert->SetEvent( XWM_YES, this,
-													&XSceneArmory::OnClickBuyOK, XGAME::xCOIN_GOLD );
+													&XSceneArmory::OnClickBuyOK, XGAME::xCOIN_PROP );
 			}
-			// 			// 아이템 가격을 지불가능함.
-// 			m_Layout.CreateLayout("commontextpopup", this);
-// 			XWnd *pPopup = Find("img.common.popuptext");
-// 			if (pPopup) {
-// 				pPopup->SetbModal(TRUE);
-// 				xSET_TEXT(this, "text.title", XTEXT(80043));				// "구입"
-// 				xSET_TEXT(this, "text.common.ask", XTEXT(80071));			// "정말로 구매하시겠습니까?"
-// 				xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80043));				// "구입"
-// 				xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickBuyOK, XGAME::xCOIN_GOLD );
-// 				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-// 			}
 		} else {
-		// 금화가 없으면 캐시로 구입안내
-//		if (ACCOUNT->GetCashtem() >= m_pSelectItem->getpProp()->cashCost) {
+			// 지불 안됨.
 			// 팝업
-			int goldLack = price - ACCOUNT->GetGold();
+//			int goldLack = price - ACCOUNT->GetGold();
 			auto pPopup = new XWndPaymentByCash( XTEXT( 80068 ), XTEXT( 80065 ) );
-			pPopup->SetGold( goldLack );
-			Add( pPopup );
-			pPopup->SetEvent( XWM_OK,
-												this,
-												&XSceneArmory::OnClickNewItemChangeOK, 
-												XGAME::xSC_SPENT_GEM );
+			//pPopup->SetGold( goldLack );
+			auto pPropPaytem = PROP_ITEM->GetpProp( pPropItem->m_strPayItem );
+			if( pPropPaytem ) {
+				const int numGem = pPropPaytem->cashCost * pPropItem->m_numCost;		// 모자르는 만큼을 젬으로 사야할때 필요한 젬개수.
+				pPopup->SetItem( pPropItem->m_strPayItem, numGem );
+				Add( pPopup );
+				pPopup->SetEvent( XWM_OK,
+													this,
+													&XSceneArmory::OnClickBuyOK,
+													XGAME::xCOIN_CASH );
+			}
 		}
 	}
-// 			m_Layout.CreateLayout("commonitemtextpopup", this);
-// 			XWnd *pPopup = Find("img.common.popupitemtext");
-// 			if (pPopup) {
-// 				pPopup->SetbModal(TRUE);
-// //				auto pProp = m_pSelectItem->getpProp();
-// 				xSET_TEXT(this, "text.title", XTEXT(80169));				// "금화 부족"
-// 				_tstring strText = XE::Format( XTEXT( 80069 ),pPropItem->cashCost, price );			// "금화가 부족합니다. 캐쉬 50개를 사용하여 1000금화 아이템을 구매하시겟습니까?"
-// 				if( XE::LANG.GetstrKey() == _T("english") ) {
-// 					strText = XE::Format( XTEXT( 80069 ), price, pPropItem->cashCost );
-// 				}
-// 				xSET_TEXT( this, "text.common.ask", strText );
-// 				xSET_BUTT_TEXT(this, "butt.ok", XTEXT(80070));				// "구매"
-// 			
-// 				xSET_IMG(this, "img.ask.itemimg", XE::MakePath(DIR_UI, _T("hero_gold.png")));
-// 				xSET_BUTT_HANDLER_PARAM(this, "butt.ok", this, &XSceneArmory::OnClickBuyOK, XGAME::xCOIN_CASH );
-// 				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-// 			}
-// 		} else {
-// 			// 티켓 아이템도 없고 캐쉬도 부족
-// 			XWND_ALERT_T( _T( "%s" ), XTEXT( 80150 ) );
-// 			// 팝업
-// // 			m_Layout.CreateLayout("commontextpopup", this);
-// // 			XWnd *pPopup = Find("img.common.popuptext");
-// // 			if (pPopup) {
-// // 				pPopup->SetbModal(TRUE);
-// // 				xSET_TEXT(this, "text.title", XTEXT(80070));			// "구매"
-// // 				xSET_TEXT(this, "text.common.ask", XTEXT(80150));		// "아이템과 캐쉬가 부족합니다. 구매해주세요"
-// // 				//xSET_BUTT_TEXT(this, "butt.ok", XTEXT(2));
-// // //				xSET_SHOW(this, "butt.ok1", TRUE);
-// // //				xSET_SHOW(this, "butt.ok", FALSE);
-// // //				xSET_SHOW(this, "butt.cancel", FALSE);
-// // //				xSET_BUTT_HANDLER(this, "butt.ok1", &XSceneStorage::OnClickPopupCancel);
-// // 				//xSET_BUTT_HANDLER(this, "butt.ok", &XSceneArmory::OnClickPopupCancel);
-// // 				xSET_BUTT_HANDLER(this, "butt.cancel", &XSceneArmory::OnClickPopupCancel);
-// // 			}
-// 		}
-//	}
 	SetbUpdate( true );
 	return 1;
 }
@@ -394,22 +274,6 @@ int XSceneArmory::OnClickBuyOK(XWnd *pWnd, DWORD p1, DWORD p2)
 
 	return 1;
 }
-
-// int XSceneArmory::OnClickPopupCancel(XWnd *pWnd, DWORD p1, DWORD p2)
-// {
-// 	if (pWnd->GetpParent())
-// 		pWnd->GetpParent()->SetbDestroy(TRUE);
-// 
-// 	return 1;
-// }
-
-// void XSceneArmory::RecvUpdate()
-// {
-// 	xSET_TEXT(this, "text.common.gold", XE::Format(_T("%d"), ACCOUNT->GetGold()));
-// 	xSET_TEXT(this, "text.common.cash", XE::Format(_T("%d"), ACCOUNT->GetCashtem()));
-// 
-// 	NewListRecvUpdate(true);
-// }
 
 void XSceneArmory::NewListRecvUpdate(bool bSuccess)
 {
@@ -450,80 +314,6 @@ void XSceneArmory::NewListRecvUpdate(bool bSuccess)
 	}
 }
 
-// void XSceneArmory::UpdateBuyItemInfo()
-// {
-// 	return;
-// 	XWnd *pAll = Find("wnd.armory.itemteb");
-// 	if (pAll)
-// 		pAll->SetbDestroy(TRUE);
-// 
-// 	m_Layout.CreateLayout("itemtab", this);
-// 
-// 	if (m_pSelectItem)
-// 	{
-// 		// 아이템 이미지
-// // 		XWndImage* img = dynamic_cast<XWndImage*>(Find("img.armory.itemimg"));
-// // 		if( img )
-// // 			img->SetSurface(m_pSelectItem->GetItemImg());
-// 		xSET_IMG( this, "img.armory.itemimg", m_pSelectItem->getpProp()->strIcon);
-// 		
-// 		// 아이템 별
-// 		if (m_pSelectItem->GetnumStars() == XGAME::xGD_LEGENDARY)
-// 		{
-// 			xSET_SHOW(this, "img.armory.star4", TRUE);
-// 			xSET_SHOW(this, "img.armory.star3", TRUE);
-// 			xSET_SHOW(this, "img.armory.star2", TRUE);
-// 			xSET_SHOW(this, "img.armory.star1", TRUE);
-// 		}
-// 		else if (m_pSelectItem->GetnumStars() == XGAME::xGD_EPIC)
-// 		{
-// 			xSET_SHOW(this, "img.armory.star4", FALSE);
-// 			xSET_SHOW(this, "img.armory.star3", TRUE);
-// 			xSET_SHOW(this, "img.armory.star2", TRUE);
-// 			xSET_SHOW(this, "img.armory.star1", TRUE);
-// 		}
-// 		else if(m_pSelectItem->GetnumStars() == XGAME::xGD_RARE)
-// 		{
-// 			xSET_SHOW(this, "img.armory.star4", FALSE);
-// 			xSET_SHOW(this, "img.armory.star3", FALSE);
-// 			xSET_SHOW(this, "img.armory.star2", TRUE);
-// 			xSET_SHOW(this, "img.armory.star1", TRUE);
-// 		}
-// 		else if(m_pSelectItem->GetnumStars() == XGAME::xGD_VETERAN)
-// 		{
-// 			xSET_SHOW(this, "img.armory.star4", FALSE);
-// 			xSET_SHOW(this, "img.armory.star3", FALSE);
-// 			xSET_SHOW(this, "img.armory.star2", FALSE);
-// 			xSET_SHOW(this, "img.armory.star1", TRUE);
-// 		}
-// 		else if(m_pSelectItem->GetnumStars() == XGAME::xGD_COMMON)
-// 		{
-// 			xSET_SHOW(this, "img.armory.star4", FALSE);
-// 			xSET_SHOW(this, "img.armory.star3", FALSE);
-// 			xSET_SHOW(this, "img.armory.star2", FALSE);
-// 			xSET_SHOW(this, "img.armory.star1", FALSE);
-// 		}
-// 
-// 		// 아이템 이름
-// 		xSET_SHOW(this, "text.armory.armoryname", TRUE);
-// 		xSET_TEXT(this, "text.armory.armoryname", XTEXT(m_pSelectItem->getpProp()->idName));
-// 
-// 		// 아이템 능력치
-// 		XSceneStorage::sUpdateItemOption( m_pSelectItem->getpProp(), this, "armory", 16.f );
-// 
-// 		xSET_SHOW(this, "text.armory.itemdesc", TRUE);
-// 		xSET_TEXT(this, "text.armory.itemdesc", XTEXT(m_pSelectItem->getpProp()->idDesc));
-// 
-// 		xSET_SHOW(this, "img.armory.gold", TRUE);
-// 		xSET_SHOW(this, "text.armory.cost", TRUE);
-// 		xSET_TEXT(this, "text.armory.cost", XE::Format(_T("%d"), m_pSelectItem->getpProp()->GetCost(ACCOUNT->GetLevel())));
-// 
-// 		xSET_BUTT_HANDLER(this, "butt.armory.new", &XSceneArmory::OnClickNewItemChange);
-// 		xSET_BUTT_HANDLER(this, "butt.armory.buy", &XSceneArmory::OnClickBuy);
-// 		
-// 		xSET_SHOW(this, "butt.armory.buy", TRUE);
-// 	}
-// }
 /**
  @brief 선택한 아이템의 정보를 업데이트 한다.
 */
@@ -545,7 +335,7 @@ void XSceneArmory::UpdateBuyItemInfo()
 			xSET_SHOW( this, "img.bg.item.tooltip", true );
 			xSET_SHOW( this, "wnd.item.tooltip", true );
 			xSET_SHOW( this, "wnd.hero.tooltip", false );
-			XGAME::UpdateItemTooltip( pProp, pRoot, cost );
+			XGAME::UpdateItemTooltip( pProp, pRoot, pProp->m_strPayItem, cost );
 		}
 	}
 	xSET_BUTT_HANDLER(this, "butt.armory.new", &XSceneArmory::OnClickNewItemChange);
@@ -580,9 +370,12 @@ void XSceneArmory::UpdateToolTipBySoul( XPropItem::xPROP *pProp )
 /**
  @brief pRoot아래에 있는 아이템 툴팁모듈을 업데이트한다.
  @param cost 아이템 가격을 표시해야할때 가격을 넘겨준다.
+ @param idsPay 지불수단. 금화대신에 지불해야하는 아이템(징표같은..)의 ids. 금화와 코인도 "gold", "guild_coin"이름으로 아이템화 되어있다. null이면 표시하지 않는다.
 */
-
-static void sUpdateEquipItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot, int cost )
+static void sUpdateEquipItemTooltip( const XPropItem::xPROP *pProp, 
+																		 XWnd *pRoot, 
+																		 const _tstring& idsPay, 
+																		 int numPaytem )
 {
 	// 아이템 이미지
 	if( pProp == nullptr )
@@ -632,10 +425,8 @@ static void sUpdateEquipItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot,
 
 	// 아이템 설명
 	pText = xGET_TEXT_CTRL( pRoot, "text.desc" );
-	if( pText )
-	{
-		if( pProp->idDesc )
-		{
+	if( pText )	{
+		if( pProp->idDesc )		{
 			pText->SetbShow( TRUE );
 			xSET_TEXT( pRoot, "text.desc", XTEXT(pProp->idDesc) );
 			if( !pTextInvoke->GetbShow() && pTextInvoke )
@@ -644,19 +435,26 @@ static void sUpdateEquipItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot,
 			pText->SetbShow( FALSE );
 	}
 	// 판매가격
-	if( cost > 0 )
-	{
+	if( numPaytem > 0 ) {
+		auto pPropPay = PROP_ITEM->GetpProp( idsPay );
+		xSET_SHOW( pRoot, "img.gold", !idsPay.empty() );
+		if( !idsPay.empty() ) {
+			const _tstring strRes = XE::MakePath( DIR_IMG, pPropPay->strIcon );
+			xSET_IMG( pRoot, "img.gold", strRes );
+		}
 		xSET_SHOW( pRoot, "wnd.sell", TRUE );
-		pText = xSET_TEXT( pRoot, "text.cost", XE::NumberToMoneyString( cost ) );
-		if( ACCOUNT->GetGold() < (DWORD)cost )
-			pText->SetColorText( XCOLOR_RED );
-		else
+		pText = xSET_TEXT( pRoot, "text.cost", XE::NumberToMoneyString( numPaytem ) );
+//		if( ACCOUNT->GetGold() < (DWORD)numPaytem )
+		if( ACCOUNT->IsPayable( pProp, 1, nullptr ) ) {
 			pText->SetColorText( XCOLOR_WHITE );
+		}	else {
+			pText->SetColorText( XCOLOR_RED );
+		}
 	} else
 		xSET_SHOW( pRoot, "wnd.sell", FALSE );
 }
 
-static void sUpdateEtcItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot, int cost )
+static void sUpdateEtcItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot, const _tstring& idsPay, int numPaytem )
 {
 	// 아이템 이미지
 	if( pProp == nullptr )
@@ -731,20 +529,33 @@ static void sUpdateEtcItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot, i
 	else
 		pText->SetbShow( FALSE );
 	// 판매가격
-	if( cost > 0 ) {
+	if( numPaytem > 0 ) {
+		auto pPropPay = PROP_ITEM->GetpProp( idsPay );
+		xSET_SHOW( pRoot, "img.gold", !idsPay.empty() );
+		if( !idsPay.empty() ) {
+			const _tstring strRes = XE::MakePath( DIR_IMG, pPropPay->strIcon );
+			xSET_IMG( pRoot, "img.gold", strRes );
+		}
 		xSET_SHOW( pRoot, "wnd.sell", TRUE );
-		pText = xSET_TEXT( pRoot, "text.cost", XE::NumberToMoneyString( cost ) );
-		if( ACCOUNT->GetGold() < (DWORD)cost )
+		pText = xSET_TEXT( pRoot, "text.cost", XE::NumberToMoneyString( numPaytem ) );
+//		if( ACCOUNT->GetGold() < (DWORD)numPaytem )
+		if( ACCOUNT->IsPayable( pProp, 1, nullptr ) ) {
+			pText->SetColorText( XCOLOR_WHITE );
+		} else {
 			pText->SetColorText( XCOLOR_RED );
+		}
 	} else
 		xSET_SHOW( pRoot, "wnd.sell", FALSE );
 }
 
-void XGAME::UpdateItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot, int cost )
+void XGAME::UpdateItemTooltip( const XPropItem::xPROP *pProp, 
+															 XWnd *pRoot, 
+															 const _tstring& idsPay, 
+															 int cost )
 {
 	if( pProp->type == XGAME::xIT_EQUIP )
-		sUpdateEquipItemTooltip( pProp, pRoot, cost );
+		sUpdateEquipItemTooltip( pProp, pRoot, idsPay, cost );
 	else
-		sUpdateEtcItemTooltip( pProp, pRoot, cost );
+		sUpdateEtcItemTooltip( pProp, pRoot, idsPay, cost );
 }
 
