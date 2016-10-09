@@ -30,24 +30,12 @@ public:
 	static int sSerialize( XArchive* pOut, XSPHero pHero ) {
 		return sSerialize( *pOut, pHero );
 	}
-//	static XSPHero sCreateDeSerialize( XArchive& ar, XSPAcc spAcc );
 	static XSPHero sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc );
 	static XSPHero sDeSerializeUpdate( XArchive& ar, XSPHero pHero, XSPAccConst spAcc );
 	static int sGetMaxExpWithLevel( XGAME::xtTrain type, int level );
 #if defined(_XSINGLE) || !defined(_CLIENT)
 	static XSPHero sCreateHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit, XSPAccConst spAcc );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
-// 	struct xItem {
-// 	private:
-// 		ID snItem = 0;
-// 		XBaseItem *pItem = nullptr;
-// 	public:
-// 		void Set( XBaseItem *_pItem );
-// 		XBaseItem* GetpItem() const;
-// 		ID GetsnItem() const {
-// 			return snItem;
-// 		}
-// 	};
 	struct xEquip {
 		ID m_idProp = 0;		// 장착아이템의 프롭아이디
 		ID m_snItem = 0;		// 계정에서의 고유번호
@@ -58,10 +46,9 @@ private:
 	//
 	ID m_idProp = 0;      // m_pProp을 교체해야할때 필요함.
 	ID m_snHero;
-	XSPAccConst m_spAcc;			// 어떤 계정에 속한 영웅인지. npc는 null
+	XSPAccConstW m_spAcc;			// 어떤 계정에 속한 영웅인지. npc는 null
 	std::vector<xnHero::xUpgrade> m_aryUpgrade;		// 업글3종세트의 정보가 담김
 	XGAME::xtGrade m_Grade = XGAME::xGD_COMMON;		// 생성되면 1성부터 시작함.
-	//XVector<xItem> m_aryEquip;
 	XVector<xEquip> m_aryEquip;
 	XGAME::xtUnit m_Unit;		// 인솔중인 유닛
 #if defined(_CLIENT) || defined(_GAME_SERVER)
@@ -92,7 +79,10 @@ public:
 	~XHero() { Destroy(); }
 	//
 //	GET_ACCESSOR( std::shared_ptr<XSKILL::XAdjParam>, spAdjParam );
-	GET_ACCESSOR_CONST( XSPAccConst, spAcc );
+	//GET_ACCESSOR_CONST( XSPAccConst, spAcc );
+	XSPAccConst GetspAcc() const {
+		return m_spAcc.lock();
+	}
 	GET_SET_ACCESSOR_CONST( XGAME::xtUnit, Unit );
 	int GetnumUnit() const;
 	GET_SET_ACCESSOR_CONST( bool, bLive );
@@ -371,6 +361,7 @@ public:
 	int GetMaxHpSquad( int levelSquad );
 	float GetDefensePowerSquad( int levelSquad );
 	void SetidPropToEquip( XSPAccConst spAcc );
+	void Release();
 private:
 	void InitAryAbil();
 	BOOL IsEmptyAbilMap();

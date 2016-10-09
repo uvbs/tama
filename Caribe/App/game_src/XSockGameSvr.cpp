@@ -307,13 +307,11 @@ void XSockGameSvr::RecvSuccessLogin( XPacket& p, const xCALLBACK& c )
 	_tstring _strPublicKey;
 	if (spAcc == nullptr)	{
 		spAcc = std::make_shared<XAccount>();
-//		GAME->SetspAccount( spAccount );
 		XAccount::sSetPlayer( spAcc );
 		spAcc->SetpDelegateLevel( GAME );
 		XArchive arAcc(0x10000);
 		p >> arAcc;
 		spAcc->DeSerialize( arAcc );
-//		spAccount->SetSessionkey(_T("123456789"));
 		XGame::sSetSessionKey(_T("123456789"));
 		sGetpWorld()->OnAfterDeSerialize( GAME, spAcc->GetidAccount() );
 		// 암호화 키테이블
@@ -341,18 +339,6 @@ void XSockGameSvr::RecvSuccessLogin( XPacket& p, const xCALLBACK& c )
 		ACCOUNT->SetAP( spAcc->GetAP() );
 		ACCOUNT->SetmaxAP( spAcc->GetmaxAP() );
 		m_CryptoObj.DeSerializeKeyTable( p );
-// 		XCrypto dummy;
-// 		dummy.DeSerializeKeyTable( p );
-// 		p >> _strPublicKey;
-// 		// 각 스팟의 타이머도 재갱신 해야할듯. 계정정보 꼼꼼하게 뒤져서 그런거 찾아서 넣자.
-// #ifdef _NEW_INAPP
-// #if defined(_VER_ANDROID)
-// 		// 재접시에는 아이템 구매 후 consume이 안된 아이템이 있는지 검사한다.(이미 반영된 거래가 갈수도 있으므로 서버에서 영수증 중복처리를 해야함)
-// 		XInApp::sGet()->DoCheckUnconsumedItemAsync();
-// #elif defined(_VER_IOS)
-// 		XBREAK( 1 );		// 미구현
-// #endif
-// #endif // _NEW_INAPP
 		CONSOLE( "login successed: relogin" );
 	}
 	if( !XGame::s_strGcmRegid.empty() ) {

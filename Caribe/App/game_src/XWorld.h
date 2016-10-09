@@ -96,6 +96,7 @@ public:
 #endif // _DUMMY_GENERATOR
 	GET_ACCESSOR( BOOL, bUpdate );
 	SET_ACCESSOR( BOOL, bUpdate );
+	void Release();
 	void UpdateLastCalc() {
 		m_secLastCalc = XTimer2::sGetTime();
 	}

@@ -1398,6 +1398,7 @@ private:
 		return std::static_pointer_cast<XAccount>( XDBAccount::GetThis() );
 	}
 	void DestroyPostInfoAll();
+	void Release();
 }; // class XAccount
 
 

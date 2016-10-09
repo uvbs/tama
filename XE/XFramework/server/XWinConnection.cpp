@@ -106,29 +106,18 @@ void XEWinConnectionInServer::ClearConnection()
 */
 void XEWinConnectionInServer::tWSARecv( void )
 {
-// 	XLOCK_OBJ;
 	//
 	do 	{
-// 		if( IsDisconnected() )
-// 			break;;		// 
-// 		if( IsDestroy() )
-// 			break;
-	//	BOOL bResult = TRUE;
 		unsigned long readbytes; 
 		// 비동기로 전송처리, 큐에 올라감. 이걸해야 스레드에서 데이타가 받아짐.
 	#ifdef _USING_WSA 
 		WSABUF b[1]; 
 		unsigned long flags = 0; 
-// 		XE::xOVERLAPPED overlapped;
  		memset( &m_opRecv, 0, sizeof(m_opRecv) );
-// 		overlapped.typeEvent = 2;
 		m_opRecv.typeEvent = 2;
-		//WSAOVERLAPPED overlapped;
-//		OVERLAPPED overlapped;
 		b[0].buf = (CHAR *)m_Buffer; 
 		b[0].len = sizeof(m_Buffer); 
 		if( WSARecv( m_Socket, b, 1, &readbytes, &flags, &m_opRecv, NULL ) == SOCKET_ERROR )
-//		if( WSARecv( m_Socket, b, 1, &readbytes, &flags, (LPWSAOVERLAPPED)&overlapped, NULL ) == SOCKET_ERROR )
 	#else
 		// 최초 accept시에는 아래처림 == FALSE로 검사하면 안됨. 원래 0나옴
 		if( ReadFile( (HANDLE)m_Socket, m_Buffer, sizeof(m_Buffer), &readbytes, &m_op ) == FALSE )

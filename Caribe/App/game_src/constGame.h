@@ -41,6 +41,7 @@ typedef std::shared_ptr<XSpot> SpotPtr;
 typedef std::shared_ptr<XAccount> XSPAcc;
 typedef std::shared_ptr<const XAccount> XSPAccConst;
 typedef std::weak_ptr<XAccount> XSPAccW;
+typedef std::weak_ptr<const XAccount> XSPAccConstW;
 typedef std::shared_ptr<XPostItem> XSPPostItem;
 typedef std::shared_ptr<const XPostItem> XSPPostItemConst;
 typedef std::shared_ptr<XPostInfo> XSPPostInfo;
