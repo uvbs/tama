@@ -90,6 +90,8 @@ void XSceneWorld::Destroy()
 // 		XAPP->m_ToolMode = xTM_NONE;
 #endif
 	SOUNDMNG->RemoveAll();
+
+	m_spAcc.reset();
 	XBREAK( SCENE_WORLD == nullptr );
 	XBREAK( SCENE_WORLD != this );
 	SCENE_WORLD = nullptr;

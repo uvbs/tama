@@ -36,20 +36,6 @@ static char THIS_FILE[] = __FILE__;
 //volatile float XHero::s_fMultiply = 100;				// 메모리 치팅방지
 #endif // _CLIENT
 
-// void XHero::xItem::Set( XBaseItem *_pItem ) {
-// 	if( _pItem ) {
-// 		pItem = _pItem;
-// 		snItem = _pItem->GetsnItem();
-// 	}
-// 	else {
-// 		pItem = nullptr;
-// 		// snItem값은 남아있을 수 있음.
-// 	}
-// }
-// XBaseItem* XHero::xItem::GetpItem() const {
-// 	XBREAK( pItem && pItem->GetsnItem() != snItem );
-// 	return pItem;
-// }
 void XHero::xEquip::Serialize( XArchive& ar ) const {
 	ar << m_idProp;
 	ar << m_snItem;
@@ -68,16 +54,6 @@ int XHero::sSerialize( XArchive& ar, XSPHero pHero )
 	return 1;
 }
 
-// XSPHero XHero::sCreateDeSerialize( XArchive& ar/*, XSPAcc spAcc*/ )
-// {
-// 	int ver;
-// 	ar >> ver;
-// 	XSPHero pHero = std::make_shared<XHero>();
-// 	pHero->DeSerialize( ar/*, spAcc*/, ver );
-// 	spAcc->AddHero( pHero );
-// 	return pHero;
-// }
-
 XSPHero XHero::sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc )
 {
 	int ver;
@@ -91,7 +67,7 @@ XSPHero XHero::sDeSerializeUpdate( XArchive& ar, XSPHero pHero, XSPAccConst spAc
 {
 	int ver;
 	ar >> ver;
-	XHero hero( pHero->m_spAcc );		// 복사
+	XHero hero( pHero->GetspAcc() );		// 복사
 	*pHero = hero;		// 초기화
 	pHero->DeSerialize( ar/*, spAcc*/, ver );
 	return pHero;
@@ -633,11 +609,11 @@ float XHero::GetMoveSpeed( int lvHero, bool bForShow ) const
 */
 float XHero::GetAdjParamByItem( XGAME::xtParameter adjParam ) const
 {
-	if( m_spAcc == nullptr )		/// NPC는 아이템 장착 못함.
+	if( m_spAcc.expired() )		/// NPC는 아이템 장착 못함.
 		return 0.f;
 	float add = 0.f;
 	for( auto slot : m_aryEquip ) {
-		auto pItem = m_spAcc->GetpcItemBySN( slot.m_snItem );
+		auto pItem = m_spAcc.lock()->GetpcItemBySN( slot.m_snItem );
 		if( pItem ) {
 			for( const auto& adj : pItem->GetpProp()->aryAdjParam ) {
 				if( adj.adjParam == adjParam ) {
@@ -647,16 +623,6 @@ float XHero::GetAdjParamByItem( XGAME::xtParameter adjParam ) const
 			}
 		}
 	}
-// 	for( const auto& item : m_aryEquip ) {
-// 		if( item.GetpItem() ) {
-// 			for( const auto& adj : item.GetpItem()->GetpProp()->aryAdjParam ) {
-// 				if( adj.adjParam == adjParam ) {
-// 					add += adj.param / 100.f;
-// 					break;
-// 				}
-// 			}
-// 		}
-// 	}
 	return add;
 }
 
@@ -1484,4 +1450,9 @@ void XHero::SetidPropToEquip( XSPAccConst spAcc )
 			}
 		}
 	}
+}
+
+void XHero::Release()
+{
+//	m_spAcc.reset();
 }

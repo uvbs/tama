@@ -1754,6 +1754,14 @@ void XAccount::DestroyPostInfoAll()
 	m_listPost.clear();
 }
 
+void XAccount::Release()
+{
+	for( auto pHero : m_listHero ) {
+		pHero->Release();
+	}
+	m_pWorld->Release();
+}
+
 /**
  @brief snPost편지에 첨부되어있는 모든 아이템을 계정으로 수령한다.
  @return 해당 메일을 찾았으면 true
@@ -5434,3 +5442,4 @@ bool XAccount::IsPayable( ID idPropItemBuy, int num, int* pOutLack )
 		return false;
 	return IsPayable( pProp, num, pOutLack );
 }
+

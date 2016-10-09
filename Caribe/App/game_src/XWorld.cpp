@@ -44,6 +44,13 @@ void XWorld::Destroy()
 	XLIST4_DESTROY( m_listSpots );
 }
 
+void XWorld::Release()
+{
+	for( auto pSpot : m_listSpots ) {
+		pSpot->Release();
+	}
+}
+
 void XWorld::Restore()
 {
 	for( auto pSpot : m_listSpots )

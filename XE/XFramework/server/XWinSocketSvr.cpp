@@ -83,25 +83,21 @@ XEWinSocketSvr::XEWinSocketSvr( LPCTSTR szName
 void XEWinSocketSvr::Destroy() 
 {
 	BTRACE( "destroy %s", m_strName.c_str() );
-// 	BTRACE( "save user" );
-// 	m_pUserMng->Save();
-	
-//	m_pUserMng->DestroyAll();
 	BTRACE( "destroy usermng" );
 	SAFE_DELETE( m_pUserMng );		// 여기서 커넥션도 실제 삭제함.
 	BTRACE( "close thread" );
-	if( m_Socket )
-		closesocket( m_Socket );
-	m_Socket = 0;
 	auto plistLogined = &m_Logined.m_shoList.GetSharedObj();
 	for( auto spConnect : *plistLogined ) {
 //		OVERLAPPED lpOverlapped;
 //		BOOL bOk = PostQueuedCompletionStatus( m_hIOCP, 0, spConnect->GetidConnect(), nullptr );
 		spConnect->DoDisconnect();
 	}
+	if( m_Socket )
+		closesocket( m_Socket );
+	m_Socket = 0;
 	m_Logined.m_shoList.ReleaseSharedObj();
-	CloseHandle( m_hIOCP );
 	CloseAllThread();
+	CloseHandle( m_hIOCP );
 //	CloseHandle( m_hIOCP );
 	BTRACE( "close socket" );
 }
@@ -190,6 +186,9 @@ void XEWinSocketSvr::CloseAllThread()
 		XDetectDeadLock::sGet()->DelThread( m_thAccept.m_idThread );
 	}
 	for( auto& th : m_aryThreadWork ) {
+		BOOL bOk = PostQueuedCompletionStatus( m_hIOCP, 0, 0, nullptr );
+	}
+	for( auto& th : m_aryThreadWork ) {
 		::WaitForSingleObject( th.m_hHandle, INFINITE );
 		CloseHandle( th.m_hHandle );
 		XDetectDeadLock::sGet()->DelThread( th.m_idThread );
@@ -271,6 +270,9 @@ void XEWinSocketSvr::WorkThread()
 					// 클라이언트 소켓 close
 				}
 			}
+		} else {
+			if( pOverlap == nullptr )
+				return;
 		}
 		const auto typeEvent = pOverlap->typeEvent;
 		if( bRet == FALSE && pOverlap == nullptr ) {
@@ -827,104 +829,12 @@ void XEWinSocketSvr::DelUserProcess( XSPUserBase spUser )
 #endif					
 }
 
-
-// this만이 사용하는 커넥션 파괴 등록 함수.
-// BOOL XEWinSocketSvr::AddDestroyConnectionForSelf( XList2<XEWinConnectionInServer>* /*plistAdded*/, XEWinConnectionInServer *pConnect )
-// {
-// 	BOOL bRet = TRUE;
-// 	// plistAdded는 락이 걸려있어야 한다.
-// 	// Lock: 커넥션 리스트(m_listDestroy.Add();보다 아래로 내려가도 되지만 안전을 위해서 올려놓음)
-// 	do 
-// 	{
-// 		// 이럴리는 없겠지만 이미 같은 커넥션이 등록되어 있으면 그냥 나감.
-// 		// 두번호출되는지 확인
-// 		if( XBREAK( m_listDestroy.Find( pConnect ) == TRUE ) )		
-// 		{
-// 			// 그렇다면 혹시 리스트에도 있는지 확인.
-// /*			if( XBREAK( plistAdded->Find( pConnect ) == TRUE ) )
-// 			{
-// 				int idxDel = plistAdded->Del( pConnect );
-// 				// 정상적으로 지워지는지도 확인.
-// 				XBREAK( idxDel == -1 );
-// 			} */
-// 			bRet = FALSE;
-// 			break;
-// 		}
-// 		// 삭제목록에 올림
-// 		m_listDestroy.Add( pConnect );
-// 		// 하위 상속자에게 pConnect가 삭제될거란걸 알림
-// 		OnDestroyConnection( pConnect );
-// 		// 커넥션의 파괴 핸들러 호출
-// 		pConnect->Lock(__TFUNC__);
-// 		pConnect->OnDestroy();
-// 		pConnect->Unlock();
-// 		++m_numDestroyAdd;
-// 	} while (0);
-// 
-// 	return bRet;
-// }
-
-
 /**
  @brief 클라로부터 로그인이 성공
 */
 void XEWinSocketSvr::OnLoginedFromClient( XSPWinConnInServer spConnect )
 {
-// 	int num = GetNumConnection();
-//	XServerView::GetView()->SetnumConnect( num );
-// 	m_numConnect = num;
 }
-
-// 커넥션 아이디로 커넥션 객체를 찾는다. listConnection과 대기열 모두에서 찾는다.
-// XE::xWinConn* XEWinSocketSvr::_FindspConnection( const XList4<XE::xWinConn>& listReady
-// 																							 , const XList4<XE::xWinConn>& listAdded
-// 																							 , ID idConnect )
-// {
-// 	auto spConnect = _FindConnectionInReady( listReady, idConnect );
-// 	if( spConnect )
-// 		return spConnect;
-// 	spConnect = _FindConnectionInAdded( listAdded, idConnect );
-// 	return spConnect;
-// }
-// 
-// // 커넥션 아이디로 커넥션 객체를 찾는다. 대기열에서만 찾는다.
-// XSPWinConnInServer
-// XEWinSocketSvr::_FindspConnInConnected( const XList4<XE::xWinConn>& listReady, ID idConnect )
-// {
-// 
-// 	for( const auto& conn : listReady ) {
-// 		XBREAK( pConnect->GetidConnect() == 0 );
-// 		if( spConnect->GetidConnect() == idConnect )
-// 			return pConnect;
-// 	} END_LOOP; 
-// 	return NULL;
-// }
-
-// struct xAutoConn {
-// 	XE::xWinConn conn;
-// 	xAutoConn( XE::xWinConn& conn ) {}
-// 	~xAutoConn() {
-// 		conn.Unlock();
-// 	}
-// };
-// {
-// 	xAutoConn autoConn = Svr->FindConnection( idConnect );	=> 내부에서 lock걸어서 내보냄.
-// 	autoConn.m_spConnect->Do();
-// }
-
-
-
-// 커넥션 아이디로 커넥션 객체를 찾는다. add된. 그러니까 listConnection에서만 찾는다.
-// XEWinConnectionInServer* XEWinSocketSvr::_FindConnectionInAdded( XList2<XEWinConnectionInServer> *plist, ID idConnect )
-// {
-// 	XLIST2_LOOP( *plist, XEWinConnectionInServer*, pConnect )
-// 	{
-// 		XBREAK( pConnect->GetidConnect() == 0 );
-// 		if( pConnect->GetidConnect() == idConnect )
-// 			return pConnect;
-// 	} END_LOOP;
-// 	return NULL;
-// }
 
 // 커넥션 아이디로 커넥션 객체를 찾는다. listConnection과 대기열 모두에서 찾는다.
 XSPWinConnInServer XEWinSocketSvr::FindspConnect( ID idConnect )
@@ -940,63 +850,6 @@ XSPWinConnInServer XEWinSocketSvr::FindspConnect( ID idConnect )
 	auto pMap = shaAuto.Get();
 	return _FindspConnInMap( *pMap, idConnect );
 }
-
-// 커넥션 아이디로 커넥션 객체를 찾는다. 대기열에서만 찾는다.
-// XSPWinConn XEWinSocketSvr::_FindpConnInConnected( const ID idConnect )
-// {
-// 	if( XBREAK(idConnect == 0) )
-// 		return nullptr;
-// 	XAutoSharedObj<XList_Connection> shaList( m_shoListConnected );
-// 	auto plistConn = shaList.Get();
-// 	for( auto& conn : *plistConn ) {
-// 		const auto idConn = conn.GetidConnect();
-// 		if( XASSERT(idCon) ) {
-// 			if( idConn == idConnect ) {
-// 				return &conn
-// 			}
-// 		}
-// 	}
-// 	return nullptr;
-// // 	XLIST2_LOOP( *plist, XEWinConnectionInServer*, pConnect )
-// // 	{
-// // 		XBREAK( pConnect->GetidConnect() == 0 );
-// // 		if( pConnect->GetidConnect() == idConnect )
-// // 		{
-// // 			pFind = pConnect;
-// // 			break;
-// // 		}
-// // 	} END_LOOP; 
-// // 	m_shoListConnected.ReleaseSharedObj();
-// // 	return pFind;
-// }
-
-// 커넥션 아이디로 커넥션 객체를 찾는다. 맵에서 찾는다.
-// XEWinConnectionInServer* XEWinSocketSvr::_FindConnectionInAdded( ID idConnect )
-// {
-// //	std::map<ID, XEWinConnectionInServer*>::iterator itor;
-// 	XEWinConnectionInServer* pConnect = NULL;
-// 	// Lock
-// 	auto pmap = &m_shoMapLogined.GetSharedObj();
-// 	do
-// 	{
-// 		auto itor = pmap->find( idConnect );
-// 		if( itor == pmap->end() )
-// 		{
-// 			pConnect = NULL;
-// 			break;
-// 		}
-// 		pConnect = (*itor).second;
-// 		XBREAK( pConnect == NULL );
-// 		if( XBREAK( XE::IsValidPtr( pConnect ) == FALSE ) )
-// 		{
-// 			pmap->erase( idConnect );
-// 			pConnect = NULL;
-// 		}
-// 	} while(0);
-// 	// Unlock
-// 	m_shoMapLogined.ReleaseSharedObj();
-// 	return pConnect;
-// }
 
 // 커넥션 아이디로 커넥션 객체를 찾는다.(범용 대기열에서만 찾는다.
 XSPWinConnInServer XEWinSocketSvr::_FindspConnInList( const XList4<XSPWinConnInServer>& listConn, ID idConnectFind )
