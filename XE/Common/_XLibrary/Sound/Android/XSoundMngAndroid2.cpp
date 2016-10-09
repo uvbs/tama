@@ -35,7 +35,7 @@ XSoundMngAndroid::~XSoundMngAndroid()
 }
 bool XSoundMngAndroid::OpenBGMusic( const char* cFileTitle, bool bRepeat)
 {
-	XLOGXN( "%s, %s", __FUNCTION__, cFileTitle );
+	//XLOGXN( "%s, %s", __FUNCTION__, cFileTitle );
 	const std::string strFile = XE::Format( "%s.mp3", cFileTitle );
 	XSoundMng::OpenBGMusic( cFileTitle, bRepeat );
 //	strcpy_s(m_szBGMFilename, _filename);
@@ -44,7 +44,7 @@ bool XSoundMngAndroid::OpenBGMusic( const char* cFileTitle, bool bRepeat)
 	XE::SetReadyRes( szFullpath, strRes.c_str() );
 	m_strBGMFullpath = szFullpath;
 	//	XLOGXN("%s", szPath);
-	XLOGXN("%s:%s", __FUNCTION__, szFullpath );
+	//XLOGXN("%s:%s", __FUNCTION__, szFullpath );
 	SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic( szFullpath );
 // 	SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume( GetBGMMasterVolume() );
 	//	XLOGXN("set volume");
@@ -137,7 +137,7 @@ bool XSoundMngAndroid::OpenSound( ID idSound )
 	if( strFullpath.empty() )
 		return false;
 	SimpleAudioEngine::sharedEngine()->preloadEffect( strFullpath.c_str() );
-	XLOGXN("open sound:%s", strFullpath.c_str() );
+	//XLOGXN("open sound:%s", strFullpath.c_str() );
 	sound.strFile = strFullpath;
 	sound.idSound = idSound;
 	//	sound.Use  =  1;

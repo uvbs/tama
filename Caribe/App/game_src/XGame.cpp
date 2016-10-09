@@ -2476,7 +2476,7 @@ int XGame::OnClickDebugShowLog( XWnd* pWnd, DWORD p1, DWORD p2 )
 			XSYSTEM::strReplace( szBuff, _T( '\r' ), _T( ' ' ) );
 			auto pText = new XWndTextString( v,
 																			szBuff,
-																			FONT_NANUM,
+																			FONT_MNLS,
 																			sizeFont );
 	//			pText->SetLineLength( 100 );
 			pText->SetLineLength( pScrlView->GetSizeLocal().w - 10 );

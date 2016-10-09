@@ -344,7 +344,7 @@ void XWndStoragyItemElem::Update()
 		m_bEquip = (m_pItem && ACCOUNT->IsEquip( m_snItem ));
 		//
 		if( m_bEquip && m_psfcEquip == nullptr) {
-			m_psfcEquip = IMAGE_MNG->Load( PATH_UI( "icon_equip.png" ),
+			m_psfcEquip = IMAGE_MNG->Load( PATH_ICON( "icon_equip.png" ),
 																		 m_bBatch,
 																		 XE::xPF_ARGB4444,
 																		 true,
