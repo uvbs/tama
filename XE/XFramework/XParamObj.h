@@ -138,12 +138,12 @@ public:
 #endif // not win32
 	}
 	bool GetStrt( const char* cKey, _tstring* pOut ) const {
+#ifdef WIN32
 		if( m_paramStrt.IsEmpty( cKey ) )
 			return false;
-#ifdef WIN32
 		*pOut = m_paramStrt.Get( cKey );
 #else	// WIN32
-		*pOut = m_paramStrc.Get( cKey );
+		return GetStrc( cKey, pOut );
 #endif // not win32
 		return true;
 	}
