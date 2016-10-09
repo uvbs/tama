@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugGMO|Win32">
+      <Configuration>DebugGMO</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="DebugHome(Google)|Win32">
       <Configuration>DebugHome(Google)</Configuration>
       <Platform>Win32</Platform>
@@ -93,6 +97,13 @@
     <UseOfMfc>Dynamic</UseOfMfc>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGMO|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugHome(Google)|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -147,7 +158,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelCrewGoogle|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -207,6 +218,9 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugGMO|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugHome(Google)|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -264,6 +278,12 @@
     <TargetName>Caribe</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>Caribe_gles2</TargetName>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGMO|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>Caribe_gles2</TargetName>
@@ -384,6 +404,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>XE_GLES2;_VER_OPENGL;WIN32;_WINDOWS;_DEBUG;DEBUG;%(PreprocessorDefinitions);_xIN_TOOL</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\..\..\XE\bin\debug;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\OGL\WindowsX86\Lib;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\WindowsX86\Lib;..\..\..\..\..\XE\Third_Party_lib\libpng_win\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xe_clientd_gles2.lib;libGLESv2.lib;libgles_cm.lib;windowscodecs.lib;winmm.lib;opengl32.lib;glu32.lib;glut32.lib;glaux.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugGMO|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>.;..\..\..\game_src;..\..\..\Resource;..\..\..\..\..\XE;..\..\..\..\..\XE\Common\_XLibrary;..\..\..\..\..\XE\Third_Party_lib;..\..\..\..\..\XE\Third_Party_lib\bugslayer\Include;..\..\..\..\..\XE\Third_Party_lib\Lua\5.1\include;..\..\..\..\..\XE\Third_Party_lib\pthread_win32\include;..\..\..\..\..\XE\Common\_XLibrary\OpenGL2\WinGLES2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -865,6 +907,7 @@
     <ClInclude Include="..\..\..\game_src\XPropItem.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugGMO|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugHome(Google)|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">false</ExcludedFromBuild>
@@ -1078,6 +1121,7 @@
     <ClCompile Include="..\..\..\game_src\XPropItem.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugGMO|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugHome(Google)|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">false</ExcludedFromBuild>
@@ -1209,6 +1253,7 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_DX|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_GLES2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugGMO|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugHome(Google)|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Softnyx|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_GMO|Win32'">Create</PrecompiledHeader>

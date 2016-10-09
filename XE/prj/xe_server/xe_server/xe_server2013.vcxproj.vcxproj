@@ -609,7 +609,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XGMO;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\..\..\Common\_XLibrary;..\..\..\Third_Party_lib;..\..\..\prj\xe_server\xe_server;..\..\..\Third_Party_lib\Lua\5.1\include;..\..\..\Third_Party_lib\openssl\include;..\..\..\..\XE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

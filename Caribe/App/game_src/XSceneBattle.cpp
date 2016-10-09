@@ -561,6 +561,7 @@ void XSceneBattle::ArrangeAry( XVector<XVector<XWnd*>>* pOut,
 void XSceneBattle::CreateFaceWnds( const XLegionObj* pLegionObj, 
 																	 int idxSide, XWnd* pWndLayer )
 {
+	int idxSide = 0;
 	for( const auto spSquadObj : pLegionObj->GetlistSquad() ) {
 		auto pHero = spSquadObj->GetpHero();
 		if( pHero ) {
@@ -568,7 +569,7 @@ void XSceneBattle::CreateFaceWnds( const XLegionObj* pLegionObj,
 			pWnd->SetstrIdentifierf( "face.%8x", pHero->GetsnHero() );
 			pWnd->SetPosLocal( idxSide * 609, 0 );
 #if !defined(_DEBUG)
-			if( i == 0 )		// 디버깅모드일때는 제한없이 양쪽편을 다 누를 수 있음.
+			if( idxSide == 0 )		// 디버깅모드일때는 제한없이 양쪽편을 다 누를 수 있음.
 #endif
 			{
 				pWnd->SetEvent( XWM_CLICKED, this, 
@@ -577,6 +578,7 @@ void XSceneBattle::CreateFaceWnds( const XLegionObj* pLegionObj,
 			}
 			pWndLayer->Add( pWnd );
 		}
+		++idxSide;
 	}
 }
 

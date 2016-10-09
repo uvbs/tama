@@ -373,7 +373,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_DBAGENT_SVR;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XGMO;WIN32;_WINDOWS;_DEBUG;_DBAGENT_SVR;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatSpecificWarningsAsErrors>4800;4305;4700</TreatSpecificWarningsAsErrors>
     </ClCompile>
