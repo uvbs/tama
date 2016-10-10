@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <global>
-  <const sample_int="11" _battle_exp="1500" _battle_exp_per_hero="125" gold_low_summon="50000" gold_high_summon="1500000" cash_high_summon="300" cash_shop_refresh="300" brave_point_small="1" brave_point_middle="5" brave_point_big="20" trader_recall_item="40001" trader_recall_gem="1" armory_recall_item="40002" armory_recall_gem="3" storagy_lock_item="40000" storagy_lock_gem="5" _subscribe_gem_interval="86400" trade_call_interval="43200" shop_call_interval="43200" log_level="200" shop_sell_rate="50" const_brave_point="200" drop_rate_last_chance="33" _ap_per_min="1"></const>
+  <const sample_int="11" _battle_exp="1500" _battle_exp_per_hero="125" gold_low_summon="50000" gold_high_summon="1500000" cash_high_summon="300" cash_shop_refresh="300" brave_point_small="1" brave_point_middle="5" brave_point_big="20" trader_recall_item="40001" trader_recall_gem="1" armory_recall_item="40002" armory_recall_gem="3" storagy_lock_item="40000" storagy_lock_gem="10" _subscribe_gem_interval="86400" trade_call_interval="43200" shop_call_interval="43200" log_level="200" shop_sell_rate="50" const_brave_point="200" drop_rate_last_chance="33" _ap_per_min="1"></const>
   <!--무역상 시세 - 자원 1당 얻는 금화량-->
   <trade wood_rate="1" iron_rate="1" jewel_rate="2" sulfur_rate="3" mandrake_rete="5" />
   <!--영웅 가챠 확률-->
