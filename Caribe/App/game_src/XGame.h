@@ -90,6 +90,7 @@ class XGame : public XEContent, public XGameCommon//, public XNetworkDelegate
 													, public XDelegateSprObj
 {
 public:
+//	XVector<XSurface*> m_aryWorldSurface;
 	static XGame* sGet() {
 		return s_pInstance;
 	}

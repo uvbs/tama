@@ -220,7 +220,6 @@ void XSceneBattle::CreateCamps()
 		// 플레이어측 정보도 외부에서 받아서 세팅하게 해서 ACCOUNT와의 연관성을 완전히 끊어야 한다.
 		camp.SetAccInfo( xSIDE_PLAYER, 0, ACCOUNT->GetLevel(), ACCOUNT->Get_strName() );
 		// 복사본으로 만든다.
-#pragma message("=========================복사본으로 만든다.==================")
 		camp.m_spLegion = std::make_shared<XLegion>( *(m_spSceneParam->m_spLegion[idxSide]) );
 			//= m_spSceneParam->m_spLegion[idxSide];
 			//

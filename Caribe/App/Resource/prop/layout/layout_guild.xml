@@ -38,15 +38,15 @@
   </popup_join>
   <popup_create>
     <img file="guild_popup_bg.png" posx="0" posy="0">
-      <img file="guild_popup_box.png" posx="48" posy="88" key="img.input.desc">
+      <img file="guild_popup_box.png" posx="center" posy="68" key="img.input.desc">
         <text posx="10" posy="8" width="286" font_style="stroke" font_size="30" key="text.guild.desc" align="hcenter" font="font_text_b" />
       </img>
-      <img file="guild_name_box.png" posx="109" posy="47" key="img.input.name">
+      <img file="guild_name_box.png" posx="center" posy="27" key="img.input.name">
         <text posx="4" posy="9" width="176" font_style="stroke" font_size="30" key="text.guild.name" align="hcenter" font="font_mnls" />
       </img>
     </img>
-    <butt posx="93" posy="183" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="25" key="butt.guild.create" font_style="stroke" text="80095" />
-    <butt posx="215" posy="183" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.guild.cancel" font_style="stroke" text="3" font_text_b="bold.ttf" />
+    <butt posx="93" posy="163" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="25" key="butt.guild.create" font_style="stroke" text="80095" />
+    <butt posx="215" posy="163" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.guild.cancel" font_style="stroke" text="3" font_text_b="bold.ttf" />
   </popup_create>
   <guild>
     <img posx="0" posy="0" file="common_bg_bottom.png" key="scene.guild">

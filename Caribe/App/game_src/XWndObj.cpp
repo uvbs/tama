@@ -314,7 +314,7 @@ XWndBgObj* XWndBgObjLayer::CreateWndBgObj( xnBgObj::xProp *pProp )
 
 void XWndBgObjLayer::Draw()
 {
-	XWnd::Draw();
+//	XWnd::Draw();
 	//
 	if( XBaseTool::sIsToolBgObjMode() ) {
 #ifdef _CHEAT

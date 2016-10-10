@@ -317,23 +317,40 @@ void XSceneWorld::LoadWorldMap( XWndScrollView* pScrlView )
 					const XE::POINT sizeMemSrc( 4096, 4096 );
 //					auto pSurface = GRAPHICS->CreateSurface();
 					const std::string strKey = XE::Format( "world%d.%d", i, k );
-					auto pSurface = IMAGE_MNG->CreateSurface( strKey );
-					// 레퍼런스 카운트 설계가 잘못되서 m_aryWorldSurface로 받아뒀다가 직접 해제시켜야한다. 
-					m_aryWorldSurface.push_back( pSurface );
-					pSurface->CreateSub( posMemSrc
-															, sizeArea
-															, sizeMemSrc
-															, img.m_pImg 
-															, XE::xPF_ARGB8888
-															, sizeArea.ToVec2() * 0.5f
-															, XE::VEC2(0)
-															, XE::xPF_RGB565
-															, false, false );
-					const XE::VEC2 posImg( k * 512, i * 512 );
-					auto pWndImg = new XWndImage( posImg );
-					pWndImg->SetSurfacePtr( pSurface );
-					pWndImg->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickWorld );
-					pScrlView->Add( pWndImg );
+					//pScrlView->DestroyWndByIdentifier( strKey );
+					auto pImgQuad = SafeCast<XWndImage*>( pScrlView->Find( strKey ) );
+					if( pImgQuad == nullptr ) {
+						auto pSurface = IMAGE_MNG->CreateSurface( strKey );
+						// 레퍼런스 카운트 설계가 잘못되서 m_aryWorldSurface로 받아뒀다가 직접 해제시켜야한다. 
+						m_aryWorldSurface.push_back( pSurface );
+						//GAME->m_aryWorldSurface.push_back( pSurface );
+						pSurface->CreateSub( posMemSrc
+																 , sizeArea
+																 , sizeMemSrc
+																 , img.m_pImg
+																 , XE::xPF_ARGB8888
+																 , sizeArea.ToVec2() * 0.5f
+																 , XE::VEC2( 0 )
+																 , XE::xPF_RGB565
+																 , false, false );
+						const XE::VEC2 posImg( k * 512, i * 512 );
+						auto pWndImg = new XWndImage( posImg );
+						pWndImg->SetstrIdentifier( strKey );
+						pWndImg->SetSurfacePtr( pSurface );
+						pWndImg->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickWorld );
+						pScrlView->Add( pWndImg );
+					} else {
+						auto pSurface = pImgQuad->GetpSurface();
+						pSurface->CreateSub( posMemSrc
+																 , sizeArea
+																 , sizeMemSrc
+																 , img.m_pImg
+																 , XE::xPF_ARGB8888
+																 , sizeArea.ToVec2() * 0.5f
+																 , XE::VEC2( 0 )
+																 , XE::xPF_RGB565
+																 , false, false );
+					}
 				}
 			}
 		}
@@ -4264,3 +4281,9 @@ void XSceneWorld::UpdateBgObjSelected()
 }
 
 #endif // _xIN_TOOL
+
+BOOL XSceneWorld::RestoreDevice()
+{
+	LoadWorldMap( m_pScrollView );
+	return true;
+}

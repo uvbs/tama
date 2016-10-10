@@ -419,6 +419,8 @@ void XSurfaceGLAtlasBatch::DrawByParam( const MATRIX &mParent,
 		// 비동기상태로 로딩을 기다리고 있는 중.
 		return;
 	}
+	if( m_glTexture == 0 )
+		return;
 	// 버텍스 월드변환
 	do {
 		XBREAK( !paramRender.m_funcBlend );

@@ -487,7 +487,6 @@ private:
 //	int OnClickSelectLanguage( XWnd* pWnd, DWORD p1, DWORD p2 );
 //	int OnCloseOption( XWnd* pWnd, DWORD p1, DWORD p2 );
 	void DelegateStopScroll( const XE::VEC2& vCurr ) override;
-
 	//
 #ifdef _xIN_TOOL
 	void DelegateChangeToolMode( xtToolMode modeOld, xtToolMode modeCurr ) override;
@@ -495,8 +494,9 @@ private:
 	friend class XToolCloud;
 #endif // _xIN_TOOL
 	void AddMenuKill( XWndPopupSpotMenu* pPopup, ID idSpot, int enemyPower, bool bNPC );
-//	void OnRecvSyncAcc( XGAME::xtParamSync type );
-};
+private:
+	BOOL RestoreDevice() override;
+ };
 
 extern XSceneWorld *SCENE_WORLD;
 
