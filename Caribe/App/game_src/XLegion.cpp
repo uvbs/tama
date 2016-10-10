@@ -1011,8 +1011,7 @@ BOOL XLegion::DeSerialize( XArchive& ar, XSPAccConst spAcc, int verLegion )
 		auto pSquad = std::make_shared<XSquadron>();
 		if( !pSquad->DeSerialize( ar, spAcc, verLegion ) )
 			return FALSE;
-		if( i == 0 )
-			m_listSquadrons.push_back( pSquad );
+		m_listSquadrons.push_back( pSquad );
 	}
 	{
 		ID snLeader;
@@ -1088,13 +1087,6 @@ void XLegion::SerializeFull( XArchive& ar )
 	for( auto pSq : m_listSquadrons ) {
 		pSq->SerializeFull( ar );
 	}
-// 	for( int i = 0; i < size; ++i ) {
-// 		if( m_arySquadrons[i] ) {
-// 			ar << 1;
-// 			m_arySquadrons[ i ]->SerializeFull( ar );
-// 		} else
-// 			ar << 0;
-// 	}
 	if( m_pLeader )
 		ar << m_pLeader->GetsnHero();
 	else
@@ -1115,55 +1107,32 @@ BOOL XLegion::DeSerializeFull( XArchive& ar, int verLegion )
 	XBREAK( b0 != 66 );
 	ar >> b0;	m_gradeLegion = (XGAME::xtGradeLegion)b0;
 	ar >> m_snLegion;
-	if( verLegion >= 7 ) {
-		ar >> m_RateAtk;
-		ar >> m_RateHp;
-	}
-	if( verLegion >= 5 )
-		ar >> m_aryResourceHero;
-//	XLIST4_DESTROY( m_listSquadrons );
+	ar >> m_RateAtk;
+	ar >> m_RateHp;
+	ar >> m_aryResourceHero;
 	m_listSquadrons.clear();
-	if( verLegion <= 9 ) {
-	//
-		for( int i = 0; i < size; ++i ) {
-	//		SAFE_DELETE( m_arySquadrons[ i ] );	// 이미 데이타가 있으면 삭제하고 넣는다.
-			int fill;
-			ar >> fill;
-			if( fill == 1 ) {
-				auto pSquad = std::make_shared<XSquadron>();
-				if( pSquad->DeSerializeFull( ar, verLegion ) == FALSE )
-					return FALSE;
-				pSquad->SetidxPos( i );
-				m_listSquadrons.push_back( pSquad );
-				//m_arySquadrons[ i ] = pSquad;
-			} else {
-				if( XBREAK( fill != 0 ) )
-					return FALSE;
-			}
-		}
-	} else {
-		for( int i = 0; i < size; ++i ) {
-			auto pSq = std::make_shared<XSquadron>();
-			if( !pSq->DeSerializeFull( ar, verLegion ) )
-				return FALSE;
-			m_listSquadrons.push_back( pSq );
-		}
+	for( int i = 0; i < size; ++i ) {
+		auto pSq = std::make_shared<XSquadron>();
+		if( !pSq->DeSerializeFull( ar, verLegion ) )
+			return FALSE;
+		m_listSquadrons.push_back( pSq );
 	}
-	{
+	do {
 		ID snLeader;
 		ar >> snLeader;
-		if( snLeader ) {
+  	if( snLeader ) {
 			auto pSquad = GetSquadronByHeroSN( snLeader );
-			if( XBREAK( pSquad == nullptr ) )
-				return FALSE;
+			if( XBREAK( pSquad == nullptr ) ) {
+				SetpLeader( nullptr );
+				break;
+			}
 			XBREAK( pSquad->GetpHero() == nullptr );
 			SetpLeader( pSquad->GetpHero() );
-		}
-		else
+		} else {
 			SetpLeader( nullptr );
-	}
-	if( verLegion >= 6 )
-		DeSerializeFogs( ar, verLegion );
+		}
+	} while(0);
+	DeSerializeFogs( ar, verLegion );
 	RESTORE_VERIFY_CHECKSUM( ar );
 	return TRUE;
 }
