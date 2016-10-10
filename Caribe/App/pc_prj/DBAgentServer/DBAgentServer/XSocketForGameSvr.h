@@ -21,7 +21,7 @@ private:
 	void Destroy() {}
 public:
 	XSocketForGameSvr();
-	virtual ~XSocketForGameSvr() { Destroy(); }
+	~XSocketForGameSvr() { Destroy(); }
 	//
 	GET_ACCESSOR( XGameUserMng*, pUserMng );
 

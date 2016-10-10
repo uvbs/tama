@@ -5207,58 +5207,40 @@ int XGameUser::RecvItemSpent(XPacket& p)					///< 아이템 사용
 int XGameUser::RecvInventoryExpand(XPacket& p)			///< 인벤토리 확장
 {	
 	int type = 0;
-
 	p >> type;
-
 	// 최대 창고 갯수 체크
-	if (m_spAcc->GetmaxItems() + 5 > XGAME::ITEM_MAX_COUNT)		//인벤토리를 더이상 확장 할 수 없다.
-	{
+	if (m_spAcc->GetmaxItems() + 5 > XGAME::ITEM_MAX_COUNT) {		//인벤토리를 더이상 확장 할 수 없다.
 		XPacket ar((ID)xCL2GS_LOBBY_INVENTORY_EXPAND);
-
 		ar << int(0);
 		ar << int(3);
-
 		Send(ar);
-
 		_tstring strLog = XE::Format(_T("Inventory_Expanded_Failed:Over_Max User InvenCount[%d]"), m_spAcc->GetmaxItems());
 		AddLog(XGAME::xULog_Use_Gem, strLog);
 	}
-
-	if (type == XGAME::xSC_SPENT_ITEM) // 여긴 키
-	{
+	if (type == XGAME::xSC_SPENT_ITEM) {// 여긴 키
 		int nCount = m_spAcc->GetNumItems(XGC->m_storageLockItem);
-		if (nCount > 0)
-		{			
+		if (nCount > 0)	{			
 			m_spAcc->DestroyItem(XGC->m_storageLockItem, 1);
 			m_spAcc->SetmaxItems(m_spAcc->GetmaxItems() + 5);
-
 			int tmpCount = m_spAcc->GetNumItems(XGC->m_storageLockItem);
-
 			XPacket ar((ID)xCL2GS_LOBBY_INVENTORY_EXPAND);
 			ar << int(1);
 			ar << type;
 			ar << XGC->m_storageLockItem;
 			ar << m_spAcc->GetmaxItems();			
 			Send(ar);
-
 			_tstring strLog = XE::Format(_T("Inventory_Expanded_Item:Before[%d] After[%d]"), nCount, tmpCount);
 			AddLog(XGAME::xULog_Use_Gem, strLog);
-		}
-		else
-		{
+		}	else {
 			XPacket ar((ID)xCL2GS_LOBBY_INVENTORY_EXPAND); //소모 리소스 부족
-			
 			ar << (int)0;
 			ar << type;		// 호출 타입: 아이템			
 			Send(ar);
-
 			_tstring strLog = XE::Format(_T("Inventory_Expanded_Item:Have_not_enough[%d]"), nCount);
 			AddLog(XGAME::xULog_Use_Gem, strLog);
 			return 1;
 		}
-	}
-	else if (type == XGAME::xSC_SPENT_GEM) //젬
-	{
+	}	else if (type == XGAME::xSC_SPENT_GEM) {//젬
 		int Havecash = m_spAcc->GetCashtem();
 		XVERIFY_BREAK( Havecash < XGC->m_storageLockGem );
 		m_spAcc->AddCashtem( -XGC->m_storageLockGem );
