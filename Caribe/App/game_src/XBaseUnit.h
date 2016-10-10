@@ -50,8 +50,8 @@ class XBaseUnit : public XEBaseWorldObj, public XEControllerFSM
 										, public XDelegateObjBullet
 {
 public:
-	static XSPUnit sCreateUnit( XSPSquad spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
-	static XSPUnit sCreateHero( XSPSquad spSquadObj, XSPHero pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
+	static XSPUnit sCreateUnit( XSPSquadObj spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
+	static XSPUnit sCreateHero( XSPSquadObj spSquadObj, XSPHero pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
 	static BOOL sGetMoveDstDelta( const XE::VEC3& vwCurr, const XE::VEC3& vwDst, float speedMove, XE::VEC3 *pOutDelta );
 	static bool s_bNotUseActiveByEnemy;		// 적영웅 스킬사용금지
 #ifdef WIN32
@@ -146,7 +146,7 @@ private:
 protected:
 // 	GET_ACCESSOR( int, cntPerSec );
 public:
-	XBaseUnit( XSPSquad spSquadObj
+	XBaseUnit( XSPSquadObj spSquadObj
 					, ID idProp
 					, BIT bitSide
 					, const XE::VEC3& vPos
@@ -170,7 +170,7 @@ public:
 	GET_ACCESSOR_CONST( int, cntTargeting );
 	GET_SET_ACCESSOR_CONST( XE::xtHorizDir, Dir );
 	GET_ACCESSOR_CONST( XSquadObj*, pSquadObj );	///< this가 속한 부대를 리턴한다.
-	XSPSquad GetspSquadObj() const;
+	XSPSquadObj GetspSquadObj() const;
 	GET_ACCESSOR_CONST( const XE::VEC3&, vwTarget );
 	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vwBind );
 	GET_SET_ACCESSOR_CONST( float, speedBind );	///< 프레임당 이동픽셀

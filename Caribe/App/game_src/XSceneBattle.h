@@ -100,7 +100,7 @@ public:
 	virtual void Create( void );
 	virtual int Process( float dt );
 	virtual void Draw( void );
-	void GetSquadInfoToAry( XSPSquad spSquad, XBaseUnit* pUnit, XVector<_tstring>* pOut ) const;
+	void GetSquadInfoToAry( XSPSquadObj spSquad, XBaseUnit* pUnit, XVector<_tstring>* pOut ) const;
 	virtual void OnLButtonDown( float lx, float ly );
 	virtual void OnLButtonUp( float lx, float ly );
 	virtual void OnMouseMove( float lx, float ly );
@@ -123,8 +123,8 @@ public:
 	int OnDebugProfile( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnUseSkillByButton( XWnd* pWnd, DWORD p1, DWORD p2 );
 	XWndFaceInBattle* GetpWndFace( ID snHero );
-	void OnUseSkill( XSPSquad spSquadObj, const _tstring& strText );
-	void OnSelectSquad( const XSPSquad& squadSelect );
+	void OnUseSkill( XSPSquadObj spSquadObj, const _tstring& strText );
+	void OnSelectSquad( const XSPSquadObj& squadSelect );
 	void OnStartSkillMotion( XUnitHero *pUnitHero, float secCool );
 	int OnCancelSelect( XWnd* pWnd, DWORD p1, DWORD p2 );
 	void OnFinishBattle( XGAME::xtSide bitCampWin, bool bRetreatSulfur );
@@ -155,7 +155,7 @@ public:
 	XE::VEC2 GetvwCamera();
 	void OnCreateOrderDialog( ID idHero ) override;
 	XSPHero GetpHero( ID idHero ) override;
-	virtual void OnDieSquad( XSPSquad spSquadObj );
+	virtual void OnDieSquad( XSPSquadObj spSquadObj );
 #ifdef _XSINGLE
 	static void sSetAbilHeroes();
 	static void sSetAbilHero( XSPHero pHero, XGAME::xtUnit unit, LPCTSTR idsAbil, int point );
@@ -170,7 +170,7 @@ private:
 	void OnEnterBattle();
 	void CreateProcessReady();
 	int OnClickPlay( XWnd* pWnd, DWORD p1, DWORD p2 );
-	XSPSquad GetspSquadObj( ID snSquad );
+	XSPSquadObj GetspSquadObj( ID snSquad );
 	int OnTouchHeroFace( XWnd* pWnd, DWORD snSquad, DWORD );
 	void CheckLeak();
 	void CreateCamps();
@@ -186,7 +186,7 @@ private:
 	XWndBatchRender* GetpLayerUI();
 	XWndBatchRender* GetpLayerFaces();
 	XSPWorld GetspmWorld();
-	void OnDieSquadPrivateRaid( XSPSquad spSquadObj );
+	void OnDieSquadPrivateRaid( XSPSquadObj spSquadObj );
 	int OnDebugTest( XWnd* pWnd, DWORD p1, DWORD p2 );
 };
 

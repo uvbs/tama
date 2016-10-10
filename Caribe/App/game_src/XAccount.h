@@ -808,10 +808,10 @@ public:
 	}
 
 	XGAME::xtGrade GetRandomGradeHeroByTable(int levelUser) const;
-	XSquadron* CreateSquadronByRandom(XLegion *pLegion, int idxSquad, int levelUser, LPCTSTR szHero, XGAME::xtGrade grade, XGAME::xtUnit unit);
+	XSPSquadron CreateSquadronByRandom(XLegion *pLegion, int idxSquad, int levelUser, LPCTSTR szHero, XGAME::xtGrade grade, XGAME::xtUnit unit);
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	XSquadron* CreateSquadron(XLegion *pLegion, int idxSquad, LPCTSTR szHeroIdentifier, int levelSquad, int tierUnit);
-	XSquadron* CreateSquadron(XLegion *pLegion,
+	XSPSquadron CreateSquadron(XLegion *pLegion, int idxSquad, LPCTSTR szHeroIdentifier, int levelSquad, int tierUnit);
+	XSPSquadron CreateSquadron(XLegion *pLegion,
 														int idxSquad,
 														int lvHero,
 														int lvSquad,
@@ -820,7 +820,7 @@ public:
 														LPCTSTR idsHero,
 														XGAME::xtGrade grade,
 														XGAME::xtUnit unit );
-	static XSquadron* sCreateSquadron( XLegion *pLegion, int idxSquad, const _tstring& idsHero, int levelSquad, int tierUnit, XSPAccConst spAcc );
+	static XSPSquadron sCreateSquadron( XLegion *pLegion, int idxSquad, const _tstring& idsHero, int levelSquad, int tierUnit, XSPAccConst spAcc );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 	// 스팟
 

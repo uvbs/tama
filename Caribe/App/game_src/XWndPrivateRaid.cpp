@@ -139,7 +139,7 @@ void XWndPrivateRaid::UpdateEnterHeroes( XWndList* pWndList, int idxSide )
 // 				listEnterHero.push_back( pHero );
 // 		}
 // 	} else {
-// 		for( XSquadron* pSq : m_pSpot->GetspLegion()->GetlistSquadrons() ) {
+// 		for( XSPSquadron pSq : m_pSpot->GetspLegion()->GetlistSquadrons() ) {
 // 			listEnterHero.push_back( pSq->GetpHero() );
 // 		}
 // 	}

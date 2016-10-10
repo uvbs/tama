@@ -276,7 +276,7 @@ XSPLegion XLegion::sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, b
  @note 레벨류는 랜덤요소를 넣지 말것. adjDiff로 조절함.
 */
 #if defined(_XSINGLE) || !defined(_CLIENT)
-XSquadron* XLegion::sCreateSquadronForNPC( int levelLegion,
+XSPSquadron XLegion::sCreateSquadronForNPC( int levelLegion,
 																					 int adjDiff,
 																					 XGAME::xtUnit unit,
 																					 ID idHero,
@@ -330,7 +330,7 @@ XSquadron* XLegion::sCreateSquadronForNPC( int levelLegion,
 // 	if( pLegionInfo && pLegionInfo->unit )	이걸 propHero결정보다 밑에서하면 외부에서 unit을 직접 지정했을때 버그 난다.
 // 		unit = pLegionInfo->unit;
 // 	XBREAK( unit == XGAME::xUNIT_NONE );
-	auto pSquad = new XSquadron( pPropHero, levelHero, unit, levelSquad );
+	auto pSquad = std::make_shared<XSquadron>( pPropHero, levelHero, unit, levelSquad );
 	pSquad->GetpHero()->SetGrade( grade );
 	return pSquad;
 }
@@ -338,7 +338,7 @@ XSquadron* XLegion::sCreateSquadronForNPC( int levelLegion,
  @brief 신버전 부대생성기.
  파라메터는 반드시 유효한 값으로 들어와야한다.
 */
-XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
+XSPSquadron XLegion::sCreateSquadronForNPC2( const int lvLegion
 																					, XPropHero::xPROP *pPropHero
 																					, const XGAME::xSquad& sqParam )
 {
@@ -349,7 +349,7 @@ XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
 	XASSERT( sqParam.lvSkill > 0 && sqParam.lvSkill < XGAME::MAX_SKILL_LEVEL );
 	XASSERT( sqParam.lvSquad > 0 && sqParam.lvSquad <= XGAME::MAX_SQUAD_LEVEL );
 	XASSERT( !IsInvalidGrade(sqParam.grade) );
-	auto pSquad = new XSquadron( pPropHero, sqParam.lvHero, sqParam.unit, sqParam.lvSquad );
+	auto pSquad = std::make_shared<XSquadron>( pPropHero, sqParam.lvHero, sqParam.unit, sqParam.lvSquad );
 	auto pHero = pSquad->GetpHero();
 	if( sqParam.lvSkill > 0 ) {
 		pHero->SetlvActive( sqParam.lvSkill );
@@ -386,7 +386,7 @@ XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
 /**
  @brief 
 */
-XSquadron* XLegion::sCreateSquadronForNPC2( const int lvLegion
+XSPSquadron XLegion::sCreateSquadronForNPC2( const int lvLegion
 																					, const XGAME::xSquad& sqParam )
 {
 	XBREAK( sqParam.idHero == 0 );
@@ -465,7 +465,7 @@ XLegion* XLegion::sCreateLegionForNPC( int levelUser, int adjDiff,
 			XBREAK( pPropHero == nullptr );
 			idHero = pPropHero->idProp;
 		}
-		auto pSquad = new XSquadron( pPropHero, lvHero, selectedUnit, lvSquadLevel );
+		auto pSquad = std::make_shared<XSquadron>( pPropHero, lvHero, selectedUnit, lvSquadLevel );
 		pLegion->AddSquadron( idxSquad, pSquad, true );
 //		pLegion->AddSquadron( idxSquad, pSquad, TRUE );
 		if( XASSERT( pSquad ) )
@@ -770,7 +770,7 @@ XGAME::xtGrade XLegion::sGetGradeHeroByInfo( const XGAME::xSquad& squad, int lvL
 	return gradeHero;
 }
 
-void XLegion::sSetLeaderByInfo( const XGAME::xLegion* pxLegion, XSPLegion spLegion, XSquadron *pSquad )
+void XLegion::sSetLeaderByInfo( const XGAME::xLegion* pxLegion, XSPLegion spLegion, XSPSquadron pSquad )
 {
 	if( pSquad == nullptr ) 
 		return;
@@ -966,7 +966,8 @@ void XLegion::DestroySquadronAll()
 {
 	m_listFogs.clear();
 	m_aryResourceHero.clear();
-	XLIST4_DESTROY( m_listSquadrons );
+//	XLIST4_DESTROY( m_listSquadrons );
+	m_listSquadrons.clear();
 	m_pLeader = nullptr;
 }
 
@@ -1004,12 +1005,14 @@ BOOL XLegion::DeSerialize( XArchive& ar, XSPAccConst spAcc, int verLegion )
 	ar >> m_RateAtk;
 	ar >> m_RateHp;
 	ar >> m_aryResourceHero;
-	XLIST4_DESTROY( m_listSquadrons );
+	//XLIST4_DESTROY( m_listSquadrons );
+	m_listSquadrons.clear();
 	for( int i = 0; i < size; ++i ) {
-		auto pSquad = new XSquadron();
+		auto pSquad = std::make_shared<XSquadron>();
 		if( !pSquad->DeSerialize( ar, spAcc, verLegion ) )
 			return FALSE;
-		m_listSquadrons.push_back( pSquad );
+		if( i == 0 )
+			m_listSquadrons.push_back( pSquad );
 	}
 	{
 		ID snLeader;
@@ -1118,7 +1121,8 @@ BOOL XLegion::DeSerializeFull( XArchive& ar, int verLegion )
 	}
 	if( verLegion >= 5 )
 		ar >> m_aryResourceHero;
-	XLIST4_DESTROY( m_listSquadrons );
+//	XLIST4_DESTROY( m_listSquadrons );
+	m_listSquadrons.clear();
 	if( verLegion <= 9 ) {
 	//
 		for( int i = 0; i < size; ++i ) {
@@ -1126,7 +1130,7 @@ BOOL XLegion::DeSerializeFull( XArchive& ar, int verLegion )
 			int fill;
 			ar >> fill;
 			if( fill == 1 ) {
-				auto pSquad = new XSquadron;
+				auto pSquad = std::make_shared<XSquadron>();
 				if( pSquad->DeSerializeFull( ar, verLegion ) == FALSE )
 					return FALSE;
 				pSquad->SetidxPos( i );
@@ -1139,7 +1143,7 @@ BOOL XLegion::DeSerializeFull( XArchive& ar, int verLegion )
 		}
 	} else {
 		for( int i = 0; i < size; ++i ) {
-			auto pSq = new XSquadron();
+			auto pSq = std::make_shared<XSquadron>();
 			if( !pSq->DeSerializeFull( ar, verLegion ) )
 				return FALSE;
 			m_listSquadrons.push_back( pSq );
@@ -1176,7 +1180,7 @@ XLegion* XLegion::CreateLegionForLink( XSPAcc spAcc )
 		const ID snHero = pSqSrc->GetpHero()->GetsnHero();
 		auto pHero = spAcc->GetHero( snHero );
 		if( XASSERT( pHero ) ) {
-			auto pSqNew = new XSquadron( pHero );
+			auto pSqNew = std::make_shared<XSquadron>( pHero );
 			pNewLegion->AddSquadron( pSqSrc->GetidxPos(), pSqNew, false );
 			if( m_pLeader && pHero->GetsnHero() == m_pLeader->GetsnHero() )
 				pNewLegion->SetpLeader( pHero );
@@ -1221,7 +1225,7 @@ ID XLegion::sGetHeroByUnit( XGAME::xtUnit unit )
 /**
  @brief 영웅 sn번호로 부대를 찾는다.
 */
-XSquadron* XLegion::GetSquadronByHeroSN( ID snHero ) const
+XSPSquadron XLegion::GetSquadronByHeroSN( ID snHero ) const
 {
 	for( auto pSq : m_listSquadrons ) {
 		if( pSq->GetsnHero() == snHero )
@@ -1349,7 +1353,7 @@ void XLegion::DestroySquadron( ID snSquad )
 		if( pSquad->GetsnSquad() == snSquad ) {
 			if( m_pLeader == pSquad->GetpHero() )
 				m_pLeader = nullptr;
-			SAFE_DELETE( pSquad );
+//			SAFE_DELETE( pSquad );
 			m_listSquadrons.erase( itor++ );
 		} else {
 			++itor;
@@ -1559,7 +1563,7 @@ int XLegion::DeserializeForGuildRaid( XArchive& ar )
  @brief 부대를 추가한다
  @param pSq 부대의 포인터. idxPos가 반드시 지정되어야 한다.
 */
-void XLegion::AddSquadron( int idxPos, XSquadron *pSq, bool bCreateHero ) 
+void XLegion::AddSquadron( int idxPos, XSPSquadron pSq, bool bCreateHero ) 
 {
 	// -1이라도 명시적으로 지정되어야 한다.
 	XBREAK( idxPos == -99 );
@@ -1585,14 +1589,14 @@ void XLegion::SetResourceSquad( int numSquad )
 	int num = numSquad;
 	m_aryResourceHero.clear();
 	// 부대를 임시 리스트에 담는다.
-	XList4<XSquadron*> listSquads = m_listSquadrons;
+	XList4<XSPSquadron> listSquads = m_listSquadrons;
 	// 뽑아야할 수만큼 루프를 돈다.
 	while( num-- ) {
 		// 랜덤으로 한부대를 뽑는다.
 		auto itor = listSquads.GetItorFromRandom();
 		if( itor != listSquads.end() ) {
 			// 그 부대를 자원부대로 설정한다.
-			XSquadron *pSuqad = (*itor);
+			XSPSquadron pSuqad = (*itor);
 			if( XASSERT(pSuqad) ) {
 				//pSuqad->SetbResourceSquad( true );
 				m_aryResourceHero.push_back( pSuqad->GetpHero()->GetsnHero() );
@@ -1683,7 +1687,7 @@ int XLegion::GetNumFogs()
 
 bool XLegion::DelFogSquad( ID snHero )
 {
-	m_listFogs.DelIf( [snHero]( XSquadron *pSquad )->bool {
+	m_listFogs.DelIf( [snHero]( XSPSquadron pSquad )->bool {
 		return pSquad->GetpHero()->GetsnHero() == snHero;
 	});
 	return true;
@@ -1801,7 +1805,7 @@ bool XLegion::IsNpc() const
 	return true;
 }
 
-XSquadron* XLegion::GetpmSquadronByidxPos( int idxPos )
+XSPSquadron XLegion::GetpmSquadronByidxPos( int idxPos )
 {
 	for( auto pSq : m_listSquadrons ) {
 		if( pSq->GetidxPos() == idxPos )
@@ -1809,7 +1813,7 @@ XSquadron* XLegion::GetpmSquadronByidxPos( int idxPos )
 	}
 	return nullptr;
 }
-const XSquadron* XLegion::GetpSquadronByidxPos( int idxPos ) const
+const XSPSquadron XLegion::GetpSquadronByidxPos( int idxPos ) const
 {
 	for( auto pSq : m_listSquadrons ) {
 		if( pSq->GetidxPos() == idxPos )
@@ -1818,7 +1822,7 @@ const XSquadron* XLegion::GetpSquadronByidxPos( int idxPos ) const
 	return nullptr;
 }
 
-const XSquadron* XLegion::GetpSquadronBySN( ID snSquad ) const
+const XSPSquadron XLegion::GetpSquadronBySN( ID snSquad ) const
 {
 	for( auto pSq : m_listSquadrons ) {
 		if( pSq->GetsnSquad() == snSquad )
@@ -1827,7 +1831,7 @@ const XSquadron* XLegion::GetpSquadronBySN( ID snSquad ) const
 	return nullptr;
 }
 
-XSquadron* XLegion::GetpmSquadronBySN( ID snSquad )
+XSPSquadron XLegion::GetpmSquadronBySN( ID snSquad )
 {
 	for( auto pSq : m_listSquadrons ) {
 		if( pSq->GetsnSquad() == snSquad )
@@ -1839,9 +1843,9 @@ XSquadron* XLegion::GetpmSquadronBySN( ID snSquad )
 /** ////////////////////////////////////////////////////////////////////////////////////
  @brief 주어진 영웅으로 부대객체를 만들어 군단에 포함시킨다.
 */
-XSquadron* XLegion::CreateAddSquadron( int idxSquad, XSPHeroConst pHero, bool bCreateHero )
+XSPSquadron XLegion::CreateAddSquadron( int idxSquad, XSPHeroConst pHero, bool bCreateHero )
 {
-	auto pSq = new XSquadron( std::const_pointer_cast<XHero>( pHero ) );
+	auto pSq = std::make_shared<XSquadron>( std::const_pointer_cast<XHero>( pHero ) );
 	AddSquadron( idxSquad, pSq, bCreateHero );
 	return pSq;
 

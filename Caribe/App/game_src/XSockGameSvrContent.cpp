@@ -1671,7 +1671,7 @@ void XSockGameSvr::RecvNewSquad( XPacket& p, const xCALLBACK& c )
 	{
 		//SCENE_LEGION->CreateSquadToLegion( pHero, pLegion, idxSlot );
 	}
-	XSquadron *pSq = new XSquadron( pHero );
+	XSPSquadron pSq = std::make_shared<XSquadron>( pHero );
 	pLegion->AddSquadron( idxSlot, pSq, FALSE );
 }
 
@@ -3161,7 +3161,6 @@ void XSockGameSvr::RecvCheckTrainComplete( XPacket& p, const xCALLBACK& c )
 		//
 		_tstring str;
 		int type2 = -1;
-		XBREAK(1);	// XWndSkillTrainComplete로 교체할것.
 		switch( type ) {
 		case XGAME::xTR_LEVEL_UP:
 			str = XE::Format( XTEXT( 2096 ), pHero->GetstrName().c_str() );	// 영웅 xxx의 훈련이 끝났습니다.
@@ -3456,7 +3455,7 @@ void XSockGameSvr::RecvChangeSquad(XPacket& p, const xCALLBACK& c)
 		p >> slot;
 		p >> snHero;
 		XBREAK(ACCOUNT->GetHero(snHero) == nullptr);
-		auto pSq = new XSquadron(ACCOUNT->GetHero(snHero));
+		auto pSq = std::make_shared<XSquadron>(ACCOUNT->GetHero(snHero));
 		ACCOUNT->GetCurrLegion()->AddSquadron(slot, pSq, false);
 
 		if (pSq->GetpHero()->GetsnHero() == snLeader)

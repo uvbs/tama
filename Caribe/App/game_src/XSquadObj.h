@@ -47,13 +47,13 @@ public:
 private:
 	float m_Radius/* = 150.f*/;
 	ID m_snSquadObj;
-	XSquadron *m_pSquadron;
+	XSPSquadronConst m_pSquadron;
 	XSPHero m_pHero;
 	XList4<XSPUnit> m_listUnit;			// 오브젝트매니저에서 유닛이 삭제되어도 스쿼드에는 보관하기로 함. 자기 분대원객체를 끝까지 알 필요가 있을거 같아서.
 	XE::VEC3 m_vwPos;		// 분대의 중앙 지점
 	BOOL m_bMove;			// 부대 이동모드
 	bool m_bInoreCounterAttack = false;			// 반격무시상태
-	XSPSquad m_spTarget;	///< 이동시 목표부대
+	XSPSquadObj m_spTarget;	///< 이동시 목표부대
 	XE::VEC3 m_vwTarget;	///< 이동시 목표좌표(spTarget이 null일경우)
 	XPropUnit::xPROP *m_pProp;	///< 유닛 프로퍼티
 	XSPLegionObj m_spLegionObj;	///< this가 속해있는 군단객체
@@ -62,7 +62,7 @@ private:
 	BOOL m_bMeleeMode;			///< 근접전모드인가?(원거리부대 전용)
 //	BOOL m_bRequestMoveModeChange;	///< 외부에서 이동모드로 바꿔주길 요청이 들어옴
 	xtCmd m_cmdRequest = xCMD_NONE;			///< 객체 외부에서 부대의 동작을 바꾸기위해 명령이 들어온다.
-	XSPSquad m_spTargetForCmd;		///< 명령용 파라메터
+	XSPSquadObj m_spTargetForCmd;		///< 명령용 파라메터
 	XE::VEC3 m_vDstForCmd;			///< 명령용 좌표파라메터.
 	XSPUnit m_spHeroUnit;		///< 영웅 유닛의 포인터
 	BOOL m_bManualMoving;			///< 현재수동 지정으로 움직이고 있는가
@@ -74,13 +74,13 @@ private:
 	XSKILL::XSkillDat *m_pCourage = nullptr;		// 용기
 	CTimer m_timerBreakThrough;
 	CTimer m_timerHeal;		// 안수치료 타이머
-	XSPSquad m_spBleedingTarget;	///< 출혈걸린 적 타겟
+	XSPSquadObj m_spBleedingTarget;	///< 출혈걸린 적 타겟
 	ID m_idStreamByRun = 0;
 	XVector<XGAME::xRES_NUM> m_aryLoots;
-	XList4<XSPSquad> m_listAttackMe;			// this부대를 공격중인 모든 적부대
+	XList4<XSPSquadObj> m_listAttackMe;			// this부대를 공격중인 모든 적부대
 	void Init() {
 		m_snSquadObj = XE::GenerateID();
-		m_pSquadron = nullptr;
+//		m_pSquadron = nullptr;
 		m_pHero = nullptr;
 		m_bMove = FALSE;
 		m_pProp = NULL;
@@ -94,7 +94,7 @@ private:
 	}
 	void Destroy();
 public:
-	XSquadObj( XSPLegionObj spLegion, const XSquadron *pSquad, const XE::VEC3& vwPos );
+	XSquadObj( XSPLegionObj spLegion, const XSPSquadron pSquad, const XE::VEC3& vwPos );
 	XSquadObj( XSPLegionObj spLegion, XSPHero pHero, const XE::VEC3& vwPos );
 	virtual ~XSquadObj() { Destroy(); --s_numObj; }
 	//
@@ -103,12 +103,12 @@ public:
 	inline int GetNumLists() {
 		return m_listUnit.size();
 	}
-	inline XSPSquad GetThis() {
+	inline XSPSquadObj GetThis() {
 		return shared_from_this();
 
 	}
 	GET_ACCESSOR_CONST( BOOL, bMeleeMode );
-	GET_ACCESSOR( XSPSquad, spTarget );
+	GET_ACCESSOR( XSPSquadObj, spTarget );
 	GET_ACCESSOR_CONST( ID, snSquadObj );
 	GET_SET_ACCESSOR_CONST( int, lvBreakThrough );
 	GET_ACCESSOR_CONST( const XE::VEC3&, vwTarget );
@@ -138,18 +138,18 @@ public:
 	GET_ACCESSOR_CONST( float, Radius );
 	GET_SET_ACCESSOR_CONST( BOOL, bNearOther );
 	GET_ACCESSOR( const XSPUnit, spHeroUnit );
-	GET_ACCESSOR_CONST( const XSquadron*, pSquadron );
+	GET_ACCESSOR_CONST( XSPSquadronConst, pSquadron );
 	GET_ACCESSOR_CONST( const XList4<XSPUnit>&, listUnit );
 	GET_SET_ACCESSOR_CONST( const XVector<XGAME::xRES_NUM>&, aryLoots );
-	GET_ACCESSOR_CONST( const XList4<XSPSquad>&, listAttackMe );
-	inline void AddAttackMe( XSPSquad spAttacker ) {
+	GET_ACCESSOR_CONST( const XList4<XSPSquadObj>&, listAttackMe );
+	inline void AddAttackMe( XSPSquadObj spAttacker ) {
 		if( !FindAttackMe( spAttacker ) )
 			m_listAttackMe.push_back( spAttacker );
 	}
-	inline void DelAttackMe( XSPSquad spAttacker ) {
+	inline void DelAttackMe( XSPSquadObj spAttacker ) {
 		m_listAttackMe.DelByID( spAttacker->getid() );
 	}
-	inline bool FindAttackMe( XSPSquad spAttacker ) {
+	inline bool FindAttackMe( XSPSquadObj spAttacker ) {
 		return m_listAttackMe.FindByID( spAttacker->getid() ) != nullptr;
 	}
 	inline int GetNumAttackMeByMelee() const {
@@ -202,7 +202,7 @@ public:
 	void FrameMove( float dt );
 private:
 	// 외부에서 적부대를 공격하거나 특정좌표로 이동을 하고 싶다면 DoAttackSquad/DoMoveSquad를 쓴다.
-	void DoMoveTo( XSPSquad spTarget );
+	void DoMoveTo( XSPSquadObj spTarget );
 	void DoMoveTo( const XE::VEC3& vwDst );
 public:
 	inline bool IsRange() const {
@@ -226,7 +226,7 @@ public:
 	inline void AddPos( const XE::VEC3& vwDelta ) {
 		m_vwPos += vwDelta;
 	}
-	XSPSquad FindAttackSquad();
+	XSPSquadObj FindAttackSquad();
 	XSPUnit FindAttackTarget( BOOL bIncludeHero );
 	void OnDieMember( XBaseUnit *pUnit );
 	XE::VEC2 GetDistUnit( XPropUnit::xPROP *pProp );
@@ -247,11 +247,11 @@ public:
 	bool IsHaveTargetSquad() const {
 		return m_spTarget != nullptr;
 	}
-	void DoAllUnitsChase( XSPSquad spTarget );
+	void DoAllUnitsChase( XSPSquadObj spTarget );
 	XSPUnit GetAttackTargetForUnit( const XSPUnit& unit );
-	void OnAttacked( const XSPSquad spAttacker );
+	void OnAttacked( const XSPSquadObj spAttacker );
 	XE::VEC3 GetvCenterByUnits();
-	void DoAttackSquad( const XSPSquad& spTarget );
+	void DoAttackSquad( const XSPSquadObj& spTarget );
 	void DoMoveSquad( const XE::VEC3& vwDst );
 	float GetDistAttack();
 	void DoDamage( XSPUnit spUnitAtker, float damage, BIT bitHitAdd = 0 );
@@ -267,7 +267,7 @@ public:
 	float GetAvgSpeedUnits();
 	void OnStartBattle();
 	void OnAfterStartBattle();
-	void HardcodingBreakthrough( float& speedMultiply, XArrayLinearN<XSPSquad, 64>& aryNear );
+	void HardcodingBreakthrough( float& speedMultiply, XArrayLinearN<XSPSquadObj, 64>& aryNear );
 	float GetAttackMeleeDamage();
 	void AddAdjParam( XGAME::xtParameter adjParam, XSKILL::xtValType valType, float adj );
 	void DoHeal( float addHp );
@@ -282,14 +282,14 @@ public:
 	void ProcessLycan( float dt );
 	void ProcessHardcode( float dt );
 	bool IsAbleTarget();
-	XSPSquad DoAttackAutoTargetEnemy();
+	XSPSquadObj DoAttackAutoTargetEnemy();
 	void DoRequestMoveMode();
 	void OnSkillEvent( XSKILL::xtJuncture event );
 	float GetSumHpAllMember();
 	float GetMaxHpAllMember() const;
 	float DrawMembersHp( const XE::VEC2& v );
-	float GetDistBetweenSquad( XSPSquad spOther );
-	bool IsInAttackRadius( XSPSquad spOther );
+	float GetDistBetweenSquad( XSPSquadObj spOther );
+	bool IsInAttackRadius( XSPSquadObj spOther );
 	bool IsResourceSquad() const;
 	
 private:
@@ -297,12 +297,12 @@ private:
 		m_cmdRequest = cmd;
 		m_vDstForCmd = vDst;
 	}
-	void SetCmdRequest( xtCmd cmd, XSPSquad& spTarget ) {
+	void SetCmdRequest( xtCmd cmd, XSPSquadObj& spTarget ) {
 		m_cmdRequest = cmd;
 		m_vDstForCmd.Set( 0 );
 		m_spTargetForCmd = spTarget;
 	}
-	void SetCmdRequest( xtCmd cmd, const XSPSquad& spTarget ) {
+	void SetCmdRequest( xtCmd cmd, const XSPSquadObj& spTarget ) {
 		m_cmdRequest = cmd;
 		m_vDstForCmd.Set( 0 );
 		m_spTargetForCmd = spTarget;
@@ -315,5 +315,5 @@ private:
 	void ProcessCmd();
 	float GetMulByLvSquad( XPropUnit::xPROP *pProp, int idxUnit );
 	void DoTeleport();
-	void OnAttackLeave( XSPSquad spAttacker );
+	void OnAttackLeave( XSPSquadObj spAttacker );
 }; // XSquadObj

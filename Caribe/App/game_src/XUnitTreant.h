@@ -19,7 +19,7 @@ class XUnitTreant : public XUnitCommon
 	void Init() {}
 	void Destroy();
 public:
-	XUnitTreant( XSPSquad spSquadObj,
+	XUnitTreant( XSPSquadObj spSquadObj,
 								ID idProp,
 								BIT bitSide, 
 								const XE::VEC3& vPos,

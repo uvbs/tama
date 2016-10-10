@@ -4256,7 +4256,7 @@ int XGameUser::RecvNewSquad( XPacket& p )
 	XVERIFY_BREAK( pHero == NULL );
 	XLegion *pLegion = m_spAcc->GetLegionByIdx( idxLegion ).get();
 	XVERIFY_BREAK( pLegion == NULL );
-	XSquadron *pSq = new XSquadron( pHero );
+	XSPSquadron pSq = std::make_shared<XSquadron>( pHero );
 	XVERIFY_BREAK( pSq == NULL );
 	pLegion->AddSquadron( idxSlot, pSq, FALSE );
 	///< 
@@ -4351,7 +4351,7 @@ int XGameUser::RecvChangeSquad(XPacket& p)
 	}
 	auto itor = squadlist.begin();		
 	for (; itor != squadlist.end(); itor++) {	
-		XSquadron *pSq = new XSquadron(m_spAcc->GetHero(itor->ssnhero));
+		XSPSquadron pSq = std::make_shared<XSquadron>(m_spAcc->GetHero(itor->ssnhero));
 		m_spAcc->GetCurrLegion()->AddSquadron(itor->spos, pSq, false);
 		if (pSq->GetpHero()->GetsnHero() == snLeader)
 			m_spAcc->GetCurrLegion()->SetpLeader(pSq->GetpHero());

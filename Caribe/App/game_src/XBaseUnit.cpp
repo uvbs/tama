@@ -106,7 +106,7 @@ void ADD_LOG( _tstring& str, const char* format, ... )
  @brief
  @param pSquadObj XSquadObj를 shared_ptr상속받게 하지 않으려고 일반포인터로 넘김. weak임.
 */
-XSPUnit XBaseUnit::sCreateUnit( XSPSquad spSquadObj,
+XSPUnit XBaseUnit::sCreateUnit( XSPSquadObj spSquadObj,
 																	ID idProp,
 																	BIT bitSide,
 																	const XE::VEC3& vwPos,
@@ -132,7 +132,7 @@ XSPUnit XBaseUnit::sCreateUnit( XSPSquad spSquadObj,
 	return spBaseUnit;
 }
 
-XSPUnit XBaseUnit::sCreateHero( XSPSquad spSquadObj,
+XSPUnit XBaseUnit::sCreateHero( XSPSquadObj spSquadObj,
 																XSPHero pHero,
 																ID idPropUnit,
 																BIT bitSide,
@@ -146,7 +146,7 @@ XSPUnit XBaseUnit::sCreateHero( XSPSquad spSquadObj,
 }
 
 ////////////////////////////////////////////////////////////////
-XBaseUnit::XBaseUnit( XSPSquad spSquadObj,
+XBaseUnit::XBaseUnit( XSPSquadObj spSquadObj,
 											ID idProp,
 											BIT bitCamp,
 											const XE::VEC3& vPos,
@@ -309,7 +309,7 @@ void XBaseUnit::OnFinishAsyncLoad( const XSprDat* pSprDat )
 	OnFinishLoad( pSprDat );
 }
 
-XSPSquad XBaseUnit::GetspSquadObj() const 
+XSPSquadObj XBaseUnit::GetspSquadObj() const 
 {
 	return m_pSquadObj->GetThis();
 }
@@ -590,7 +590,7 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 	scaleDraw *= scaleFactor;
 
 	// 정식선택되었을때 인디케이터
-	const XSPSquad& spSelect = XWndBattleField::sGet()->GetspSelectSquad();
+	const XSPSquadObj& spSelect = XWndBattleField::sGet()->GetspSelectSquad();
 	BOOL bDrawSelect = FALSE;
 	if( spSelect != nullptr
 		&& spSelect->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj()
@@ -605,7 +605,7 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 		bDrawSelect = TRUE;
 	}
 	// 임시선택되었을때 인디케이터
-	const XSPSquad& spTemp = XWndBattleField::sGet()->GetspTempSelect();
+	const XSPSquadObj& spTemp = XWndBattleField::sGet()->GetspTempSelect();
 	if( spTemp != nullptr
 		&& spTemp->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj()
 		&& IsLive() ) {
@@ -618,7 +618,7 @@ void XBaseUnit::DrawShadow( const XE::VEC2& vPos, float scale )
 		m_psoSelect->Draw( vPos );
 		bDrawSelect = TRUE;
 	}
-	const XSPSquad& spSelectEnemy = XWndBattleField::sGet()->GetspTempSelectEnemy();
+	const XSPSquadObj& spSelectEnemy = XWndBattleField::sGet()->GetspTempSelectEnemy();
 	if( spSelectEnemy != nullptr
 		&& spSelectEnemy->GetsnSquadObj() == m_pSquadObj->GetsnSquadObj()
 		&& IsLive() )	{

@@ -334,10 +334,10 @@ XWndResearchComplete::XWndResearchComplete( XSPHero pHero, ID idAbil, int point 
 		pCtrlHero->SetHero( pHero );
 	}
 	// 유닛지정
-	auto pCtrlUnit = ::xGetCtrlUnit( this, "ctrl.unit" );
+	auto pCtrlUnit = ::xGetCtrlUnit2( this, "ctrl.unit" );
 	if( XASSERT( pCtrlUnit ) ) {
 		if( XASSERT( pAbil ) ) {
-			pCtrlUnit->SetUnit( pAbil->unit );
+			pCtrlUnit->SetUnit( pAbil->unit,pHero->GetLevel() );
 		}
 	}
 	// XXX의 연구가 끝났습니다.

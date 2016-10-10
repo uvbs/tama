@@ -26,7 +26,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace XSKILL;
 
 ////////////////////////////////////////////////////////////////
-XUnitHero::XUnitHero( XSPSquad spSquadObj,
+XUnitHero::XUnitHero( XSPSquadObj spSquadObj,
 					XSPHero pHero,
 					ID idPropUnit, 
 					BIT bitSide, 

@@ -1012,7 +1012,7 @@ void XAccount::CreateFakeAccount(void)
 /**
 @brief 지정된 값으로 부대를 생성한다.
 */
-XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
+XSPSquadron XAccount::CreateSquadron(XLegion *pLegion,
 																		int idxSquad,
 																		LPCTSTR szHeroIdentifier,
 																		int levelSquad,
@@ -1024,7 +1024,7 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 // 	auto unit = XGAME::GetRandomUnit(pPropHero->typeAtk, (XGAME::xtSize)tierUnit);
 // 	auto pHero = XHero::sCreateHero(pPropHero, levelSquad, unit);
 // 	AddHero(pHero);
-// 	auto pSq = new XSquadron(pHero);
+// 	auto pSq = std::make_shared<XSquadron>(pHero);
 // 	pLegion->AddSquadron(idxSquad, pSq, false);
 	auto pSq = sCreateSquadron( pLegion, idxSquad, szHeroIdentifier, levelSquad, tierUnit, GetThis() );
 	if( XASSERT(pSq) ) {
@@ -1036,7 +1036,7 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 /** ////////////////////////////////////////////////////////////////////////////////////
  @brief static 버전
 */
-XSquadron* XAccount::sCreateSquadron( XLegion *pLegion,
+XSPSquadron XAccount::sCreateSquadron( XLegion *pLegion,
 																		 int idxSquad,
 																		 const _tstring& idsHero,
 																		 int levelSquad,
@@ -1049,7 +1049,7 @@ XSquadron* XAccount::sCreateSquadron( XLegion *pLegion,
 	auto unit = XGAME::GetRandomUnit( pPropHero->typeAtk, ( XGAME::xtSize )tierUnit );
 	auto pHero = XHero::sCreateHero( pPropHero, levelSquad, unit, spAcc );
 	auto pSq = pLegion->CreateAddSquadron( idxSquad, pHero, false );
-// 	auto pSq = new XSquadron( pHero );
+// 	auto pSq = std::make_shared<XSquadron>( pHero );
 // 	pLegion->AddSquadron( idxSquad, pSq, false );
 	return pSq;
 }
@@ -1244,7 +1244,7 @@ XLegion* XAccount::CreateLegionByRandom(int numSquad, int byLevel)
 	for (int i = 0; i < numSquad; ++i) {
 		int idxSquad = idx[i];
 		if (pLegion->GetpSquadronByidxPos(idxSquad) == nullptr) {
-			XSquadron *pSquad = nullptr;
+			XSPSquadron pSquad = nullptr;
 #ifdef _XSINGLE
 			auto unit = aryUnits.GetFromRandom();
 			auto grade = XGAME::xGD_COMMON;
@@ -1352,7 +1352,7 @@ XLegion* XAccount::CreateLegionByRandom(int numSquad, int byLevel)
  랜덤요소는 없으면 반드시 외부에서 파라메터를 지정해줘야 한다.
  이 함수는 싱글모드 혹은 게임서버의 PC부대생성에 사용한다.
 */
-XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
+XSPSquadron XAccount::CreateSquadron(XLegion *pLegion,
 																	int idxSquad,
 																	int lvHero,
 																	int lvSquad,
@@ -1381,7 +1381,7 @@ XSquadron* XAccount::CreateSquadron(XLegion *pLegion,
 	AddHero(pHero);
 	// NPC가 아니므로 sq가 블럭을 벗어날때 pHero를 파괴하진 않는다.
 	// 일단은 놔두고 깔끔하게 해결해야함.
-	XSquadron *pSq = new XSquadron(pHero);
+	XSPSquadron pSq = std::make_shared<XSquadron>(pHero);
 	pLegion->AddSquadron(idxSquad, pSq, FALSE);
 	return pSq;
 }
@@ -1684,7 +1684,7 @@ int XAccount::GetHerosListExceptLegion(XArrayLinearN<XSPHero, 1024> *pOutAry, XL
 	// 영웅들의 루프를 돌면서
 	for( auto pHero : m_listHero ) {
 		if( pLegion ) {
-			XSquadron *pSquad = pLegion->GetSquadronByHeroSN( pHero->GetsnHero() );
+			XSPSquadron pSquad = pLegion->GetSquadronByHeroSN( pHero->GetsnHero() );
 			if( pSquad == NULL )
 				pOutAry->Add( pHero );
 		} else

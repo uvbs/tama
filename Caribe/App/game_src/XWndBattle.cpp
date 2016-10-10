@@ -166,7 +166,7 @@ void XWndSkillButton::Draw( void )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-XWndFaceInBattle::XWndFaceInBattle( XSPSquad spSquadObj, int side )
+XWndFaceInBattle::XWndFaceInBattle( XSPSquadObj spSquadObj, int side )
 	: XWndStoragyItemElem( XE::VEC2(0), spSquadObj->GetpHero(), true )
 {
 	m_spSquadObj = spSquadObj;

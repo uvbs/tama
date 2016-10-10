@@ -19,7 +19,7 @@ using namespace XSKILL;
 using namespace XGAME;
 
 ////////////////////////////////////////////////////////////////
-XUnitTreant::XUnitTreant( XSPSquad spSquadObj,
+XUnitTreant::XUnitTreant( XSPSquadObj spSquadObj,
 													ID idProp,
 													BIT bitSide, const 
 													XE::VEC3& vPos,

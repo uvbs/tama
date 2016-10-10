@@ -30,11 +30,11 @@ public:
 	static XSPLegion sCreateLegionForNPC2( XGAME::xLegion& legion, int lvExtern, bool bAdjustLegion );
 //	static XSPLegion sCreatespLegion( const XGAME::xLegion& legion, int lvExtern, bool bReArrangeSquad, XVector<XSPHero>* pOutAry );
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	static XSquadron* sCreateSquadronForNPC( int levelLegion, int adjDiff, XGAME::xtUnit unit, ID idHero=0, int _levelHero=0, int levelSkill=0, int _levelSquad=0, XGAME::xtGradeLegion gradeLegion = XGAME::xGL_NORMAL, const XGAME::xLegionParam *pLegionInfo = nullptr );
-	static XSquadron* sCreateSquadronForNPC2( const int levelLegion
+	static XSPSquadron sCreateSquadronForNPC( int levelLegion, int adjDiff, XGAME::xtUnit unit, ID idHero=0, int _levelHero=0, int levelSkill=0, int _levelSquad=0, XGAME::xtGradeLegion gradeLegion = XGAME::xGL_NORMAL, const XGAME::xLegionParam *pLegionInfo = nullptr );
+	static XSPSquadron sCreateSquadronForNPC2( const int levelLegion
 																					, XPropHero::xPROP *pPropHero
 																					, const XGAME::xSquad& sqParam );
-	static XSquadron* sCreateSquadronForNPC2( const int levelLegion
+	static XSPSquadron sCreateSquadronForNPC2( const int levelLegion
 																					, const XGAME::xSquad& sqParam );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 	// 앞으로 이 시리즈들 사용금지.
@@ -52,7 +52,7 @@ public:
 	static int sGetLvSkillByInfo( int lvSkill, int lvLegion );
 	static XGAME::xtGrade sGetGradeHeroByInfo( XGAME::xtGrade gradeHero, int lvLegion );
 	//
-	static void sSetLeaderByInfo( const XGAME::xLegion* pxLegion, XSPLegion spLegion, XSquadron *pSquad );
+	static void sSetLeaderByInfo( const XGAME::xLegion* pxLegion, XSPLegion spLegion, XSPSquadron pSquad );
 	static XGAME::xtUnit sCreateUnitType( int spawnType );
 //	static int sCreateUnitNum( XGAME::xtUnit unit, BOOL bRandom );
 	static int sGetNumUnitByLevel( XGAME::xtUnit unit, int lvUnit );
@@ -68,8 +68,8 @@ public:
 private:
 	ID m_snLegion;
 	XSPHero m_pLeader = nullptr;		// 널이 될수 있음.
-	XList4<XSquadron*> m_listSquadrons;		// 부대 리스트
-	XList4<XSquadron*> m_listFogs;
+	XList4<XSPSquadron> m_listSquadrons;		// 부대 리스트
+	XList4<XSPSquadron> m_listFogs;
 	XGAME::xtGradeLegion m_gradeLegion = XGAME::xGL_NORMAL;
 	float m_RateHp = 1.f;	// 인게임전투시 유닛들에게 곱해질 hp배율
 	float m_RateAtk = 1.f;	// 인게임전투시 유닛들에게 곱해질 공격력배율
@@ -88,8 +88,8 @@ public:
 	}
 	~XLegion() { Destroy(); }
 	//
-// 	GET_ACCESSOR( const XVector<XSquadron*>&, arySquadrons );
-	GET_ACCESSOR_CONST( const XList4<XSquadron*>&, listSquadrons );
+// 	GET_ACCESSOR( const XVector<XSPSquadron>&, arySquadrons );
+	GET_ACCESSOR_CONST( const XList4<XSPSquadron>&, listSquadrons );
 	GET_ACCESSOR_CONST( ID, snLegion );
 	GET_SET_ACCESSOR( XSPHero, pLeader );
 	GET_ACCESSOR_CONST( XGAME::xtGradeLegion, gradeLegion );
@@ -118,13 +118,13 @@ public:
 	inline int GetNumSquadrons() {
 		return m_listSquadrons.size();
 	}
-	XSquadron* GetpmSquadronByidxPos( int idxSquad );
-	const XSquadron* GetpSquadronByidxPos( int idxSquad ) const;
-	const XSquadron* GetpSquadronBySN( ID snSquad ) const;
-	XSquadron* GetpmSquadronBySN( ID snSquad );
-	void AddSquadron( int idxPos, XSquadron *pSq, bool bCreateHero );
+	XSPSquadron GetpmSquadronByidxPos( int idxSquad );
+	const XSPSquadron GetpSquadronByidxPos( int idxSquad ) const;
+	const XSPSquadron GetpSquadronBySN( ID snSquad ) const;
+	XSPSquadron GetpmSquadronBySN( ID snSquad );
+	void AddSquadron( int idxPos, XSPSquadron pSq, bool bCreateHero );
 	void DestroySquadron( ID idSquad );
-	XSquadron* GetSquadronByHeroSN( ID snHero ) const;
+	XSPSquadron GetSquadronByHeroSN( ID snHero ) const;
 	int _GetIdxSquadByHeroSN( ID snHero ) const;
 	void SwapSlotSquad( XSPHero pHeroSrc, XSPHero pHeroDst );
 	void SwapSlotSquad( int idxSrc, int idxDst );
@@ -164,7 +164,7 @@ public:
 	float GethpMaxEach( ID snSquadHero, bool bHero ) const;
 //	bool IsValid() const;
 	bool IsNpc() const;
-	XSquadron* CreateAddSquadron( int idxSquad, XSPHeroConst pHero, bool bCreateHero );
+	XSPSquadron CreateAddSquadron( int idxSquad, XSPHeroConst pHero, bool bCreateHero );
 	void DestroySquadronAll();
 	void sDeserialize( XSPLegion spLegionTarget, XSPAccConst spAcc, XArchive& ar );
 private:

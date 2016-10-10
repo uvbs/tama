@@ -274,7 +274,7 @@ void XWndBattleField::OnLButtonUp( float lx, float ly )
  @param ly 윈도우좌표y
  @param camp 픽킹조건진영
 */
-XSPSquad XWndBattleField::PickingSquad( float lx, float ly, BIT bitCamp )
+XSPSquadObj XWndBattleField::PickingSquad( float lx, float ly, BIT bitCamp )
 {
 	// 윈도우 좌표를 월드좌표로 변환
 	XE::VEC2 vTouch(lx, ly);
@@ -288,7 +288,7 @@ XSPSquad XWndBattleField::PickingSquad( float lx, float ly, BIT bitCamp )
 															bitCamp, 
 															snExcludeSquad, 
 															&bPickExclude );
-	XSPSquad spSquad;
+	XSPSquadObj spSquad;
 	if( unitPick == nullptr )	{
 		// 해당 픽킹위치가 반경내에 들어가는 부대가 있는지 검사.
 		spSquad = XBattleField::sGet()->GetPickSquad( vwPick, bitCamp );

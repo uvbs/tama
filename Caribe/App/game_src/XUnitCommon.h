@@ -22,7 +22,7 @@ private:
 	}
 	void Destroy();
 public:
-	XUnitCommon( XSPSquad spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vPos, float multipleAbility );
+	XUnitCommon( XSPSquadObj spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vPos, float multipleAbility );
 	//
 	virtual LPCTSTR GetszSpr( void ) {
 		return GetpPropUnit()->strSpr.c_str();

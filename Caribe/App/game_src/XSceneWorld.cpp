@@ -380,6 +380,7 @@ int XSceneWorld::OnEnterScene( XWnd*, DWORD p1, DWORD )
 																								pElem->m_idParam, 
 																								pElem->m_Level );
 				Add( pPopup );
+				listAlert.pop_front();
 			} else 
 			if( pElem->m_Type == xAW_TRAIN_COMPLETE ) {
 				switch( pElem->m_Train ) {

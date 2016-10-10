@@ -36,9 +36,9 @@ private:
 	XEWndWorldImage* m_pBgLayer = nullptr;
 	XEWndWorld* m_pObjLayer = nullptr;
 	XWndBatchRender* m_pUnitUILayer = nullptr;
-	XSPSquad m_spTempSelect;		///< 임시선택
-	XSPSquad m_spSelectSquad;		///< 선택된 아군 부대
-	XSPSquad m_spTempSelectEnemy;	///< 적진영 임시선택
+	XSPSquadObj m_spTempSelect;		///< 임시선택
+	XSPSquadObj m_spSelectSquad;		///< 선택된 아군 부대
+	XSPSquadObj m_spTempSelectEnemy;	///< 적진영 임시선택
 	XE::VEC2 m_vTouch;				///< 터치다운시 좌표
 //	_tstring m_strBg;
 	void Init() {
@@ -55,9 +55,9 @@ public:
 	virtual ~XWndBattleField() { Destroy(); }
 	///< 
 //	GET_ACCESSOR( XBattleField*, prefBattleField );
-	GET_SET_ACCESSOR( XSPSquad, spSelectSquad );
-	GET_ACCESSOR( XSPSquad, spTempSelect );
-	GET_ACCESSOR( XSPSquad, spTempSelectEnemy );
+	GET_SET_ACCESSOR( XSPSquadObj, spSelectSquad );
+	GET_ACCESSOR( XSPSquadObj, spTempSelect );
+	GET_ACCESSOR( XSPSquadObj, spTempSelectEnemy );
 	GET_ACCESSOR( XEWndWorld*, pObjLayer );
 	GET_ACCESSOR( XWndBatchRender*, pUnitUILayer );
 	GET_SET_ACCESSOR( std::shared_ptr<XEWorldCamera>, spCamera );
@@ -76,7 +76,7 @@ public:
 	virtual void OnMouseMove( float lx, float ly );
 	virtual void OnLButtonUp( float lx, float ly );
 	BOOL OnCreate() override;
-	XSPSquad PickingSquad( float lx, float ly, BIT bitCamp );
+	XSPSquadObj PickingSquad( float lx, float ly, BIT bitCamp );
 	BOOL IsSelectedSquad( XSquadObj *pSquadObj );
 	float GetscaleCamera() const;
 	void SetScaleCamera( float scale );

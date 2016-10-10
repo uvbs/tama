@@ -369,7 +369,7 @@ void XSceneLegion::CreateSquadToLegion( XSPHero pHeroNew, XLegion *pLegion, int 
 	// 왼쪽 리스트에서 새 영웅을 뺀다.
 	m_pHeroList->DelItem( pHeroNew->GetsnHero() );
 	// 부대객체를 생성한다.
-	XSquadron *pSq = new XSquadron( pHeroNew );
+	XSPSquadron pSq = std::make_shared<XSquadron>( pHeroNew );
 	pLegion->AddSquadron(idxSlot, pSq, FALSE);
 }
 
@@ -448,7 +448,7 @@ void XSceneLegion::CopyLegionObj()
 // 	for( int i = 0; i < pLegion->GetMaxSquadSlot(); i++ ) {
 // 		if( pLegion->GetpSquadronByidxPos(i) ) {
 	for( auto pSqSrc : pLegion->GetlistSquadrons() ) {
-			auto pSq = new XSquadron( *pSqSrc );
+			auto pSq = std::make_shared<XSquadron>( *pSqSrc );
 			m_pLegion->AddSquadron( pSqSrc->GetidxPos(), pSq, false );
 			if( pLegion->GetpLeader() 
 					&& pLegion->GetpLeader()->GetsnHero() == pSq->GetpHero()->GetsnHero() )

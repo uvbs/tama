@@ -485,7 +485,7 @@ friend class CUserDB;
 
 };	// class XSpot
 
-typedef std::shared_ptr<XSpot> SpotPtr;
+typedef std::shared_ptr<XSpot> XSPSpot;
 
 
 

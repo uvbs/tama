@@ -42,11 +42,12 @@ using namespace XSKILL;
 int XSquadObj::s_numObj = 0;		// 메모리 릭 추적용
 
 XSquadObj::XSquadObj( XSPLegionObj spLegionObj,
-											const XSquadron *pSquad,
+											const XSPSquadron pSquad,
 											const XE::VEC3& vwPos )
 	: XSquadObj( spLegionObj, pSquad->GetpHero(), vwPos )
 {
-	m_pSquadron = const_cast<XSquadron*>( pSquad );
+	//m_pSquadron = const_cast<XSPSquadron>( pSquad );
+	m_pSquadron = std::const_pointer_cast<XSquadron>( pSquad );
 }
 
 XSquadObj::XSquadObj( XSPLegionObj spLegionObj,
@@ -328,9 +329,9 @@ void XSquadObj::SetAI( BOOL bFlag )
 /**
  @brief 가까운 적부대를 찾아서 공격을 시작한다.
 */
-XSPSquad XSquadObj::DoAttackAutoTargetEnemy()
+XSPSquadObj XSquadObj::DoAttackAutoTargetEnemy()
 {
-	XSPSquad spTarget = XBattleField::sGet()->FindNearSquadEnemy( this );
+	XSPSquadObj spTarget = XBattleField::sGet()->FindNearSquadEnemy( this );
 //	DoMoveTo( spTarget );
 	if( spTarget != nullptr )
 		SetCmdRequest( xCMD_ATTACK_TARGET, spTarget );
@@ -405,7 +406,7 @@ void XSquadObj::ProcessLycan( float dt )
 	if( m_spBleedingTarget == nullptr ) {
 		// 출혈에 걸린적을 찾는다.
 		m_spBleedingTarget = GetEnemyLegion()->FindNearSquad( this,
-			[]( XSPSquad& spSquad )->bool {
+			[]( XSPSquadObj& spSquad )->bool {
 			if( spSquad && spSquad->IsState( XGAME::xST_BLEEDING ) ) {
 				return true;
 			}
@@ -436,7 +437,7 @@ void XSquadObj::ProcessCmd()
 			if( m_spBleedingTarget == nullptr 
 					|| (m_spBleedingTarget && m_spBleedingTarget->IsDead()) ) {
 				// 월드에게 새 타겟을 찾아달라고 요청함
-				XSPSquad spTargetSquad = XBattleField::sGet()->FindNearSquadEnemy( this );
+				XSPSquadObj spTargetSquad = XBattleField::sGet()->FindNearSquadEnemy( this );
 				// 찾은 목표부대로 이동하게 한다. 만약 못찾았다면 현재자리에서 Idle로 들어간다.
 				DoMoveTo( spTargetSquad );
 			}
@@ -465,10 +466,10 @@ void XSquadObj::FrameMove( float dt )
 		// 스피드부대의 경우 적근접부대곁을 지나가면 속도가 느려진다.
 		if( IsSpeed()) {
 			// GetNearSquad내에서 IsTanker까지 하면 더 최적화 가능.
-			XArrayLinearN<XSPSquad,64> ary;
+			XArrayLinearN<XSPSquadObj,64> ary;
 			bool bSlow = false;
 			XBattleField::sGet()->GetNearSquadEnemy( this, &ary, m_Radius / 2.f );
-			XARRAYLINEARN_LOOP_REF( ary, XSPSquad, spSquad ) {
+			XARRAYLINEARN_LOOP_REF( ary, XSPSquadObj, spSquad ) {
 				if( spSquad->IsTanker() ) {
 					bSlow = true;
 					break;
@@ -638,7 +639,7 @@ void XSquadObj::ProcessHardcode( float dt )
 			m_timerBreakThrough.Set( 1.f );
 		if( m_timerBreakThrough.IsOver() ) {
 			m_timerBreakThrough.Reset();
-			XArrayLinearN<XSPSquad, 64> ary;
+			XArrayLinearN<XSPSquadObj, 64> ary;
 			XBattleField::sGet()->GetNearSquadEnemy( this, &ary, m_Radius / 2.f );
 			auto pEffect = m_pFlameKnight->GetEffectByIdx( 0 );
 			float abil = pEffect->invokeAbilityMin[ m_lvFlameKnight ];
@@ -658,7 +659,7 @@ void XSquadObj::ProcessHardcode( float dt )
 	// 용기
 	if( m_pCourage && IsLive() )
 	{
-		XArrayLinearN<XSPSquad, 64> ary;
+		XArrayLinearN<XSPSquadObj, 64> ary;
 		XBattleField::sGet()->GetNearSquad( this, &ary, m_Radius / 2.f );
 		auto pEffect = m_pCourage->GetEffectByIdx( 0 );
 		float abil = pEffect->invokeAbilityMin[ m_lvCourage ];
@@ -839,7 +840,7 @@ XSPUnit XSquadObj::GetNewTargetInTargetSquad( BOOL bIncludeHero )
 /**
  @brief 목표부대로 이동시켜라.
 */
-void XSquadObj::DoMoveTo( XSPSquad spTarget )
+void XSquadObj::DoMoveTo( XSPSquadObj spTarget )
 {
 	if( m_spTarget ) {
 		if( ( ( spTarget && m_spTarget->getid() != spTarget->getid() ) )
@@ -893,7 +894,7 @@ void XSquadObj::DoMoveTo( const XE::VEC3& vwDst )
 /**
  @brief this부대와 가장가까운 부대를 찾는다.
 */
-XSPSquad XSquadObj::FindAttackSquad()
+XSPSquadObj XSquadObj::FindAttackSquad()
 {
 	return m_spLegionObj->FindNearSquad( this );
 }
@@ -1034,7 +1035,7 @@ XSPUnit XSquadObj::GetAttackTargetForUnit( const XSPUnit& unit )
 /**
  @brief 모든 부대원들에게 개별타겟을 찾아 공격하라고 알림
 */
-void XSquadObj::DoAllUnitsChase( XSPSquad spTarget )
+void XSquadObj::DoAllUnitsChase( XSPSquadObj spTarget )
 {
 	m_spTarget = spTarget;
 	if( IsRange() == FALSE )
@@ -1072,7 +1073,7 @@ void XSquadObj::DoAllUnitsChase( XSPSquad spTarget )
 /**
  @brief spAttacker부대로부터 공격받기시작함.
 */
-void XSquadObj::OnAttacked( const XSPSquad spAttacker )
+void XSquadObj::OnAttacked( const XSPSquadObj spAttacker )
 {
 	XBREAK( spAttacker == nullptr );
 	if( spAttacker->IsRange() )		// 공격자가 원거리유닛이면 반격안함.
@@ -1146,7 +1147,7 @@ void XSquadObj::OnAttacked( const XSPSquad spAttacker )
 /**
  @brief this를 공격하던 spAttacker가 나에대한 타겟을 풀었다.
 */
-void XSquadObj::OnAttackLeave( XSPSquad spAttacker )
+void XSquadObj::OnAttackLeave( XSPSquadObj spAttacker )
 {
 	DelAttackMe( spAttacker );
 	// this가 원거리부대일경우 다시 this를 공격중인 리스트를 검색해서 melee류가 하나도 없으면 원거리 공격모드로 전환.
@@ -1183,7 +1184,7 @@ XE::VEC3 XSquadObj::GetvCenterByUnits()
  명령받은 부대는 도착해서 해당부대가 전멸할때까지 공격대상을 바꾸지 않는다.
  단, 도발 및 상대스킬이나 특성에의한 타겟변경은 있을 수 있다.
 */
-void XSquadObj::DoAttackSquad( const XSPSquad& spTarget )
+void XSquadObj::DoAttackSquad( const XSPSquadObj& spTarget )
 {
 	// 강제지정부대를 설정.
 	m_bManualMoving = TRUE;
@@ -1344,7 +1345,7 @@ float XSquadObj::GetAvgSpeedUnits()
 /**
  @brief 팔라딘-돌파 특성 하드코딩
 */
-void XSquadObj::HardcodingBreakthrough( float& speedMultiply, XArrayLinearN<XSPSquad,64>& aryNear )
+void XSquadObj::HardcodingBreakthrough( float& speedMultiply, XArrayLinearN<XSPSquadObj,64>& aryNear )
 {
 	XBREAK( m_pBreakThrough == nullptr );
 	auto pEffect1 = m_pBreakThrough->GetEffectByIdx( 0 );
@@ -1515,7 +1516,7 @@ float XSquadObj::DrawMembersHp( const XE::VEC2& vPos )
 /**
  @brief 부대간 거리를 잰다.
 */
-float XSquadObj::GetDistBetweenSquad( XSPSquad spOther )
+float XSquadObj::GetDistBetweenSquad( XSPSquadObj spOther )
 {
 	auto vwDist = spOther->GetvwPos() - GetvwPos();
 	return vwDist.Length();
@@ -1523,7 +1524,7 @@ float XSquadObj::GetDistBetweenSquad( XSPSquad spOther )
 /**
  @brief this와 spOther간의 거리가 this의 사거리 이내인가.
 */
-bool XSquadObj::IsInAttackRadius( XSPSquad spOther )
+bool XSquadObj::IsInAttackRadius( XSPSquadObj spOther )
 {
 	auto vwDist = spOther->GetvwPos() - GetvwPos();
 	auto distAttack = GetDistAttack();

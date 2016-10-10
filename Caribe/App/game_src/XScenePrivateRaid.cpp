@@ -111,14 +111,14 @@ int XScenePrivateRaid::GetsecTimeOver()
 /** //////////////////////////////////////////////////////////////////
 @brief 부대가 전멸함.
 */
-void XScenePrivateRaid::OnDieSquad( XSPSquad spSquadObj )
+void XScenePrivateRaid::OnDieSquad( XSPSquadObj spSquadObj )
 {
 	XSceneBattle::OnDieSquad( spSquadObj );
 	//
 	OnDieSquadPrivateRaid( spSquadObj );
 }
 
-void XScenePrivateRaid::OnDieSquadPrivateRaid( XSPSquad spSquadObj )
+void XScenePrivateRaid::OnDieSquadPrivateRaid( XSPSquadObj spSquadObj )
 {
 	auto spLegionObj = spSquadObj->GetspLegionObj();
 	// 새로 만들어야 할 부대가 아군인지 적인지
@@ -137,7 +137,7 @@ void XScenePrivateRaid::OnDieSquadPrivateRaid( XSPSquad spSquadObj )
 		return;
 	}
 	// 영웅으로 부대객체 만듬.
-	auto pSq = new XSquadron( pHeroNext );
+	auto pSq = std::make_shared<XSquadron>( pHeroNext );
 	bool bCreateHero = (idx != 0);
 	spLegionObj->GetspLegionMutable()->AddSquadron( -1, pSq, bCreateHero );
 	//		auto spLegionObj = m_aryCamp[ idx ].m_spLegionObj;
