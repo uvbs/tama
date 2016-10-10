@@ -170,82 +170,11 @@ void XSprMng::DestroyOverTimeFile()
 void XSprMng::Release( const XSPDat& spDatRelease )
 {
 	ReleaseByID( spDatRelease->m_idDat );
-// 	XAUTO_LOCK2( m_spLock );
-// 	// 캐시에 있는것 중 오래된파일은 삭제한다.
-// 	DestroyOlderFile();
-// 	//
-// 	for( auto& itor = m_mapDat.begin(); itor != m_mapDat.end(); ) {
-// 		auto& spDat = itor->second;
-// 		auto pSprDat = spDat->m_pSprDat;
-// 		if( pSprDat && spDat->m_idDat == spDatRelease->m_idDat ) {
-// 			const int useCnt = spDat.use_count();
-// 			if( useCnt == 2 ) {
-// 				// 캐시로 이동시켜 파괴되지 않도록 한다.
-// #ifdef _XDEBUG
-// 				auto itorCache = m_mapCache.find( spDat->m_strKey );
-// 				if( XASSERT( itorCache == m_mapCache.end() ) )
-// #endif // _XDEBUG
-// 					m_mapCache[spDat->m_strKey] = spDat;
-// 				// 참조맵에선 삭제
-// 				m_mapDat.erase( itor++ );
-// //				XBREAK( spDat.use_count() != 2 );
-// 			}
-// 			return;
-// 		} else
-// 			itor++;
-// 	}
 }
 void XSprMng::ReleaseByID( ID snDat )
 {
-// 	XAUTO_LOCK2( m_spLock );
-// 	// 캐시에 있는것 중 오래된파일은 삭제한다.
-// 	DestroyOlderFile();
-// 	//
-// 	for( auto& itor = m_mapDat.begin(); itor != m_mapDat.end(); ) {
-// 		auto& spDat = itor->second;
-// 		auto pSprDat = spDat->m_pSprDat;
-// 		if( pSprDat && spDat->m_idDat == snDat ) {
-// 			const int useCnt = spDat.use_count();
-// 			if( useCnt == 1 ) {
-// 				// 캐시로 이동시켜 파괴되지 않도록 한다.
-// #ifdef _XDEBUG
-// 				auto itorCache = m_mapCache.find( spDat->m_strKey );
-// 				if( XASSERT( itorCache == m_mapCache.end() ) )
-// #endif // _XDEBUG
-// 					m_mapCache[spDat->m_strKey] = spDat;
-// 				// 참조맵에선 삭제
-// 				m_mapDat.erase( itor++ );
-// 				//				XBREAK( spDat.use_count() != 2 );
-// 			}
-// 			return;
-// 		} else
-// 			itor++;
-// 	}
+
 }
-// void XSprMng::Release( XSprDat *pSprDat )
-// {
-// 	XAUTO_LOCK2( m_spLock );
-// 	// 캐시에 있는것 중 오래된파일은 삭제한다.
-// 	DestroyOlderFile();
-// 	//
-// 	for( auto itor = m_mapDat.begin(); itor != m_mapDat.end(); ) {
-// 		auto spDat = itor->second;
-// 		auto pSprDat = spDat->m_pSprDat;
-// 		if( pSprDat && pSprDat->GetsnDat() == pSprDat->GetsnDat() ) {
-// 			// 캐시로 이동시켜 파괴되지 않도록 한다.
-// #ifdef _XDEBUG
-// 			auto itorCache = m_mapCache.find( spDat->m_strKey );
-// 			if( XASSERT(itorCache == m_mapCache.end()) )
-// #endif // _XDEBUG
-// 				m_mapCache[ spDat->m_strKey ] = spDat;
-// 			// 참조맵에선 삭제
-// 			m_mapDat.erase( itor++ );
-// 			XBREAK( spDat.use_count() != 2 );
-// 			return;
-// 		} else
-// 			itor++;
-// 	}
-// }
 
 /**
 @brief 아무도 참조하고 있지는 않지만 캐쉬타임에 걸려 아직 파괴되지 않은 리스스들을 모두 날린다.

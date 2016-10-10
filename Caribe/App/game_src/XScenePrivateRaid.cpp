@@ -35,7 +35,7 @@ void XScenePrivateRaid::Destroy()
 	s_pSingleton = nullptr;
 }
 
-XScenePrivateRaid::XScenePrivateRaid( XGame *pGame, XSPSceneParam spParam ) 
+XScenePrivateRaid::XScenePrivateRaid( XGame *pGame, XSPSceneParam spParam )
 	: XSceneBattle( pGame, XGAME::xSC_PRIVATE_RAID, spParam )
 { 
 	XBREAK( s_pSingleton != nullptr );	// 이미 생성되어있다면 잘못된것임.
@@ -46,11 +46,12 @@ XScenePrivateRaid::XScenePrivateRaid( XGame *pGame, XSPSceneParam spParam )
 	//
 	SetbUpdate( true );
 }
-// 
-// void XScenePrivateRaid::Create( void )
-// {
-// 	XSceneBattle::Create();
-// }
+
+void XScenePrivateRaid::Create()
+{
+	xSET_ENABLE( this, "butt.edit", false );
+}
+
 
 /**
  @brief UI의 생성과 업데이트는 이곳에 넣습니다.
