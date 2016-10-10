@@ -588,6 +588,7 @@ public:
 	void SetResource( XGAME::xtResource resType, int numLack );
 	void SetResource( const std::vector<XGAME::xRES_NUM>& aryLack );
 	void SetFillTryByDailySpot();		// 요일스팟 도전횟수 리필
+	void SetChallMark( int numMark, int gem );
 private:
 	XGAME::xtPaymentRes m_typePayment = XGAME::xPR_NONE;
 	int m_needCash = 0;		// 소모될 캐시개수

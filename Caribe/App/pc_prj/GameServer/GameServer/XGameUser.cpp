@@ -6163,35 +6163,6 @@ void XGameUser::Cheat_AddPostInfo()
 	post.AddPostGem( 100 );
 	// 우편을 보냄
 	DoSendPost( &post );
-//	if( DBA_SVR ) {
-// 		XArchive ar;
-// 
-// 		ar.WriteString( m_spAcc->GetstrName() ); //Sender
-// 		ar.WriteString( m_spAcc->GetstrName() ); //Recv			
-// 		ar.WriteString( _T( "This is title" ) );		 //Title
-// 		ar.WriteString( _T( "This is message" ) ); //Message
-// 
-// 		int count = 2;// ::rand() % 4; //첨부 아이템 개수
-// 		ar << count;
-// 
-// 		for( int n = 0; n < count; n++ ) {
-// 			int ncount = ( ::xRand() % 9 ) + 1;
-// 			XPropItem::xPROP* pData = PROP_ITEM->GetpPropRandom();
-// 			XBREAK( pData == nullptr );
-// 
-// 			ar << (ID)XGAME::xtPOSTResource::xPOSTRES_ITEMS;
-// 			ar << (ID)pData->idProp;
-// 			ar << (ID)ncount;
-// 		}
-// 		ID idKey = DBA_SVR->SendPOSTInfoAdd( GetidAcc()
-// 																				, m_spAcc->GenerateSN()
-// 																				, (ID)( XGAME::xtPostType::xPOSTTYPE_NORMAL )
-// 																				, ar
-// 																				, xCL2GS_LOBBY_POST_ADD );
-//		DBA_SVR->AddResponse( idKey, this, &XGameUser::cbDoAddPostInfo );
-
-		//DBA_SVR->SendPOSTInfoAdd(ar);
-//	}
 #endif // _CHEAT
 }
 void XGameUser::Cheat_AddPostInfoGuildCoin()
@@ -6205,21 +6176,6 @@ void XGameUser::Cheat_AddPostInfoGuildCoin()
 	post.AddPostGuildCoin( 50 );
 	// 우편을 보냄
 	DoSendPost( &post );
-// 	if( DBA_SVR ) {
-// 		XArchive ar;
-// 		ar << m_spAcc->GetstrName(); //Sender
-// 		ar << m_spAcc->GetstrName(); //Recv			
-// 		ar << _T( "This is title." );		 //Title
-// 		ar << _T( "This is message." ); //Message
-// 		int count = 1;// ::rand() % 4; //첨부 아이템 개수
-// 		ar << count;
-// 		XPostItem postItem( XGAME::xPOSTRES_GUILD_COIN, 100 );
-// 		postItem.Serialize( ar );
-// 		ID idKey = DBA_SVR->SendPOSTInfoAdd( GetidAcc(), m_spAcc->GenerateSN(), 
-// 											(ID)( XGAME::xtPostType::xPOSTTYPE_NORMAL ), 
-// 											ar, xCL2GS_LOBBY_POST_ADD );
-// 		DBA_SVR->AddResponse( idKey, this, &XGameUser::cbDoAddPostInfo );
-// 	}
 #endif // _CHEAT
 }
 /**
@@ -7018,9 +6974,11 @@ int XGameUser::RecvPaymentAssetByGem( XPacket& p )
 {
 	XGAME::xtError errCode = xE_SUCCESS;
 	char c0;
+	XParamObj2 param;
 	p >> c0;		const XGAME::xtPaymentRes typeAsset = (xtPaymentRes)c0;
 	p >> c0;		const bool bByItem = (c0 != 0);
 	p >> c0 >> c0;
+	p >> param;
 
 	switch( typeAsset ) {
 	case xPR_AP:
@@ -7044,6 +7002,25 @@ int XGameUser::RecvPaymentAssetByGem( XPacket& p )
 			m_spAcc->AddCashtem( -numGem );
 			// 스팟 동기화 전송
 			SendSpotSync( pSpotDaily );
+		}
+	} break;
+	case xPR_TRY_PRIVATE_RAID: {
+		// 횟수 모두 채우는 젬가격 얻음
+		const int numGem = 10;
+		XBREAK( numGem == 0 );
+		if( m_spAcc->IsNotEnoughCash( numGem ) ) {
+			errCode = xE_NOT_ENOUGH_CASH;
+		} else {
+			// 스팟 찾음
+			const ID idSpot = param.GetDword( "id_spot" );
+			auto pSpot = SafeCast<XSpotPrivateRaid*>( GetpWorld()->GetpSpot( idSpot ) );
+			XVERIFY_BREAK( pSpot == nullptr );
+			// 스팟에 업데이트
+			pSpot->ResetTry();
+			// 젬 소모
+			m_spAcc->AddCashtem( -numGem );
+			// 스팟 동기화 전송
+			SendSpotSync( pSpot );
 		}
 	} break;
 	default:

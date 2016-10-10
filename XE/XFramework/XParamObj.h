@@ -49,6 +49,23 @@ public:
 	void Clear() {
 		m_mapVal.clear();
 	}
+	void Serialize( XArchive& ar ) const {
+		ar << m_mapVal.size();
+		for( auto itor : m_mapVal ) {
+			ar << itor.first;
+			ar << itor.second;
+		}
+	}
+	void DeSerialize( XArchive& ar, int ver ) {
+		int size;
+		ar >> size;
+		for( int i = 0; i < size; ++i ) {
+			std::string key;
+			T val;
+			ar >> key >> val;
+			m_mapVal[ key ] = val;
+		}
+	}
 private:
 	// private member
 	std::map<std::string, T> m_mapVal;
@@ -252,6 +269,8 @@ public:
 	void Clear() {
 		m_params.Clear();
 	}
+	void Serialize( XArchive& ar ) const;
+	void DeSerialize( XArchive& ar, int ver );
 private:
 	// private member
 	XParamType<std::string> m_params;

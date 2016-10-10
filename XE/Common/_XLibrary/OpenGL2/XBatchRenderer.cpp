@@ -130,8 +130,8 @@ void XBatchRenderer::SortCmds()
 {
 	std::sort( m_qCmds.begin(), m_qCmds.end(),
 						 []( const xCmd& cmd1, const xCmd& cmd2 )->bool {
-		XBREAK( cmd1.m_Font.m_idFont == 0 && cmd1.m_glTex == 0 );
-		XBREAK( cmd2.m_Font.m_idFont == 0 && cmd2.m_glTex == 0 );
+// 		XBREAK( cmd1.m_Font.m_idFont == 0 && cmd1.m_glTex == 0 );
+// 		XBREAK( cmd2.m_Font.m_idFont == 0 && cmd2.m_glTex == 0 );
 		if( cmd1.m_Font.m_idFont == cmd2.m_Font.m_idFont ) {
 			if( cmd1.m_Priority == cmd2.m_Priority ) {
 				if( cmd1.m_glTex == cmd2.m_glTex ) {

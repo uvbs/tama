@@ -587,6 +587,7 @@ namespace XGAME
 		xPR_ITEM,
 		xPR_GEM,
 		xPR_TRY_DAILY,		// 요일스팟 도전횟수
+		xPR_TRY_PRIVATE_RAID,	// 개인레이드 도전횟수
 	};
 	// 기타 enum들
 	enum {

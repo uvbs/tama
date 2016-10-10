@@ -1955,7 +1955,7 @@ void XWndPaymentByCash::Update()
 		case xPR_TIME:		break;
 		case xPR_TRY_DAILY:		m_strTitle = XTEXT(2227); break;		// 도전횟수 부족
 		default:
-			XBREAK(1);
+			m_strTitle = XTEXT(2348);		// 젬으로 대신하시겠습니까?
 			break;
 		}
 	}
@@ -2084,25 +2084,44 @@ void XWndPaymentByCash::SetItem( ID idItem, int gem )
 void XWndPaymentByCash::SetFillTryByDailySpot()		
 {
 	m_typePayment = xPR_TRY_DAILY;
- 	auto pWndRoot = Find( "wnd.half.top" );
- 	if( XASSERT( pWndRoot ) ) {
-		auto pWnd = pWndRoot->Find( "wnd.challs" );
-		if( pWnd == nullptr ) {
-			pWnd = new XWnd();
-			pWnd->SetstrIdentifier( "wnd.challs" );
-			pWndRoot->Add( pWnd );
-			XE::VEC2 vPos;
-			for( int i = 0; i < XGlobalConst::sGet()->m_numEnterDaily; ++i ) {
-				auto pImg = new XWndImage();
-				pImg->SetPosLocal( vPos );
-				pImg->SetSurfaceRes( PATH_UI("chall_mark_on.png") );
-				vPos.x += pImg->GetSizeLocal().w + 1.f;
-				pWnd->Add( pImg );
-			}
-			pWnd->AutoLayoutCenter();
-		}
- 	}
-	m_needCash = XGlobalConst::sGet()->m_gemFillDailyTry;
+	SetChallMark( XGlobalConst::sGet()->m_numEnterDaily, XGlobalConst::sGet()->m_gemFillDailyTry );
+//  	auto pWndRoot = Find( "wnd.half.top" );
+//  	if( XASSERT( pWndRoot ) ) {
+// 		auto pWnd = pWndRoot->Find( "wnd.challs" );
+// 		if( pWnd == nullptr ) {
+// 			pWnd = new XWnd();
+// 			pWnd->SetstrIdentifier( "wnd.challs" );
+// 			pWndRoot->Add( pWnd );
+// 			XE::VEC2 vPos;
+// 			for( int i = 0; i < XGlobalConst::sGet()->m_numEnterDaily; ++i ) {
+// 				auto pImg = new XWndImage();
+// 				pImg->SetPosLocal( vPos );
+// 				pImg->SetSurfaceRes( PATH_UI("chall_mark_on.png") );
+// 				vPos.x += pImg->GetSizeLocal().w + 1.f;
+// 				pWnd->Add( pImg );
+// 			}
+// 			pWnd->AutoLayoutCenter();
+// 		}
+//  	}
+//	m_needCash = XGlobalConst::sGet()->m_gemFillDailyTry;
+}
+
+void XWndPaymentByCash::SetChallMark( int numMark, int gem )
+{
+	auto pWndRoot = Find( "wnd.half.top" );
+	auto pWnd = new XWnd();
+	pWnd->SetstrIdentifier( "wnd.challs" );
+	pWndRoot->Add( pWnd );
+	XE::VEC2 vPos;
+	for( int i = 0; i < numMark; ++i ) {
+		auto pImg = new XWndImage();
+		pImg->SetPosLocal( vPos );
+		pImg->SetSurfaceRes( PATH_UI( "chall_mark_on.png" ) );
+		vPos.x += pImg->GetSizeLocal().w + 1.f;
+		pWnd->Add( pImg );
+	}
+	pWnd->AutoLayoutCenter();
+	m_needCash = gem;
 }
 
 ////////////////////////////////////////////////////////////////

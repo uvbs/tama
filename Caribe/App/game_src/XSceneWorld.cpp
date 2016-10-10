@@ -3927,9 +3927,22 @@ void XSceneWorld::OnRecvSpotTouch( XSpot *pBaseSpot, std::vector<xDropItem>& ary
 		auto pPopup = new XWndPrivateRaid( pSpot );
 		pPopup->SetOkButton( "butt.ok" );
 		pPopup->SetEvent2( XWM_OK, [this, pSpot](XWnd*) {
-			// 서버로 내 출전영웅 리스트 보냄.
-			GAMESVR_SOCKET->SendReqPrivateRaidEnterList( GAME, pSpot->GetlistEnter(0), pSpot->GetidSpot() );
-			GAMESVR_SOCKET->SendReqEnterReadyScene( GAME, pSpot->GetidSpot() );
+			if( pSpot->GetwinRemain() > 0 ) {
+				// 서버로 내 출전영웅 리스트 보냄.
+				GAMESVR_SOCKET->SendReqPrivateRaidEnterList( GAME, pSpot->GetlistEnter( 0 ), pSpot->GetidSpot() );
+				GAMESVR_SOCKET->SendReqEnterReadyScene( GAME, pSpot->GetidSpot() );
+			} else {
+				auto pPopup = new XWndPaymentByCash();
+				const int gem = 10;
+				pPopup->SetChallMark( 2, gem );
+				GAME->GetpScene()->Add( pPopup );
+				pPopup->SetEvent2( XWM_OK, [pSpot]( XWnd* pWnd ) {
+					const bool bByItem = false;
+					XParamObj2 param;
+					param.Set( "id_spot", pSpot->GetidSpot() );
+					GAMESVR_SOCKET->SendReqPaymentAssetByGem( GAME, xPR_TRY_PRIVATE_RAID, bByItem, param );
+				} );
+			}
 		});
 		Add( pPopup );
 	} break;

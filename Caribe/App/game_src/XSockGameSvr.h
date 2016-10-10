@@ -417,7 +417,7 @@ public:
 	BOOL SendReqCreatePayload( XWnd *pTimeoutCallback, const _tstring& idsProduct );
 	BOOL SendReqSync( XWnd *pTimeoutCallback, XGAME::xtParamSync type, int param = 0 );
 	//	BOOL SendReqAllGuildInfo( XWnd *pTimeoutCallback );
-	BOOL SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, XGAME::xtPaymentRes typeAsset, bool bByItem );
+	BOOL SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, XGAME::xtPaymentRes typeAsset, bool bByItem, const XParamObj2& param );
 	BOOL SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, const XList4<XSPHero>& listHero, ID idSpot );
 	BOOL SendReqEnterReadyScene( XWnd *pTimeoutCallback, ID idSpot );
 private:

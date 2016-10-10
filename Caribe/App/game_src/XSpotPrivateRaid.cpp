@@ -263,6 +263,16 @@ XSPHero XSpotPrivateRaid::GetSelectEnterHero( int idxSide )
 {
 	return m_arySelected[ idxSide ];
 }
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 도전횟수를 다시 초기화 한다.
+*/
+void XSpotPrivateRaid::ResetTry()
+{
+	m_numWins = 0;
+	m_secTimer = XTimer2::sGetTime();
+}
+
 void XSpotPrivateRaid::SetSelectEnterHero( XSPHero pHero, int idxSide )
 {
 	m_arySelected[idxSide] = pHero;
@@ -316,14 +326,12 @@ bool XSpotPrivateRaid::Update( XSPAcc spAcc )
 	}
 	// 타이머 세팅 안되어 있으면 타이머 켜고 도전회수 채움
 	if( m_secTimer == 0 ) {
-		m_secTimer = XTimer2::sGetTime();
-		m_numWins = 0;
+		ResetTry();
 	} else {
 		// 타이머가 켜져있고 한시간이 지났으면 도전회수 다시 채우고 타이머 리셋
 		const xSec secReset = GetPropParam().GetInt("sec_reset");
 		if( XTimer2::sGetTime() - m_secTimer > secReset ) {
-			m_secTimer = XTimer2::sGetTime();
-			m_numWins = 0;
+			ResetTry();
 		}
 	}
 

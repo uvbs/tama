@@ -60,7 +60,8 @@ public:
 	}
 	void SerializeForBattle( XArchive* pOut, const XParamObj2& param );
 	XList4<XSPHero> GetlistEnter( int idxSide );
-//	XSPLegion GetspLegionPlayer();
+	void ResetTry();
+	//	XSPLegion GetspLegionPlayer();
 //////////////////////////////////////////////////////////////////////////
 #ifdef _SERVER
 private:

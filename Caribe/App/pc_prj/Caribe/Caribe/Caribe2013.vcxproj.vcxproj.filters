@@ -536,9 +536,6 @@
     <ClCompile Include="..\..\..\game_src\XWndStorageItemElem.cpp">
       <Filter>source\ui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\game_src\XWndPrivateRaid.cpp">
-      <Filter>source\ui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\game_src\XSpotPrivateRaid.cpp">
       <Filter>source\world and spot</Filter>
     </ClCompile>
@@ -552,6 +549,9 @@
       <Filter>source\battle</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\game_src\XScenePrivateRaid.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XWndPrivateRaid.cpp">
       <Filter>source\battle</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1166,9 +1166,6 @@
     <ClInclude Include="..\..\..\game_src\XWndStorageItemElem.h">
       <Filter>source\ui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\game_src\XWndPrivateRaid.h">
-      <Filter>source\ui</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\game_src\XSpotPrivateRaid.h">
       <Filter>source\world and spot</Filter>
     </ClInclude>
@@ -1186,6 +1183,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\game_src\XLegionH.h">
       <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XWndPrivateRaid.h">
+      <Filter>source\battle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

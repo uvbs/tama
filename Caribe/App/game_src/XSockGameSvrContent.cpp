@@ -558,13 +558,10 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 				auto pPopup = new XWndPaymentByCash();
 				pPopup->SetFillTryByDailySpot();
 				GAME->GetpScene()->Add( pPopup );
-//				pPopup->SetEvent( XWM_OK, GAME, &XGame::OnClickFillAPByCash );
 				pPopup->SetEvent2( XWM_OK, []( XWnd* pWnd ) {
 					const bool bByItem = false;
-					GAMESVR_SOCKET->SendReqPaymentAssetByGem( GAME, xPR_TRY_DAILY, bByItem );
-// 					GAMESVR_SOCKET->SendReqOpenCloud( this, idCloud, xTP_GOLD_AND_CASH );
+					GAMESVR_SOCKET->SendReqPaymentAssetByGem( GAME, xPR_TRY_DAILY, bByItem, XParamObj2() );
 				} );
-//				XWND_ALERT("%s", XTEXT(2227));	// 도전횟수 없음.
 				return;
 			}
 		} else
@@ -4984,7 +4981,7 @@ void XSockGameSvr::RecvFillAP( XPacket& p, const xCALLBACK& c )
  @brief 각종 asset(자원,금화,시간,AP,횟수등)을 젬이나 특정아이템으로 지불하고 구매한다.
  @param bByItem 젬대신 typeAsset에 맞는 아이템이 있다면 그것을 소모하고 구매(교환)
 */
-BOOL XSockGameSvr::SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, xtPaymentRes typeAsset, bool bByItem )
+BOOL XSockGameSvr::SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, xtPaymentRes typeAsset, bool bByItem, const XParamObj2& param )
 {
 	_XCHECK_CONNECT(0);
 	//
@@ -4993,6 +4990,7 @@ BOOL XSockGameSvr::SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, xtPaymentRe
 	ar << xboolToByte( bByItem );
 	ar << (char)0;
 	ar << (char)0;
+	ar << param;
 
 	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
 	ID idKey = 

@@ -34,6 +34,7 @@ void XPropWorld::xBASESPOT::Serialize( XArchive& ar ) const {
 	ar << (BYTE)xboolToByte(m_bitAttr.bOpened);
 	ar << (BYTE)idAct;
 	ar << idArea << idCode << idName;
+	ar << m_Param;
 }
 void XPropWorld::xBASESPOT::DeSerialize( XArchive& ar, int ) {
 	BYTE b0;
@@ -48,6 +49,7 @@ void XPropWorld::xBASESPOT::DeSerialize( XArchive& ar, int ) {
 	ar >> b0;		m_bitAttr.bOpened = xbyteToBool(b0);
 	ar >> b0;		idAct = b0;
 	ar >> idArea >> idCode >> idName;
+	ar >> m_Param;
 }
 
 void XPropWorld::xCASTLE::Serialize( XArchive& ar ) const {
