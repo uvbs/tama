@@ -35,7 +35,12 @@ void XScenePrivateRaid::Destroy()
 	s_pSingleton = nullptr;
 }
 
-XScenePrivateRaid::XScenePrivateRaid( XGame *pGame, XSPSceneParam spParam ) 
+void XScenePrivateRaid::Create()
+{
+	xSET_ENABLE( this, "butt.edit", false );
+}
+
+XScenePrivateRaid::XScenePrivateRaid( XGame *pGame, XSPSceneParam spParam )
 	: XSceneBattle( pGame, XGAME::xSC_PRIVATE_RAID, spParam )
 { 
 	XBREAK( s_pSingleton != nullptr );	// 이미 생성되어있다면 잘못된것임.

@@ -58,6 +58,7 @@ private:
 private:
 	void Init()  {}
 	void Destroy();
+	void Create() override;
 	void OnDieSquad( XSPSquad spSquadObj );
 	void OnDieSquadPrivateRaid( XSPSquad spSquadObj );
 	void GetSquadObjToAry( int idxSide, XSPLegionObjConst spLegionObj, XVector<XSPSquadObjConst>* pOut ) override;

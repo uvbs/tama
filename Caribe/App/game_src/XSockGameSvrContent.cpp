@@ -3161,7 +3161,7 @@ void XSockGameSvr::RecvCheckTrainComplete( XPacket& p, const xCALLBACK& c )
 		//
 		_tstring str;
 		int type2 = -1;
-		XBREAK(1);	// XWndSkillTrainComplete로 교체할것.
+		//XBREAK(1);	// XWndSkillTrainComplete로 교체할것.
 		switch( type ) {
 		case XGAME::xTR_LEVEL_UP:
 			str = XE::Format( XTEXT( 2096 ), pHero->GetstrName().c_str() );	// 영웅 xxx의 훈련이 끝났습니다.
@@ -3185,27 +3185,19 @@ void XSockGameSvr::RecvCheckTrainComplete( XPacket& p, const xCALLBACK& c )
 		SOUNDMNG->OpenPlaySound( 27 );		// 훈련완료!
 		if( pHero->GetbLevelUpAndClear( type ) ) {
 			str += XFORMAT( "\n%s", XTEXT( 2234 ) );	// 레벨이 올랐습니다!
-// 			if( !GAME->IsPlayingSeq() && !SCENE_BATTLE ) {	// 튜토중이거나 전투중에도 안뜸.
 		}
 		// 튜토중이거나 월드씬이 아닌상태에선 버퍼에 담는다.
 		if( GAME->IsPlayingSeq() || !SCENE_WORLD ) {
 			auto& listAlert = GAME->GetlistAlertWorld();
-// 			if( !listAlert.FindpByID(pHero->GetsnHero() ) {
 			xAlertWorld alert;
 			alert.m_Type = xAW_TRAIN_COMPLETE;
 			alert.m_snHero = pHero->GetsnHero();
 			alert.m_Train = type;
 			alert.m_strMsg = str;
 			listAlert.Add( alert );
-// 			}
 		} else {
 			const int lv = pHero->GetLevel( type );
 			GAME->DoPopupTrainComplete( type, pHero, lv );
-// 			auto pAlert = new XGameWndAlert( str.c_str(), nullptr, XWnd::xOK );
-// 			if( pAlert ) {
-// 				GAME->GetpScene()->Add( pAlert );
-// 				pAlert->SetbModal( TRUE );
-// 			}
 		}
 		if ( typeComplete ) {
 			// 즉시완료시키면 렙업창 꺼줌.
@@ -3214,11 +3206,8 @@ void XSockGameSvr::RecvCheckTrainComplete( XPacket& p, const xCALLBACK& c )
 				pWnd->SetbDestroy( true );
 			SendUnregistPushMsg(NULL, ACCOUNT->GetidAccount(), type2, snHero);
 		}
-
-	} else
-	{
-		switch( result )
-		{
+	} else	{
+		switch( result )		{
 		case xEC_NOT_ENOUGH_CASH:
 			XWND_ALERT("%s", _T("not enough cash."))
 			break;
