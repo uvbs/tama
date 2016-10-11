@@ -180,7 +180,7 @@ const std::string XGame::OnSelectLanguageKey()
 	m_pOption->Load();
 	const auto strcKey = m_pOption->GetstrcKeyCurrLang();
 	if( strcKey == "english" ) {
-		XFontMng::s_aryFonts[2] = _T("../normal.ttf");
+		XFontMng::s_aryFonts[2] = _T("mnls.ttf");
 	}
 //	XE::LANG.SetSelectedKey( m_pOption->GetstrcKeyCurrLang() );
 	return strcKey;
@@ -195,6 +195,10 @@ bool XGame::IsbFirst() const
 void XGame::DidFinishCreated()
 {
 	XTRACE( "XGame::Create()" );
+//	const auto strcKey = m_pOption->GetstrcKeyCurrLang();
+// 	if( strcKey == "english" ) {
+// 		XFontMng::s_aryFonts[2] = _T( "../normal.ttf" );
+//	}
 	const auto bMusic = m_pOption->GetbMusic();
 	const auto bSound = m_pOption->GetbSound();
 	
@@ -899,8 +903,9 @@ void XGame::OnLButtonDown( float x, float y )
 				bOk = false;		// 튜토중단 버튼위치를 눌렀으면 아래 listAllow검사는 안함.
 		}
 	} else {
+		if( GetpScene() )
 		// 컷씬중이 아닌데 블로킹 되어있으면 해제함.
-		GetpScene()->SetActive( true );
+			GetpScene()->SetActive( true );
 	}
 	if( m_listAllowWnd.size() && bOk ) {
 		if( IsOutsideClickedAllowWnd( XE::VEC2( x, y ) ) ) {

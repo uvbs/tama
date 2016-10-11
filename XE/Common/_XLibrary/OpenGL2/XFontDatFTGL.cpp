@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "etc/xLang.h"
 #ifdef _VER_OPENGL
 #include "XFontDatFTGL.h"
 #include "XFontObjFTGL.h"

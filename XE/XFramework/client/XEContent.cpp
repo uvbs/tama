@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XSystem.h"
 #include "XEContent.h"
 #include "XFontMng.h"
 #include "_Wnd2/XWndPopup.h"
@@ -45,10 +46,10 @@ void XEContent::Destroy()
 
 BOOL XEContent::OnCreate()
 {
-//	XTextureAtlas::sSetMaxSizeTex( XE::VEC2(4096, 4096) );
+	CreateSystemFont();
+	//	XTextureAtlas::sSetMaxSizeTex( XE::VEC2(4096, 4096) );
 	const auto strKeyLang = OnSelectLanguageKey();		// virtual. lang.txt의 국가키를 받는다.
 	XE::LANG.SetSelectedKey( strKeyLang );
-	CreateSystemFont();
 	// 시스템이 시작하자마자 씬루트를 젤 밑에 깔아준다.
 	XWnd *pRoot = new XWnd();
 	pRoot->SetstrIdentifier( "_root.scene" );
@@ -72,12 +73,24 @@ void XEContent::DestroySystemFont()
 BOOL XEContent::CreateSystemFont( void )
 {
 	XBREAK( m_pfdSystem != nullptr );
-	m_pfdSystem = FONTMNG->Load( FONT_SYSTEM, FONT_SIZE_DEFAULT );
-	if( XBREAKF( m_pfdSystem == NULL, "load font: %s......failed", FONT_SYSTEM ) )
-		return FALSE;
-	m_pfoSystem = m_pfdSystem->CreateFontObj();
-	if( XBREAKF( m_pfoSystem == NULL, "create system fontobj:......failed" ) )
-		return FALSE;
+// 	m_pfdSystem = FONTMNG->Load( FONT_SYSTEM, FONT_SIZE_DEFAULT );
+// 	if( XBREAKF( m_pfdSystem == NULL, "load font: %s......failed", FONT_SYSTEM ) )
+// 		return FALSE;
+	int idx = 0;
+	do {
+ 		m_pfdSystem = FONTMNG->Load( FONT_SYSTEM, FONT_SIZE_DEFAULT );
+		if( m_pfdSystem ) {
+			break;
+		} else {
+			XSYSTEM::xSleep( 1 );
+		}
+		XTRACE("retry font load:%d", idx);
+	} while( ++idx < 5 );
+	if( XASSERT( m_pfdSystem ) ) {
+		m_pfoSystem = m_pfdSystem->CreateFontObj();
+		if( XBREAKF( m_pfoSystem == NULL, "create system fontobj:......failed" ) )
+			return FALSE;
+	}
 	m_pfdSystemSmall = FONTMNG->Load( FONT_SYSTEM, (int)(FONT_SIZE_DEFAULT / 1.5f) );
 	if( XBREAKF( m_pfdSystemSmall == NULL, "load font size10: %s......failed", FONT_SYSTEM ) )
 		return FALSE;

@@ -11,6 +11,12 @@ static char THIS_FILE[] = __FILE__;
 
 
 ////////////////////////////////////////////////////////////////
+XOption::XOption()
+	: m_strcKeyCurrLang( "english" )
+{
+	Init();
+}
+
 bool XOption::Parse( const std::string& strcKey, CToken& token )
 {
 	if( strcKey == "lang" ) {

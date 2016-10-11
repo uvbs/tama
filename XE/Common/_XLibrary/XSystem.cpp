@@ -410,8 +410,8 @@ XE::xtAlertRet XSYSTEM::xMessageBox( LPCTSTR szMsg, XE::xtAlert type )
 #endif
 #ifdef _VER_ANDROID
 //	XLOG( "%s", szMsg );
-#ifdef _DEV_LEVEL <= DLV_DEV_EXTERNAL
-	JniHelper::ShowDialog( "Alert", szMsg );
+#if _DEV_LEVEL <= DLV_DEV_EXTERNAL
+//	JniHelper::ShowDialog( "Alert", szMsg );
 #endif
 #endif
 	return (XE::xtAlertRet)retv;

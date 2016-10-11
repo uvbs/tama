@@ -2136,7 +2136,7 @@ XWndOrderDialog::XWndOrderDialog( OrderPtr spOrder, float x, float y, ID idHero,
 // 	auto pImg = new XWndImage( m_strFaceRes, 8, 8 );
 // 	pImg->SetstrIdentifier( "img.face" );
 // 	Add( pImg );
-	auto pText = new XWndTextString( XE::VEC2( 75,0 ), XE::VEC2( 203, 78 ), _T(""), FONT_NANUM, 22.f );
+	auto pText = new XWndTextString( XE::VEC2( 75,0 ), XE::VEC2( 203, 78 ), _T(""), FONT_MNLS, 22.f );
 	pText->SetstrIdentifier( "text.dialog" );
 	pText->SetAlign( XE::xALIGN_CENTER );
 	pText->SetStyleShadow();
