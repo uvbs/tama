@@ -134,3 +134,4 @@ void XRandom2::SetSeed( DWORD seed )
 {
 	m_engineRandom.seed( seed );
 }
+

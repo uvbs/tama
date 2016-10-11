@@ -497,7 +497,10 @@ BOOL XAppMain::OnSelectLoadType( XE::xtLoadType typeLoad )
 
 bool XAppMain::RequestCheatAuth()
 {
-	if( XAccount::sGetPlayer() && XAccount::sGetPlayer()->GetGMLevel() == 1 ) {
+#if _DEV_LEVEL >= DLV_OPEN_BETA
+	if( XAccount::sGetPlayer() && XAccount::sGetPlayer()->GetGMLevel() == 1 ) 
+#endif // _DEV_LEVEL >= DLV_OPEN_BETA
+	{
 		return true;
 	}
 	return false;
