@@ -6964,6 +6964,7 @@ int XGameUser::RecvSendReqFillAP( XPacket& p )
 	return 1;
 }
 
+
 /**
  클라이언트의 SendReqPaymentAssetByGem()에 대한 서버측의 Receive함수
  @param p 패킷이 들어있는 아카이브
