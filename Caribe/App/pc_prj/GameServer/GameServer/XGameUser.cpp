@@ -6964,7 +6964,6 @@ int XGameUser::RecvSendReqFillAP( XPacket& p )
 	return 1;
 }
 
-
 /**
  클라이언트의 SendReqPaymentAssetByGem()에 대한 서버측의 Receive함수
  @param p 패킷이 들어있는 아카이브
@@ -6981,6 +6980,7 @@ int XGameUser::RecvPaymentAssetByGem( XPacket& p )
 	p >> c0 >> c0;
 	p >> param;
 
+	// 회사코드
 	switch( typeAsset ) {
 	case xPR_AP:
 	case xPR_GOLD:
@@ -7005,6 +7005,7 @@ int XGameUser::RecvPaymentAssetByGem( XPacket& p )
 			SendSpotSync( pSpotDaily );
 		}
 	} break;
+	// 회사코드.
 	case xPR_TRY_PRIVATE_RAID: {
 		// 횟수 모두 채우는 젬가격 얻음
 		const int numGem = 10;
