@@ -333,9 +333,9 @@ bool XSpotDaily::sGetRewardDaily( XPropWorld::xDaily* pProp
 	// 계산
 	for( auto& reward : ary ) {
 		// 보상양을 가공한다.
-		auto lvBase = lvLegion - XSpotDaily::c_lvLegionStart;
-		if( lvBase < 0 )
-			lvBase = 0;
+		auto lvBase = lvLegion - XSpotDaily::c_lvLegionStart + 1;
+		if( lvBase <= 0 )
+			lvBase = 1;
 		const auto v1 = pProp->m_v1;
 		const auto v2 = pProp->m_v2;
 		const auto v3 = pProp->m_v3;

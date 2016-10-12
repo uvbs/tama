@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.gemtree2.caribe" android:versionCode="5" android:versionName="0.0.05">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.gemtree2.caribe" android:versionCode="6" android:versionName="0.0.06">
   <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="19" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="com.android.vending.BILLING" />

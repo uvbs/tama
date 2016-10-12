@@ -232,12 +232,13 @@ void XGame::DidFinishCreated()
 #endif // WIN32
 	LoadTextTable();
 
-	std::string strPath = XE::MakePath( "", "LastUpdate.txt" );
-	CONSOLE( "Find LastUpdate.txt.........." );
-	if( !XE::IsExistFileInWork( strPath.c_str() ) ) {
-		CONSOLE( "no have LastUpdate.txt....copy package to work" );
-		XE::CopyPackageToWork( strPath.c_str() );
-	}
+	// 이건 풀버전 apk일때만 필요함.
+// 	std::string strPath = XE::MakePath( "", "LastUpdate.txt" );
+// 	CONSOLE( "Find LastUpdate.txt.........." );
+// 	if( !XE::IsExistFileInWork( strPath.c_str() ) ) {
+// 		CONSOLE( "no have LastUpdate.txt....copy package to work" );
+// 		XE::CopyPackageToWork( strPath.c_str() );
+// 	}
 	FONTMNG->SetpDelegate( this );
 	//
 	//////////////////////////////////////////////////////////////////////////
@@ -632,7 +633,7 @@ int XGame::Process( float dt )
 		ProcessAP( dt );
 	}
 	// 1분 타이머
-	if( m_timerMin.IsOver() ) {
+	if( SCENE_WORLD && m_timerMin.IsOver() ) {
 		m_timerMin.Reset();
 		// 무역상 데이터 동기화 요청.
 #ifndef _XSINGLE

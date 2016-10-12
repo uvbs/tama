@@ -852,6 +852,56 @@ void XWnd::GenerateLoopEvent()
 	}
 }
 
+void XWnd::ClearEvent( DWORD msg ) 
+{
+	LIST_MANUAL_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap ) {
+		if( msgMap.msg == msg )
+			m_listMessageMap.erase( itor++ );
+		else
+			++itor;
+	} END_LOOP;
+	// event2
+	
+	for( auto itor = m_listCallback.begin(); itor != m_listCallback.end(); ) {
+		auto& callback = *itor;
+		if( callback.m_idEvent == msg ) {
+			m_listCallback.erase( itor++ );
+		} else {
+			++itor;
+		}
+	}
+	
+}
+XWND_MESSAGE_MAP XWnd::FindMsgMap( DWORD msg ) 
+{
+	LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap ) {
+		if( msgMap.msg == msg )
+			return msgMap;
+	} END_LOOP;
+	XWND_MESSAGE_MAP msgMap;
+	return msgMap;
+}
+
+const XWnd::xCallback* XWnd::FindMsgMap2( DWORD msg ) const
+{
+	return m_listCallback.FindpcByIDNonPtr( msg );
+}
+
+
+bool XWnd::IsHaveEvent( DWORD msg )  const
+{
+	LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap ) {
+		if( msgMap.msg == msg )
+			return true;
+	} END_LOOP;
+	for( auto& callback : m_listCallback ) {
+		if( callback.m_idEvent == msg ) {
+			return true;
+		}
+	}
+	return FALSE;
+}
+
 int XWnd::CallEventHandler( ID msg, DWORD dwParam2 )
 {
 	int ret = 1;
@@ -868,18 +918,13 @@ int XWnd::CallEventHandler( ID msg, DWORD dwParam2 )
 	for( auto& callback : m_listCallback ) {
 		if( callback.m_idEvent == msg ) {
 			callback.m_funcCallback( this );		// 콜백 함수 호출
+			if( msg == XWM_CLICKED ) {
+				if( XBREAK( m_vSize.IsInvalid() ) )
+					return 0;
+				// 한 윈도우에 같은이벤트를 여러개 달수 있도록 허용함.
+			}
 		}
 	}
-// 	for( auto itor = m_listCallback.begin(); itor != m_listCallback.end(); ) {
-// 		xCallback& callback = (*itor);
-// 		if( callback.m_idEvent == msg ) {
-// 			callback.m_funcCallback( this );		// 콜백 함수 호출
-// 			m_listCallback.erase( itor++ );
-// 		} else {
-// 			++itor;
-// 		}
-// 	}
-
 	return ret;
 }
 

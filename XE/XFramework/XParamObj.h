@@ -16,9 +16,7 @@ template<typename T>
 class XParamType
 {
 public:
-	XParamType() {
-		Init();
-	}
+	XParamType() {		Init();	}
 	~XParamType() {
 		Destroy();
 	}
