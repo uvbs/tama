@@ -7009,7 +7009,82 @@ int XGameUser::RecvPaymentAssetByGem( XPacket& p )
 		const int numGem = 10;
 		XBREAK( numGem == 0 );
 		if( m_spAcc->IsNotEnoughCash( numGem ) ) {
-			errCode = xE_NOT_ENOUGH_CASH;
+			errCode = xE_NOT_ENOUGH_CASH;]'[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			...........................................'
 		} else {
 			// 스팟 찾음
 			const ID idSpot = param.GetDword( "id_spot" );
