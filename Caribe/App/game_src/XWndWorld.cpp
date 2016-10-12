@@ -820,7 +820,7 @@ XWndOption::XWndOption( XSPAcc spAcc )
 	SetButtHander( this, "img.world.checkbox3", &XWndOption::OnClickRegist );
 	SetButtHander( this, "img.butt.check4", &XWndOption::OnClickLow );
 #ifdef _CHEAT
-	if( XAPP->m_bDebugMode ) {
+	if( XAPP->m_bDebugMode || ACCOUNT->GetGMLevel() == 1 ) {
 		XE::VEC2 vPos(369, 271);
 		const XE::VEC2 vSize(30, 30);
 		auto pButt = new XWndButtonDebug( vPos, vSize + XE::VEC2(10,10), _T( "bLog" ) );

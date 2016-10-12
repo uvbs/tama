@@ -1306,6 +1306,11 @@ XWndPrivateRaidSpot::XWndPrivateRaidSpot( XSpotPrivateRaid* pSpot )
 	: XWndSpot( pSpot, _T(""), 0, pSpot->GetPosWorld() )
 {
 	Init();
+	SetbShowName( true );
+	SetbShowLevel( true );
+	SetbShowExclamByQuest( true );
+// 	SetbShowExclamByDefeat( true );
+// 	SetbShowStarScore( false );
 }
 
 //////////////////////////////////////////////////////////////////////////

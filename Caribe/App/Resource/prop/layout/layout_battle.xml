@@ -50,20 +50,20 @@
             <!--레벨-->
           </text>
         </img>
-        <text posx="17" posy="center" key="text.name" font="font_text_s" font_size="20" font_style="stroke" text="1" align="left">
+        <text posx="17" posy="center" key="text.name" font="font_mnls" font_size="20" font_style="stroke" text="1" align="left">
           <!--군주이름-->
         </text>
       </wnd>
       <wnd width="83" height="20" posx="right" posy="0" key="mod.name.1" scale="0.8">
         <!--적군 이름-->
-        <img file="world_top_shield.png" posx="right" posy="center">
+        <img file="world_top_shield.png" posx="right" posy="center" adjx="-20">
           <!--방패-->
           <text posx="center" posy="center" key="text.level" font="font_res_num" font_size="20" font_style="stroke" text="11">
             <!--레벨-->
           </text>
         </img>
         <wnd width="65" height="19">
-          <text posx="right" posy="center" key="text.name" font="font_text_s" font_size="20" font_style="stroke" debug="1">
+          <text posx="right" posy="center" key="text.name" font="font_mnls" font_size="20" font_style="stroke" debug="1">
             <!--군주이름-->
           </text>
         </wnd>
@@ -75,8 +75,8 @@
     </butt>
     <butt posx="50" posy="328" img_up="butt_playx2.png" key="butt.play">
       <!--배속버튼-->
-      <img posx="17" posy="16" file="butt_text_x2.png" key="img.text.x2" show="off"></img>
-      <img posx="17" posy="16" file="butt_text_x4.png" key="img.text.x4" show="off" />
+      <img posx="22" posy="20" file="butt_text_x2.png" key="img.text.x2" show="off"></img>
+      <img posx="22" posy="20" file="butt_text_x4.png" key="img.text.x4" show="off" />
     </butt>
   </battle>
   <world>

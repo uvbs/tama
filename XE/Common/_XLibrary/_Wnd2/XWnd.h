@@ -152,6 +152,9 @@ class XWnd
 		xCallback() {}
 		xCallback( ID idEvent, std::function<void( XWnd* )> funcCallback ) 
 		: m_idEvent(idEvent), m_funcCallback(funcCallback) {	}
+		inline ID getid() const {
+			return m_idEvent;
+		}
 	};
 	XList4<xCallback> m_listCallback;
 public:
@@ -833,33 +836,10 @@ public:
 		msgMap.pHandler = static_cast<CALLBACK_FUNC>( func );
 		m_listMessageMap.push_back( msgMap );
 	}
-	void ClearEvent( DWORD msg ) {
-		LIST_MANUAL_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )	{
-			if( msgMap.msg == msg )
-				m_listMessageMap.erase( itor++ );
-			else
-				++itor;
-		} END_LOOP;
-	}
-	XWND_MESSAGE_MAP FindMsgMap( DWORD msg ) {
-		LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )	{
-			if( msgMap.msg == msg )
-				return msgMap;
-		} END_LOOP;
-		XWND_MESSAGE_MAP msgMap;
-		return msgMap;
-	}
-	BOOL IsHaveEvent( DWORD msg ) {
-		LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )	{
-			if( msgMap.msg == msg )
-				return TRUE;
-		} END_LOOP;
-		return FALSE;
-	}
-// 	void GetNextClear( std::list<XWnd*>::iterator *pItor );
-// 	XWnd* GetNext(std::list<XWnd*>::iterator& itor);
-// 	void GetNextClear2( XList<XWnd*>::Itor *pOutItor );
-// 	XWnd* GetNext2( XList<XWnd*>::Itor& itor );
+	void ClearEvent( DWORD msg );
+	XWND_MESSAGE_MAP FindMsgMap( DWORD msg );
+	const xCallback* FindMsgMap2( DWORD msg ) const;
+	bool IsHaveEvent( DWORD msg ) const;
 	template<typename T, int N>
 	int GetUnderChildListToArray( XArrayLinearN<XWnd*, N> *pOutAry ) {
 		for( auto pWnd : m_listItems ) {

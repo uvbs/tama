@@ -518,7 +518,7 @@ int XSceneTitle::OnClickNicknameBox(XWnd* pWnd, DWORD p1, DWORD p2)
 {
 	XWnd *pBox = Find("img.input.box");
 	if (pBox)	{
-		XWndEdit *pEdit = new XWndEdit( XE::VEC2(10,4), XE::VEC2(262,37), FONT_SYSTEM, 20.f, XCOLOR_WHITE );
+		XWndEdit *pEdit = new XWndEdit( XE::VEC2(10,4), XE::VEC2(262,37), FONT_MNLS, 20.f, XCOLOR_WHITE );
 //		XWndEdit *pEdit = new XWndEdit(10, 4, 262, 37, GAME->GetpfdSystem(), XCOLOR_WHITE, 0);
 		pEdit->SetbShow(FALSE);
 		pEdit->SetpDelegate(this);

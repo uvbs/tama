@@ -338,7 +338,7 @@ int XGameUser::RecvCheat( XPacket& p )
 	} else
 	if( type == 99 ) {
 #if _DEV_LEVEL >= DLV_OPEN_BETA
-		if( m_spAcc->GetGMLevel() == 5 ) 
+		if( m_spAcc->GetGMLevel() == 1 ) 
 #endif
 		{
 			int i0;

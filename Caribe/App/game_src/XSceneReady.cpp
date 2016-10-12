@@ -59,6 +59,9 @@ XSceneReady::XSceneReady( XGame *pGame, XSPSceneParam& spBaseParam )
 	} else {
 		xSET_ENABLE( this, "butt.edit", false );
 	}
+	if( m_spParam->IsPrivateRaid() ) {
+		xSET_ENABLE( this, "butt.edit", false );
+	}
 
 #ifndef _XSINGLE
 	SetButtHander( this, "butt.cancel", &XSceneReady::OnClickCancel, m_spParam->m_idSpot );

@@ -11,6 +11,11 @@ copy "fonts\bold.ttf"  "..\..\proj.android\assets\fonts"
 copy "fonts\normal.ttf" "..\..\proj.android\assets\fonts\"
 copy "fonts\res_num.ttf"  "..\..\proj.android\assets\fonts\"
 copy "fonts\damage.ttf"  "..\..\proj.android\assets\fonts\"
+copy "fonts\mnls.ttf"  "..\..\proj.android\assets\fonts\"
+
+mkdir "..\..\proj.android\assets\fonts\en\"
+copy "fonts\en\bold.ttf"  "..\..\proj.android\assets\fonts\en\"
+copy "fonts\en\normal.ttf" "..\..\proj.android\assets\fonts\en\"
 
 mkdir "..\..\proj.android\assets\prop\"
 copy "prop\global.xml" "..\..\proj.android\assets\prop\"

@@ -15,8 +15,7 @@
 class XOption : public XEOption
 {
 public:
-	XOption() 
-		: m_strcKeyCurrLang("english") { Init(); }
+	XOption();
 	virtual ~XOption() { Destroy(); }
 	// get/setter
 	GET_SET_ACCESSOR_CONST( const std::string&, strcKeyCurrLang );

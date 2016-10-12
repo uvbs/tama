@@ -38,6 +38,7 @@ void XDownloadTask::Go( void )
 	if( XBREAK( m_listReq.size() == 0 ) )	{
 		XTRACE("error go");
 		CallEventHandler( XWM_ERROR_DOWNLOAD, (DWORD) XDownloader::xERR_INVALID_REQUEST );
+		ClearEvent( XWM_ERROR_DOWNLOAD );
 		return;
 	}
 	m_bGo = TRUE;
@@ -64,7 +65,7 @@ XDownloadTask::xRECV_INFO XDownloadTask::GetCurrDownloadInfo( void )
 		xREQ_INFO reqInfo = *m_itor;
 		DWORD sizeFile = m_pDownloader->GetsizeFile();
 		reqInfo.sizeCurr = sizeFile;
-		recvInfo = reqInfo;
+		recvInfo.Set( reqInfo );
 	}
 	return recvInfo;
 }
@@ -161,52 +162,25 @@ int XDownloadTask::Process( float dt )
 				CallEventHandler( XWM_ERROR_DOWNLOAD, (DWORD)XDownloader::xOK );
 				m_RiseError = 0;
 			}
-			// 다운로더 내부에서 타임아웃이 발생했다면 에러 핸들링
-// 			if( m_pDownloader->GettimerTimeout().IsOver() ) {
-// 				m_pDownloader->GettimerTimeout().Off();
-// 				if( m_RiseError == 0 ) {
-// 					m_RiseError = 1;
-// //					XDownloader::xtError codeErr = m_pDownloader->GetErrorCode();
-// //					CallEventHandler( XWM_ERROR_DOWNLOAD, (DWORD) codeErr );
-// 					CallEventHandler( XWM_ERROR_DOWNLOAD, (DWORD)XDownloader::xERR_NO_RESPONSE );
-// 				}
-// 			} else {
-// 				// 에러가 있었으나 방금 해결됨.
-// 				if( m_RiseError ) {
-// 					// 문제가 해결된걸 알려줘야 함. <= 어따쓰는거지 -_-?
-// 					CallEventHandler( XWM_ERROR_DOWNLOAD, (DWORD) XDownloader::xOK );
-// 					m_RiseError = 0;
-// 				}
-// 			}
-
 			// 파일 하나를 다 받음.
 			if( m_pDownloader->GetbComplete() )	{
-				xREQ_INFO reqInfo;
-				{
-					reqInfo = *m_itor++;
-					if( reqInfo.strToRename.empty() == false )	{
-						// 받은 파일을 리네임 시킴
-// 						const auto size1 = XSYSTEM::GetFileSize( reqInfo.strDstFullpath.c_str() );
-// 						const auto size2 = XSYSTEM::GetFileSize( reqInfo.strToRename.c_str() );
-						// rename해야함.
-						// 원래 파일 삭제
-						XSYSTEM::RemoveFile( reqInfo.strToRename.c_str() );		
-// 						const _tstring str1 = C2SZ(reqInfo.strDstFullpath);
-// 						const _tstring str2 = C2SZ(reqInfo.strToRename);
-// 						XTRACE("%s(%d) => %s(%d)", str1.c_str(), size1
-// 																			, str2.c_str(), size2 );
-						XBREAK( XSYSTEM::RenameFile( reqInfo.strDstFullpath.c_str(), reqInfo.strToRename.c_str() ) == FALSE );
-					}
+				m_lastInfo = *m_itor++;;
+				if( m_lastInfo.strToRename.empty() == false )	{
+					// 받은 파일을 리네임 시킴
+					// 원래 파일 삭제
+					XSYSTEM::RemoveFile( m_lastInfo.strToRename.c_str() );
+					XSYSTEM::RenameFile( m_lastInfo.strDstFullpath, m_lastInfo.strToRename );
 				}
 				if( m_itor == m_listReq.end() ) {
 					// 모든 파일을 다 다운받음.
-					XTRACE("XDownloadTask Complete. call handler");
+					XTRACE("XDownloadTask: %d files download Complete", m_listReq.size() );
 					m_bComplete = TRUE;
 					m_bCallbackAll = FALSE;
 					m_bGo = FALSE;
 				} else {
-					XTRACE("XDownloadTask each Complete. next file....");
-					CallEventHandler( XWM_EACH_COMPLETE, (DWORD)(&reqInfo) );
+					XTRACE("XDownloadTask each Complete.%s", C2SZ( m_lastInfo.strDstFullpath ) );
+					XTRACE("-Next file:.%s", C2SZ( m_itor->strDstFullpath ) );
+					CallEventHandler( XWM_EACH_COMPLETE, 0/*, (DWORD)(&reqInfo)*/ );
 					// complete상태를 풀어줘서 Go 대기상태로 만듬.
 					m_pDownloader->ClearComplete();
 				}
@@ -214,16 +188,13 @@ int XDownloadTask::Process( float dt )
 		}
 
 	}
-	if( m_Error )
-	{
+	if( m_Error )	{
 		CallEventHandler( XWM_ERROR_DOWNLOAD, XDownloader::xERR_FAILED_REQUEST );
 		m_Error = 0;
 	}
 	// 다운로드가 다 끝나고 콜백호출을 아직 안했으면 호출함.
-	if( m_bComplete && m_bCallbackAll == FALSE )
-	{
+	if( m_bComplete && m_bCallbackAll == FALSE )	{
 		// 콜백호출까지 하면 다 마무리
-//		m_idxCurrDownload = 0;
 		m_itor = m_listReq.begin();
 		m_bCallbackAll = TRUE;
 		m_bComplete = FALSE;
@@ -234,8 +205,7 @@ int XDownloadTask::Process( float dt )
 		// 받은 파일의 에러검사.
 		if( XBREAK( m_listComplete.size() == 0 ) )
 			bSuccess = FALSE;
-		for( auto& info : m_listComplete )
-		{
+		for( auto& info : m_listComplete )	{
 			if( XBREAK( info.strDstFullpath.empty() == true ) )
 				bSuccess = FALSE;
 			if( XBREAK( info.strURL.empty() == true ) )
@@ -245,10 +215,13 @@ int XDownloadTask::Process( float dt )
 		if( bSuccess )
 		{
 			// 다운 다받은후 이벤트 발생시킬땐 에러가 없음을 보증하고 발생시킬것.
-			XTRACE("XDownloadTask Call handler");
+			XTRACE("XDownloadTask: Call handler: XWM_ALL_COMPLETE");
 			CallEventHandler( XWM_ALL_COMPLETE );
-		} else
+			ClearEvent( XWM_ALL_COMPLETE );
+		} else {
 			CallEventHandler( XWM_ERROR_DOWNLOAD, codeErr );
+			ClearEvent( XWM_ERROR_DOWNLOAD );
+		}
 		m_pDownloader->ClearComplete();
 	}
 	return 1;

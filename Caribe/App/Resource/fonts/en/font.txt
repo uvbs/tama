@@ -1,3 +1,0 @@
-title = bold.ttf
-body = normal.ttf
-unicode = ../normal.ttf

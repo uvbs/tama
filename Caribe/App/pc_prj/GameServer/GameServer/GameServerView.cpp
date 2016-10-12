@@ -104,6 +104,10 @@ void CGameServerView::OnDraw(CDC* pDC)
 	if( pWnd && MAIN ) {
 		_tstring str = XE::Format(_T("fps::%d\n"), MAIN->m_FPS );
 		// 클라이언트 들이 접속하는 소켓서버
+		static int s_numMax = 0;
+		
+		if( pSocketSvr->GetnumLogined() > s_numMax )
+			s_numMax = pSocketSvr->GetnumLogined();
 		XARRAYLINEAR_LOOP( MAIN->GetarySocketSvr(), XEWinSocketSvr*, pSocketSvr ) {
 			str += XE::Format( _T("[%s:%d] 접속자 수: %d/%d, %d/%d 최대큐:%d\n")
 												, pSocketSvr->GetszName()

@@ -52,6 +52,9 @@ cd ..\spr"
 del /q /f _*.spr
 cd "..\prop"
 del /q /f _*.*
+cd layout
+del /q /f _*.*
+cd ..
 cd ..\ui"
 del /q /f _*.png
 cd ..
