@@ -35,6 +35,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 
 import com.facebook.Request;
@@ -69,6 +71,15 @@ import com.pgman.auth.AuthConnectionFailListener;
 import com.pgman.auth.AuthConnectionListener;
 import com.pgman.auth.AuthResult;
 import com.pgman.auth.AuthUserInfoListener;
+//import com.google.android.gms.ads.*;
+//import android.widget.RelativeLayout;
+//import android.widget.RelativeLayout.*;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 public class XeActivity extends Activity implements Cocos2dxHelperListener {
 	public static XeActivity xeActivity;
@@ -98,7 +109,9 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 	public static final boolean debugLog = true;
 	public static final boolean debugLogFb = false;
 	Purchase consumeProduct;
-
+    //private AdView adView;
+	private RewardedVideoAd mAd;
+    
 	// @SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,10 +121,71 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 		this.mHandler = new Cocos2dxHandler(this);
 		mGLView = new XGLSurfaceView(this);
 		Cocos2dxHelper.init(this, this);
-		setContentView(mGLView);
+		//setContentView(mGLView);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//		com.pgman.util.Utility.setLocal( this, "ko" );
-//		Start();	// Softnyx IAP  MyMainActivity에서 호출함.
+        // Create and load the AdView.
+/*        adView = new AdView(this);
+        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+        adView.setAdSize(AdSize.BANNER);
+
+        // Create a RelativeLayout as the main layout and add the gameView.
+        android.widget.RelativeLayout 
+        mainLayout = new android.widget.RelativeLayout(this);
+        mainLayout.removeView(mGLView);
+        mainLayout.addView(mGLView);
+
+         Add adView to the bottom of the screen.
+        android.widget.RelativeLayout.LayoutParams 
+        adParams = new android.widget.RelativeLayout.LayoutParams(
+                android.widget.RelativeLayout.LayoutParams.MATCH_PARENT, 
+                android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
+        adParams.addRule(android.widget.RelativeLayout.ALIGN_PARENT_TOP);
+        mainLayout.addView(adView, adParams);
+		
+		
+		//setContentView(mGLView);
+        setContentView(mainLayout);
+        //
+        adView.setVisibility(View.VISIBLE);
+        adView.loadAd(new AdRequest.Builder()
+        .addTestDevice( AdRequest.DEVICE_ID_EMULATOR).build());
+*/        
+        setContentView(mGLView);
+        //
+        // Initialize the Mobile Ads SDK.
+        MobileAds.initialize(this, APP_ID);
+
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
+        loadRewardedVideoAd();
+
+        // Create the "retry" button, which tries to show an interstitial between game plays.
+        mRetryButton = ((Button) findViewById(R.id.retry_button));
+        mRetryButton.setVisibility(View.INVISIBLE);
+        mRetryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startGame();
+            }
+        });
+
+        // Create the "show" button, which shows a rewarded video if one is loaded.
+        mShowVideoButton = ((Button) findViewById(R.id.watch_video));
+        mShowVideoButton.setVisibility(View.INVISIBLE);
+        mShowVideoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showRewardedVideo();
+            }
+        });
+
+        // Display current coin count to user.
+        mCoinCountText = ((TextView) findViewById(R.id.coin_count_text));
+        mCoinCount = 0;
+        mCoinCountText.setText("Coins: " + mCoinCount);
+
+        startGame();
+        
 	}
 
 	@Override
@@ -802,6 +876,21 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 		Log.d(TAG, "xeActivity.CreateGoogleIAP:" + publicKey );
 	    CreateGoogleIAP( publicKey );
 	}
+	//////////////////////////////////////////////////////////////////////////////////////
+    private void loadRewardedVideoAd() {
+        if (!mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.loadAd(AD_UNIT_ID, new AdRequest.Builder().build());
+        }
+    }
+    private void startGame() {
+        // Hide the retry button, load the ad, and start the timer.
+//        mRetryButton.setVisibility(View.INVISIBLE);
+//        mShowVideoButton.setVisibility(View.INVISIBLE);
+        loadRewardedVideoAd();
+//        createTimer(COUNTER_TIME);
+//        mGamePaused = false;
+//        mGameOver = false;
+    }
 	/////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void showDialog(final String pTitle, final String pMessage) {
@@ -819,6 +908,10 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 	protected void onPause() {
 		super.onPause();
 		mGLView.onPause();
+//		if( adView != null ) {
+//			adView.pause();
+//		}
+        mRewardedVideoAd.pause(this);
 	}
 	@Override
 	protected void onResume() {
@@ -828,12 +921,19 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 
 		super.onResume();
 		mGLView.onResume();
+        mRewardedVideoAd.resume(this);
+//		if( adView != null ) {
+//			adView.resume();
+//		}
 	}
 	@Override
 	public void onDestroy() {
 		Log.d(TAG, "XeActivity.onDestroy()");
 		mGLView.onDestroy();
 		super.onDestroy();
+//		if( adView != null ) {
+//			adView.destroy();
+//		}
 	}
 	@Override
 	public boolean onKeyDown(int KeyCode, KeyEvent event) {
