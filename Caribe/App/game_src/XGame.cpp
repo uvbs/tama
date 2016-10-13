@@ -1,6 +1,10 @@
 ﻿#include "stdafx.h"
+#include "XWndWorld.h"
+#include "XWndTech.h"
 #include "XGame.h"
 #include "sprite/SprMng.h"
+#include "sprite/SprObj.h"
+#include "sprite/SprDat.h"
 #include "sprite/Key.h"
 #include "XParticleMng.h"
 #include "XFramework/XEToolTip.h"
@@ -11,6 +15,7 @@
 #include "XSystem.h"
 #ifdef WIN32
 #include "CaribeView.h"
+#include "XSceneTest.h"
 #endif // WIN32
 #ifdef _VER_IOS
 	#include "objc/xe_ios.h"
@@ -33,6 +38,7 @@
 #include "XSceneWorld.h"
 #include "XSceneTitle.h"
 #include "XSceneBattle.h"
+#include "XScenePrivateRaid.h"
 #include "XSceneUnitOrg.h"
 #include "XSceneShop.h"
 #include "XSceneHero.h"
@@ -68,6 +74,11 @@
 #include "client/XAppDelegate.h"
 #include "XDefNetwork.h"
 #include "XFramework/XEProfile.h"
+#include "XImageMng.h"
+#include "client/XCheatOption.h"
+#ifdef _CHEAT
+#include "OpenGL2/XTextureAtlas.h"
+#endif // _CHEAT
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -111,6 +122,7 @@ bool XGame::s_bLoaded = false;
 
 _tstring XGame::s_strSessionKey;		// 임시
 std::list<_tstring> XGame::s_masterMessages;
+XGame* XGame::s_pInstance = nullptr;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -120,7 +132,7 @@ std::list<_tstring> XGame::s_masterMessages;
 XGame::XGame() 
 { 
 	GAME = this;
-
+	s_pInstance = this;
 	Init();
 	XWndButton::s_modeAnimationDefault = XE::xBA_MOVE;	// 버튼들의 눌릴때 애니메이션 방식
 #ifdef _XUZHU
@@ -134,7 +146,9 @@ XGame::XGame()
 void XGame::Destroy() 
 {
 	GAME = nullptr;
+	s_pInstance = nullptr;
 	XTRACE("XGame::Destroy\n");
+	XAccount::sDestroyPlayer();
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcProfile );
 	SAFE_RELEASE2( IMAGE_MNG, m_psfcBgPopup );
 	SAFE_DELETE(m_pGuild);
@@ -164,8 +178,12 @@ const std::string XGame::OnSelectLanguageKey()
 	// 옵션 로딩및 적용
 	m_pOption = new XOption();
 	m_pOption->Load();
+	const auto strcKey = m_pOption->GetstrcKeyCurrLang();
+	if( strcKey == "english" ) {
+		XFontMng::s_aryFonts[2] = _T("mnls.ttf");
+	}
 //	XE::LANG.SetSelectedKey( m_pOption->GetstrcKeyCurrLang() );
-	return m_pOption->GetstrcKeyCurrLang();
+	return strcKey;
 }
 
 bool XGame::IsbFirst() const
@@ -177,6 +195,10 @@ bool XGame::IsbFirst() const
 void XGame::DidFinishCreated()
 {
 	XTRACE( "XGame::Create()" );
+//	const auto strcKey = m_pOption->GetstrcKeyCurrLang();
+// 	if( strcKey == "english" ) {
+// 		XFontMng::s_aryFonts[2] = _T( "../normal.ttf" );
+//	}
 	const auto bMusic = m_pOption->GetbMusic();
 	const auto bSound = m_pOption->GetbSound();
 	
@@ -210,12 +232,13 @@ void XGame::DidFinishCreated()
 #endif // WIN32
 	LoadTextTable();
 
-	std::string strPath = XE::MakePath( "", "LastUpdate.txt" );
-	CONSOLE( "Find LastUpdate.txt.........." );
-	if( !XE::IsExistFileInWork( strPath.c_str() ) ) {
-		CONSOLE( "no have LastUpdate.txt....copy package to work" );
-		XE::CopyPackageToWork( strPath.c_str() );
-	}
+	// 이건 풀버전 apk일때만 필요함.
+// 	std::string strPath = XE::MakePath( "", "LastUpdate.txt" );
+// 	CONSOLE( "Find LastUpdate.txt.........." );
+// 	if( !XE::IsExistFileInWork( strPath.c_str() ) ) {
+// 		CONSOLE( "no have LastUpdate.txt....copy package to work" );
+// 		XE::CopyPackageToWork( strPath.c_str() );
+// 	}
 	FONTMNG->SetpDelegate( this );
 	//
 	//////////////////////////////////////////////////////////////////////////
@@ -233,11 +256,11 @@ void XGame::DidFinishCreated()
 #else
 	CONNECT_INI.Load( _T( "connect.ini" ) );
 	if( CONNECT_INI.GetstrcIPLogin().empty() ) {
-		XALERT("%s", "로긴서버 아이피 지정되지 않음.");
+		XALERT("%s", "Unspecified login server IP.");
 	}
 #ifdef _XPATCH
 	if( CONNECT_INI.GetstrcIPPatch().empty() ) {
-		XALERT( "%s", "패치서버 아이피 지정되지 않음." );
+		XALERT( "%s", "Unspecified patch server IP." );
 	}
 #endif // _XPATCH
 	#ifdef WIN32
@@ -273,6 +296,7 @@ void XGame::DidFinishCreated()
 		m_pSceneMng->AddSceneInfo( xSC_GUILD, xSC_LOADING );
 		m_pSceneMng->AddSceneInfo( xSC_GUILD_SHOP, xSC_LOADING );
 		m_pSceneMng->AddSceneInfo( xSC_OPENNING, xSC_LOADING );
+		m_pSceneMng->AddSceneInfo( xSC_INGAME, xSC_LOADING );
 	}
 //	CONSOLE( "GetViewportHeight:%d", (int)GRAPHICS->GetViewportHeight() );
 //	CONSOLE( "vc.y:%d", (int)( GRAPHICS->GetViewportHeight() * 2.f - 0 ) );
@@ -282,7 +306,7 @@ void XGame::DidFinishCreated()
 	CreateGameResource();
 #endif 
 	// 디폴트 프로핈하진 읽음.
-	m_psfcProfile = IMAGE_MNG->Load( true, PATH_UI("fb_empty.png"), XE::xPF_RGB565 );
+	m_psfcProfile = IMAGE_MNG->Load( PATH_UI("fb_empty.png"), XE::xPF_RGB565 );
 	//
 	m_timerSec.Set( 3.f );
 	m_timerMin.Set( xMIN_TO_SEC(1) );
@@ -335,6 +359,29 @@ void XGame::DidFinishCreated()
 	//
 //  	m_psoTest = new XSprObj(_T("unit_paladin.spr"));
 //  	m_psoTest->SetAction( 98 );
+#ifdef _CHEAT
+	if( XAPP->m_bDebugMode ) {
+		const XE::VEC2 size( 32, 32 );
+		XE::VEC2 v( XE::GetGameWidth() - size.w, 0 );
+		auto 
+		pButt = new XWndButtonDebug( v.x, v.y,
+																 size.w, size.h,
+																 _T( "->" ),
+																 GetpfdSystem() );
+		pButt->SetstrIdentifier( "butt.debug.minus" );
+		pButt->SetEvent( XWM_CLICKED, this, &XGame::OnDebug, 1 );
+		Add( pButt );
+		v.x -= size.w;
+		pButt = new XWndButtonDebug( v.x, v.y,
+																 size.w, size.h,
+																 _T( "<-" ),
+																 GetpfdSystem() );
+		pButt->SetstrIdentifier( "butt.debug.plus" );
+		pButt->SetEvent( XWM_CLICKED, this, &XGame::OnDebug, 0 );
+		Add( pButt );
+		v.x -= size.w;
+	}
+#endif // _CHEAT
 	SetbUpdate( true );
 } // Create()
 
@@ -346,24 +393,22 @@ void XGame::CopyLuaToWork()
 void XGame::CreateGameResource()
 {
 	XBREAK( s_bLoaded == true );
-// #ifdef _XPATCH
-// 	// 패치로 text_ko.txt가 갱신되었을 수도 있으니 다시 로딩함.
-// 	SAFE_DELETE( TEXT_TBL );
-// //	LoadTextTable();
-// #endif
 	// 공통 리소스 로딩.
 	XGameCommon::CreateCommon();
-// 	XPropBgObj::sGet()->LoadProp( _T("propObj.xml") );
 	// 패치 클라가 들어가면 게임관련 리소스는 패치클라가 끝난후 로딩된다.
 	XWndButton::SetDefaultEvent( XWM_SOUND_DOWN, this, &XGame::OnSoundDown );
 	//
 	XLOGXN("load main layout: layout.xml");
 	// 메인 레이아웃 생성
-//	XAppLayout::sCreate(_T("layout.xml"), nullptr );
 	XLayout::sCreateMain(_T("layout.xml"), XAppDelegate::sGet() );
 	//
 	m_psoBrilliant = new XSprObj( _T("brilliant.spr") );
 	m_psoBrilliant->SetAction( 1 );
+#ifdef _CHEAT
+// 	m_psoMouse = new XSprObj( _T("ui_levelup.spr") );
+// 	m_psoMouse->SetAction( 3 );
+
+#endif // _CHEAT
 	s_bLoaded = true;
 } // createGameResource
 
@@ -399,15 +444,20 @@ XSceneBase* XGame::GetpScene()
 }
 
 // idScene에 해당하는 씬객체를 생성해서 돌려줘야 한다.
-XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, SceneParamPtr& spParam )
+XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, XSPSceneParam& spParam )
 {
 	XSceneBase *pScene = nullptr;
 	GAME->ClearBrilliant();
 	switch( idScene )	{
-	case XGAME::xSC_START:
+	case XGAME::xSC_START: {
 		XAccount::sGetPlayer().reset();
 #ifdef _XSINGLE
+#ifdef _XTEST
+//		pSceneMng->SetidNextScene( XGAME::xSC_INGAME );
+		pSceneMng->SetidNextScene( XGAME::xSC_TEST );
+#else
 		pSceneMng->SetidNextScene( XGAME::xSC_INGAME );
+#endif // _XTEST
 #else
 #ifdef _XPATCH
 		pSceneMng->SetidNextScene( XGAME::xSC_PATCH );
@@ -415,7 +465,7 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, Scen
 		pSceneMng->SetidNextScene( XGAME::xSC_TITLE );
 #endif
 #endif
-		break;
+	} break;
 	case XGAME::xSC_OPENNING:
 // 		pScene = new XSceneOpening( this, spParam );
 // 		pScene->SetstrIdentifier( "scene.opening" );
@@ -444,10 +494,22 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, Scen
 		pScene = new XSceneLegion( this );
 		pScene->SetstrIdentifier( "scene.legion" );
 		break;
-	case XGAME::xSC_INGAME:
-		pScene = new XSceneBattle( this/*, spParam */);
+	case XGAME::xSC_INGAME: {
+#ifdef _XSINGLE
+		// 싱글에선 가상의 파라메터를 넣어준다.
+		//auto spBattleParam = XSceneBattle::sSetBattleParam();
+		auto spBattleParam = XScenePrivateRaid::sSetPrivateRaidParam();
+#else
+		auto spBattleParam = std::static_pointer_cast<xSceneBattleParam>(spParam);
+#endif // _XSINGLE
+		if( spBattleParam->IsNormal() ) {
+			pScene = new XSceneBattle( this, spBattleParam );
+		} else
+		if( spBattleParam->IsPrivateRaid() ) {
+			pScene = new XScenePrivateRaid( this, spBattleParam );
+		}
 		pScene->SetstrIdentifier( "scene.battle" );
-		break;
+	} break;
 	case XGAME::xSC_STORAGE:
 		pScene = new XSceneStorage(this);
 		pScene->SetstrIdentifier( "scene.storage" );
@@ -488,6 +550,12 @@ XEBaseScene* XGame::DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, Scen
 		pScene = new XScenePatchClient();
 		pScene->SetstrIdentifier( "scene.patch" );
 		break;
+#ifdef _XTEST
+	case XGAME::xSC_TEST:
+		pScene = new XSceneTest( this, spParam );
+		pScene->SetstrIdentifier( "scene.test" );
+		break;
+#endif // _XTEST
 	case XGAME::xSC_LOADING: {
 		pScene = new XSceneLoading( this, spParam );
 		pScene->SetstrIdentifier( "scene.loading" );
@@ -507,7 +575,7 @@ void XGame::DelegateOnDestroy( XEBaseScene *pScene )
 	DestroySeq();
 }
 
-void XGame::DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, SceneParamPtr spParam ) 
+void XGame::DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, XSPSceneParam spParam ) 
 {
 	if( idSceneDestroy == xSC_WORLD && idSceneNext == xSC_START ) {
 		if( spParam && spParam->m_strParam == "change_lang" ) {
@@ -538,12 +606,11 @@ int XGame::Process( float dt )
 	ProcessConnection();
 	XConnector::sGet()->Process( dt );
 	//
-// 	if( m_psoTest ) {
-// 		m_psoTest->SetAction( 98 );
-// 		m_psoTest->SetFlipHoriz( TRUE );
-// 		m_psoTest->SetmultiplySpeed( 4.95f );
-// 		m_psoTest->FrameMove( dt );
-// 	}
+#ifdef _CHEAT
+	if( m_psoMouse ) {
+		m_psoMouse->FrameMove( dt );
+	}
+#endif // _CHEAT
 		//
 	XEContent::Process( dt );
 		//
@@ -566,7 +633,7 @@ int XGame::Process( float dt )
 		ProcessAP( dt );
 	}
 	// 1분 타이머
-	if( m_timerMin.IsOver() ) {
+	if( SCENE_WORLD && m_timerMin.IsOver() ) {
 		m_timerMin.Reset();
 		// 무역상 데이터 동기화 요청.
 #ifndef _XSINGLE
@@ -740,19 +807,25 @@ void XGame::Draw()
 		}
 	}
 	if( XAPP->m_bViewMemoryInfo ) {
-		const auto sizeTotalVMem = XSurface::sGetsizeTotalVMem();
+		const auto sizeTotalVMem = XImageMng::s_sizeTotalVMem 
+															+ XSprDat::s_sizeVM
+															+ XTextureAtlas::sGetSizeVM();
 		XE::VEC2 v(39,92);
 		PUT_STRING_STROKE( v.x, v.y, XCOLOR_YELLOW
-									, XFORMAT("TotalXSurface vMem=%sM"
-											, XE::NumberToMoneyString(sizeTotalVMem / 1024 / 1024)) );
+											 , XFORMAT( "Total vMem=%sM"
+																	, XE::NtS( sizeTotalVMem / 1024 / 1024 ) ) );
+		v.y += 10.f;
+		PUT_STRING_STROKE( v.x, v.y, XCOLOR_YELLOW
+											 , XFORMAT( "Atlas vMem=%sM"
+																	, XE::NtS( XTextureAtlas::sGetSizeVM() / 1024 / 1024 ) ) );
 		v.y += 10.f;
 		PUT_STRING_STROKE( v.x, v.y, XCOLOR_YELLOW
 									, XFORMAT("ImageMng vMem=%sM"
-											, XE::NumberToMoneyString(XImageMng::s_sizeTotalVMem / 1024 / 1024)) );
+											, XE::NtS(XImageMng::s_sizeTotalVMem / 1024 / 1024)) );
 		v.y += 10.f;
 		PUT_STRING_STROKE( v.x, v.y, XCOLOR_YELLOW
 									, XFORMAT("SprMng vMem=%sM"
-											, XE::NumberToMoneyString(XSprMng::s_sizeTotalVM / 1024 / 1024)) );
+											, XE::NtS(XSprDat::s_sizeVM / 1024 / 1024)) );
 	}
 #ifdef WIN32
 	if( XWnd::s_bDrawMouseOverWins && XWnd::s_aryMouseOver.size() ) {
@@ -782,14 +855,39 @@ void XGame::Draw()
 		}
 // 		PUT_STRING_STROKE( vMouse.x + 100.f, vMouse.y, XCOLOR_YELLOW, strt.c_str() );
 	}
+	if( XAPP->IsBitOption( XGAME::xBO_SHOW_DPCALL ) ) {
+		const int cnt1 = XGraphics::s_fpsDPCallBatch.GetFps();
+		const int cnt2 = XGraphics::s_fpsDPCallNoBatch.GetFps();
+		const int cnt3 = XGraphics::s_fpsDPCallNormal.GetFps();
+		const int fps = XClientMain::s_fps.GetFps();
+		const int avgSum = (int)(((cnt1 + cnt2 + cnt3) / 3) / (float)fps);
+		PUT_STRINGF( 31, 32, XCOLOR_WHITE, "dpcall:%d(%d+%d+%d)", avgSum, cnt1, cnt2, cnt3 );
+	}
 #endif // WIN32
 #endif // _CHEAT
-// 	if( m_psoTest ) {
-// 		auto vMouse = INPUTMNG->GetMousePos();
-// //		m_psoTest->Draw( vMouse );
-//  		m_psoTest->Draw( XE::GetGameSize() * 0.75f );
-// 	}
+	if( m_psoMouse ) {
+		auto vMouse = INPUTMNG->GetMousePos();
+		m_psoMouse->Draw( vMouse );
+	}
 } // void XGame::Draw()
+
+void XGame::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat* pFontDat )
+{
+	XEContent::DrawDebugInfo( x, y, col, pFontDat );
+#ifdef _CHEAT
+	if( XAPP->m_idxViewAtlas >= 0 ) {
+		auto spAtlas = XTextureAtlas::sGetspAtlasByIdx( XAPP->m_idxViewAtlas );
+		if( spAtlas ) {
+			auto idTex = spAtlas->m_idTex;
+//			auto idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
+			if( idTex ) {
+				GRAPHICS_GL->FillRectSize( XE::VEC2(0,0), XE::VEC2(356,356), XCOLOR_RGBA(128,128,128,200) );
+				GRAPHICS_GL->DrawTexture( idTex, 0, 0, 356.f, 356.f, FALSE );
+			}
+		}
+	}
+#endif // _CHEAT
+}
 
 void XGame::OnLButtonDown( float x, float y )
 {
@@ -806,8 +904,9 @@ void XGame::OnLButtonDown( float x, float y )
 				bOk = false;		// 튜토중단 버튼위치를 눌렀으면 아래 listAllow검사는 안함.
 		}
 	} else {
+		if( GetpScene() )
 		// 컷씬중이 아닌데 블로킹 되어있으면 해제함.
-		GetpScene()->SetActive( true );
+			GetpScene()->SetActive( true );
 	}
 	if( m_listAllowWnd.size() && bOk ) {
 		if( IsOutsideClickedAllowWnd( XE::VEC2( x, y ) ) ) {
@@ -929,7 +1028,7 @@ int XGame::OnGotoStart( XWnd* pWnd, DWORD p1, DWORD p2 )
 	GAMESVR_SOCKET->ClearConnection();
 //	XAccount::sGetPlayer().reset();
 	ID idParam = p1;
-	SceneParamPtr spParam = std::make_shared<XGAME::xSPM_BASE>();
+	XSPSceneParam spParam = std::make_shared<XGAME::xSceneParamBase>();
 	if( idParam == 1 )
 		spParam->m_strParam = "change_lang";
 	GAME->GetpScene()->DoExit( XGAME::xSC_START, spParam );
@@ -941,6 +1040,8 @@ void XGame::OnCheatMode()
 {
 	if( m_pSceneMng )
 		m_pSceneMng->OnCheatMode();
+	xSET_SHOW( this, "butt.debug.plus", XAPP->m_bDebugMode != 0 );
+	xSET_SHOW( this, "butt.debug.minus", XAPP->m_bDebugMode != 0 );
 }
 
 int XGame::OnIpConfig( XWnd *pWnd, DWORD, DWORD )
@@ -1074,9 +1175,9 @@ void XGame::OnResume()
 				*/
 //				m_pSceneMng->DoForceDestroyCurrScene();
 				// img,spr,font등 현재 안쓰고 있는것들 모두 해제하여 다음 restore때 필요없는것들을 restore하지 않도록 한다. 이것은 resume시간을 빠르게 하기 위해서다.
-				IMAGE_MNG->DoFlushCache();
-				SPRMNG->DoFlushCache();
-				FONTMNG->DoFlushCache();
+// 				IMAGE_MNG->DoFlushCache();
+// 				SPRMNG->DoFlushCache();
+// 				FONTMNG->DoFlushCache();
 			}
 		} else  {
 			XConnector::sGet()->SetidNextFSM( xConnector::xFID_ONLINE );
@@ -1090,9 +1191,9 @@ void XGame::OnResume()
 			if( sGetpWorld() ) {
 				sGetpWorld()->Restore();
 			}
-			IMAGE_MNG->DoFlushCache();
-			SPRMNG->DoFlushCache();
-			FONTMNG->DoFlushCache();
+// 			IMAGE_MNG->DoFlushCache();
+// 			SPRMNG->DoFlushCache();
+// 			FONTMNG->DoFlushCache();
 		}
 	}
 	CONSOLE("OnResume: finished");
@@ -1109,8 +1210,9 @@ void XGame::OnPause()
 	if( GAMESVR_SOCKET->IsConnected() ) {
 		GAMESVR_SOCKET->SendGotoHome( 10 );	// xx초 이내 다시 돌아오면 끊기지않음.
 	}
+	// 모든 하드웨어 자원을 날린다.
+	XEContent::OnPause();
 }		
-
 
 // 구글/iOS의 인앱결제로 szSku상품을 사라. 이것의 결과는 비동기로 돌아온다.
 int XGame::DoAsyncBuyIAP( LPCTSTR szSku, const std::string& strcPayload, int price )
@@ -1307,7 +1409,7 @@ void XGame::DelegateBeforeDraw( XWnd *pWnd )
 
 void XGame::Update()
 {
-	XEContent::Update();	
+	XEContent::Update();
 }
 
 void XGame::sPushMasterMessage(_tstring& str)
@@ -1384,7 +1486,7 @@ int XGame::OnClickItemTooltip( XWnd* pWnd, DWORD p1, DWORD p2 )
 	if( pProp->IsSoul() )
 		XGAME::UpdateHeroTooltip( pProp->strIdHero, pPopup, 0 );
 	else
-		XGAME::UpdateItemTooltip( pProp, pPopup, 0 );
+		XGAME::UpdateItemTooltip( pProp, pPopup, _T(""), 0 );
 //	pPopup->SetLayout( _T( "layout_item.xml" ) );
 	AddWndTop( pPopup );
 	return 1;
@@ -1483,7 +1585,7 @@ int XGame::OnGotoAppStore( XWnd* pWnd, DWORD p1, DWORD p2 )
 #ifdef _SOFTNYX
 	JniHelper::LoadMarketURL( "http://store.softnyx.com/app/detail.aspx?seq=3237" );			// 현재 테스트라 안됩니다
 #else
-	JniHelper::LoadMarketURL( "market://details?id=com.gemtree.caribe" );			// 현재 테스트라 안됩니다
+	JniHelper::LoadMarketURL( "market://details?id=com.gemtree2.caribe" );			// 현재 테스트라 안됩니다
 #endif
 #endif
 // #ifdef _VER_ANDROID
@@ -1989,6 +2091,8 @@ void XGame::OnRecvProfileImageByFacebook( const std::string& strcFbUserId, DWORD
 
 void XGame::DoRequestPlayerProfileImg( XSPAcc spAcc )
 {
+	if( !spAcc )
+		return;
 	if( spAcc->GetstrFbUserId().empty() )
 		return;
 	XFacebook::sGet()->SetstrcFbUserId( SZ2C( spAcc->GetstrFbUserId() ) );
@@ -2378,7 +2482,7 @@ int XGame::OnClickDebugShowLog( XWnd* pWnd, DWORD p1, DWORD p2 )
 			XSYSTEM::strReplace( szBuff, _T( '\r' ), _T( ' ' ) );
 			auto pText = new XWndTextString( v,
 																			szBuff,
-																			FONT_NANUM,
+																			FONT_MNLS,
 																			sizeFont );
 	//			pText->SetLineLength( 100 );
 			pText->SetLineLength( pScrlView->GetSizeLocal().w - 10 );
@@ -2396,4 +2500,102 @@ int XGame::OnClickDebugShowLog( XWnd* pWnd, DWORD p1, DWORD p2 )
 	} // p1 == 0
 	return 1;
 }
+
 #endif // _CHEAT
+
+/**
+ @brief 
+*/
+int XGame::OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 )
+{
+#ifdef _CHEAT
+//	CONSOLE("%s", __TFUNC__);
+	//
+	auto fmtAtlas = XE::xPF_NONE;
+	ID idTex = 0;
+	if( p1 == 0 ) {
+		if( XAPP->m_idxViewAtlas >= 0 )
+			--XAPP->m_idxViewAtlas;
+//		fmtAtlas = GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
+// 		idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas  );
+	} else
+	if( p1 == 1 ) {
+		if( XAPP->m_idxViewAtlas < (int)XTextureAtlas::sGetNumAtlas() - 1 )
+			++XAPP->m_idxViewAtlas;
+// 		fmtAtlas = XTextureAtlas::sGet()->GetfmtByidxAtlas( XAPP->m_idxViewAtlas );
+// 		idTex = XTextureAtlas::sGet()->GetidTex( XAPP->m_idxViewAtlas );
+	}
+	if( p1 == 0 || p1 == 1 ) {
+		auto spAtlas = XTextureAtlas::sGetspAtlasByIdx( XAPP->m_idxViewAtlas );
+		if( spAtlas ) {
+			fmtAtlas = spAtlas->m_FormatSurface;
+			idTex = spAtlas->m_idTex;
+			int byteAll = XTextureAtlas::sGetBytesAll();
+			CONSOLE( "tag:%s Atlas=(%d/%d), fmt=%s idTex=%d, size=%.0fx%.0f, refCnt=%d, byteAll=%s",
+							 C2SZ( spAtlas->m_strTag ),
+							 XAPP->m_idxViewAtlas,
+							 XTextureAtlas::sGetNumAtlas(),
+							 XE::GetstrPixelformat( fmtAtlas ),
+							 idTex,
+							 spAtlas->m_Size.x, spAtlas->m_Size.y,
+							 spAtlas->m_refCnt,
+							 XE::NtS( byteAll ));
+		}
+	}
+
+#endif // _CHEAT
+	return 1;
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 특성연구 완료 핸들러
+*/
+void XGame::OnRecvResearchCompleted( XSPHero pHero, ID idAbil, int point )
+{
+	auto pProp = XPropTech::sGet()->GetpNode( idAbil );
+	if( XBREAK( pProp == nullptr ) )
+		return;
+	// 현재 월드씬이면 바로 띄우고 아니면 큐에 보관했다가 월드맵 진입하면 띄운다.
+	const _tstring str = XE::Format( XTEXT( 2029 ), XTEXT( pProp->idName ) );	// "아무개"의 연구가 완료되었습니다.
+	if( SCENE_WORLD && !GAME->IsPlayingSeq() ) {
+		auto pPopup = new XWndResearchComplete( pHero, idAbil, point );
+		SCENE_WORLD->Add( pPopup );
+	} else {
+		auto& listAlert = GAME->GetlistAlertWorld();
+		xAlertWorld alert;
+		alert.m_Type = xAW_RESEARCH_COMPLETE;
+		alert.m_snHero = pHero->GetsnHero();
+		alert.m_idParam = idAbil;
+		alert.m_Level = point;
+		listAlert.Add( alert );
+	}
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 타입에 따라 훈련완료창을 띄운다.
+*/
+void XGame::DoPopupTrainComplete( xtTrain train, XSPHero pHero, int level )
+{
+	switch( train ) {
+	case XGAME::xTR_LEVEL_UP: {
+		auto pPopup = new XWndTrainCompleteLevel( pHero );
+		Add( pPopup );
+	} break;
+	case XGAME::xTR_SQUAD_UP: {
+		auto pAlert = new XGameWndAlert( _T( "" ), nullptr, XWnd::xOK );
+		if( pAlert ) {
+			GAME->GetpScene()->Add( pAlert );
+			pAlert->SetbModal( TRUE );
+		}
+	} break;
+	case XGAME::xTR_SKILL_ACTIVE_UP:
+	case XGAME::xTR_SKILL_PASSIVE_UP: {
+		const _tstring str = pHero->GetsidSkill( train );
+		auto pPopup
+			= new XWndSkillTrainComplete( pHero, str, level );
+	} break;
+	default:
+		XBREAK( 1 );
+		break;
+	}
+}

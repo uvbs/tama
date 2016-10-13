@@ -9,7 +9,7 @@
 #include "_Wnd2/XWnd.h"
 #include "_Wnd2/XWndButton.h"
 #include "_Wnd2/XWndPopup.h"
-#include "etc/XSurface.h"
+//#include "etc/XSurface.h"
 #include "XPropTech.h"
 
 class XHero;
@@ -65,7 +65,7 @@ private:
 	}
 	void Destroy();
 public:
-	XWndAbilButton( XHero *pHero, XGAME::xtUnit unit, XPropTech::xNodeAbil *pNodeAbil, const XE::VEC2& vPos );
+	XWndAbilButton( XSPHero pHero, XGAME::xtUnit unit, XPropTech::xNodeAbil *pNodeAbil, const XE::VEC2& vPos );
 	virtual ~XWndAbilButton() { Destroy(); }
 	//
 	GET_SET_ACCESSOR( bool, bInRightPanel );
@@ -99,3 +99,26 @@ private:
 	BOOL OnCreate() override;
 	void Update() override;
 }; // class XWndResearchConfirm
+
+/****************************************************************
+* @brief 
+* @author xuzhu
+* @date	2016/10/02 15:44
+*****************************************************************/
+class XWndResearchComplete : public XWndPopup
+{
+public:
+	XWndResearchComplete( XSPHero pHero, ID idAbil, int point );
+	~XWndResearchComplete() { Destroy(); }
+	// get/setter
+	// public member
+private:
+	// private member
+	int m_Test = 0;
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	BOOL OnCreate() override;
+	void Update() override;
+}; // class XWndResearchComplete

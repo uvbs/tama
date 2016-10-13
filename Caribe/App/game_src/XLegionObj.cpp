@@ -12,6 +12,7 @@
 #include "XBattleField.h"
 #include "XSkillMng.h"
 #include "XStatistic.h"
+#include "XFramework/Game/XEWndWorld.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #include "XGame.h"
@@ -29,7 +30,7 @@ using namespace XGAME;
 
 ////////////////////////////////////////////////////////////////
 int XLegionObj::s_numObj = 0;		// 메모리 릭 추적용
-XLegionObj::XLegionObj( /*XAccount *pAccount, */LegionPtr& spLegion, BIT bitCamp, BOOL )
+XLegionObj::XLegionObj( /*XAccount *pAccount, */XSPLegion& spLegion, BIT bitCamp, BOOL )
 {
 	Init();
 	
@@ -62,14 +63,12 @@ BOOL XLegionObj::CreateLegion( XWndBattleField *pWndWorld,
 								XGAME::xtLegionOption bitOption )
 {
 	XE::VEC2 vDist(166 * 1.5f,117 * 1.5f);	// 분대간 간격
-	int col = m_spLegion->GetarySquadrons().GetMax() / 5;	// 몇 라인까지 나오는가
-	int mod = m_spLegion->GetarySquadrons().GetMax() % 5;	// 
+	int col = m_spLegion->GetMaxSquadSlot() / 5;	// 몇 라인까지 나오는가
+	int mod = m_spLegion->GetMaxSquadSlot() % 5;	// 
 //	BIT bitSide = m_Camp.GetbitCamp(); // ( idxLegion == 0 ) ? XGAME::xSIDE_PLAYER : XGAME::xSIDE_OTHER;
-	for( int i = 0; i < col; ++i )
-	{
-		for( int j = 0; j < 5; ++j )
-		{
-			XSquadron *pSquad = m_spLegion->GetSquadron( i * 5 + j );
+	for( int i = 0; i < col; ++i )	{
+		for( int j = 0; j < 5; ++j )		{
+			auto pSquad = m_spLegion->GetpSquadronByidxPos( i * 5 + j );
 			bool bCreate = true;
 			if( bitOption & XGAME::xLO_NO_CREATE_DEAD ) {
 				if( pSquad && pSquad->GetpHero()->GetbLive() == false )
@@ -86,8 +85,8 @@ BOOL XLegionObj::CreateLegion( XWndBattleField *pWndWorld,
 				{
 					XBREAK( pSquad->GetnumUnit() > XGAME::MAX_UNIT_SMALL );
 					XSquadObj *pSquadObj = new XSquadObj( GetThis(), pSquad, vCurr );
-					pSquadObj->CreateSquad( pWndWorld, m_Camp );
-					AddSquad( XSPSquad( pSquadObj ) );
+					pSquadObj->CreateUnitAndHero( pWndWorld, m_Camp );
+					AddSquad( XSPSquadObj( pSquadObj ) );
 				}
 			}
 		}
@@ -100,13 +99,13 @@ BOOL XLegionObj::CreateLegion( XWndBattleField *pWndWorld,
 		else
 			vCurr.x = vwStart.x + ( col * vDist.w );
 		vCurr.y = vwStart.y + ( j * vDist.h );
-		XSquadron *pSquad = m_spLegion->GetSquadron( col * 5 + j );
+		auto pSquad = m_spLegion->GetpSquadronByidxPos( col * 5 + j );
 		if( pSquad )
 		{
 			XSquadObj *pSquadObj = new XSquadObj( GetThis(), pSquad, vCurr );
 			XPropUnit::xPROP *pProp = PROP_UNIT->GetpProp( pSquadObj->GetpHero()->GetUnit() );
-			pSquadObj->CreateSquad( pWndWorld, m_Camp );
-			AddSquad( XSPSquad( pSquadObj ) );
+			pSquadObj->CreateUnitAndHero( pWndWorld, m_Camp );
+			AddSquad( XSPSquadObj( pSquadObj ) );
 		}
 	}
 	return TRUE;	
@@ -117,9 +116,9 @@ BOOL XLegionObj::CreateLegionDebug( XWndBattleField *pWndWorld,
 									XE::VEC3 vwStart, 
 									XGAME::xtLegionOption bitOption )
 {
-	vwStart.y = pWndWorld->GetpWorld()->GetvwSize().h / 2.f;
+	vwStart.y = pWndWorld->GetspWorld()->GetvwSize().h / 2.f;
 //	BIT bitSide = m_Camp.GetbitCamp(); // ( idxLegion == 0 ) ? XGAME::xSIDE_PLAYER : XGAME::xSIDE_OTHER;
-	XSquadron *pSquad = m_spLegion->GetSquadron( 2 );
+	auto pSquad = m_spLegion->GetpSquadronByidxPos( 2 );
 #ifdef _XSINGLE
 	m_spLegion->SetpLeader( pSquad->GetpHero() );
 #endif
@@ -128,7 +127,7 @@ BOOL XLegionObj::CreateLegionDebug( XWndBattleField *pWndWorld,
 	{
 		XSquadObj *pSquadObj = new XSquadObj( GetThis(), pSquad, vwStart );
 		pSquadObj->CreateSquadsDebug( pWndWorld, m_Camp );
-		AddSquad( XSPSquad( pSquadObj ) );
+		AddSquad( XSPSquadObj( pSquadObj ) );
 	}
 	return TRUE;
 }
@@ -136,11 +135,12 @@ BOOL XLegionObj::CreateLegionDebug( XWndBattleField *pWndWorld,
 /**
  @brief 분대객체들을 만든다.
 */
-bool XLegionObj::CreateLegion2( XWndBattleField *pWndWorld, 
+bool XLegionObj::CreateSquadObjList( XWndBattleField *pWndWorld, 
 																const XE::VEC3& vwStart, 
 																xtLegionOption bitOption )
 {
-	const int maxSquad = m_spLegion->GetarySquadrons().GetMax();
+//	const int maxSquad = m_spLegion->GetarySquadrons().GetMax();
+	const int maxSquad = m_spLegion->GetMaxSquadSlot();
 	int col = maxSquad / 5;	// 몇 라인까지 나오는가
 	int mod = maxSquad % 5;	// 마지막 짜투리 부대수
 	for( int i = 0; i < col; ++i ) {
@@ -161,30 +161,70 @@ bool XLegionObj::CreateLegion2( XWndBattleField *pWndWorld,
 /**
  @brief col,row위치에 분대하나를 생성한다.
 */
-XSPSquad XLegionObj::CreateSquadObj( int col, int row
+XSPSquadObj XLegionObj::CreateSquadObj( int col, int row
 																		, const XE::VEC3& vwBase
 																		, xtLegionOption bitOption
-																		, XWndBattleField* pWndWorld )
+																		, XWndBattleField* pWndWorld ) const
 {
 	if( !m_spLegion )
 		return nullptr;
-	const auto pSquad = m_spLegion->GetSquadron( col * 5 + row );
+	auto pSquad = m_spLegion->GetpmSquadronByidxPos( col * 5 + row );
 	if( !pSquad )
 		return nullptr;
-	const float sideSign = ( IsPlayer() ) ? -1.f : 1.f;
+	const float sideSign = (IsPlayer()) ? -1.f : 1.f;
 	const XE::VEC2 vDist( 166 * 1.5f, 117 * 1.5f );	// 분대간 간격
-	//
+	XE::VEC3 vCurr;
+	vCurr.x = vwBase.x + ((col * vDist.w) * sideSign);
+	vCurr.y = vwBase.y + (row * vDist.h);
+	return sCreateSquadObj( shared_from_this(), pSquad, vCurr, bitOption, pWndWorld );
+	// 	if( !m_spLegion )
+// 		return nullptr;
+// 	const auto pSquad = m_spLegion->GetpSquadronByidxPos( col * 5 + row );
+// 	if( !pSquad )
+// 		return nullptr;
+// 	const float sideSign = ( IsPlayer() ) ? -1.f : 1.f;
+// 	const XE::VEC2 vDist( 166 * 1.5f, 117 * 1.5f );	// 분대간 간격
+// 	//
+// 	if( bitOption & XGAME::xLO_NO_CREATE_DEAD ) {
+// 		// 죽은부대는 생성하지 않는 옵션이면 부대생성하지 않음.
+// 		if( pSquad->GetpHero()->GetbLive() == false )
+// 			return nullptr;
+// 	}
+// 	XE::VEC3 vCurr;
+// 	vCurr.x = vwBase.x + ( ( col * vDist.w ) * sideSign );
+// 	vCurr.y = vwBase.y + ( row * vDist.h );
+// 	XBREAK( pSquad->GetnumUnit() > XGAME::MAX_UNIT_SMALL );
+// 	auto spSquadObj = std::make_shared<XSquadObj>( GetThis(), 
+// 																								 pSquad, 
+// 																								 vCurr );
+// 	spSquadObj->CreateUnitAndHero( pWndWorld, m_Camp );
+// 	return spSquadObj;
+}
+
+XSPSquadObj XLegionObj::sCreateSquadObj( XSPLegionObjConst spLegionObj,
+																			XSPSquadron pSquad,
+																			const XE::VEC3& vwPos,
+																			xtLegionOption bitOption,
+																			XWndBattleField* pWndWorld )
+{
+	XBREAK( pSquad == nullptr );
+//	const float sideSign = (IsPlayer()) ? -1.f : 1.f;
+//	const XE::VEC2 vDist( 166 * 1.5f, 117 * 1.5f );	// 분대간 간격
+																									//
 	if( bitOption & XGAME::xLO_NO_CREATE_DEAD ) {
 		// 죽은부대는 생성하지 않는 옵션이면 부대생성하지 않음.
 		if( pSquad->GetpHero()->GetbLive() == false )
 			return nullptr;
 	}
-	XE::VEC3 vCurr;
-	vCurr.x = vwBase.x + ( ( col * vDist.w ) * sideSign );
-	vCurr.y = vwBase.y + ( row * vDist.h );
+// 	XE::VEC3 vCurr;
+// 	vCurr.x = vwBase.x + ((col * vDist.w) * sideSign);
+// 	vCurr.y = vwBase.y + (row * vDist.h);
 	XBREAK( pSquad->GetnumUnit() > XGAME::MAX_UNIT_SMALL );
-	auto spSquadObj = std::make_shared<XSquadObj>( GetThis(), pSquad, vCurr );
-	spSquadObj->CreateSquad( pWndWorld, m_Camp );
+	auto spSquadObj = std::make_shared<XSquadObj>( std::const_pointer_cast<XLegionObj>( spLegionObj ),
+																								 pSquad,
+																								 vwPos );
+	const auto& camp = spLegionObj->GetCamp();
+	spSquadObj->CreateUnitAndHero( pWndWorld, camp );
 	return spSquadObj;
 }
 
@@ -239,7 +279,7 @@ void XLegionObj::OnAfterStartBattle()
 	}
 }
 
-XSquadObj* XLegionObj::AddSquad( const XSPSquad& spSquad ) 
+XSquadObj* XLegionObj::AddSquad( const XSPSquadObj& spSquad ) 
 {
 	XBREAK( spSquad->GetNumLists() != spSquad->GetcntLive() );
 	m_listSquad.Add( spSquad );
@@ -252,9 +292,9 @@ XSquadObj* XLegionObj::AddSquad( const XSPSquad& spSquad )
  @brief pFinder와 가장가까운 적부대를 찾는다.
  XSquadObj를 shared_ptr상속받지 않으려고 일반포인터로 넘김
 */
-XSPSquad XLegionObj::FindNearSquad( XSquadObj *pFinder )
+XSPSquadObj XLegionObj::FindNearSquad( XSquadObj *pFinder )
 {
-	XSPSquad spMinObj;
+	XSPSquadObj spMinObj;
 	float minDistsq = 99999999.f;
 	for( auto &spSquadObj : m_listSquad ) {										
 		// 살아있는 부대만 대상으로 검색한다.
@@ -270,9 +310,9 @@ XSPSquad XLegionObj::FindNearSquad( XSquadObj *pFinder )
 	return spMinObj;
 }
 
-XSPSquad XLegionObj::FindNearSquad( XSquadObj *pFinder, bool (*pFunc)( XSPSquad& ) )
+XSPSquadObj XLegionObj::FindNearSquad( XSquadObj *pFinder, bool (*pFunc)( XSPSquadObj& ) )
 {
-	XSPSquad spMinObj;
+	XSPSquadObj spMinObj;
 	float minDistsq = 99999999.f;
 	for( auto &spSquadObj : m_listSquad ) {
 		// 살아있는 부대만 대상으로 검색한다.
@@ -296,12 +336,12 @@ XSPSquad XLegionObj::FindNearSquad( XSquadObj *pFinder, bool (*pFunc)( XSPSquad&
  @param bitCampFind 찾고자 하는 진영
  @param bHighest true면 hp가 가장많은 부대를, false면 가장적은 부대를 찾는다.
 */
-XSPSquad XLegionObj::FindNearSquadLeastHp( XSquadObj *pFinder, 
+XSPSquadObj XLegionObj::FindNearSquadLeastHp( XSquadObj *pFinder, 
 																					float pixelRadius, 
 																					BIT bitCampFind,
 																					BOOL bHighest )
 {
-	XSPSquad spMinObj;
+	XSPSquadObj spMinObj;
 	float hpSelect = 0;
 	if( bHighest )
 		hpSelect = -9999999.f;
@@ -361,11 +401,11 @@ XSPUnit XLegionObj::FindNearUnit( const XE::VEC3& vwSrc, float meterRadius ) con
 /**
  @brief 아무부대나 랜덤으로 꺼낸다.
 */
-XSPSquad XLegionObj::FindSquadRandom( XSquadObj *pFinder, 
+XSPSquadObj XLegionObj::FindSquadRandom( XSquadObj *pFinder, 
 										float pixelRadius, 
 										bool bIncludeFinder )
 {
-	XArrayLinearN<XSPSquad,32> ary;
+	XArrayLinearN<XSPSquadObj,32> ary;
 	for( auto& spSquadObj : m_listSquad ) {
 		bool bCondDist = false;
 // 		XSPSquad *pspSquadObj = m_listSquad.GetNext3( _itor );
@@ -387,7 +427,7 @@ XSPSquad XLegionObj::FindSquadRandom( XSquadObj *pFinder,
 	} //END_LOOP;
 	if( ary.size() > 0 )
 		return ary.GetFromRandom();
-	return XSPSquad();
+	return XSPSquadObj();
 }
 
 void XLegionObj::FrameMove( float dt )
@@ -397,7 +437,7 @@ void XLegionObj::FrameMove( float dt )
 	}
 }
 
-BOOL XLegionObj::IsNearestSquad( const XSPSquad& spBase, XSPSquad& spOut )
+BOOL XLegionObj::IsNearestSquad( const XSPSquadObj& spBase, XSPSquadObj& spOut )
 {
 	for( auto& spSquad : m_listSquad ) {
 		if( spBase->GetCamp().IsEnemy( spSquad->GetCamp().GetbitCamp() ) ) {
@@ -420,7 +460,7 @@ void XLegionObj::Draw( XEWndWorld *pWndWorld )
 		for( auto& spSquad : m_listSquad ) {
 			if( spSquad->IsLive() ) {
 				XE::VEC3 vwPos = spSquad->GetvwPos();
-				XE::VEC2 vPos = pWndWorld->GetPosWorldToWindow( vwPos );
+				XE::VEC2 vPos = pWndWorld->GetPosWorldToWindow( vwPos, nullptr );
 				float radius = spSquad->GetRadius() * XWndBattleField::sGet()->GetscaleCamera();
 				XCOLOR col = XCOLOR_WHITE;
 				// 				switch( spSquad->GetUnitType() )
@@ -442,7 +482,7 @@ void XLegionObj::Draw( XEWndWorld *pWndWorld )
 				GRAPHICS->DrawCircle( vPos.x, vPos.y, radius, col );
 				// 부대의 평균 중심점에 십자를 그린다.
 				XE::VEC3 vwAvg = spSquad->GetvCenterByUnits();
-				XE::VEC2 vCenter = XWndBattleField::sGet()->GetPosWorldToWindow( vwAvg );
+				XE::VEC2 vCenter = pWndWorld->GetPosWorldToWindow( vwAvg, nullptr );
 				float len = 16.f;
 				GRAPHICS->DrawHLine( vCenter.x - (len / 2.f), vCenter.y, len, col );
 				GRAPHICS->DrawVLine( vCenter.x, vCenter.y - (len / 2.f), len, col );
@@ -458,7 +498,7 @@ void XLegionObj::Draw( XEWndWorld *pWndWorld )
 /**
  @brief 분대가 전멸했다.
 */
-void XLegionObj::OnDieSuqad( XSPSquad spSquad )
+void XLegionObj::OnDieSuqad( XSPSquadObj spSquad )
 {
 // 	auto spFound = m_listSquad.FindByIDNonPtr( spSquad->getid() );
 	auto spFound = m_listSquad.FindByID( spSquad->getid() );
@@ -480,7 +520,7 @@ void XLegionObj::OnDieSuqad( XSPSquad spSquad )
  @brief 월드좌표vwPick가 부대반경에 포함되는 부대를 리턴한다.
  @param idExclude 검색에서 제외할 부대아이디
 */
-XSPSquad XLegionObj::GetPickSquad( const XE::VEC3& vwPick, BIT bitCamp, ID snExclude /*= 0*/ )
+XSPSquadObj XLegionObj::GetPickSquad( const XE::VEC3& vwPick, BIT bitCamp, ID snExclude /*= 0*/ )
 {
 	for( auto& spSquad : m_listSquad ) {
 		if( spSquad->IsLive() &&
@@ -501,7 +541,7 @@ XSPSquad XLegionObj::GetPickSquad( const XE::VEC3& vwPick, BIT bitCamp, ID snExc
  this부대는 src부대의 적부대여야 한다.
 */
 int XLegionObj::GetNearSquad( XSquadObj *pSquadSrc,
-							XArrayLinearN<XSPSquad, 64> *pOutAry,
+							XArrayLinearN<XSPSquadObj, 64> *pOutAry,
 							float radius )
 {
 	for( auto& spSquad : m_listSquad ) {
@@ -516,7 +556,7 @@ int XLegionObj::GetNearSquad( XSquadObj *pSquadSrc,
 	return pOutAry->size();
 }
 
-XSPSquad XLegionObj::GetSquadBySN( ID snSquad )
+XSPSquadObj XLegionObj::GetSquadBySN( ID snSquad )
 {
 	for( auto& spSquad : m_listSquad ) {
 		if( spSquad->GetsnSquadObj() == snSquad )
@@ -525,9 +565,9 @@ XSPSquad XLegionObj::GetSquadBySN( ID snSquad )
 	return nullptr;
 }
 
-XSPSquad XLegionObj::GetspSquadObjByIdx( int idx )
+XSPSquadObj XLegionObj::GetspSquadObjByIdx( int idx )
 {
-	auto pSquad = m_spLegion->GetpSquadronByIdx( idx );
+	auto pSquad = m_spLegion->GetpSquadronByidxPos( idx );
 	if( !pSquad )
 		return nullptr;
 	for( auto spSquadObj : m_listSquad ) {
@@ -557,7 +597,7 @@ void XLegionObj::DoDamage()
 #endif // _CHEAT
 }
 
-XHero* XLegionObj::GetpLeader() 
+XSPHero XLegionObj::GetpLeader() 
 {
 	return m_spLegion->GetpLeader();
 }
@@ -611,7 +651,7 @@ void XLegionObj::DoFullHp()
  @param pFinder 찾는 부대. 이것은 결과에서 제외해야 한다.
  @param unitFilter none이 아니라면 해당유닛부대만 검색한다.
 */
-XSPSquad XLegionObj::FindSquadTakeTargetAndClosed( XSquadObj *pFinder, XSquadObj *pTarget, XGAME::xtUnit unitFilter )
+XSPSquadObj XLegionObj::FindSquadTakeTargetAndClosed( XSquadObj *pFinder, XSquadObj *pTarget, XGAME::xtUnit unitFilter )
 {
 	// 아군 부대의 루프를 돈다.
 	for( auto& spSquad : m_listSquad )
@@ -632,7 +672,7 @@ XSPSquad XLegionObj::FindSquadTakeTargetAndClosed( XSquadObj *pFinder, XSquadObj
 			}
 		}
 	}
-	return XSPSquad();
+	return XSPSquadObj();
 }
 
 /**
@@ -695,7 +735,7 @@ void XLegionObj::DrawSquadsBar( const XE::VEC2& vPos )
 /**
  @brief 자원부대 리스트를 얻는다.
 */
-void XLegionObj::GetArySquadByResource( XVector<XSPSquad>* pOut )
+void XLegionObj::GetArySquadByResource( XVector<XSPSquadObj>* pOut )
 {
 	for( auto spSquad : m_listSquad ) {
 		if( spSquad->IsResourceSquad() )

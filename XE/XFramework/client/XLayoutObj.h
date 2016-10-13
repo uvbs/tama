@@ -31,4 +31,5 @@ public:
 	inline bool CreateLayout( const std::string& strKey, XWnd *pParent ) {
 		return CreateLayout( strKey.c_str(), pParent, nullptr ) != FALSE;
 	}
+	bool CreateLayout2( const std::string& strKey, XWnd *pParent );
 };

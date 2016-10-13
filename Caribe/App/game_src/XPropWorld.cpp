@@ -34,6 +34,7 @@ void XPropWorld::xBASESPOT::Serialize( XArchive& ar ) const {
 	ar << (BYTE)xboolToByte(m_bitAttr.bOpened);
 	ar << (BYTE)idAct;
 	ar << idArea << idCode << idName;
+	ar << m_Param;
 }
 void XPropWorld::xBASESPOT::DeSerialize( XArchive& ar, int ) {
 	BYTE b0;
@@ -48,6 +49,7 @@ void XPropWorld::xBASESPOT::DeSerialize( XArchive& ar, int ) {
 	ar >> b0;		m_bitAttr.bOpened = xbyteToBool(b0);
 	ar >> b0;		idAct = b0;
 	ar >> idArea >> idCode >> idName;
+	ar >> m_Param;
 }
 
 void XPropWorld::xCASTLE::Serialize( XArchive& ar ) const {
@@ -60,6 +62,7 @@ void XPropWorld::xCASTLE::Serialize( XArchive& ar ) const {
 void XPropWorld::xCASTLE::DeSerialize( XArchive& ar, int ver ) {
 	xBASESPOT::DeSerialize( ar, ver );
 #if _DEV_LEVEL <= DLV_DEV_CREW
+#pragma message("======================임시 삭제=====================")
 	ar >> m_aryProduceOrig;
 #endif
 	ar >> m_aryProduce;
@@ -167,11 +170,11 @@ void XPropWorld::xGuildRaid::DeSerialize( XArchive& ar, int ver ) {
 
 void XPropWorld::xPrivateRaid::Serialize( XArchive& ar ) const {
 	xBASESPOT::Serialize( ar );
-	ar << dummy;
+	ar << m_idsLegion;
 }
 void XPropWorld::xPrivateRaid::DeSerialize( XArchive& ar, int ver ) {
 	xBASESPOT::DeSerialize( ar, ver );
-	ar >> dummy;
+	ar >> m_idsLegion;
 }
 
 void XPropWorld::xCommon::Serialize( XArchive& ar ) const {
@@ -283,6 +286,22 @@ void XPropWorld::GetBaseSpotAttr( xBASESPOT *pSpot, XEXmlNode& childNode )
 		pSpot->idAct = (ID)nAct;
 	int _size = sizeof(pSpot->m_bitAttr);
 	pSpot->m_bitAttr.bOpened = childNode.GetBool( "opened" );
+
+	XEXmlNode nodeParam = childNode.FindNode( "param" );
+	if( !nodeParam.IsEmpty() ) {
+		GetNodeParam( nodeParam, pSpot );
+	}
+}
+
+void XPropWorld::GetNodeParam( XEXmlNode& node, xBASESPOT* pProp )
+{
+	auto pElem = node.GetFirstAttribute();
+	while( pElem ) {
+		const std::string strAttr = pElem->NameTStr();
+		const std::string strVal = pElem->ValueStr();
+		pProp->m_Param.Set( strAttr, strVal );
+		pElem = pElem->Next();
+	}
 }
 
 /**
@@ -294,37 +313,29 @@ BOOL XPropWorld::LoadSpots( XEXmlNode& node )
 	XEXmlNode childNode = node.GetFirst();
 //	XArrayLinearN<xBASESPOT*,1024> m_listSpots;
 	while( !childNode.IsEmpty() ) {
-		xBASESPOT *pBaseSpot = nullptr;
+		xBASESPOT *pBaseProp = nullptr;
 		// 식별자가 있는 경우 읽는다.
 		if( childNode.GetstrName() == _T("castle") ) {
-			pBaseSpot = LoadCastle( node, childNode );
+			pBaseProp = LoadCastle( node, childNode );
 		} else
 		if( childNode.GetstrName() == _T("jewel") ) {
-			pBaseSpot = LoadJewel( node, childNode );
+			pBaseProp = LoadJewel( node, childNode );
 		} else
 		if( childNode.GetstrName() == _T("sulfur") ) {
-			pBaseSpot = LoadSulfur( node, childNode );
+			pBaseProp = LoadSulfur( node, childNode );
 		} else
 		if( childNode.GetstrName() == _T("mandrake") ) {
-			pBaseSpot = LoadMandrake( node, childNode );
+			pBaseProp = LoadMandrake( node, childNode );
 		} else
 		if( childNode.GetstrName() == _T("npc") || childNode.GetstrName() == _T("event") ) {
-			pBaseSpot = LoadNpc( node, childNode );
+			pBaseProp = LoadNpc( node, childNode );
 		} else
 		if( childNode.GetstrName() == _T("daily") ) {
-			pBaseSpot = LoadDaily( node, childNode );
-// 			xDaily *spot = new xDaily;
-// 			pBaseSpot = spot;
-// 			GetBaseSpotAttr( spot, childNode );
+			pBaseProp = LoadDaily( node, childNode );
 		} else
-// 		if( childNode.GetstrName() == _T( "special" ) ) {
-// 			xSpecial *spot = new xSpecial;
-// 			pBaseSpot = spot;
-// 			GetBaseSpotAttr( spot, childNode );
-// 		} else
 		if( childNode.GetstrName() == _T("camp") ) {
 			xCampaign *spot = new xCampaign;
-			pBaseSpot = spot;
+			pBaseProp = spot;
 			GetBaseSpotAttr( spot, childNode );
 			std::string strCamp = childNode.GetString( "camp" );
 			spot->strCamp = C2SZ( strCamp.c_str() );	// 디버깅용.
@@ -333,22 +344,28 @@ BOOL XPropWorld::LoadSpots( XEXmlNode& node )
 		} else
 		if( childNode.GetstrName() == _T("visit") ) {
 			xVisit *spot = new xVisit;
-			pBaseSpot = spot;
+			pBaseProp = spot;
 			GetBaseSpotAttr( spot, childNode );
 			spot->idDialog = (ID)childNode.GetInt( "dialog" );
 			spot->idsSeq = childNode.GetString( "seq" );
 		} else
 		if( childNode.GetstrName() == _T("cash") ) {
 			xCash *spot = new xCash;
-			pBaseSpot = spot;
+			pBaseProp = spot;
 			GetBaseSpotAttr( spot, childNode );
 			spot->secRegen = (float)childNode.GetInt( "secRegen" );
 			spot->produceMin = childNode.GetFloat( "numMin" );
 			spot->produceMax = childNode.GetFloat( "numMax" );
 		} else
+		if( childNode.GetstrName() == _T("private_raid") ) {
+			auto* pProp = new xPrivateRaid;
+			pBaseProp = pProp;
+			GetBaseSpotAttr( pProp, childNode );
+			pProp->m_idsLegion = childNode.GetString( "legion" );
+		} else
 		if( childNode.GetstrName() == _T("common") ) {
 			xCommon *spot = new xCommon;
-			pBaseSpot = spot;
+			pBaseProp = spot;
 			GetBaseSpotAttr( spot, childNode );
 			spot->strType = childNode.GetTString( "type" );
 			spot->strParam = childNode.GetTString( "str" );
@@ -365,8 +382,8 @@ BOOL XPropWorld::LoadSpots( XEXmlNode& node )
 		}
 		// 
 		//
-		if( XASSERT(pBaseSpot) ) {
-			AddSpot( pBaseSpot );
+		if( XASSERT(pBaseProp) ) {
+			AddSpot( pBaseProp );
 		}
 		childNode = childNode.GetNext();
 	}
@@ -638,17 +655,6 @@ bool XPropWorld::Save( LPCTSTR szXml )
 			AddBaseAttribute( pBaseProp, node );
 			node.AddAttribute( "secRegen", pProp->secRegen );
 			node.AddAttribute( "legion", pProp->m_idsLegion );
-// 			if( !pProp->legion.IsEmpty() )
-// 				pProp->legion.SaveXML( node );
-// 			if( pProp->unit )
-// 				node.AddAttribute( "unit", XGAME::GetstrEnumUnit(pProp->unit) );
-// 			if( pProp->gradeLegion > XGAME::xGL_NONE )	// 값이 있을때만 저장한다.
-// 				if( pProp->gradeLegion != XGAME::xGL_NORMAL )	// 일반은 굳이 저장하지 않는다. 0이면 일반으로 인식한다.
-// 					node.AddAttribute( "elite", (int)pProp->gradeLegion - 1 );
-// 			if( pProp->unit ) {
-// 				std::string cStr = XGAME::GetstrEnumUnit(pProp->unit);
-// 				node.AddAttribute( "unit", cStr.c_str() );
-// 			}
 		} break;
 		case XGAME::xSPOT_DAILY: {
 			auto pProp = static_cast<xDaily*>( pBaseProp );
@@ -656,11 +662,6 @@ bool XPropWorld::Save( LPCTSTR szXml )
 			AddBaseAttribute( pBaseProp, node );
 			SaveDaily( pProp, node );
 		} break;
-// 		case XGAME::xSPOT_SPECIAL: {
-// 			auto pProp = static_cast<xSpecial*>( pBaseProp );
-// 			XEXmlNode node = nodeSpots.AddNode( "special" );
-// 			AddBaseAttribute( pBaseProp, node );
-// 		} break;
 		case XGAME::xSPOT_CAMPAIGN: {
 			auto pProp = static_cast<xCampaign*>( pBaseProp );
 			XEXmlNode node = nodeSpots.AddNode( "camp" );
@@ -684,21 +685,27 @@ bool XPropWorld::Save( LPCTSTR szXml )
 			node.AddAttribute( "numMax", pProp->produceMax );
 		} break;
     case XGAME::xSPOT_COMMON: {
-		auto pProp = static_cast<xCommon*>( pBaseProp );
-		XEXmlNode node = nodeSpots.AddNode( "common" );
-		AddBaseAttribute( pBaseProp, node );
-		node.AddAttribute( "type", pProp->strType.c_str() );
-		if( !pProp->strParam.empty() )
-			node.AddAttribute( "str", pProp->strParam.c_str() );
-		if( pProp->nParam[ 0 ] )
-			node.AddAttribute( "p1", pProp->nParam[ 0 ] );
-		if( pProp->nParam[ 1 ] )
-			node.AddAttribute( "p2", pProp->nParam[ 1 ] );
-		if( pProp->nParam[ 2 ] )
-			node.AddAttribute( "p3", pProp->nParam[ 2 ] );
-		if( pProp->nParam[ 3 ] )
-			node.AddAttribute( "p4", pProp->nParam[ 3 ] );
+			auto pProp = static_cast<xCommon*>( pBaseProp );
+			XEXmlNode node = nodeSpots.AddNode( "common" );
+			AddBaseAttribute( pBaseProp, node );
+			node.AddAttribute( "type", pProp->strType.c_str() );
+			if( !pProp->strParam.empty() )
+				node.AddAttribute( "str", pProp->strParam.c_str() );
+			if( pProp->nParam[ 0 ] )
+				node.AddAttribute( "p1", pProp->nParam[ 0 ] );
+			if( pProp->nParam[ 1 ] )
+				node.AddAttribute( "p2", pProp->nParam[ 1 ] );
+			if( pProp->nParam[ 2 ] )
+				node.AddAttribute( "p3", pProp->nParam[ 2 ] );
+			if( pProp->nParam[ 3 ] )
+				node.AddAttribute( "p4", pProp->nParam[ 3 ] );
     } break;
+		case XGAME::xSPOT_PRIVATE_RAID: {
+			auto pProp = static_cast<xPrivateRaid*>( pBaseProp );
+			XEXmlNode node = nodeSpots.AddNode( "private_raid" );
+			AddBaseAttribute( pBaseProp, node );
+			node.AddAttribute( "legion", pProp->m_idsLegion );
+		} break;
 		default:
 			XBREAK(1);
 			break;
@@ -772,45 +779,7 @@ XPropWorld::xBASESPOT* XPropWorld::CreateSpot( XGAME::xtSpot type )
 	ID idSpot = ++s_idGlobal;
 	_tstring strIdentifier = MakeIds( idSpot );
 	xBASESPOT *pBaseSpot = sCreateSpot( type );
-// 	xBASESPOT *pBaseSpot = nullptr;
-// 	switch( type ) {
-// 	case XGAME::xSPOT_CASTLE: {
-//  		pBaseSpot = new xCASTLE;
-// 	} break;
-// 	case XGAME::xSPOT_JEWEL:
-// 		pBaseSpot = new xJEWEL;
-// 		break;
-// 	case XGAME::xSPOT_SULFUR:
-// 		pBaseSpot = new xSULFUR;
-// 		break;
-// 	case XGAME::xSPOT_MANDRAKE:
-// 		pBaseSpot = new xMANDRAKE;
-// 		break;
-// 	case XGAME::xSPOT_NPC:
-// 		pBaseSpot = new xNPC;
-// 		break;
-// 	case XGAME::xSPOT_DAILY:
-// 		pBaseSpot = new xDaily;
-// 		break;
-// // 	case XGAME::xSPOT_SPECIAL:
-// // 		pBaseSpot = new xSpecial;
-// // 		break;
-// 	case XGAME::xSPOT_CAMPAIGN:
-// 		pBaseSpot = new xCampaign;
-// 		break;
-// 	case XGAME::xSPOT_VISIT:
-// 		pBaseSpot = new xVisit;
-// 		break;
-// 	case XGAME::xSPOT_CASH:
-// 		pBaseSpot = new xCash;
-// 		break;
-//   case XGAME::xSPOT_COMMON:
-//     pBaseSpot = new xCommon;
-//     break;
-// 	default:
-// 		XBREAK(1);
-// 		break;
-// 	}
+
 	if( pBaseSpot )	{
 		pBaseSpot->idSpot = idSpot;
 		pBaseSpot->strIdentifier = strIdentifier;
@@ -851,6 +820,9 @@ XPropWorld::xBASESPOT* XPropWorld::sCreateSpot( xtSpot type )
 		break;
 	case XGAME::xSPOT_CASH:
 		pBaseSpot = new xCash;
+		break;
+	case XGAME::xSPOT_PRIVATE_RAID:
+		pBaseSpot = new xPrivateRaid;
 		break;
 	case XGAME::xSPOT_COMMON:
 		pBaseSpot = new xCommon;

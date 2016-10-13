@@ -42,6 +42,7 @@
 #include "XPropLegion.h"
 #include "XPropCamp.h"
 #include "XPropHelp.h"
+#include "XImageMng.h"
 
 #define BTRACE		XTRACE
 
@@ -306,13 +307,11 @@ void XSockGameSvr::RecvSuccessLogin( XPacket& p, const xCALLBACK& c )
 	_tstring _strPublicKey;
 	if (spAcc == nullptr)	{
 		spAcc = std::make_shared<XAccount>();
-//		GAME->SetspAccount( spAccount );
 		XAccount::sSetPlayer( spAcc );
 		spAcc->SetpDelegateLevel( GAME );
 		XArchive arAcc(0x10000);
 		p >> arAcc;
 		spAcc->DeSerialize( arAcc );
-//		spAccount->SetSessionkey(_T("123456789"));
 		XGame::sSetSessionKey(_T("123456789"));
 		sGetpWorld()->OnAfterDeSerialize( GAME, spAcc->GetidAccount() );
 		// 암호화 키테이블
@@ -340,18 +339,6 @@ void XSockGameSvr::RecvSuccessLogin( XPacket& p, const xCALLBACK& c )
 		ACCOUNT->SetAP( spAcc->GetAP() );
 		ACCOUNT->SetmaxAP( spAcc->GetmaxAP() );
 		m_CryptoObj.DeSerializeKeyTable( p );
-// 		XCrypto dummy;
-// 		dummy.DeSerializeKeyTable( p );
-// 		p >> _strPublicKey;
-// 		// 각 스팟의 타이머도 재갱신 해야할듯. 계정정보 꼼꼼하게 뒤져서 그런거 찾아서 넣자.
-// #ifdef _NEW_INAPP
-// #if defined(_VER_ANDROID)
-// 		// 재접시에는 아이템 구매 후 consume이 안된 아이템이 있는지 검사한다.(이미 반영된 거래가 갈수도 있으므로 서버에서 영수증 중복처리를 해야함)
-// 		XInApp::sGet()->DoCheckUnconsumedItemAsync();
-// #elif defined(_VER_IOS)
-// 		XBREAK( 1 );		// 미구현
-// #endif
-// #endif // _NEW_INAPP
 		CONSOLE( "login successed: relogin" );
 	}
 	if( !XGame::s_strGcmRegid.empty() ) {
@@ -396,17 +383,15 @@ void XSockGameSvr::RecvReconnectTry( XPacket& ar, const xCALLBACK& c )
 void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 {
 	CONSOLE("RecvProp");
-	try
-	{
-		{
-			CONSOLE( "deserialize global.xml" );
+	try {	{
+			XTRACE( "deserialize global.xml" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XGlobalConst::sGetMutable()->DeSerialize( arProp, 0 );
-		}	{
-// 			throw std::exception("xbreak");
-			CONSOLE( "deserialize constant" );
+		} {
+			// 			throw std::exception("xbreak");
+			XTRACE( "deserialize constant" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -414,9 +399,10 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				CONSTANT = new XConstant();
 			}
 			CONSTANT->DeSerialize( arProp, 0 );
-		}	
+			IMAGE_MNG->LoadMap( _T( "img_map.txt" ) );
+	}
 		{
-			CONSOLE( "deserialize propunit" );
+			XTRACE( "deserialize propunit" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -424,8 +410,8 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				PROP_UNIT = new XPropUnit();
 			}
 			PROP_UNIT->DeSerialize( arProp );
-		}	{
-			CONSOLE( "deserialize prophero" );
+		} {
+			XTRACE( "deserialize prophero" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -433,9 +419,9 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				PROP_HERO = new XPropHero();
 			}
 			PROP_HERO->DeSerialize( arProp, 0 );
-		}	
-	{
-			CONSOLE( "deserialize propitem" );
+		}
+		{
+			XTRACE( "deserialize propitem" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -443,16 +429,16 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				PROP_ITEM = new XPropItem();
 			}
 			PROP_ITEM->DeSerialize( arProp, 0 );
-		} 
-			{
-			CONSOLE( "deserialize proplegion" );
+		}
+		{
+			XTRACE( "deserialize proplegion" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XPropLegion::sGet()->DeSerialize( arProp, 0 );
 		}
-	{
-			CONSOLE( "deserialize propworld" );
+		{
+			XTRACE( "deserialize propworld" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -461,8 +447,8 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 			}
 			PROP_WORLD->DeSerialize( arProp, 0 );
 		}
- 		{
-			CONSOLE( "deserialize propcloud" );
+		{
+			XTRACE( "deserialize propcloud" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -470,8 +456,8 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				PROP_CLOUD = new XPropCloud();
 			}
 			PROP_CLOUD->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize skillmng" );
+		} {
+			XTRACE( "deserialize skillmng" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -479,20 +465,20 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				SKILL_MNG = new XSkillMng();
 			}
 			SKILL_MNG->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize proptech" );
+		} {
+			XTRACE( "deserialize proptech" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XPropTech::sGet()->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize propupgrade" );
+		} {
+			XTRACE( "deserialize propupgrade" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XPropUpgrade::sGet()->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize propsquad" );
+		} {
+			XTRACE( "deserialize propsquad" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
@@ -500,34 +486,33 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 				PROP_SQUAD = new XPropSquad();
 			}
 			PROP_SQUAD->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize propcamp" );
+		} {
+			XTRACE( "deserialize propcamp" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XPropCamp::sGet()->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize propquest" );
+		} {
+			XTRACE( "deserialize propquest" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			XQuestProp::sGet()->DeSerialize( arProp, 0 );
-		}{
-			CONSOLE( "deserialize prophelp" );
+		} {
+			XTRACE( "deserialize prophelp" );
 			XArchive arProp;
 			ar >> arProp;
 			arProp.DoUnCompress();
 			xHelp::XPropHelp::sGet()->DeSerialize( arProp, 0 );
 		}
-	
+
 		//
-		CONSOLE( "Recv Deserialize finished" );
+		XTRACE( "Recv Deserialize finished" );
 		GAME->OnAfterPropSerialize();
 		CONSOLE( "RecvProp finished" );
-	}
-	catch( std::exception& e ) {
-		_tstring str = C2SZ(e.what());
+	} catch( std::exception& e ) {
+		_tstring str = C2SZ( e.what() );
 		CONSOLE( "exception: %s ", str.c_str() );
-		exit(1);
+		exit( 1 );
 	}
 }

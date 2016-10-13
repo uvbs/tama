@@ -40,9 +40,11 @@
         <text font="normal" font_size="15" text_col="green" text="2056">
           <!--판매가격-->
         </text>
-        <img posx="32" key="img.gold" file="world_top_gold.png" scale="0.75" posy="-5">
-          <!--금화아이콘-->
-        </img>
+        <wnd posx="19" posy="-10" width="25" height="25">
+          <img posx="right" posy="center" key="img.gold" file="world_top_gold.png" scale="0.3">
+            <!--금화아이콘-->
+          </img>
+        </wnd>
         <text font="font_res_num" font_size="18" key="text.cost" text_col="green" text="2056" comma="yes" posx="48">
           <!--가격숫자-->
         </text>

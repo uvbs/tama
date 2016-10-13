@@ -39,6 +39,7 @@ class XSquadObj;
 class XLegionObj;
 class XHero;
 class XStatistic;
+class XProgressBar;
 ////////////////////////////////////////////////////////////////
 /**
  @brief 유닛들의 기본형 객체
@@ -49,8 +50,8 @@ class XBaseUnit : public XEBaseWorldObj, public XEControllerFSM
 										, public XDelegateObjBullet
 {
 public:
-	static XSPUnit sCreateUnit( XSPSquad spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
-	static XSPUnit sCreateHero( XSPSquad spSquadObj, XHero *pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
+	static XSPUnit sCreateUnit( XSPSquadObj spSquadObj, ID idProp, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
+	static XSPUnit sCreateHero( XSPSquadObj spSquadObj, XSPHero pHero, ID idPropUnit, BIT bitSide, const XE::VEC3& vwPos, float multipleAbility );
 	static BOOL sGetMoveDstDelta( const XE::VEC3& vwCurr, const XE::VEC3& vwDst, float speedMove, XE::VEC3 *pOutDelta );
 	static bool s_bNotUseActiveByEnemy;		// 적영웅 스킬사용금지
 #ifdef WIN32
@@ -71,7 +72,7 @@ private:
 	std::string m_strcIds;
 //#endif // WIN32
 	ID m_idProp;			// 자주쓰는거라 최적화를 위해 변수로 빼놓음. 
-	XHero* m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	XECompCamp m_Camp;
 	XE::VEC3 m_vDelta;
 	CTimer m_Timer;
@@ -108,6 +109,7 @@ private:
 	BIT m_bitFlags = 0;				///< 각종플래그들(xFL_...)
   int m_Count = 0;          ///< 디버깅용 FrameMove카운터
 	XPropUnit::xPROP *m_pPropUnit = nullptr;	///< 유닛 프로퍼티.(this가 영웅이어도 갖고 있다)
+	std::shared_ptr<XProgressBar> m_spBar;
 	struct xIconBuff {
 		ID m_idSkill = 0;
 		XSurface *m_psfcIcon = nullptr;
@@ -144,7 +146,7 @@ private:
 protected:
 // 	GET_ACCESSOR( int, cntPerSec );
 public:
-	XBaseUnit( XSPSquad spSquadObj
+	XBaseUnit( XSPSquadObj spSquadObj
 					, ID idProp
 					, BIT bitSide
 					, const XE::VEC3& vPos
@@ -157,10 +159,10 @@ public:
  	GET_ACCESSOR( XSPUnit, spTarget );
  	SET_ACCESSOR( const XSPUnit, spTarget );
 	GET_ACCESSOR_CONST( const XE::VEC2&, vsPos );
-	GET_ACCESSOR( XPropUnit::xPROP*, pPropUnit );
+	GET_ACCESSOR_PTR( XPropUnit::xPROP*, pPropUnit );
 	GET_SET_ACCESSOR_CONST( const std::string&, strcIds );
-	GET_ACCESSOR_CONST( const XHero*, pHero );
-	inline XHero* GetpHeroMutable() {
+	GET_ACCESSOR_CONST( XSPHeroConst, pHero );
+	inline XSPHero GetpHeroMutable() {
 		return m_pHero;
 	}
  	GET_ACCESSOR_CONST( float, multipleAbility );
@@ -168,7 +170,7 @@ public:
 	GET_ACCESSOR_CONST( int, cntTargeting );
 	GET_SET_ACCESSOR_CONST( XE::xtHorizDir, Dir );
 	GET_ACCESSOR_CONST( XSquadObj*, pSquadObj );	///< this가 속한 부대를 리턴한다.
-	XSPSquad GetspSquadObj() const;
+	XSPSquadObj GetspSquadObj() const;
 	GET_ACCESSOR_CONST( const XE::VEC3&, vwTarget );
 	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vwBind );
 	GET_SET_ACCESSOR_CONST( float, speedBind );	///< 프레임당 이동픽셀
@@ -194,11 +196,11 @@ public:
 		return !IsHero();
 	}
 	const XPropHero::xPROP* GetpPropHero();
-//	XHero* GetpHero();
-// 	inline XHero* GetpHero() {
+//	XSPHero GetpHero();
+// 	inline XSPHero GetpHero() {
 // 		return GetHero();
 // 	}
-//	const XHero* GetpHeroConst() const;
+//	XSPHeroConst GetpHeroConst() const;
 	ID GetsnHero() const;
 	virtual bool IsLeader() {return FALSE;}
 	XSPUnit GetspLeader();
@@ -331,6 +333,8 @@ public:
 	}
 	BOOL IsNear( const XSPUnit& spUnit );
 	virtual void OnCreate();
+	virtual void OnFinishLoad( const XSprDat* pSprDat );
+	void OnFinishAsyncLoad( const XSprDat* pSprDat ) override;
 	//////////////////////////////////////////////////////////////////////////
 	// stat관련
 	// 프레임당 이동속도(픽셀단위)
@@ -338,7 +342,7 @@ public:
 	inline float GetSizeRadius() {
 		return GetSize().w / 2.f;
 	}
-	int GetHp();
+	int GetHp() const;
 	inline int DoFullHp() {
 		int max = GetMaxHp();
 		m_HP = max;
@@ -361,7 +365,7 @@ public:
 		return m_pPropUnit->atkSpeed;
 	}
 	float GetSpeedAttack( XSPUnit spTarget );
-	int GetMaxHp();
+	int GetMaxHp() const;
 	float GetBaseAtkMeleeDmg();
 	float GetBaseAtkRangeDmg();
 	float GetAttackMeleePower();
@@ -527,8 +531,12 @@ public:
 	void FrameMoveAI( float dt );
 	void FrameMoveLive( float dt );
 	virtual void Draw( const XE::VEC2& vPos, float scale, float alpha=1.f ) override;
-	virtual XE::VEC2 DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp ) { return vPos; }
+	XE::VEC2 DrawBar( const XE::VEC2& vDrawHp, float scaleSize, float scale, const XE::VEC3& vSizeUnit ) const;
+	virtual XE::VEC2 DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp ) {
+		return vPos;
+	}
 	void DrawShadow( const XE::VEC2& vPos, float scale );
+	XE::VEC2 DrawHitSfx( float scale, float scaleFactor );
 	virtual void Release() override;
 	void OnEventCreateSfx( XSprObj *pSprObj, XBaseKey *pKey, float lx, float ly, float scale, LPCTSTR szSpr, ID idAct, xRPT_TYPE typeLoop, float secLifeTime, BOOL bTraceParent, float fAngle, float fOverSec );
 //	virtual void OnEventSprObj( XSprObj *pSprObj, XKeyEvent *pKey, float lx, float ly, ID idEvent, float fAngle, float fOverSec ) override;

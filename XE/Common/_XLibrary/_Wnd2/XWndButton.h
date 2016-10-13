@@ -104,7 +104,7 @@ public:
 		: XWnd( vPos.x, vPos.y ) {
 		Init();
 	}
-	XWndButton( float x, float y, LPCTSTR szSpr, DWORD idActUp, DWORD idActDown = 0, DWORD idActDisable = 0, XEToolTip *pToolTip=NULL, BOOL bSrcKeep = FALSE );
+// 	XWndButton( float x, float y, LPCTSTR szSpr, DWORD idActUp, DWORD idActDown = 0, DWORD idActDisable = 0, XEToolTip *pToolTip=NULL, BOOL bSrcKeep = FALSE );
 	XWndButton( float x, float y, XSprObj *pSprObj, DWORD idActUp, DWORD idActDown = 0, DWORD idActDisable = 0 );			// KeepSrc된 SprObj가 필요할때 외부에서 생성시킨걸 쓴다
 	XWndButton( float x, float y, float w, float h, XEToolTip *pToolTip=NULL );
 	XWndButton( float x, float y, LPCTSTR szImgUp, LPCTSTR szImgDown = nullptr, LPCTSTR szImgDisable=NULL, XEToolTip *pToolTip=NULL, DWORD xfFlag=0, BOOL bSrcKeep = FALSE );
@@ -230,12 +230,12 @@ private:
 	void Destroy() { 	}
 protected:
 public:
-	XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, 
-							XBaseFontDat *pFontDat, 
-							LPCTSTR szSpr, ID idActUp, ID idActDown=0, ID idActDisable=0 );
-	XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, 
-							LPCTSTR szFont, float sizeFont,
-							LPCTSTR szSpr, ID idActUp, ID idActDown=0, ID idActDisable=0 );
+// 	XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, 
+// 							XBaseFontDat *pFontDat, 
+// 							LPCTSTR szSpr, ID idActUp, ID idActDown=0, ID idActDisable=0 );
+// 	XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, 
+// 							LPCTSTR szFont, float sizeFont,
+// 							LPCTSTR szSpr, ID idActUp, ID idActDown=0, ID idActDisable=0 );
 	XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, XBaseFontDat *pFontDat, 
 							LPCTSTR szImgUp, LPCTSTR szImgDown=NULL, LPCTSTR szImgDisable=NULL );
 	XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, 
@@ -265,24 +265,7 @@ public:
 	}
 	virtual ~XWndButtonString() { Destroy(); }
 	//
-// 	void SetString( LPCTSTR szString ) {
-// 		if( m_pText ) {
-// 			m_pText->SetText( szString );
-// 			m_pText->SetLineLength( GetSizeFinal().w );
-// 		}
-// // 		XWndTextString::SetColorText( m_Color );
-// // 		XWndTextString::SetLineLength( GetSizeFinal().w );
-// // 		XWndTextString::SetText( szString );
-// 	}
-	//
 	virtual void Draw();
-// 	virtual void Draw( const XE::VEC2& vPos ) {
-// 		XWndButton::Draw( vPos );
-// 		XWndTextString::Draw( vPos );
-// 	}
-// 	BOOL IsWndAreaIn( float lx, float ly ) {
-// 		return XWndButton::IsWndAreaIn( lx, ly );
-// 	}
 	inline void SetStyle( xFONT::xtStyle style ) {
 		if( m_pText )
 			m_pText->SetStyle( style );
@@ -311,7 +294,6 @@ public:
 		if( m_pText )
 			m_pText->SetText( szString );
 	}
-
 };
 ////////////////////////////////////////////////////////////////////////
 // 리소스가 필요없는 디버깅용 심플한 버튼
@@ -360,33 +342,33 @@ public:
 };
 ////////////////////////////////////////////////////////////////////////
 // 체크버튼위에 스트링 표시하는 버전
-class XWndButtonCheckString : public XWndButtonCheck, public XWndTextString
-{
-private:
-	void Init() {	}
-	void Destroy() { 	}
-protected:
-public:
-	XWndButtonCheckString( float x, float y, LPCTSTR szString, XBaseFontDat *pFontDat, LPCTSTR szSpr, DWORD idActUp, DWORD idActDown = 0, BOOL bPush=FALSE ) :
-// 		: XWnd( x, y ), 
-		XWndButton( x, y, szSpr, idActUp, idActDown, 0 ),
-		XWndButtonCheck( x, y, szSpr, idActUp, idActDown, bPush ), 
-		XWndTextString( 0, 0, szString, pFontDat, XCOLOR_BLACK ) {
-		Init();
-	}
-	virtual ~XWndButtonCheckString() { Destroy(); }
-	
-	virtual void Draw() {
-		XWndButtonCheck::Draw();
-		XWndTextString::Draw();
-	}
-	virtual void Draw( const XE::VEC2& vPos ) {
-		XWndTextString::Draw( vPos );
-	}
-	virtual BOOL IsWndAreaIn( float lx, float ly ) {
-		return XWndButtonCheck::IsWndAreaIn( lx, ly );
-	}
-}; // class XWndButtonCheckString 
+// class XWndButtonCheckString : public XWndButtonCheck, public XWndTextString
+// {
+// private:
+// 	void Init() {	}
+// 	void Destroy() { 	}
+// protected:
+// public:
+// 	XWndButtonCheckString( float x, float y, LPCTSTR szString, XBaseFontDat *pFontDat, LPCTSTR szSpr, DWORD idActUp, DWORD idActDown = 0, BOOL bPush=FALSE ) :
+// // 		: XWnd( x, y ), 
+// 		XWndButton( x, y, szSpr, idActUp, idActDown, 0 ),
+// 		XWndButtonCheck( x, y, szSpr, idActUp, idActDown, bPush ), 
+// 		XWndTextString( 0, 0, szString, pFontDat, XCOLOR_BLACK ) {
+// 		Init();
+// 	}
+// 	virtual ~XWndButtonCheckString() { Destroy(); }
+// 	
+// 	virtual void Draw() {
+// 		XWndButtonCheck::Draw();
+// 		XWndTextString::Draw();
+// 	}
+// 	virtual void Draw( const XE::VEC2& vPos ) {
+// 		XWndTextString::Draw( vPos );
+// 	}
+// 	virtual BOOL IsWndAreaIn( float lx, float ly ) {
+// 		return XWndButtonCheck::IsWndAreaIn( lx, ly );
+// 	}
+// }; // class XWndButtonCheckString 
 
 //////////////////////////////////////////////////////////////////////////
 XWndButton* xGET_BUTT_CTRL( XWnd *pRoot, const char *cKey );

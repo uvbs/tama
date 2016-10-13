@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout normal="normal.ttf" bold="bold.ttf">
+  <module>
+    <img file="common_bg_skillsimbol.png">
+      <img posx="0" posy="0" key="img.skill" />
+      <spr posx="49" posy="49" file="brilliant.spr" id_act="1" scale="0.5" show="off" key="spr.light" />
+      <img posx="43" posy="43" file="popup_squadskilllevel.png" key="img.bg.lv">
+        <!--숫자들어간동그라미-->
+        <text posx="center" posy="center" key="text.level" _text="11" font_size="15" _font_style="stroke" font="font_res_num"></text>
+      </img>
+    </img>
+  </module>
+</layout>

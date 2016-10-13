@@ -1,6 +1,4 @@
-﻿#ifndef __XTRANSITION_H__
-#define __XTRANSITION_H__
-
+﻿#pragma once
 /*
  *  XTransition.h
  *  ShakeMP
@@ -9,14 +7,7 @@
  *  Copyright 2010 __MyCompanyName__. All rights reserved.
  *
  */
-#include "etc/XSurface.h"
-#include "etc/Timer.h"
-#include "XImageMng.h"
 //--------------------------------------------------------------------------------------------------------- 
-//namespace XTRANS
-//{
-//	enum xtType { xNONE=0, xFADE_IN, xFADE_OUT, xSLIDE_IN, xSLIDE_OUT, xOVERLAP, xMAX_TRANS_TYPE };
-//}
 class XTransition
 {
 	BOOL m_bHighReso;	// 리소스를 고해상도로 쓸건지
@@ -46,10 +37,7 @@ public:
 		m_bDestroy = FALSE;
 		m_nTransIn = bTransIn;
 	}
-    virtual ~XTransition(){
-		SAFE_RELEASE2(IMAGE_MNG, m_pSurface1 );
-		SAFE_RELEASE2(IMAGE_MNG, m_pSurface2 );
-	}
+	virtual ~XTransition();
 	//
 	GET_ACCESSOR( BOOL, bHighReso );
 	GET_SET_ACCESSOR( float, fSlerp );
@@ -123,4 +111,3 @@ public:
 };
 
 
-#endif // __XTRANSITION_H__

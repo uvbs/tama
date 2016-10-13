@@ -33,10 +33,12 @@ using namespace XGAME;
 ////////////////////////////////////////////////////////////////
 XWndCloudLayer::XWndCloudLayer( const XE::VEC2& vPos, 
 								const XE::VEC2& vSize )
-	: XWnd( vPos.x, vPos.y, vSize.w, vSize.h )
+// 	: XWnd( vPos.x, vPos.y, vSize.w, vSize.h )
+	: XWndBatchRender( "cloud", false, true, false, false, XE::xRECT( vPos, vSize ) )
 {
 	Init();
-	m_psdCloud = SPRMNG->Load( _T("cloud.spr") );
+	ID idAsync = 0;
+	m_spDatCloud = SPRMNG->Load( _T("cloud.spr"), XE::xHSL(), true, FALSE, true, true, &idAsync );
 //	SetbTouchable( FALSE );
 	m_objMove[0].SetState1();
 	m_objMove[1].SetState2();
@@ -44,7 +46,7 @@ XWndCloudLayer::XWndCloudLayer( const XE::VEC2& vPos,
 
 void XWndCloudLayer::Destroy()
 {
-	SPRMNG->Release( m_psdCloud );
+	//SPRMNG->Release( m_spDatCloud );
 }
 
 void XWndCloudLayer::UpdateClouds( XArrayLinearN<ID, 512>& ary )
@@ -117,7 +119,7 @@ int XWndCloudLayer::Process( float dt )
 	}// END_LOOP;
 	m_objMove[0].Process( dt );
 	m_objMove[1].Process( dt );
-	return XWnd::Process( dt );
+	return XWndBatchRender::Process( dt );
 }
 
 
@@ -214,7 +216,7 @@ void XWndCloudLayer::Draw()
 #ifdef _xIN_TOOL
 	if( bToolMode == false )
 #endif // _xIN_TOOL
-		XWnd::Draw();
+		XWndBatchRender::Draw();
 }
 
 
@@ -287,7 +289,7 @@ void XWndCloudLayer::DrawCloudArea( XPropCloud::xCloud* pProp
 		const float scaleCloud = 1.4f;
 		vSum += v;		// 헥사타일들의 좌표를 모두 더한다.
 		BOOL bDraw = TRUE;
-		XSprite *psfcCloud = m_psdCloud->GetSprite( hexa.idxImg );
+		auto psfcCloud = m_spDatCloud->GetSpriteMutable( hexa.idxImg );
 		const auto vSize = psfcCloud->GetSize() * scaleCloud;
 		if( v.x > sizeWin.w )
 			bDraw = FALSE;
@@ -333,9 +335,18 @@ void XWndCloudLayer::DrawHexaElem( const XE::VEC2& vt
 		alpha *= slerp;
 	}
 	alpha *= 0.875f;//alpha *= 0.75f;		// 이제 항상 구름은 이 값으로 찍는다. 이게 더 보기가 좋더라.
-	psfcCloud->SetfAlpha( alpha );
-	psfcCloud->SetScale( scaleCloud );
-	psfcCloud->Draw( vt );
+// 	psfcCloud->SetfAlpha( alpha );
+// 	psfcCloud->SetScale( scaleCloud );
+// 	psfcCloud->Draw( vt );
+	XE::xRenderParam param;
+	param.m_vPos = vt;
+	param.m_vScale = scaleCloud;
+	param.m_vColor = XE::VEC4(1.f, 1.f, 1.f, alpha );
+	param.m_bAlphaTest = false;
+	param.m_bZBuff = false;
+	MATRIX mWorld;
+	MatrixIdentity( mWorld );
+	psfcCloud->GetpSurface()->DrawByParam( mWorld, param );
 }
 
 /**
@@ -601,7 +612,6 @@ int XWndAreaBanner::Process( float dt )
 			m_State = 2;
 		}
 	}
-
-	return XWnd::Process( dt );
+	return XWnd::Process(dt);
 }
 

@@ -21,12 +21,12 @@ class XUnitArcher : public XUnitCommon
 	void Init() {}
 	void Destroy();
 public:
-	XUnitArcher( XSPSquad spSquadObj, 
+	XUnitArcher( XSPSquadObj spSquadObj, 
 								ID idProp,
 								BIT bitSide, 
 								const XE::VEC3& vPos,
 								float multipleAbility );
-	virtual ~XUnitArcher() { Destroy(); }
+	~XUnitArcher() { Destroy(); }
 	//
 	void ShootRangeAttack( XSPUnit& spTarget,
 							const XE::VEC3& vwSrc,

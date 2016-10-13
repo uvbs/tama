@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup>
+    <popup img="popup_cash.png">
+      <img posx="11" posy="10" file="spot_bg_reward.png" _surface_format="argb4444" scalex="1.27" scaley="1.19"></img>
+      <img posx="10" posy="121" file="spot_bg_log.png" _surface_format="argb8888" scalex="1.27" scaley="0.23"></img>
+      <_text posx="46" posy="21" font="font_text_b" text_col="yellow" font_size="30" font_style="stroke" align="hcenter" text="80127" width="50">
+        <!--순위-->
+      </_text>
+      <_text posx="122" posy="21" font="font_text_b" text_col="yellow" font_size="30" font_style="stroke" align="hcenter" text="80128" width="81">
+        <!--유저이름-->
+      </_text>
+      <_text posx="259" posy="21" font="font_text_b" text_col="yellow" font_size="30" font_style="stroke" align="hcenter" text="80129" width="68" />
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.ok"></butt>
+      <img posx="center" posy="-7" img="world_bg_title_new.png" surface_format="argb8888">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="30" font_style="stroke" text="80075" />
+      </img>
+    </popup>
+  </popup>
+</layout>

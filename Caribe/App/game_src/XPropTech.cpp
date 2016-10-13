@@ -1,5 +1,8 @@
 ﻿#include "stdafx.h"
 #if defined(_CLIENT) || defined(_GAME_SERVER)
+#ifdef _CLIENT
+#include "etc/XSurface.h"
+#endif // _CLIENT
 #include "XPropTech.h"
 #include "XSkillMng.h"
 #include "skill/XSkillDat.h"
@@ -618,5 +621,11 @@ void XPropTech::xNodeAbil::DeSerialize( XArchive& ar, int ) {
 	ar >> vPos;
 }
 
+#ifdef _CLIENT
+void XPropTech::xNodeAbil::DrawIcon( const XE::VEC2& vAdj )
+{
+	psfcIcon->Draw( vPos + vAdj );
+}
+#endif // _CLIENT
 
 #endif // #if defined(_CLIENT) || defined(_GAME_SERVER)

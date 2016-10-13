@@ -15,16 +15,26 @@
 
 #include "etc/xGraphics.h"
 #include "XSurfaceOpenGL.h"
-//#include "Mathematics.h"
 #include "etc/xMath.h"
 
+
+#define _CHECK_GL_ERROR() \
+		{ volatile auto glErr = glGetError(); \
+			XASSERT( glErr == GL_NO_ERROR ); }
+#ifdef _DEBUG
+#define CHECK_GL_ERROR() _CHECK_GL_ERROR()
+#else
+#define CHECK_GL_ERROR() (0)
+#endif
+
 namespace XE {
-    enum { ATTRIB_POS,
-        ATTRIB_COLOR,
-        ATTRIB_TEXTURE,
-        ATTRIB_SIZE,
-    };
-    extern MATRIX  x_mViewProjection;
+	enum xtAttib {
+		ATTRIB_POS,
+		ATTRIB_COLOR,
+		ATTRIB_TEXTURE,
+		ATTRIB_SIZE,
+	};
+extern MATRIX  x_mViewProjection;
 //    extern GLKMatrix4 x_mViewProjection;
 	//
 	extern double x_tblGauss[ 32 ];
@@ -32,45 +42,48 @@ namespace XE {
 	void build_mask( double* mask, int lenMask, int* n, float d );
 }
 
-class XShader
-{
-    enum
-    {
-        UNIFORM_MVP_MATRIX,
+class XShader {
+	enum {
+		UNIFORM_MVP_MATRIX,
 		UNIFORM_COLOR,
 		UNIFORM_FLOAT,
-        NUM_UNIFORMS
-    };
-    GLint m_glProgram;
-    GLint m_locUniforms[NUM_UNIFORMS];
-    void Init() {
-        m_glProgram = 0;
-        XCLEAR_ARRAY(m_locUniforms);
-    }
-    void Destroy() {
-        glDeleteProgram( m_glProgram );
-    }
+		NUM_UNIFORMS
+	};
+	GLint m_glProgram;
+	GLint m_locUniforms[NUM_UNIFORMS];
+	void Init() {
+		m_glProgram = 0;
+		XCLEAR_ARRAY( m_locUniforms );
+	}
+	void Destroy() {
+		glDeleteProgram( m_glProgram );
+	}
 public:
-    XShader() { Init(); }
-    virtual ~XShader() { Destroy(); }
-    //
-//    BOOL LoadShader( LPCTSTR szVertexShader, LPCTSTR szFragShader );
-    BOOL LoadShaderFromString( const GLchar *cVertShader, const GLchar *cFragShader, const char *cszTag );
-//    BOOL CompileShader( GLuint *shader, GLenum type, NSString *pathFile );
-    BOOL CompileShaderFromString( GLuint *shader, GLenum type, const GLchar *cShader, const char *cszTag );
-    BOOL LinkShader( GLuint prog, const char *cszTag );
+	XShader() {
+		Init();
+	}
+	virtual ~XShader() {
+		Destroy();
+	}
+	GET_ACCESSOR_CONST( GLint, glProgram );
+	//
+	//    BOOL LoadShader( LPCTSTR szVertexShader, LPCTSTR szFragShader );
+	BOOL LoadShaderFromStr( const GLchar *cVertShader, const GLchar *cFragShader, const char *cszTag );
+	//    BOOL CompileShader( GLuint *shader, GLenum type, NSString *pathFile );
+	BOOL CompileShaderFromString( GLuint *shader, GLenum type, const GLchar *cShader, const char *cszTag );
+	BOOL LinkShader( GLuint prog, const char *cszTag );
 	void SetShader( const MATRIX& mMVP,
-							float r, float g, float b, float a );
+									float r, float g, float b, float a );
 	inline void SetShader( const MATRIX& mMVP, const XE::VEC4& vColor ) {
 		SetShader( mMVP, vColor.x, vColor.y, vColor.z, vColor.a );
 	}
 	void SetUniformMVP( const MATRIX& mMVP );
 	void SetUniformColor( float r, float g, float b, float a );
 	void SetUniformFloat( float v );
-//	void SetColor( float r, float g, float b, float a );
-//    void SetMatrixModel( MATRIX& mModel ) {
-//        glUniformMatrix4fv(m_locUniforms[UNIFORM_MODEL_MATRIX], 1, 0, mModel.f);
-//    }
+	//	void SetColor( float r, float g, float b, float a );
+	//    void SetMatrixModel( MATRIX& mModel ) {
+	//        glUniformMatrix4fv(m_locUniforms[UNIFORM_MODEL_MATRIX], 1, 0, mModel.f);
+	//    }
 };
 
 
@@ -159,6 +172,7 @@ class XGraphicsOpenGL : public XGraphics
 {
 	static XShader *m_pCurrShader;
 public:
+	static XGraphicsOpenGL* sGet() { return s_pGraphicsOpenGL;	}
 	static XGraphicsOpenGL *s_pGraphicsOpenGL;		// 일단 이렇게 하고 나중에 멀티플랫폼용으로 고치자.
 #ifdef _XBLUR
     static GLuint s_glBlurFBO, s_glBlurRBO, s_glBlurTexture;
@@ -196,11 +210,13 @@ public:
 		}
 		return 0;
 	}
+	static int s_numCallBindTexture;
 private:
 	GLuint m_defaultFrameBuffer, m_defaultRenderBuffer;
 	WORD *m_pLockBackBuffer;
-    XShader *m_pBaseShader;     // 기본 쉐이더
-    XShader *m_pTextureShader;    // 컬러없이 텍스쳐만 있는 쉐이더
+    XShader *m_pShaderColTex;     // 기본 쉐이더
+		XShader *m_pShaderColTexAlphaTest = nullptr;     // 알파테스트 쉐이더
+		XShader *m_pTextureShader;    // 컬러없이 텍스쳐만 있는 쉐이더
     XShader *m_pGrayShader = nullptr;    // 그레이스케일 쉐이더
     XShader *m_pColorShader;    // 컬러만 있는 쉐이더
     XShader *m_pBlurShaderH;
@@ -214,13 +230,14 @@ public:
 	XGraphicsOpenGL( int nResolutionWidth, int nResolutionHeight, xPixelFormat pixelFormat );
 	virtual ~XGraphicsOpenGL() { Destroy(); }
     //
-    GET_ACCESSOR( XShader*, pBaseShader );
+	GET_ACCESSOR( XShader*, pShaderColTex );
+	GET_ACCESSOR( XShader*, pShaderColTexAlphaTest );
 	GET_ACCESSOR( XShader*, pTextureShader );
-    GET_ACCESSOR( XShader*, pColorShader );
+	GET_ACCESSOR( XShader*, pColorShader );
 	GET_ACCESSOR( XShader*, pGrayShader );
-    GET_ACCESSOR( XShader*, pOneColorShader );
-    GET_ACCESSOR( XShader*, pBlurShaderH );
-    GET_ACCESSOR( XShader*, pBlurShaderV );
+	GET_ACCESSOR( XShader*, pOneColorShader );
+	GET_ACCESSOR( XShader*, pBlurShaderH );
+	GET_ACCESSOR( XShader*, pBlurShaderV );
 	// wSrc,hSrc크기의 pSrc이미지로 gl용 텍스쳐를 만들어 아이디를 리턴한다. pOutAligned에는 2^로 정렬된 크기를 받는다.
 	GLuint CreateTextureGL( void* const pImgSrc
 														, int wSrc, int hSrc
@@ -234,6 +251,14 @@ public:
 															, XE::xtPixelFormat formatSurface ) {
 		return CreateTextureGL( pSrc, sizeSrc.w, sizeSrc.h, formatImgSrc, sizeSrcAligned.w, sizeSrcAligned.h, formatSurface );
 	}
+	inline GLuint CreateTextureGL( void* const pSrc, 
+																 const XE::VEC2& sizeSrc, 
+																 XE::xtPixelFormat formatImgSrc, 
+																 const XE::VEC2& sizeSrcAligned,
+																 XE::xtPixelFormat formatSurface ) {
+		return CreateTextureGL( pSrc, (int)sizeSrc.w, (int)sizeSrc.h, formatImgSrc, (int)sizeSrcAligned.w, (int)sizeSrcAligned.h, formatSurface );
+	}
+	void ResizeTexture( ID idTex, const XE::POINT& sizeTexPrev, const XE::POINT& sizeTexNew, GLenum glType, GLenum glFormatSurface );
 	GLuint CreateTextureSubGL( void* const pImgSrc
 													, const XE::POINT& sizeSrc			// pImgSrc의 크기
 													, const XE::xRECTi& rectSrc			// pImgSrc에서 잘라낼 영역
@@ -282,7 +307,11 @@ public:
     void DrawTexture( GLint idTexture, float x, float y, float w, float h, BOOL bBlendAdd=FALSE );
 	// craete surface
 //	virtual XSurface* CreateSurface( BOOL bHighReso );
-	virtual XSurface* CreateSurface();
+	XSurface* CreateSurface() override;
+	XSurface* CreateSurfaceByType( bool bAtlas, bool bBatch ) override;
+	XSurface* CreateSurfaceAtlasBatch() override;
+	XSurface* CreateSurfaceAtlasNoBatch() override;
+	//	XSurface* CreateSurface2( BOOL bHighReso, int srcx, int srcy, int srcw, int srch, float dstw, float dsth, float adjx, float adjy, DWORD *pSrcImg, BOOL bSrcKeep ) override;
 	// 이미지의 일부분만 서피스로 만드는 버전
 	virtual BOOL LoadImg( LPCTSTR szFilename, int *pWidth, int *pHeight, DWORD **ppImage );
 	virtual XSurface*	CreateSurface( BOOL bHighReso, int srcx, int srcy, int srcw, int srch, float dstw, float dsth, float adjx, float adjy, DWORD *pSrcImg, BOOL bSrcKeep );
@@ -297,6 +326,7 @@ public:
 	//
 	void DrawFan( float *pAryPos, float *pAryCol, int numVertex, int numFan ) override;
 	void CopyValueSurface( XSurface* pDst, XSurface* pSrc ) override;
+	static void sBindTexture( ID idTex );
 }; // XGraphicsOpenGL
 
 

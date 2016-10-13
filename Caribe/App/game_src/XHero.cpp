@@ -22,6 +22,7 @@
 #endif 
 
 using namespace XSKILL;
+using namespace XGAME;
 #ifdef WIN32
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -35,57 +36,63 @@ static char THIS_FILE[] = __FILE__;
 //volatile float XHero::s_fMultiply = 100;				// 메모리 치팅방지
 #endif // _CLIENT
 
-void XHero::xItem::Set( XBaseItem *_pItem ) {
-	if( _pItem ) {
-		pItem = _pItem;
-		snItem = _pItem->GetsnItem();
-	}
-	else {
-		pItem = nullptr;
-		// snItem값은 남아있을 수 있음.
-	}
+void XHero::xEquip::Serialize( XArchive& ar ) const {
+	ar << m_idProp;
+	ar << m_snItem;
 }
-XBaseItem* XHero::xItem::GetpItem() const {
-	XBREAK( pItem && pItem->GetsnItem() != snItem );
-	return pItem;
+void XHero::xEquip::DeSerialize( XArchive& ar, int verHero ) {
+	ar >> m_idProp;
+	ar >> m_snItem;
 }
+
 //////////////////////////////////////////////////////////////////////////
 // static
-int XHero::sSerialize( XArchive& ar, XHero *pHero )
+int XHero::sSerialize( XArchive& ar, XSPHero pHero )
 {
 	ar << VER_HERO_SERIALIZE;
 	pHero->Serialize( ar );
 	return 1;
 }
 
-XHero* XHero::sCreateDeSerialize( XArchive& ar, XSPAcc spAcc )
+XSPHero XHero::sCreateDeSerialize2( XArchive& ar, XSPAccConst spAcc )
 {
 	int ver;
 	ar >> ver;
-	XHero *pHero = new XHero;
-	pHero->DeSerialize( ar, spAcc, ver );
-	spAcc->AddHero( pHero );
+	XSPHero pHero = std::make_shared<XHero>( spAcc );
+	pHero->DeSerialize( ar/*, spAcc*/, ver );
+	return pHero;
+}
+
+XSPHero XHero::sDeSerializeUpdate( XArchive& ar, XSPHero pHero, XSPAccConst spAcc )
+{
+	int ver;
+	ar >> ver;
+	XHero hero( pHero->GetspAcc() );		// 복사
+	*pHero = hero;		// 초기화
+	pHero->DeSerialize( ar/*, spAcc*/, ver );
 	return pHero;
 }
 
 #if defined(_XSINGLE) || !defined(_CLIENT)
-XHero* XHero::sCreateHero( const XPropHero::xPROP *pProp, 
-						int levelSquad, 
-						XGAME::xtUnit unit )
+XSPHero XHero::sCreateHero( const XPropHero::xPROP *pProp,
+													 int levelSquad,
+													 XGAME::xtUnit unit,
+													 XSPAccConst spAcc )
 {
 #if defined(_XSINGLE) || !defined(_CLIENT)
 #else
 	XBREAK( 1 );	// 클라에선 이걸 사용하면 안됨.
 #endif // XSINGLE || not CLIENT
-	XHero *pHero = new XHero( pProp, levelSquad, unit );
+	XSPHero pHero = std::make_shared<XHero>( pProp, levelSquad, unit, spAcc );
 	return pHero;
 }
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 
 
 ////////////////////////////////////////////////////////////////
-XHero::XHero()
-	: m_aryUpgrade(XGAME::xTR_MAX)
+XHero::XHero( XSPAccConst spAcc )
+	: m_spAcc( spAcc )
+	, m_aryUpgrade(XGAME::xTR_MAX)
 	, m_aryUnitsAbil( XGAME::xUNIT_MAX )
 	, m_aryEquip( XGAME::xPARTS_MAX )
 {
@@ -93,8 +100,9 @@ XHero::XHero()
 	Init();
 }
 
-XHero::XHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit )
-	: m_aryUpgrade(XGAME::xTR_MAX)
+XHero::XHero( const XPropHero::xPROP *pProp, int levelSquad, XGAME::xtUnit unit, XSPAccConst spAcc )
+	: m_spAcc( spAcc )
+	, m_aryUpgrade(XGAME::xTR_MAX)
 	, m_aryUnitsAbil( XGAME::xUNIT_MAX )
 	, m_aryEquip( XGAME::xPARTS_MAX )
 {
@@ -131,14 +139,9 @@ void XHero::InitAryAbil()
 	}
 }
 
-XPropHero::xPROP* const XHero::GetpProp()
+const XPropHero::xPROP* const XHero::GetpProp() const 
 {
-// 	if( m_keyPropHero != PROP_HERO->GetidKey() ) {
-// 		_m_pProp = PROP_HERO->GetpProp( m_idProp );
-// 		m_keyPropHero = PROP_HERO->GetidKey();
-// 	}
 	return PROP_HERO->GetpProp( m_idProp );
-//	return static_cast<const XPropHero::xPROP*>( _m_pProp );
 }
 
 const XPropHero::xPROP* const XHero::GetpPropConst() const
@@ -148,17 +151,9 @@ const XPropHero::xPROP* const XHero::GetpPropConst() const
 
 void XHero::SetpProp( XPropHero::xPROP* pProp, ID idKey )
 {
-// 	_m_pProp = pProp;
-// 	m_keyPropHero = idKey;
 }
 void XHero::SetpProp( ID idProp )
 {
-// 	auto pProp = PROP_HERO->GetpProp( idProp );
-// 	if( XASSERT( pProp ) ) {
-// 		m_idProp = idProp;
-// 		_m_pProp = pProp;
-// 		m_keyPropHero = PROP_HERO->GetidKey();
-// 	}
 }
 
 int XHero::Serialize( XArchive& ar )
@@ -181,21 +176,23 @@ int XHero::Serialize( XArchive& ar )
 	SerializeUpgrade( ar );
 	SerializeAbil( ar );
 	for (int parts = 1; parts < XGAME::xPARTS_MAX; ++parts) {
-		ar << parts;
-		// 검사루틴 반드시 넣을것. -xuzhu-
+		ar << (char)parts;
+		ar << (char)0;
+		ar << (short)0;
 		if( XBREAK( XGAME::IsInvalidParts( (XGAME::xtParts)parts ) ) )
 			return 0;
-		const auto& item = m_aryEquip[parts];
-		if (item.GetpItem()) {
-			XBREAK( item.GetpItem()->GetsnItem() != item.GetsnItem() );
-			ar << item.GetpItem()->GetsnItem();
-		} else
-			ar << 0;
+		ar << m_aryEquip[ parts ];
+// 		const auto& item = m_aryEquip[parts];
+// 		if (item.GetpItem()) {
+// 			XBREAK( item.GetpItem()->GetsnItem() != item.GetsnItem() );
+// 			ar << item.GetpItem()->GetsnItem();
+// 		} else
+// 			ar << 0;
 	}
 
 	return ar.size() - _sizeAr;
 }
-int XHero::DeSerialize(XArchive& ar, XSPAcc spAcc, int verHero )
+int XHero::DeSerialize(XArchive& ar, int verHero )
 {
 	ID idProp;
 	BYTE b0;
@@ -203,43 +200,35 @@ int XHero::DeSerialize(XArchive& ar, XSPAcc spAcc, int verHero )
 	
 	ar >> m_snHero;
 	ar >> w0;	idProp = w0;
-// 	SetpProp( idProp );
 	m_idProp = idProp;
-// 	auto pProp = _m_pProp;
 #if _DEV_LEVEL <= DLV_DEV_EXTERNAL
 	auto pProp = PROP_HERO->GetpProp( idProp );
 	if( XBREAK( pProp == nullptr ) )
 		return FALSE;
 #endif
 	ar >> b0;	m_Unit = ( XGAME::xtUnit )b0;;
-	if( verHero >= 8 ) {
-		ar >> b0;		m_numRemainAbilPoint = b0;
-	} else {
-		ar >> b0;
-	}
+	ar >> b0;		m_numRemainAbilPoint = b0;
 	ar >> b0;	m_bLive = xbyteToBool( b0 );
 	ar >> b0;	m_Grade = ( XGAME::xtGrade )b0;
-//	ar >> w0; 
-	if( verHero >= 8 ) {
-		ar >> b0;		m_numRemainAbilUnlock = b0;
-	} else {
-		ar >> b0;
-	}
+	ar >> b0;		m_numRemainAbilUnlock = b0;
 	ar >> b0;		m_numInitAbil = b0;
 	XBREAK( !m_Grade );
 	DeSerializeUpgrade( ar );
 	DeserializeAbil( ar, verHero );
-	m_aryEquip.Fill( xItem() );
 	for (int parts = 1; parts < XGAME::xPARTS_MAX; ++parts) {
-		ID idParts, snItem;
-		ar >> idParts;
-		ar >> snItem;
-		// 검사루틴 반드시 넣을것. -xuzhu-
-		if( XBREAK( XGAME::IsInvalidParts((XGAME::xtParts)idParts) ) )
+		char c0;
+		short s0;
+		ar >> c0; const int idxParts = c0;
+		ar >> c0;
+		ar >> s0;
+// 		ar >> snItem;
+		if( XBREAK( XGAME::IsInvalidParts((XGAME::xtParts)idxParts) ) )
 			return 0;
-		if (spAcc && snItem != 0) {
-			m_aryEquip[idParts].Set( spAcc->GetItem(snItem) );
-		}
+		ar >> m_aryEquip[ idxParts ];
+// 		if (spAcc && snItem != 0) {
+// 			auto pItem = spAcc->GetItemConst(snItem);
+// 			m_aryEquip[idParts].Set( const_cast<XBaseItem*>( pItem ) );
+// 		}
 	}
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 	AssignSkillPtr();
@@ -458,50 +447,49 @@ int XHero::GetTrainExpRemain( XGAME::xtTrain typeTrain )
 }
 #endif // #if defined(_CLIENT) && defined(_GAME_SERVER)
 
-BOOL XHero::SetEquip(XBaseItem *pItem)
+void XHero::SetEquip(XBaseItem *pItem)
 {
-	XBREAK(pItem == NULL);
-	XBREAK(pItem->GetbEquip() == TRUE);	//사용중인 장비를 누군가 또 장착 시도하면 문제있는거임
-	XGAME::xtParts parts = pItem->GetpProp()->parts;
-	if (pItem->GetpProp()->type == XGAME::xIT_EQUIP)
-	{
-		if (m_aryEquip[parts].GetpItem() != nullptr)
-			m_aryEquip[parts].GetpItem()->SetbEquip(FALSE);
-		pItem->SetbEquip(TRUE);
-		m_aryEquip[parts].Set( pItem );
-		return TRUE;
+	XBREAK(pItem == nullptr);
+//	XBREAK(pItem->GetbEquip() == TRUE);	//사용중인 장비를 누군가 또 장착 시도하면 문제있는거임
+	auto parts = pItem->GetpProp()->parts;
+	if (pItem->GetpProp()->type == XGAME::xIT_EQUIP) {
+// 		if (m_aryEquip[parts].GetpItem() != nullptr)
+// 			m_aryEquip[parts].GetpItem()->SetbEquip(FALSE);
+// 		pItem->SetbEquip(TRUE);
+//		m_aryEquip[parts].Set( pItem );
+		m_aryEquip[ parts ].m_idProp = pItem->GetidProp();
+		m_aryEquip[ parts ].m_snItem = pItem->GetsnItem();
 	}
-	return FALSE;
 }
 
-XBaseItem* XHero::GetEquipItem(XGAME::xtParts parts)
-{
-	if (XGAME::xPARTS_NONE < parts && parts < XGAME::xPARTS_MAX)
-		return m_aryEquip[parts].GetpItem();
-	return NULL;
-}
+// XBaseItem* XHero::GetsnEquipItem(XGAME::xtParts parts)
+// {
+// 	if (XGAME::xPARTS_NONE < parts && parts < XGAME::xPARTS_MAX)
+// 		return m_aryEquip[parts].GetpItem();
+// 	return NULL;
+// }
 
 void XHero::SetUnequipAll()
 {
-	for (int i = XGAME::xPARTS_HEAD; i < XGAME::xPARTS_MAX; ++i)
-	{
-		if (m_aryEquip[i].GetpItem())
-			m_aryEquip[i].GetpItem()->SetbEquip(FALSE);
-	}
+// 	for (int i = XGAME::xPARTS_HEAD; i < XGAME::xPARTS_MAX; ++i)
+// 	{
+// 		if (m_aryEquip[i].GetpItem())
+// 			m_aryEquip[i].GetpItem()->SetbEquip(FALSE);
+// 	}
+	m_aryEquip.Fill( xEquip() );
 }
 
-BOOL XHero::SetUnequip(XBaseItem *pItem)
+void XHero::SetUnequip(XBaseItem *pItem)
 {
 	XBREAK(pItem == NULL);
-	XBREAK(pItem->GetbEquip() == FALSE);	//사용중이지 않은 장비를 누군가 탈착하면 문제있는거
-	if (pItem->GetpProp()->type == XGAME::xIT_EQUIP)
-	{
-		pItem->SetbEquip(FALSE);
+//	XBREAK(pItem->GetbEquip() == FALSE);	//사용중이지 않은 장비를 누군가 탈착하면 문제있는거
+	if (pItem->GetpProp()->type == XGAME::xIT_EQUIP) {
+// 		pItem->SetbEquip(FALSE);
 		XGAME::xtParts parts = pItem->GetpProp()->parts;
-		m_aryEquip[parts].Set( nullptr );
-		return TRUE;
+		//m_aryEquip[parts].Set( nullptr );
+		m_aryEquip[ parts ].m_snItem = 0;
+		m_aryEquip[ parts ].m_idProp = 0;
 	}
-	return FALSE;
 }
 
 // float XHero::GetSquadAttackMeleePower()
@@ -621,17 +609,18 @@ float XHero::GetMoveSpeed( int lvHero, bool bForShow ) const
 */
 float XHero::GetAdjParamByItem( XGAME::xtParameter adjParam ) const
 {
+	if( m_spAcc.expired() )		/// NPC는 아이템 장착 못함.
+		return 0.f;
 	float add = 0.f;
-//	XARRAYN_LOOP_AUTO( m_aryEquip, const& item ) {
-	for( const auto& item : m_aryEquip ) {
-		if( item.GetpItem() ) {
-//			XARRAYLINEARN_LOOP_AUTO( item.GetpItem()->GetpProp()->aryAdjParam, &adj )	{
-			for( const auto& adj : item.GetpItem()->GetpProp()->aryAdjParam ) {
+	for( auto slot : m_aryEquip ) {
+		auto pItem = m_spAcc.lock()->GetpcItemBySN( slot.m_snItem );
+		if( pItem ) {
+			for( const auto& adj : pItem->GetpProp()->aryAdjParam ) {
 				if( adj.adjParam == adjParam ) {
 					add += adj.param / 100.f;
 					break;
 				}
-			}// END_LOOP;
+			}
 		}
 	}
 	return add;
@@ -640,32 +629,42 @@ float XHero::GetAdjParamByItem( XGAME::xtParameter adjParam ) const
 /**
  @brief snItem이 영웅이 갖고 있던 아이템이라면 pNewItem으로 포인터를 교체한다.
 */
-void XHero::UpdateEquipItem( ID snItem, XBaseItem *pNewItem )
+void XHero::UpdateEquipItem( ID _snItem, XBaseItem *pNewItem )
 {
-	bool bChanged = false;
-//	XARRAYN_LOOP_AUTO( m_aryEquip, &item )
-	for( auto& item : m_aryEquip ) {
-		if( item.GetsnItem() ) {
-			if( snItem == item.GetsnItem() ) {
-				XBREAK( bChanged == true );		// 같은 시리얼번호의 장착아이템이 하나더 있다는뜻.
-				item.Set( pNewItem );
-				bChanged = true;
+	for( auto& slot : m_aryEquip ) {
+		if( slot.m_snItem ) {
+			if( slot.m_snItem == _snItem ) {
+//				XBREAK( bChanged == true );		// 같은 시리얼번호의 장착아이템이 하나더 있다는뜻.
+				slot.m_snItem = pNewItem->GetsnItem();
+				slot.m_idProp = pNewItem->GetidProp();
 			}
-#ifndef _DEBUG
 			return;
-#endif
 		}
 	}
+// 	for( auto& item : m_aryEquip ) {
+// 		if( item.GetsnItem() ) {
+// 			if( snItem == item.GetsnItem() ) {
+// 				XBREAK( bChanged == true );		// 같은 시리얼번호의 장착아이템이 하나더 있다는뜻.
+// 				item.Set( pNewItem );
+// 				bChanged = true;
+// 			}
+// #ifndef _DEBUG
+// 			return;
+// #endif
+// 		}
+// 	}
 }
 
 /**
  @brief snItem을 장착중인지 확인
 */
-bool XHero::IsEquip( ID snItem ) const
+bool XHero::IsEquip( ID _snItem ) const
 {
-	for( const auto& item : m_aryEquip ) {
-		if( item.GetpItem() && item.GetpItem()->GetsnItem() == snItem )
+	for( const auto& slot : m_aryEquip ) {
+		if( slot.m_snItem == _snItem )
 			return true;
+// 		if( item.GetpItem() && item.GetpItem()->GetsnItem() == snItem )
+// 			return true;
 	}
 	return false;
 }
@@ -754,6 +753,13 @@ _tstring XHero::GetsidSkill( XGAME::xtIdxSkilltype idxType )
 		return GetpProp()->strPassive;
 	if( m_Grade < XGAME::xGD_EPIC )
 		return _tstring();
+	return GetpProp()->strActive;
+}
+
+_tstring XHero::GetsidSkill( XGAME::xtTrain train )
+{
+	if( train == xTR_SKILL_PASSIVE_UP )
+		return GetpProp()->strPassive;
 	return GetpProp()->strActive;
 }
 
@@ -1379,7 +1385,7 @@ float XHero::GetSquadPower( float statBase, XGAME::xtSize size, int levelSquad )
 }
 // 스탯
 //////////////////////////////////////////////////////////////////////////
-// static float GetAttackMeleePowerSquad( XHero* pHero, XPropUnit::xPROP *pProp, int levelSquad ) {
+// static float GetAttackMeleePowerSquad( XSPHero pHero, XPropUnit::xPROP *pProp, int levelSquad ) {
 // 	return pHero->GetSquadPower( pProp->atkMelee, pProp->size, levelSquad );
 // }
 // static float GetAttackRangePowerSquad( XPropUnit::xPROP *pProp, int levelSquad ) {
@@ -1422,4 +1428,31 @@ int XHero::GetMaxHpSquad( int levelSquad )
 	if( XBREAK( pProp == nullptr ) )
 		return 0;
 	return (int)GetSquadPower( pProp->hpMax, pProp->size, levelSquad );
+}
+
+const XPropItem::xPROP* XHero::GetpPropEquipItem( XGAME::xtParts parts ) const
+{
+	if( m_aryEquip[parts].m_idProp )
+		return PROP_ITEM->GetpProp( m_aryEquip[parts].m_idProp );
+	return nullptr;
+}
+
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief DeSerialize직후 장착아이템의 idProp을 셋팅한다.
+*/
+void XHero::SetidPropToEquip( XSPAccConst spAcc )
+{
+	for( auto& slot : m_aryEquip ) {
+		if( slot.m_snItem ) {
+			auto pItem = spAcc->GetpcItemBySN( slot.m_snItem );
+			if( XASSERT( pItem ) ) {
+				slot.m_idProp = pItem->GetidProp();
+			}
+		}
+	}
+}
+
+void XHero::Release()
+{
+//	m_spAcc.reset();
 }

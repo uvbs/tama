@@ -37,7 +37,7 @@ private:
 		return shared_from_this();
 	}
 	XSPLegion m_spLegion;
-	XList4<XSPSquad> m_listSquad;
+	XList4<XSPSquadObj> m_listSquad;
 	XECompCamp m_Camp;
 	int m_cntLive;				///< 현재 살아있는 부대수. 부대가 전멸할때마다 하나씩 카운팅 된다.
 	XStatistic *m_pStatObj = nullptr;		///< 전투통계 객체
@@ -58,9 +58,9 @@ public:
 	XStatistic* GetpStatObj() const {
 		return const_cast<XStatistic*>( m_pStatObj );
 	}
-	GET_ACCESSOR( XList4<XSPSquad>&, listSquad );
+	GET_ACCESSOR_CONST( const XList4<XSPSquadObj>&, listSquad );
   GET_SET_ACCESSOR( float, Def );
-	XHero* GetpLeader();
+	XSPHero GetpLeader();
 	BOOL IsPlayer() const {
 		return m_Camp == XGAME::xSIDE_PLAYER;
 	}
@@ -73,7 +73,7 @@ public:
 	BOOL CreateLegionDebug( XWndBattleField *pWndWorld, XE::VEC3 vwStart, XGAME::xtLegionOption bitOption );
 	void MakeResource();
 #endif
-	XSquadObj* AddSquad( const XSPSquad& spSquad );
+	XSquadObj* AddSquad( const XSPSquadObj& spSquad );
 	/// 부대가 생성되거나 전멸할때 하나씩 카운팅 해준다.
 	int AddCntLive( int add ) {
 		m_cntLive += add;
@@ -82,25 +82,25 @@ public:
 	}
 	void SetAI( BOOL bFlag );
 	void OnSkillEvent( XSKILL::xtJuncture event );
-	XSPSquad FindNearSquad( XSquadObj *pFinder );
-	XSPSquad FindNearSquad( XSquadObj *pFinder, bool( *pFunc )( XSPSquad& ) );
+	XSPSquadObj FindNearSquad( XSquadObj *pFinder );
+	XSPSquadObj FindNearSquad( XSquadObj *pFinder, bool( *pFunc )( XSPSquadObj& ) );
 	XSPUnit FindNearUnit( const XE::VEC3& vwSrc, float meterRadius ) const;
 //	XSPUnit FindAttackTargetInSquad( XSquadObj *pFinder, const XSPSquad& spAt, XSPSquad *pOutSquad );
 	void FrameMove( float dt );
 	void Draw( XEWndWorld *pWndWorld );
-	void OnDieSuqad( XSPSquad spSquad );
-	BOOL IsNearestSquad( const XSPSquad& spBase, XSPSquad& spOut );
-	XSPSquad GetPickSquad( const XE::VEC3& vwPick, BIT bitCamp, ID snExclude = 0 );
+	void OnDieSuqad( XSPSquadObj spSquad );
+	BOOL IsNearestSquad( const XSPSquadObj& spBase, XSPSquadObj& spOut );
+	XSPSquadObj GetPickSquad( const XE::VEC3& vwPick, BIT bitCamp, ID snExclude = 0 );
 	int GetNearSquad( XSquadObj *pSquadSrc,
-					XArrayLinearN<XSPSquad, 64> *pOutAry,
+					XArrayLinearN<XSPSquadObj, 64> *pOutAry,
 					float radius );
-	XSPSquad GetSquadBySN( ID snSquad );
+	XSPSquadObj GetSquadBySN( ID snSquad );
 	void KillAllUnit();
-	XSPSquad FindNearSquadLeastHp( XSquadObj *pFinder,
+	XSPSquadObj FindNearSquadLeastHp( XSquadObj *pFinder,
 																 float pixelRadius,
 																 BIT bitCampFind,
 																 BOOL bHighest );
-	XSPSquad FindSquadRandom( XSquadObj *pFinder,
+	XSPSquadObj FindSquadRandom( XSquadObj *pFinder,
 														float pixelRadius,
 														bool bIncludeFinder );
 	void OnStartBattle();
@@ -109,16 +109,24 @@ public:
 	int GetAllUnit( XVector<XBaseUnit*> *pOutAry );
 	XSPUnit GetHeroUnit( ID idHero );
 	void DoFullHp();
-	XSPSquad FindSquadTakeTargetAndClosed( XSquadObj *pFinder, XSquadObj *pTarget, XGAME::xtUnit unitFilter = XGAME::xUNIT_NONE );
+	XSPSquadObj FindSquadTakeTargetAndClosed( XSquadObj *pFinder, XSquadObj *pTarget, XGAME::xtUnit unitFilter = XGAME::xUNIT_NONE );
 	float GetSumHpAllSquad();
 	float GetMaxHpAllSquad();
 	int SerializeForGuildRaid( XArchive& ar );
 	void DrawSquadsBar( const XE::VEC2& vPos );
-	void GetArySquadByResource( XVector<XSPSquad>* pOut );
-	XSPSquad CreateSquadObj( int i, int j, const XE::VEC3& vwBase, XGAME::xtLegionOption bitOption, XWndBattleField* pWndWorld );
-	bool CreateLegion2( XWndBattleField *pWndWorld, const XE::VEC3& vwStart, XGAME::xtLegionOption bitOption );
-	XSPSquad GetspSquadObjByIdx( int idx );
-	inline XSPSquad GetspSquadObjBySN( ID snSquad ) {
+	void GetArySquadByResource( XVector<XSPSquadObj>* pOut );
+	XSPSquadObj CreateSquadObj( int i, int j, 
+													 const XE::VEC3& vwBase, 
+													 XGAME::xtLegionOption bitOption, 
+													 XWndBattleField* pWndWorld ) const;
+	static XSPSquadObj sCreateSquadObj( XSPLegionObjConst spLegionObj,
+																	 XSPSquadron pSquad,
+																	 const XE::VEC3& vwPos,
+																	 XGAME::xtLegionOption bitOption,
+																	 XWndBattleField* pWndWorld );
+	bool CreateSquadObjList( XWndBattleField *pWndWorld, const XE::VEC3& vwStart, XGAME::xtLegionOption bitOption );
+	XSPSquadObj GetspSquadObjByIdx( int idx );
+	inline XSPSquadObj GetspSquadObjBySN( ID snSquad ) {
 		return GetSquadBySN( snSquad );
 	}
 	void DoDamage();

@@ -19,7 +19,7 @@ using namespace XSKILL;
 template<> XPool<XUnitArcher>* XMemPool<XUnitArcher>::s_pPool = NULL;
 #endif
 ////////////////////////////////////////////////////////////////
-XUnitArcher::XUnitArcher( XSPSquad spSquadObj,
+XUnitArcher::XUnitArcher( XSPSquadObj spSquadObj,
 						ID idProp,
 						BIT bitSide, 
 						const XE::VEC3& vPos,

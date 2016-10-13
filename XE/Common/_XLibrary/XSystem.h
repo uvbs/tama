@@ -35,6 +35,9 @@ namespace XSYSTEM {
 	BOOL MakeDir( LPCTSTR szPath );
 	BOOL MakeRecursiveDir( LPCTSTR szPath );
 	BOOL RenameFile( const char* cPathOld, const char* cPathNew );
+	inline BOOL RenameFile( const std::string& strPathOld, const std::string& strPathNew ) {
+		return RenameFile( strPathOld.c_str(), strPathNew.c_str() );
+	}
 	BOOL RemoveFile( const char* cPath );
 	inline BOOL RemoveFile( const std::string& str ) {
 		return RemoveFile( str.c_str() );
@@ -102,7 +105,13 @@ namespace XSYSTEM {
 #endif // WIN32
 	int GetnumChar( const char* utf8Text );
 	BOOL CopyFileX( LPCTSTR szSrcPath, LPCTSTR szDstPath );
+	inline BOOL CopyFileX( const _tstring& strSrcPath, const _tstring& strDstPath ) {
+		return CopyFileX( strSrcPath.c_str(), strDstPath.c_str() );
+	}
 	BOOL DeleteFile( const char* cFilePath );
+	inline BOOL DeleteFile( const std::string& strFilePath ) {
+		return DeleteFile( strFilePath.c_str() );
+	}
 #ifdef WIN32
 	BOOL CopyFileX( const char* cSrcPath, const char* cDstPath );
 #endif

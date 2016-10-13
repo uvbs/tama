@@ -41,9 +41,9 @@ private:
 	CTimer m_timerAutoSave;	///< 수정한지 3초가 지나면 자동세이브 한다.
 	ID m_idSelectedNode = 0;
 	ID m_snSelectedHero = 0;
-	XHero *m_pHeroSected = nullptr;
+	XSPHero m_pHeroSected = nullptr;
 	CTimer m_timerGlow;
-	XList4<XHero*> m_listHeroes;		// 영웅들 리스트(현재 소트된 상태의)
+	XList4<XSPHero> m_listHeroes;		// 영웅들 리스트(현재 소트된 상태의)
 private:
 	enum { SIZE_GRID=7 };
 	XE::VEC2 m_vLocalLDownT;						///< LDown을 했을때 아이콘내 마우스 로컬좌표
@@ -125,14 +125,14 @@ public:
 	void Update();
 	//	void UpdateTreeNode( XWnd *pRoot );
 	void UpdateHeroList( XWnd *pRoot );
-	void UpdateRightPanel( XWnd *_pRoot, XHero *pHero, XPropTech::xNodeAbil* pProp, const XGAME::xAbil& abil );
-	void UpdateInitAbil( XWnd *pRoot, XHero *pHero );
-	void UpdateUnlockButton( XWnd *pRoot, XHero *pHero, XPropTech::xNodeAbil* pProp );
-	void UpdateSelectedAbil( XWnd *pRoot, XHero *pHero, XPropTech::xNodeAbil* pProp, const XGAME::xAbil& abil );
+	void UpdateRightPanel( XWnd *_pRoot, XSPHero pHero, XPropTech::xNodeAbil* pProp, const XGAME::xAbil& abil );
+	void UpdateInitAbil( XWnd *pRoot, XSPHero pHero );
+	void UpdateUnlockButton( XWnd *pRoot, XSPHero pHero, XPropTech::xNodeAbil* pProp );
+	void UpdateSelectedAbil( XWnd *pRoot, XSPHero pHero, XPropTech::xNodeAbil* pProp, const XGAME::xAbil& abil );
 	void UpdateNeedRes( const XPropTech::xtResearch& costAbil );
-	void UpdateTopUnitButtons( XWnd *pRoot, XHero *pHero );
-	void UpdateAbilResearch( XWnd *pRoot, XHero *pHero, XPropTech::xNodeAbil* pPropNode, const XGAME::xAbil& abil );
-	void UpdateTree( XWnd *pRoot, XHero *pHero );
+	void UpdateTopUnitButtons( XWnd *pRoot, XSPHero pHero );
+	void UpdateAbilResearch( XWnd *pRoot, XSPHero pHero, XPropTech::xNodeAbil* pPropNode, const XGAME::xAbil& abil );
+	void UpdateTree( XWnd *pRoot, XSPHero pHero );
 	int OnClickLockFree( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnCheat( XWnd* pWnd, DWORD p1, DWORD p2 );
 	static _tstring _sGetResearchTime( int sec );

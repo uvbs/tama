@@ -158,9 +158,7 @@ private:
 private:
 	// private method
 	void Init() {}
-	void Destroy() {
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcProfile );
-	}
+	void Destroy();
 }; // class XWndProfilePicture
 
 /****************************************************************
@@ -323,3 +321,71 @@ private:
 	BOOL OnCreate();
 	void Update();
 }; // class XWndRegistAcc
+
+/****************************************************************
+* @brief 
+* @author xuzhu
+* @date	2016/10/02 15:44
+*****************************************************************/
+class XWndSkillTrainComplete : public XWndPopup
+{
+public:
+	XWndSkillTrainComplete( XSPHero pHero, 
+													const _tstring& idsSkill,
+													int level );
+	~XWndSkillTrainComplete() { Destroy(); }
+	// get/setter
+	// public member
+private:
+	// private member
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	BOOL OnCreate() override;
+	void Update() override;
+}; // class XWndSkillTrainComplete
+
+/****************************************************************
+* @brief 
+* @author xuzhu
+* @date	2016/10/02 15:44
+*****************************************************************/
+class XWndTrainCompleteLevel : public XWndPopup
+{
+public:
+	XWndTrainCompleteLevel( XSPHero pHero );
+	~XWndTrainCompleteLevel() { Destroy(); }
+	// get/setter
+	// public member
+private:
+	// private member
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	BOOL OnCreate() override;
+	void Update() override;
+}; // class XWndTrainCompleteLevel
+
+/****************************************************************
+* @brief 
+* @author xuzhu
+* @date	2016/10/02 15:44
+*****************************************************************/
+class XWndTrainCompleteSquad : public XWndPopup
+{
+public:
+	XWndTrainCompleteSquad( XSPHero pHero, XGAME::xtUnit unit, int level );
+	~XWndTrainCompleteSquad() { Destroy(); }
+	// get/setter
+	// public member
+private:
+	// private member
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	BOOL OnCreate() override;
+	void Update() override;
+}; // class XWndTrainCompleteSquad

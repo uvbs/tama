@@ -325,7 +325,8 @@ void XConnector::DispatchFSMEvent( xtFSMEvent event, const XParamObj& paramObj )
 // 		auto pfsmNext = m_pCurrFSM->GetpfsmByEvent( event );
 		if( XASSERT(pfsmNext) ) {
 			pfsmNext->SetParam( paramObj );
-			m_pCurrFSM->OnFinish();		// 현재 fsm종료 핸들러
+			if( m_pCurrFSM )		// 홈으로 나가있을땐 널이된다.
+				m_pCurrFSM->OnFinish();		// 현재 fsm종료 핸들러
 			m_pNextFSM = pfsmNext;		// 다음 fsm으로 등록.
 		}
 	} else

@@ -73,10 +73,10 @@ XEmitter::XEmitter( const XE::VEC2& vPos, XPropParticle::xEmitter* pPropEmitter,
 		m_timerLife.Off();		// 이미터 사라지지 않음.
 //	m_numEmit = 1;
 	if( idxArySpr >= 0 ) {
-		auto psoSurfaces = new XSprObj( pPropEmitter->strSpr );
+		auto psoSurfaces = new XSprObj( pPropEmitter->strSpr, XE::xHSL(), false, false, false );
 		m_idxSpr = idxArySpr + 1;	// id는 0값이 초기화값이므로.
 		m_psoSurfaces = psoSurfaces;
-		m_psfcParticle = psoSurfaces->GetSprite( idxArySpr )->GetpSurface();
+		m_psfcParticle = psoSurfaces->GetSpriteMutable( idxArySpr )->GetpSurface();
 	} else {
 		m_strSpr = pPropEmitter->strSpr;
 	}

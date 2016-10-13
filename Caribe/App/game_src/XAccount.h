@@ -12,7 +12,7 @@
 #include "XPropWorld.h"
 #include "XPropTech.h"
 #include "XGuild.h"
-#include "VerPacket.h"
+#include "../Resource/VerPacket.h"
 #include "XPropUpgrade.h"
 #include "XFramework/Game/XEComponents.h"
 #include "XPropSquad.h"
@@ -47,8 +47,9 @@ ver 5: 리소스 부대
 ver 6: 안개정보
 ver 7: rateHP, rateAtk
 ver 8,9: 부대 mulAtk, mulHp적용
+ver 10: XLegion의 squadron저장방식 변경(고정배열->가변배열)
 */
-#define VER_LEGION_SERIALIZE	9
+#define VER_LEGION_SERIALIZE	10
 #define VER_RESOURCE_SERIALIZE	1
 /*
 	ver 2: 용맹포인트 추가.
@@ -207,6 +208,9 @@ public:
 #ifdef _CLIENT
 	static XSPAcc s_spInstance;
 	static XSPAcc sGetPlayer() { return s_spInstance; }
+	static XSPAccConst sGetPlayerConst() {
+		return s_spInstance;
+	}
 	static void sSetPlayer( XSPAcc spAcc ) { 
 #ifdef _DEBUG
 		XBREAK( s_spInstance != nullptr );
@@ -241,7 +245,7 @@ public:
 	static int s_secOfflineForSimul;		// 스팟침공 시뮬레이션시 오프라인 시간.
 	static int s_bTraderArrived;			// 무역상이 도착함.
 	// 헬퍼 함수
-	static XBaseItem* sCreateItem(XPropItem::xPROP *pProp, int num);
+	static XBaseItem* sCreateItem( const XPropItem::xPROP *pProp, int num);
 	static XBaseItem* sCreateItem(ID idItem, int num);
 	static int sGetMaxSquadByLevelForPlayer(int level);
 	static int sGetLevelByUnlockUnit(int numUnits);
@@ -377,7 +381,7 @@ private:
     ID idAccEnemy = 0;      // 상대중인 적의 계정아이디
     ID idSpot = 0;          // 어떤 스팟의 전투인가.
     DWORD param = 0;       // 만약 캠페인형태라면 스테이지 인덱스나 스테이지 아이디등의 부가정보.
-    LegionPtr spEnemy;      // 적 부대 정보(이것을 DB에 저장하는 이유는 전투중 잠깐 끊겼다가 다시 붙었을때 부대 정보가 없어서 무효가 되는일이 없도록하기위함)
+    XSPLegion spEnemy;      // 적 부대 정보(이것을 DB에 저장하는 이유는 전투중 잠깐 끊겼다가 다시 붙었을때 부대 정보가 없어서 무효가 되는일이 없도록하기위함)
     XTimerTiny timerStart;      // 전투 시작시간
     void Clear() {
       snSession = 0;
@@ -426,8 +430,7 @@ protected:
 	int m_powerTotal = 0;                 // 전체 군사력
 	int m_PowerIncludeEmpty = 0;							// 현재 군단의 전투력(빈슬롯을 포함함)
 	int m_Ladder = 0;                      // 
-	XList4<XHero*> m_listHero;								// 영웅 리스트
-//	XArrayN<LegionPtr, XGAME::MAX_LEGION> m_aryLegion;		// 군단 배열
+	XList4<XSPHero> m_listHero;								// 영웅 리스트
 	XVector<XSPLegion> m_aryLegion;
 	XList4<XBaseItem*> m_listItem;							// 아이템 인벤
 	XList4<XPostInfo*> m_listPost;							// 우편함 인벤
@@ -456,7 +459,7 @@ protected:
 	ID m_GuildIndex;										// 
 	XList4< ID > m_listGuildJoinReq;				// 가입 길드 리스트?
 	XGAME::xtGuildGrade m_Guildgrade;						// 길드 등급
-	int	m_GMLevel;											// 
+	int	m_GMLevel;											// 1이 가장높은 등급. 
 	XECompBit m_bitUnlockMenu;			// 잠금해제된 기능들(xBM_XXXX)
 	bool m_bUnlockTicketForPaladin = false;		// 기사 언락 포인트
 	int m_numUnlockTicketForMiddleOrBig = 0;	// 중대형유닛중 하나를 언락시킬수 있는 포인트 개수.
@@ -702,13 +705,13 @@ public:
 	bool IsRemainSquad();
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 	// abil, PropTech
-	bool IsUnlockableAbil( XHero *pHero, XGAME::xtUnit unit, XPropTech::xNodeAbil *pProp );
-	XGAME::xtError GetUnlockableAbil( XHero *pHero, XGAME::xtUnit unit, XPropTech::xNodeAbil *pProp );
-	XGAME::xtError GetUnlockableAbil( XHero *pHero, XGAME::xtUnit unit, ID idAbilNode );
-	bool IsEnableAbil( XHero *pHero, XGAME::xtUnit unit, XPropTech::xNodeAbil *pProp );
+	bool IsUnlockableAbil( XSPHero pHero, XGAME::xtUnit unit, XPropTech::xNodeAbil *pProp );
+	XGAME::xtError GetUnlockableAbil( XSPHero pHero, XGAME::xtUnit unit, XPropTech::xNodeAbil *pProp );
+	XGAME::xtError GetUnlockableAbil( XSPHero pHero, XGAME::xtUnit unit, ID idAbilNode );
+	bool IsEnableAbil( XSPHero pHero, XGAME::xtUnit unit, XPropTech::xNodeAbil *pProp );
 	///<
-	bool IsEnoughResourceForResearch( XHero *pHero/*, XGAME::xtUnit unit*/ );
-	bool IsEnoughIdxResourceForResearch( XHero *pHero/*, XGAME::xtUnit unit*/, int idxRes );
+	bool IsEnoughResourceForResearch( XSPHero pHero/*, XGAME::xtUnit unit*/ );
+	bool IsEnoughIdxResourceForResearch( XSPHero pHero/*, XGAME::xtUnit unit*/, int idxRes );
 	bool IsEnoughIdxResourceForResearchWithPoint( /*XGAME::xtUnit unit,*/ int numPoint, int idxRes );
 	XPropTech::xtResearch& GetCostAbilWithNum( int numPoint );
 // 	XPropTech::xtResearch& GetCostAbilCurr( XGAME::xtUnit unit );
@@ -716,74 +719,64 @@ public:
 
 	// Hero
 
-	XHero* GetHero(ID snHero);
-	inline XHero* GetpHeroBySN( ID snHero ) {
+	XSPHero GetHero(ID snHero);
+	inline XSPHero GetpHeroBySN( ID snHero ) {
 		return GetHero( snHero );
 	}
-	XHero* GetHeroByidProp( ID idProp );
-	XHero* GetpHeroByAtkType( XGAME::xtAttack typeAtk );
-	XHero* GetpHeroByUnit( XGAME::xtUnit unit );
-	XHero* GetpHeroByIndex( int idx );
+	XSPHeroConst GetpcHeroBySN( ID snHero ) const;
+	XSPHero GetHeroByidProp( ID idProp );
+	XSPHero GetpHeroByAtkType( XGAME::xtAttack typeAtk );
+	XSPHero GetpHeroByUnit( XGAME::xtUnit unit );
+	XSPHero GetpHeroByIndex( int idx );
 	// 앞으로 GetlistpHeroByInven을 사용할것.
-	void _GetInvenHero(XList4<XHero*> &listHero) {
+	void _GetInvenHero(XList4<XSPHero> &listHero) {
 		listHero = m_listHero;
 	}
-	inline void GetlistpHeroByInven( XList4<XHero*> *plistOut ) {
+	inline void GetlistpHeroByInven( XList4<XSPHero> *plistOut ) {
 		*plistOut = m_listHero;
 	}
-	void GetarypHeroByInven( XVector<XHero*> *pAryOut );
+	inline const XList4<XSPHero>& GetlistHeroByInvenConst() const {
+		return m_listHero;
+	}
+	void GetarypHeroByInven( XVector<XSPHero> *pAryOut );
 	void GetaryidPropHeroByInven( XVector<ID> *pAryOut );
-	int GetHerosListExceptLegion(XArrayLinearN<XHero*, 1024> *pOutAry, XLegion *pLegion);
+	int GetHerosListExceptLegion(XArrayLinearN<XSPHero, 1024> *pOutAry, XLegion *pLegion);
 	void DestroyHeros(void);
-	XHero* AddHero(XHero *pHero);
+	XSPHero AddHero(XSPHero pHero);
 
 	void AddExpToHeros(int add, XLegion *pLegion, XVector<ID>* pOutAryLevelup = nullptr);
 	void DeleteHeroInLegion(ID snHero);
 	void DestroyHero(ID snHero);
 	/// 현재 pHero영웅의 스킬 레벨업이 가능한 조건인가
 #if defined(_CLIENT) || defined(_GAME_SERVER)
-	bool IsAbleLevelupSkill(XHero *pHero, XGAME::xtTrain type) {
+	bool IsAbleLevelupSkill(XSPHero pHero, XGAME::xtTrain type) {
 		return GetAbleLevelupSkill(pHero, type) == XGAME::xES_OK;
 	}
-	XGAME::xtSkillLevelUp GetAbleLevelupSkill(XHero *pHero, XGAME::xtTrain type);		// 영웅의 스킬이 레벨업 가능한지 조사
+	XGAME::xtSkillLevelUp GetAbleLevelupSkill(XSPHero pHero, XGAME::xtTrain type);		// 영웅의 스킬이 레벨업 가능한지 조사
 	//	void GetNeedSkillUpItem(int lvSkill, ID *pOutId, int *pOutNum);
 #if defined(_XSINGLE) || defined(_GAME_SERVER)
 	void CreateFakeAccount(void);
 #endif // defined(_XSINGLE) || defined(_GAME_SERVER)
 //	BOOL IsEmptyAbilMap();
 	bool IsAbleUpgradeHero();
-	bool IsAbleUpgradeHeroAny(XHero *pHero);
+	bool IsAbleUpgradeHeroAny(XSPHero pHero);
 	bool IsAbleLevelUpHero();
-	bool IsAbleLevelUpHero(XHero *pHero);
-	// 	bool IsAbleProvideSquad( XHero *pHero, ID *pOutID = nullptr, int *pOutNum = nullptr );
-	// 	bool IsAbleProvideSquad();
-//	bool IsAbleLevelUpSquad(XHero *pHero, ID *pOutID = nullptr, int *pOutNum = nullptr);
-	bool IsAbleLevelUpSquad( XHero *pHero );
+	bool IsAbleLevelUpHero(XSPHero pHero);
+	bool IsAbleLevelUpSquad( XSPHero pHero );
 	bool IsUpdateHero();
 	bool IsAbleLevelUpSquad();
-	// 	bool GetItemLevelUpSquad( XHero *pHero, ID *pOutID, int *pOutNum );
-	// 	void GetItemLevelUpSkill( XHero *pHero, XGAME::xtTrain type, ID *pOutId, int *pOutNum );
 	bool GetAbleLevelupSkill();
-// 	bool IsHaveTechPoint() {
-// 		for (int i = 1; i < XGAME::xUNIT_MAX; ++i)
-// 			if (GetTechPoint((XGAME::xtUnit)i) > 0)
-// 				return true;
-// 		return false;
-// 	}
 #endif // CLIENT or GAME_SERVER
 #ifdef _GAME_SERVER
 	int DoCompleteCurrResearch();
 #endif // _GAME_SERVER
-// 	int GetNumSetAbilPoint();
-// 	int GetNumSetAbilPoint(XGAME::xtUnit unit);
-// 	void InitAbilMap();
 
 	// Legion
 #ifdef _XSINGLE
 	void SetspLegion( int idxLegion, XSPLegion spLegion );
 //	XSPLegion CreatespLegion( const XGAME::xLegion& infoLegion );
 #endif // _XSINGLE
-	LegionPtr& GetCurrLegion(void) {
+	XSPLegion& GetCurrLegion(void) {
 		return m_aryLegion[GetCurrLegionIdx()];
 	}
 	int GetCurrLegionIdx(void) {
@@ -792,7 +785,7 @@ public:
 	// 	void SetCurrLegion( XLegion *pLegion ) {
 	// 		m_aryLegion[0] = pLegion;
 	// 	}
-	LegionPtr GetLegionByIdx(int idx) {
+	XSPLegion GetLegionByIdx(int idx) {
 		if (idx < 0 || idx >= m_aryLegion.Size())
 			return nullptr;
 		return m_aryLegion[idx];
@@ -815,10 +808,10 @@ public:
 	}
 
 	XGAME::xtGrade GetRandomGradeHeroByTable(int levelUser) const;
-	XSquadron* CreateSquadronByRandom(XLegion *pLegion, int idxSquad, int levelUser, LPCTSTR szHero, XGAME::xtGrade grade, XGAME::xtUnit unit);
+	XSPSquadron CreateSquadronByRandom(XLegion *pLegion, int idxSquad, int levelUser, LPCTSTR szHero, XGAME::xtGrade grade, XGAME::xtUnit unit);
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	XSquadron* CreateSquadron(XLegion *pLegion, int idxSquad, LPCTSTR szHeroIdentifier, int levelSquad, int tierUnit);
-	XSquadron* CreateSquadron(XLegion *pLegion,
+	XSPSquadron CreateSquadron(XLegion *pLegion, int idxSquad, LPCTSTR szHeroIdentifier, int levelSquad, int tierUnit);
+	XSPSquadron CreateSquadron(XLegion *pLegion,
 														int idxSquad,
 														int lvHero,
 														int lvSquad,
@@ -827,6 +820,7 @@ public:
 														LPCTSTR idsHero,
 														XGAME::xtGrade grade,
 														XGAME::xtUnit unit );
+	static XSPSquadron sCreateSquadron( XLegion *pLegion, int idxSquad, const _tstring& idsHero, int levelSquad, int tierUnit, XSPAccConst spAcc );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 	// 스팟
 
@@ -918,21 +912,25 @@ public:
 	BOOL IsSaleItemidProp(ID idItemProp);
 //	ID ChangeScalpToBook(XGAME::xtClan clan, XArrayLinearN<XBaseItem*, 256> *pOutAry = nullptr);
 	int GetNumItems(LPCTSTR szIdentifier);
+	inline int GetNumItems( const _tstring& idsItem ) {
+		return GetNumItems( idsItem.c_str() );
+	}
 	int GetNumItems(ID idProp);
-	int DestroyItem(LPCTSTR szIdentifier, int num);
+//	int DestroyItem(LPCTSTR szIdentifier, int num);
 	int DestroyItem(ID idProp, int num);
-	int DestroyItemBySN(ID snProp, const int num = 1);
-	//	LPCTSTR GetClanScalpIdentifier( XGAME::xtClan clan ) const;
-// 	int GetNumScalp(XGAME::xtClan clan, int grade = XGAME::xGD_NONE);
-// 	int GetNumClanBook(XGAME::xtClan clan, int grade = XGAME::xGD_NONE);
-// 	XINT64 GetExpClanBooks(XGAME::xtClan clan, int grade = XGAME::xGD_NONE);
-	int CreateItemToInven(XPropItem::xPROP *pProp, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr);
+	int DestroyItem( const _tstring& ids, int num );
+	int DestroyItemBySN( ID snProp, const int num = 1 );
+	int CreateItemToInven( const XPropItem::xPROP *pProp, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr);
 	int CreateItemToInven( ID idProp, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr );
 	int CreateItemToInven( const _tstring& idsItem, int num, XArrayLinearN<XBaseItem*, 256> *pAryOut = nullptr );
-	XBaseItem* CreateItemToInvenForNoStack(XPropItem::xPROP *pProp);
+	XBaseItem* CreateItemToInvenForNoStack( const XPropItem::xPROP *pProp);
 	XBaseItem* CreatePieceItemByidHero( ID idHero, int num );
 	XBaseItem* CreatePieceItem( ID idPropItem, int num );
 	XBaseItem* GetItem(ID snItem);
+	inline XBaseItem* GetpItemBySN( ID snItem ) {
+		return GetItem( snItem );
+	}
+	const XBaseItem* GetpcItemBySN( ID snItem ) const;
 	XBaseItem* GetItem( LPCTSTR idsItem );
 	XBaseItem* GetItem( _tstring& idsItem ) {
 		return GetItem( idsItem.c_str() );
@@ -941,30 +939,12 @@ public:
 		return GetItem(snItem) != nullptr;
 	}
 	XBaseItem* GetItemByEquip(XGAME::xtParts parts, bool bExcludeEquiped = false);
-// 	bool IsEnoughResourceForAbil(xAbil *pAbil, XPropTech::xNodeAbil* pProp);
-//	bool IsEnoughGoldForAbil(xAbil *pAbil, XPropTech::xNodeAbil* pProp);
-// 	bool IsEnoughSubResourceForAbil(xAbil *pAbil, XPropTech::xNodeAbil* pProp, int idx);
 	bool IsCompleteResearch() const {
 		return m_Researching.IsComplete();
 	}
 	// 퀘스트
 	void CreateQuestMng(void);
 	void SetQuestDelegate(XDelegateQuestMng *pDelegate);
-	//옵션 조정. 일단 사용이 확실시되는 옵션만 구현해둠
-// 	void SetbSound(BOOL bOption) {
-// 		m_xOption.bSound = bOption;
-// 		m_xOption.Save();
-// 	}
-// 	BOOL GetbSound(void) {
-// 		return m_xOption.bSound;
-// 	}
-// 	void SetLanguage(int nLang) {
-// 		m_xOption.nLang = nLang;
-// 		m_xOption.Save();
-// 	}
-// 	int GetLanguage(void) {
-// 		return m_xOption.nLang;
-// 	}
 #if defined(_DB_SERVER) || defined(_LOGIN_SERVER)
 	friend class CUserDB;
 	friend class XDatabase;
@@ -1027,10 +1007,10 @@ public:
 	int GetsecRemainResearch() const {
 		return m_Researching.GetsecRemain();
 	}
-//	int GetCostHeroLevelup(XHero *pHero, XINT64 expAdd);
+//	int GetCostHeroLevelup(XSPHero pHero, XINT64 expAdd);
 	bool IsEquip(ID snItem);
-	XHero* GetHeroByEquip(ID snItem);
-	//	std::pair<int,int> GetCostHeroLevelUpByRes( XHero *pHero );
+	XSPHero GetHeroByEquip(ID snItem);
+	//	std::pair<int,int> GetCostHeroLevelUpByRes( XSPHero pHero );
 	ID AddTrainSlot(const xTrainSlot& slot);
 	bool IsTrainingHero(ID snHero, XGAME::xtTrain type);
 	bool IsTrainingLevelupHero(ID snHero) {
@@ -1113,7 +1093,7 @@ public:
 		}
 		return pProp;
 	}
-	int DoCompleteTraining(ID snSlot, XHero *pHero, int expAdd);
+	int DoCompleteTraining(ID snSlot, XSPHero pHero, int expAdd);
 	int AddAP(int add) {
 		m_AP += add;
 		if (m_AP > GetmaxAP())
@@ -1186,15 +1166,15 @@ public:
 	bool IsUnlockableUnit( XGAME::xtUnit unit );
 	int GetLevelUnlockableUnit( XGAME::xtUnit unit );
 	bool IsAbleEquipAnyHero();
-	bool IsHaveBetterEquipItem(XBaseItem* pItemEquip);
-	bool IsHaveBetterThanParts(XHero *pHero);
+	bool IsHaveBetterEquipItem( const XBaseItem* pItemEquip);
+	bool IsHaveBetterThanParts(XSPHero pHero);
 	bool IsHaveBetterThanPartsEnteredHero();
 #if defined(_GAME_SERVER) && defined(_DEV)
 	int CreateDummyAccount( int lvExtern = 0 );
 	int CreateDummyAccountLegion( int level );
 // 	bool RecursiveAbilPointRandom( XGAME::xtUnit unit, XPropTech::xNodeAbil *pRoot );
 // 	void GenerateAbilityForDummy( int lvAcc, XArrayLinearN<char, XGAME::xUNIT_MAX>& aryTechPoint );
-	void GenerateAbilityForDummy( XHero *pHero, int lvAcc );
+	void GenerateAbilityForDummy( XSPHero pHero, int lvAcc );
 	void UnlockUnitForDummy( /*XArrayLinearN<char, XGAME::xUNIT_MAX>& aryTechPoint*/ );
 #endif // _GAME_SERVER && _DEV
 	int GetMilitaryPowerCurrLegion();
@@ -1212,8 +1192,8 @@ public:
 	bool IsHaveHero( const _tstring& idsHero ) {
 		return IsHaveHero( idsHero.c_str() );
 	}
-	XHero* GetpHeroByIdentifier( LPCTSTR szIdentifier );
-	int SerializeHeroUpdate( XArchive& ar, XHero *pHero );
+	XSPHero GetpHeroByIdentifier( LPCTSTR szIdentifier );
+	int SerializeHeroUpdate( XArchive& ar, XSPHero pHero );
 	int DeserializeHeroUpdate( XArchive& ar );
 	void AddCompleteSeq( const std::string& idsSeq ) {
 		if( XBREAK( IsCompletedSeq( idsSeq ) ) )
@@ -1237,7 +1217,7 @@ public:
 	int DeserializeSeq( XArchive& ar, int verEtc );
 	GET_ACCESSOR( const std::string&, idsLastSeq );
 	// xuzhu end
-	ID SetBattleSession( ID snSession, const LegionPtr& spLegion, ID idAccEnemy, ID idSpot, DWORD param = 0 );
+	ID SetBattleSession( ID snSession, const XSPLegion& spLegion, ID idAccEnemy, ID idSpot, DWORD param = 0 );
 	void ClearBattleSession() {
 		m_BattleSession.Clear();
 	}
@@ -1269,23 +1249,23 @@ public:
 	int GetListSoulStoneExcludeHaveHero( XList4<XBaseItem*> *pOutList );
 	int GetNumSoulStone( const _tstring& strId );
 	int GetNumSoulStoneWithidPropHero( ID idPropHero );
-	int GetNumSoulStone( XHero *pHero );
+	int GetNumSoulStone( XSPHero pHero );
 	ID GetsnSoulStone( const _tstring& strId );
 	XGAME::xtError DoPromotionHero( ID snHero );
 #ifndef _CLIENT
-	XGAME::xtError DoSummonHeroByPiece( ID idPropHero, XHero **ppOut = nullptr );
+	XGAME::xtError DoSummonHeroByPiece( ID idPropHero, XSPHero *ppOut = nullptr );
 #endif // not _CLIENT
 	//  bool IsPromotionHero(_tstring strIdHero);
-	XGAME::xtError IsPromotionHero( XHero *pHero );
-	XGAME::xtError IsAbleSummonHeroBySoulStone( _tstring& strIdHero );
+	XGAME::xtError IsPromotionHero( XSPHero pHero );
+	XGAME::xtError IsAbleSummonHeroBySoulStone( const _tstring& strIdHero );
 	XBaseItem* GetSoulStoneByHero( LPCTSTR idsHero );
-	XBaseItem* GetSoulStoneByHero( _tstring& strHero ) {
+	XBaseItem* GetSoulStoneByHero( const _tstring& strHero ) {
 		return GetSoulStoneByHero( strHero.c_str() );
 	}
-	int GetNeedSoulPromotion( XHero *pHero );
+	int GetNeedSoulPromotion( XSPHero pHero );
 #if defined(_XSINGLE) || !defined(_CLIENT)
-	XHero* CreateAddHero( ID idHero, XGAME::xtUnit unitExtern = XGAME::xUNIT_NONE );
-	XHero* CreateAddHero( const _tstring& idsHero, XGAME::xtUnit unitExtern = XGAME::xUNIT_NONE );
+	XSPHero CreateAddHero( ID idHero, XGAME::xtUnit unitExtern = XGAME::xUNIT_NONE );
+	XSPHero CreateAddHero( const _tstring& idsHero, XGAME::xtUnit unitExtern = XGAME::xUNIT_NONE );
 #endif // defined(_XSINGLE) || !defined(_CLIENT)
 	ID GetidItemPieceByidHero( ID idHero );
 	inline bool IsLockBarrack() {
@@ -1333,7 +1313,7 @@ public:
 	bool IsGreenOver( int powerEnemy );
 	int GetGradeLevel( int powerEnemy );
 	int GetTrainExpByGold( int lvHero, int gold, XGAME::xtTrain typeTrain );
-	void GetTrainExpByGoldCurrLv( XHero *pHero, int goldBase, XGAME::xtTrain typeTrain, int *pOutExp, int *pOutSec, int *pOutGold );
+	void GetTrainExpByGoldCurrLv( XSPHero pHero, int goldBase, XGAME::xtTrain typeTrain, int *pOutExp, int *pOutSec, int *pOutGold );
 	int GetGoldByExp( int lvHero, int exp, XGAME::xtTrain typeTrain );
 	static int sGetGoldByMaxExp( int lvHero, XGAME::xtTrain typeTrain );
 	int GetsecTrainHero( int lvHero, int exp, XGAME::xtTrain typeTrain );
@@ -1347,16 +1327,16 @@ public:
 	int GetGoldRemainResearch();
 	int GetGoldResearch( int sec );
 	int GetGoldRemainTrain( xTrainSlot *pSlot );
-	int GetCostOpenFog( LegionPtr spLegion );
+	int GetCostOpenFog( XSPLegion spLegion );
 	int GetAPPerBattle();
 	bool IsAbleResearch();
-	bool IsAbleResearchUnit( XHero *pHero );
+	bool IsAbleResearchUnit( XSPHero pHero );
 	bool IsAbleSummonHero();
 	bool IsAblePromotionHero();
 	bool IsNoCheckUnlockUnit();
 	bool IsNoCheckUnlockUnitEach( XGAME::xtUnit unit );
 	bool IsHaveHeroWithAtkType( XGAME::xtAttack typeAtk );
-	bool IsNoCheckUnlockUnitWithHero( XHero *pHero );
+	bool IsNoCheckUnlockUnitWithHero( XSPHero pHero );
 	void SetCheckUnlockUnit( XGAME::xtUnit unit );
 	bool IsAblePvP();
 	bool IsDummyUser() {
@@ -1393,7 +1373,7 @@ public:
 	int GetsecRemainByTraderRecall() const;
 	bool IsCallableTraderByGem();
 	int GetCashUnlockTrainingSlot();
-	int GetLvHeroAfterAddExp( XHero *pHero, XGAME::xtTrain type, int expAdd, bool bAccLvLimit, int *pOutExp );
+	int GetLvHeroAfterAddExp( XSPHero pHero, XGAME::xtTrain type, int expAdd, bool bAccLvLimit, int *pOutExp );
 	bool ReceivePostItemsAll( ID snPost );
 	void ReceivePostItemsAll( XPostInfo* pPostInfo );
 	XGAME::xtError IsAbleKill( XSpot* pBaseSpot );
@@ -1403,15 +1383,22 @@ public:
 	int ProcessCheatCmd( const _tstring& strCmd );
 	bool IsEnoughResource( const XGAME::xRES_NUM& res );
 	bool IsEnoughResourceWithAry( const XVector<XGAME::xRES_NUM>& aryRes );
-//////////////////////////////////////////////////////////////////////////
+	void SerializeHeros( XArchive& ar ) const;
+	bool DeSerializeHeros( XArchive& ar );
+	const XBaseItem* GetpEquipItemWithHero( XSPHero pHero, XGAME::xtParts parts ) const;
+	bool IsPayable( ID idPropItemBuy, int num, int* pOutLack );
+	bool IsPayable( const XPropItem::xPROP* pProp, int num, int* pOutLack );
+	bool IsPayable( const _tstring& idsItemBuy, int num, int* pOutLack );
+	//////////////////////////////////////////////////////////////////////////
 private:
 	int GetPowerMaxInHeroes();
-	void OnHeroLevelup( XGAME::xtTrain type, XHero *pHero );
+	void OnHeroLevelup( XGAME::xtTrain type, XSPHero pHero );
 	XSPAcc GetThis() {
 		// 객체 정적생성(스택)금지
 		return std::static_pointer_cast<XAccount>( XDBAccount::GetThis() );
 	}
 	void DestroyPostInfoAll();
+	void Release();
 }; // class XAccount
 
 

@@ -373,7 +373,7 @@ int XCampObj::DeSerializeLegion( XArchive& ar, int verCamp )
 	XBREAK( size > 30 );		// 이상값 방지
 	XBREAK( size != m_aryStages[ idxFloor ].size() );
 	for( int i = 0; i < size; ++i ) {
-		auto spLegion = LegionPtr( XLegion::sCreateDeserializeFull( ar ) );
+		auto spLegion = XSPLegion( XLegion::sCreateDeserializeFull( ar ) );
 		auto spStageObj = GetspStage( i, idxFloor );
 		spStageObj->DestroyLegion();
 		spStageObj->SetspLegion( spLegion );
@@ -403,15 +403,15 @@ bool XCampObj::ClearStage( int idxStage, int idxFloor )
 
 }
 
-LegionPtr XCampObj::GetspLegionLastUnlockStage( int idxFloor )  
+XSPLegion XCampObj::GetspLegionLastUnlockStage( int idxFloor )  
 {
 	XLOCK_OBJ;
 	if( GetidxLastUnlock() >= (int)m_aryStages[ idxFloor ].size() )
-		return LegionPtr();
+		return XSPLegion();
 	return GetaryStages( idxFloor )[ m_idxLastUnlock ]->GetspLegion();
 }
 
-LegionPtr XCampObj::GetspLegionLastPlayStage( int idxFloor ) 
+XSPLegion XCampObj::GetspLegionLastPlayStage( int idxFloor ) 
 {
 	XLOCK_OBJ;
 	if( m_idxLastPlay < 0 )

@@ -49,6 +49,8 @@ static char THIS_FILE[] = __FILE__;
 #pragma message("_DEV ==============================================")
 #endif
 
+#pragma message("=================RENDER OPTIMIZE==========================")
+
 static XRandom2 s_Random;
 
 // namespace XE
@@ -132,3 +134,4 @@ void XRandom2::SetSeed( DWORD seed )
 {
 	m_engineRandom.seed( seed );
 }
+

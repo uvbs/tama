@@ -205,7 +205,7 @@ BOOL XSYSTEM::RenameFile( const char* cPathOld, const char* cPathNew )
 	XTRACE("=> %s", cPathNew);
 #endif // _VER_ANDROID
 	auto bRenameOk = (rename( cPathOld, cPathNew ) == 0);
-	XBREAK( bRenameOk == false );
+//	XBREAK( bRenameOk == false );		// 폰트파일같은건 열려있는ㄹ채로 패치를 하기땜에 rename이 안된다. 초기 실행시에 __normal.ttf 이런파일이 있으면 그때 바꿔줘야 함.
 	return ((bRenameOk)? TRUE : FALSE);
 //	return rename( cPathOld, cPathNew ) == 0;
 }
@@ -410,7 +410,9 @@ XE::xtAlertRet XSYSTEM::xMessageBox( LPCTSTR szMsg, XE::xtAlert type )
 #endif
 #ifdef _VER_ANDROID
 //	XLOG( "%s", szMsg );
-	JniHelper::ShowDialog( "Alert", szMsg );
+#if _DEV_LEVEL <= DLV_DEV_EXTERNAL
+//	JniHelper::ShowDialog( "Alert", szMsg );
+#endif
 #endif
 	return (XE::xtAlertRet)retv;
 }

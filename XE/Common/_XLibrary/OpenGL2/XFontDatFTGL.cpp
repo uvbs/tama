@@ -1,12 +1,13 @@
 ﻿#include "stdafx.h"
+#include "etc/xLang.h"
 #ifdef _VER_OPENGL
 #include "XFontDatFTGL.h"
 #include "XFontObjFTGL.h"
-//#include "Mathematics.h"
 #include "etc/xMath.h"
 #include "XResMng.h"
 #include "XFramework/client/XApp.h"
 #include "XFramework/client/XClientMain.h"
+#include "XBatchRenderer.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -71,7 +72,7 @@ void XFontDatFTGL::Reload2()
 {
 	SAFE_DELETE( m_font );
 	//
-	XLP1;		// profiling
+	XLOAD_PROFILE1;		// profiling
 //	XTRACE("FTTextureFont create");
 	TCHAR szFullpath[1024];
 	TCHAR szLocalpath[256];
@@ -97,14 +98,24 @@ void XFontDatFTGL::Reload2()
 	m_font->FaceSize( (int)GetFontSize() );
 	//	if( outset > 0 )
 	//		m_font->Outset( outset );		// 뚱뚱함의 굵기
-	XLP2;
+	XLOAD_PROFILE2;
 	XLOGP( "%s(%.2f), %llu", XE::GetFileName( szFullpath ), (float)GetFontSize(), __llPass );
 }
 
 // 텍스트 레이아웃 기능이 없는 단순 출력루틴
-float XFontDatFTGL::DrawString( float x, float y, LPCTSTR szString, XCOLOR color, xFONT::xtStyle style, float dist )
+float XFontDatFTGL::DrawString( float x, float y, 
+																LPCTSTR szString, 
+																XCOLOR color, 
+																xFONT::xtStyle style, 
+																float dist )
 {
-	if( XBREAK( m_font == NULL ) )
+	if( IsbBatch() ) {
+		auto pRenderer = XBatchRenderer::sGetpCurrRenderer();
+		if( XASSERT( pRenderer ) )
+			RenderBatch( pRenderer, XE::VEC2( x, y ), szString, color, style );
+		return 0.f;
+	}
+	if( XBREAK( m_font == nullptr ) )
 		return 0;
 	if( XE::IsEmpty( szString ) )
 		return 0;
@@ -179,7 +190,8 @@ float XFontDatFTGL::DrawString( float x, float y, LPCTSTR szString, XCOLOR color
 	return 0;
 }
 
-void XFontDatFTGL::_RenderStroke( float x, float y, LPCTSTR szStr, const MATRIX& mVP, float alpha )
+void XFontDatFTGL::_RenderStroke( float x, float y, LPCTSTR szStr, 
+																	const MATRIX& mVP, float alpha )
 {
 #ifdef _XPROFILE
 	if( XGraphics::s_dwDraw & XE::xeBitNoFont )
@@ -202,5 +214,65 @@ void XFontDatFTGL::_RenderStroke( float x, float y, LPCTSTR szStr, const MATRIX&
 
 	m_font->Render(szStr);
 }
+
+float XFontDatFTGL::RenderBatch( XBatchRenderer* pRenderer,
+																const XE::VEC2& vPos,
+																LPCTSTR szString,
+																XCOLOR color,
+																xFONT::xtStyle style )
+{
+	if( XBREAK( m_font == nullptr ) )
+		return 0;
+	if( XE::IsEmpty( szString ) )
+		return 0;
+	const float hFont = GetFontHeight();
+	const float hFontAdj = (hFont * 0.8f);		// 폰트 출력시 기준이 되는 y값이 폰트의 아래쪽이 되어야 하는데 위쪽으로 사용해서 생기는 근본적인 문제. 폰트의 좌표계를 바꾸지 않는한 이렇게 하드코딩으로 보정해야한다.
+	XE::VEC2 vc = vPos;	// virtual coodinate
+	vc.y += hFontAdj;		// FTGL은 좌표계가 글자의 아랫부분이므로 편의상 글자위 좌상귀가 좌표가 되도록 바꿈
+	// 프리타입 폰트는 독자적인 좌표계를 씀. 아래쪽이 0임
+	MATRIX mVP;
+	MatrixMakeOrtho( mVP, 0, GRAPHICS->GetViewportWidth()*2.f, 0, GRAPHICS->GetViewportHeight()*2.f, -1.0f, 1.0f );
+
+	// 480x320좌표계를 1024x768좌표계로 바꿈
+	// 그리고 y좌표를 뒤집음
+	vc *= 2.f;
+	vc.y = GRAPHICS->GetViewportHeight()*2.f - vc.y;
+	float r, g, b, a;
+	r = XCOLOR_RGB_R( color ) / 255.f;
+	g = XCOLOR_RGB_G( color ) / 255.f;
+	b = XCOLOR_RGB_B( color ) / 255.f;
+	a = XCOLOR_RGB_A( color ) / 255.f;
+
+	float adjStyle = 1.f;
+	MATRIX mModel, mMVP, mWorld;
+	MatrixIdentity( mWorld );
+	MatrixScaling( mModel, m_vScale.x, m_vScale.y, 1.0f );
+	MatrixMultiply( mWorld, mWorld, mModel );
+	MatrixTranslation( mModel, vc.x, vc.y, 0 );
+	MatrixMultiply( mWorld, mWorld, mModel );
+	MatrixMultiply( mMVP, mWorld, mVP );
+#ifdef _XPROFILE
+	if( !(XGraphics::s_dwDraw & XE::xeBitNoFont) )
+#endif // _XPROFILE
+	{
+//		m_font->Render( szString );
+		xRenderCmd::xCmd cmd;
+		static ID s_idFont = 0;
+		cmd.m_Font.m_idFont = ++s_idFont;
+		cmd.m_Font.m_vPos = vc;
+		cmd.m_Font.m_vScale = m_vScale;
+		cmd.m_v4Color = XE::VEC4( r, g, b, a );
+		cmd.m_Font.m_adjStyle = adjStyle;
+		cmd.m_Font.m_mVP = mVP;
+		cmd.m_Font.m_Style = style;
+		cmd.m_Font.m_pFont = m_font;
+		cmd.m_Font.m_pLayer = nullptr;
+		cmd.m_Font.m_szString = szString;
+		pRenderer->PushCmd( cmd );
+	}
+
+	return 0;
+}
+
 
 #endif // gl

@@ -45,6 +45,12 @@ BOOL XLayoutObj::CreateLayout( const char *cKey, XWnd *pParent, const char *cKey
 	return m_pLayout->CreateLayout( cKey, pParent, cKeyGroup );
 }
 
+bool XLayoutObj::CreateLayout2( const std::string& strKey, XWnd *pParent )
+{
+	XBREAK( m_pLayout == nullptr );
+	return m_pLayout->CreateLayout2( strKey, pParent );
+}
+
 void XLayoutObj::Destroy() 
 {
 	SAFE_DELETE( m_pLayout );

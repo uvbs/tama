@@ -1,5 +1,6 @@
 ﻿#pragma once 
 
+#include "etc/XSurfaceDef.h"
 #include "etc/xGraphics.h"
 #include "etc/InputMng.h"
 #include "etc/Timer.h"
@@ -9,10 +10,11 @@
 #include "XLua.h"
 #include "../XInterpolationObj.h"
 //#include "XFramework/client/XLayout.h"
-#include "XImageMng.h"
+//#include "XImageMng.h"
 //#include "../XDrawGraph.h"
 #include "XBaseDelegate.h"
 #include "XWndH.h"
+#include "XFramework/XParamObj.h"
 
 class XWndButton;
 class XDelegateWnd;
@@ -71,13 +73,22 @@ class XDelegateWnd;
 #define XWM_FINISH_NUMBER_COUNTER		1000	// XWnnTextNumberCount의 카운터가 끝나면 호출.
 
 // flag
-namespace XE {
-	enum {	xID_OK=1,
-				xID_CANCEL=2,
-				xID_YES=3,
-				xID_NO=4
-			};
+XE_NAMESPACE_START( XE )
+//
+enum {	xID_OK=1,
+		xID_CANCEL=2,
+		xID_YES=3,
+		xID_NO=4
+	};
+// 윈도우 메시지
+struct xMsgWin {
+	std::string m_strMsg;
+	XParamObj m_ParamObj;
 };
+//
+XE_NAMESPACE_END; // XE
+	
+	
 
 struct XWND_RES_FRAME
 {
@@ -90,10 +101,7 @@ struct XWND_RES_FRAME
 		XCLEAR_ARRAY( psfcFrame );
 	}
 	~XWND_RES_FRAME() { Destroy(); }
-	void Destroy() {
-		for( int i = 0; i < 9; i++ )
-			SAFE_DELETE( psfcFrame[ i ] );
-	}
+	void Destroy();
 };
 
 //{
@@ -144,6 +152,9 @@ class XWnd
 		xCallback() {}
 		xCallback( ID idEvent, std::function<void( XWnd* )> funcCallback ) 
 		: m_idEvent(idEvent), m_funcCallback(funcCallback) {	}
+		inline ID getid() const {
+			return m_idEvent;
+		}
 	};
 	XList4<xCallback> m_listCallback;
 public:
@@ -287,6 +298,7 @@ private:
 	XE::xAlign m_Align = XE::xALIGN_NONE;
 	XVector<xnWnd::xClickEvent> m_aryClickEvent;
 	xnWnd::xTooltip m_datTooltip;		// 툴팁 정보
+	XList4<XE::xMsgWin> m_qMsg;			// 이벤트메시지 큐
 #ifdef WIN32
 	int m_nDepth;				// 윈도우 트리에서의 깊이
 #endif
@@ -356,7 +368,7 @@ public:
 	XWnd( XLayout *pLayout, const char *cNodeName );
 	virtual ~XWnd() { Destroy(); }
 
-	GET_ACCESSOR( XE::xtWnd, wtWnd );
+	GET_ACCESSOR_CONST( XE::xtWnd, wtWnd );
 	GET_ACCESSOR( XWnd*, pParent );
 	// 비공식API이므로 엔진개발자 외엔 사용하지 말것.
 	void _SetpParent( XWnd* pParent ) {
@@ -591,23 +603,23 @@ public:
 		m_vAdjDraw = vAdjDraw;
 	}
 	// transform width, height
-	inline float GetWidthLocal() { 
+	inline float GetWidthLocal() const { 
 		return m_vSize.x * GetScaleLocal().x; 
 	}
-	inline float GetHeightLocal() { 
+	inline float GetHeightLocal() const { 
 		return m_vSize.y * GetScaleLocal().y; 
 	}
-	inline XE::VEC2 GetSizeLocal() { 
+	inline XE::VEC2 GetSizeLocal() const { 
 		return m_vSize * GetScaleLocal(); 
 	}
-	inline XE::VEC2 GetSizeLocalNoTrans() {
+	inline XE::VEC2 GetSizeLocalNoTrans() const {
 		return m_vSize;
 	}
-	inline XE::VEC2 GetSizeFinal() { 
+	inline XE::VEC2 GetSizeFinal() const { 
 		return m_vSize * GetScaleFinal(); 
 	}
-	float GetWidthFinalValid();
-	float GetHeightFinalValid();
+	float GetWidthFinalValid() const;
+	float GetHeightFinalValid() const;
 // 	virtual XE::VEC2 GetSizeWindow() {
 // 		return m_vSize * GetScaleFinal();
 // 	}
@@ -682,18 +694,9 @@ public:
 	}
 	/// m_vSize와는 다르게 실제 화면에 렌더되는 크기의 바운드박스를 얻는다 보통 클리핑에 사용된다
 	XE::xRECT GetBoundBoxByVisibleFinal();
-// 	inline XE::xRECT GetBoundBoxByVisibleFinal() const {
-// 		return GetBoundBoxByVisible();
-// 	}
 	// this의 트랜스폼이 적용된 바운딩박스 크기를 돌려준다. 기준은 this의 (0,0)이다.
 	inline XE::xRECT GetBoundBoxByVisibleLocal() {
 		return GetBoundBoxByVisibleNoTrans() * m_vScale;
-// 	// 코드가 괴상하군 한번 손봐야 할듯.
-// 		XE::xRECT rect;
-// 		rect.vRB = rect.vLT + GetSizeFinal() - XE::VEC2( 1 );
-// 		if( rect.vRB.IsMinus() )
-// 			rect.vRB = rect.vLT;	// 사이즈가 없는 윈도우는 RB가 -1이 되면 XWnd::Draw 클리핑에서 걸러지므로 LT랑 같게 한다.,
-// 		return rect;
 	}
 	/// this윈도우의 실제 그림이 있는 영역의 트랜스폼되지 않은 크기바운딩박스를 돌려준다. 기준은 this의 (0,0)이다.
 	/// 일반적으로는 0,0 - m_vSize가 바운딩 박스지만 텍스트나 스프라이트의 경우는 옵션이나 그림모양에 따라 다르다.
@@ -761,11 +764,17 @@ protected:
 	virtual void Update();
 public:
 	// 일반사용자 사용금지.
-	void _Update() {
+	inline void _Update() {
 		Update();
 	}
 	virtual void Draw();
 	virtual void Draw( const XE::VEC2& vParent );
+	virtual void OnDrawBefore() {}
+	virtual void OnDrawAfter() {}
+	virtual void OnUpdateBefore() {}
+	virtual void OnUpdateAfter() {}
+	virtual void OnProcessBefore() {}
+	virtual void OnProcessAfter() {}
 	virtual void OnDestroy() {}
 	virtual void CallEvent( const char *cFunc );
 	void DrawFrame( const XWND_RES_FRAME& frame );
@@ -827,33 +836,10 @@ public:
 		msgMap.pHandler = static_cast<CALLBACK_FUNC>( func );
 		m_listMessageMap.push_back( msgMap );
 	}
-	void ClearEvent( DWORD msg ) {
-		LIST_MANUAL_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )	{
-			if( msgMap.msg == msg )
-				m_listMessageMap.erase( itor++ );
-			else
-				++itor;
-		} END_LOOP;
-	}
-	XWND_MESSAGE_MAP FindMsgMap( DWORD msg ) {
-		LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )	{
-			if( msgMap.msg == msg )
-				return msgMap;
-		} END_LOOP;
-		XWND_MESSAGE_MAP msgMap;
-		return msgMap;
-	}
-	BOOL IsHaveEvent( DWORD msg ) {
-		LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap )	{
-			if( msgMap.msg == msg )
-				return TRUE;
-		} END_LOOP;
-		return FALSE;
-	}
-// 	void GetNextClear( std::list<XWnd*>::iterator *pItor );
-// 	XWnd* GetNext(std::list<XWnd*>::iterator& itor);
-// 	void GetNextClear2( XList<XWnd*>::Itor *pOutItor );
-// 	XWnd* GetNext2( XList<XWnd*>::Itor& itor );
+	void ClearEvent( DWORD msg );
+	XWND_MESSAGE_MAP FindMsgMap( DWORD msg );
+	const xCallback* FindMsgMap2( DWORD msg ) const;
+	bool IsHaveEvent( DWORD msg ) const;
 	template<typename T, int N>
 	int GetUnderChildListToArray( XArrayLinearN<XWnd*, N> *pOutAry ) {
 		for( auto pWnd : m_listItems ) {
@@ -883,7 +869,12 @@ public:
 	virtual BOOL OnCreate() { return TRUE; }	/// 윈도우가 생성되고 Add()가 된후 호출된다.
 	virtual void OnStartChangeSizeOfChild( XWnd *pChild, const XE::VEC2& vSize, float secSizing ) {}
 	virtual void PreCalcLayoutSize();
+	// 하드웨어 자원 및 일반 자원을 복구시킨다.
 	virtual BOOL RestoreDevice();
+	// 하드웨어 자원만 날린다.
+	virtual void DestroyDevice();
+	// 홈버튼
+	virtual void OnPause();
 	/**
 	 패치클라이언트 작동으로 게임리소스(프로퍼티,spr,txt등 파일형태로 되어있는 것들)
 	 가 삭제되었다 다시 생성되었다는것을 의미함. 이 메소드를 받은 객체는 자신이 게임리소스의
@@ -892,7 +883,7 @@ public:
 	virtual BOOL RestoreGameResource();
 	virtual void OnFinishAppear() {}
 	// 레이아웃에서 생성될때 this의 자식들이 모두 생성이 끝나면 호출된다.
-	virtual void OnFinishCreatedChildLayout( XLayout *pLayout ) {}
+	virtual void OnFinishCreatedChildLayout( const XLayout *pLayout ) {}
 	//
 	void LuaDestroy() {
 		SetbDestroy( TRUE );
@@ -914,14 +905,14 @@ public:
 	virtual XE::VEC2 GetSizeNoTransLayout();
 	XE::VEC2 GetSizeNoTransLayoutWithAry( const XVector<XWnd*>& aryWnd ) const;
 	XE::VEC2 GetSizeFinalLayout();
-	XE::VEC2 GetSizeValidNoTrans();
-	float GetSizeValidNoTransWidth();
-	float GetSizeValidNoTransHeight();
-	void AutoLayoutHCenter( XWnd *pParent );
-	void AutoLayoutBottom( XWnd *pParent );
-	void AutoLayoutRight( XWnd *pParent );
-	void AutoLayoutVCenter( XWnd *pParent );
-	void AutoLayoutCenter( XWnd *pParent );
+	XE::VEC2 GetSizeValidNoTrans() const;
+	float GetSizeValidNoTransWidth() const;
+	float GetSizeValidNoTransHeight() const;
+	void AutoLayoutHCenter( const XWnd *pParent );
+	void AutoLayoutBottom( const XWnd *pParent );
+	void AutoLayoutRight( const XWnd *pParent );
+	void AutoLayoutVCenter( const XWnd *pParent );
+	void AutoLayoutCenter( const XWnd *pParent );
 	void AutoLayoutHCenter() {
 		AutoLayoutHCenter( m_pParent );
 	}
@@ -933,10 +924,10 @@ public:
 	}
 	void AutoLayoutHCenterWithAry( XArrayLinearN<XWnd*, 256>& aryChilds, float marginLR );
 	void AutoLayoutHCenterWithAry( XVector<XWnd*>& aryWnd, float marginLR );
-	void AutoLayoutVCenterWithAry( XVector<XWnd*>& aryChilds, float marginTB );
+	void AutoLayoutVCenterWithAry( const XVector<XWnd*>& aryChilds, float marginTB ) const;
 	void AutoLayoutVCenterByChilds( float marginTB );
 	void AutoLayoutHCenterByChilds( float marginLR );
-	virtual void AutoLayoutByAlign( XWnd *pParent, XE::xAlign align );
+	virtual void AutoLayoutByAlign( const XWnd *pParent, XE::xAlign align );
 	inline void AutoLayoutByAlign( XE::xAlign align ) {
 // 		auto pParent = GetpParentValid();
 // 		if( pParent )
@@ -1006,8 +997,7 @@ public:
 // 	template<typename T>
 // 	XWndButton* SetButtHander( XWnd *pKeyRoot, const char *cKey, T funcCallback, DWORD param1 = 0 );
 	template<typename T>
-	XWnd* SetButtHander( XWnd *pKeyRoot, const char *cKey, T funcCallback, DWORD param1 = 0)
-	{
+	XWnd* SetButtHander( XWnd *pKeyRoot, const char *cKey, T funcCallback, DWORD param1 = 0)	{
 		typedef int ( XWnd::*CALLBACK_FUNC )( XWnd *, DWORD, DWORD );
 		if( XBREAK( pKeyRoot == NULL ) )
 			return nullptr;
@@ -1016,7 +1006,10 @@ public:
 			pButt->SetEvent( XWM_CLICKED, this, funcCallback, param1 );
 		return pButt;
 	}
-	
+	XWnd* SetClickHander( const char *cKey,
+												ID idEvent,
+												std::function<void( XWnd* )> func );
+
 	void SetbTouchableWithChild( bool bFlag );
 	virtual void GetDebugString( _tstring& strOut );
 	void SetbUpdateChilds();
@@ -1035,19 +1028,36 @@ public:
 	virtual void ProcessMsg( const std::string& strMsg ) {}
 	void SendMsgToChilds( const std::string& strMsg );
 	int __OnClickLayoutEvent( XWnd* pWnd, DWORD, DWORD );
-	XWnd* GetpParentValidWidth();
-	XWnd* GetpParentValidHeight();
-	XWnd* GetpParentHaveAlignV();
-	XWnd* GetpParentHaveAlignH();
+	XWnd* GetpParentValidWidth() const;
+	XWnd* GetpParentValidHeight() const;
+	XWnd* GetpParentHaveAlignV() const;
+	XWnd* GetpParentHaveAlignH() const;
 #if defined(_CHEAT) && defined(WIN32)
 	void UpdateMouseOverWins( const XE::VEC2& vMouse, int depth, XVector<xWinDepth>* pOutAry );
 #endif // defined(_CHEAT) && defined(WIN32)
 	bool IsMouseOver( const XE::VEC2& vMouse );
 	void SetEvent2( ID idEvent, std::function<void(XWnd*)> func );
+	inline void PushMsg( const std::string& strMsg ) {
+		XE::xMsgWin msg;
+		msg.m_strMsg = strMsg;
+		m_qMsg.push_back( msg );
+	}
+	void DispatchMsg();
+	/**
+	 @brief 외부로부터 이벤트메시지가 들어왔을때 각 윈도우는 그것을 처리한다.
+	 @return 메시지처리를 끝내고 메시지삭제를 원할땐 true를 리턴한다. 
+	*/
+	virtual bool DispatchMsg( const XE::xMsgWin& msg ) { return false; }
 private:
 	virtual void OnNCModal() {}
 	virtual bool IsAbleAlign() const { return true; }
 	virtual XE::VEC2 GetvChildLocal( const XE::VEC2& vLocal, XWnd* pParent, XWnd* pGrandParent ) const;
+	const XE::xMsgWin& FrontMsg() const {
+		return m_qMsg.front();
+	}
+	void PopMsg() {
+		m_qMsg.pop_front();
+	}
 }; // class XWnd
 
 #pragma warning ( default : 4250 )

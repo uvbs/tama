@@ -1,4 +1,5 @@
-﻿/********************************************************************
+﻿
+/********************************************************************
 	@date:	2016/06/08 18:52
 	@file: 	C:\xuzhu_work\Project\iPhone_zero\Caribe\App\game_src\XGlobalConst.h
 	@author:	xuzhu
@@ -13,6 +14,7 @@ class XGlobalConst;
 class XGameCommon;
 //extern XGlobalConst *XGC;
 #include "XFramework/XGlobal.h"
+#include "XFramework/XParamObj.h"
 
 /**
  @brief 
@@ -64,6 +66,7 @@ public:
 	float m_rateEquipDrop = 0.1f;	///< 장비아이템 드롭율
 	int m_frEquipDropMax = 100000;	///< 확률 정밀도(10만분의 1)
 	float m_rateKillDrop = 0.3f;		// 소탕권 드랍 확률
+	float m_rateScalpDrop = 0.1f;		// 장비구입용 징표 드랍률
 	int m_bravePointPerTech = 200;	///< 특성레벨당 필요 용맹포인트
 	float m_rateDropLastChance = 0.5f;	///< 스팟에 드랍아이템을 가질수 있는 확률
 	float m_cashPerAP = 1.f;			// ap1당 젬개수
@@ -101,6 +104,7 @@ private:
 	// 가격얻기는 XGAME::GetCostGatcha()를 사용할것.
 	int m_cashHighSummon;			///< 상급소환 캐쉬가격
 	std::vector<_tstring> m_aryBgsBattle;		 // 전투배경 이미지
+	XParamObj2 m_Param;		// key/val 방식의 다이나믹 파라메터
 public:
 	int m_cashShopReload;			//상점 목록 다시 부르기
 	int m_armoryCallInterval;		// 무기상점 갱신 주기
@@ -185,6 +189,7 @@ public:
 	//
 	bool LoadTable( LPCTSTR szTxt );
 	void LoadConst();
+	void LoadDynaParam( XParamObj2* pOut );
 public:
 	//////////////////////////////////////////////////////////////////////////
 	// jw

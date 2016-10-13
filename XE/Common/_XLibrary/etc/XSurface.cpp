@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "etc/XSurface.h"
 #include "etc/xGraphics.h"
+#include "etc/xMath.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -11,19 +12,109 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 DWORD XSurface::s_dwMaxSurfaceWidth = 0;
-int XSurface::s_sizeTotalVMem = 0;
+//int XSurface::s_sizeTotalVMem = 0;
+int XSurface::s_cntDPCallNoBatch = 0;
+int XSurface::s_cntDPCallNormal = 0;
+
+XE_NAMESPACE_START( XE )
+// xSurfaceInfo::~xSurfaceInfo() {	
+// 	SAFE_DELETE_ARRAY( m_pImg );
+// }
+//
+// xVertex::xVertex() 
+// {
+// 	pos.z = 0;
+// }
+//
+XE_NAMESPACE_END; // XE
+
+
+void XE::xRenderParam::GetmTransform( MATRIX* pOut ) const {
+	MATRIX& mWorld = (*pOut);
+	MATRIX m;
+	MatrixIdentity( mWorld );
+	const auto& vAdjAxis = m_vAdjAxis;
+	if( !vAdjAxis.IsZero() ) {
+		MatrixTranslation( m, -vAdjAxis.x, -vAdjAxis.y, 0 );
+		MatrixMultiply( mWorld, mWorld, m );
+	}
+	const auto& vScale = m_vScale;
+	if( vScale.x != 1.0f || vScale.y != 1.0f || vScale.z != 1.0f ) {
+		MatrixScaling( m, vScale.x, vScale.y, 1.0f );
+		MatrixMultiply( mWorld, mWorld, m );
+	}
+	const auto& vRot = m_vRot;
+	if( vRot.z ) {
+		MatrixRotationZ( m, D2R( vRot.z ) );
+		MatrixMultiply( mWorld, mWorld, m );
+	}
+	if( vRot.y ) {
+		MatrixRotationY( m, D2R( vRot.y ) );
+		MatrixMultiply( mWorld, mWorld, m );
+	}
+	if( !vAdjAxis.IsZero() ) {
+		MatrixTranslation( m, vAdjAxis.x, vAdjAxis.y, 0 );
+		MatrixMultiply( mWorld, mWorld, m );
+	}
+	const auto& vPos = m_vPos;
+	MatrixTranslation( m, vPos.x, vPos.y, 0 );
+	MatrixMultiply( mWorld, mWorld, m );
+}
+
+void XE::xRenderParam::SetFlipHoriz( bool bFlag ) {
+	if( bFlag ) {
+		m_dwDrawFlag |= EFF_FLIP_HORIZ;
+		m_vRot.y += 180.f;
+	} else {
+		m_dwDrawFlag &= ~EFF_FLIP_HORIZ;
+		m_vRot.y += 0.f;
+	}
+}
+void XE::xRenderParam::SetFlipVert( bool bFlag ) {
+	if( bFlag ) {
+		m_dwDrawFlag |= EFF_FLIP_VERT;
+		m_vRot.x += 180.f;
+	} else {
+		m_dwDrawFlag &= ~EFF_FLIP_VERT;
+		m_vRot.x += 0;
+	}
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void XSurface::Destroy() 
+{
+	XBREAK( XRefRes::Getid64Res() > 0 && XRefRes::GetnRefCnt() > 0 );
+	SAFE_DELETE_ARRAY( __pSrcImg );
+	SAFE_DELETE_ARRAY( m_pMask );
+}
+
+void XSurface::ClearVertices() 
+{
+	memset( m_Vertices, 0, sizeof( m_Vertices ) );
+	m_Vertices[0].uv.x = 0.f;		m_Vertices[0].uv.y = 1.f;
+	m_Vertices[1].uv.x = 1.f;		m_Vertices[1].uv.y = 1.f;
+	m_Vertices[2].uv.x = 0.f;		m_Vertices[2].uv.y = 0.f;
+	m_Vertices[3].uv.x = 1.f;		m_Vertices[3].uv.y = 0.f;
+	m_Vertices[0].rgba.w = 1.f;
+	m_Vertices[1].rgba.w = 1.f;
+	m_Vertices[2].rgba.w = 1.f;
+	m_Vertices[3].rgba.w = 1.f;
+}
+
 void XSurface::DestroyDevice()
 {
-	AddSizeByte( -GetbytesMemAligned() );
-	XSurface::s_sizeTotalVMem -= GetbytesMemAligned();
+// 	if( !m_bAtlas ) {
+// 		AddSizeByte( -GetbytesMemAligned() );
+// 	}
+	ClearVertices();
 }
 
 void XSurface::RestoreDeviceFromSrcImg()
 {
-	AddSizeByte( GetbytesMemAligned() );
-	XSurface::s_sizeTotalVMem += GetbytesMemAligned();
+// 	if( !m_bAtlas ) {
+// 		AddSizeByte( GetbytesMemAligned() );
+// 	}
 }
 /**
  @brief 
@@ -36,7 +127,7 @@ bool XSurface::Create( const XE::POINT& sizeSurfaceOrig
 										, void* const pImgSrc
 										, XE::xtPixelFormat formatImgSrc
 										, const XE::POINT& sizeMemSrc
-										, bool bSrcKeep, bool bMakeMask )
+										, bool bSrcKeep, bool bMakeMask, bool bUseAtlas )
 {
 	SetAdjust( vAdj );
 	// XE::xPF_ARGB8888 이외의 포맷은 아직 지원하지 않음
@@ -74,12 +165,12 @@ bool XSurface::Create( const XE::POINT& sizeSurfaceOrig
 									, pImgSrc
 									, formatImgSrc
 									, sizeMemSrc
-									, m_sizeMemAligned );
+									, m_sizeMemAligned
+									, bUseAtlas );
 	if( bOk ) {
-		AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
-		// 상위딴에서 집계하려고 했으나 하위딴에서 자기들끼리 호출하는건 집계가 안되는 문제가 있어 집계는 하위딴에게 맡김.
-// 		m_sizeByte += ( m_sizeMemAligned.Size() * bppSurface );
-// 		XSurface::s_sizeTotalVMem += (m_sizeMemAligned.Size() * bppSurface );
+		m_bAtlas = bUseAtlas;
+// 		if( !m_bAtlas )
+// 			AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
 	}
 	return bOk;
 }
@@ -141,9 +232,10 @@ bool XSurface::CreateSub( const XE::POINT& posMemSrc
 														, sizeRender
 														, vAdj
 														, formatSurface );
-	if( bOk ) {
-		AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
-	}
+// 	if( bOk ) {
+// 		if( !m_bAtlas )
+// 			AddSizeByte( m_sizeMemAligned.Size() * bppSurface );
+// 	}
 	return bOk;
 }
 
@@ -251,7 +343,7 @@ void XSurface::CopyRectTo( DWORD *pDst, int wDst, int hDst, int xSrc, int ySrc )
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef _CLIENT
 
-BOOL XSurface::IsInViewport( float x, float y, const MATRIX &mTM )
+BOOL XSurface::IsInViewport( float x, float y, const MATRIX &mTM ) const
 {
 	XE::VEC2 vLT = XE::VEC2( x, y ) + XE::VEC2(m_AdjustX, m_AdjustY);
 	XE::VEC2 vRB = XE::VEC2( x+GetWidth(), y+GetHeight() );
@@ -285,7 +377,7 @@ BOOL XSurface::IsInViewport( float x, float y, const MATRIX &mTM )
 	return TRUE;
 }
 
-BOOL XSurface::IsInViewport( float x, float y, float w, float h )
+BOOL XSurface::IsInViewport( float x, float y, float w, float h ) const
 {
 	XE::VEC2 vLT = XE::VEC2( x, y );
 	XE::VEC2 vRB = XE::VEC2( x + w * m_fScaleX, y + h * m_fScaleY );
@@ -366,9 +458,10 @@ void XSurface::ClearAttr()
 	m_ColorR = m_ColorG = m_ColorB = 1.f;
 	m_dwDrawFlag = 0;
 	m_DrawMode = xDM_NORMAL;
+	m_adjZ = 0;
 }
 
-void XSurface::GetMatrix( const XE::VEC2& vPos, MATRIX* pOut )
+void XSurface::GetMatrix( const XE::VEC2& vPos, MATRIX* pOut ) const 
 {
 	MATRIX& mWorld = (*pOut);
 	MATRIX m;
@@ -397,3 +490,63 @@ void XSurface::GetMatrix( const XE::VEC2& vPos, MATRIX* pOut )
 	MatrixTranslation( m, vPos.x, vPos.y, 0 );
 	MatrixMultiply( mWorld, mWorld, m );
 }
+
+void XSurface::SetDrawMode( xDM_TYPE drawMode ) 
+{
+	m_DrawMode = drawMode;
+	m__funcBlend = XE::ConvertDMTypeToBlendFunc( drawMode );
+// 	switch( drawMode ) {
+// 	case xDM_NORMAL:
+// 	case xDM_MULTIPLY:
+// 		m__funcBlend = XE::xBF_MULTIPLY;
+// 		break;
+// 	case xDM_SCREEN:
+// 		m__funcBlend = XE::xBF_ADD;
+// 		break;
+// 	case xDM_SUBTRACT:
+// 		m__funcBlend = XE::xBF_SUBTRACT;
+// 		break;
+// 	case xDM_GRAY:
+// 		m__funcBlend = XE::xBF_GRAY;
+// 		break;
+// 	default:
+// 		break;
+// 	}
+}
+void XSurface::sSetglBlendFunc( XE::xtBlendFunc funcBlend,
+																GLenum *pOutsfactor,
+																GLenum *pOutdfactor )
+{
+	switch( funcBlend ) {
+	case XE::xBF_NONE:
+		XBREAK( 1 );
+		*pOutsfactor = 0;
+		*pOutdfactor = 0;
+		break;
+	case XE::xBF_NO_DRAW:
+	case XE::xBF_GRAY:
+	case XE::xBF_MULTIPLY:
+		*pOutsfactor = GL_SRC_ALPHA;
+		*pOutdfactor = GL_ONE_MINUS_SRC_ALPHA;
+		break;
+	case XE::xBF_ADD:
+		*pOutsfactor = GL_SRC_ALPHA;
+		*pOutdfactor = GL_ONE;
+		break;
+	case XE::xBF_SUBTRACT:
+		*pOutsfactor = GL_ONE;
+		*pOutdfactor = GL_ONE;
+		break;
+	default:
+		break;
+	}
+}
+
+void XSurface::DestroySurfaceInfo()
+{
+	if( m_spSurfaceInfo ) {
+		SAFE_DELETE_ARRAY( m_spSurfaceInfo->m_pImg );
+		m_spSurfaceInfo.reset();
+	}
+}
+

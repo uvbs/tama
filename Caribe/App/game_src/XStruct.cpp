@@ -138,31 +138,31 @@ int XGAME::xBattleLog::AddLootRes( XGAME::xtResource type, int add )
 // 	return 1;
 // }
 //////////////////////////////////////////////////////////////////////////
-bool xBattleStart::IsValid() const {
-	if( XBREAK(m_spLegion[0] == nullptr || m_spLegion[1] == nullptr) )
-		return false;
-	if( XBREAK(!m_typeBattle || !m_Level || m_strName.empty()) )
-		return false;
-#ifndef _XSINGLE
-	if( XBREAK(!m_typeSpot) )
-		return false;
-	if( XBREAK(!m_idSpot) )
-		return false;
-	if( m_typeSpot == xSPOT_CASTLE || m_typeSpot == xSPOT_JEWEL || m_typeSpot == xSPOT_MANDRAKE )
-		if( XBREAK(m_idEnemy == 0) )
-			return false;
-	if( m_typeSpot == xSPOT_JEWEL )
-		if( XBREAK(m_Defense == 0) )
-			return false;
-	if( m_Defense > 0 )
-		if( XBREAK(m_typeSpot != xSPOT_JEWEL) )
-			return false;
-	if( m_typeSpot == xSPOT_CAMPAIGN || m_typeSpot == xSPOT_COMMON )
-		if( XBREAK(m_idxStage < 0) )
-			return false;
-#endif // not _XSINGLE
-	return true;
-}
+// bool xBattleStart::IsValid() const {
+// 	if( XBREAK(m_spLegion[0] == nullptr || m_spLegion[1] == nullptr) )
+// 		return false;
+// 	if( XBREAK(!m_typeBattle || !m_Level || m_strName.empty()) )
+// 		return false;
+// #ifndef _XSINGLE
+// 	if( XBREAK(!m_typeSpot) )
+// 		return false;
+// 	if( XBREAK(!m_idSpot) )
+// 		return false;
+// 	if( m_typeSpot == xSPOT_CASTLE || m_typeSpot == xSPOT_JEWEL || m_typeSpot == xSPOT_MANDRAKE )
+// 		if( XBREAK(m_idEnemy == 0) )
+// 			return false;
+// 	if( m_typeSpot == xSPOT_JEWEL )
+// 		if( XBREAK(m_Defense == 0) )
+// 			return false;
+// 	if( m_Defense > 0 )
+// 		if( XBREAK(m_typeSpot != xSPOT_JEWEL) )
+// 			return false;
+// 	if( m_typeSpot == xSPOT_CAMPAIGN || m_typeSpot == xSPOT_COMMON )
+// 		if( XBREAK(m_idxStage < 0) )
+// 			return false;
+// #endif // not _XSINGLE
+// 	return true;
+// }
 // void xBattleStart::Serialize( XArchive& ar ) const
 // {
 // 	XASSERT( ar.IsForDB() == false );
@@ -206,10 +206,10 @@ int xBattleResult::Serialize( XArchive& ar ) const {
 		{
 			XArchive _arHeroes;
 			_arHeroes << aryHeroes.size();
-			XARRAYLINEARN_LOOP( aryHeroes, XHero*, pHero ) {
+			for( auto pHero : aryHeroes ) {
 				_arHeroes << pHero->GetsnHero();
 				pHero->SerializeUpgrade( _arHeroes );
-			} END_LOOP;
+			}
 			ar << _arHeroes;
 			ar << m_aryLevelUpHeroes;
 		}
@@ -282,7 +282,8 @@ int xBattleResult::DeSerialize( XArchive& ar, int ) {
 			ar >> sw0;  int num = sw0;
 			auto pProp = PROP_ITEM->GetpProp( idProp );
 			if( XASSERT( pProp ) ) {
-				ItemBox itembox = std::make_pair( pProp, num );
+				//ItemBox itembox = std::make_pair( pProp, num );
+				ItemBox itembox( std::make_pair( pProp, num ) );
 				aryDrops.Add( itembox );
 			}
 		}
@@ -300,7 +301,7 @@ int xBattleResult::DeSerializeHeroes( XArchive& ar, XSPAcc spAcc )
 	ID snHero;
 	for( int i = 0; i < size; ++i ) {
 		ar >> snHero;
-		XHero *pHero = spAcc->GetHero( snHero );
+		XSPHero pHero = spAcc->GetHero( snHero );
 		if( XASSERT(pHero) )
 			pHero->DeSerializeUpgrade( ar );
 		else
@@ -369,7 +370,7 @@ XPropItem::xPROP* sReadItemIdentifier( XEXmlAttr& attr, LPCTSTR szTag )
 	_tstring strConst = attr.GetTString();
 	if( strConst.empty() )
 		return nullptr;
-	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( strConst );
+	auto pProp = PROP_ITEM->GetpProp( strConst );
 	if( pProp == nullptr ) {
 		CONSOLE( "%s:%s라는 아이템은 없습니다.", szTag, strConst.c_str() );
 	}
@@ -544,7 +545,7 @@ void xBattleStartInfo::DeSerialize( XArchive& ar, XWorld *pWorld, int ) {
 	ar >> c0;	m_idxStage = c0;
 	ar >> b0;	m_bRecon = xbyteToBool(b0);
 	ar >> c0;	m_bInitSpot = xbyteToBool(c0);
-	m_spLegion = LegionPtr( XLegion::sCreateDeserializeFull( ar ) );
+	m_spLegion = XSPLegion( XLegion::sCreateDeserializeFull( ar ) );
 	ar >> w0;	m_AP = w0;
 	ar >> w0;	m_apMax = w0;
 	ar >> m_Power;
@@ -563,7 +564,7 @@ void xBattleStartInfo::DeSerialize( XArchive& ar, XWorld *pWorld, int ) {
 /**
  @brief XML 노드로부터 reward를 읽어들인다.
 */
-xReward::xReward( XHero* pHero ) {
+xReward::xReward( XSPHero pHero ) {
 	XBREAK( pHero == nullptr );
 	SetHero( pHero->GetidProp(), 0 );
 }
@@ -937,43 +938,43 @@ bool xLegion::LoadFromXML( XEXmlNode& nodeLegion, LPCTSTR szTag )
 	int idx = 0;
 	XEXmlAttr attr = nodeLegion.GetFirstAttribute();
 	while( !attr.IsEmpty() ) {
-// 		if( attr.GetcstrName() == "sn" ) {
-// 			std::string str = attr.GetString();
-// 			snLegion = strtoul( str.c_str(), nullptr, 16 );
-// 		} else
-		if( attr.GetcstrName() == "name" ) {
+		const auto& strName = attr.GetcstrName();
+		if( strName.front() == '_' ) {
+			// 무시
+		} else
+		if( strName == "name" ) {
 			idName = attr.GetInt();
 		} else
-		if( attr.GetcstrName() == "level" ) {
+		if( strName == "level" ) {
 			lvLegion = attr.GetInt();
 		} else
-		if( attr.GetcstrName() == "adj_level" ) {
+		if( strName == "adj_level" ) {
 			adjLvLegion = attr.GetInt();
 		} else
-		if( attr.GetcstrName() == "grade" ) {
+		if( strName == "grade" ) {
 			gradeLegion = (XGAME::xtGradeLegion)sReadConst( attr, szTag );
 		} else
-		if( attr.GetcstrName() == "lv_limit" ) {
+		if( strName == "lv_limit" ) {
 			lvLimit = attr.GetInt();
 		} else
-		if( attr.GetcstrName() == "num_squad" ) {
+		if( strName == "num_squad" ) {
 			numSquad = attr.GetInt();
 		} else
-		if( attr.GetcstrName() == "boss" ) {
+		if( strName == "boss" ) {
 			auto pProp = sReadHeroIdentifier( attr, szTag );
 			if( pProp ) {
 				idBoss = pProp->idProp;
 			}
 		} else
-		if( attr.GetcstrName() == "mul_atk" ) {
+		if( strName == "mul_atk" ) {
 			mulAtk = attr.GetFloat();
 			XBREAK( mulAtk <= 0 );
 		} else
-		if( attr.GetcstrName() == "mul_hp" ) {
+		if( strName == "mul_hp" ) {
 			mulHp = attr.GetFloat();
 			XBREAK( mulHp <= 0 );
 		} else {
-			XBREAKF( 1, "%s:알수없는 속성이름. %s", szTag, attr.GetstrName().c_str() );
+			XBREAKF( 1, "%s:알수없는 속성이름. %s", szTag, strName.c_str() );
 			bRet = false;
 		}
 		//

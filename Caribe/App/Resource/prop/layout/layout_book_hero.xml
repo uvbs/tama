@@ -3,12 +3,12 @@
   <popup_training_base>
     <popup img="popup_levelup.png" format="argb8888">
       <img file="popup_title_bar.png" posx="center" posy="-12">
-        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="1" key="text.title">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="1" key="text.title">
           <!--타이틀-->
         </text>
       </img>
       <text posx="18" posy="9" font="font_text_s" text_col="white" font_size="18" font_style="stroke" _text="1" key="text.graph"></text>
-      <img file="board04.png" posx="center" posy="23">
+      <img file="board04.png" posx="center" posy="53" format="argb8888">
         <!--상단 그래프바 배경-->
         <wnd posx="8" posy="8" key="wnd.root.trainer">
           <!--훈련자(영웅얼굴,부대얼굴,스킬아이콘)-->
@@ -31,7 +31,7 @@
         </pbar2>
       </img>
       <wnd key="wnd.train.before" show="on">
-        <img file="board01.png" posx="40" posy="98">
+        <img file="board01.png" posx="40" posy="128" format="argb8888">
           <!--+-버튼 배경,-->
           <text posx="center" posy="-10" font="font_text_s" text_col="white" font_size="18" font_style="stroke" text="2252">
             <!--투입할 훈련 비용-->
@@ -60,7 +60,7 @@
             <text posx="center" posy="42" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.min.gold" text="1" adjx="5"></text>
           </img>
         </img>
-        <img file="board02.png" posx="40" posy="176">
+        <img file="board02.png" posx="40" posy="206">
           <!--훈련시작버튼 배경-->
           <text posx="center" posy="-10" font="font_text_s" text_col="white" font_size="20" font_style="stroke" text="2253">
             <!--최종 훈련 비용-->
@@ -87,7 +87,7 @@
         </img>
       </wnd>
       <wnd key="wnd.training" show="off">
-        <img file="board02.png" posx="40" posy="176">
+        <img file="board02.png" posx="40" posy="206">
           <!--훈련시작버튼 배경-->
           <butt posx="28" posy="13" img_up="common_butt_mid.png" key="butt.complete.gold">
             <!--즉시완료버튼-->
@@ -107,7 +107,7 @@
             <text posx="center" posy="21" font="font_res_num" text_col="white" font_size="20" font_style="stroke" key="text.cost.cash" text="1"></text>
           </butt>
         </img>
-        <img file="board01.png" posx="40" posy="98">
+        <img file="board01.png" posx="40" posy="128">
           <!--+-버튼 배경,-->
           <text posx="center" posy="-10" font="font_text_b" text_col="white" font_size="18" font_style="stroke" text="2256">
             <!--"남은 훈련 시간"-->
@@ -121,11 +121,11 @@
           <spr posx="42" posy="38" file="ui_circle_glow.spr" act="2" />
         </img>
       </wnd>
-      <butt posx="right" posy="0" img_up="common_butt_x.png" key="butt.close"></butt>
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.close"></butt>
     </popup>
   </popup_training_base>
   <sub_levelup>
-    <img file="board03.png" posx="334" posy="97">
+    <img file="board03.png" posx="334" posy="127" format="argb8888">
       <img file="legion_simbol_table_b.png" posx="11" posy="3" scale="0.9" />
       <text posx="38" posy="6" font="font_res_num" text_col="white" font_size="25" font_style="stroke" _text="11" key="text.stat." num="6" disty="24"></text>
       <text posx="80" posy="6" font="font_res_num" text_col="green" font_size="25" font_style="stroke" _text="11" key="text.up." num="6" disty="24"></text>
@@ -134,13 +134,13 @@
       </text>
       <spr posx="75" posy="17" num="6" disty="24" key="spr.up." file="ui_upstat.spr" id_act="1" />
     </img>
-    <spr posx="90" posy="225" key="spr.train.before" flip="yes" />
+    <spr posx="90" posy="245" key="spr.train.before" flip="yes" />
   </sub_levelup>
   <sub_skillup>
-    <img file="board03.png" posx="334" posy="97" scale_x="1.17">
+    <img file="board03.png" posx="334" posy="127" scale_x="1.17">
       <!--스킬설명 뒷배경 검은보드-->
     </img>
-    <wnd posx="334" posy="97" width="128" height="140">
+    <wnd posx="334" posy="127" width="128" height="140">
       <text posx="center" posy="-5" text_col="green" font_size="20" font_style="stroke" font="font_text_s" text="2259" key="text.next">
         <!--다음레벨-->
       </text>

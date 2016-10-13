@@ -16,9 +16,7 @@ template<typename T>
 class XParamType
 {
 public:
-	XParamType() {
-		Init();
-	}
+	XParamType() {		Init();	}
 	~XParamType() {
 		Destroy();
 	}
@@ -40,11 +38,31 @@ public:
 			return m_Empty;
 		return ( *itor ).second;
 	}
+	inline bool IsEmpty( const char* cKey ) const {
+		return  m_mapVal.find( std::string( cKey ) ) == m_mapVal.end();
+	}
 	inline bool IsEmpty() const {
 		return m_mapVal.empty();
 	}
 	void Clear() {
 		m_mapVal.clear();
+	}
+	void Serialize( XArchive& ar ) const {
+		ar << m_mapVal.size();
+		for( auto itor : m_mapVal ) {
+			ar << itor.first;
+			ar << itor.second;
+		}
+	}
+	void DeSerialize( XArchive& ar, int ver ) {
+		int size;
+		ar >> size;
+		for( int i = 0; i < size; ++i ) {
+			std::string key;
+			T val;
+			ar >> key >> val;
+			m_mapVal[ key ] = val;
+		}
 	}
 private:
 	// private member
@@ -96,15 +114,29 @@ public:
 	}
 #endif // WIN32
 	int GetInt( const char* cKey ) const {
+		if( m_paramInt.IsEmpty( cKey ) )
+			return 0;
 		return m_paramInt.Get( cKey );
 	}
+	bool GetInt( const char* cKey, int* pOut ) const {
+		if( m_paramInt.IsEmpty( cKey ) )
+			return false;
+		*pOut = m_paramInt.Get( cKey );
+		return true;
+	}
 	DWORD GetDword( const char* cKey ) const {
+		if( m_paramDword.IsEmpty( cKey ) )
+			return 0;
 		return m_paramDword.Get( cKey );
 	}
-	DWORD GetWord( const char* cKey ) const {
+	WORD GetWord( const char* cKey ) const {
+		if( m_paramWord.IsEmpty( cKey ) )
+			return 0;
 		return m_paramWord.Get( cKey );
 	}
 	float GetFloat( const char* cKey ) const {
+		if( m_paramFloat.IsEmpty( cKey ) )
+			return 0;
 		return m_paramFloat.Get( cKey );
 	}
 	char GetChar( const char* cKey ) const {
@@ -119,6 +151,22 @@ public:
 #else	// WIN32
 		return m_paramStrc.Get( cKey );
 #endif // not win32
+	}
+	bool GetStrt( const char* cKey, _tstring* pOut ) const {
+#ifdef WIN32
+		if( m_paramStrt.IsEmpty( cKey ) )
+			return false;
+		*pOut = m_paramStrt.Get( cKey );
+#else	// WIN32
+		return GetStrc( cKey, pOut );
+#endif // not win32
+		return true;
+	}
+	bool GetStrc( const char* cKey, std::string* pOut ) const {
+		if( m_paramStrc.IsEmpty( cKey ) )
+			return false;
+		*pOut = m_paramStrc.Get( cKey );
+		return true;
 	}
 	bool IsEmpty() const {
 		return m_paramInt.IsEmpty() && m_paramDword.IsEmpty() && m_paramWord.IsEmpty()
@@ -219,6 +267,8 @@ public:
 	void Clear() {
 		m_params.Clear();
 	}
+	void Serialize( XArchive& ar ) const;
+	void DeSerialize( XArchive& ar, int ver );
 private:
 	// private member
 	XParamType<std::string> m_params;

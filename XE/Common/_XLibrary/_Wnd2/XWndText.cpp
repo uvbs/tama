@@ -575,7 +575,7 @@ void XWndTextString::SetLineLength( float len )
 /**
  @brief 텍스트컨트롤의 경우 m_vPos를 수정하는게 아니고 자체 정렬옵션을 사용한다.
 */
-void XWndTextString::AutoLayoutByAlign( XWnd *pParent, XE::xAlign align )
+void XWndTextString::AutoLayoutByAlign( const XWnd *pParent, XE::xAlign align )
 {
 	if( !align )
 		align = xALIGN_LEFT;
@@ -585,7 +585,7 @@ void XWndTextString::AutoLayoutByAlign( XWnd *pParent, XE::xAlign align )
 /**
  @brief 자식들의 크기를 포함
 */
-XE::VEC2 XWndTextString::GetSizeNoTransLayout() 
+XE::VEC2 XWndTextString::GetSizeNoTransLayout()
 {	
 	const auto sizeLocalNoTrans = GetSizeLocalNoTrans();
 	// 윈도우 크기가 지정되어 있으면 그것을 우선적으로 돌려준다.
@@ -593,6 +593,7 @@ XE::VEC2 XWndTextString::GetSizeNoTransLayout()
 		return sizeLocalNoTrans;
 	// 이함수가 불렸다는것은 이 컨트롤의 크기를 요구받았던것인데 실행순서상. 이 컨트롤에 텍스트가 없어서 사이즈 계산을 못했을수가 있다. 
 	// 그래서 다음에 텍스트가 들어오면 left정렬이라도 강제로 사이즈를 계산해서 부모에게 알려줘야 한다.
+	// 결국 이런 예외상황을 다 처리하지 않으려면 정렬을 위한 좌표계산은 무조건 실시간 Update()에서 해야한다. 텍스트나 부모의 크기가 변해도 즉각 대응이 될수 있어야 한다.
 	if( m_sizeString.IsZero() )
 		m_bUpdateSizeIfChangeText = true;
 	// 윈도우 크기가 없으면 렌더영역의 크기를 돌려준다.
@@ -695,3 +696,8 @@ XWndTextString* xSET_TEXT_FORMAT( XWnd *pRoot, const char *cKey, LPCTSTR strForm
 		XLOGXN( "xSET_TEXT_FORMAT: %s not found.", C2SZ( cKey ) );
 	return pText;
 };
+
+void XWndTextString::SetbBatch( bool bFlag )
+{
+	m_pFont->SetbBatch( bFlag );
+}

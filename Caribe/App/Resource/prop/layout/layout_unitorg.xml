@@ -250,9 +250,9 @@
     </wnd>
   </equipment>
   <legion_list>
-    <list posx="112" posy="117" width="458" height="132" spacew="8" spaceh="0" type="thumb" key="list.legion" />
-    <butt posx="335" posy="290" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.legion.exit" font_style="stroke" text="80006"></butt>
-    <butt posx="216" posy="290" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.legion.decide" font_style="stroke" text="80005" />
+    <list posx="102" posy="97" width="458" height="132" spacew="8" spaceh="0" type="thumb" key="list.legion" />
+    <butt posx="335" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.legion.exit" font_style="stroke" text="80006"></butt>
+    <butt posx="216" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.legion.decide" font_style="stroke" text="80005" />
   </legion_list>
   <legion_detail>
     <img posx="77" posy="87" key="img.legion.detail" />
@@ -269,8 +269,8 @@
     <butt posx="328" posy="281" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.legion.detail.decide" font_style="stroke" text="80005" />
   </legion_detail>
   <base_popup>
-    <img posx="62" posy="5" file="common_bg_popup.png" format="argb8888">
-      <img posx="center" posy="18" img="popup_title_bar.png">
+    <img posx="62" posy="25" file="common_bg_popup.png" format="argb8888">
+      <img posx="center" posy="-15" img="popup_title_bar.png">
         <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.popup.title" />
       </img>
       <!--팝업 기본틀-->

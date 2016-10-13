@@ -3,13 +3,13 @@
 <layout font_text_m="normal.ttf" font_text_b="bold.ttf">
   <popup_barrack>
     <popup img="common_bg_popup.png" format="argb8888">
-      <img posx="center" posy="18" img="popup_title_bar.png">
-        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="40" font_style="stroke" key="text.title" text="2097" />
+      <img posx="center" posy="-15" img="popup_title_bar.png">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="40" font_style="stroke" key="text.title" text="2097" />
       </img>
-      <list posx="24" posy="58" spacew="0" width="475" height="262" key="list.slot" type="list_horiz">
+      <list posx="10" posy="38" spacew="0" width="462" height="262" key="list.slot" type="list_horiz">
         <!--영웅 리스트-->
       </list>
-      <butt posx="470" posy="30" img_up="common_butt_x.png" key="butt.close">
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.close">
         <!--x버튼-->
       </butt>
     </popup>

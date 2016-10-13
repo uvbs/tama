@@ -129,7 +129,7 @@ void CMainFrame::OnCreatePowerTable()
 			for( int lv = 1; lv <= 50; ++lv ) {
 				XGAME::xLegionParam info;
 				auto pLegion = XLegion::sCreateLegionForNPC( lv, 0, info );
-				auto spLegion = LegionPtr( pLegion );
+				auto spLegion = XSPLegion( pLegion );
 				int power = XLegion::sGetMilitaryPower( spLegion );
 				auto szStr = XFORMAT( "%d\t%d\r\n", lv, power );
 				res.Write( (void*)szStr, sizeof( TCHAR ), _tcslen( szStr ) );

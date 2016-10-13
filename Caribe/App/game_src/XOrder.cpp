@@ -145,7 +145,7 @@ void XOrderDialog::OnCreate()
 		if( vPos.y == -1.f )
 			vPos.y = 43;
 		auto pPropHero = PROP_HERO->GetpProp( m_spProp->m_strTalker );
-		XHero *pHero = nullptr;
+		XSPHero pHero = nullptr;
 		if( XASSERT( pPropHero ) ) {
 			// 영웅얼굴을 그리기위해 현재씬에 영웅객체를 요구한다.
 			pHero = GAME->GetpScene()->GetpHero( pPropHero->idProp );

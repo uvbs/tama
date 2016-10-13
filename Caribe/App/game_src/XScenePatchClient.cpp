@@ -63,17 +63,18 @@ void XScenePatchClient::Create( void )
 {
 	XTRACE("111:%s", __TFUNC__);
 	CONSOLE_TAG("patch", "%s", __TFUNC__);
-	m_verLastUpdateInApk = GetUpdateVerFromApk( _T(FILE_LAST_UPDATE) );
-	// 내 로컬에 있는 업데이트 버전(LastUpdate.txt)을 읽는다.
+//	m_verLastUpdateInApk = GetUpdateVerFromApk( _T(FILE_LAST_UPDATE) );
+	// 내 로컬워크에 있는 업데이트 버전(LastUpdate.txt)을 읽는다.
 	m_LocalLastUpdate = GetUpdateVerFromWork( _T(FILE_LAST_UPDATE) );
 	// 다운로드 태스크 객체 생성하고 패치서버에 접속
 	XBREAK( XE::IsEmpty(CONNECT_INI.m_cIPPatch) );
 	//
-	XDownloadTask *pTask = new XDownloadTask;
+	auto pTask = new XDownloadTask;
+	XTRACE( "connecting server: %s", C2SZ( CONNECT_INI.m_cIPPatch ) );
 	if( pTask->Create( CONNECT_INI.m_cIPPatch, XPATCH_URL ) == FALSE ) {
 		// 태스크 생성에 실패 했다면 보통 폰 네트워크를 쓸수없거나 서버에 접속할수 없는 상태
 		XWND_ALERT( "alert.network.fail", "%s", "could not connect to the network. Please check the status of the network." );
-		ChangeState( xST_ERROR_COULD_NOT_CONNECT );
+		ChangeState( xST_ERROR_COULD_NOT_CONNECT, XParamObj2() );
 	} else {
 		pTask->SetEvent( XWM_ERROR_DOWNLOAD, this, &XScenePatchClient::OnErrorDownload );
 		// 다운받는 동안은 자동으로 슬립모드가 되지 않게 한다.
@@ -83,9 +84,8 @@ void XScenePatchClient::Create( void )
 	m_pTask = pTask;
 	// 서버들 프로토콜 버전파일 전송을 요청해서 도착하면 szDstFullPath에 저장한다.
 //	ChangeState( xST_REQ_VER_PACKET );
-	XLOGXN( "core version=%d", m_LocalLastUpdate );
-	if( m_LocalLastUpdate < 0 || (DWORD)m_LocalLastUpdate == TOKEN_ERROR )
-	{
+	XLOGXN( "local work ver: %d", m_LocalLastUpdate );
+	if( m_LocalLastUpdate < 0 || (DWORD)m_LocalLastUpdate == TOKEN_ERROR )	{
 		XBREAKF( 1, "core update ver file damaged." );
 		// 파일은 있는데 이상한 값이 읽힌 경우. 파일이 깨졋다고 보고 lastUpdate를 지워주는게 나을듯.
 // 		XLOGXN("아마도 core에 LastVersion이 없다면 MakePackage가 잘못된것. 패치툴 실행후 패키징 할것");
@@ -97,14 +97,9 @@ void XScenePatchClient::Create( void )
 		strPath += FILE_LAST_UPDATE;
 		XSYSTEM::RemoveFile( strPath.c_str() );
 		m_LocalLastUpdate = 0;
-#pragma message("check this")
 	}
-	// VerPacket과 LastUpdate를 받는다.
-	ChangeState( xST_REQ_VER );
-	// 최초 다운로드
-	if( m_LocalLastUpdate == 0 )
-	{
-	}
+	// 서버의 최신 VerPacket과 LastUpdate를 받는다.
+	ChangeState( xST_REQ_VER, XParamObj2() );
 	m_timerCreateUI.Set(2.f);
 	m_secPatchStart = XTimer2::sGetTime();
 	XDownloaderCurl::sClearReadTotal();
@@ -150,21 +145,27 @@ int XScenePatchClient::GetUpdateVerFromApk( LPCTSTR szRes )
 	return ver;
 }
 
-int XScenePatchClient::ChangeState( xtState state )
+int XScenePatchClient::ChangeState( xtState state, const XParamObj2& param )
 {
 	XBREAK( m_State == state );
-	DoFSMState( m_State, xACT_LEAVE );
-	//
-	XLOGXN("MWScenePatchClient: changeState %d -> %d", (int)m_State, (int)state );
-	m_StateOld = m_State;
-	m_State = state;
-	//
-	DoFSMState( state, xACT_ENTER );
+
+	m_StateNext = state;
+	m_paramNext = param;
+
+// 	DoFSMState( m_State, xACT_LEAVE, param );
+// 	//
+// 	XLOGXN("MWScenePatchClient: changeState %d -> %d", (int)m_State, (int)state );
+// 	m_StateOld = m_State;
+// 	m_State = state;
+// 	//
+// 	DoFSMState( state, xACT_ENTER, param );
 	return 1;
 }
 
 
-int XScenePatchClient::DoFSMState( xtState state, xtAct event, std::string *pFilename )
+int XScenePatchClient::DoFSMState( xtState state, 
+																	 xtAct event, 
+																	 const XParamObj2& param )
 {
 	int ret = 0;
 	switch( state )
@@ -172,30 +173,30 @@ int XScenePatchClient::DoFSMState( xtState state, xtAct event, std::string *pFil
 	case xST_NONE:
 		break;
 	case xST_REQ_VER:
-		ret = FSMReqVersion( event );
+		ret = FSMReqVersion( event, param );
 		break;
 	case xST_REQ_FULL_LIST:
-		ret = FSMReqFullList( event );
+		ret = FSMReqFullList( event, param );
 		break;
 	case xST_AFTER_DOWNLOAD:
-		ret = FSMAfterDownload( event );
+		ret = FSMAfterDownload( event, param );
 		break;
 	case xST_BRANCH_UPDATE_LIST:
-		ret = FSMBranchUpdateList( event );
+		ret = FSMBranchUpdateList( event, param );
 		break;
 	case xST_REQ_UPDATE_LIST:
-		ret = FSMReqUpdateList( event );
+		ret = FSMReqUpdateList( event, param );
 		break;
 	case xST_REQ_RECV_RES:
-		ret = FSMReqRecvRes( event );
+		ret = FSMReqRecvRes( event, param );
 		break;
 	case xST_EXIT_SCENE:
-		ret = FSMExitScene( event );
+		ret = FSMExitScene( event, param );
 		break;
 	case xST_ERROR:
 	case xST_ERROR_DOWNLOAD:
 	case xST_ERROR_UPDATE_LIST:
-		ret = FSMError( event );
+		ret = FSMError( event, param );
 		break;
 	default:
 		XBREAKF( 1, "알수없는 패치클라 상태:%d", state );
@@ -253,7 +254,7 @@ void XScenePatchClient::CreateUI()
 /**
  @brief VerPacket.h과 LastUpdate.txt파일을 받는다.
 */
-int XScenePatchClient::FSMReqVersion( xtAct event )
+int XScenePatchClient::FSMReqVersion( xtAct event, const XParamObj2& param )
 {
 	switch( event )
 	{
@@ -266,14 +267,14 @@ int XScenePatchClient::FSMReqVersion( xtAct event )
 												strDstFile + _T("_") );
 		} {
 		// LastUpdate파일 다운로드를 요청함.
-			_tstring strFile /*= _T( XCORE_DIR )*/;
-			strFile = _T( FILE_LAST_UPDATE );
-			m_pTask->AddRequest( _T(XCORE_DIR), strFile.c_str(), 
-										strFile + _T("_") );
+			const _tstring strFile = _T( FILE_LAST_UPDATE );
+			m_pTask->AddRequest( _T( XCORE_DIR ), strFile.c_str(),
+													 strFile + _T( "_" ) );
 		}
-		// 완료되면 case xACT_RECV가 실행된다.
-		m_pTask->SetEvent( XWM_ALL_COMPLETE, this,
-									&XScenePatchClient::OnRecvVersions, (DWORD)m_State );
+		m_pTask->SetEvent2( XWM_ALL_COMPLETE, [this](XWnd*) {
+												// 완료되면 case xACT_RECV가 실행된다.
+												FSMReqVersion( xACT_RECV, XParamObj2() );
+		} );
 		m_pTask->Go();
 	}	break;
 	case xACT_PROCESS:
@@ -290,11 +291,11 @@ int XScenePatchClient::FSMReqVersion( xtAct event )
 			XSYSTEM::RenameFile( strOld.c_str(), strNew.c_str() );
 		} {
 		// 다운받은 Lastupdate.txt_ 파일을 읽는다.
-			_tstring strVer = _T(FILE_LAST_UPDATE);
-			int verServer = GetUpdateVerFromWork( strVer + _T("_") );
+			const _tstring strVer = _T(FILE_LAST_UPDATE);
+			const int verServer = GetUpdateVerFromWork( strVer + _T("_") );
 			if( XBREAKF( verServer == 0, "verServer == 0, %s", strVer.c_str() ) ) {
 				// 서버의 버전이 0이란 소린데 다운로드가 잘못된거임.
-				ChangeState( xST_ERROR );
+				ChangeState( xST_ERROR, XParamObj2() );
 				return 1;
 			}
 			m_LastUpdateOnServer = verServer;
@@ -304,73 +305,60 @@ int XScenePatchClient::FSMReqVersion( xtAct event )
 		// 최초 실행이냐
 		if( IsFirstPlay() ) {
 			// full_list요청
-			XBREAK(1);		// 이제 apk에 LastUpdate파일은 반드시 들어가야하므로 여기로 들어오는일은 없어야 함.
-			ChangeState( xST_REQ_FULL_LIST );
+			ChangeState( xST_REQ_FULL_LIST, XParamObj2() );
 			// 다운받아야 하므로 다운 ui띄움.(배경만 fade in해서 짧은 다운인경우 다시 사라지도록)
 			CreateUI();
 			m_bPatched = true;
 		} else {
 			// 최초실행이 아님
 			// 업데이트 버전 비교 상태로 전환
-			ChangeState( xST_BRANCH_UPDATE_LIST );
+			ChangeState( xST_BRANCH_UPDATE_LIST, XParamObj2() );
 		}
 
 	}	break;
-// 	case xACT_ON_YES:
-// 		// full_list요청
-// 		ChangeState( xST_REQ_FULL_LIST );
-// 		// 다운받아야 하므로 다운 ui띄움.(배경만 fade in해서 짧은 다운인경우 다시 사라지도록)
-// 		CreateUI();
-// 		break;
 	case xACT_LEAVE:
 		break;
 	}
 	return 1;
 } // FSMReqVersion
 
-// CDMA에서 다운로드를 받겠다 Yes누름.
-// int XScenePatchClient::OnYesCDMADownload( XWnd* pWnd, DWORD p1, DWORD p2 )
+// int XScenePatchClient::OnYesCDMADownloadInRecvRes( XWnd* pWnd, DWORD p1, DWORD p2 )
 // {
-// 	DoFSMState( xST_REQ_VER, xACT_ON_YES );	
+// 	DoFSMState( xST_REQ_RECV_RES, xACT_ON_YES );
 // 	return 1;
 // }
 
-int XScenePatchClient::OnYesCDMADownloadInRecvRes( XWnd* pWnd, DWORD p1, DWORD p2 )
-{
-	DoFSMState( xST_REQ_RECV_RES, xACT_ON_YES );
-	return 1;
-}
-
-int XScenePatchClient::FSMBranchUpdateList( xtAct event )
+int XScenePatchClient::FSMBranchUpdateList( xtAct event, const XParamObj2& param )
 {
 	switch( event ) {
 	case xACT_ENTER: {
 		// 버전 비교
-		XLOGXN( "core version compare: my.ver=%d, ser.Ver=%d, apk.ver=%d", m_LocalLastUpdate, m_LastUpdateOnServer, m_verLastUpdateInApk );
-		XBREAK( m_verLastUpdateInApk <= 0 );
+		XLOGXN( "core version compare: my.ver=%d, ser.Ver=%d", m_LocalLastUpdate, m_LastUpdateOnServer );
 		XBREAK( m_LastUpdateOnServer <= 0 );
-		XBREAK( m_LocalLastUpdate == 0 );
+		//XBREAK( m_LocalLastUpdate == 0 );
 		XBREAKF( m_LocalLastUpdate > m_LastUpdateOnServer
-																								, "m_LocalLastUpdate(%d) > m_LastUpdateOnServer(%d)"
-																									, m_LocalLastUpdate, m_LastUpdateOnServer );
+						 , "m_LocalLastUpdate(%d) > m_LastUpdateOnServer(%d)"
+						 , m_LocalLastUpdate, m_LastUpdateOnServer );
 		do {
 			// 업데이트 목록파일(updateXX.txt) 요청
-			if( m_LocalLastUpdate < m_verLastUpdateInApk ) {
-				// work버전이 apk버전보다 낮음. apk로부터 패치카피(apk버전 우선 체크)
-				m_modePatchFrom = xPF_FROM_APK;
-			} else
 			if( m_LocalLastUpdate < m_LastUpdateOnServer ) {
 				// work버전이 패치서버 버전보다 낮음.
-				m_modePatchFrom = xPF_FROM_SERVER;
-			} else {
+				ChangeState( xST_REQ_UPDATE_LIST, XParamObj2() );
+				CreateUI();
+				m_bPatched = true;
+			} else 
+			if( m_LocalLastUpdate == m_LastUpdateOnServer )	{
 				// 업데이트를 받을 필요가 없다.
 				// 씬 빠져나가기.
-				ChangeState( xST_EXIT_SCENE );
-				break;
+				ChangeState( xST_EXIT_SCENE, XParamObj2() );
+			} else {
+				//#pragma message("서버버전보다 로컬버전이 높을때는 첨부터 다시 받게 하자")
+				m_LocalLastUpdate = 0;
+				// full_list요청
+				ChangeState( xST_REQ_FULL_LIST, XParamObj2() );
+				CreateUI();
+				m_bPatched = true;
 			}
-			ChangeState( xST_REQ_UPDATE_LIST );
-			CreateUI();
-			m_bPatched = true;
 		} while(0);
 	} break;
 	case xACT_PROCESS: {
@@ -389,26 +377,26 @@ int XScenePatchClient::FSMBranchUpdateList( xtAct event )
  @brief full_list.txt를 받는다.
  최초 패치상황
 */
-int XScenePatchClient::FSMReqFullList( xtAct event )
+int XScenePatchClient::FSMReqFullList( xtAct event, const XParamObj2& param )
 {
 	switch( event )
 	{
 	case xACT_ENTER: {
 		// 서버에 full_list.txt를 요청함. 다운이 끝나면 case xACT_RECV가 실행됨.
 		m_pTask->AddRequest( _T( XFULL_DIR ), _T(FILE_FULL_LIST) );
-		m_pTask->SetEvent( XWM_ALL_COMPLETE, this, 
-										&XScenePatchClient::OnRecvFullList, 
-										(DWORD)m_State );
+		m_pTask->SetEvent2( XWM_ALL_COMPLETE, [this]( XWnd* ) {
+			FSMReqFullList( xACT_RECV, XParamObj2() );
+		} );
 		m_pTask->Go();
 	} break;
 	case xACT_PROCESS:
 		break;
 	case xACT_RECV: {
 		// full_list.txt에서 파일목록을 추려낸다.
-		_tstring strFullpath = XE::MakeWorkFullPath(_T(""), _T("full_list.txt"));
+		const _tstring strFullpath = XE::MakeWorkFullPath(_T(""), _T("full_list.txt"));
 		XList4<XPatch::XRES_INFO> listFulls;
 		XPatch::sLoadFullList( strFullpath.c_str(), &listFulls );
-		// 파일목록의 파일을 다운받도록 요청한다.
+		// 파일목록의 파일을 다운받도록 리스트를 작성하고 다음 상태로 넘긴다.
 		m_listWillDownload.clear();
 		for( auto& res : listFulls ) {
 			std::string str = SZ2C( res.strFile.c_str() );
@@ -417,12 +405,17 @@ int XScenePatchClient::FSMReqFullList( xtAct event )
 			if( !m_listCompleteFiles.Findp( str ) )
 				m_listWillDownload.Add( res.strFile );
 		}
-		m_pTask->SetEvent( XWM_ALL_COMPLETE, this,
-											&XScenePatchClient::OnRecvRes, 
-											(DWORD)xDL_FULL );
-//		m_pTask->Go();
+// 		m_pTask->SetEvent2( XWM_ALL_COMPLETE, [this]( XWnd* pWnd ) {
+// 												// 다운로드완료
+// 												OnRecvRes( pWnd, xDL_FULL, 0 ); 
+// 		} );
+// 		m_pTask->SetEvent( XWM_ALL_COMPLETE, this,
+// 											&XScenePatchClient::OnRecvRes, 
+// 											(DWORD)xDL_FULL );
 		// 요청한 목록 받는 상태로 전환
-		ChangeState( xST_REQ_RECV_RES );
+		XParamObj2 param;
+		param.Set( "type_down", (DWORD)xDL_FULL );
+		ChangeState( xST_REQ_RECV_RES, param );
 	} break;
 	case xACT_LEAVE:
 		break;
@@ -433,7 +426,7 @@ int XScenePatchClient::FSMReqFullList( xtAct event )
 /**
  @brief 파일들 다운로드가 끝나면 패치의 마무리를 한다.
 */
-int XScenePatchClient::FSMAfterDownload( xtAct event )
+int XScenePatchClient::FSMAfterDownload( xtAct event, const XParamObj2& param )
 {
 	switch( event )
 	{
@@ -448,7 +441,7 @@ int XScenePatchClient::FSMAfterDownload( xtAct event )
 		// 기존의 LastUpdate.txt를 삭제하고 LastUpdate.txt_ 의 이름을 바꾼다.
 		XSYSTEM::DeleteFile( cstrUpdateVer.c_str() );
 		XSYSTEM::RenameFile( cstrTempUpdateVer.c_str(), cstrUpdateVer.c_str() );
-		ChangeState( xST_EXIT_SCENE );
+		ChangeState( xST_EXIT_SCENE, XParamObj2() );
 	} break;
 	case xACT_PROCESS:
 		break;
@@ -491,43 +484,40 @@ bool XScenePatchClient::IsApkFile( const _tstring& strRes, std::map<_tstring, in
 /**
  @brief updateXX.txt 파일들 요청
 */
-int XScenePatchClient::FSMReqUpdateList( xtAct event )
+int XScenePatchClient::FSMReqUpdateList( xtAct event, const XParamObj2& param )
 {
 	switch( event )
 	{
 	case xACT_ENTER: {
 		// 받아야할 Update00.txt 업데이트 목록파일명 생성
 		// 업데이트 리스트 요청. 내버전에서부터 최신버전목록파일 까지 모두 받아온다.
-		_tstring strDstLocal = XE::MakePath( _T(XUPDATE_DIR), _T("") );
+		const _tstring strDstLocal = XE::MakePath( _T(XUPDATE_DIR), _T("") );
 		int verStart = 0;
 		int verEnd = 0;
 		XBREAK( m_LocalLastUpdate == 0 );
-		XBREAK( m_modePatchFrom == xPF_NONE );
-		if( m_modePatchFrom == xPF_FROM_APK ) {
-			verStart = m_LocalLastUpdate + 1;
-			verEnd = m_verLastUpdateInApk;
-		} else
-		if( m_modePatchFrom == xPF_FROM_SERVER ) {
-			XBREAK( m_LastUpdateOnServer == 0 );
-			XBREAK( m_LocalLastUpdate > m_LastUpdateOnServer );
-			verStart = m_LocalLastUpdate + 1;
-			verEnd = m_LastUpdateOnServer;
-		}
+		XBREAK( m_LastUpdateOnServer == 0 );
+		XBREAK( m_LocalLastUpdate > m_LastUpdateOnServer );
+		verStart = m_LocalLastUpdate + 1;
+		verEnd = m_LastUpdateOnServer;
 		for( int i = verStart; i <= verEnd; ++i ) {
 			_tstring strURL = _T(XCORE_DIR);
 			strURL += XE::Format( _T("Update%d.txt"), i );
 			m_pTask->AddRequest( _T(""), strURL, strDstLocal );
 		} 
-		XBREAKF( m_pTask->GetNumRequest() == 0, 
-																			"updateXX.txt num request 0. myCorVer=%d, serverVer=%d", 
-																					m_LocalLastUpdate, m_LastUpdateOnServer );
+		XBREAKF( m_pTask->GetNumRequest() == 0,
+						 "updateXX.txt num request 0. myCorVer=%d, serverVer=%d",
+						 m_LocalLastUpdate, m_LastUpdateOnServer );
+		m_pTask->SetEvent2( XWM_ALL_COMPLETE, [this]( XWnd* ) {
+												FSMReqUpdateList( xACT_RECV, XParamObj2() );
+		});
 		// 다운완료되면 xACT_RECV를 실행한다.
-		m_pTask->SetEvent( XWM_ALL_COMPLETE, this, 
-									&XScenePatchClient::OnRecvUpdateList, (DWORD)m_State );
+// 		m_pTask->SetEvent( XWM_ALL_COMPLETE, this, 
+// 									&XScenePatchClient::OnRecvUpdateList, (DWORD)m_State );
 		m_pTask->Go();
 	} break;
 	case xACT_PROCESS:
 		break;
+	//////////////////////////////////////////////////////////////////////////
 	// UpdateXX.txt 목록 파일들 다받음.
 	case xACT_RECV: {
 		// 다운받은 파일목록을 어레이에 옮겨담는다.
@@ -536,16 +526,18 @@ int XScenePatchClient::FSMReqUpdateList( xtAct event )
 			//앱스토어로 이동
 			break;
 		}
-		for( auto& info : m_pTask->GetlistComplete() ) {
-			_tstring tstrURL = C2SZ( info.strURL.c_str() );
+		for( const auto& info : m_pTask->GetlistComplete() ) {
+			const _tstring tstrURL = C2SZ( info.strURL.c_str() );
 			listUpdateList.Add( tstrURL );
 		}
 		// 업데이트 리스트의 목록들을 합치고 파일명들 중에 중복된건 걸러낸다.
 		XList4<_tstring> listUpdate;
 		DoMergeUpdateList( listUpdateList, &listUpdate );
 		//
-		if( listUpdate.size() == 0 )		// 이거 필요한가.
-			ChangeState( xST_EXIT_SCENE );
+		if( listUpdate.empty() ) {		// 이거 필요한가.
+			ChangeState( xST_EXIT_SCENE, XParamObj2() );
+			break;
+		}
 		// UpdateXXX파일들 지움
 		for( auto& info : m_pTask->GetlistComplete() ) {
 			std::string strFullpath = XE::GetPathWorkA();
@@ -557,7 +549,7 @@ int XScenePatchClient::FSMReqUpdateList( xtAct event )
 					return ( c == '/' );
 			}, '\\');
 #endif // WIN32
-			XSYSTEM::DeleteFile( strFullpath.c_str() );
+			XSYSTEM::DeleteFile( strFullpath );
 		}
 		// 추려낸 실제 리소스 파일들을 요청한다.
 		for( auto& strRes : listUpdate ) {
@@ -566,12 +558,13 @@ int XScenePatchClient::FSMReqUpdateList( xtAct event )
 			// 이미 받은 목록에 없어야만 요청한다.
 			if( !m_listCompleteFiles.Findp( str ) )
 				m_listWillDownload.Add( strRes );
-//				m_pTask->AddRequest( _T(XFULL_DIR), strRes );
 		}
-		m_pTask->SetEvent( XWM_ALL_COMPLETE, this, 
-							&XScenePatchClient::OnRecvRes, (DWORD)xDL_UPDATE );
+// 		m_pTask->SetEvent( XWM_ALL_COMPLETE, this, 
+// 							&XScenePatchClient::OnRecvRes, (DWORD)xDL_UPDATE );
 		// 필요한 리소스 파일들을 받는 상태로 넘어간다.
-		ChangeState( xST_REQ_RECV_RES );
+		XParamObj2 param;
+		param.Set( "type_down", (DWORD)xDL_UPDATE );
+		ChangeState( xST_REQ_RECV_RES, param );
 //		m_pTask->Go();
 		return 1;
 	} break;
@@ -584,26 +577,30 @@ int XScenePatchClient::FSMReqUpdateList( xtAct event )
 /**
  @brief 업데이트가 필요한 리소스 파일들을 다운받는다.
 */
-int XScenePatchClient::FSMReqRecvRes( xtAct event )
+int XScenePatchClient::FSMReqRecvRes( xtAct event, const XParamObj2& param )
 {
 	switch( event )
 	{
 	case xACT_ENTER: {
-		XBREAK( m_modePatchFrom == xPF_NONE );
-		if( m_modePatchFrom == xPF_FROM_SERVER ) {
-			if( !XSYSTEM::CheckWiFi() ) {
-				// 와이파이 아닌데 다운받을래?
-				auto pAlert = XWND_ALERT_YESNO( "alert.cdma.check", "%s", _T( "Download the new file. If the network is no WiFi, you may excessive fee occurs." ) );
-				if( pAlert ) {
-					pAlert->SetEvent( XWM_YES, this, &XScenePatchClient::OnYesCDMADownloadInRecvRes );
-					pAlert->SetEvent( XWM_NO, GAME, &XGame::OnExitApp );
-				}
-			} else {
-				FSMReqRecvRes( xACT_ON_YES );
+		// 다운시작전에 미리 핸들러를 등록시켜두고 요청을 한다.
+		const auto typeDown = static_cast<xtDownload>( param.GetDword( "type_down" ) );
+		XBREAK( !typeDown );
+		m_pTask->SetEvent2( XWM_ALL_COMPLETE, [this, typeDown]( XWnd* pWnd ) {
+												// 다운로드완료
+												OnRecvRes( pWnd, typeDown, 0 ); 
+		} );
+		if( !XSYSTEM::CheckWiFi() ) {
+			// 와이파이 아닌데 다운받을래?
+			auto pAlert = XWND_ALERT_YESNO( "alert.cdma.check", "%s", _T( "Download the new file. If the network is no WiFi, you may excessive fee occurs." ) );
+			if( pAlert ) {
+				pAlert->SetEvent2( XWM_YES, [this](XWnd*) {
+														FSMReqRecvRes( xACT_ON_YES, XParamObj2() );
+				} );
+				//pAlert->SetEvent( XWM_YES, this, &XScenePatchClient::OnYesCDMADownloadInRecvRes );
+				pAlert->SetEvent( XWM_NO, GAME, &XGame::OnExitApp );
 			}
-		} else
-		if( m_modePatchFrom == xPF_FROM_APK ) {
-
+		} else {
+			FSMReqRecvRes( xACT_ON_YES, XParamObj2() );
 		}
 	} break;
 	case xACT_ON_YES: {
@@ -612,78 +609,66 @@ int XScenePatchClient::FSMReqRecvRes( xtAct event )
 		for( auto& strRes : m_listWillDownload ) {
 			m_pTask->AddRequest( _T( XFULL_DIR ), strRes );
 		}
-		m_pTask->SetEvent( XWM_EACH_COMPLETE, this,
-			&XScenePatchClient::OnRecvEachRes, (DWORD)m_State );
+		m_pTask->SetEvent2( XWM_EACH_COMPLETE, [this](XWnd*) {
+												// 파일하나의 다운로드 완료
+												const auto& info = m_pTask->GetlastInfo();
+												XParamObj2 param;
+												if( info.strToRename.empty() == false ) {
+													param.Set( "strDownloadedFile", info.strToRename );
+//													m_strDownloadedFile = info.strToRename;
+												} else {
+													param.Set( "strDownloadedFile", info.strDstFullpath );
+//													m_strDownloadedFile = info.strDstFullpath;
+												}
+												FSMReqRecvRes( xACT_RECV_EACH, param );
+		} );
+// 		m_pTask->SetEvent( XWM_EACH_COMPLETE, this,
+// 			&XScenePatchClient::OnRecvEachRes, (DWORD)m_State );
 		m_pTask->Go();		// 다운로드 시작
 	} break;
 	case xACT_PROCESS: {
-		if( m_modePatchFrom == xPF_FROM_SERVER ) {
-			if( m_pTask->GetbGo() ) {
-				// 다운받는 상황 보여주기
-				XDownloadTask::xRECV_INFO info;
-				info = m_pTask->GetCurrDownloadInfo();
-				if( m_pWndText ) {
-					_tstring strBuff;
-					_tstring strFilename = XE::GetFileName( info.strURL );
+		if( m_pTask->GetbGo() ) {
+			// 다운받는 상황 보여주기
+			const auto info = m_pTask->GetCurrDownloadInfo();
+			if( m_pWndText ) {
+				_tstring strBuff;
+				_tstring strFilename = XE::GetFileName( info.strURL );
 #ifdef _CHEAT
-					if( XAPP->m_bDebugMode ) {
-						const xSec secPass = XTimer2::sGetTime() - m_secPatchStart;
-						const auto readPerSec = XDownloaderCurl::s_readTotal / ((secPass)? secPass : 1);
-						strBuff = XFORMAT( " update %d/%d(%dkb/s):%s(total:%smb avg %dkb/s)", 
-											m_pTask->GetidxCurrDownload(),
-											m_pTask->GetNumRequest(),
-											XDownloaderCurl::s_FpsDown.GetFps() / 1024,
-											XSYSTEM::GetstrTimeHMS( secPass ).c_str(),
-											XE::NtS( XDownloaderCurl::s_readTotal / 1024 / 1024 ),
-											readPerSec / 1024 );
-					} else 
+				if( XAPP->m_bDebugMode ) {
+					const xSec secPass = XTimer2::sGetTime() - m_secPatchStart;
+					const auto readPerSec = XDownloaderCurl::s_readTotal / ((secPass)? secPass : 1);
+					strBuff = XFORMAT( " update %d/%d(%dkb/s):%s(total:%smb avg %dkb/s)", 
+										m_pTask->GetidxCurrDownload(),
+										m_pTask->GetNumRequest(),
+										XDownloaderCurl::s_FpsDown.GetFps() / 1024,
+										XSYSTEM::GetstrTimeHMS( secPass ).c_str(),
+										XE::NtS( XDownloaderCurl::s_readTotal / 1024 / 1024 ),
+										readPerSec / 1024 );
+				} else 
 #endif // _CHEAT
-					{
-						strBuff = XFORMAT( " update from svr%.1f%%", 
-											((float)m_pTask->GetidxCurrDownload() / m_pTask->GetNumRequest()) * 100.f );
-					}
-					XTRACE( "%s", strBuff.c_str() );
-					m_pWndText->SetText( strBuff );
+				{
+					strBuff = XFORMAT( " update from svr%.1f%%", 
+										((float)m_pTask->GetidxCurrDownload() / m_pTask->GetNumRequest()) * 100.f );
 				}
+// 					XTRACE( "%s", strBuff.c_str() );
+				m_pWndText->SetText( strBuff );
 			}
-		} else
-		if( m_modePatchFrom == xPF_FROM_APK ) {
-			int idx = 0;
-			for( auto& strRes : m_listWillDownload ) {
-				// 업데이트 파일을 apk로부터 카피한다.
-				XE::CopyPackageToWork( strRes.c_str() );
-#ifdef _CHEAT
-				if( XAPP->m_bDebugMode && m_pWndText ) {
-					const _tstring strBuff = XFORMAT( " copy from apk %d/%d", idx, m_listWillDownload.size() );
-					XTRACE("%s", strBuff.c_str());
-					m_pWndText->SetText( strBuff );
-				}
-#endif // _CHEAT
-				++idx;
-			} // for
-			// apk에 있는걸로 work에 카피
-			XE::CopyPackageToWork( _T(FILE_LAST_UPDATE) );
-			m_LocalLastUpdate = GetUpdateVerFromWork( _T(FILE_LAST_UPDATE) );
-			XBREAK( m_LocalLastUpdate == 0 );
-			ChangeState( xST_BRANCH_UPDATE_LIST );		// 다시 첨으로 돌아가서 서버패치버전을 검사한다.
-#ifdef _CHEAT
-			if( XAPP->m_bDebugMode && m_pWndText ) {
-				m_pWndText->SetText( _T( "copy complete" ) );
-			}
-#endif // _CHEAT
-		} // from apk copy
+		}
 	} break;
 		// 파일들을 받을때 한 파일의 전송이 끝나면 호출된다.
 	case xACT_RECV_EACH: {
+		const std::string strDownloaded = param.GetStrc( "strDownloadedFile" );
+		XBREAK( strDownloaded.empty() );
 		int lenWorkPath = strlen(XE::GetPathWorkA());
-		std::string strResOnly = m_strDownloadedFile.substr( lenWorkPath );
+		std::string strResOnly = strDownloaded.substr( lenWorkPath );
 		XUNIX_PATH( strResOnly );	// /기반 패스명으로 바꾼다.
 		m_listCompleteFiles.Add( strResOnly );	// 리소스패스만
 		// 다운로드된 서브파일 목록을 파일에 바로바로 쓴다.
 		SaveDownloadedList();
 	} break;
 	case xACT_RECV: {
-		m_pTask->ClearEvent( XWM_EACH_COMPLETE );
+		XBREAK(1);		// 외부에서 이 라인을 직접 호출하게 바뀜.
+		//m_pTask->ClearEvent( XWM_EACH_COMPLETE );
 	} break;
 	case xACT_LEAVE:
 		break;
@@ -691,7 +676,8 @@ int XScenePatchClient::FSMReqRecvRes( xtAct event )
 	return 1;
 } // FSMReqRecvRes
 
-int XScenePatchClient::FSMExitScene( xtAct event )
+
+int XScenePatchClient::FSMExitScene( xtAct event, const XParamObj2& param )
 {
 	switch( event )
 	{
@@ -725,16 +711,8 @@ int XScenePatchClient::FSMExitScene( xtAct event )
 				auto pWndButt = new XWndButton( 0, 0, XE::GetGameWidth(), XE::GetGameHeight() );
 				pWndButt->SetEvent( XWM_CLICKED, this, &XScenePatchClient::OnTouch );
 				Add( pWndButt );
-// 				const auto vImg = ( XE::GetGameSize() * 0.5f ) + XE::VEC2( 0, 150 );
-// 				auto pWndTouch = new XWndImage( PATH_UI( "ui_say.png" ), vImg );
-// 				Add( pWndTouch );
-// 				pWndTouch->AutoLayoutHCenter();
-// 				auto pText = new XWndTextString( XTEXT( 2284 ), FONT_NANUM, 20.f, XCOLOR_BLACK );
-// 				pText->SetSizeLocal( pWndTouch->GetSizeLocal() );
-// 				pWndTouch->Add( pText );
-// 				pText->AutoLayoutCenter();
-// 				pWndTouch->GetcompMngByAlpha().AddComponentWave( "alpha" );
 			} else {
+				XSYSTEM::SetAutoSleepMode( ON );
 				DoExit( XGAME::xSC_TITLE );
 			}
 			m_bPatched = false;
@@ -760,7 +738,7 @@ int XScenePatchClient::OnTouch( XWnd* pWnd, DWORD p1, DWORD p2 )
 }
 
 
-int XScenePatchClient::FSMError( xtAct event )
+int XScenePatchClient::FSMError( xtAct event, const XParamObj2& param )
 {
 	switch( event )
 	{
@@ -790,7 +768,22 @@ int XScenePatchClient::Process( float dt )
 		}
 	}
 	//
-	DoFSMState( m_State, xACT_PROCESS );
+	DoFSMState( m_State, xACT_PROCESS, XParamObj2() );
+	// 다음상태로 전환.
+	if( m_StateNext ) {
+		DoFSMState( m_State, xACT_LEAVE, m_paramNext );
+		XLOGXN( "MWScenePatchClient: changeState %d -> %d", (int)m_State, (int)m_StateNext );
+		m_StateOld = m_State;
+		m_State = m_StateNext;
+		m_StateNext = xST_NONE;
+
+ 		auto paramNext = m_paramNext;			// 복사본
+		m_paramNext.Clear();
+		DoFSMState( m_State, xACT_ENTER, paramNext );
+		// 내부에서 다시 ChangeState()를 할수도 있으므로 여기서 클리어 시키면 안된다.
+// 		m_StateNext = xST_NONE;
+// 		m_paramNext.Clear();
+	}
 	//
 	return XEBaseScene::Process( dt );
 }
@@ -832,23 +825,23 @@ void XScenePatchClient::OnMouseMove( float lx, float ly ) {
 }
 
 // 패킷버전 파일 받음.
-int XScenePatchClient::OnRecvVersions( XWnd *pWnd, DWORD p1, DWORD )
-{
-	DoFSMState( (xtState)p1, xACT_RECV );
-	return 1;
-}
+// int XScenePatchClient::OnRecvVersions( XWnd *pWnd, DWORD p1, DWORD )
+// {
+// 	DoFSMState( (xtState)p1, xACT_RECV );
+// 	return 1;
+// }
 
 /****************************************************************
 * @brief 
 *****************************************************************/
-int XScenePatchClient::OnRecvFullList( XWnd* pWnd, DWORD p1, DWORD p2 )
-{
-	CONSOLE("OnRecvFullList");
-	//
-	DoFSMState( (xtState)p1, xACT_RECV );
-	
-	return 1;
-}
+// int XScenePatchClient::OnRecvFullList( XWnd* pWnd, DWORD p1, DWORD p2 )
+// {
+// 	CONSOLE("OnRecvFullList");
+// 	//
+// 	DoFSMState( (xtState)p1, xACT_RECV );
+// 	
+// 	return 1;
+// }
 
 
 // 코어 업데이트 버전 파일 받음.
@@ -858,16 +851,16 @@ int XScenePatchClient::OnRecvFullList( XWnd* pWnd, DWORD p1, DWORD p2 )
 // 	return 1;
 // }
 
-void XScenePatchClient::OnCompleteRecvFile( const char *cURL, const char *cFullpath, int size )
-{
-}
+// void XScenePatchClient::OnCompleteRecvFile( const char *cURL, const char *cFullpath, int size )
+// {
+// }
 
 // UpdateXX.txt 업데이트 목록 파일들 다받음.
-int XScenePatchClient::OnRecvUpdateList( XWnd *pWnd, DWORD p1, DWORD )
-{
-	DoFSMState( (xtState)p1, xACT_RECV );
-	return 1;
-}
+// int XScenePatchClient::OnRecvUpdateList( XWnd *pWnd, DWORD p1, DWORD )
+// {
+// 	DoFSMState( (xtState)p1, xACT_RECV );
+// 	return 1;
+// }
 
 /**
 @brief 업데이트 리스트의 목록들을 합치고 파일명들 중에 중복된건 걸러낸다.
@@ -878,12 +871,6 @@ int XScenePatchClient::DoMergeUpdateList( XList4<_tstring>& listUpdateList,
 	int _size = sizeof(_tstring);
 	int max = 0;
 	int duplicate = 0;
-// 	std::map<_tstring, int> mapApkList;
-// 	if( listUpdateList.size() > 0 ) {
-// 		if( listUpdateList.GetFirst() == _T("Update1.txt") ) {
-// 			LoadApkList( &mapApkList );
-// 		}
-// 	}
 	// updateXX.txt 파일들.
 	for( auto& _strFile : listUpdateList )
 	{
@@ -893,9 +880,8 @@ int XScenePatchClient::DoMergeUpdateList( XList4<_tstring>& listUpdateList,
 		_tcscat_s( szFile, _strFile.c_str() );
 		XPLATFORM_PATH( szFile );
 //		_tstring strFile = C2SZ( cFile );
-		if( token.LoadFromWork( szFile, XE::TXT_EUCKR ) == xFAIL )
-		{
-			ChangeState( xST_ERROR_UPDATE_LIST );
+		if( token.LoadFromWork( szFile, XE::TXT_EUCKR ) == xFAIL ) {
+			ChangeState( xST_ERROR_UPDATE_LIST, XParamObj2() );
 			XBREAKF( 1, "file open error. [ %s ]", szFile );
 			// 이건 중간 업데이트 파일을 못받더라도 뒷버전 목록으로 해결될수도 있으니 일단 계속 진행하고 경고만 띄워준다.
 		} else	{
@@ -924,18 +910,17 @@ int XScenePatchClient::DoMergeUpdateList( XList4<_tstring>& listUpdateList,
 int XScenePatchClient::OnRecvRes( XWnd *pWnd, DWORD p1, DWORD )
 {
 	XLOGXN( "OnRecvRes finished" );
-	auto typeDownload = (xtDownload)p1;
+	const auto typeDownload = (xtDownload)p1;
 	if( m_pWndText )
 		m_pWndText->SetText( _T( "Update complete" ) );
 	XBREAK( typeDownload == xDL_NONE );
-	DoFSMState( xST_REQ_RECV_RES, xACT_RECV );
-	ChangeState( xST_AFTER_DOWNLOAD );
-	if( typeDownload == xDL_FULL )
-	{
+	m_pTask->ClearEvent( XWM_EACH_COMPLETE );		// ??
+// 	DoFSMState( xST_REQ_RECV_RES, xACT_RECV );
+	ChangeState( xST_AFTER_DOWNLOAD, XParamObj2() );
+	if( typeDownload == xDL_FULL )	{
 		XLOGXN( "full patch complete" );
 	} else
-	if( typeDownload == xDL_UPDATE )
-	{
+	if( typeDownload == xDL_UPDATE )	{
 		XLOGXN( "core patch complete" );
 	}
 	return 1;
@@ -957,16 +942,6 @@ int XScenePatchClient::OnRecvRes( XWnd *pWnd, DWORD p1, DWORD )
 // 앱 최초 실행인가.
 BOOL XScenePatchClient::IsFirstPlay( void )
 {
-// 	std::string strFile = SZ2C( XE::GetPathWork() );
-// 	strFile += "patch.ini";
-// 	FILE *fp = nullptr;
-// 	fopen_s( &fp, strFile.c_str(), "rt" );
-// 	if( fp == nullptr )
-// 		return TRUE;
-// 	int val = 0;
-// 	fscanf_s( fp, "%d", &val );
-// 	fclose(fp);
-// 	return val != 1;	// 1이 안써있으면 깨진걸로 생각하고 처음 실행으로 간주함
 	return m_LocalLastUpdate == 0;
 }
 
@@ -1035,18 +1010,18 @@ bool XScenePatchClient::SaveDownloadedList( void )
 /****************************************************************
 * @brief 
 *****************************************************************/
-int XScenePatchClient::OnRecvEachRes( XWnd* pWnd, DWORD p1, DWORD p2 )
-{
-//	CONSOLE("OnRecvEachRes");
-	//
-	XDownloadTask::xREQ_INFO *pInfo = ( XDownloadTask::xREQ_INFO* ) p2;
-	if( pInfo->strToRename.empty() == false )
-		m_strDownloadedFile = pInfo->strToRename;
-	else
-		m_strDownloadedFile = pInfo->strDstFullpath;
-	DoFSMState( (xtState)p1, xACT_RECV_EACH );
-	return 1;
-}
+// int XScenePatchClient::OnRecvEachRes( XWnd* pWnd, DWORD p1, DWORD p2 )
+// {
+// //	CONSOLE("OnRecvEachRes");
+// 	//
+// 	XDownloadTask::xREQ_INFO *pInfo = ( XDownloadTask::xREQ_INFO* ) p2;
+// 	if( pInfo->strToRename.empty() == false )
+// 		m_strDownloadedFile = pInfo->strToRename;
+// 	else
+// 		m_strDownloadedFile = pInfo->strDstFullpath;
+// 	DoFSMState( (xtState)p1, xACT_RECV_EACH );
+// 	return 1;
+// }
 
 /**
  @brief 

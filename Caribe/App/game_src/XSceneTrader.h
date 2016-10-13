@@ -57,7 +57,7 @@ public:
 	int OnClickRecallOK(XWnd *pWnd, DWORD p1, DWORD p2);		// 즉시호출 수락
 	//int OnClickRecallCancel(XWnd *pWnd, DWORD p1, DWORD p2);	// 즉시호출 취소
 
-	int OnClickPopupCancel(XWnd *pWnd, DWORD p1, DWORD p2);		// 팝업 취소
+//	int OnClickPopupCancel(XWnd *pWnd, DWORD p1, DWORD p2);		// 팝업 취소
 
 	// 슬라이더
 	int OnSlidingResource0(XWnd *pWnd, DWORD p1, DWORD p2);

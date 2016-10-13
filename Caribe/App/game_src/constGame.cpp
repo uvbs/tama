@@ -412,7 +412,8 @@ xtUnitFilter xLegionParam::SetUnitFilter( xtAttack atkType ) {
 */
 _tstring GetstrResearchTime( int sec )
 {
-	XBREAK( sec < 0 );
+	if( sec < 0 )
+		return _T("0");
 	int d, h, m, s;
 	XSYSTEM::GetDayHourMinSec( (xSec)sec, &d, &h, &m, &s );
 	_tstring str;// = _T( "연구시간:" );
@@ -776,4 +777,5 @@ LPCTSTR GetstrDEV_LEVEL()
 
 // namespace XGAME
 XE_NAMESPACE_END;
+
 

@@ -6,33 +6,7 @@
 #define XRESO_WIDTH		640
 #define XRESO_HEIGHT	360
 
-namespace XGAME {
-	// m_dwFilter
-	enum {
-		xBIT_PLAYER_HERO = 0x01,
-		xBIT_PLAYER_UNIT= 0x02,
-		xBIT_ENEMY_HERO = 0x04,
-		xBIT_ENEMY_UNIT = 0x08,
-		xBIT_SIDE_FILTER = 0x0f,
-		xBIT_HERO_INFO_CONSOLE = 0x10,
-		xBIT_FLUSH_IMG = 0x00001000,
-		xBIT_FLUSH_SPR = 0x00002000,
-		xBIT_NO_DRAW_DMG_NUM		= 0x00010000,
-		xBIT_NO_DRAW_HIT_SFX		= 0x00020000,
-		xBIT_NO_DRAW_SKILL_SFX	= 0x00040000,
-		xBIT_NO_DRAW_BUFF_ICON	= 0x00080000,
-		// 
-		xBIT_NO_CREATE_DMG_NUM		= 0x01000000,
-		xBIT_NO_CREATE_HIT_SFX		= 0x02000000,
-		xBIT_NO_CREATE_SKILL_SFX	= 0x04000000,
-		xBIT_NO_CREATE_BUFF_ICON	= 0x08000000,
-	};
-	// m_dwDraw
-	enum {
-		xBD_NO_FONT = 0x01,
-		xBD_NO_DRAW_PRIM_UP = 0x02,
-	};
-}
+// XCheatOption.h로 옮겨짐
 
 class XGame;
 ////////////////////////////////////////////////////////////////
@@ -74,7 +48,6 @@ public:
 	bool m_bDebugViewSquadsHp = false;		///< 각 부대 hp보이기
 	bool m_bStopPassive = false;					///< 패시브스킬 금지
 	bool m_bStopActive = false;					///< 액티브스킬 금지
-	DWORD m_dwFilter = XGAME::xBIT_SIDE_FILTER;
 	bool m_bViewCutScene = true;
 	bool m_bViewHexaIdx = false;				// 헥사 인덱스
 	bool m_bViewAreaCost = false;				// 툴모드시 지역가격을 표시할건지.
@@ -87,7 +60,8 @@ public:
 	BOOL m_bWaitAfterWin = false;			// 상대부대 전멸 후 대기
 	xtTestMode m_ModeTest = xTEST_NONE;
 //	bool m_bLow = false;
-#ifdef WIN32
+	int m_idxViewAtlas = -1;
+#ifdef _CHEAT
 	bool m_bViewMemoryInfo = false;
 	std::string m_strLayoutXml;
 	std::string m_strLayoutNode;
@@ -96,7 +70,15 @@ public:
 	bool m_bReloadWhenRetryPropUnit = FALSE;
 	bool m_bReloadWhenRetryPropSkill = FALSE;
 	bool m_bReloadWhenRetryPropLegion = FALSE;
-	DWORD m_dwDraw = 0;
+private:
+	DWORD m_dwFilter;
+	DWORD m_dwNoDraw = 0;
+	DWORD m_dwOption = 0;
+public:
+	GET_SET_BIT_ACCESSOR( Filter );
+	GET_SET_BIT_ACCESSOR( Option );
+	GET_SET_BIT_ACCESSOR( NoDraw );
+	
 #else
 	bool m_bViewMemoryInfo = false;
 #endif
@@ -139,6 +121,9 @@ public:
 	void OnError( XE::xtError codeError, DWORD p1, DWORD p2 );
 	BOOL DoEditBox( TCHAR *pOutText, int lenOut );
 	BOOL OnSelectLoadType( XE::xtLoadType typeLoad ) override;
+private:
+	bool RequestCheatAuth() override;
+	void FrameMove() override;
 };
 
 

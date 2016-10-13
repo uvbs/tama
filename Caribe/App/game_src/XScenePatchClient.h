@@ -42,15 +42,17 @@ class XScenePatchClient : public XSceneBase
 		xDL_UPDATE,	// 업데이트된 파일만 받음
 		xDL_FULL,		// 풀리스트를 받음.
 	};
-	enum xtPatchFrom {
-		xPF_NONE,
-		xPF_FROM_SERVER,
-		xPF_FROM_APK,
-	};
+// 	enum xtPatchFrom {
+// 		xPF_NONE,
+// 		xPF_FROM_SERVER,
+// 		xPF_FROM_APK,
+// 	};
 private:
 	xtState m_State;
 	xtState m_StateOld;
-	int m_verLastUpdateInApk = 0;
+	xtState m_StateNext = xST_NONE;
+	XParamObj2 m_paramNext;
+	//int m_verLastUpdateInApk = 0;
 	int m_LocalLastUpdate = 0;
 	int m_LastUpdateOnServer = 0;
 	XWndTextString *m_pWndText;
@@ -60,12 +62,12 @@ private:
 	XDownloadTask *m_pTask;
 	CTimer m_timerCreateUI;
 	int m_Error;
-	std::string m_strDownloadedFile;
+//	std::string m_strDownloadedFile;
 	bool m_bDrawProgress = false;		// 다운받을때 프로그레스바를 그릴지 말지
 	bool m_bPatched = false;
 	xSec m_secPatchStart = 0;		// 총 패치시간 측정용
 	xSec m_secTotalPatch = 0;		// 패치에 걸린 시간
-	xtPatchFrom m_modePatchFrom = xPF_NONE;
+//	xtPatchFrom m_modePatchFrom = xPF_NONE;
 	//
 	void Init()  {
 		m_State = xST_NONE;
@@ -81,13 +83,13 @@ public:
 	virtual ~XScenePatchClient(void) { Destroy(); }
 	//
 	//
-	int ChangeState( xtState state );
-	int DoFSMState( xtState state, xtAct event, std::string *pFilename=nullptr );
-	int FSMReqVersion( xtAct event );
-	int FSMReqUpdateList( xtAct event );
-	int FSMReqRecvRes( xtAct event );
-	int FSMExitScene( xtAct event );
-	int FSMError( xtAct event );
+	int ChangeState( xtState state, const XParamObj2& param );
+	int DoFSMState( xtState state, xtAct event, const XParamObj2& param );
+	int FSMReqVersion( xtAct event, const XParamObj2& param );
+	int FSMReqUpdateList( xtAct event, const XParamObj2& param );
+	int FSMReqRecvRes( xtAct event, const XParamObj2& param );
+	int FSMExitScene( xtAct event, const XParamObj2& param );
+	int FSMError( xtAct event, const XParamObj2& param );
 	//
 	int GetUpdateVerFromWork( LPCTSTR szRes );
 	inline int GetUpdateVerFromWork( const _tstring& strRes ) {
@@ -103,25 +105,25 @@ public:
 	virtual void OnLButtonDown( float lx, float ly );
 	virtual void OnLButtonUp( float lx, float ly );
 	virtual void OnMouseMove( float lx, float ly );
-	virtual void OnCompleteRecvFile( const char *cURL, const char *cFullpath, int size );
+	//virtual void OnCompleteRecvFile( const char *cURL, const char *cFullpath, int size );
 	//
-	int OnRecvVersions( XWnd *pWnd, DWORD, DWORD );
-	int OnRecvUpdateList( XWnd *pWnd, DWORD, DWORD );
+	//int OnRecvVersions( XWnd *pWnd, DWORD, DWORD );
+	//int OnRecvUpdateList( XWnd *pWnd, DWORD, DWORD );
 	int OnRecvRes( XWnd *pWnd, DWORD, DWORD );
 	int OnBack( XWnd *pWnd, DWORD p1, DWORD p2 ) override;
 	void CreateUI();
-	int FSMReqFullList( xtAct event );
-	int OnRecvFullList( XWnd* pWnd, DWORD p1, DWORD p2 );
-	int FSMAfterDownload( xtAct event );
+	int FSMReqFullList( xtAct event, const XParamObj2& param );
+	//int OnRecvFullList( XWnd* pWnd, DWORD p1, DWORD p2 );
+	int FSMAfterDownload( xtAct event, const XParamObj2& param );
 	bool LoadDownloadedList( int verServer );
 	bool SaveDownloadedList( void );
-	int OnRecvEachRes( XWnd* pWnd, DWORD p1, DWORD p2 );
+	//int OnRecvEachRes( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnErrorDownload( XWnd* pWnd, DWORD p1, DWORD codeErr );
 	int OnTouch( XWnd* pWnd, DWORD p1, DWORD p2 );
 	bool IsApkFile( const _tstring& strRes, std::map<_tstring, int>& mapApk );
 	void LoadApkList( std::map<_tstring, int>* pMapOut );
 	int GetUpdateVerFromApk( LPCTSTR szRes );
-	int OnYesCDMADownloadInRecvRes( XWnd* pWnd, DWORD p1, DWORD p2 );
-	int FSMBranchUpdateList( xtAct event );
+	//int OnYesCDMADownloadInRecvRes( XWnd* pWnd, DWORD p1, DWORD p2 );
+	int FSMBranchUpdateList( xtAct event, const XParamObj2& param );
 };
 

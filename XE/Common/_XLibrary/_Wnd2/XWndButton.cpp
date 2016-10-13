@@ -1,6 +1,5 @@
 ﻿#include "stdafx.h"
-#include "XWndButton.h"
-//#include "XWindow.h"
+#include "etc/XSurface.h"
 #include "etc/xUtil.h"
 #include "sprite/SprObj.h"
 #ifdef WIN32
@@ -11,6 +10,8 @@
 #include "XFramework/client/XEContent.h"
 #include "XSoundMng.h"
 #include "XFramework/XEProfile.h"
+#include "XImageMng.h"
+#include "XWndButton.h"
 
 using namespace XE;
 
@@ -40,21 +41,20 @@ XWndButton* XWndButton::Find( XWndMng *pWndMng, ID idWnd )
 }
 */
 // 생성자
-XWndButton::XWndButton( float x, float y, LPCTSTR szSpr,
-					   DWORD idActUp, DWORD idActDown, DWORD idActDisable,
-					   XEToolTip *pToolTip, BOOL bSrcKeep )
-	: XWnd( x, y )
-{
-	Init();
-	SetprefToolTip( pToolTip );
-	//
-	if( XE::IsHave( szSpr ) )
-	{
-		// 이 버튼이 독자적으로 쓸 sprobj 생성
-		XSprObj *pSprObj = m_pSprObj = new XSprObj( bSrcKeep, szSpr );
-		Create( pSprObj, idActUp, idActDown, idActDisable );
-	}
-}
+// XWndButton::XWndButton( float x, float y, LPCTSTR szSpr,
+// 					   DWORD idActUp, DWORD idActDown, DWORD idActDisable,
+// 					   XEToolTip *pToolTip, BOOL bSrcKeep )
+// 	: XWnd( x, y )
+// {
+// 	Init();
+// 	SetprefToolTip( pToolTip );
+// 	//
+// 	if( XE::IsHave( szSpr ) )	{
+// 		// 이 버튼이 독자적으로 쓸 sprobj 생성
+// 		auto pSprObj = m_pSprObj = new XSprObj( bSrcKeep, szSpr );
+// 		Create( pSprObj, idActUp, idActDown, idActDisable );
+// 	}
+// }
 
 void XWndButton::Destroy() 
 {
@@ -763,35 +763,35 @@ void XWndButtonCheck::OnLButtonUp( float lx, float ly )
 }
 
 ////////////////////////////////////////
-XWndButtonString::XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, 
-						XBaseFontDat *pFontDat, 
-						LPCTSTR szSpr, ID idActUp, ID idActDown, ID idActDisable ) 
-	: XWnd( x, y ), 
-	XWndButton( x, y, szSpr, idActUp, idActDown, idActDisable ) 
-{
-	Init();
-	m_Color = col;
-	auto vSize = GetSizeLocal();
-	m_pText = new XWndTextString( XE::VEC2(0), vSize, szString, pFontDat, col );
-	m_pText->SetAlign( XE::xALIGN_CENTER );		// 텍스트는 중앙정렬하도록 한다.
-	m_pText->SetstrIdentifier("__text.label");
-	Add( m_pText );
-}
+// XWndButtonString::XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, 
+// 						XBaseFontDat *pFontDat, 
+// 						LPCTSTR szSpr, ID idActUp, ID idActDown, ID idActDisable ) 
+// 	: XWnd( x, y ), 
+// 	XWndButton( x, y, szSpr, idActUp, idActDown, idActDisable ) 
+// {
+// 	Init();
+// 	m_Color = col;
+// 	auto vSize = GetSizeLocal();
+// 	m_pText = new XWndTextString( XE::VEC2(0), vSize, szString, pFontDat, col );
+// 	m_pText->SetAlign( XE::xALIGN_CENTER );		// 텍스트는 중앙정렬하도록 한다.
+// 	m_pText->SetstrIdentifier("__text.label");
+// 	Add( m_pText );
+// }
 
-XWndButtonString::XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, 
-						LPCTSTR szFont, float sizeFont,
-						LPCTSTR szSpr, ID idActUp, ID idActDown, ID idActDisable )
-	: XWnd( x, y ), 
-	XWndButton( x, y, szSpr, idActUp, idActDown, idActDisable ) 
-{
-		Init();
-		m_Color = col;
-		auto vSize = GetSizeLocal();
-		m_pText = new XWndTextString( XE::VEC2(0), vSize, szString, szFont, sizeFont, col );
-		m_pText->SetAlign( XE::xALIGN_CENTER );		// 텍스트는 중앙정렬하도록 한다.
-		m_pText->SetstrIdentifier( "__text.label" );
-		Add( m_pText );
-}
+// XWndButtonString::XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, 
+// 						LPCTSTR szFont, float sizeFont,
+// 						LPCTSTR szSpr, ID idActUp, ID idActDown, ID idActDisable )
+// 	: XWnd( x, y ), 
+// 	XWndButton( x, y, szSpr, idActUp, idActDown, idActDisable ) 
+// {
+// 		Init();
+// 		m_Color = col;
+// 		auto vSize = GetSizeLocal();
+// 		m_pText = new XWndTextString( XE::VEC2(0), vSize, szString, szFont, sizeFont, col );
+// 		m_pText->SetAlign( XE::xALIGN_CENTER );		// 텍스트는 중앙정렬하도록 한다.
+// 		m_pText->SetstrIdentifier( "__text.label" );
+// 		Add( m_pText );
+// }
 
 XWndButtonString::XWndButtonString( float x, float y, LPCTSTR szString, XCOLOR col, XBaseFontDat *pFontDat, 
 						LPCTSTR szImgUp, LPCTSTR szImgDown, LPCTSTR szImgDisable ) 

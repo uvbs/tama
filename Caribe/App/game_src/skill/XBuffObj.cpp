@@ -2,6 +2,7 @@
 #include "xSkill.h"
 #include "XEffect.h"
 #include "XESkillMng.h"
+#include "XImageMng.h"
 
 
 #ifdef WIN32
@@ -96,8 +97,8 @@ void XBuffObj::OnSkillEventKillEnemy( XSkillReceiver *pOwner, ID idDead )
 		}
 	} END_LOOP;
 #ifdef _DEBUG
-	if( bApplied )
-		XTRACE( "%s ", __TFUNC__ );
+// 	if( bApplied )
+// 		XTRACE( "%s ", __TFUNC__ );
 #endif // _DEBUG
 }
 
@@ -138,8 +139,8 @@ void XBuffObj::OnHitFromAttacker( const XSkillReceiver *pAttacker,
 
 	} END_LOOP;
 #ifdef _DEBUG
-	if( bApplied )
-		XTRACE( "%s typedmg=%d", __TFUNC__, typeDamage );
+// 	if( bApplied )
+// 		XTRACE( "%s typedmg=%d", __TFUNC__, typeDamage );
 #endif // _DEBUG
 }
 
@@ -185,8 +186,8 @@ void XBuffObj::OnAttackToDefender( XSkillReceiver *pDefender,
 		}
 	} END_LOOP;
 #ifdef _DEBUG
-	if( bApplied )
-		XTRACE( "%s dmg:%d typeDmg=%d", __TFUNC__, (int)damage, typeDamage );
+//	if( bApplied )
+//		XTRACE( "%s dmg:%d typeDmg=%d", __TFUNC__, (int)damage, typeDamage );
 #endif // _DEBUG
 }
 
@@ -223,9 +224,9 @@ bool XBuffObj::OnEventJunctureCommon( ID idEvent, DWORD dwParam, const XSkillRec
 		}
 	}
 #ifdef _DEBUG
-	if( bApplied ) {
-		XTRACE( "%s idEvent=%d", __TFUNC__, idEvent );
-	}
+// 	if( bApplied ) {
+// 		XTRACE( "%s idEvent=%d", __TFUNC__, idEvent );
+// 	}
 #endif // _DEBUG
 	return bApplied;
 }
@@ -245,15 +246,15 @@ void XBuffObj::OnEventInvokeFromSkill( XSkillDat *pFromSkill,
 	LIST_LOOP( m_listEffectObjs, EFFECT_OBJ*, itor, pEffObj ) {
 		EFFECT *pEffect = &pEffObj->m_effect;
 		if( pEffect->strInvokeTimeSkill == pFromSkill->GetstrIdentifier() ) {
-			XTRACE( "발동시점스킬: %s발동으로 인해 %s발동", pFromSkill->GetstrIdentifier().c_str(),
-														m_pDat->GetstrIdentifier().c_str() );
+// 			XTRACE( "발동시점스킬: %s발동으로 인해 %s발동", pFromSkill->GetstrIdentifier().c_str(),
+// 														m_pDat->GetstrIdentifier().c_str() );
 			pBaseTarget->ApplyInvokeEffect( m_pDat, pCaster, m_pOwner, this, pEffect, m_Level );
 			bApplied = true;
 		}
 	} END_LOOP;
 #ifdef _DEBUG
-	if( bApplied )
-		XTRACE( "%s fromSkill=%s", __TFUNC__, pFromSkill->GetIds().c_str() );
+// 	if( bApplied )
+// 		XTRACE( "%s fromSkill=%s", __TFUNC__, pFromSkill->GetIds().c_str() );
 #endif // _DEBUG
 }
 

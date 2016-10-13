@@ -1,8 +1,15 @@
 ﻿#include "stdafx.h"
+#include "XSystem.h"
 #include "XEContent.h"
 #include "XFontMng.h"
 #include "_Wnd2/XWndPopup.h"
 #include "XImageMng.h"
+#include "OpenGL2/XTextureAtlas.h"
+#ifdef _XASYNC_SPR
+#include "Sprite/SprMng.h"
+#endif // _XASYNC_SPR
+#include "OpenGL2/XBatchRenderer.h"
+#include "OpenGL2/XTextureAtlas.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -16,10 +23,13 @@ XEContent* XEContent::s_pInstance = nullptr;
 
 XEContent::XEContent() 
 	: XWnd( 0, 0, (int)XE::GetGameWidth(), (int)XE::GetGameHeight() ) 
+	, m_pRenderer( new XBatchRenderer( __FUNCTION__, false ) )
 {
 	s_pInstance = this;
 	Init();
+	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__ );
 	SetbTouchable( FALSE );	// 게임 윈도우 자체는 터치이벤트를 발생시키지 않는다.
+	m_spAtlas->PushAtlasMng();
 }
 XWnd* XEContent::GetpRootScene()
 {
@@ -28,6 +38,7 @@ XWnd* XEContent::GetpRootScene()
 
 void XEContent::Destroy()
 {
+	SAFE_DELETE( m_pRenderer );
 	XTRACE("XEContent::Destroy\n");
 	DestroySystemFont();
 	XTRACE( "--XEContent::Destroy\n" );
@@ -35,9 +46,10 @@ void XEContent::Destroy()
 
 BOOL XEContent::OnCreate()
 {
+	CreateSystemFont();
+	//	XTextureAtlas::sSetMaxSizeTex( XE::VEC2(4096, 4096) );
 	const auto strKeyLang = OnSelectLanguageKey();		// virtual. lang.txt의 국가키를 받는다.
 	XE::LANG.SetSelectedKey( strKeyLang );
-	CreateSystemFont();
 	// 시스템이 시작하자마자 씬루트를 젤 밑에 깔아준다.
 	XWnd *pRoot = new XWnd();
 	pRoot->SetstrIdentifier( "_root.scene" );
@@ -49,7 +61,7 @@ BOOL XEContent::RestoreDevice()
 {
 //   m_pfdSystem->RestoreDevice();
 //   m_pfdSystemSmall->RestoreDevice();
-  return XWnd::RestoreDevice();
+	return XWnd::RestoreDevice();
 }
 
 void XEContent::DestroySystemFont()
@@ -61,12 +73,24 @@ void XEContent::DestroySystemFont()
 BOOL XEContent::CreateSystemFont( void )
 {
 	XBREAK( m_pfdSystem != nullptr );
-	m_pfdSystem = FONTMNG->Load( FONT_SYSTEM, FONT_SIZE_DEFAULT );
-	if( XBREAKF( m_pfdSystem == NULL, "load font: %s......failed", FONT_SYSTEM ) )
-		return FALSE;
-	m_pfoSystem = m_pfdSystem->CreateFontObj();
-	if( XBREAKF( m_pfoSystem == NULL, "create system fontobj:......failed" ) )
-		return FALSE;
+// 	m_pfdSystem = FONTMNG->Load( FONT_SYSTEM, FONT_SIZE_DEFAULT );
+// 	if( XBREAKF( m_pfdSystem == NULL, "load font: %s......failed", FONT_SYSTEM ) )
+// 		return FALSE;
+	int idx = 0;
+	do {
+ 		m_pfdSystem = FONTMNG->Load( FONT_SYSTEM, FONT_SIZE_DEFAULT );
+		if( m_pfdSystem ) {
+			break;
+		} else {
+			XSYSTEM::xSleep( 1 );
+		}
+		XTRACE("retry font load:%d", idx);
+	} while( ++idx < 5 );
+	if( XASSERT( m_pfdSystem ) ) {
+		m_pfoSystem = m_pfdSystem->CreateFontObj();
+		if( XBREAKF( m_pfoSystem == NULL, "create system fontobj:......failed" ) )
+			return FALSE;
+	}
 	m_pfdSystemSmall = FONTMNG->Load( FONT_SYSTEM, (int)(FONT_SIZE_DEFAULT / 1.5f) );
 	if( XBREAKF( m_pfdSystemSmall == NULL, "load font size10: %s......failed", FONT_SYSTEM ) )
 		return FALSE;
@@ -139,6 +163,58 @@ void XEContent::OnMouseMove( float lx, float ly )
 int XEContent::Process( float dt )
 {
 	IMAGE_MNG->Process( m_bDraging );
+#ifdef _XASYNC_SPR
+	SPRMNG->Process();
+#endif // _XASYNC_SPR
 	return XWnd::Process( dt );
 }
 
+void XEContent::DestroyDevice()
+{
+	XWnd::DestroyDevice();
+	if( m_spAtlas )
+		m_spAtlas->DestroyDevice();
+}
+
+void XEContent::OnPause()
+{
+	XWnd::OnPause();
+	if( m_spAtlas )
+		m_spAtlas->OnPause();
+}
+
+void XEContent::OnDrawBefore()
+{
+	if( m_pRenderer )
+		m_pRenderer->PushRenderer();
+	XWnd::OnDrawBefore();
+}
+
+void XEContent::OnDrawAfter()
+{
+	XWnd::OnDrawAfter();
+	if( m_pRenderer ) {
+		m_pRenderer->RenderBatch();
+		m_pRenderer->PopRenderer();
+	}
+}
+
+void XEContent::OnProcessBefore()
+{
+	m_spAtlas->PushAtlasMng();
+}
+
+void XEContent::OnProcessAfter()
+{
+	m_spAtlas->PopAtlasMng();
+}
+
+void XEContent::OnUpdateBefore()
+{
+	m_spAtlas->PushAtlasMng();
+}
+
+void XEContent::OnUpdateAfter()
+{
+	m_spAtlas->PopAtlasMng();
+}

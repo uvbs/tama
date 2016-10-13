@@ -30,10 +30,11 @@ int XQuestMng::Serialize( XArchive& ar )
 	int sizeOld = ar.size();
 	ar << (WORD)VER_QUEST_SERIALIZE;
 	ar << (WORD)m_listQuestCurr.size();
-	for( auto pQuestObj : m_listQuestCurr )
-	{
+	for( auto pQuestObj : m_listQuestCurr )	{
 		ar << pQuestObj->GetpProp()->idProp;
-		pQuestObj->Serialize( ar );
+		XArchive arEach;
+		pQuestObj->Serialize( arEach );
+		ar << arEach;
 		MAKE_CHECKSUM( ar );
 	}
 	ar << m_listQuestsComplete;
@@ -47,20 +48,21 @@ int XQuestMng::DeSerialize( XArchive& ar )
 	WORD w0;
 	ar >> w0;	ver = w0;
 	ar >> w0;	size = w0;
-	for( int i = 0; i < size; ++i )
-	{
+	for( int i = 0; i < size; ++i )	{
 		DWORD idProp;
 		ar >> idProp;
-		XQuestProp::xProp *pProp = XQuestProp::sGet()->GetpProp( idProp );
-// 		if( pProp == nullptr )
-// 			return 0;
-		XBREAKF( pProp == nullptr
-			, "QuestMng::Deserialize. pProp==null: idProp=%d", idProp );	// 테스트
-		XQuestObj *pObj = new XQuestObj( pProp );
+		auto pProp = XQuestProp::sGet()->GetpProp( idProp );
+		XArchive arEach;
+		ar >> arEach;		// 통째로 읽어낸다음
+		if( pProp == nullptr )		// 없으면 그냥 리턴
+			return 0;
+// 		XBREAKF( pProp == nullptr
+// 			, "QuestMng::Deserialize. pProp==null: idProp=%d", idProp );	// 테스트
+		auto pObj = new XQuestObj( pProp );
 		if( pProp ) {
 			m_listQuestCurr.push_back( pObj );
 		}
-		pObj->DeSerialize( ar, ver );
+		pObj->DeSerialize( arEach, ver );
 		if( pProp == nullptr )
 			SAFE_DELETE( pObj );
 		RESTORE_VERIFY_CHECKSUM( ar );
@@ -129,23 +131,6 @@ void XQuestMng::DispatchEvent( ID idEvent, const xQuest::XEventInfo& infoEvent )
 		return;
 	// 이 이벤트로 인해 생성되는 다른 퀘스트가 있는지 검사.
 	OccurQuestByDispatchEvent( idEvent, infoEvent );
-// 	for( auto pProp : XQuestProp::sGet()->GetaryQuests() ) {
-// 		// 퀘스트의 등장조건(when)에 맞는 퀘스트가 있는지 검사.
-// 		if( IsCondWhen( pProp, idEvent, infoEvent ) ) {
-// 			if( IsHaveCurrQuest( pProp->idProp ) == false ) {
-// 				if( IsCompleteQuest( pProp->idProp ) == false ) {
-// 					XQuestObj *pObj = CreateAndAddQuestObjCurr( pProp );
-// 					XBREAK( pObj == nullptr );
-// 					///< 퀘발생 델리게이트 발생
-// 					m_pDelegate->DelegateOccurQuest( pObj );
-// 					XARRAYLINEAR_LOOP_AUTO( pObj->GetaryConds(), pCond ) {
-// 						m_pDelegate->DelegateOccurQuestCond( pObj, pCond );
-// 					} END_LOOP;
-// 					// 같은 조건의 다른 퀘스트도 있을 수 있으므로 루프를 멈춰선 안된다.
-// 				}
-// 			}
-// 		}
-// 	}// END_LOOP;
 	// 받은 퀘스트들에게 이벤트를 던진다.
 	for( auto pQuestObj : m_listQuestCurr ) {
 		bool bUpdate = pQuestObj->DispatchEvent( this, idEvent, infoEvent );

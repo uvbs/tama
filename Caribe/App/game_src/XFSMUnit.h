@@ -51,7 +51,7 @@ public:
 	GET_ACCESSOR( CTimer&, timerLocalMove );
 	virtual void Release() override {}
 	//
-	XEWorld* GetWorld( void );
+	XSPWorld GetWorld( void );
 	/// 타겟이 this보다 오른쪽에 있는가
 	BOOL IsTargetRight( const XE::VEC3& vwDst );
 	XFSMChase* DoChase( const XSPUnit& spTarget, XFSMBase::xtFSM fsmNext );
@@ -133,7 +133,7 @@ class XFSMNormalAttack : public XFSMBase
 	XE::VEC3 m_vTarget;			///< 목표가 좌표형태일 경우
 //	CTimer m_timerAttack;	///< 공속타이머
 //	XGAME::xtMelee m_typeCurrMeleeType;	///< 현재 어떤 공격중이었는가.
-	XSPSquad m_spLastTargetSquad;		///< 마지막으로 공격하고 있던 타겟부대
+	XSPSquadObj m_spLastTargetSquad;		///< 마지막으로 공격하고 있던 타겟부대
 	void _Init() {
 
 	}

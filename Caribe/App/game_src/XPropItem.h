@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 
-#include "defineGame.h"
+#include "../Resource/defineGame.h"
 #include "XFramework/XEBaseProp.h"
 #include "XArchive.h"
 
@@ -24,7 +24,6 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	struct xPROP {
 	private:
-		DWORD goldCost;					///< 금화가격. 장착템은 이 가격을 사용하지 않음.
 	public:
 		ID idProp;						///< 아이템 아이디
 		_tstring strIdentifier;			///< 아이템 식별자
@@ -36,9 +35,10 @@ public:
 		XGAME::xtGrade grade;			///< 아이템 등급
 		int maxStack;					///< 몇개나 겹칠수 있는 아이템인가. 0이거나 음수거나 1은 겹쳐지지 않음
 		XGAME::xtParts parts;			///< 장착부위
+		_tstring m_strPayItem;		///< 지불 아이템 식별자 null이면 디폴트로 금화
+		DWORD m_numCost;					///< 지불아이템의 비용개수. 지불형태가 금화라면 금화수가 된다.
 		DWORD cashCost;					///< 캐쉬가격
 		_tstring strActive;				///< 아이템 스킬
-//		int numOverlap;					
 		_tstring strIdHero;				///< 영혼석일경우 어떤 영웅의 영혼석인지
 		_tstring strIcon;				///< 아이콘 png파일명
 		XVector<xAdj> aryAdjParam;	///< 보정파라메터
@@ -52,11 +52,11 @@ public:
 			grade = XGAME::xGD_NONE;
 			maxStack = 0;
 			parts = XGAME::xPARTS_NONE;
-			goldCost = 0;
+			m_numCost = 0;
 			cashCost = 0;
 		}
 		void SetgoldCost( DWORD cost ) {
-			goldCost = cost;
+			m_numCost = cost;
 		}
 //		BOOL IsOverlapable() const { return numOverlap > 1; }		/// 겹치기가 가능한 아이템인가
 		bool IsEquipable() const {
@@ -115,10 +115,9 @@ public:
 		XBREAK( pMob == nullptr );			// 위에서 find로 검사했기때문에 nullptr나와선 안됨.
 		return pMob;
 	}
-	xPROP* GetpProp( ID idType ) {
+	const xPROP* GetpProp( ID idType ) const {
 		XBREAK( idType == 0 );
-		std::unordered_map<ID, xPROP*>::iterator itor;
-		itor = m_mapID.find( idType );
+		auto itor = m_mapID.find( idType );
 		if( itor == m_mapID.end() ) {
 			return nullptr;							// 못찾았으면 에러 리턴
 		}
@@ -126,7 +125,17 @@ public:
 		XBREAK( pMob == nullptr );			// 위에서 find로 검사했기때문에 nullptr나와선 안됨.
 		return pMob; 
 	}
-	xPROP* GetpPropByidHero( ID idHero );
+	xPROP* GetpPropMutable( ID idType ) {
+		XBREAK( idType == 0 );
+		auto itor = m_mapID.find( idType );
+		if( itor == m_mapID.end() ) {
+			return nullptr;							// 못찾았으면 에러 리턴
+		}
+		xPROP *pMob = ( *itor ).second;
+		XBREAK( pMob == nullptr );			// 위에서 find로 검사했기때문에 nullptr나와선 안됨.
+		return pMob;
+	}
+	const xPROP* GetpPropByidHero( ID idHero );
 	/// idProp아이템의 아이콘파일의 패스를 얻는다. res패스이므로 img/icon_test.png 이런식이 된다.
 	LPCTSTR GetIconResPath( ID idProp ) {
 		auto pProp = GetpProp( idProp );
@@ -154,10 +163,10 @@ public:
 	//	xPROP* GetClanBookProp( XGAME::xtClan clan );
 };
 
-typedef std::pair<XPropItem::xPROP*, int> ItemBox;
+typedef std::pair<const XPropItem::xPROP*, int> ItemBox;
 namespace XGAME {
   inline void GetItemBox( const ItemBox& box, XPropItem::xPROP** ppOut, int *pOutNum ) {
-    *ppOut = std::get<0>( box );
+    *ppOut = const_cast<XPropItem::xPROP*>( std::get<0>( box ) );
     *pOutNum = std::get<1>( box );
   }
 }; // XGAME

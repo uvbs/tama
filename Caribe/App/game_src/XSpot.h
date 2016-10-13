@@ -120,7 +120,7 @@ private:
 //	int m_LevelArea = 0;	// 미리 계산된 지역레벨
 	XTimer2 m_timerSpawn;	// 공통 스폰타이머.
 	XDelegateSpot *m_pDelegate;
-	LegionPtr m_spLegion;		// 스팟에 있던 군대 객체. 이것은 스팟의 종류마다 메모리 할당의 성격이 다르다
+	XSPLegion m_spLegion;		// 스팟에 있던 군대 객체. 이것은 스팟의 종류마다 메모리 할당의 성격이 다르다
 	int m_Score;
 	int m_Power = 0;
 	bool m_bDestroy = false;		///< 파괴될 스팟
@@ -218,11 +218,11 @@ public:
 	GET_SET_ACCESSOR_CONST( int, Level );
 //	GET_ACCESSOR( XLegion*, pLegion );
 // 	virtual GET_ACCESSOR( LegionPtr&, spLegion );
-	LegionPtr GetspLegion() const {
+	XSPLegion GetspLegion() const {
 		return m_spLegion;
 	}
 //	SET_ACCESSOR( LegionPtr&, spLegion );
-	void SetspLegion( LegionPtr spLegion );
+	void SetspLegion( XSPLegion spLegion );
 	GET_SET_ACCESSOR_CONST( int, Score );
 	GET_SET_ACCESSOR_CONST( int, Power );
 	GET_ACCESSOR( struct bitfield&, bitFlag );
@@ -385,6 +385,8 @@ public:
 	virtual int DoDropItem( XSPAcc spAcc, XArrayLinearN<ItemBox, 256> *pOutAry, int lvSpot, float multiplyDropNum ) const;
 	virtual void GetLootInfo( XArrayLinearN<XGAME::xRES_NUM, XGAME::xRES_MAX> *pAry ) const;
 	void GetLootInfo( XVector<XGAME::xRES_NUM>* pOutAry ) const;
+	virtual void SerializeForBattle( XArchive* pOutLegion, const XParamObj2& param );
+	virtual void DeSerializeForBattle( XArchive& arLegion, XArchive& arAdd, XSPAcc spAcc );
 #if defined(_CLIENT) || defined(_GAME_SERVER)
 	virtual int GetNeedAP( XSPAcc spAcc );
 #endif // #if defined(_CLIENT) || defined(_GAME_SERVER)
@@ -419,7 +421,7 @@ public:
 	virtual int GetDropItems( std::vector<XGAME::xDropItem> *pOutAry );
 	virtual bool IsElite() { return false; }
 	void SetDropItems( const std::vector<XGAME::xDropItem>& aryDropItem );
-	void UpdatePower( /*XSPAcc spAccEnemy, */LegionPtr spLegion = LegionPtr() );
+	void UpdatePower( /*XSPAcc spAccEnemy, */XSPLegion spLegion = XSPLegion() );
 	bool IsSulfur() {
 		return GettypeSpot() == XGAME::xSPOT_SULFUR;
 	}
@@ -445,6 +447,9 @@ public:
 	virtual _tstring GetstrHello() const { return _tstring(); }		// 일단 이렇게 하고 나중에 리팩토링
 	virtual void SetstrHello( const _tstring& strHello ) {}
 	virtual void OnTouch( XSPAcc spAcc ) {}
+	const XParamObj2& GetPropParam() const {
+		return GetpBaseProp()->m_Param;
+	}
 #ifdef _DEV
 	bool IsDummy() const {
 		return m_strName == _T("TEST_USER");
@@ -474,12 +479,13 @@ protected:
 private:
 	virtual void ResetPower( int lvSpot ) {}
 	virtual void ResetLevel( XSPAcc spAcc ) {}
+//	virtual void 
 
 friend class CUserDB;
 
 };	// class XSpot
 
-typedef std::shared_ptr<XSpot> SpotPtr;
+typedef std::shared_ptr<XSpot> XSPSpot;
 
 
 

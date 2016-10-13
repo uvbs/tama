@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <popup_tree>
+    <popup img="br_bg1.png">
+      <butt posx="0" posy="0" img_up="common_butt_x.png" key="butt.close"></butt>
+      <text posx="14" posy="37" font_size="18" font="font_text_s" key="text.abil" />
+      <butt key="butt.popup"></butt>
+      <click file="sample.xml" layout="sample" posx="14" posy="37" key="butt.popup" />
+    </popup>
+  </popup_tree>
+  <sample>
+    <!--must be root only one-->
+    <wnd>
+      <img file="">
+        <img file="" />
+        <text posx="" />
+      </img>
+      <img>
+        <spr file="" />
+      </img>
+    </wnd>
+  </sample>
+  <popup_dialog>
+    <popup img="br_bg1.png">
+      <butt posx="0" posy="0" img_up="common_butt_x.png" key="butt.close"></butt>
+      <text posx="14" posy="37" font_size="18" font="font_text_s" key="text.abil" />
+      <butt key="butt.popup" link_file="sample.xml" link_node="popup" />
+    </popup>
+  </popup_dialog>
+</layout>

@@ -83,6 +83,7 @@ private:
 	DWORD m_dwFlag = 0;
 	bool m_bUpdateSizeAndPos = false;		// 사이즈계산을 한곳에서 일괄적으로 하기위함. SetAlign이나 SetLineLength가 변하면 즉시 계산하지 말고 플래그만 받아뒀다가 size가 필요한순간(GetLayoutSize)에 계산한다. 이 플래그가 true가 되면 무조건 재계산을 하는것이므로 중복계산을 피하려면 이것을 사용하는측에서 중복검사를 해야한다.
 	bool m_bUpdateSizeIfChangeText = false;		// true가 되면 SetText()로 텍스트가 바꼈을때 사이즈를 재계산하고 부모에게 알린다.
+//	bool m_bBatch = false;
 	void Init() {
 #ifdef _XNEW_WND_TEXT
 		m_szString = NULL;
@@ -187,6 +188,7 @@ public:
 	void SetText( LPCTSTR szString );
 	void SetNumberText( int num );
 	GET_ACCESSOR_CONST( LPCTSTR, szString );
+	void SetbBatch( bool bFlag );
 	//
 	void SetFont( LPCTSTR szFont, float size );
 	void SetAlign( XE::xAlign align ) override;
@@ -202,22 +204,22 @@ public:
 	inline void SetAlignRight() {
 		SetAlign( XE::xALIGN_RIGHT );
 	}
-	void SetbComma( bool bFlag ) {
+	inline void SetbComma( bool bFlag ) {
 		if( bFlag )
 			m_dwFlag |= xFLAG_COMMA;
 		else
 			m_dwFlag &= ~(xFLAG_COMMA);
 	}
-	bool IsComma() const {
+	inline bool IsComma() const {
 		return (m_dwFlag & xFLAG_COMMA) != 0;
 	}
-	void SetbPassword( bool bFlag ) {
+	inline void SetbPassword( bool bFlag ) {
 		if( bFlag )
 			m_dwFlag |= xFLAG_PASSWORD;
 		else
 			m_dwFlag &= ~( xFLAG_PASSWORD );
 	}
-	bool IsPassword() const {
+	inline bool IsPassword() const {
 		return ( m_dwFlag & xFLAG_PASSWORD ) != 0;
 	}
 	inline void SetColorText( XCOLOR col ) {
@@ -290,7 +292,7 @@ private:
 	inline XE::VEC2 GetLayoutPosFinal(){
 		return GetLayoutPosNoTrans() * GetScaleFinal();
 	}
-	void AutoLayoutByAlign( XWnd *pParent, XE::xAlign align ) override;
+	void AutoLayoutByAlign( const XWnd *pParent, XE::xAlign align ) override;
 }; // XWndTextString
 
 

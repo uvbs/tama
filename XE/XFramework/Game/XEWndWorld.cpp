@@ -1,7 +1,11 @@
 ﻿#include "stdafx.h"
 #include "XEWndWorld.h"
 #include "XFramework/Game/XEWorld.h"
+#include "XFramework/Game/XEWorldCamera.h"
 #include "xFont.h"
+#include "OpenGL2/XBatchRenderer.h"
+#include "OpenGL2/XTextureAtlas.h"
+#include "XFramework/XEProfile.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -12,152 +16,194 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 ////////////////////////////////////////////////////////////////
-XEWndWorld::XEWndWorld()
-{
-	Init();
-	//
-	SetSizeLocal( XE::GetGameSize() );	// 디폴트로 화면에 꽉차는 윈도우
-}
+// XEWndWorld::XEWndWorld()
+// 	: m_pRenderer( new XRenderCmdMng( __FUNCTION__ ) )
+// 	, m_pAtlas( new XTextureAtlas( __FUNCTION__ ) )
+// {
+// 	Init();
+// 	//
+// 	SetSizeLocal( XE::GetGameSize() );	// 디폴트로 화면에 꽉차는 윈도우
+// }
 
-XEWndWorld::XEWndWorld( XEWorld *pWorld ) 
+XEWndWorld::XEWndWorld( std::shared_ptr<XEWorld> spWorld )
+	: m_pRenderer( new XBatchRenderer( __FUNCTION__, false ) )	// zbuff(디폴트로 끄고 유닛찍을때만 켜자)
+//	, m_spAtlas( std::make_shared<XTextureAtlas>( __FUNCTION__ ) )
 {
 	Init();
 	//
-	XBREAK( pWorld == NULL );
-	m_pWorld = pWorld;
+	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__ );
+	XBREAK( spWorld == nullptr );
+	m_spWorld = spWorld;
 	SetSizeLocal( XE::GetGameSize() );	// 디폴트로 화면에 꽉차는 윈도우
 }
 
 void XEWndWorld::Destroy()
 {
-	SAFE_DELETE( m_pWorld );
+//	SAFE_DELETE( m_pAtlas );
+	SAFE_DELETE( m_pRenderer );
+//	SAFE_DELETE( m_pWorld );
 }
 
-void XEWndWorld::Release( void )
+void XEWndWorld::Release()
 {
-	XBREAK( m_pWorld == NULL );
-	m_pWorld->Release();
+	XBREAK( m_spWorld == nullptr );
+	m_spWorld->Release();
+}
+
+BOOL XEWndWorld::OnCreate()
+{
+	XWnd::OnCreate();
+	return TRUE;
+}
+
+void XEWndWorld::OnProcessBefore()
+{
+	m_spAtlas->PushAtlasMng();
 }
 
 int XEWndWorld::Process( float dt ) 
 {
-	SetvwCamera( XScroll::GetvCenter() );
-	m_pWorld->Process( this, dt );
+	if( m_spWorld ) {
+		m_spWorld->Process( this, dt );
+	}
 	XWnd::Process( dt );
-	XScroll::Process( dt );
 	return 1;
 }
 
-void XEWndWorld::Draw( void )
+void XEWndWorld::OnProcessAfter()
 {
-	m_pWorld->Draw( this );
-	XWnd::Draw();
+	m_spAtlas->PopAtlasMng();
 }
-void XEWndWorld::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat *pFontDat )
+
+void XEWndWorld::Draw()
 {
-	x = 2.f;
-	y = 0.f;
-	XE::VEC2 vlsPos = INPUTMNG->GetMousePos() - GetPosLocal();
-	XE::VEC2 vwMouse = GetPosWindowToWorld( vlsPos );
-	for( int i = 0; i < 1; ++i )
-	{
-		pFontDat->DrawString( x, y, col,
-			XE::Format( _T( "vwCamera:%d,%d scaleCamera:%.1f vwMouse:%d,%d visibleObj:%d" ),
-			(int)m_vwCamera.x, (int)m_vwCamera.y,
-			m_scaleCamera,
-			(int)vwMouse.x, (int)vwMouse.y ),
-			(int)(GetpWorld()->GetpObjMng()->GetNumVisibleObj()) );
+	if( m_spWorld ) {
+//		SET_RENDERER( m_pRenderer ) {
+		m_pRenderer->PushRenderer();
+			m_spWorld->Draw( this );
+			m_pRenderer->RenderBatch();
+			m_pRenderer->PopRenderer();
+//		} END_RENDERER;
 	}
+
+	XWnd::Draw();		// 현재 차일드가 없으면 이부분 삭제
+	// 여기는 순수하게 월드렌더링을 위한 레이어여야 하는게 맞다. 그래서 ui용 배치렌더러는 놓지 않았다.
 }
-/**
- 월드좌표를 윈도우내 로컬좌표로 변환한다.
-*/
-XE::VEC2 XEWndWorld::GetPosWorldToWindow( const XE::VEC3& vwPos, float *pOutScale/*=NULL*/ ) 
+// void XEWndWorld::DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat *pFontDat )
+// {
+// 	if( m_spWorld == nullptr )
+// 		return;
+// 	XBREAK( m_spWorld == nullptr );
+// 	XBREAK( m_spWorld->GetpObjMng() == nullptr );
+// 	x = 2.f;
+// 	y = 0.f;
+// 	XE::VEC2 vlsPos = INPUTMNG->GetMousePos() - GetPosLocal();
+// 	XE::VEC2 vwMouse = GetPosWindowToWorld( vlsPos );
+// 	for( int i = 0; i < 1; ++i )
+// 	{
+// 		pFontDat->DrawString( x, y, col,
+// 			XE::Format( _T( "vwCamera:%d,%d scaleCamera:%.1f vwMouse:%d,%d visibleObj:%d" ),
+// 			(int)m_vwCamera.x, (int)m_vwCamera.y,
+// 			m_scaleCamera,
+// 			(int)vwMouse.x, (int)vwMouse.y ),
+// 			(int)(m_spWorld->GetpObjMng()->GetNumVisibleObj()) );
+// 	}
+// }
+XE::VEC2 XEWndWorld::GetPosWorldToWindow( const XE::VEC3& vwPos, float *pOutScale )
 {
-	// 카메라 퍼스펙티브 버전
-	// 화면의 중심
-/*
-	XE::VEC2 vsCenter = XE::GetGameSize() / 2.f;
-	// 카메라 중심의 로컬월드 좌표
-	XE::VEC2 vwLocalFromCamera = vwPos.ToVec2() - m_vwCamera;
-	float zScale = ( vwPos.y / m_vwCamera.y ) * m_scaleCamera;
-	XE::VEC2 vlsPos = vsCenter + vwLocalFromCamera * zScale;
-	if( pOutScale )
-		*pOutScale = zScale;
-	return vlsPos;
-*/
-
-	// 평행투영 머전
-	XE::VEC2 sizeWin = GetSizeLocal();
-	XE::VEC2 vwLT = m_vwCamera - ((sizeWin * 0.5f) / m_scaleCamera);		// 현재 윈도우뷰의 좌상귀 월드좌표
-	XE::VEC2 v2wPos = XE::VEC2( vwPos.x, vwPos.y );
-	v2wPos.y += vwPos.z;		// z축은 마이너스가 위쪽.
-	XE::VEC2 vlsPos = (v2wPos - vwLT) * m_scaleCamera;		// 로컬스크린(윈도우)좌표계로 변환
-	vlsPos.x += ((vwPos.y - 525.f) * 0.5f) * m_scaleCamera;		// 쿼터뷰로 표시할때..
-	if( pOutScale )
-		*pOutScale = m_scaleCamera;
-	return vlsPos;
-
-	// 평행 패스펙티브 버전(이게 진짜임)
-/*
-	XE::VEC2 sizeWin = GetSizeLocal();
-	XE::VEC2 vwLT = m_vwCamera - ( ( sizeWin / 2.f ) / m_scaleCamera );		// 현재 윈도우뷰의 좌상귀 월드좌표
-	XE::VEC2 v2wPos = XE::VEC2( vwPos.x, vwPos.y );
-	v2wPos.y += vwPos.z;		// z축은 마이너스가 위쪽.
-	XE::VEC2 vlsPos = ( v2wPos - vwLT ) * m_scaleCamera;		// 로컬스크린(윈도우)좌표계로 변환
-	// 월드y좌표 400을 기준으로 위쪽에 있는 오브젝트는 왼쪽으로 빗겨찍고 아래쪽에 있는 오브젝트는 오른쪽으로 빗겨찍는다.
-	XE::VEC2 vsCenter = XE::GetGameSize() / 2.f;
-//	XE::VEC2 vwCenter = GetpWorld()->GetvwSize() / 2.f;	// 월드의 중심
-	// 화면중심으로부터의 좌표로 변환
-	XE::VEC2 vsLocalCenter = vlsPos - vsCenter;
-	XE::VEC2 vsPosPerspective;
-	// 화면좌표로 퍼스펙티브를 한다.
-	float y = ((vlsPos.y - vsCenter.y) * 0.3f) + vsCenter.y;;
-	float y2 = ((vlsPos.y - vsCenter.y) * 0.3f) + vsCenter.y;;
-	float zScale1 = (y / vsCenter.y) * m_scaleCamera;
-	float zScale2 = (y2 / vsCenter.y) * m_scaleCamera;
-//	float zScale = ( vlsPos.y / vsCenter.y );
-	vsPosPerspective.x = vsCenter.x + ((vsLocalCenter.x * 2.f) * zScale2);
-	vsPosPerspective.y = vsCenter.y + ((vsLocalCenter.y * 2.f) * zScale2);
-	if( pOutScale )
-		*pOutScale = zScale1;
-	return vsPosPerspective;
-*/
-	
+	return m_spCamera->GetPosWorldToWindow( vwPos, pOutScale );
 }
-
-/**
- 윈도우좌표 vlsPos를 월드좌표로 변환한다.
-*/
+// /**
+//  월드좌표를 윈도우내 로컬좌표로 변환한다.
+// */
+// XE::VEC2 XEWndWorld::GetPosWorldToWindow( const XE::VEC3& vwPos, float *pOutScale ) 
+// {
+// 	// 카메라 퍼스펙티브 버전
+// 	// 화면의 중심
+// /*
+// 	XE::VEC2 vsCenter = XE::GetGameSize() / 2.f;
+// 	// 카메라 중심의 로컬월드 좌표
+// 	XE::VEC2 vwLocalFromCamera = vwPos.ToVec2() - m_vwCamera;
+// 	float zScale = ( vwPos.y / m_vwCamera.y ) * m_scaleCamera;
+// 	XE::VEC2 vlsPos = vsCenter + vwLocalFromCamera * zScale;
+// 	if( pOutScale )
+// 		*pOutScale = zScale;
+// 	return vlsPos;
+// */
+// 
+// 	// 평행투영 머전
+// 	XE::VEC2 sizeWin = GetSizeLocal();
+// 	XE::VEC2 vwLT = m_vwCamera - ((sizeWin * 0.5f) / m_scaleCamera);		// 현재 윈도우뷰의 좌상귀 월드좌표
+// 	XE::VEC2 v2wPos = XE::VEC2( vwPos.x, vwPos.y );
+// 	v2wPos.y += vwPos.z;		// z축은 마이너스가 위쪽.
+// 	XE::VEC2 vlsPos = (v2wPos - vwLT) * m_scaleCamera;		// 로컬스크린(윈도우)좌표계로 변환
+// 	vlsPos.x += ((vwPos.y - 525.f) * 0.5f) * m_scaleCamera;		// 쿼터뷰로 표시할때..
+// 	if( pOutScale )
+// 		*pOutScale = m_scaleCamera;
+// 	return vlsPos;
+// 
+// 	// 평행 패스펙티브 버전(이게 진짜임)
+// /*
+// 	XE::VEC2 sizeWin = GetSizeLocal();
+// 	XE::VEC2 vwLT = m_vwCamera - ( ( sizeWin / 2.f ) / m_scaleCamera );		// 현재 윈도우뷰의 좌상귀 월드좌표
+// 	XE::VEC2 v2wPos = XE::VEC2( vwPos.x, vwPos.y );
+// 	v2wPos.y += vwPos.z;		// z축은 마이너스가 위쪽.
+// 	XE::VEC2 vlsPos = ( v2wPos - vwLT ) * m_scaleCamera;		// 로컬스크린(윈도우)좌표계로 변환
+// 	// 월드y좌표 400을 기준으로 위쪽에 있는 오브젝트는 왼쪽으로 빗겨찍고 아래쪽에 있는 오브젝트는 오른쪽으로 빗겨찍는다.
+// 	XE::VEC2 vsCenter = XE::GetGameSize() / 2.f;
+// //	XE::VEC2 vwCenter = GetpWorld()->GetvwSize() / 2.f;	// 월드의 중심
+// 	// 화면중심으로부터의 좌표로 변환
+// 	XE::VEC2 vsLocalCenter = vlsPos - vsCenter;
+// 	XE::VEC2 vsPosPerspective;
+// 	// 화면좌표로 퍼스펙티브를 한다.
+// 	float y = ((vlsPos.y - vsCenter.y) * 0.3f) + vsCenter.y;;
+// 	float y2 = ((vlsPos.y - vsCenter.y) * 0.3f) + vsCenter.y;;
+// 	float zScale1 = (y / vsCenter.y) * m_scaleCamera;
+// 	float zScale2 = (y2 / vsCenter.y) * m_scaleCamera;
+// //	float zScale = ( vlsPos.y / vsCenter.y );
+// 	vsPosPerspective.x = vsCenter.x + ((vsLocalCenter.x * 2.f) * zScale2);
+// 	vsPosPerspective.y = vsCenter.y + ((vsLocalCenter.y * 2.f) * zScale2);
+// 	if( pOutScale )
+// 		*pOutScale = zScale1;
+// 	return vsPosPerspective;
+// */
+// 	
+// }
+// 
+// /**
+//  윈도우좌표 vlsPos를 월드좌표로 변환한다.
+// */
+// XE::VEC2 XEWndWorld::
 XE::VEC2 XEWndWorld::GetPosWindowToWorld( const XE::VEC2& vlsPos )
 {
-	XE::VEC2 sizeWin = GetSizeLocal();
-	XE::VEC2 vwLT = m_vwCamera - ( ( sizeWin / 2.f ) / m_scaleCamera );		// 현재 윈도우뷰의 좌상귀 월드좌표
-	XE::VEC2 vWinPos = vlsPos;
-	XE::VEC2 vwPos = vwLT + vlsPos / m_scaleCamera;
-	vwPos.x -= ((vwPos.y - 525.f) / 2.f) * m_scaleCamera;
-	return vwPos;
+	return m_spCamera->GetPosWindowToWorld( vlsPos );
+// 	XE::VEC2 sizeWin = GetSizeLocal();
+// 	XE::VEC2 vwLT = m_vwCamera - ( ( sizeWin / 2.f ) / m_scaleCamera );		// 현재 윈도우뷰의 좌상귀 월드좌표
+// 	XE::VEC2 vWinPos = vlsPos;
+// 	XE::VEC2 vwPos = vwLT + vlsPos / m_scaleCamera;
+// 	vwPos.x -= ((vwPos.y - 525.f) / 2.f) * m_scaleCamera;
+// 	return vwPos;
 }
-
-
-void XEWndWorld::OnZoom( float scale, float lx, float ly ) 
-{
-	m_scaleCamera *= scale;
-	if( m_scaleCamera < m_scaleMin )
-		m_scaleCamera = m_scaleMin;
-	else
-	if( m_scaleCamera > m_scaleMax )
-		m_scaleCamera = m_scaleMax;
-// 	m_scaleCamera += scale;
-// 	if( scale < 0 && m_scaleCamera < m_scaleMin )
+// 
+// 
+// void XEWndWorld::OnZoom( float scale, float lx, float ly ) 
+// {
+// 	m_scaleCamera *= scale;
+// 	if( m_scaleCamera < m_scaleMin )
 // 		m_scaleCamera = m_scaleMin;
 // 	else
-// 	if( scale > 0 && m_scaleCamera > m_scaleMax )
+// 	if( m_scaleCamera > m_scaleMax )
 // 		m_scaleCamera = m_scaleMax;
-	SetScaleCamera( m_scaleCamera );
-//	XLOGXNA("m_scaleCamera:%f", m_scaleCamera );
-	XScroll::OnZoom( lx, ly, scale );
-}
+// // 	m_scaleCamera += scale;
+// // 	if( scale < 0 && m_scaleCamera < m_scaleMin )
+// // 		m_scaleCamera = m_scaleMin;
+// // 	else
+// // 	if( scale > 0 && m_scaleCamera > m_scaleMax )
+// // 		m_scaleCamera = m_scaleMax;
+// 	SetScaleCamera( m_scaleCamera );
+// //	XLOGXNA("m_scaleCamera:%f", m_scaleCamera );
+// 	XScroll::OnZoom( lx, ly, scale );
+// }
 
 /**
  rectBB바운딩 박스가 윈도우 영역을 벗어났는지 확인
@@ -177,3 +223,12 @@ BOOL XEWndWorld::IsOutBoundary( const XE::xRECT& rectBB )
 	return FALSE;
 }
 
+ID XEWndWorld::AddObj( const XSPWorldObj& spObj ) 
+{
+	return m_spWorld->AddObj( spObj );
+}
+
+// int XEWndWorld::GetavgDPCall() const
+// {
+// 	return (m_pRenderer)? m_pRenderer->GetfpsDPCall().GetFps() : 0;
+// }

@@ -51,13 +51,11 @@ public:
 		XList4<ID> listChildID;		///< 자식노드의 아이디 리스트(ID붙은것들은 로딩할때외엔 쓰지 않음.
 	public:
 		ID idNode;					///< 노드 아이디
-//		std::string strIdentifier;		///< 식별 아이디 문자열
 		_tstring strSkill;			///< 스킬 식별자(아이콘은 스킬프로퍼티것을 쓴다)
 		_tstring strIcon;			///< 스킬프로퍼티가 있다면 처음 읽을때 거기서 참조하고 직접 지정하면 지정한 값으로 세팅되게
 		XGAME::xtUnit unit = XGAME::xUNIT_NONE;	///< 어떤 유닛의 특성인가.
 		ID idName;					///< 이름
 		ID idDesc;					///< 설명
-//		int lvOpenable;					///< 오픈가능 레벨
 		int point;					///< 현재 찍은 포인트(이것은 인스턴스로 사용시에만 사용된다.)
 		int maxPoint;				///< 최대 포인트
 		int tier = 0;				///< 레벨단계
@@ -65,13 +63,10 @@ public:
 		XList4<xNodeAbil*> listChild;	///< 차일드 노드 리스트
 #ifdef _CLIENT
 		XSurface *psfcIcon;				///< 아이콘 서피스
-		inline void DrawIcon( const XE::VEC2& vAdj = XE::VEC2()) {
-			psfcIcon->Draw( vPos + vAdj );
-		}
+		void DrawIcon( const XE::VEC2& vAdj = XE::VEC2());
 #endif
 		xNodeAbil() {
-			idNode = 0; //sGenerateID();
-//			lvOpenable = 1;
+			idNode = 0; 
 			point = 0;
 			maxPoint = MAX_POINT;
 			idName = 0;
@@ -80,7 +75,7 @@ public:
 			psfcIcon = nullptr;
 #endif // _CLIENT
 		}
-		ID getid() {
+		inline ID getid() const {
 			return idNode;
 		}
 		const XList4<xNodeAbil*>& GetListParents() {

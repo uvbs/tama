@@ -4,6 +4,7 @@
 #include "XWndBattleField.h"
 #include "XSquadObj.h"
 #include "XFramework/XEProfile.h"
+#include "XFramework/Game/XEWndWorld.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -617,9 +618,11 @@ XSPUnit XEObjMngWithType::GetPickUnit( XWndBattleField *pWndWorld,
 	return nullptr;
 }
 
-void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible )
+void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, 
+																		const XVector<XEBaseWorldObj*>& aryVisible )
 {
 	XPROF_OBJ_AUTO();
+	auto prevZ = GRAPHICS->SetbEnableZBuff( false );
 	{
 		XPROF_OBJ( "draw floor/shadow" );
 		for( auto pObj : aryVisible ) {
@@ -659,12 +662,42 @@ void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseW
 	}
 	// 일반 오브젝트들을 찍는다.
 	{
+		GRAPHICS->SetbEnableZBuff( true );
 		XPROF_OBJ( "draw normal" );
 		for( auto pObj : aryVisible ) {
 			if( pWndWorld ) {
-				// 바닥오브젝트가 아닌것만 찍는다.
+				// 다음 오브젝트가 아닌것만 찍는다.
 				if( pObj->GetType() != XGAME::xOT_FLOOR_OBJ 
-						&& pObj->GetType() != XGAME::xOT_UI ) {
+						&& pObj->GetType() != XGAME::xOT_UI
+						&& pObj->GetType() != XGAME::xOT_SFX ) {
+					// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
+					float scale = 1.f;
+					// 투영함수에서 카메라 스케일값을 받아온다.
+					XE::VEC2 vsPos;
+					{
+						XPROF_OBJ( "projection obj" );
+						vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
+					}
+					{
+						XPROF_OBJ( "draw each obj" );
+						pObj->Draw( vsPos, scale );
+					}
+				}
+			} else {
+				XPROF_OBJ( "draw each obj(no world)" );
+				XE::VEC2 vs = pObj->GetvwPos().ToVec2();
+				pObj->Draw( vs );
+			}
+		}
+	}
+	// sfx 오브젝트들을 찍는다.
+	{
+		GRAPHICS->SetbEnableZBuff( false );
+		XPROF_OBJ( "draw normal" );
+		for( auto pObj : aryVisible ) {
+			if( pWndWorld ) {
+				// sfx만 찍는다.
+				if( pObj->GetType() == XGAME::xOT_SFX ) {
 					// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
 					float scale = 1.f;
 					// 투영함수에서 카메라 스케일값을 받아온다.
@@ -687,6 +720,7 @@ void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseW
 	}
 	// UI오브젝트를 찍는다.
 	{
+		GRAPHICS->SetbEnableZBuff( false );
 		XPROF_OBJ( "draw ui_obj" );
 		for( auto pObj : aryVisible ) {
 			if( pWndWorld ) {
@@ -712,5 +746,6 @@ void XEObjMngWithType::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseW
 			}
 		}
 	}
+	GRAPHICS->SetbEnableZBuff( prevZ );
 }
 

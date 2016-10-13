@@ -5,6 +5,8 @@
 #include "XLegionObj.h"
 #include "XSquadObj.h"
 #include "Sprite/SprObj.h"
+#include "xframework/game/XEWndWorld.h"
+#include "XFramework/Game/XEWorld.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -26,9 +28,9 @@ void XFSMBase::Destroy()
 {
 }
 
-XEWorld* XFSMBase::GetWorld( void ) 
+XSPWorld XFSMBase::GetWorld( void ) 
 {
-	return m_pUnit->GetpWndWorld()->GetpWorld();
+	return m_pUnit->GetpWndWorld()->GetspWorld();
 }
 
 BOOL XFSMBase::IsTargetRight( const XE::VEC3& vwDst ) 
@@ -213,7 +215,7 @@ int XFSMChase::ProcessTraceTarget( float dt )
 			m_timerDelay.Off();
 			m_pUnit->GetpSprObj()->SetAction( ACT_RUN );
 		}
-		if( m_pUnit->GetpSprObj()->GetActionID() == ACT_RUN ) {
+		if( m_pUnit->GetpSprObjConst()->GetActionID() == ACT_RUN ) {
 			BOOL bArrive = FALSE;
 			XE::VEC3 vDist = m_pUnit->GetspTarget()->GetvwPos() - m_pUnit->GetvwPos();
 			vDist.Abs();
@@ -602,7 +604,7 @@ int XFSMNormalAttack::FrameMove( float dt )
 	XBaseUnit *pTarget = nullptr;
 	if( m_pUnit->GetspTarget() != nullptr )
 		pTarget = m_pUnit->GetspTarget().get();
-	if( m_pUnit->GetpSprObj()->GetActionID() != ACT_IDLE1 ) {
+	if( m_pUnit->GetpSprObjConst()->GetActionID() != ACT_IDLE1 ) {
 		if( m_pUnit->GetpSprObj()->IsFinish() ) {
 			// 공격모션이 끝나면 대기모션으로 전환
 			m_pUnit->GetpSprObj()->SetAction( ACT_IDLE1 );

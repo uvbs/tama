@@ -2,20 +2,20 @@
 <layout>
   <popup>
     <popup img="common_bg_popup.png" format="argb8888">
-      <text posx="30" posy="92" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="right" width="100" text="2336" />
-      <text posx="30" posy="160" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="right" width="100" text="80145"></text>
-      <text posx="30" posy="218" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="right" width="100" text="80146" />
-      <img posx="141" posy="78" file="option_input_box.png" key="img.box.email" format="argb8888">
+      <text posx="30" posy="72" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="right" width="80" text="2336" />
+      <text posx="30" posy="140" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="right" width="80" text="80145"></text>
+      <text posx="30" posy="198" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="right" width="80" text="80146" />
+      <img posx="121" posy="58" file="option_input_box.png" key="img.box.email" format="argb8888">
         <edit_box key="edit.email" align="center" font_size="30" _posx="0" _posy="0" _width="286" _height="47" />
       </img>
-      <img posx="141" posy="146" file="option_input_box.png" key="img.box.password" format_surface="argb8888">
+      <img posx="121" posy="126" file="option_input_box.png" key="img.box.password" format_surface="argb8888">
         <edit_box key="edit.password" align="center" font_size="30" password="on" />
       </img>
-      <img posx="141" posy="214" file="option_input_box.png" key="img.box.password.verify" format_surface="argb8888">
+      <img posx="121" posy="194" file="option_input_box.png" key="img.box.password.verify" format_surface="argb8888">
         <edit_box key="edit.password.verify" align="center" font_size="30" password="on" />
       </img>
-      <butt posx="center" posy="282" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="30" key="butt.regist" font_style="stroke" text="80142"></butt>
-      <butt posx="right" posy="31" img_up="common_butt_x.png" key="butt.cancel" adjx="-15"></butt>
+      <butt posx="center" posy="252" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="30" key="butt.regist" font_style="stroke" text="80142"></butt>
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.cancel"></butt>
     </popup>
   </popup>
 </layout>

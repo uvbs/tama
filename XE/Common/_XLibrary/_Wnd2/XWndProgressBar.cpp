@@ -1,9 +1,11 @@
 ﻿#include "stdafx.h"
+#include "etc/XSurface.h"
 #include "XWndProgressBar.h"
 #include "XWndImage.h"
 #include "sprite/SprObj.h"
 #include "../XDrawGraph.h"
 #include "XFramework/XEProfile.h"
+#include "XImageMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -187,7 +189,7 @@ XWndProgressBar2::AddLayer( ID idLayer
 //	layer.m_psfcBar = IMAGE_MNG->Load( strPath, FALSE, FALSE );
 	const _tstring strExt = XE::GetFileExt( strImg );
 	if( strExt == _T("png") ) {
-		layer.m_psfcBar = IMAGE_MNG->Load( XE::MakePath2( DIR_UI, strImg ), FALSE, FALSE );
+		layer.m_psfcBar = IMAGE_MNG->Load( XE::MakePath2( DIR_UI, strImg ) );
 		XBREAK( layer.m_psfcBar == nullptr );
 	} else {
 		const auto strSpr = strImg;

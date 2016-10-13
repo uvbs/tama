@@ -194,12 +194,12 @@ public:
 // 	xPROP* GetPropRandomByAtkType( XGAME::xtAttack typeAtk, XGAME::xtGrade gradeMax=XGAME::xGD_NONE );
 	xPROP* GetPropRandomByAtkType( XGAME::xtAttack typeAtk, int lvLimit );
 //	xPROP* GetPropRandomGrade( XGAME::xtGrade gradeMax ) ;
-	int GetpPropByGetToAry( XVector<xPROP*> *pOutAry, XGAME::xtGet typeGet, XGAME::xtAttack typeAtk = XGAME::xAT_NONE );
+	int GetpPropByGetToAry( XVector<xPROP*> *pOutAry, XGAME::xtGet bitGet, XGAME::xtAttack typeAtk = XGAME::xAT_NONE );
 	int GetpPropByGetToAryWithExclude( XVector<xPROP*> *pOutAry
 																	, XGAME::xtGet typeGet
 																	, const XVector<ID>& aryExclude
 																	, XGAME::xtAttack typeAtk = XGAME::xAT_NONE );
-	xPROP* GetpPropRandomByGetType( XGAME::xtGet typeGet, XGAME::xtAttack typeAtk = XGAME::xAT_NONE );
+	xPROP* GetpPropRandomByGetType( XGAME::xtGet bitGet, XGAME::xtAttack typeAtk = XGAME::xAT_NONE );
 	ID GetidPropByIds( LPCTSTR idsHero );
 	ID GetidPropByIds( const _tstring& idsHero ) {
 		return GetidPropByIds( idsHero.c_str() );

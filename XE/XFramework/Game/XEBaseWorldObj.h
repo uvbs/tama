@@ -10,7 +10,9 @@ class XEWndWorld;
 class XArchive;
 class XEBaseWorldObj;
 class XSprObj;
+class XSprDat;
 class XSurface;
+class XActDat;
 namespace XE {
 struct xHSL;
 }
@@ -18,6 +20,7 @@ struct xHSL;
 class XEBaseWorldObj : public XDelegateSprObj,
 					public std::enable_shared_from_this<XEBaseWorldObj>
 {
+friend class XEObjMng;
 	static DWORD s_idSerial;
 	static int s_numObj;		// 메모리 릭 추적용
 public:	
@@ -35,42 +38,14 @@ public:
 		xFG_TOUCHABLE = 0x01,
 		xFG_ERROR=0x80000000,
 	};
-private:
-	int m_Type;					///< 오브젝트의 대분류(유닛인가 or sfx인가 같은...)
-	int m_Destroy;
-	ID m_snObj;					///< 인스턴스의 고유 번호
-	XSprObj *m_pSprObj;
-	XSurface *m_pSurface;		///< 애니메이션 없는 객체의 경우 이걸 써본다.
-	XE::VEC3 m_vwPos;
-	XE::VEC3 m_vScale;			
-	float m_Alpha;				///< 사라지는등의 연출을 위해 사용
-	XEWndWorld *m_pWndWorld;
-	DWORD m_dwFlag;
-	_tstring m_strSpr;		// spr파일 이름.
-	void Init() {
-		m_Type = 0;
-		m_snObj = sGenerateID();	// 순차적으로 번호가 생성되므로 나중에 생성된 객체가 먼저생성된 객체보다 위에 찍히게 하고 싶을때 소트용으로 써도 된다.
-		m_pSprObj = NULL;
-		m_pSurface = NULL;
-		m_Destroy = 0;
-		m_pWndWorld = NULL;
-		m_dwFlag = 0;
-		m_vScale.Set(1.f);
-		m_Alpha = 1.f;
-		++s_numObj;
-	}
-	void Destroy();
-	SET_ACCESSOR( ID, snObj );
-protected:
-	SET_ACCESSOR( int, Type );
 public:
 	XEBaseWorldObj( XEWndWorld *pWndWorld ) { 
 		Init(); 
 		m_pWndWorld = pWndWorld;
 	}
-	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, LPCTSTR szSpr, ID idAct );
-	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szSpr, ID idAct );
-	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szImg );
+	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, LPCTSTR szSpr, ID idAct, bool bBatch, bool bZBuff );
+	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szSpr, ID idAct, bool bBatch, bool bZBuff );
+	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos, LPCTSTR szImg, bool bBatch, bool bZBuff );
 	XEBaseWorldObj( XEWndWorld *pWndWorld, int type, const XE::VEC3& vPos ) { 
 		Init(); 
 		m_Type = type;
@@ -88,6 +63,7 @@ public:
 	void SetDestroy( int n ) { m_Destroy = n; }
 	GET_ACCESSOR_CONST( int, Type );
 	GET_ACCESSOR_CONST( ID, snObj );
+	GET_ACCESSOR_CONST( const _tstring&, strSpr );
 	//GET_ACCESSOR( ID, idObj );
 // 	ID GetsnObj() {
 // 		return m_snObj;
@@ -98,6 +74,9 @@ public:
 	GET_ACCESSOR_CONST( int, Destroy );
 	GET_SET_ACCESSOR( XEWndWorld*, pWndWorld );
 	GET_ACCESSOR( XSprObj*, pSprObj );
+	inline const XSprObj* GetpSprObjConst() const {
+		return m_pSprObj;
+	}
 	GET_ACCESSOR( XSurface*, pSurface );
 //	GET_SET_ACCESSOR( BIT, bitSide );
 //	GET_SET_ACCESSOR( float, Z );
@@ -170,15 +149,15 @@ public:
 	virtual int Serialize( XArchive& ar );
 	virtual int DeSerialize( XArchive& ar );
 	//
-	BOOL LoadSpr( LPCTSTR szSpr, const XE::xHSL& hsl, ID idAct, xRPT_TYPE typeLoop=xRPT_LOOP );
-	inline BOOL LoadSpr( LPCTSTR szSpr, ID idAct, xRPT_TYPE typeLoop = xRPT_LOOP ) {
-		return LoadSpr( szSpr, XE::xHSL(), idAct, typeLoop );
+	bool LoadSpr( LPCTSTR szSpr, const XE::xHSL& hsl, ID idAct, bool bBatch, bool bZBuff, xRPT_TYPE typeLoop );
+	inline bool LoadSpr( LPCTSTR szSpr, ID idAct, bool bBatch, bool bZBuff, xRPT_TYPE typeLoop ) {
+		return LoadSpr( szSpr, XE::xHSL(), idAct, bBatch, bZBuff, typeLoop );
 	}
-	inline BOOL LoadSpr( const _tstring& strSpr, ID idAct, xRPT_TYPE typeLoop = xRPT_LOOP ) {
-		return LoadSpr( strSpr.c_str(), XE::xHSL(), idAct, typeLoop );
+	inline bool LoadSpr( const _tstring& strSpr, ID idAct, bool bBatch, bool bZBuff, xRPT_TYPE typeLoop ) {
+		return LoadSpr( strSpr.c_str(), XE::xHSL(), idAct, bBatch, bZBuff, typeLoop );
 	}
-	inline BOOL LoadSpr( const _tstring& strSpr, const XE::xHSL& hsl, ID idAct, xRPT_TYPE typeLoop = xRPT_LOOP ) {
-		return LoadSpr( strSpr.c_str(), hsl, idAct, typeLoop );
+	inline bool LoadSpr( const _tstring& strSpr, const XE::xHSL& hsl, ID idAct, bool bBatch, bool bZBuff, xRPT_TYPE typeLoop ) {
+		return LoadSpr( strSpr.c_str(), hsl, idAct, bBatch, bZBuff, typeLoop );
 	}
 	void LoadImage( LPCTSTR szImg );
 	//	
@@ -246,12 +225,15 @@ public:
 	/**
 	 @brief 오브젝트 중심기준 좌표계로 바운딩박스를 만든다.
 	*/
-	virtual XE::xRECT GetBoundBoxLocal();
+//	virtual XE::xRECT GetBoundBoxLocal();
+	virtual XE::xRECT GetBoundBoxLocal( const XSprObj* pso, 
+																			const XActDat* pActDat ) const;
 	/**
 	 @brief 오브젝트의 바운딩 영역을 월드좌표로 만들어 돌려준다.
 	*/
-	XE::xRECT GetBoundBoxWorld() {
-		XE::xRECT rect = GetBoundBoxLocal();
+	XE::xRECT GetBoundBoxWorld( const XSprObj* pso, 
+															const XActDat* pActDat ) const {
+		XE::xRECT rect = GetBoundBoxLocal( pso, pActDat );
 		XE::VEC2 vwPos = m_vwPos.ToVec2();
 		vwPos.y += m_vwPos.z;
 		rect.vLT += vwPos;
@@ -261,8 +243,8 @@ public:
 	/**
 	 @brief 오브젝트의 바운딩 영역을 스크린좌표로 만들어 돌려준다.
 	*/
-	XE::xRECT GetBoundBoxScreen();
-	XE::xRECT GetBoundBoxWindow();
+	XE::xRECT GetBoundBoxScreen( const XSprObj* pso, const XActDat* pActDat ) const;
+	XE::xRECT GetBoundBoxWindow( const XSprObj* pso, const XActDat* pActDat ) const;
 	//
 	virtual void OnLButtonUp( float lx, float ly );
 	virtual void OnTouch( const XE::xRECT& bbWindow, const XE::VEC2& vlTouch ) {}
@@ -289,7 +271,39 @@ public:
 	float GetDistSqBetweenPos( const XE::VEC3& vwSrc ) const {
 		return (vwSrc - m_vwPos).Lengthsq();
 	}
-	
-friend class XEObjMng;
+// 	// 비동기 로딩으로 spr로딩과 SetAction까지 끝나면 호출된다.
+// 	virtual void OnFinishLoadSpr( const XSprDat* pSprDat ) {}
+	void GetTransform( MATRIX* pOut ) const;
+//	virtual bool GetRenderFlag( const _tstring& strSpr, const std::string& strParam ) const = 0;
+protected:
+	SET_ACCESSOR( int, Type );
+private:
+	int m_Type;					///< 오브젝트의 대분류(유닛인가 or sfx인가 같은...)
+	int m_Destroy;
+	ID m_snObj;					///< 인스턴스의 고유 번호
+	XSprObj *m_pSprObj;
+	XSurface *m_pSurface;		///< 애니메이션 없는 객체의 경우 이걸 써본다.
+	XE::VEC3 m_vwPos;
+	XE::VEC3 m_vScale;
+	float m_Alpha;				///< 사라지는등의 연출을 위해 사용
+	XEWndWorld *m_pWndWorld;
+	DWORD m_dwFlag;
+	_tstring m_strSpr;		// spr파일 이름.
+	ID m_idAtlas = 0;
+	bool m_bZBuff = false;
+	void Init() {
+		m_Type = 0;
+		m_snObj = sGenerateID();	// 순차적으로 번호가 생성되므로 나중에 생성된 객체가 먼저생성된 객체보다 위에 찍히게 하고 싶을때 소트용으로 써도 된다.
+		m_pSprObj = NULL;
+		m_pSurface = NULL;
+		m_Destroy = 0;
+		m_pWndWorld = NULL;
+		m_dwFlag = 0;
+		m_vScale.Set( 1.f );
+		m_Alpha = 1.f;
+		++s_numObj;
+	}
+	void Destroy();
+	SET_ACCESSOR( ID, snObj );
 };
 

@@ -205,6 +205,9 @@ public:
 	XArchive& operator << ( unsigned long d ) {
 		return *this << (long)d;
 	}
+	XArchive& operator << ( unsigned int d ) {
+		return *this << (long)d;
+	}
 	XArchive& operator << ( unsigned char d ) {
 		return *this << (char)d;
 	}
@@ -494,6 +497,9 @@ public:
 	}
 	XArchive& operator >> ( unsigned long& d ) {
 		return *this >> ((long&)d);
+	}
+	XArchive& operator >> ( unsigned int& d ) {
+		return *this >> ( (long&)d );
 	}
 	XArchive& operator >> ( unsigned char& d ) {
 		return *this >> ((char&)d);

@@ -37,8 +37,10 @@
   요일스팟 리뉴얼.
  ver31
   요일스팟 시리얼라이즈 변경 
+ ver32
+  개인레이드 스팟
 */
-#define VER_WORLD_SERIALIZE		31
+#define VER_WORLD_SERIALIZE		32
 
 //class XTimeEventTimer;
 class XDelegateSpot;
@@ -94,6 +96,7 @@ public:
 #endif // _DUMMY_GENERATOR
 	GET_ACCESSOR( BOOL, bUpdate );
 	SET_ACCESSOR( BOOL, bUpdate );
+	void Release();
 	void UpdateLastCalc() {
 		m_secLastCalc = XTimer2::sGetTime();
 	}

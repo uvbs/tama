@@ -5,16 +5,14 @@
 //  Created by JungWoo Sung on 13. 6. 8..
 //  Copyright (c) 2013년 JungWoo Sung. All rights reserved.
 //
-
-#ifndef xe_xVector_h
-#define xe_xVector_h
+#pragma once
 #include "etc/Types.h"
 #include "etc/Global.h"
 #include <math.h>
 #include <stdlib.h>
-// #ifdef _VER_DX
-// #include <d3dx9.h>
-// #endif
+#if defined(_XOOLONG)
+#include "Oolong_Engine2/Include/Mathematics.h"
+#endif // defined(_XOOLONG)
 #ifdef WIN32
 // 서버에서도 DirectX의 헤더를 사용함. 벡터의 사용을 위해.
 #ifdef _VER_DX
@@ -171,33 +169,33 @@ namespace XE
 		
 		//		friend POINT operator * ( int, const POINT& );
 		
-		BOOL operator == ( const POINT& rhs ) const {
+		inline BOOL operator == ( const POINT& rhs ) const {
 			return (x == rhs.x && y == rhs.y );
 		}
-		BOOL operator != ( const POINT& rhs ) const {
+		inline BOOL operator != ( const POINT& rhs ) const {
 			return (x != rhs.x || y != rhs.y );
 		}
-		BOOL IsZero() const {
+		inline BOOL IsZero() const {
 			return (x == 0 && y == 0);
 		}
-		BOOL IsMinus() const {
+		inline BOOL IsMinus() const {
 			return (x == -1 && y == -1 );
 		}
-		BOOL IsHave() const {
+		inline BOOL IsHave() const {
 			return (x > 0 && y > 0);
 		}
-		float Length() const {
+		inline float Length() const {
 			return sqrt( (float)(x * x) + (float)(y * y) );
 		}
-		float Lengthsq() const {
+		inline float Lengthsq() const {
 			return (float)(x * x + y * y);
 		}
-		const POINT& Abs() {
+		inline const POINT& Abs() {
 			x = abs(x);
 			y = abs(y);
 			return *this;
 		}
-		int Size() const {
+		inline int Size() const {
 			return w * h;
 		}
 		VEC2 ToVec2() const;
@@ -234,12 +232,20 @@ namespace XE
 #ifdef _VER_DX
 		VEC2( D3DXVECTOR2 vd3d ) { x = vd3d.x; y = vd3d.y; }
 #endif
+#ifdef _XOOLONG
+		VEC2( const Vec2& vec2 ) {
+			x = vec2.x;		y = vec2.y;
+		}
+		void Set( const Vec2& v ) {
+			x = v.x;	y = v.y;
+		}
+#endif // _XOOLONG
 		
 		template<typename T>
 		void Set( T _x, T _y ) { x = (float)_x; y = (float)_y; }
 		template<typename T>
 		void Set( T xy ) { x = (float)xy; y = (float)xy; }
-		
+
 		// casting
 		//		operator float* ();
 		//		operator const float* () const;
@@ -703,14 +709,35 @@ namespace XE
 	//////////////////////////////////////////////////////////////////////////
 	class VEC4 : public VEC3 {
 	public:
+		VEC4() : a(0) {}
 		VEC4( float _x, float _y, float _z, float _a ) 
 		: VEC3( _x, _y, _z ) {
 			a = _a;
 		}
-		float a;
+		union {
+			float a;
+			float w;
+		};
+#ifdef _XOOLONG
+		operator Vec4 () const {
+			return Vec4( x, y, z, a );
+		}
+		VEC4& operator = ( const Vec4& rhs ) {
+			x = rhs.x;
+			y = rhs.y;
+			z = rhs.z;
+			a = rhs.w;
+			return *this;
+		}
+#endif // _XOOLONG
+		inline void Set( float _x, float _y, float _z, float _w ) {
+			x = _x;
+			y = _y;
+			z = _z;
+			w = _w;
+		}
 	};
 }; // XE
 
-#endif
 
 

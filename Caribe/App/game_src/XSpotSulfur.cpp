@@ -109,7 +109,7 @@ void XSpotSulfur::DoDropRegisterRes( XSPAcc spAcc )
 	XBREAK( lvSpot == 0 );
 	ClearLootRes();
 //	int numSulfur = 10000 + xRandom( 15000 );
-	int numSulfur = ((int)(lvSpot / 5) + 1) * 5000;
+	int numSulfur = ((int)(lvSpot / 5) + 1) * GetpProp()->GetProduce();
 	numSulfur += xRandom( (int)(numSulfur * 0.25f) );
 	SetLootRes( XGAME::xRES_SULFUR, numSulfur );
 }
@@ -246,7 +246,7 @@ void XSpotSulfur::ResetPower( int lvSpot )
 //	SetseedRandom( ::timeGetTime() );
 	XSeed seed( seedNew );
 	XLegion *pLegion = CreateLegion( GetpProp(), lvSpot );
-	LegionPtr spLegion( pLegion );
+	XSPLegion spLegion( pLegion );
 	// 전투력을 산출한다.
 	UpdatePower( spLegion );
 }

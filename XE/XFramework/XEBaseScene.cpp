@@ -3,6 +3,10 @@
 #include "XFramework/client/XEContent.h"
 #include "XFramework/XESceneMng.h"
 #include "XSoundMng.h"
+#include "OpenGL2/XBatchRenderer.h"
+#include "OpenGL2/XTextureAtlas.h"
+#include "XImageMng.h"
+#include "Sprite/SprMng.h"
 
 
 #ifdef WIN32
@@ -15,18 +19,12 @@ static char THIS_FILE[] = __FILE__;
 
 #define SEC_FADEOUT		0.01f
 
-void XEBaseScene::Destroy() 
-{	
-	SAFE_DELETE( m_pTransition );
-	DestroyWnd( m_pSceneChild );		// 여기서 이걸 먼저 해줘야 XT3::Destroy()때 SPRMNG해제할때 남는게 생기지 않는다.
-	if( !IsbBridge() )
-		SOUNDMNG->StopBGMusic();
-}
-
 XEBaseScene::XEBaseScene( XEContent *pGame, ID idScene, BOOL bTransition ) 
 	: XWnd( 0.f, 0.f, XE::GetGameWidth(), XE::GetGameHeight() )
 { 
 	Init(); 
+//	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__);
+//	m_spAtlas->PushAtlasMng();
 	m_idScene = idScene;
 	m_pGame = pGame;
 	if( bTransition )
@@ -43,6 +41,7 @@ XEBaseScene::XEBaseScene( XEContent *pGame, const std::string& idsScene, bool bT
 {
 	Init();
 	m_pGame = pGame;
+//	m_spAtlas = XTextureAtlas::sCreateAtlasMng( __FUNCTION__ );
 	XBREAK( idsScene.empty() );
 	SetstrIdentifier( idsScene );
 	if( bTransition )
@@ -51,51 +50,64 @@ XEBaseScene::XEBaseScene( XEContent *pGame, const std::string& idsScene, bool bT
 	SetbTouchable( FALSE );		// 씬자체는 터치이벤트를 발생시키지 않는다.
 }
 
+void XEBaseScene::Destroy()
+{
+	SAFE_DELETE( m_pTransition );
+	DestroyWnd( m_pSceneChild );		// 여기서 이걸 먼저 해줘야 XT3::Destroy()때 SPRMNG해제할때 남는게 생기지 않는다.
+	if( !IsbBridge() )
+		SOUNDMNG->StopBGMusic();
+	IMAGE_MNG->DoFlushCache();
+	SPRMNG->DoFlushCache();
+}
+
+
 /**
  @brief 
 */
 int XEBaseScene::Process( float dt ) 
 { 
+//	XTextureAtlas::XAutoPushObj _spAuto( m_spAtlas );
 	if( m_pTransition && m_pTransition->GetbDestroy() )
 		SAFE_DELETE( m_pTransition );
 	//
 	XWnd::Process( dt );
 	// 다음씬으로 넘어갈 준비를 함.
-	if( m_pSceneChild )	{
+	if( m_pSceneChild ) {
 		// 자식 씬이 파괴되었으면 트랜지션 객체를 생성하고 파괴될 준비를 함.
-		if( GetDestroy() == 0 && m_pSceneChild->GetDestroy() )	{
+		if( GetDestroy() == 0 && m_pSceneChild->GetDestroy() ) {
 			SetpTransition( new XFadeInOut( TRUE, FALSE, SEC_FADEOUT ) );
 			SetDestroy( 2 );
 		}
 	}
-	if( m_pTransition )	{
+	if( m_pTransition ) {
 		// 트랜지션 중.
-		if( m_pTransition->Process( dt ) == 0 )	{
+		if( m_pTransition->Process( dt ) == 0 ) {
 			// 트랜지션 끝남.
 			OnEndTransition( m_pTransition );
 			m_pTransition->SetbDestroy( TRUE );
-			if( m_pTransition->IsTransIn() == FALSE )	{
+			if( m_pTransition->IsTransIn() == FALSE ) {
 				// fadeOut(어두워짐)이 끝남.
 				OnEndTransitionOut( m_pTransition );
 				OnDestroySceneBefore();
 				SetDestroy( 1 );
 			} else {
 				OnEndTransitionIn( m_pTransition );
-			}	
+			}
 		}
 		// 브릿지씬만 아니면 페이드아웃될때 음악도 서서히 줄어든다.
 		if( !IsbBridge() ) {
 			float lerp = m_pTransition->GetfSlerp();
- 			if( m_pTransition->IsTransIn() )
+			if( m_pTransition->IsTransIn() )
 				SOUNDMNG->SetBGMVolumeLocal( lerp );
 			else
 				SOUNDMNG->SetBGMVolumeLocal( 1.f - lerp );
 		}
-//			SOUNDMNG->FadeOutBGM( 0.1f );	// 시간
+		//			SOUNDMNG->FadeOutBGM( 0.1f );	// 시간
 	} else {
 		if( m_idNextScene )	// 넥스트신이 지정됐는데 트랜지션이 없으면 그냥 나감.
 			SetDestroy( 1 );
 	}
+// 	XTextureAtlas::sSetpCurrMng( pPrev );
 	return 1;
 }
 
@@ -103,7 +115,7 @@ int XEBaseScene::Process( float dt )
 /**
  @brief 
 */
-void XEBaseScene::DoExit( ID idSceneNext, SceneParamPtr spParam/*=NULL*/ )
+void XEBaseScene::DoExit( ID idSceneNext, XSPSceneParam spParam/*=NULL*/ )
 {
 	// 이미 그 씬상태이면 아무것도 안함.
 	//	if( m_idScene == idSceneNext )		// 유황스팟 유저인카운터 씬때문에 이기능 삭제함.
@@ -138,9 +150,11 @@ void XEBaseScene::DoExit( ID idSceneNext, SceneParamPtr spParam/*=NULL*/ )
 //
 void XEBaseScene::Draw( void ) 
 {
-	XWnd::Draw();
-	if( m_pTransition )
-		m_pTransition->Draw();
+//  	SET_RENDERER( m_pRenderer ) {
+		XWnd::Draw();
+		if( m_pTransition )
+			m_pTransition->Draw();
+// 	} END_RENDERER;
 }
 void XEBaseScene::DrawTransition( void )
 {
@@ -200,3 +214,58 @@ void XEBaseScene::OnExitBridge()
 	SAFE_DELETE( m_pTransition );
 	SetpTransition( new XFadeInOut( TRUE, FALSE, SEC_FADEOUT ) );
 }
+
+void XEBaseScene::DestroyDevice()
+{
+	XWnd::DestroyDevice();
+	if( m_spAtlas )
+		m_spAtlas->DestroyDevice();
+}
+
+void XEBaseScene::OnPause()
+{
+	XWnd::OnPause();
+	if( m_spAtlas )
+		m_spAtlas->OnPause();
+}
+
+void XEBaseScene::PopAtalsMng()
+{
+	if( m_spAtlas )
+		m_spAtlas->PopAtlasMng();
+}
+
+void XEBaseScene::OnDrawBefore()
+{
+	
+}
+
+void XEBaseScene::OnDrawAfter()
+{
+
+}
+
+void XEBaseScene::OnUpdateBefore()
+{
+	if( m_spAtlas )
+		m_spAtlas->PushAtlasMng();
+}
+
+void XEBaseScene::OnUpdateAfter()
+{
+	if( m_spAtlas )
+		m_spAtlas->PopAtlasMng();
+}
+
+void XEBaseScene::OnProcessBefore()
+{
+	if( m_spAtlas )
+		m_spAtlas->PushAtlasMng();
+}
+
+void XEBaseScene::OnProcessAfter()
+{
+	if( m_spAtlas )
+		m_spAtlas->PopAtlasMng();
+}
+

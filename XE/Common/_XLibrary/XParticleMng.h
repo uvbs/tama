@@ -6,6 +6,8 @@
 #include "XParticle.h"
 #include "XFramework/client/XEmitter.h"
 
+enum xDM_TYPE : int;
+
 // 파티클 매니저 기본형
 class XBaseParticleMng
 {
@@ -19,9 +21,8 @@ class XBaseParticleMng
 	}
 protected:
 	XList2<XBaseParticle> m_listParticle;
-//	list<XBaseParticle*> m_listParticle;
 	XList4<XEmitter*> m_listEmitter;
-    int m_MaxParticle;
+	int m_MaxParticle;
 public:
 	XBaseParticleMng( XParticleDelegate *pDelegate, int maxParticle )
 	: m_listParticle(_T("particle")) { 
@@ -62,7 +63,6 @@ private:
 	xDM_TYPE m_DrawMode;
 	void Init() {
 		m_pBuffer = NULL;
-		m_DrawMode = xDM_SCREEN;
 	}
 	void Destroy() {
 		SAFE_DELETE_ARRAY( m_pBuffer );
@@ -107,7 +107,7 @@ protected:
 	XList4<XPointSpriteParticle*> m_listPoints;	// 포인트 파티클 리스트
 	int m_maxBuffer = 1000;
 	XPointSpriteParticle::xOUT *m_pBuffer = nullptr;
-	XE::xtBlendFunc m_BlendFunc = XE::xBF_MULTIPLY;
+	XE::xtBlendFunc m_BlendFunc;
 public:
 	XParticleMng();
 	virtual ~XParticleMng() { Destroy(); }

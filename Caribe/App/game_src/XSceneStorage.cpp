@@ -3,6 +3,7 @@
 #include "XGameEtc.h"
 #include "_Wnd2/XWndList.h"
 #include "_Wnd2/XWndButton.h"
+#include "XWndStorageItemElem.h"
 
 //#include "XGame.h"
 #include "XGameWnd.h"
@@ -173,13 +174,14 @@ int XSceneStorage::OnClickEquipmentSell( XWnd *pWnd, DWORD p1, DWORD p2 )
 		xSET_BUTT_TEXT( this, "butt.ok", XTEXT( 80015 ) );			// "판매"
 
 		//xSET_IMG(this, "img.ask.itemimg", m_pSelectItem->GetpItem()->GetResPathIcon());
-		XWndImage *pImg = SafeCast<XWndImage*, XWnd*>( Find( "img.ask.itemimg" ) );
+
+		auto pImg = SafeCast<XWndImage*>( Find( "img.ask.itemimg" ) );
 		if( pImg ) {
 			pImg->SetSurface( m_pSelectItem->GetpItem()->GetResPathIcon() );
 			if( m_pSelectItem->GetpItem()->GetType() == XGAME::xIT_SOUL ) {
 				pImg->SetScaleLocal( 0.76f );
-				XWndImage *pSoulStone = new XWndImage( TRUE, XE::MakePath( DIR_UI, _T( "gem_small.png" ) ), 241, 129 );
-				pPopup->Add( pSoulStone );
+				auto pSoulStone = new XWndImage( TRUE, XE::MakePath( DIR_UI, _T( "gem_small.png" ) ), 1, 1 );
+				pImg->Add( pSoulStone );
 			} else
 				pImg->SetScaleLocal( 1.f );
 		}
@@ -618,7 +620,7 @@ void XSceneStorage::UpdateSelItemInfo()
 			// 툴팁 레이아웃모듈을 읽는다.
 			m_LayoutTooltip.CreateLayout( "item_tooltip", pRoot );
 			pRoot->SetbShow( true );
-			XGAME::UpdateItemTooltip( pProp, pRoot, costSell );
+			XGAME::UpdateItemTooltip( pProp, pRoot, _T("gold"), costSell );
 		}
 	}
 	xSET_SHOW( this, "text.storage.title", m_pSelectItem != nullptr );

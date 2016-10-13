@@ -57,6 +57,7 @@ protected:
 	XE::xAlign m_Align = XE::xALIGN_NONE;		// 초기값이 0인것이 여러모로 나을듯.
 	XCOLOR m_Color;
 	xFONT::xtStyle m_Style;
+	bool m_bBatch = false;
 public:
 	// 파일명과 폰트크기만으로 생성하면 편할텐데 하지 않은 이유.
 	// 같은 폰트에 여러사이즈의 폰트가 마구 생겨나 메모리를 낭비하지 않게 하기 위해.
@@ -72,6 +73,7 @@ public:
 	GET_SET_ACCESSOR( float, Alpha );
 	GET_SET_ACCESSOR( float, fDist );
 	GET_SET_ACCESSOR( xFONT::xtStyle, Style );
+	GET_SET_BOOL_ACCESSOR( bBatch );
 	float GetScaleX() { return m_vScale.x; }
 	float GetScaleY() { return m_vScale.y; }
 	void SetScale( float sx, float sy ) { m_vScale.Set( sx, sy ); }	

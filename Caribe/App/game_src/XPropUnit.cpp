@@ -85,6 +85,9 @@ BOOL XPropUnit::ReadProp( CToken& token, DWORD dwParam )
 		CONSOLE( "warning: identifier=%s, szSpr is empty", pProp->strIdentifier.c_str() );
 	pProp->movSpeedNormal = token.GetNumber();
 	pProp->scale = token.GetNumberF();
+	if( GetVer() >= 2 ) {
+		pProp->scale_factor = token.GetNumberF();
+	}
 	// HSL값은 포토샵값을 기준으로 하므로 소수점을 사용하지 않아서 일부러 int로 읽음.
 	pProp->vHSL.x = (float)token.GetNumber();
 	pProp->vHSL.y = (float)token.GetNumber();
@@ -184,7 +187,7 @@ XPropUnit::xPROP* XPropUnit::GetpPropFromName( LPCTSTR szName )
 // /**
 //  @brief 스탯과 사이즈 부대레벨을 받아서 부대총 능력치를 곱해준다.
 // */
-// float XPropUnit::GetSquadPower( XHero *pHero, float statBase, XGAME::xtSize size, int levelSquad )
+// float XPropUnit::GetSquadPower( XSPHero pHero, float statBase, XGAME::xtSize size, int levelSquad )
 // {
 // 	const XPropSquad::xPROP& propSquad = PROP_SQUAD->GetTable( levelSquad );
 // 	float stat = statBase;
@@ -210,7 +213,7 @@ XPropUnit::xPROP* XPropUnit::GetpPropFromName( LPCTSTR szName )
 // }
 // // 스탯
 // //////////////////////////////////////////////////////////////////////////
-// float XPropUnit::GetAttackMeleePowerSquad( XHero *pHero, int levelSuqad ) 
+// float XPropUnit::GetAttackMeleePowerSquad( XSPHero pHero, int levelSuqad ) 
 // {
 // 	xPROP *pProp = GetpProp( pHero->GetUnit() );
 // 	if( XBREAK( pProp == nullptr ) )
@@ -218,7 +221,7 @@ XPropUnit::xPROP* XPropUnit::GetpPropFromName( LPCTSTR szName )
 // 	return GetAttackMeleePowerSquad( pHero, pProp, levelSuqad );
 // }
 // 
-// float XPropUnit::GetAttackRangePowerSquad( XHero *pHero, int levelSquad ) 
+// float XPropUnit::GetAttackRangePowerSquad( XSPHero pHero, int levelSquad ) 
 // {
 // 	xPROP *pProp = GetpProp( pHero->GetUnit() );
 // 	if( XBREAK( pProp == nullptr ) )
@@ -226,7 +229,7 @@ XPropUnit::xPROP* XPropUnit::GetpPropFromName( LPCTSTR szName )
 // 	return GetAttackRangePowerSquad( pHero, pProp, levelSquad );
 // }
 // 
-// float XPropUnit::GetDefensePowerSquad( XHero *pHero, int levelSquad ) 
+// float XPropUnit::GetDefensePowerSquad( XSPHero pHero, int levelSquad ) 
 // {
 // 	xPROP *pProp = GetpProp( pHero->GetUnit() );
 // 	if( XBREAK( pProp == nullptr ) )
@@ -234,7 +237,7 @@ XPropUnit::xPROP* XPropUnit::GetpPropFromName( LPCTSTR szName )
 // 	return GetDefensePowerSquad( pHero, pProp, levelSquad );
 // }
 // 
-// int XPropUnit::GetMaxHpSquad( XHero *pHero, int levelSquad ) 
+// int XPropUnit::GetMaxHpSquad( XSPHero pHero, int levelSquad ) 
 // {
 // 	xPROP *pProp = GetpProp( pHero->GetUnit() );
 // 	if( XBREAK( pProp == nullptr ) )

@@ -1,6 +1,6 @@
 ﻿#pragma once
 //#include "XWindow.h"
-#include "_Wnd2/XWnd.h"
+#include "XFramework/client/XWndBatchRender.h"
 #include "XPropCloud.h"
 #include "XFramework/Game/XEComponents.h"
 //#include "Sprite/SprDat.h"
@@ -47,7 +47,7 @@ private:
 	void Destroy() {}
 }; // class XCloudMove
 
-class XWndCloudLayer : public XWnd
+class XWndCloudLayer : public XWndBatchRender
 {
 	struct xtDisappear {
 		CTimer timerFade;	///< 구름 사라질때 타이머
@@ -60,7 +60,8 @@ class XWndCloudLayer : public XWnd
 		}
 	};
 	//	XSurface *m_psfcCloud[3];
-	XSprDat *m_psdCloud;
+//	XSprDat *m_psdCloud;
+	xSpr::XSPDat m_spDatCloud;
 	XArrayLinearN<ID, 512> m_aryCloud;	// 구름그룹 어레이
 	ID m_idSelected;		// 선택된 구름그룹
 	XList4<xtDisappear> m_listDisappear;		// 사라지고 있는 구름들
@@ -68,7 +69,7 @@ class XWndCloudLayer : public XWnd
 	void Init() {
 		//		XCLEAR_ARRAY( m_psfcCloud );
 		m_idSelected = 0;
-		m_psdCloud = nullptr;
+//		m_psdCloud = nullptr;
 	}
 	void Destroy();
 	void AddDisappear( xtDisappear& fadeCloud );

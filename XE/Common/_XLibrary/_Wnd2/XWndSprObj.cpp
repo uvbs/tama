@@ -1,7 +1,11 @@
 ﻿#include "stdafx.h"
-#include "_Wnd2/XWndSprObj.h"
-#include "sprite/SprDat.h"
+//#include "sprite/SprDat.h"
 #include "XFramework/XEProfile.h"
+#include "sprite/SprObj.h"
+#include "sprite/XActObj2.h"
+#include "Sprite/XActDat.h"
+#include "etc/XSurface.h"
+#include "_Wnd2/XWndSprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -45,38 +49,101 @@ XWndSprObj* XWndSprObj::sUpdateCtrl( XWnd *pRoot
 	return pCtrl;
 }
 
-XWndSprObj::XWndSprObj( LPCTSTR szSpr, ID idAct, const XE::VEC2& vPos, xRPT_TYPE loopType/*=xRPT_LOOP*/ ) 
+XWndSprObj* XWndSprObj::sUpdateCtrl( XWnd *pRoot
+																		 , LPCTSTR szSpr
+																		 , ID idAct
+																		 , bool bBatch
+																		 , const XE::VEC2& vPos
+																		 , const char *cIdentifier )
+{
+	auto pCtrl = SafeCast2<XWndSprObj*>( pRoot->Find( cIdentifier ) );
+	if( pCtrl == nullptr ) {
+		pCtrl = new XWndSprObj( szSpr, idAct, bBatch, vPos, xRPT_LOOP );
+		pCtrl->SetstrIdentifier( cIdentifier );
+		XBREAK( pCtrl == nullptr );
+		pRoot->Add( pCtrl );
+	}
+	pCtrl->SetPosLocal( vPos );
+	pCtrl->SetSprObj( szSpr, idAct );
+	return pCtrl;
+}
+
+XWndSprObj::XWndSprObj( LPCTSTR szSpr, 
+												ID idAct, 
+												const XE::VEC2& vPos, 
+												xRPT_TYPE loopType/*=xRPT_LOOP*/ ) 
 	: XWnd(vPos.x, vPos.y) 
 {
 	Init();
 	SetPosLocal( vPos );
 	if( XE::IsHave(szSpr) ) {
-		m_pSprObj = CreateSprObj( szSpr, idAct, loopType, false );
+		CreateSprObj( szSpr, idAct, true, false, false, loopType );
 		m_loopType = loopType;
 		m_idAct = idAct;
-// 			m_bCreate = TRUE;
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-XSprObj* XWndSprObj::CreateSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, bool bAsyncLoad )
+XWndSprObj::XWndSprObj( LPCTSTR szSpr,
+												ID idAct,
+												bool bBatch,
+												const XE::VEC2& vPos,
+												xRPT_TYPE loopType/*=xRPT_LOOP*/ )
+	: XWnd( vPos.x, vPos.y )
+{
+	Init();
+	SetPosLocal( vPos );
+	if( XE::IsHave( szSpr ) ) {
+		CreateSprObj( szSpr, idAct, true, bBatch, false, loopType );
+		m_loopType = loopType;
+		m_idAct = idAct;
+	}
+}
+
+void XWndSprObj::Destroy() 
+{
+	SAFE_DELETE( m_pSprObj );
+}
+
+void XWndSprObj::CreateSprObj( LPCTSTR szSpr, 
+																	 ID idAct, 
+																	 bool bUseAtlas,
+																	 bool bBatch,
+																	 bool bAsyncLoad,
+																	 xRPT_TYPE loopType )
 {
 	if( XE::IsEmpty( szSpr ) ) {
 		SetbDestroy( true );
-		return nullptr;
+		return;
 	}
-//	XSprObj *pSprObj = new XSprObj( szSpr );
-	auto pSprObj = new XSprObj();
-	pSprObj->Load( szSpr, XE::xHSL(), FALSE, false );
-	pSprObj->SetAction( idAct, loopType );
+	m_pSprObj = new XSprObj( szSpr, XE::xHSL(), idAct, xRPT_LOOP,
+													 bUseAtlas, bBatch, bAsyncLoad,
+													 [this]( XSprObj* pSprObj ) {
+		XBREAK( pSprObj->GetpObjActCurr() == nullptr );
+		if( pSprObj->GetpObjActCurr() ) {
+			// 캐시에 있다가 불려온것이면 데이타가 있다.
+			const XE::VEC2 vSize = pSprObj->GetSize();
+			SetSizeLocal( vSize );
+			SetbUpdate( true );
+		} else {
+			const XE::VEC2 vSize( 2, 2 );		// 비동기로 로딩해서 크기를 일단 이렇게 맞춤.
+			SetSizeLocal( vSize );
+			SetbUpdate( true );
+		}
+	} );
+	m_pSprObj->SetAction( idAct, loopType );
 	m_idAct = idAct;
 	m_loopType = loopType;
-	if( pSprObj->IsError() )
-		return pSprObj;
+	if( m_pSprObj->IsError() )
+		return;
 	m_strSpr = szSpr;
-	XE::VEC2 vSize = pSprObj->GetSize();
-	SetSizeLocal( vSize );
-	return pSprObj;
+// 	if( m_pSprObj->GetpObjActCurr() ) {
+// 		// 캐시에 있다가 불려온것이면 데이타가 있다.
+// 		const XE::VEC2 vSize = m_pSprObj->GetSize();
+// 		SetSizeLocal( vSize );
+// 	} else {
+// 		const XE::VEC2 vSize( 2, 2 );		// 비동기로 로딩해서 크기를 일단 이렇게 맞춤.
+// 		SetSizeLocal( vSize );
+// 	}
 }
 
 /**
@@ -85,20 +152,30 @@ XSprObj* XWndSprObj::CreateSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, 
 */
 void XWndSprObj::SetSprObj( LPCTSTR szSpr, ID idAct, xRPT_TYPE loopType, bool bASyncLoad ) 
 {
+	SetSprObj( szSpr, idAct, true, false, bASyncLoad, loopType );
+}
+
+void XWndSprObj::SetSprObj( LPCTSTR szSpr, 
+														ID idAct, 
+														bool bUseAtlas,
+														bool bBatch,
+														bool bASyncLoad,
+														xRPT_TYPE loopType )
+{
 	if( XE::IsEmpty( szSpr ) ) {
 		return;
 	}
 	if( idAct )
 		m_idAct = idAct;
 	bool bRecreate = false;
-	if( m_pSprObj == nullptr 
-		|| (m_pSprObj && !XE::IsSame(m_pSprObj->GetszFilename(), szSpr) ) )
+	if( m_pSprObj == nullptr
+			|| (m_pSprObj && !XE::IsSame( m_pSprObj->GetszFilename(), szSpr )) )
 		bRecreate = true;
 	if( bRecreate ) {
 		// 다른파일을 지정해서 객체를 새로 생성해야함.
 		SAFE_DELETE( m_pSprObj );
 		if( XE::IsHave( szSpr ) ) {
-			m_pSprObj = CreateSprObj( szSpr, idAct, loopType, bASyncLoad );
+			CreateSprObj( szSpr, idAct, bUseAtlas, bBatch, bASyncLoad, loopType );
 		}
 	} else {
 		if( m_pSprObj )
@@ -129,7 +206,15 @@ void XWndSprObj::Reload()
 int XWndSprObj::Process( float dt ) 
 {
 	if( m_pSprObj ) {
+		auto bLoaded = m_pSprObj->IsLoaded();
 		m_pSprObj->FrameMove( dt );
+		if( !bLoaded && m_pSprObj->IsLoaded() ) {
+			// 위 FrameMove에서 파일로딩이 완료되었다.
+			if( m_pSprObj->GetpObjActCurr() ) {
+				auto sizeSpr = m_pSprObj->GetSize();
+				SetSizeLocal( sizeSpr );
+			}
+		}
 		if( m_timerLife.IsOn() ) {
 			if( m_timerLife.IsOver() )
 				SetbDestroy( true );
@@ -156,14 +241,21 @@ void XWndSprObj::Draw( void )
 	XPROF_OBJ_AUTO();
 //	XWnd::Draw();	// << 이걸왜 먼저 불렀지?
 	if( m_pSprObj && m_bDraw ) {
-		XE::VEC2 vScale = GetScaleFinal();
-		float alphaWin = GetAlphaFinal();
-		m_pSprObj->SetRotateX( m_vRotate.x );
-		m_pSprObj->SetRotateY( m_vRotate.y );
-		m_pSprObj->SetRotateZ( m_vRotate.z );
-		m_pSprObj->SetfAlpha( alphaWin );
-		m_pSprObj->SetScale( vScale );
-		m_pSprObj->Draw( GetPosFinal() );
+//		const XE::VEC2 vScale = GetScaleFinal();
+// 		float alphaWin = GetAlphaFinal();
+// 		m_pSprObj->SetRotateX( m_vRotate.x );
+// 		m_pSprObj->SetRotateY( m_vRotate.y );
+// 		m_pSprObj->SetRotateZ( m_vRotate.z );
+// 		m_pSprObj->SetfAlpha( alphaWin );
+// 		m_pSprObj->SetScale( vScale );
+// 		m_pSprObj->Draw( GetPosFinal() );
+		XE::xRenderParam param;
+		param.m_vPos = GetPosFinal();
+		param.m_vRot = m_vRotate;
+		param.m_vScale = GetScaleFinal();
+		param.m_vColor.a = GetAlphaFinal();
+		param.m_Priority = m_Priority;
+		m_pSprObj->DrawByParam( param );
 	}
 	XWnd::Draw();
 }
@@ -199,4 +291,56 @@ XE::xRECT XWndSprObj::GetBoundBoxByVisibleNoTrans()
 	} else {
 		return XWnd::GetBoundBoxByVisibleNoTrans();
 	}
+}
+
+ID XWndSprObj::GetidAct() const
+{
+	return (m_pSprObj) ? m_pSprObj->GetActionID() : 0;
+}
+
+void XWndSprObj::SetpDelegateBySprObj( XDelegateSprObj *pDelegate ) {
+	if( m_pSprObj )
+		m_pSprObj->SetpDelegate( pDelegate );
+}
+
+void XWndSprObj::SetColor( XCOLOR col ) {
+	if( m_pSprObj )
+		m_pSprObj->SetColor( col );
+}
+void XWndSprObj::SetColor( float r, float g, float b ) {
+	if( m_pSprObj )
+		m_pSprObj->SetColor( r, g, b );
+}
+void XWndSprObj::SetFlipHoriz( BOOL bFlag ) {
+	if( m_pSprObj )
+		m_pSprObj->SetFlipHoriz( bFlag );
+}
+void XWndSprObj::SetFlipVert( BOOL bFlag ) {
+	if( m_pSprObj )
+		m_pSprObj->SetFlipVert( bFlag );
+}
+void XWndSprObj::SetFlipHoriz( bool bFlag ) {
+	if( m_pSprObj )
+		m_pSprObj->SetFlipHoriz( xboolToBOOL( bFlag ) );
+}
+void XWndSprObj::SetFlipVert( bool bFlag ) {
+	if( m_pSprObj )
+		m_pSprObj->SetFlipVert( xboolToBOOL( bFlag ) );
+}
+
+void XWndSprObj::SetAction( ID idAct, xRPT_TYPE typeLoop ) {
+	if( m_pSprObj )
+		m_pSprObj->SetAction( idAct, typeLoop );
+}
+void XWndSprObj::GoFirstFrame( void ) {
+	if( m_pSprObj )
+		m_pSprObj->ResetAction();
+}
+void XWndSprObj::GoRandomFrame() {
+	if( m_pSprObj )
+		m_pSprObj->JumpToRandomFrame();
+}
+void XWndSprObj::SetSizeSprObjHeight( float h ) {
+	float ratio = h / m_pSprObj->GetHeight();
+	SetScaleLocal( ratio );
 }

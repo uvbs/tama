@@ -220,15 +220,15 @@ void xPutsTimeStringW( FILE *fp );
 
 // 파일 로딩시간 측정용(프로파일링) 로그
 #if defined(_CLIENT) && defined(_CHEAT)
-	#define XLP1	const auto __llTime = XE::GetFreqTime()
-	#define XLP2	const auto __llPass = XE::GetFreqTime() - __llTime
+	#define XLOAD_PROFILE1	const auto __llTime = XE::GetFreqTime()
+	#define XLOAD_PROFILE2	const auto __llPass = XE::GetFreqTime() - __llTime
 	#define XLOGP(F,...)		\
 		if( XE::GetMain()->m_bDebugMode && XE::GetMain()->m_bDebugProfilingLoad ) {\
 			CONSOLE( F, ##__VA_ARGS__ ); \
 		}
 #else
-	#define XLP1	(0)
-	#define XLP2	(0)
+	#define XLOAD_PROFILE1	(0)
+	#define XLOAD_PROFILE2	(0)
 	#define XLOGP(F,...) (0)
 #endif
 

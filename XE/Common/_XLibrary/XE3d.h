@@ -7,7 +7,7 @@
 	#include "xMathGLM.h"
   #else
 	#include "Oolong_Engine2/include/Mathematics.h"
-	#define GetMatrixPtr(M)		M.f
+	#define GetMatrixPtr(M)		(M.f)
   #endif
 #endif
 #include "etc/types.h"

@@ -77,10 +77,10 @@ public:
 class XWndInvenHeroElem : public XWnd
 {
 public:
-	static XWndInvenHeroElem* sUpdateCtrl( XWndList *pWndList, XHero *pHero );
+	static XWndInvenHeroElem* sUpdateCtrl( XWndList *pWndList, XSPHero pHero );
 private:
-	XHero *m_pHero;
-	XPropHero::xPROP *m_pProp = nullptr;
+	XSPHero m_pHero;
+	const XPropHero::xPROP *m_pProp = nullptr;
 	XSurface *m_pBG;
 	XSurface *m_pFace;
 	XSurface *m_psfcBgGradation = nullptr;
@@ -112,34 +112,16 @@ private:
 		m_pParty = nullptr;
 		m_pLegion = nullptr;
 	}
-	void Destory() {
-		SAFE_RELEASE2( IMAGE_MNG, m_pBG );
-		SAFE_RELEASE2( IMAGE_MNG, m_pFace );
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcBgGradation );
-		SAFE_RELEASE2( IMAGE_MNG, m_pNameCard );
-// 		for( int i = 0; i < 4; ++i ) {
-// 			SAFE_RELEASE2( IMAGE_MNG, m_pStar[ i ] );
-// 			SAFE_RELEASE2( IMAGE_MNG, m_aryStarEmpty[ i ] );
-// 		}
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcStar );
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcStarEmpty );
-		SAFE_RELEASE2( IMAGE_MNG, m_pSelect );
-		SAFE_RELEASE2( IMAGE_MNG, m_pUnitFace );
-		SAFE_RELEASE2( IMAGE_MNG, m_pUnitBg );
-		SAFE_RELEASE2(IMAGE_MNG, m_pParty);
-		SAFE_RELEASE2(IMAGE_MNG, m_pSoulStone);
-		SAFE_DELETE(m_pName);
-		//SAFE_DELETE(m_pSoulCount);
-	}
+	void Destory();
 
 public:
-	XWndInvenHeroElem(XHero* pHero, XLegion *pLegion = nullptr);
+	XWndInvenHeroElem(XSPHero pHero, XLegion *pLegion = nullptr);
 	XWndInvenHeroElem(XPropHero::xPROP *pProp);	//이건 영혼석용 
 	virtual ~XWndInvenHeroElem(){ Destory(); }
-	XHero* GetpHero( void ) {
+	XSPHero GetpHero( void ) {
 		return m_pHero;
 	}
-	XPropHero::xPROP* GetpProp();
+	const XPropHero::xPROP* GetpProp();
 	ID GetsnHero( void );
 	int GetnumStars();
 	GET_SET_BOOL_ACCESSOR( bSelected );
@@ -170,12 +152,7 @@ class XWndInvenLegionElem : public XWnd
 		m_pFace = NULL;
 		m_pSelect = NULL;
 	}
-	void Destroy()
-	{
-		SAFE_RELEASE2( IMAGE_MNG, m_pBG );
-		SAFE_RELEASE2( IMAGE_MNG, m_pFace );
-		SAFE_RELEASE2( IMAGE_MNG, m_pSelect );
-	}
+	void Destroy();
 public:
 	XWndInvenLegionElem( XPropUnit::xPROP* pPropUnit );
 	virtual ~XWndInvenLegionElem(){ Destroy(); }
@@ -232,8 +209,7 @@ class XWndCallbackSpr : public XWndSprObj
 public:
 	template<typename T>
 	XWndCallbackSpr( XWnd *pOwner, LPCTSTR szFilename, ID action, const XE::VEC2& vPos, int( T::*pFunc )( XWnd* pWnd, DWORD p1, DWORD p2 ), DWORD param1 = 0, DWORD param2 = 0 )
-		: XWndSprObj( szFilename, action, vPos, xRPT_1PLAY_CONT )
-	{
+		: XWndSprObj( szFilename, action, vPos, xRPT_1PLAY_CONT )	{
 		Init();
 		typedef int ( XWnd::*CALLBACK_FUNC )( XWnd *, DWORD dwParam1, DWORD dwParam2 );
 		m_dwParam1 = param1;
@@ -243,13 +219,7 @@ public:
 	}
 	virtual ~XWndCallbackSpr(){ Destroy(); }
 
-	int Process( float dt )
-	{
-		if( m_pOwner && GetpSprObj()->IsFinish() )
-			( m_pOwner->*m_pFunc )( this, m_dwParam1, m_dwParam2 );
-
-		return XWndSprObj::Process( dt );
-	}
+	int Process( float dt ) override;
 };
 
 

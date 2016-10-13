@@ -125,6 +125,9 @@ public:
 	inline void Set( int secWaitTime, BOOL bRealTimer = FALSE ) {
 		Set( (float)secWaitTime, bRealTimer );
 	}
+	inline void Set( xSec secWaitTime, BOOL bRealTimer = FALSE ) {
+		Set( (float)secWaitTime, bRealTimer );
+	}
 	void Reset( void );
 	// 지나간시간을 1/1000초로 돌려준다.
 	DWORD GetPassTime( void ) const;

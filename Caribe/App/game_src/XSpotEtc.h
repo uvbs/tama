@@ -329,6 +329,7 @@ public:
 	void ResetLevel( XSPAcc spAcc ) override;
 	void ResetName( XSPAcc spAcc ) override;
 	void OnBeforeBattle( XSPAcc spAcc ) override;
+//	bool IsPrivateRaid() const;
 private:
 }; // class XSpotCommon
 

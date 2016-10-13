@@ -10,9 +10,96 @@ base: 소스
 장기적으로 해야할것.{
 	에버노트 참조.
 }
-해결해야할 문제{
+
+
+플레이어측 출전UI표시할때
+스팟에 저장되어있는 리스트가 우선
+0번군단에 이미 출전중인 영웅이 있으므로
+레디씬과 전투씬에서는 스팟에 별도로 플레이어측 군단이 있어야 할듯.
+
+캠페인
+  스테이지 3
+  시작레벨 20
+  증가레벨 5
+
+
+	int num = 1;
+	do {
+		auto pCtrl = CreateControl( pNode, pParent, &attr );
+		pParent->Add( pCtrl );
+		num = attr.num;
+	} while( --num );
+
+	auto pCtrl = CreateControl( pNode, pParent, &attr );
+	pParent->Add( pCtrl );
+	auto vPos = pCtrl->GetPosLocal();
+	auto size = pCtrl->GetSizeLocal();
+	if( attr.num > 1 ) {
+		for( int i = 0; i < attr.num - 1; ++i ) {
+			auto pCtrl = CreateControl( pNode, pParent, &attr );
+			pParent->Add( pCtrl );
+			vPos += attr.vDist;
+			pCtrl->SetPosLocal( vPos );
+		}
+	}
+
+
+
+
+아틀라스 공간분할 알고리즘
+이미지 = 삽입할 이미지
+if( 더이상 child가 없는가(잎) ) {
+	if( 이미지크기가 현재노드보다 큼 )
+		return null;
+	if( 이미지가 가로/세로 딱 맞음 ) {
+		return this;		// 분할 할필요 없음.
+	}
+	자식1 생성;
+	자식2 생성;
+	if( 남은 영역이 가로가 더큰 직사각형인가 ) {
+		
+	} else {
+	}
+} else {
 }
 
+
+
+ui_batch_opt 목표 {
+  .ui도 아틀라스를 사용해서 메모리를 최적화 한다.
+  .ui도 배치렌더링을 해서 속도를 끌어올린다.
+    .특히 전투중 초상화 ui때문에 속도저하가 많이 일어나는데 이부분을 대폭 끌어올린다.
+	.유닛 hp바 등의 ui도 배치렌더링으로 속도를 올린다.
+  .ui전용 레이어를 만들고 여기에 ui레이어만의 아틀라스를 바인딩 시킨다.
+  .레이어방식의 배치렌더링을 위해 ui레이어에 배치렌더링 관리자를 바인딩 시킨다.
+  해볼만한시도 {
+	.유닛 hp바 배치로 그리기
+	.유닛 이름등을 렌더타겟으로 그린후 배치렌더 하기
+	.모든 리소스의 비동기 로딩
+  }
+}
+
+// 일반 ui씬
+scene:draw()
+{
+	psfc->Draw();
+	{
+		psfc->Draw();
+	}
+	psfc->Draw();
+	AddRenderer();
+}
+
+// objmng 씬
+scene::draw()
+{
+	pLayerBg->Draw();
+	AddRenderer();
+	pLayerObjs->Draw();
+	AddRenderer();
+	pLayerUI->Draw();
+	AddRenderer();
+}
 
 
 
@@ -414,6 +501,38 @@ pbar on/off
 }
 
 
+
+ depth(*)	func	share	avg	min	max	depth
+ + frameMove/draw	1.1%	134485	94
+ ++ XClientMain::FrameMove	54.7%	73528	94
+ +++ XGame::Process	100.0%	73496	94
+ ++++ XBattleField::Process	94.4%	69356	94
+ +++++ XEObjMng::FrameMove	0.9%	606	94
+ ++ XClientMain::Draw	45.3%	60896	94
+ +++ XEObjMng::Draw	81.4%	49587	94
+ ++++ select	2.9%	1453	94
+ ++++ select-sort	1.1%	536	94
+ ++++ XEObjMngWithType::DrawVisible	95.8%	47512	94
+ +++++ draw floor/shadow	0.8%	364	94
+ +++++ draw normal	98.9%	47004	94
+ ++++++ projection obj	0.6%	292	94
+ ++++++ draw each obj	82.1%	38598	94
+ +++++++ XBaseUnit::Draw	81.0%	31261	94
+ ++++++++ draw unit	5.3%	1642	94
+ ++++++++ draw hit	1.9%	598	94
+ ++++++++ draw bar	9.3%	2916	94
+ ++++++++ draw buff	30.3%	9465	94
+ ++++++++ draw name	30.2%	9433	94
+ +++++++ XObjArrow::Draw	0.5%	210	94
+ ++++++++ XObjBullet::Draw	37.6%	79	94
+ +++++++ XObjLoop::Draw	9.4%	3619	94
+ +++++ draw ui_obj	0.1%	64	94
+ +++ XWndImage::Draw	0.5%	314	187
+ +++ XWndTextString::Draw	1.4%	829	94
+ +++ XWndButtonDebug::Draw	1.8%	1082	94
+ +++ render_batch	8.7%	5268	94
+ +++ XClientMain::DrawDebugInfo	1.6%	982	94
+ + swap buff	0.0%	1343	93
 
 
 
@@ -1114,6 +1233,13 @@ http://graph.facebook.com/1385798771667701/picture?type=normal
 	  .cheat모드에서 화면 한켠에 현재 로딩된 폰트들의 폰트이름과 크기리스트를 볼수 있게 하면 좋을듯.
 	.압축텍스쳐의 사용
 	.모든 png의 565포맷사용으로용량 감소.
+	.스레드로딩
+	  .OpenGL은 주스레드 이외의 스레드에서 opengl context를 쓸수 없다고 한다.
+	  .파일i/o만 스레드로 놓고 텍스쳐 생성등은 주스레드에서 하는수밖에 없다.
+	  .SprMng::Load()를 하면 로딩예약만 걸어놓고 빠져나간다.
+	  .로딩하면서 할당한 메모리를 XSprite에 일단 보관한다.
+	  .SprMng::Process(주스레드)에서 로딩이 완료된 spr파일의 각 XSprite들을 텍스쳐 아틀라스에 집어넣는다.
+	  .XSprObj에 pSprDat를 연결시킨다.
 }
 
 
@@ -3552,3 +3678,42 @@ depth(*)	func	share	avg	min	max	depth
  + swap buff	0.0%	1016	445
 
 
+ ##렌더 몰아찍기
+ XSurface::Draw( vec vPos, matrix mWorld )
+ {
+	//aryVertex = 버텍스 4개를 최종 월드좌표로 모두 변환해둠
+
+	renderCmd cmd;
+	cmd.blend;
+	cmd.flendfunc;
+	cmd.aryVertexWorld;
+	cmd.shader
+	cmd.idTex
+	렌더명령큐.push( cmd );
+ }
+
+ main()
+ {
+	frameMove();
+	draw();		<- render cmd로 렌더링
+ }
+
+ draw()
+ {
+	모든 요소들 render cmd로 렌더;
+	//
+	//최종 렌더
+	렌더명령
+	cmd의 각 속성별로 소팅;
+	같은 속성에 속한 버텍스들을 하나의 다이나믹 버퍼로 만듬.
+	(인덱스 버퍼도 필요함?)
+	for( 배열 : 속성별 리스트 ) {
+		SetTexture(속성등....)
+		투영
+		SetShader( mMVP )
+		for( 속성 : 배열 ) {
+			glDrawArrays( 삼각형_리스트, )
+		}
+	}
+
+ }

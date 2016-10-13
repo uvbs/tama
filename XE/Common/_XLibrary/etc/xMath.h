@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "xVector.h"
+#include "VersionXE.h"
 
 // #define	D2R(D)		(3.141592f*(D)/180.f)
 // #define	R2D(R)		(180.f*(R)/3.141592f)
@@ -15,12 +16,7 @@ inline T R2D( const T& R ) {
 #ifdef _CLIENT
 #include "XE3d.h"
 #endif
-/*#ifndef WIN32
-#include "XE.h"
-#include "XE3d.h"
-#include "Oolong_Engine2/include/Mathematics.h"		// oolong engine
-#endif // not win32
-*/
+
 namespace XE
 {
 	float CalcDistAngle( float srcAngle, float destAngle );
@@ -143,16 +139,11 @@ inline void Vec3CatmullRom( XE::VEC3& pOut,
             ) * 0.5f;
     
 }
-/*
-#ifdef _VER_IOS
-#include "xMathiOS.h"
- #endif
- */
 //#if !defined(_CONSOLE) && defined(WIN32)	// win32 console app
   #if defined(_VER_DX)
     #include "_DirectX/xMathD3D.h"
 	#elif defined(_VER_OPENGL)
-		#ifdef XOOLONG
+		#ifdef _XOOLONG
 			#include "oolong_engine2/Include/Mathematics.h"
 		#endif
 	#else

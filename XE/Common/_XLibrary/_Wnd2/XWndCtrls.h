@@ -7,6 +7,7 @@
 #include "XWndText.h"
 #include "XParticleMng.h"
 #include "XFramework/client/XLayoutObj.h"
+#include "XFramework/client/XWndBatchRender.h"
 
 class XWndAlert;
 class XWndButtonString;
@@ -605,7 +606,7 @@ public:
 * @author xuzhu
 * @date	2015/12/04 18:22
 *****************************************************************/
-class XWndParticleLayer : public XWnd
+class XWndParticleLayer : public XWnd //XWndBatchRender
 {
 public:
 	XWndParticleLayer( const char *cKeyParticle, const XE::VEC2& vPos, float secLife, XParticleDelegate *pDelegate );

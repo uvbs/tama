@@ -9,6 +9,7 @@
 #include "XSockGameSvr.h"
 #include "XExpTableHero.h"
 #include "skill/XSkillDat.h"
+#include "XWndStorageItemElem.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT
@@ -27,7 +28,7 @@ using namespace XGAME;
 /**
  @brief 
 */
-XWndLevelupHero::XWndLevelupHero( XHero *pHero, XGAME::xtTrain typeTrain )
+XWndLevelupHero::XWndLevelupHero( XSPHero pHero, XGAME::xtTrain typeTrain )
 	: XWndPopup( _T("layout_book_hero.xml"), "popup_training_base" )
 {
 	Init();
@@ -54,9 +55,9 @@ XWndLevelupHero::XWndLevelupHero( XHero *pHero, XGAME::xtTrain typeTrain )
 	case XGAME::xTR_SQUAD_UP: {
 		GetpLayout()->CreateLayout( "sub_levelup", this );
 		xSET_TEXT( this, "text.title", XTEXT( 2250 ) );
-		auto pWndUnit = new XWndCircleUnit( pHero->GetUnit(), XE::VEC2(105,20), pHero );
+		auto pWndUnit = new XWndCircleUnit( pHero->GetUnit(), XE::VEC2(55,-10), pHero );
 		pWndUnit->SetbShowLevelSquad( false );
-		Add( pWndUnit );
+		pRoot->Add( pWndUnit );
 		auto pText = xGET_TEXT_CTRL( this, "text.name.hero");
 		if( pText ) {
 			auto v = pText->GetPosLocal();
@@ -70,9 +71,9 @@ XWndLevelupHero::XWndLevelupHero( XHero *pHero, XGAME::xtTrain typeTrain )
 		GetpLayout()->CreateLayout( "sub_skillup", this );
 		auto pDat = pHero->GetSkillDat( m_typeTrain );
 		xSET_TEXT( this, "text.title", XTEXT( 2251 ) );
-		auto pWndSkill = new XWndCircleSkill( pDat, XE::VEC2(105,20), nullptr );
+		auto pWndSkill = new XWndCircleSkill( pDat, XE::VEC2(55,-10), nullptr );
 		pWndSkill->SetScaleLocal( 0.6f );
-		Add( pWndSkill );
+		pRoot->Add( pWndSkill );
 		auto pText = xGET_TEXT_CTRL( this, "text.name.hero");
 		if( pText ) {
 			auto v = pText->GetPosLocal();
@@ -509,14 +510,6 @@ void XWndLevelupHero::UpdateGold()
 		m_ExpRest = 0;
 		m_secTrainByGold = 0;
 	}
-//	int expRemain = (int)m_pHero->GetExpRemain( m_typeTrain );
-// 	if( expByGold > expRemain ) {
-// 		expByGold = expRemain;
-// 		// exp를 골드로 환산
-// 		m_Gold = ACCOUNT->GetGoldByExp( lvHero, expByGold, m_typeTrain );
-// 		if( m_Gold > 10000 )
-// 			m_Gold = ((int)m_Gold / 10000) * 10000;	// 다시 만단위로 절삭
-// 	}
 }
 
 /**
@@ -524,43 +517,122 @@ void XWndLevelupHero::UpdateGold()
 */
 int XWndLevelupHero::OnClickMax( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
-	CONSOLE("OnClickMax");
-	int type = (int)p1;	// 0:max 1:min
+	CONSOLE("OnClickPlus");
 	//
-	auto pBar = SafeCast2<XWndProgressBar2*>( Find( "pbar.exp" ) );
-	const int lvTrain = m_pHero->GetLevel( m_typeTrain );
-	int lvCurr = m_Level;
-	int expCurr = m_ExpRest;
-	int expMaxCurr = m_pHero->GetMaxExpWithLevel( m_typeTrain, lvCurr );
-	if( lvCurr == 0 )
-		lvCurr = lvTrain;
-	if( expCurr == 0 )
-		expCurr = m_pHero->GetExp( m_typeTrain );
-	if( expMaxCurr == 0 ) {
-		expMaxCurr = m_pHero->GetMaxExpWithLevel( m_typeTrain, lvCurr );
-		XBREAK( expMaxCurr == 0 );
+	// 현재 바 레벨의 최대치까지 채울때 필요한 골드양
+	const auto goldMax = XAccount::sGetGoldByMaxExp( m_lvBar, m_typeTrain );
+//	const auto 남은exp의골드 = ACCOUNT->GetGoldByExp( m_lvBar, 남은exp, m_typeTrain )
+	int goldRemainExp = goldMax -  ACCOUNT->GetGoldByExp( m_lvBar, m_ExpRest, m_typeTrain );
+	if( m_GoldUse + goldRemainExp <= (int)ACCOUNT->GetGold() ) {
+		// 골드가 충분함.
+		auto pBar = SafeCast2<XWndProgressBar2*>( Find( "pbar.exp" ) );
+		const int lvTrain = m_pHero->GetLevel( m_typeTrain );
+		int lvCurr = m_Level;
+		int expCurr = m_ExpRest;
+		// 현재 레벨에서의 최대 exp
+		int expMaxCurr = m_pHero->GetMaxExpWithLevel( m_typeTrain, lvCurr );
+		if( lvCurr == 0 )
+			lvCurr = lvTrain;
+		if( expCurr == 0 )
+			expCurr = m_pHero->GetExp( m_typeTrain );
+		if( expMaxCurr == 0 ) {
+			expMaxCurr = m_pHero->GetMaxExpWithLevel( m_typeTrain, lvCurr );
+			XBREAK( expMaxCurr == 0 );
+		}
+		// 현재까지 모든 exp의 비율
+		float lerpCurr = (float)expCurr / expMaxCurr;
+		// 애니메이션중이 다시 눌릴수도 있으므로 항상 애니메이션시작 레벨로 업데이트한다.
+		UpdateLevel( pBar, lvCurr );
+		//
+		m_GoldUse += goldRemainExp;
+		UpdateGold();
+		if( pBar ) {
+			int lvDst = m_Level;
+			auto expMaxAfter = m_pHero->GetMaxExpWithLevel( m_typeTrain, m_Level );
+			float lerpDst = (float)m_ExpRest / expMaxAfter;
+			int lvOrig = lvTrain;
+			pBar->DoLerpAni( 1, lvOrig, lvCurr, lerpCurr, lvDst, lerpDst, 0.25f );
+		}
+	} else {
+		// 현재 레벨을 다 채우기엔 골드가 부족함.
+		// 가진돈의 최대로 채움.
+		int type = (int)p1;	// 0:max 1:min
+		//
+		auto pBar = SafeCast2<XWndProgressBar2*>( Find( "pbar.exp" ) );
+		const int lvTrain = m_pHero->GetLevel( m_typeTrain );
+		int lvCurr = m_Level;
+		int expCurr = m_ExpRest;
+		int expMaxCurr = m_pHero->GetMaxExpWithLevel( m_typeTrain, lvCurr );
+		if( lvCurr == 0 )
+			lvCurr = lvTrain;
+		if( expCurr == 0 )
+			expCurr = m_pHero->GetExp( m_typeTrain );
+		if( expMaxCurr == 0 ) {
+			expMaxCurr = m_pHero->GetMaxExpWithLevel( m_typeTrain, lvCurr );
+			XBREAK( expMaxCurr == 0 );
+		}
+		float lerpCurr = (float)expCurr / expMaxCurr;
+		// 애니메이션중이 다시 눌릴수도 있으므로 항상 애니메이션시작 레벨로 업데이트한다.
+		UpdateLevel( pBar, lvCurr );
+		//
+		if( type == 0 )
+			m_GoldUse = (int)ACCOUNT->GetGold();
+		else {
+			m_GoldUse = GetGoldMinForTrain( m_typeTrain, m_lvBar );
+		}
+		UpdateGold();
+		//
+		if( pBar ) {
+			int lvDst = m_Level;
+			auto expMaxAfter = m_pHero->GetMaxExpWithLevel( m_typeTrain, m_Level );
+			float lerpDst = (float)m_ExpRest / expMaxAfter;
+			int lvOrig = lvTrain;
+			pBar->DoLerpAni( 1, lvOrig, lvCurr, lerpCurr, lvDst, lerpDst, 0.25f );
+		}
 	}
-	float lerpCurr = (float)expCurr / expMaxCurr;
-	// 애니메이션중이 다시 눌릴수도 있으므로 항상 애니메이션시작 레벨로 업데이트한다.
-	UpdateLevel( pBar, lvCurr );
-	//
-	if( type == 0 )
-		m_GoldUse = (int)ACCOUNT->GetGold();
-	else {
-		m_GoldUse = GetGoldMinForTrain( m_typeTrain, m_lvBar );
-	}
-	UpdateGold();
-	//
-	if( pBar ) {
-		int lvDst = m_Level;
-		auto expMaxAfter = m_pHero->GetMaxExpWithLevel( m_typeTrain, m_Level );
-		float lerpDst = (float)m_ExpRest / expMaxAfter;
-		int lvOrig = lvTrain;
-		pBar->DoLerpAni( 1, lvOrig, lvCurr, lerpCurr, lvDst, lerpDst, 0.25f );
-	}
+	// 
 	SetbUpdate( true );
 	return 1;
 }
+// int XWndLevelupHero::OnClickMax( XWnd* pWnd, DWORD p1, DWORD p2 )
+// {
+// 	CONSOLE("OnClickMax");
+// 	int type = (int)p1;	// 0:max 1:min
+// 	//
+// 	auto pBar = SafeCast2<XWndProgressBar2*>( Find( "pbar.exp" ) );
+// 	const int lvTrain = m_pHero->GetLevel( m_typeTrain );
+// 	int lvCurr = m_Level;
+// 	int expCurr = m_ExpRest;
+// 	int expMaxCurr = m_pHero->GetMaxExpWithLevel( m_typeTrain, lvCurr );
+// 	if( lvCurr == 0 )
+// 		lvCurr = lvTrain;
+// 	if( expCurr == 0 )
+// 		expCurr = m_pHero->GetExp( m_typeTrain );
+// 	if( expMaxCurr == 0 ) {
+// 		expMaxCurr = m_pHero->GetMaxExpWithLevel( m_typeTrain, lvCurr );
+// 		XBREAK( expMaxCurr == 0 );
+// 	}
+// 	float lerpCurr = (float)expCurr / expMaxCurr;
+// 	// 애니메이션중이 다시 눌릴수도 있으므로 항상 애니메이션시작 레벨로 업데이트한다.
+// 	UpdateLevel( pBar, lvCurr );
+// 	//
+// 	if( type == 0 )
+// 		m_GoldUse = (int)ACCOUNT->GetGold();
+// 	else {
+// 		m_GoldUse = GetGoldMinForTrain( m_typeTrain, m_lvBar );
+// 	}
+// 	UpdateGold();
+// 	//
+// 	if( pBar ) {
+// 		int lvDst = m_Level;
+// 		auto expMaxAfter = m_pHero->GetMaxExpWithLevel( m_typeTrain, m_Level );
+// 		float lerpDst = (float)m_ExpRest / expMaxAfter;
+// 		int lvOrig = lvTrain;
+// 		pBar->DoLerpAni( 1, lvOrig, lvCurr, lerpCurr, lvDst, lerpDst, 0.25f );
+// 	}
+// 	SetbUpdate( true );
+// 	return 1;
+// }
 
 /**
  @brief 

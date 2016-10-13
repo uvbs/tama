@@ -46,6 +46,7 @@ void XSceneTitle::Destroy()
 	GAME->DestroyWndByIdentifier("butt.ipchange");
 	GAME->DestroyWndByIdentifier("butt.logout");
 	GAME->DestroyWndByIdentifier("butt.appstore");
+	GAME->DestroyWndByIdentifier( "butt.log" );
 	ClearLoginLock();
 	XBREAK( SCENE_TITLE == nullptr );
 	XBREAK( SCENE_TITLE != this );
@@ -84,7 +85,11 @@ XSceneTitle::XSceneTitle(XGame *pGame)
 #if defined(_SOFTNYX)
 	strVer += _T(" For Softnyx");
 #elif defined(_VER_ANDROID)
+<<<<<<< HEAD
 	strVer += _T(" For Google");
+=======
+	strVer += _T(" For Android");
+>>>>>>> private_raid
 #elif defined(_VER_IOS)
 	strVer += _T(" For iOS");
 #elif defined(WIN32)
@@ -113,7 +118,7 @@ void XSceneTitle::Create(void)
 #if !defined(_XSINGLE)
 	// 로긴서버의 ip와 포트를 지정
 	const _tstring strIp = C2SZ(CONNECT_INI.m_cIP);
-	XTRACE("ip/port:%s(%d)", strIp.c_str(), CONNECT_INI.m_Port );
+	CONSOLE("ip/port:%s(%d)", strIp.c_str(), CONNECT_INI.m_Port );
 	LOGINSVR_SOCKET->SetIpAndPort( CONNECT_INI.m_cIP, CONNECT_INI.m_Port );
 	//
 	if( s_secLoginLockStart > 0 ) {
@@ -298,7 +303,7 @@ int XSceneTitle::Process( float dt )
 #endif 
 	if( m_pScrollView ) {
 		m_pScrollView->SetFocusView( m_vFocus );
-		m_vFocus += m_deltaScroll;
+		m_vFocus += m_deltaScroll * dt;
 		const auto vViewSize = XE::GetGameSize();
 		if( m_vFocus.x + vViewSize.w * 0.5f >= m_sizeMap.w  )
 			m_deltaScroll.x = -m_deltaScroll.x;
@@ -337,24 +342,24 @@ int XSceneTitle::OnClickTitle(XWnd* pWnd, DWORD p1, DWORD p2)
 	XAccount::sSetPlayer( spAcc );
 	spAcc->SetpDelegateLevel(GAME);
 	spAcc->CreateFakeAccount();
-	XGAME::xBattleStart bs;
-	bs.m_Level = 1;
-	bs.m_strName = _T("babarian");
-	bs.m_spLegion[0] = ACCOUNT->GetCurrLegion();
-	// 최초 NPC군단생성
-	int lvLegion = 50;
-	XGAME::xLegionParam info;
-	info.x_gradeLegion = XGAME::xGL_NORMAL;
-	info.unit = (XGAME::xtUnit)XAPP->m_nDebugRespawnUnit;
-	info.bRandom = XAPP->m_bDebugRespawnNumRandom != FALSE;
-	auto pLegion = XLegion::sCreateLegionForNPC( lvLegion, 0, info );
-	bs.m_spLegion[1] = LegionPtr(pLegion);
-	bs.m_Defense = 0;
-	bs.m_idEnemy = 0;
-	bs.m_typeBattle = XGAME::xBT_NORMAL;
-	XSceneBattle::sSetBattleStart( bs );
-
-	DoExit(XGAME::xSC_INGAME );
+// 	XGAME::xBattleStart bs;
+// 	bs.m_Level = 1;
+// 	bs.m_strName = _T("babarian");
+// 	bs.m_spLegion[0] = ACCOUNT->GetCurrLegion();
+// 	// 최초 NPC군단생성
+// 	int lvLegion = 50;
+// 	XGAME::xLegionParam info;
+// 	info.x_gradeLegion = XGAME::xGL_NORMAL;
+// 	info.unit = (XGAME::xtUnit)XAPP->m_nDebugRespawnUnit;
+// 	info.bRandom = XAPP->m_bDebugRespawnNumRandom != FALSE;
+// 	auto pLegion = XLegion::sCreateLegionForNPC( lvLegion, 0, info );
+// 	bs.m_spLegion[1] = LegionPtr(pLegion);
+// 	bs.m_Defense = 0;
+// 	bs.m_idEnemy = 0;
+// 	bs.m_typeBattle = XGAME::xBT_NORMAL;
+// 	XSceneBattle::sSetBattleStart( bs );
+// 
+ 	DoExit(XGAME::xSC_INGAME );
 #else
 	if (ACCOUNT)	{
 		//길드 정보를 못받았다 다시 요청함
@@ -517,7 +522,7 @@ int XSceneTitle::OnClickNicknameBox(XWnd* pWnd, DWORD p1, DWORD p2)
 {
 	XWnd *pBox = Find("img.input.box");
 	if (pBox)	{
-		XWndEdit *pEdit = new XWndEdit( XE::VEC2(10,4), XE::VEC2(262,37), FONT_SYSTEM, 20.f, XCOLOR_WHITE );
+		XWndEdit *pEdit = new XWndEdit( XE::VEC2(10,4), XE::VEC2(262,37), FONT_MNLS, 20.f, XCOLOR_WHITE );
 //		XWndEdit *pEdit = new XWndEdit(10, 4, 262, 37, GAME->GetpfdSystem(), XCOLOR_WHITE, 0);
 		pEdit->SetbShow(FALSE);
 		pEdit->SetpDelegate(this);

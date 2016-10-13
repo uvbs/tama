@@ -189,6 +189,8 @@ namespace XGAME
 		xIT_EVENT,		///< 이벤트
 		xIT_ETC,		///< 기타 잡템
 		xIT_SOUL,
+		xIT_GOLD,		///< 금화(UI표시용)
+		xIT_GUILD_COIN,		///< 길드코인(ui표시용)
 	};
 
 	///< 아이템 사용방식(인벤에서 사용)
@@ -321,13 +323,22 @@ namespace XGAME
 	// 영웅 입수방법
 	enum xtGet {
 		xGET_NONE,
-		xGET_GATHA,
-		xGET_QUEST,
-		xGET_GUILD_RAID,
-		xGET_MEDAL_SPOT,
-		xGET_EVENT,
+		xGET_GATHA				= 0x001,
+		xGET_QUEST				= 0x002,
+		xGET_GUILD_RAID		= 0x004,
+		xGET_MEDAL_SPOT		= 0x008,
+		xGET_EVENT				= 0x010,
 		xGET_MAX,
 	};
+// 	enum xtGetBit {
+// 		xGB_NONE = 0,
+// 		xGB_GATHA				= 0x001,
+// 		xGB_QUEST				= 0x002,
+// 		xGB_GUILD_RAID	= 0x004,
+// 		xGB_MEDAL_SPOT	= 0x008,
+// 		xGB_EVENT				= 0x010,
+// 		xGB_MAX,
+// 	};
 	// 스팟 타입
 	enum xtSpot {
 		xSPOT_NONE,
@@ -398,6 +409,7 @@ namespace XGAME
 		xCOIN_CASH,			// 캐시
 		xCOIN_GUILD,		// 길드코인
 		xCOIN_MEDAL,		// 메달
+		xCOIN_PROP,			// 프로퍼티의 지불방법
 		xCOIN_MAX,
 
 	};
@@ -478,6 +490,9 @@ namespace XGAME
 		xSC_READY,			///< 인게임 전투배치씬.
 		xSC_PATCH,
 		xSC_LOADING,		///< 로딩씬
+		xSC_TEST,				///< 각종테스트용 empty 씬
+		xSC_TEST2,				///< 각종테스트용 empty 씬
+		xSC_PRIVATE_RAID,
 		xSCENE_MAX,
 	};
 	// 컷씬 이벤트 파라메터
@@ -569,8 +584,10 @@ namespace XGAME
 		xPR_RES,
 		xPR_TIME,
 		xPR_AP,
+		xPR_ITEM,
 		xPR_GEM,
 		xPR_TRY_DAILY,		// 요일스팟 도전횟수
+		xPR_TRY_PRIVATE_RAID,	// 개인레이드 도전횟수
 	};
 	// 기타 enum들
 	enum {

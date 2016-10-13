@@ -98,25 +98,25 @@
   </commontextpopup>
   <!--아이템 슬롯 텍스트 팝업-->
   <commonitemtextpopup>
-    <img posx="62" posy="9" file="common_bg_popup.png" key="img.common.popupitemtext" format="argb8888">
+    <img posx="center" posy="center" file="popup_bg.png" key="img.common.popupitemtext" format="argb8888">
       <!--타이틀-->
-      <img posx="center" posy="18" img="popup_title_bar.png" format="argb8888">
-        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.title" />
+      <img posx="center" posy="-15" img="popup_title_bar.png" format="argb8888">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="43" font_style="stroke" key="text.title" />
       </img>
       <!--설명 bg-->
-      <img posx="144" posy="100" file="common_blank_b.png" format="argb8888">
-        <text posx="12" posy="88" key="text.common.ask" font="font_text_m" font_size="20" font_style="stroke" length="214" />
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.cancel"></butt>
+      <img posx="center" posy="center" file="common_blank_b.png" format="argb8888">
+        <text posx="center" posy="95" key="text.common.ask" font="font_text_m" font_size="20" font_style="stroke" length="214" />
       </img>
       <!--아이템 슬롯-->
-      <img posx="237" posy="120" file="common_bg_item.png">
+      <img posx="center" posy="center" file="common_bg_item.png">
         <img posx="center" posy="center" key="img.ask.itemimg"></img>
       </img>
       <!--아이템 이미지-->
       <!--메세지-->
       <!--왼쪽 버튼-->
-      <butt posx="150" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="30" key="butt.ok" font_style="stroke" text="2"></butt>
+      <butt posx="center" posy="230" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="30" key="butt.ok" font_style="stroke" text="2"></butt>
       <!--오른쪽 버튼-->
-      <butt posx="280" posy="270" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.cancel" font_style="stroke" text="3"></butt>
     </img>
   </commonitemtextpopup>
 </layout>

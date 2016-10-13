@@ -340,12 +340,14 @@ public:
 	} 
 
 	T GetFirst() {
-		typename std::list<T>::iterator itor = m_List.begin();
-		return (*itor);
+		return m_List.front();
+// 		typename std::list<T>::iterator itor = m_List.begin();
+// 		return (*itor);
 	}
 	T GetLast() {				// 
-		typename std::list<T>::iterator itor = m_List.end();
-		return (*--itor);
+		return m_List.back();
+// 		typename std::list<T>::iterator itor = m_List.end();
+// 		return (*--itor);
 	}
 
 	T GetFromIndex( int idx ) {
@@ -1574,23 +1576,15 @@ public:
 			push_back( elem );
 		}
 	}
-
+	// 기존코드 호환용임. 가급적이면 push_back으로 쓸것.
 	inline T Add( T&& elem ) {
 		this->push_back( elem );
 		return elem;
 	}
-// 	inline T Add( const T&& elem ) {
-// 		this->push_back( elem );
-// 		return elem;
-// 	}
 	inline T Add( const T& elem ) {
 		this->push_back( elem );
 		return elem;
 	}
-// 	inline T Add( T& elem ) {
-// 		this->push_back( elem );
-// 		return elem;
-// 	}
 	void Del( T& elem ) {
 		auto iter = std::find( this->begin(), this->end(), elem );
 		if( iter != this->end() )
@@ -1672,10 +1666,27 @@ public:
 		if (iter != this->end())
 			this->erase(iter);
 	}
+	/* 	m_list.FindpIf( [idDat]( XTest& spTest )->bool {
+	 		return spTest->m_idDat == idDat;
+	 	} ); */
 	template<typename F>
 	T* FindpIf( F func ) {
 		auto iter = std::find_if(this->begin(), this->end(), func);
 		if (iter != this->end())
+			return &(*iter);
+		return nullptr;
+	}
+	template<typename F>
+	T FindIf( F func ) {
+		auto iter = std::find_if( this->begin(), this->end(), func );
+		if( iter != this->end() )
+			return *iter;
+		return T();
+	}
+	template<typename F>
+	const T* FindpIfConst( F func ) const {
+		auto iter = std::find_if( this->begin(), this->end(), func );
+		if( iter != this->end() )
 			return &(*iter);
 		return nullptr;
 	}
@@ -1706,12 +1717,34 @@ public:
 			return &( *iter );
 		return nullptr;
 	}
-	T* FindByIDNonPtr( ID idNode ) {		// ?? NonPtr인데 왜 *를 리턴하징?
+	const T* FindpcByID( ID idNode ) const {
+		auto iter = std::find_if( this->begin(), this->end(),
+															[idNode]( T pElem )->bool {
+			return pElem->getid() == idNode;
+		} );
+		if( iter != this->end() )
+			return &( *iter );
+		return nullptr;
+	}
+	/// elem들이 비 포인터형이다
+	inline T* FindByIDNonPtr( ID idNode ) {		// 
 		auto iter = std::find_if(this->begin(), this->end(),
 			[idNode](T pElem)->bool {  
 			return pElem.getid() == idNode;
 		} );
 		if (iter != this->end())
+			return &( *iter );
+		return nullptr;
+	}
+	inline T* FindpByIDNonPtr( ID idNode ) {		// 
+		return FindByIDNonPtr( idNode );
+	}
+	inline const T* FindpcByIDNonPtr( ID idNode ) const {		// 
+		auto iter = std::find_if( this->begin(), this->end(),
+															[idNode]( T pElem )->bool {
+			return pElem.getid() == idNode;
+		} );
+		if( iter != this->end() )
 			return &( *iter );
 		return nullptr;
 	}
@@ -1734,7 +1767,7 @@ public:
 			return (*iter);
 		return T();
 	}
-	int GetIndex( T& elem ) {
+	int GetIndex( const T& elem ) {
 		int idx = 0;
 		for (auto iter = this->begin(); iter != this->end(); ++iter) {
 			if( (*iter) == elem )
@@ -1743,8 +1776,26 @@ public:
 		}
 		return idx;
 	}
+	int GetIndexByID( T& elem ) {
+		int idx = 0;
+		for( auto iter = this->begin(); iter != this->end(); ++iter ) {
+			if( ( *iter )->getid() == elem->getid() )
+				break;
+			++idx;
+		}
+		return idx;
+	}
+	int GetIndexByIDNonPtr( T& elem ) {
+		int idx = 0;
+		for( auto iter = this->begin(); iter != this->end(); ++iter ) {
+			if( ( *iter ).getid() == elem.getid() )
+				break;
+			++idx;
+		}
+		return idx;
+	}
 	// itorComp가 현재 리스트의 몇번째인지 얻는다.
-	int GetIndex(const typename std::list<T>::iterator& itorComp) {
+	int GetIndexByItor(const typename std::list<T>::iterator& itorComp) {
 		int idx = 0;
 		for( auto itor = this->begin(); itor != this->end(); ++itor ) {
 			if( itor == itorComp )
@@ -1754,10 +1805,12 @@ public:
 		return idx;
 	}
 	T* GetpFirst() {
-		return &(*this->begin());
+//		return &(*this->begin());
+		return &(this->front());
 	}
 	T* GetpLast() {
-		return &(*--this->end());
+//		return &(*--this->end());
+		return &(this->back());
 	}
 	T* GetpByIndex( int idx ) {
 		int i = 0;
@@ -1789,6 +1842,14 @@ public:
 		}
 		return m_Empty;
 	}
+	const T& GetByIndexConst( int idx ) {
+		int i = 0;
+		for( auto iter = this->begin(); iter != this->end(); ++iter ) {
+			if( i++ == idx )
+				return (*iter);
+		}
+		return m_Empty;
+	}
 	T GetByIndexNonPtr( int idx ) {
 		int i = 0;
 		for( auto iter = this->begin(); iter != this->end(); ++iter ) {
@@ -1796,6 +1857,13 @@ public:
 				return ( *iter );
 		}
 		return nullptr;
+	}
+	typename XList4<T>::iterator GetItor( ID idElem ) {
+		for( auto iter = this->begin(); iter != this->end(); ++iter ) {
+			if( ( *iter ) == idElem )
+				return iter;
+		}
+		return this->end();
 	}
 	typename XList4<T>::iterator GetItorByIndex( int idx ) {
 		int i = 0;

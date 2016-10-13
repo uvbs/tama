@@ -437,6 +437,7 @@ namespace XE
 		// 로컬패스를 넘기면 리커시브를 돌며 워킹폴더에 모든 패스를 만든다.
 		TCHAR szPath[ 1024 ];
 		_tcscpy_s( szPath, XE::GetFilePath( szRes ) );
+		XTRACE( "%s", __TFUNC__, szPath ); //hey
 		BOOL bMake = MakeRecursiveDirToWork( szPath );
 		{
 			//

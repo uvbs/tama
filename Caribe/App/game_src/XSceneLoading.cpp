@@ -24,7 +24,7 @@ void XSceneLoading::Destroy()
 	s_pSingleton = nullptr;
 }
 
-XSceneLoading::XSceneLoading( XGame *pGame, SceneParamPtr& spParam ) 
+XSceneLoading::XSceneLoading( XGame *pGame, XSPSceneParam& spParam ) 
 	: XSceneBase( pGame, XGAME::xSC_LOADING )
 	, m_Layout(_T("scene_loading.xml"))
 { 

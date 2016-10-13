@@ -17,14 +17,21 @@ static char THIS_FILE[] = __FILE__;
 XFontDatSpr::XFontDatSpr( LPCTSTR szFontSpr ) 
 	: XBaseFontDat( szFontSpr, 0 ) {
 	Init();
-	m_pSprDat = SPRMNG->Load( szFontSpr );
-	if( m_pSprDat == NULL )
+	const bool bBatch = true;
+	m_spDat = SPRMNG->Load( szFontSpr, XE::xHSL(), true, TRUE, false, bBatch, nullptr );
+	if( m_spDat == nullptr ) {
 		XALERT( "%s읽기 실패", szFontSpr );
+	}
 }
 
 void XFontDatSpr::Destroy( void ) 
 {
-	SAFE_RELEASE2( SPRMNG, m_pSprDat );
+	//SAFE_RELEASE2( SPRMNG, m_spDat );
+}
+
+bool XFontDatSpr::IsError( void ) const 
+{
+	return m_spDat->m_pSprDat == nullptr && m_spDat->m_idAsync == 0;
 }
 
 XBaseFontObj* XFontDatSpr::CreateFontObj( void )
@@ -33,13 +40,13 @@ XBaseFontObj* XFontDatSpr::CreateFontObj( void )
 }
 float XFontDatSpr::GetFontWidth( void )
 {
-	XSprite *pSpr = m_pSprDat->GetSprite( 0 );
+	auto pSpr = m_spDat->GetSprite( 0 );
 	XBREAK( pSpr == NULL );
 	return pSpr->GetWidth() + pSpr->GetAdjustX();
 }
 float XFontDatSpr::GetFontHeight( void )
 {
-	XSprite *pSpr = m_pSprDat->GetSprite( 0 );
+	auto pSpr = m_spDat->GetSprite( 0 );
 	XBREAK( pSpr == NULL );
 	return pSpr->GetHeight();
 }
@@ -49,7 +56,7 @@ float XFontDatSpr::GetCharWidth( TCHAR tc )
 	int idx = GetCharToIdx( tc );
 	if( idx < 0 )
 		return 0;
-	XSprite *pSpr = m_pSprDat->GetSprite( idx );
+	auto pSpr = m_spDat->GetSprite( idx );
 	XBREAK( pSpr == NULL );
 	return pSpr->GetWidth();
 }
@@ -75,13 +82,14 @@ float XFontDatSpr::DrawString( float x, float y,
 	p = str;
 	float w = 0;
 	float cw = 0;
-	XBREAK( m_pSprDat == NULL );
+	if( m_spDat->m_pSprDat )
+		return 0.f;
 	p = str;
 	while((c = *p++ ))
 	{
 		if( c == _T(' ') )		// 스페이스일때는 좌표만 이동하고 다음으로 넘어감
 		{
-			cw = m_pSprDat->GetSprite(0)->GetWidth() * m_vScale.w; 
+			cw = m_spDat->GetSprite(0)->GetWidth() * m_vScale.w;
 			w += cw;
 			x += cw;
 			continue;
@@ -89,7 +97,7 @@ float XFontDatSpr::DrawString( float x, float y,
 		int idx = GetCharToIdx(c);
 		if( idx < 0 )
 			continue;
-		XSprite *pSpr = m_pSprDat->GetSprite( idx );
+		auto pSpr = m_spDat->GetSpriteMutable( idx );
 		pSpr->SetfAlpha( m_Alpha );
 		pSpr->SetScale( m_vScale );
 		pSpr->SetColor( color );

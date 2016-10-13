@@ -8,8 +8,9 @@
 #pragma once
 #include "_Wnd2/XWndPopup.h"
 #include "_Wnd2/XWndButton.h"
-#include "JWWnd.h"
+//#include "JWWnd.h"
 #include "Sprite/XDelegateSprObj.h"
+#include "XWndStorageItemElem.h"
 
 namespace XGAME {
 struct xBattleResult;
@@ -75,9 +76,9 @@ public:
 class XWndFaceInBattle : public XWndStoragyItemElem 
 												, public XDelegateSprObj
 {
-	XHero* m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	int m_Side = 0;		// 1은 아군 2는 적군
-	XSPSquad m_spSquadObj;
+	XSPSquadObj m_spSquadObj;
 	XSprObj* m_psoSkill = nullptr;
 	_tstring m_strText;
 	void Release() override {
@@ -85,7 +86,7 @@ class XWndFaceInBattle : public XWndStoragyItemElem
 	}
 public:
 	/// @param side 1:아군 2:적군
-	XWndFaceInBattle( XSPSquad spSquadObj, int side );
+	XWndFaceInBattle( XSPSquadObj spSquadObj, int side );
 	~XWndFaceInBattle();
 	//
 	BOOL OnCreate() override;

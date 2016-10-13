@@ -1,18 +1,8 @@
-﻿/*
- *  SprObj.h
- *  Game
- *
- *  Created by xuzhu on 10. 12. 8..
- *  Copyright 2010 LINKS CO.,LTD. All rights reserved.
- *
- */
-#pragma once
+﻿#pragma once
 
-// #include "Key.h"
-// #include "Layer.h"
-// #include "SprDat.h"
 #include "etc/xMath.h"
 #include "etc/xGraphics.h"
+#include "etc/XSurfaceDef.h"
 #include "Sprdef.h"
 #ifdef _SPR_USE_LUA
 #undef  _SPR_USE_LUA
@@ -20,9 +10,9 @@
 #ifdef _SPR_USE_LUA
 #include "XLua.h"
 #endif
-#ifdef _VER_OPENGL
-//#include "Mathematics.h"
-#endif
+#ifdef _VER_ANDROID
+#include "XActObj2.h"		// GetpLayerByidLocalInLayerT 템플릿의 안드로이드 빌드에러로 인해 추가함.
+#endif // _VER_ANDROID
 
 class XSprObj;
 class XBaseKey;
@@ -32,12 +22,19 @@ class XLayerMove;
 class XLayerImage;
 class XLayerObject;
 class XSprDat;
-class XAniAction;
+class XActDat;
+class XActObj;
 class XSprite;
 
 struct LAYER_INFO;
 struct XEFFECT_PARAM;
+enum xDM_TYPE : int;
+namespace XE {
+struct xRenderParam;
+}
+
 XE_NAMESPACE_START( xSpr )
+struct xDat;
 // KeyEvent 델리게이트시 넘겨주는 파라메터
 struct xEvent {
 	_tstring m_strSpr;
@@ -58,59 +55,8 @@ struct xEvent {
 //
 XE_NAMESPACE_END; // xSpr
 
-
-
-
-// 이 액션에서 로드될 XSprDat들은 미리 모두 로드된다
-/*typedef struct {
-	CHAR szFilename[128];
-	XSprObj *pSprObj;
-	DWORD dwID;
-} USE_SPROBJ;*/
-
 class XLua;
-//////////////////////////////////////////////////////////////////////////
-// XSprObj에서 쓰는 액션정보
-class XObjAct 
-{
-	XSprObj *m_pSprObj;
-	int m_nNumLayers;
-	XBaseLayer **m_ppLayers;		// 레이어 리스트
-	XAniAction *m_pAction;			// 이 노드가 가리키는 SprDat에서의 액션 포인터. read only
-	void Init() {
-		m_pAction = NULL;
-		m_nNumLayers = 0;
-		m_ppLayers = NULL;
-		m_pSprObj = NULL;
-	}
-	void Destroy();
-	void DestroyLayer();
-public:
-	XObjAct( XSprObj *pSprObj ) { Init(); m_pSprObj = pSprObj; }
-	XObjAct( XSprObj *pSprObj, XAniAction *pAction );
-	~XObjAct() { Destroy(); }
-	// get/set
-	GET_SET_ACCESSOR_CONST( XAniAction*, pAction );
-	GET_ACCESSOR( int, nNumLayers );
-	
-	DWORD GetPixel( float cx, float cy, float mx, float my, const MATRIX& m, BYTE *pa, BYTE *pr=NULL, BYTE *pg=NULL, BYTE *pb=NULL );
-	XBaseLayer *GetLayerInPixel( float lx, float ly );
-	// etc
-	void FrameMove( float dt, float fFrmCurr );
-#ifdef _VER_OPENGL
-	void Draw( float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam );
-#else
-	void Draw( float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam );
-#endif
-	int Serialize( XArchive& ar );
-	int DeSerialize( XArchive& ar );
-	XBaseLayer *GetLayer( xSpr::xtLayer type, int nLayer );
-	XBaseLayer *CreateLayer( int idx, xSpr::xtLayer type = xSpr::xLT_NONE, int nLayer = -1, float fAdjAxisX = 0, float fAdjAxisY = 0 );
-	XBaseLayer* GetpLayerByidLocalInLayer( ID idLocalInLayer ) const;
-	XBaseLayer *CreateLayer( int idx, LAYER_INFO* pLayerInfo );
-	void ClearLayer();
-private:
-} ;
+
 //////////////////////////////////////////////////////////////////////////
 class XBaseObj;
 class XDelegateSprObj;
@@ -127,6 +73,7 @@ private:
 		_tstring strFilename;	// 읽으려고 한 spr파일명
 		CTimer timerLazyLoad;
 		BOOL bKeepSrc;
+		bool m_bUseAtlas = false;
 //		XE::VEC3 vHSL;
 		XE::xHSL m_HSL;
 		LAZY_INFO() {
@@ -143,19 +90,17 @@ private:
 		XSprObj* m_pSprObj = nullptr;
 	};
 	DWORD m_dwID;												// 이 오브젝트만의고유한 아이디
-	XSprDat *m_pSprDat;
+	xSpr::XSPDat m_spDat;
 	XSprObj *m_pParentSprObj;		// this가 자식이면 부모포인터를 가리킨다
 	XDelegateSprObj *m_pDelegate;		// 델리게이트
 	int m_nNumSprObjs;
-//	XSprObj **m_ppSprObjs;					// 사전에 로드되는 XSprObj들의 리스트
 	XVector<xUseSprObj> m_aryUseSprObj;
 	float m_fFrameCurrent;						// 현재 프레임번호
 	BOOL m_bPause;
-//	XBaseKey *m_pParentKey;						// 이 오브젝트를 생성하게한 키가 있다면 저장. 없으면 널
 	int m_nKeyCurr;							// 현재 가리키고 있는 노드의 index
-	XObjAct *_m_pObjActCurr;				// 현재 선택된 액션. 이거 직접 쓰지말것. 이거 널로 되어있으면 경고띄워주기 위함
+	XActObj *_m_pObjActCurr;				// 현재 선택된 액션. 이거 직접 쓰지말것. 이거 널로 되어있으면 경고띄워주기 위함
 	int m_nNumObjActs;
-	XObjAct **m_ppObjActs;			// sprdat의 액션수만큼 똑같이 생성시켜 각각 레이어를 가지고 있는다
+	XActObj **m_ppObjActs;			// sprdat의 액션수만큼 똑같이 생성시켜 각각 레이어를 가지고 있는다
 	// transform
 	float	m_fAdjustAxisX, m_fAdjustAxisY;	// 회전축보정
 	float m_fRotX, m_fRotY, m_fRotZ;
@@ -168,12 +113,24 @@ private:
 	BOOL m_bFinish;					// 애니메이션이 끝났는가
 	float m_multiplySpeed;				// 애니메이션 스피드 배속
   bool m_bCallHandler = false;    // 이벤트키의 콜백이 실행중.
+#ifdef _XASYNC_SPR
+	std::function<void( XSprObj* )> m_funcLoadFinished;			// spr로딩이 완료되면 호출되는 콜백. 파일로딩뿐아니라 캐시로딩도 포함된다.
+	struct tagAsync {
+		ID m_idAsyncLoad = 0;					// 비동기 로딩중.
+		ID m_idAct = 0;			// 비동기 로딩중에 들어온 setAction
+		xRPT_TYPE m_playType = xRPT_LOOP;
+		void Clear() {
+			m_idAct = 0;
+			m_idAsyncLoad = 0;
+			m_playType = xRPT_LOOP;
+		}
+		} m_Async;
+#endif // _XASYNC_SPR
 #ifdef _SPR_USE_LUA
 	XLua *m_pLua;					// SprObj마다 붙어있는 루아쓰레드
 #endif 
 	void Init() {
 		m_dwID = XE::GenerateID();
-		m_pSprDat = NULL;
 		m_pDelegate = NULL;
 		m_pParentSprObj = NULL;
 		m_nNumSprObjs = 0;
@@ -202,57 +159,63 @@ private:
 #endif
 	}
 	void Destroy();
-	void SetpObjActCurr( XObjAct *pObjAct ) { _m_pObjActCurr = pObjAct; }
+	void SetpObjActCurr( XActObj *pObjAct ) { _m_pObjActCurr = pObjAct; }
 	SET_ACCESSOR( DWORD, dwID );
-	XSprDat* GetpSprDat() {
-//		XBREAK( m_pSprDat == NULL );		// 비동기 로딩써야하므로 브레이크 걸리면 안됨.
-		return m_pSprDat;
-	}
+	XSprDat* GetpSprDat();
 public:
 	XSprObj() { Init(); }		// 툴에서 필요해서 살림. new XSprObj;로만 생성해서 sprObj->Load()로 읽어서 에러검출 할수 있도록.
 	XSprObj( DWORD dwID );
 	XSprObj( LPCTSTR szFilename, XDelegateSprObj *pDelegate = nullptr );
-	XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, XDelegateSprObj *pDelegate = nullptr );
-  // for lua
-	XSprObj( BOOL bKeepSrc, const char *cFilename );
-#ifdef WIN32
-	XSprObj( BOOL bKeepSrc, LPCTSTR szFilename );
-#endif // WIN32
+//	XSprObj( LPCTSTR szFilename, const XE::xHSL& hsl, XDelegateSprObj *pDelegate = nullptr );
+	XSprObj( LPCTSTR szFilename, 
+					 const XE::xHSL& hsl, 
+					 bool bUseAtlas, 
+					 bool bBatch, 
+					 bool bAsync,
+					 XDelegateSprObj *pDelegate = nullptr );
+	XSprObj( const _tstring& strFile,
+					 const XE::xHSL& hsl,
+					 bool bUseAtlas,
+					 bool bBatch,
+					 bool bAsync,
+					 XDelegateSprObj *pDelegate = nullptr ) 
+	: XSprObj( strFile.c_str(), hsl, bUseAtlas, bBatch, bAsync, pDelegate ) {	}
+	XSprObj( const _tstring& strFile,
+					 const XE::xHSL& hsl,
+					 ID idAct, xRPT_TYPE loop,
+					 bool bUseAtlas,
+					 bool bBatch,
+					 bool bAsync,
+					 std::function<void( XSprObj* )> func );
+		// for lua
+// 	XSprObj( BOOL bKeepSrc, const char *cFilename );
+// #ifdef WIN32
+// 	XSprObj( BOOL bKeepSrc, LPCTSTR szFilename );
+// #endif // WIN32
 	XSprObj( const _tstring& strSpr, XDelegateSprObj *pDelegate = nullptr ) 
 		: XSprObj( strSpr.c_str(), pDelegate ) {}
 
-	virtual ~XSprObj() { Destroy(); }
+	~XSprObj() { Destroy(); }
 	
-	void Reset() {	// new로 생성이 안되고 캐시에서 다시 가져오게 됐을경우에도 기본적인 사항은 리셋시켜함
+	inline void Reset() {	// new로 생성이 안되고 캐시에서 다시 가져오게 됐을경우에도 기본적인 사항은 리셋시켜함
 		ResetAction();
 		SetpObjActCurr( NULL );
 	}
 	// get/set
-//	GET_ACCESSOR( XSprDat*, pSprDat );
-	GET_ACCESSOR( DWORD, dwID );
-	ID GetidSprObj() { return m_dwID; }
-//	GET_ACCESSOR( XObjAct*, pObjActCurr );
-  GET_SET_ACCESSOR( bool, bCallHandler );
-	XObjAct* GetpObjActCurr() const {
-#ifdef _XSPR_LAZY_LOAD
-		if( m_pSprDat == NULL )
-			NULL;
-#else
-		XBREAK( _m_pObjActCurr == NULL );
-#endif
-		return _m_pObjActCurr;
-	}
-	XObjAct* GetpObjAct( ID idAct ) const;
-	BOOL IsError() {
-		return m_pSprDat == NULL;
-	}
+	GET_ACCESSOR_CONST( DWORD, dwID );
+	inline ID GetidSprObj() const { return m_dwID; }
+  GET_SET_ACCESSOR_CONST( bool, bCallHandler );
+	XActObj* GetpObjActCurr() const;
+	XActObj* GetpObjAct( ID idAct ) const;
+	bool IsError() const;
+	// 현재 비동기 로딩중인가?
 //	GET_SET_ACCESSOR( XBaseKey*, pParentKey );
 	GET_ACCESSOR_CONST( float, fFrameCurrent );
 	GET_SET_ACCESSOR_CONST( BOOL, bPause );
-	void SetbPause( bool bPause ) {
+	inline void SetbPause( bool bPause ) {
 		m_bPause = (bPause)? TRUE : FALSE;
 	}
-	BOOL IsPlaying() const { return !m_bPause; }
+	inline bool IsPlaying() const { return !m_bPause; }
 	GET_ACCESSOR_CONST( xRPT_TYPE, PlayType );
 #ifdef _SPR_USE_LUA
 	GET_ACCESSOR( XLua*, pLua );
@@ -292,8 +255,12 @@ public:
 	GET_ACCESSOR_CONST( float, ColorR );
 	GET_ACCESSOR_CONST( float, ColorG );
 	GET_ACCESSOR_CONST( float, ColorB );
+	XE::VEC4 Getv4Color() const {
+		return XE::VEC4( m_ColorR, m_ColorG, m_ColorB, m_fAlpha );
+	}
 //	LPCTSTR GetszFilename() { return m_pSprDat->GetszFilename(); }
 	LPCTSTR GetSprFilename();
+	ID GetsnDat();
 	inline LPCTSTR GetszFilename() {
 		return GetSprFilename();
 	}
@@ -321,7 +288,7 @@ public:
 	BOOL IsFlipHoriz() {
 		return (m_dwDrawFlag & EFF_FLIP_HORIZ);
 	}
-	GET_SET_ACCESSOR( XDelegateSprObj*, pDelegate );
+	GET_SET_ACCESSOR_CONST( XDelegateSprObj*, pDelegate );
 	GET_SET_ACCESSOR( XSprObj*, pParentSprObj );
 	void AddRotate( float ax, float ay, float az ) { m_fRotX += ax; m_fRotY += ay; m_fRotZ += az; }
 	float GetSpeedCurrentAction();
@@ -337,47 +304,18 @@ public:
 	}
 
 	// frame
-	void Transform( XE::VEC2 *pvOutPos ) { Transform( &pvOutPos->x, &pvOutPos->y ); }
-	void Transform( float *lx, float *ly ) {
-		Vec3 v = Vec3(*lx, *ly, 0);
-		MATRIX m, mRotX, mRotY, mRotZ, mScale;
-		MatrixRotationX( mRotX, D2R(m_fRotX) );
-		MatrixRotationY( mRotY, D2R(m_fRotY) );
-		MatrixRotationZ( mRotZ, D2R(m_fRotZ) );
-		MatrixScaling( mScale, GetScaleX(), GetScaleY(), 1.0f );
-		MatrixIdentity( m );
-		MatrixMultiply( m, m, mScale );
-		MatrixMultiply( m, m, mRotX );
-		MatrixMultiply( m, m, mRotY );
-		MatrixMultiply( m, m, mRotZ );
-		Vec4 v4d;
-		MatrixVec4Multiply( v4d, v, m );
-		*lx = v4d.x;
-		*ly = v4d.y;
+	void Transform( XE::VEC2 *pvOutPos ) { 
+		Transform( &pvOutPos->x, &pvOutPos->y ); 
 	}
-	void Transform( float *fAngle ) {
-		// 좌우플립됐을경우는....
-		if( m_fRotY == 180.0f ) {
-			float a = *fAngle;
-			if( a > 180.0f )		// 일단 각도계를 -180~+180기준으로 바꾼다음
-				a -= 360.0f;
-			else if( a < -180.0f )
-				a += 360.0f;
-			*fAngle = -a;		// 부호를 바꿔준다
-		}
-		// 다른 각도변환은 일단은 하지 않는다.
-	}
+	void Transform( float *lx, float *ly );
+	void Transform( float *fAngle );
 	void FrameMove( float dt );
-	void JumpKeyPos( XAniAction *pAction, float fJumpFrame );	// fFrameCurrent위치로 바로 점프한다. 그사이의 키는 실행하지 않는다
+	void JumpKeyPos( XActDat *pAction, float fJumpFrame );	// fFrameCurrent위치로 바로 점프한다. 그사이의 키는 실행하지 않는다
 	void JumpToRandomFrame();
 	// draw
 //	void Draw( int x, int y ) { Draw( (float)x, (float)y ); }
 #ifdef _VER_OPENGL
-	void Draw( float x, float y ) {
-        MATRIX m;
-        MatrixIdentity( m );
-        Draw( x, y, m );
-    }
+	void Draw( float x, float y );
 	void Draw( float x, float y, const MATRIX &m );
 #endif
 #ifdef _VER_DX
@@ -394,27 +332,31 @@ public:
 	inline void Draw( const XE::VEC2& vPos, const MATRIX &m ) {
 		Draw( vPos.x, vPos.y, m );
 	}
+	void DrawByParam( const XE::xRenderParam& param ) const;
 	// action
-	BOOL IsHaveAction( ID idAct );
-	inline void ResetAction()	{	// 현재설정된 액션그대로 초기화만 시킨다
-		m_fFrameCurrent = 0;
-		SetKeyCurrStart();
-		m_bFinish = FALSE;
-	}
+	bool IsHaveAction( ID idAct );
+	void ResetAction();
 	void SetAction( DWORD id, xRPT_TYPE playType = xRPT_LOOP, BOOL bExecFrameMove=TRUE );
-	XAniAction *GetAction() const;
-	XAniAction *GetAction( ID idAct );
-	ID GetActionID();
-	XObjAct *AddObjAct( int idx, XAniAction *pAction );
+	const XActDat *GetAction() const;
+	inline XActDat* GetActionMutable() {
+		return const_cast<XActDat*>( GetAction() );
+	}
+	const XActDat *GetAction( ID idAct ) const;
+	XActDat* GetActionMutable( ID idAct ) {
+		return const_cast<XActDat*>( GetAction( idAct ) );
+	}
+	ID GetidActByRandom() const;
+	ID GetActionID() const;
+	XActObj *AddObjAct( int idx, const XActDat *pAction );
 	// 애니메이션 최대 플레이 시간을 초단위로 얻는다.
-	float GetPlayTime();
+	float GetPlayTime() const;
 	// key
 	void SetKeyCurrStart() {	m_nKeyCurr = 0; }			// 현재 가리키는 키를 맨 처음으로 돌린다.
 	
 	// layer
-	XBaseLayer* GetpLayerByidLocalInLayer( XObjAct* pActObj, ID idLocalInLayer );
+	XBaseLayer* GetpLayerByidLocalInLayer( XActObj* pActObj, ID idLocalInLayer );
 	template<typename T>
-	T* GetpLayerByidLocalInLayerT( XObjAct* pActObj, ID idLocalInLayer ) {
+	T* GetpLayerByidLocalInLayerT( XActObj* pActObj, ID idLocalInLayer ) {
 		if( XASSERT(pActObj) )
 			return SafeCast<T*>( pActObj->GetpLayerByidLocalInLayer( idLocalInLayer ) );
 		return nullptr;
@@ -438,9 +380,9 @@ public:
 	BOOL IsDrawOutPartlyBottom( const XE::VEC2& vPos );
 	BOOL IsDrawOutPartlyTop( const XE::VEC2& vPos );
 	void SetPlayTime( float secPlay );
-	XSprite* GetSprite( int idx );
+	const XSprite* GetSprite( int idx ) const;
+	XSprite* GetSpriteMutable( int idx );  // 이건 장차 없어져야한다.
 	// file
-	BOOL Load( LPCTSTR szFilename, const XE::xHSL& hsl, BOOL bKeepSrc, bool bAsyncLoad );
 	// preload sprobj
 	XSprObj* AddSprObj( LPCTSTR szSprObj, ID idAct, xRPT_TYPE playMode, ID idBase, ID idLocal, ID idActParent, ID idLayerParent );
 	// virtual 
@@ -463,5 +405,20 @@ public:
 //	friend class XKeyCreateObj;
 	int Serialize( XArchive& ar );
 	int DeSerialize( XArchive& ar );
+	bool IsBatchRender() const;
+	inline bool IsLoaded() const {
+		return m_ppObjActs != nullptr;
+	}
+#ifdef _XASYNC_SPR
+	GET_SET_ACCESSOR_CONST( const struct tagAsync&, Async );
+	inline bool IsAsyncLoading() const;
+private:
+	void OnFinishLoad( XSprDat* pSprDat );
+#ifdef WIN32
+	xSpr::XSPDat LoadInternal( LPCTSTR szFilename, const XE::xHSL& hsl, bool bUseAtlas, bool bBatch, bool bAsync, ID* pOutidAsync ) const;
+#endif // WIN32
+	xSpr::XSPDat LoadInternal( const char* cFilename, const XE::xHSL& hsl, bool bUseAtlas, bool bBatch, bool bAsync, ID* pOutidAsync ) const;
+#endif // _XASYNC_SPR
+private:
 };
 

@@ -35,9 +35,10 @@ void XSceneReady::Release()
 //	m_spParam.reset();
 }
 
-XSceneReady::XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam ) 
+XSceneReady::XSceneReady( XGame *pGame, XSPSceneParam& spBaseParam ) 
 	: XSceneBase( pGame, XGAME::xSC_READY )
 	, m_Layout(_T("layout_ready_battle.xml"))
+	, m_spParam( std::static_pointer_cast<XGAME::xSceneBattleParam>( spBaseParam ) )
 { 
 	XBREAK( SCENE_READY != NULL );
 	SCENE_READY = this;
@@ -45,11 +46,11 @@ XSceneReady::XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam )
 	m_Layout.CreateLayout("ready", this);
 	//
 	// 전투씬 파라메터가 모두 세팅되어 있어야 함.
-	XBREAK( XSceneBattle::sIsEmptyBattleStart() );
-	auto& bs = XSceneBattle::sGetBattleStart();
+	XBREAK( m_spParam->IsInvalid() );
+//	//auto& bs = XSceneBattle::sGetBattleStart();
 //	m_spParam = std::static_pointer_cast<XGAME::xSPM_BATTLE>( spBaseParam );
 	xSET_TEXT( this, "text.name.my", ACCOUNT->GetstrName() );
-	xSET_TEXT( this, "text.name.enemy", bs.m_strName.c_str() );
+	xSET_TEXT( this, "text.name.enemy", m_spParam->m_strName.c_str() );
 	SetButtHander( this, "butt.start", &XSceneReady::OnClickStart );
 	if( ACCOUNT->GetLevel() >= 10 ) {
 		auto pButt = SetButtHander( this, "butt.edit", &XSceneReady::OnClickEdit );
@@ -58,9 +59,12 @@ XSceneReady::XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam )
 	} else {
 		xSET_ENABLE( this, "butt.edit", false );
 	}
+	if( m_spParam->IsPrivateRaid() ) {
+		xSET_ENABLE( this, "butt.edit", false );
+	}
 
 #ifndef _XSINGLE
-	SetButtHander( this, "butt.cancel", &XSceneReady::OnClickCancel, bs.m_idSpot );
+	SetButtHander( this, "butt.cancel", &XSceneReady::OnClickCancel, m_spParam->m_idSpot );
 #endif // not _XSINGLE
 	// 아군 군단
 //	m_spLegion[0] = m_spParam->spLegion[0];
@@ -71,7 +75,7 @@ XSceneReady::XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam )
 	// 우측 적군단
 //	m_spLegion[1] = m_spParam->spLegion[ 1 ];
 	{
-		auto spLegion = bs.m_spLegion[1];
+		auto spLegion = m_spParam->m_spLegion[1];
 		vStart.Set( 436, 47 );
 		v = vStart;
 		for( int i = 2; i >= 0; --i ) {
@@ -79,8 +83,8 @@ XSceneReady::XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam )
 				v.x = vStart.x + 64.f * i;
 				v.y = vStart.y + 58.f * k;
 				int idx = ( i * 5 + k );
-				XSquadron *pSquad = spLegion->GetSquadron( idx );
-				XHero *pHero = nullptr;
+				auto pSquad = spLegion->GetpSquadronByidxPos( idx );
+				XSPHero pHero = nullptr;
 				bool bFog = false;
 				if( pSquad ) {
 					pHero = pSquad->GetpHero();
@@ -106,7 +110,7 @@ XSceneReady::XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam )
 		}
 	}
 	// 제한시간 30초
-	if( bs.IsVsNpc() ) {
+	if( m_spParam->IsVsNpc() ) {
 		xSET_SHOW( this, "text.time", false );
 		m_timerLimit.Off();
 		ClearAutoUpdate();
@@ -116,7 +120,7 @@ XSceneReady::XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam )
 		xSET_SHOW( this, "text.time", true );
 	}
 	// 아군 리더를 미리 선택시켜둠
-	int idxLeader = bs.m_spLegion[0]->GetIdxSquadByLeader();
+	int idxLeader = m_spParam->m_spLegion[0]->GetIdxSquadByLeader();
 	XWndSquadInLegion::sSetidxSelectedSquad( idxLeader );
 	SetbUpdate( true );
 	// 적 군단.
@@ -124,17 +128,17 @@ XSceneReady::XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam )
 
 void XSceneReady::UpdateMyLegion()
 {
-	auto& bs = XSceneBattle::sGetBattleStart();
+//	//auto& bs = XSceneBattle::sGetBattleStart();
 	const XE::VEC2 vStart( 153, 47 );
 	XE::VEC2 v = vStart;
-	auto spLegion = bs.m_spLegion[0];
+	auto spLegion = m_spParam->m_spLegion[0];
 	for( int i = 0; i < 3; ++i ) {
 		for( int k = 0; k < 5; ++k ) {
 			v.x = vStart.x + -64.f * i;
 			v.y = vStart.y + 58.f * k;
 			int idx = ( i * 5 + k );
-			auto pSquad = spLegion->GetSquadron( idx );
-			XHero *pHero = nullptr;
+			auto pSquad = spLegion->GetpSquadronByidxPos( idx );
+			XSPHero pHero = nullptr;
 			if( pSquad )
 				pHero = pSquad->GetpHero();
 			auto pWndSquad = XWndSquadInLegion::sUpdateCtrl( this, idx, v, spLegion );
@@ -156,7 +160,7 @@ void XSceneReady::Create( void )
 int XSceneReady::Process( float dt ) 
 { 
   if( m_timerLimit.IsOver() ) {
-    DoExit( XGAME::xSC_INGAME/*, m_spParam*/ );
+    DoExit( XGAME::xSC_INGAME, m_spParam );
     m_timerLimit.Off();
   }
 
@@ -183,13 +187,13 @@ void XSceneReady::OnMouseMove( float lx, float ly ) {
 
 void XSceneReady::Update()
 {
-	auto& bs = XSceneBattle::sGetBattleStart();
+//	//auto& bs = XSceneBattle::sGetBattleStart();
 	// 좌측 아군
 	UpdateMyLegion();
 	// 리더스킬 표시
 	xSET_SHOW( this, "wnd.leader.skill", true );
 	xSET_SHOW( this, "text.no.leader", false );
-	XHero *pLeader = bs.m_spLegion[0]->GetpLeader();
+	XSPHero pLeader = m_spParam->m_spLegion[0]->GetpLeader();
 	if( pLeader ) {
 		auto strPassive = pLeader->GetpProp()->strPassive;
 		if( !strPassive.empty() ) {
@@ -214,23 +218,23 @@ void XSceneReady::Update()
 	for( int i = 0; i < 2; ++i ) {
 		auto pText = xGET_TEXT_CTRLF( this, "text.power.%d", i);
 		if( pText ) {
-			int powerExcude = XLegion::sGetMilitaryPower( bs.m_spLegion[i] );
+			int powerExcude = XLegion::sGetMilitaryPower( m_spParam->m_spLegion[i] );
 			pText->SetNumberText( powerExcude );
 		}
 	}
 	// 안개 비용 갱신,
 	for( int idx = 0; idx < XGAME::MAX_SQUAD; ++idx ) {
 		ID idWnd = 200 + idx;
-		auto spLegion = bs.m_spLegion[1];
+		auto spLegion = m_spParam->m_spLegion[1];
 		auto pWndSquad = SafeCast2<XWndSquadInLegion*>( Find( idWnd ) );
 		if( XASSERT(pWndSquad) ) {
-			auto pSquad = spLegion->GetpSquadronByIdx( idx );
+			auto pSquad = spLegion->GetpSquadronByidxPos( idx );
 			if( pSquad ) {
 				auto pHeroEnemy = pSquad->GetpHero();
 				// 상성표시 처리
 				auto idxSelected = XWndSquadInLegion::sGetidxSelectedSquad();
 				// 선택된 아군 부대영웅
-				auto pHeroSelected = ACCOUNT->GetCurrLegion()->GetpHeroByIdxSquad( idxSelected );
+				auto pHeroSelected = (idxSelected>=0)? ACCOUNT->GetCurrLegion()->GetpHeroByIdxPos( idxSelected ) : nullptr;
 				if( pHeroSelected ) {
 					int adj = 0;
 					if( XGAME::IsSuperiorMOS( pHeroSelected->GetTypeAtk()
@@ -350,11 +354,11 @@ void XSceneReady::MoveSquadInLegion( int idxSrc, int idxDst, ID snHeroSrc, ID sn
 		return;
 	if( idxSrc == idxDst )
 		return;
-	auto& bs = XSceneBattle::sGetBattleStart();
-	bs.m_spLegion[0]->SwapSlotSquad( idxSrc, idxDst );
+	//auto& bs = XSceneBattle::sGetBattleStart();
+	m_spParam->m_spLegion[0]->SwapSlotSquad( idxSrc, idxDst );
 
-	XHero *pHeroSrc = ACCOUNT->GetHero( snHeroSrc );
-	XHero *pHeroDst = ACCOUNT->GetHero( snHeroDst );
+	XSPHero pHeroSrc = ACCOUNT->GetHero( snHeroSrc );
+	XSPHero pHeroDst = ACCOUNT->GetHero( snHeroDst );
 	XWndSquadInLegion *pSlotSrc = GetWndSquadSlot( idxSrc );
 	// 소스측 wnd가 없을순 없다.
 	if( XBREAK( pSlotSrc == NULL ) )
@@ -387,7 +391,7 @@ int XSceneReady::OnClickMySquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	int idxSquad = (int)p1;
 	CONSOLE( "OnClickMySquad:idx=%d", idxSquad );
-	auto pHero = ACCOUNT->GetCurrLegion()->GetpHeroByIdxSquad( idxSquad );
+	auto pHero = ACCOUNT->GetCurrLegion()->GetpHeroByIdxPos( idxSquad );
 	if( pHero ) {
 		XWndSquadInLegion::sSetidxSelectedSquad( idxSquad );
 		auto pWndHeroes = SafeCast2<XWndSelectHeroesInReady*>( Find("wnd.heroes") );
@@ -414,19 +418,19 @@ int XSceneReady::OnClickEnemySquad( XWnd* pWnd, DWORD p1, DWORD p2 )
 	int idx = (int)p1;
 	CONSOLE( "OnClickMySquad:idx=%d", idx );
 	//
-	auto& bs = XSceneBattle::sGetBattleStart();
-	auto spLegion = bs.m_spLegion[1];
+	//auto& bs = XSceneBattle::sGetBattleStart();
+	auto spLegion = m_spParam->m_spLegion[1];
 	if( XASSERT(spLegion) ) {
 		int goldCost = ACCOUNT->GetCostOpenFog( spLegion );
 		if( ACCOUNT->IsEnoughGold( goldCost ) ) {
-			auto pSquad = spLegion->GetpSquadronByIdx( idx );
+			auto pSquad = spLegion->GetpSquadronByidxPos( idx );
 			if( pSquad ) {
 				auto pHero = pSquad->GetpHero();
 				if( XASSERT(pHero) ) {
 #ifndef _XSINGLE
 					if( spLegion->IsFog( pHero->GetsnHero() ) )
 						GAMESVR_SOCKET->SendReqClickFogSquad( GAME, 
-																									bs.m_idSpot, 
+																									m_spParam->m_idSpot, 
 																									pHero->GetsnHero(), 0 );
 #endif // not _XSINGLE
 				}
@@ -443,14 +447,22 @@ int XSceneReady::OnClickStart( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("OnClickStart");
 	//
-	GAMESVR_SOCKET->SendReqChangeSquad( GAME, 
-										ACCOUNT->GetCurrLegionIdx(), 
-										ACCOUNT->GetCurrLegion().get() );
-	GAMESVR_SOCKET->SendReqBattleStart( GAME );
+	GAMESVR_SOCKET->SendReqChangeSquad( GAME,
+																			ACCOUNT->GetCurrLegionIdx(),
+																			ACCOUNT->GetCurrLegion().get() );
+	GAMESVR_SOCKET->SendReqBattleStart( GAME, m_spParam->m_idSpot );
 	return 1;
 }
 
 
+void XSceneReady::RecvBattleStart()
+{
+// 	if( m_spParam->m_typeBattle == XGAME::xBT_PRIVATE_RAID ) {
+// 		DoExit( XGAME::xSC_PRIVATE_RAID, m_spParam );
+// 	} else {
+		DoExit( XGAME::xSC_INGAME, m_spParam );
+// 	}
+}
 /****************************************************************
 * @brief 
 *****************************************************************/
@@ -469,10 +481,6 @@ int XSceneReady::OnClickCancel( XWnd* pWnd, DWORD p1, DWORD p2 )
 	return 1;
 }
 
-void XSceneReady::RecvBattleStart()
-{
-	DoExit( XGAME::xSC_INGAME/*, m_spParam*/ );
-}
 
 /****************************************************************
 * @brief 
@@ -493,10 +501,10 @@ int XSceneReady::OnClickEdit( XWnd* pWnd, DWORD p1, DWORD p2 )
 {
 	CONSOLE("OnClickEdit");
 	//
-	auto& bs = XSceneBattle::sGetBattleStart();
+	//auto& bs = XSceneBattle::sGetBattleStart();
 	m_bEditMode = !m_bEditMode;
 	int idxSquad = XWndSquadInLegion::sGetidxSelectedSquad();
-	auto pHero = bs.m_spLegion[0]->GetpHeroByIdxSquad( idxSquad );
+	auto pHero = m_spParam->m_spLegion[0]->GetpHeroByIdxPos( idxSquad );
 	if( pHero ) {
 		// 영웅선택창을 띄운다.
 		UpdateWndSelectHeroes();
@@ -515,9 +523,9 @@ int XSceneReady::OnClickEdit( XWnd* pWnd, DWORD p1, DWORD p2 )
 */
 XWndSelectHeroesInReady* XSceneReady::UpdateWndSelectHeroes()
 {
-	auto& bs = XSceneBattle::sGetBattleStart();
+	//auto& bs = XSceneBattle::sGetBattleStart();
 	int idxSquad = XWndSquadInLegion::sGetidxSelectedSquad();
-	auto pHeroSelected = bs.m_spLegion[ 0 ]->GetpHeroByIdxSquad( idxSquad );
+	auto pHeroSelected = m_spParam->m_spLegion[ 0 ]->GetpHeroByIdxPos( idxSquad );
 	// 영웅선택 팝업 생성
 	XBREAK( Find("wnd.heroes") );		// 기존에 이미 있으면 반드시 파괴시키고 다시 불러야함.
 	auto pWndHeroes = new XWndSelectHeroesInReady( pHeroSelected );

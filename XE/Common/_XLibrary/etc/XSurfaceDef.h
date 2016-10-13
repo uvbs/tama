@@ -11,7 +11,7 @@
 #define _XSURFACEDEF_H__
 
 // draw mode
-enum xDM_TYPE {
+enum xDM_TYPE : int {
 	xDM_ERROR = -1,
 	xDM_NONE = 0,		// 그림을 찍지 않음
 	xDM_NORMAL,
@@ -55,6 +55,27 @@ inline xDM_TYPE ConvertBlendFuncDMTypeDmType( xtBlendFunc func ) {
 		break;
 	}
 	return xDM_NORMAL;
+}
+
+inline xtBlendFunc ConvertDMTypeToBlendFunc( xDM_TYPE drawMode ) {
+	switch( drawMode ) {
+	case xDM_NONE:
+		return XE::xBF_NO_DRAW;
+	case xDM_NORMAL:
+	case xDM_MULTIPLY:		
+		return XE::xBF_MULTIPLY;
+	case xDM_SCREEN:		
+		return XE::xBF_ADD;
+	case xDM_SUBTRACT:		
+		return XE::xBF_SUBTRACT;
+	case xDM_GRAY:		
+		return XE::xBF_GRAY;
+		break;
+	default:
+		XBREAK(1);
+		break;
+	}
+	return xBF_NONE;
 }
 }; // namespace XE
 

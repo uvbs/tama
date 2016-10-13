@@ -7,6 +7,7 @@
 #include "XEObjMngWithType.h"
 #include "XSquadObj.h"
 #include "XMsgUnit.h"
+#include "XFramework/Game/XEWndWorld.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -20,7 +21,7 @@ using namespace XGAME;
 using namespace XSKILL;
 
 ////////////////////////////////////////////////////////////////
-XUnitCyclops::XUnitCyclops( XSPSquad spSquadObj,
+XUnitCyclops::XUnitCyclops( XSPSquadObj spSquadObj,
 							ID idProp,
 							BIT bitSide, 
 							const XE::VEC3& vPos,

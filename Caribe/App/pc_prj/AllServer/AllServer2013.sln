@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DBAgentServer_2013", "..\DBAgentServer\DBAgentServer\DBAgentServer2013.vcxproj.vcxproj", "{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -27,31 +27,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{31E4A977-014C-488C-95A7-F20AAC700E13}"
 EndProject
 Global
-	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 7
-		SccProjectName0 = Perforce\u0020Project
-		SccLocalPath0 = ..\\..\\..\\..
-		SccProvider0 = MSSCCI:Perforce\u0020SCM
-		SccProjectFilePathRelativizedFromConnection0 = Caribe\\App\\pc_prj\\AllServer\\
-		SccProjectUniqueName1 = ..\\DBAgentServer\\DBAgentServer\\DBAgentServer2013.vcxproj.vcxproj
-		SccLocalPath1 = ..\\..\\..\\..
-		SccProjectFilePathRelativizedFromConnection1 = Caribe\\App\\pc_prj\\DBAgentServer\\DBAgentServer\\
-		SccProjectUniqueName2 = ..\\GameServer\\GameServer\\GameServer2013.vcxproj.vcxproj
-		SccLocalPath2 = ..\\..\\..\\..
-		SccProjectFilePathRelativizedFromConnection2 = Caribe\\App\\pc_prj\\GameServer\\GameServer\\
-		SccProjectUniqueName3 = ..\\LoginServer\\LoginServer\\LoginServer2013.vcxproj.vcxproj
-		SccLocalPath3 = ..\\..\\..\\..
-		SccProjectFilePathRelativizedFromConnection3 = Caribe\\App\\pc_prj\\LoginServer\\LoginServer\\
-		SccProjectUniqueName4 = ..\\..\\..\\..\\XE\\prj\\xe_server\\xe_server\\xe_server2013.vcxproj.vcxproj
-		SccLocalPath4 = ..\\..\\..\\..
-		SccProjectFilePathRelativizedFromConnection4 = XE\\prj\\xe_server\\xe_server\\
-		SccProjectUniqueName5 = ..\\Caribe\\Caribe\\Caribe2013.vcxproj.vcxproj
-		SccLocalPath5 = ..\\..\\..\\..
-		SccProjectFilePathRelativizedFromConnection5 = Caribe\\App\\pc_prj\\Caribe\\Caribe\\
-		SccProjectUniqueName6 = ..\\..\\..\\..\\XE\\prj\\xe_client\\xe_client\\xe_client2013.vcxproj.vcxproj
-		SccLocalPath6 = ..\\..\\..\\..
-		SccProjectFilePathRelativizedFromConnection6 = XE\\prj\\xe_client\\xe_client\\
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_bot|Win32 = Debug_bot|Win32
 		Debug_bot|x64 = Debug_bot|x64
@@ -59,8 +34,8 @@ Global
 		Debug_DummyGenerator|x64 = Debug_DummyGenerator|x64
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
-		DebugCampHero2|Win32 = DebugCampHero2|Win32
-		DebugCampHero2|x64 = DebugCampHero2|x64
+		DebugGMO|Win32 = DebugGMO|Win32
+		DebugGMO|x64 = DebugGMO|x64
 		Rel_Bot|Win32 = Rel_Bot|Win32
 		Rel_Bot|x64 = Rel_Bot|x64
 		Rel_DummyGenerator|Win32 = Rel_DummyGenerator|Win32
@@ -82,9 +57,9 @@ Global
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.Debug|Win32.Build.0 = Debug|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.Debug|x64.ActiveCfg = Debug|Win32
-		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugCampHero2|Win32.ActiveCfg = DebugCampHero2|Win32
-		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugCampHero2|Win32.Build.0 = DebugCampHero2|Win32
-		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugCampHero2|x64.ActiveCfg = DebugCampHero2|Win32
+		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugGMO|Win32.ActiveCfg = Debug_GMO|Win32
+		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugGMO|Win32.Build.0 = Debug_GMO|Win32
+		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.DebugGMO|x64.ActiveCfg = Debug|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.Rel_Bot|Win32.ActiveCfg = Rel_Bot|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.Rel_Bot|Win32.Build.0 = Rel_Bot|Win32
 		{F0CA98AD-98DA-4DED-9C0B-2372EA11DD87}.Rel_Bot|x64.ActiveCfg = Rel_Bot|Win32
@@ -109,9 +84,9 @@ Global
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.Debug|Win32.ActiveCfg = Debug|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.Debug|Win32.Build.0 = Debug|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.Debug|x64.ActiveCfg = Debug|Win32
-		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugCampHero2|Win32.ActiveCfg = DebugCampHero2|Win32
-		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugCampHero2|Win32.Build.0 = DebugCampHero2|Win32
-		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugCampHero2|x64.ActiveCfg = DebugCampHero2|Win32
+		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugGMO|Win32.ActiveCfg = Debug_GMO|Win32
+		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugGMO|Win32.Build.0 = Debug_GMO|Win32
+		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.DebugGMO|x64.ActiveCfg = Debug|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.Rel_Bot|Win32.ActiveCfg = Rel_Bot|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.Rel_Bot|Win32.Build.0 = Rel_Bot|Win32
 		{7A080E50-4D37-449A-B3FE-2BB1863D5C6E}.Rel_Bot|x64.ActiveCfg = Rel_Bot|Win32
@@ -136,9 +111,9 @@ Global
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.Debug|Win32.Build.0 = Debug|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.Debug|x64.ActiveCfg = Debug|Win32
-		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugCampHero2|Win32.ActiveCfg = DebugCampHero2|Win32
-		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugCampHero2|Win32.Build.0 = DebugCampHero2|Win32
-		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugCampHero2|x64.ActiveCfg = DebugCampHero2|Win32
+		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugGMO|Win32.ActiveCfg = Debug_GMO|Win32
+		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugGMO|Win32.Build.0 = Debug_GMO|Win32
+		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.DebugGMO|x64.ActiveCfg = Debug|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.Rel_Bot|Win32.ActiveCfg = Rel_Bot|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.Rel_Bot|Win32.Build.0 = Rel_Bot|Win32
 		{B34B601B-C01D-4A8D-A4D2-6A832E45AE0D}.Rel_Bot|x64.ActiveCfg = Rel_Bot|Win32
@@ -166,10 +141,10 @@ Global
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.Debug|Win32.Build.0 = Debug|Win32
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.Debug|x64.ActiveCfg = Debug|x64
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.Debug|x64.Build.0 = Debug|x64
-		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugCampHero2|Win32.ActiveCfg = DebugCampHero2|Win32
-		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugCampHero2|Win32.Build.0 = DebugCampHero2|Win32
-		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugCampHero2|x64.ActiveCfg = DebugCampHero2|x64
-		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugCampHero2|x64.Build.0 = DebugCampHero2|x64
+		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugGMO|Win32.ActiveCfg = Debug_GMO|Win32
+		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugGMO|Win32.Build.0 = Debug_GMO|Win32
+		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugGMO|x64.ActiveCfg = Debug|x64
+		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.DebugGMO|x64.Build.0 = Debug|x64
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.Rel_Bot|Win32.ActiveCfg = Rel_Bot|Win32
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.Rel_Bot|Win32.Build.0 = Rel_Bot|Win32
 		{B014BA75-0D5C-4F52-886A-BF629C38BEFE}.Rel_Bot|x64.ActiveCfg = Rel_Bot|x64
@@ -196,9 +171,8 @@ Global
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug_DummyGenerator|x64.ActiveCfg = Debug_GLES2|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug|Win32.ActiveCfg = Debug_Patch5|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Debug|x64.ActiveCfg = Debug_Patch5|Win32
-		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugCampHero2|Win32.ActiveCfg = Debug_Softnyx|Win32
-		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugCampHero2|Win32.Build.0 = Debug_Softnyx|Win32
-		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugCampHero2|x64.ActiveCfg = Debug_Softnyx|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugGMO|Win32.ActiveCfg = DebugGMO|Win32
+		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.DebugGMO|x64.ActiveCfg = Debug_Patch5|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Rel_Bot|Win32.ActiveCfg = Release|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Rel_Bot|x64.ActiveCfg = Rel_Bot|Win32
 		{1565A2CB-DB14-4F22-8545-F51B7C11C502}.Rel_DummyGenerator|Win32.ActiveCfg = Rel_Bot|Win32
@@ -215,9 +189,8 @@ Global
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug_DummyGenerator|x64.ActiveCfg = Debug_GLES2|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug|Win32.ActiveCfg = Debug_Patch5|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Debug|x64.ActiveCfg = Debug_Patch5|Win32
-		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugCampHero2|Win32.ActiveCfg = Debug_single|Win32
-		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugCampHero2|Win32.Build.0 = Debug_single|Win32
-		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugCampHero2|x64.ActiveCfg = Debug_single|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugGMO|Win32.ActiveCfg = DebugGMO|Win32
+		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.DebugGMO|x64.ActiveCfg = Debug_Patch5|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Rel_Bot|Win32.ActiveCfg = Release|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Rel_Bot|x64.ActiveCfg = Rel_Bot|Win32
 		{4E6645B0-5901-4E21-A75D-C7D453C9A552}.Rel_DummyGenerator|Win32.ActiveCfg = Rel_Bot|Win32

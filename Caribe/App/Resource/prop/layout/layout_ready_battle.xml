@@ -36,22 +36,22 @@
         <!--남은 시간-->
       </text>
     </img>
-    <butt img_up="common_butt_mid.png" key="butt.start" posx="center" posy="118" text="2038" font_size="30" font="font_text_b" font_style="stroke">
+    <butt img_up="common_butt_mid.png" key="butt.start" posx="center" posy="118" text="2038" font_size="30" font="font_text_b" font_style="stroke" format_surface="argb8888">
       <!--전투-->
     </butt>
-    <butt img_up="common_butt_mid.png" key="butt.edit" posx="center" posy="160" text="2244" font_size="30" font="font_text_b" font_style="stroke">
+    <butt img_up="common_butt_mid.png" key="butt.edit" posx="center" posy="160" text="2244" font_size="30" font="font_text_b" font_style="stroke" format_surface="argb8888">
       <!--진형편집-->
     </butt>
-    <butt img_up="common_butt_mid.png" key="butt.cancel" posx="center" posy="203" text="2033" font_size="30" font="font_text_b" font_style="stroke">
+    <butt img_up="common_butt_mid.png" key="butt.cancel" posx="center" posy="203" text="2033" font_size="30" font="font_text_b" font_style="stroke" format_surface="argb8888">
       <!--퇴각-->
     </butt>
     <text font_size="35" font="font_text_b" style="stroke" posx="center" posy="50" text="2039">
       <!--전투준비-->
     </text>
-    <text font_size="25" font="font_text_b" width="142" style="stroke" align="hcenter" posx="42" posy="16" key="text.name.my">
+    <text font_size="25" font="font_mnls" width="142" style="stroke" align="hcenter" posx="42" posy="16" key="text.name.my">
       <!--내 이름-->
     </text>
-    <text font_size="25" font="font_text_b" width="142" style="stroke" align="hcenter" posx="456" posy="16" key="text.name.enemy">
+    <text font_size="25" font="font_mnls" width="142" style="stroke" align="hcenter" posx="456" posy="16" key="text.name.enemy">
       <!--적이름-->
     </text>
     <text posx="center" posy="283" font="font_text_s" font_size="20" font_style="stroke" text="2344" text_col="yellow" show="off" key="text.no.leader">

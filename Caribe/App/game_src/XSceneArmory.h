@@ -56,7 +56,7 @@ public:
 	int OnClickBuy(XWnd *pWnd, DWORD p1, DWORD p2);							// 구입 버튼
 	int OnClickBuyOK(XWnd *pWnd, DWORD p1, DWORD p2);						// 구입 확인 버튼
 
-	int OnClickPopupCancel(XWnd *pWnd, DWORD p1, DWORD p2);					// 팝업 취소
+//	int OnClickPopupCancel(XWnd *pWnd, DWORD p1, DWORD p2);					// 팝업 취소
 
 	// 업데이트 함수
 //	void RecvUpdate();				// 상단 골드 & 캐쉬 업데이트
@@ -72,7 +72,5 @@ public:
 
 extern XSceneArmory *SCENE_ARMORY;
 namespace XGAME {
-	void UpdateItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int cost );
-// 	void UpdateEquipItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int cost );
-// 	void UpdateEtcItemTooltip( XPropItem::xPROP *pProp, XWnd *pRoot, int cost );
+	void UpdateItemTooltip( const XPropItem::xPROP *pProp, XWnd *pRoot, const _tstring& idsPay, int cost );
 };

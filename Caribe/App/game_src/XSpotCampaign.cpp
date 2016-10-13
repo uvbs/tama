@@ -38,11 +38,14 @@ XSpotCampaign::XSpotCampaign( XWorld *pWorld, XPropWorld::xCampaign* pProp, XPro
 		m_spCampObj = xCampaign::XCampObj::sCreateCampObj( pPropCamp, 0 );
 	}
 }
+
 void XSpotCampaign::OnCreateNewOnServer( XSPAcc spAcc )
 {
 }
 
-
+/** //////////////////////////////////////////////////////////////////
+ @brief 
+*/
 void XSpotCampaign::Serialize( XArchive& ar ) 
 {
 	XSpot::Serialize( ar );
@@ -52,6 +55,10 @@ void XSpotCampaign::Serialize( XArchive& ar )
 	XASSERT(m_spCampObj != nullptr);
 	XCampObj::sSerialize( m_spCampObj, ar );
 }
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 
+*/
 BOOL XSpotCampaign::DeSerialize( XArchive& ar, DWORD ver ) 
 {
 	XSpot::DeSerialize( ar, ver );
@@ -81,22 +88,7 @@ int XSpotCampaign::DoDropItem( XSPAcc spAcc, XArrayLinearN<ItemBox, 256> *pOutAr
 	XBREAK( lvSpot == 0 );
 	// 징표등 기본 드랍.
 	XSpot::DoDropItem( spAcc, pOutAry, lvSpot, multiplyDropNum );
-// 	// 장비드랍
-// 	XBREAK( m_spCampaignObj->GetspStageLastPlay() == nullptr );
-// 	auto spPropStage = m_spCampaignObj->GetspStageLastPlay()->GetspPropStage();
-// 	if( !spPropStage->sidDropItem.empty() ) {
-// 		if( XASSERT(spPropStage->rateDrop > 0 ) ) {
-// 			if( XE::IsTakeChance(spPropStage->rateDrop) ) {
-// 				auto pPropItem = PROP_ITEM->GetpProp( spPropStage->sidDropItem );
-// 				if( XASSERT(pPropItem) ) {
-// 					ItemBox itemBox;
-// 					std::get<0>( itemBox ) = pPropItem;
-// 					std::get<1>( itemBox ) = 1;
-// 					pOutAry->Add( itemBox );
-// 				}
-// 			}
-// 		}
-// 	}
+
 	return pOutAry->size();
 }
 
@@ -117,8 +109,6 @@ void XSpotCampaign::CreateLegion( xCampaign::XStageObj *pStageObj )
 	auto spLegion = pStageObj->CreateLegion( m_spCampObj, 0, 0 );
 	SetspLegion( pStageObj->GetspLegion() );	// 스팟의 군단정보에도 넣는다.
 	//
-// 	int power = XLegion::sGetMilitaryPower( GetspLegion(), nullptr );
-// 	SetPower( power );
 	UpdatePower( GetspLegion() );
 }
 
@@ -138,6 +128,26 @@ void XSpotCampaign::OnAfterBattle( XSPAcc spAccWin, ID idAccLose, bool bWin, int
 	XSpot::OnAfterBattle( spAccWin, idAccLose, bWin, numStar, bRetreat );
 	if( m_spCampObj )
 		m_spCampObj->OnFinishBattle();
+}
+
+void XSpotCampaign::SerializeForBattle( XArchive* pOut, const XParamObj2& param )
+{
+	XSpot::SerializeForBattle( pOut, param );
+	///< 
+	const int idxStage = param.GetInt( "idxStage" );
+	const int idxFloor = param.GetInt( "idxFloor" );
+	*pOut << idxStage;
+	*pOut << idxFloor;
+	// 요청한 스테이지의 정보를 팩킹함.
+	const auto spStage = m_spCampObj->GetspStage( idxStage, idxFloor );
+	XStageObj::sSerialize( *pOut, spStage );
+}
+
+void XSpotCampaign::DeSerializeForBattle( XArchive& arLegion, XArchive& arAdd, XSPAcc spAcc )
+{
+	XSpot::DeSerializeForBattle( arLegion, arAdd, spAcc );
+	int idxStage, idxFloor;
+	arAdd >> idxStage >> idxFloor;
 }
 
 void XSpotCampaign::ResetLevel( XSPAcc spAcc )
@@ -179,3 +189,4 @@ void XSpotCampaign::ClearSpot()
 		m_spCampObj->DestroyLegionbyLastPlayStage();
 	XSpot::ClearSpot();
 }
+

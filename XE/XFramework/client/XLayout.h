@@ -1,9 +1,38 @@
-﻿#pragma once
+﻿/**
+@file     hello.c
+@brief    hello world  소스파일.
+
+파일여러줄 설명입니다.\n
+진짜 여러줄 입니다.\n
+음..하나.둘.셋
+넷다섯.
+*/
+
+/**
+@mainpage Hello World 메인페이지
+@section intro 소개
+- 소개      :   프로그램의 기본을 배울수있는 프로그램.
+@section   Program 프로그램명
+- 프로그램명  :   Hello World 프로그램.
+- 프로그램내용    :   화면에 Hello World!을 출력한다.
+@section  INOUTPUT    입출력자료
+- INPUT           :   없음.
+- OUTPUT      :   Hello World 화면출력.
+@section  CREATEINFO      작성정보
+- 작성자      :   infiniterun
+- 작성일      :   2005/04/18
+@section  MODIFYINFO      수정정보
+- 수정자/수정일   : 수정내역
+- infiniterun/2005.0418    :   "Helo World"에 "!"추가
+*/
+
+
+#pragma once
 #include "tinyxml/tinyxml.h"
 #include "XBaseFontDat.h"
 #include "XBaseDelegate.h"
 #include "_Wnd2/XWnd.h"
-#include "_Wnd2/XWndSprObj.h"
+#include "XFramework/XParamObj.h"
 
 #define XLAYOUT_ELEM	TiXmlElement
 #define XLAYOUT_NODE	TiXmlNode
@@ -27,6 +56,7 @@ class XWndList;
 //////////////////////////////////////////////////////////////////////////
 /**
  커스텀 컨트롤을 위해 XLayout을 상속받는 현 방식은 최초 레이아웃 객체 생성시에
+ ====================================================================
  항상 상속받은 객체를 수동으로 생성시켜야 한다는 단점이 있다.
  메인 레이아웃은 싱글톤 형태로 수동으로 생성시키고 커스텀 컨트롤은 델리게이트
  형태로 생성시키는게 좀더 편할듯 하다.
@@ -126,7 +156,8 @@ public:
 		XE::xtBlendFunc m_funcBlend = XE::xBF_MULTIPLY;
 		bool m_bFlipX = false;
 		bool m_bFlipY = false;
-		XE::xtPixelFormat m_Format = XE::xPF_ARGB4444;
+		XE::xtPixelFormat m_Format = XE::xPF_NONE;
+		XParamObj m_Param;
 		xATTR_ALL() {
 			xfFlag = 0;
 			idText = 0;
@@ -188,99 +219,102 @@ public:
 		return Load( strcFullpath.c_str() );
 	}
 	BOOL Reload( void );
+	bool CreateLayout2( const std::string& strKeyWnd, XWnd *pParent );
+	bool CreateLayout2( TiXmlElement *elemNode, XWnd *pParent ) const;
 	BOOL CreateLayout( const char *cKey, XWnd *pParent, const char *cKeyGroup = NULL );
 	inline BOOL CreateLayout( const std::string& strcKey, XWnd *pParent, const char *cKeyGroup = NULL ) {
 		return CreateLayout( strcKey.c_str(), pParent, cKeyGroup );
 	}
 	BOOL CreateLayout( TiXmlElement *elemNode, XWnd *pParent );
 	XWnd* CreateXWindow( TiXmlElement *elemNode );
+	XWnd* CreateXWindow2( TiXmlElement *elemNode ) const;
 	float GetLeftPosButt( _tstring& strSpr, int idActUp, XWnd *pParent );
-	XLAYOUT_ELEM* GetElement( const char* cKey, TiXmlNode *nodeRoot=NULL );
-	XLAYOUT_NODE* GetNode( const char* cKey, TiXmlNode *nodeRoot=NULL );
-	TiXmlNode* FindNode( TiXmlNode *nodeWnd, const char *cKey );
+	XLAYOUT_ELEM* GetElement( const char* cKey, TiXmlNode *nodeRoot=NULL ) const;
+	XLAYOUT_NODE* GetNode( const char* cKey, TiXmlNode *nodeRoot=NULL ) const;
+	TiXmlNode* FindNode( TiXmlNode *nodeWnd, const char *cKey ) const;
 	void AddWndParent( XWnd *pWnd, XWnd *pParent, const xATTR_ALL& attrAll, int idxMulti=-1 );
 	// control
-	XWnd* CreateStaticText( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, const xATTR_ALL& attrAll );
+//	XWnd* CreateStaticText( const char *cCtrlName, TiXmlElement *elemCtrl, const XWnd *pParent, const xATTR_ALL& attrAll ) const;
 	XWnd* CreateStaticTextOnlyOne( const char *cCtrlName, 
 								TiXmlElement *elemCtrl, 
-								XWnd *pParent, 
+								const XWnd *pParent, 
 								const xATTR_ALL& attr, 
-								int idxMulti=0 );
-	XWnd* CreateSlideCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, const xATTR_ALL& attrAll );
-	XWnd* CreateImgCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, const xATTR_ALL& attrAll, int idxMulti=0 );
+								int idxMulti=0 ) const;
+	XWnd* CreateSlideCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, const XWnd *pParent, const xATTR_ALL& attrAll ) const;
+	XWnd* CreateImgCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, const XWnd* pParent, const xATTR_ALL& attrAll, int idxMulti=0 ) const;
 	XWnd* CreateSprCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, const xATTR_ALL& attrAll );
 	XWnd* CreatePopupFrame( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, const xATTR_ALL& attrAll );
-	XWnd* CreateButtonCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent
+	XWnd* CreatePopupFrame2( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, const xATTR_ALL& attrAll ) const;
+	XWnd* CreateButtonCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, const XWnd *pParent
 							, const xATTR_ALL& attrAll
-//							, const xATTR_BUTT& attrButt
-							, int idxMulti=0 );
+							, int idxMulti=0 ) const;
 	XWnd* CreateRadioButtonCtrl( const char *cCtrlName, TiXmlElement *elemCtrl, 
-								XWnd *pParent,
+								const XWnd *pParent,
 								const ID idGroup,
 								const xATTR_ALL& attrAll, 
-//								const xATTR_BUTT& attrButt,
-								int idxMulti=0 );
+								int idxMulti=0 ) const;
 	XWnd* CreateProgressBarCtrl( const char *cCtrlName, 
 								TiXmlElement *elemCtrl, 
-								XWnd *pParent, 
-								const xATTR_ALL& attrAll );
+								const XWnd *pParent, 
+								const xATTR_ALL& attrAll ) const;
 	XWnd* CreateProgressBarCtrl2( const char *cCtrlName, 
 								TiXmlElement *elemCtrl, 
-								XWnd *pParent, 
-								const xATTR_ALL& attrAll );
-	int LoadLayer( XWndProgressBar2 *pBar, TiXmlElement *pRoot );
+								const XWnd *pParent, 
+								const xATTR_ALL& attrAll ) const;
+	int LoadLayer( XWndProgressBar2 *pBar, TiXmlElement *pRoot ) const;
 	XWnd* CreateTabViewCtrl( const char *cCtrlName, 
 							TiXmlElement *elemCtrl, 
 							XWnd *pParent,
 							const xATTR_ALL& attrAll );
 	int AddTab( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, const xATTR_ALL& attrAll );
-	XWnd* CreateListCtrl( const char *cCtrlName, 
-						TiXmlElement *elemCtrl, 
-						XWnd *pParent, 
-						const xATTR_ALL& attrAll );
-	XWnd* CreateSlideDownCtrl( const char *cCtrlName, 
-								TiXmlElement *elemCtrl, 
-								XWnd *pParent, 
-								const xATTR_ALL& attrAll );
-	XWnd* CreateEditBoxCtrl( const char *cCtrlName, 
-							TiXmlElement *elemCtrl, 
-							XWnd *pParent, 
-							const xATTR_ALL& attrAll );
-	XWnd* CreateScrollViewCtrl( const char *cCtrlName, 
-								TiXmlElement *elemCtrl, 
-								XWnd *pParent, 
-								const xATTR_ALL& attrAll );
+	XWnd* CreateListCtrl( const char *cCtrlName,
+												TiXmlElement *elemCtrl,
+												const XWnd *pParent,
+												const xATTR_ALL& attrAll ) const;
+	XWnd* CreateSlideDownCtrl( const char *cCtrlName,
+														 TiXmlElement *elemCtrl,
+														 const XWnd *pParent,
+														 const xATTR_ALL& attrAll );
+	XWnd* CreateEditBoxCtrl( const char *cCtrlName,
+													 TiXmlElement *elemCtrl,
+													 const XWnd *pParent,
+													 const xATTR_ALL& attrAll ) const;
+	XWnd* CreateScrollViewCtrl( const char *cCtrlName,
+															TiXmlElement *elemCtrl,
+															const XWnd *pParent,
+															const xATTR_ALL& attrAll ) const;
 	// Wnd
 //	virtual XWndPopup* CreatePopupWnd( const xATTR_ALL& attr );
 	virtual XWndTab2* CreateTabViewWnd( const xATTR_ALL& attr );
-	virtual XWndSlideDown* CreateSlideDownWnd( const xATTR_ALL& attr );
-	virtual XWndPageSlideWithXML* CreateSlideWnd( const xATTR_ALL& attr, TiXmlElement *elemCtrl );
-	virtual XWndEdit* CreateEditBoxWnd( const xATTR_ALL& attr );
-	virtual XWndScrollView* CreateScrollViewWnd( const xATTR_ALL& attr );
+	virtual XWndSlideDown* CreateSlideDownWnd( const xATTR_ALL& attr ) const;
+	virtual XWndPageSlideWithXML* CreateSlideWnd( const xATTR_ALL& attr, TiXmlElement *elemCtrl ) const;
+	virtual XWndEdit* CreateEditBoxWnd( const xATTR_ALL& attr ) const;
+	virtual XWndScrollView* CreateScrollViewWnd( const xATTR_ALL& attr ) const;
 	
 	// attribute
-	int GetAttrCommon( TiXmlElement *elemCtrl, xATTR_ALL *pOut );
-	int GetAttrColor( TiXmlElement *elemCtrl, const char *cAttrKey, XCOLOR *pOutColor );
-	int GetAttrRGBA( TiXmlElement *elemCtrl, const char *cAttrKey, BYTE *pColElem );
-	int GetAttrFont( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring *pOutStr, float *pOutSize, xFONT::xtStyle *pOutStyle );
-	int GetAttrPos( TiXmlElement *elemCtrl, const char *cAttrKey, XE::VEC2 *pOut, XE::xAlign *pOutAlign=NULL );
-	int GetAttrPos( TiXmlElement *elemCtrl, const char *cAttrKey, xATTR_ALL *pOut );
-	int GetAttrSize( TiXmlElement *elemCtrl, XE::VEC2 *pOut );
-	int GetAttrScale( TiXmlElement *elemCtrl, XE::VEC2 *pOut );
-	int GetAttrText( TiXmlElement *elemCtrl, const char *cAttrKey, ID *pOut );
-	int GetAttrTextAlign( TiXmlElement *elemCtrl, XE::xAlign *pOut, float *pOutWidth );
-	int GetAttrWinID( TiXmlElement *elemCtrl, ID *pOut );
-	int GetAttrFile( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring *pOutStr );
-	int GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, BOOL *pOut );
-	bool GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, bool *pOut );
-	int GetAttrNum( TiXmlElement *elemCtrl );
-	XE::VEC2 GetAttrDist( TiXmlElement *elemCtrl );
-	//
-//	int GetAttrCtrlButton( TiXmlElement *elemCtrl, xATTR_BUTT *pOut );
-//	void GetAttrCtrlText( TiXmlElement *elemCtrl, xATTR_ALL *pOut );
+	int GetAttrCommon( TiXmlElement *elemCtrl, xATTR_ALL *pOut ) const;
+	int GetAttrColor( TiXmlElement *elemCtrl, const char *cAttrKey, XCOLOR *pOutColor ) const;
+	int GetAttrRGBA( TiXmlElement *elemCtrl, const char *cAttrKey, BYTE *pColElem ) const;
+	int GetAttrFont( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring *pOutStr, float *pOutSize, xFONT::xtStyle *pOutStyle ) const;
+	int GetAttrPos( TiXmlElement *elemCtrl, const char *cAttrKey, XE::VEC2 *pOut, XE::xAlign *pOutAlign=NULL ) const;
+	int GetAttrPos( TiXmlElement *elemCtrl, const char *cAttrKey, xATTR_ALL *pOut ) const;
+	int GetAttrSize( TiXmlElement *elemCtrl, XE::VEC2 *pOut ) const;
+	int GetAttrScale( TiXmlElement *elemCtrl, XE::VEC2 *pOut ) const;
+	int GetAttrText( TiXmlElement *elemCtrl, const char *cAttrKey, ID *pOut ) const;
+	int GetAttrTextAlign( TiXmlElement *elemCtrl, XE::xAlign *pOut, float *pOutWidth ) const;
+	int GetAttrWinID( TiXmlElement *elemCtrl, ID *pOut ) const;
+	bool GetAttrStr( TiXmlElement* pElemCtrl, const char* cKey, std::string* pOut ) const;
+#ifdef WIN32
+	bool GetAttrStr( TiXmlElement* pElemCtrl, const char* cKey, _tstring* pOut ) const;
+#endif // _DEBUG
+	int GetAttrFile( TiXmlElement *elemCtrl, const char *cAttrKey, _tstring *pOutStr ) const;
+	int GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, BOOL *pOut ) const;
+	bool GetAttrBool( TiXmlElement *elemCtrl, const char *cKey, bool *pOut ) const;
+	int GetAttrNum( TiXmlElement *elemCtrl ) const;
+	XE::VEC2 GetAttrDist( TiXmlElement *elemCtrl ) const;
 	//
 	int CreateControl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, XWnd **ppOutCreated=NULL );
-	XWnd* CreateCustomControl( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, const xATTR_ALL& attrAll );
+	XWnd* CreateCustomControl( const char *cCtrlName, TiXmlElement *elemCtrl, const XWnd *pParent, const xATTR_ALL& attrAll ) const;
 	//
 	int GetNextCtrlFromKeyClear( void ) { return 1; }
 	template<int _Size>
@@ -288,22 +322,27 @@ public:
 		return GetNextCtrlFromKey( pRoot, cKey, pOutIdx, pOutSeqKey, _Size );
 	}
 	XWnd* GetNextCtrlFromKey( XWnd *pRoot, const char *cKey, int *pOutIdx, char *pOutSeqKey, int lenSeqKey );
-	const char* GetAttrValueF( TiXmlElement *elem, const char *cKey, float *pOut );
-	const char* GetAttrValueI( TiXmlElement *elem, const char *cKey, int *pOut );
+	const char* GetAttrValueF( TiXmlElement *elem, const char *cKey, float *pOut ) const;
+	const char* GetAttrValueI( TiXmlElement *elem, const char *cKey, int *pOut ) const;
+	XWnd* CreateWnd( const std::string& strNode, const XWnd* pParent ) const;
+//////////////////////////////////////////////////////////////////////////
 private:
 	void AlignCtrl( const char* cCtrlName
 								, TiXmlElement* pElemCtrl
-								, XWnd* pParent
+								, const XWnd* pParent
 								, XWnd* pCtrl
-								, const xATTR_ALL& attrAll );
-	void GetAttrAdj( TiXmlElement* pElemCtrl, XE::VEC2* pOut );
-	void GetAttrVector2( TiXmlElement* pElemCtrl, const char* cHeader, XE::VEC2* pOut, int idx = 0 );
-	bool GetAttrBlendFunc( TiXmlElement* pElemCtrl, XE::xtBlendFunc* pOut, const std::string& strKey = std::string() );
-	bool GetAttridAct( TiXmlElement* pElemCtrl, ID* pOut );
-	bool GetAttrDWORD( TiXmlElement *elemCtrl, const char* cKey, DWORD *pOut );
-	bool GetAttrInt( TiXmlElement *elemCtrl, const char* cKey, int *pOut );
+								, const xATTR_ALL& attrAll ) const;
+	void GetAttrAdj( TiXmlElement* pElemCtrl, XE::VEC2* pOut ) const;
+	void GetAttrVector2( TiXmlElement* pElemCtrl, const char* cHeader, XE::VEC2* pOut, int idx = 0 ) const;
+	bool GetAttrBlendFunc( TiXmlElement* pElemCtrl, XE::xtBlendFunc* pOut, const std::string& strKey = std::string() ) const;
+	bool GetAttridAct( TiXmlElement* pElemCtrl, ID* pOut ) const;
+	bool GetAttrDWORD( TiXmlElement *elemCtrl, const char* cKey, DWORD *pOut ) const;
+	bool GetAttrInt( TiXmlElement *elemCtrl, const char* cKey, int *pOut ) const;
 	XWnd* CreateViewFrame( const char *cCtrlName, TiXmlElement *elemCtrl, XWnd *pParent, const xATTR_ALL& attrAll );
-	bool GetAttrFloat( TiXmlElement *elemCtrl, const char* cKey, float *pOut );
+	bool GetAttrFloat( TiXmlElement *elemCtrl, const char* cKey, float *pOut ) const;
+	XWnd* CreateControl2( TiXmlElement *elemCtrl, const XWnd *pParent ) const;
+	XWnd* CreateControl3( TiXmlElement *elemCtrl, const XWnd *pParent, xATTR_ALL* pOut ) const;
+	XWnd* CreateSprCtrlWnd( TiXmlElement *elemCtrl, const XWnd *pParent, const xATTR_ALL& attrAll ) const;
 }; // XLayout
 ////////////////////////////////////////////////////////////////
 class XDelegateLayout : public XBaseDelegate
@@ -320,11 +359,11 @@ public:
 	//
 	virtual void OnDelegateLayoutPlaySound( ID idSnd ) {}
 	virtual void OnDelegateLayoutPlayMusic( LPCTSTR szBgm ) {}
-	virtual XWndView* DelegateLayoutCreateViewCtrl( XWnd* pParent, const XLayout::xATTR_ALL& attr );
+	virtual XWndView* DelegateLayoutCreateViewCtrl( const XWnd* pParent, const XLayout::xATTR_ALL& attr ) const;
 	virtual XWnd* DelegateCreateCustomCtrl( const std::string& strcCtrl
 																				, TiXmlElement* pElemCtrl
-																				, XWnd *pParent
-																				, const XLayout::xATTR_ALL& attrAll) { return nullptr; }
+																				, const XWnd *pParent
+																				, const XLayout::xATTR_ALL& attrAll) const { return nullptr; }
 };
 
 
@@ -414,7 +453,7 @@ inline XWnd* xSET_SHOWF( XWnd *pRoot, bool bFlag, const char *cKeyFormat, ... ) 
 XWndView* xGET_VIEW_CTRL( XWnd *pRoot, const char *cKey );
 XWndScrollView* xGET_SCROLLVIEW_CTRL( XWnd *pRoot, const char *cKey );
 XWndButton* xGET_BUTT_CTRL( XWnd *pRoot, const char *cKey );
-XWndList* xGET_LIST_CTRL( XWnd *pRoot, const char *cKey );
+// XWndList* xGET_LIST_CTRL( XWnd *pRoot, const char *cKey );
 // XWndImage* xGET_IMAGE_CTRL( XWnd *pRoot, const char *cKey );
 XWndSprObj* xGET_SPROBJ_CTRL( XWnd *pRoot, const char *cKey );
 XWndSprObj* xGET_SPROBJ_CTRLF( XWnd *pRoot, const char *cKeyFormat, ... );

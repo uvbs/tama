@@ -31,9 +31,10 @@ enum xAlpha {
 	xALPHA
 };
 
+//////////////////////////////////////////////////////////////////////////
 XE_NAMESPACE_START(XE)
 
-enum xtPixelFormat {
+enum xtPixelFormat : int {
 	xPF_NONE,
 	xPF_ARGB8888,
 	xPF_ARGB4444,
@@ -42,6 +43,21 @@ enum xtPixelFormat {
 	xPF_RGB555,
 	xPF_MAX,
 };
+
+inline LPCTSTR GetstrPixelformat( xtPixelFormat fmt ) {
+	switch( fmt ) {
+	case XE::xPF_NONE:	return _T( "xPF_NONE" );
+	case XE::xPF_ARGB8888:	return _T("xPF_ARGB8888");
+	case XE::xPF_ARGB4444:	return _T("xPF_ARGB4444");
+	case XE::xPF_ARGB1555:	return _T( "xPF_ARGB1555" );
+	case XE::xPF_RGB565:	return _T( "xPF_RGB565" );
+	case XE::xPF_RGB555:	return _T( "xPF_RGB555" );
+	default:
+		XBREAK(1);
+		break;
+	}
+	return _T("error");
+}
 
 inline int GetBpp( xtPixelFormat format ) {
 	switch( format ) {

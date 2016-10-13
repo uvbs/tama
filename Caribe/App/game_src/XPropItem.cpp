@@ -62,23 +62,15 @@ BOOL XPropItem::ReadProp( CToken& token, DWORD dwParam )
 	//
 	XBREAK( pItem->idProp > 0xffff );		// 워드크기 이상 금지
 	pItem->strIdentifier = GetTokenIdentifier( token );						// 아이템 식별자
-// 	int idText			= token.GetNumber();									
-// 	pItem->szName		= (LPCTSTR)XTEXT(idText);										// 이름
-// 	DWORD idDesc		= (DWORD)token.GetNumber();
-// 	if( !( idDesc == 0xffffffff ) )
-// 		pItem->szDesc = (LPCTSTR)XTEXT( idDesc );
 	pItem->idName = GetTokenID( token );
 	pItem->idDesc = GetTokenID( token );
-
-// 	pItem->idName = (ID) TokenGetNumber(token);
-// 	pItem->idDesc = (ID) TokenGetNumber(token);
-
 	pItem->type			= (XGAME::xtItem) TokenGetNumber( token );			// 아이템 종류
 	pItem->subType1		= (int)TokenGetNumber( token );
 	pItem->useType		= (XGAME::xtItemUse) TokenGetNumber( token );				// 아이템 사용방식
 	pItem->grade		= (XGAME::xtGrade) TokenGetNumber( token );					// 아이템 등급
 	pItem->maxStack		= token.GetNumber();
 	pItem->parts		= (XGAME::xtParts) TokenGetNumber( token );
+	pItem->m_strPayItem = GetTokenString( token );
 	pItem->SetgoldCost( token.GetNumber() );									// 금화 가격
 	pItem->cashCost		= token.GetNumber();									// 캐쉬 가격
 	for( int i = 0; i < MAX_ADJPARAM; ++i )	{
@@ -154,7 +146,7 @@ void XPropItem::OnDidFinishReadProp( CToken& token )
 /**
  @brief 영웅아이디 idHero로 해당영웅의 영혼석 프로퍼티를 얻는다.
 */
-XPropItem::xPROP* XPropItem::GetpPropByidHero( ID idHero )
+const XPropItem::xPROP* XPropItem::GetpPropByidHero( ID idHero )
 {
 	const ID idSoul = sGetidHeroToidItemSoul( idHero ); // ID_START_SOUL + idHero;
 	return GetpProp( idSoul );
@@ -213,38 +205,37 @@ int XPropItem::GetpPropRandom( XGAME::xtGrade grade, XGAME::xtItem typeItem, int
 */
 DWORD XPropItem::xPROP::GetBuyCost( int level ) const
 {
-	if( IsEquipable() ) {
-		int lvSector = -1;
-		// 현재 유저계정레벨에 맞춰 드랍테이블을 선택한다.
-		int lv = level;
-		for( int i = 0; i < XGC->m_aryDropRatePerLevel.GetMax(); ++i ) {
-			if( lv <= XGC->m_aryDropRatePerLevel[ i ].lvEnd ) {
-				lvSector = i;
-				break;
-			}
-		}
-		if( lvSector >= 0 ) {
-			// 실제 이 확률로 전투를 해서 돈을 벌때를 기반하여 계산.
-			const auto& table = XGC->m_aryDropRatePerLevel[ lvSector ];
-			double ratio = table.aryDropRate[ grade ] / (double)XGC->m_frEquipDropMax;
-			if( ratio == 0 )
-				ratio = 0.00001;
-			double valuable = 1.f / ratio;		// 가치도
-			const DWORD goldPerCombat = 50000;	// 1회전투시 평균 금화 획득양
-			XINT64 price = (XINT64)( valuable * goldPerCombat );
-			if( price > 0x7fffffff )
-				price = 0x7fffffff;
-			price = ( (XINT64)( price / 1000 ) ) * 1000;	// 1000이하 절삭
-// 			if( price > 100000 )
-// 				price = 100000;
-			return (DWORD)price;
-		}
-		XBREAK(1);
-	} else
-	{
-		return goldCost;
-	}
-	return 0;
+// 	if( IsEquipable() ) {
+// 		int lvSector = -1;
+// 		// 현재 유저계정레벨에 맞춰 드랍테이블을 선택한다.
+// 		int lv = level;
+// 		for( int i = 0; i < XGC->m_aryDropRatePerLevel.GetMax(); ++i ) {
+// 			if( lv <= XGC->m_aryDropRatePerLevel[ i ].lvEnd ) {
+// 				lvSector = i;
+// 				break;
+// 			}
+// 		}
+// 		if( lvSector >= 0 ) {
+// 			// 실제 이 확률로 전투를 해서 돈을 벌때를 기반하여 계산.
+// 			const auto& table = XGC->m_aryDropRatePerLevel[ lvSector ];
+// 			double ratio = table.aryDropRate[ grade ] / (double)XGC->m_frEquipDropMax;
+// 			if( ratio == 0 )
+// 				ratio = 0.00001;
+// 			double valuable = 1.f / ratio;		// 가치도
+// 			const DWORD goldPerCombat = 50000;	// 1회전투시 평균 금화 획득양
+// 			XINT64 price = (XINT64)( valuable * goldPerCombat );
+// 			if( price > 0x7fffffff )
+// 				price = 0x7fffffff;
+// 			price = ( (XINT64)( price / 1000 ) ) * 1000;	// 1000이하 절삭
+// // 			if( price > 100000 )
+// // 				price = 100000;
+// 			return (DWORD)price;
+// 		}
+// 		XBREAK(1);
+// 	} else {
+		return m_numCost;
+// 	}
+// 	return 0;
 }
 
 DWORD XPropItem::xPROP::GetSellCost( int level ) const
@@ -258,12 +249,14 @@ DWORD XPropItem::xPROP::GetSellCost( int level ) const
 void XPropItem::xPROP::Serialize( XArchive& ar ) const {
 	XBREAK( subType1 > 0xff );
 	ar << idProp << strIdentifier << idName << idDesc;
-	ar << goldCost;
+	ar << m_numCost;
+	ar << cashCost;
 	ar << (BYTE)type;
 	ar << (BYTE)useType;
 	ar << (BYTE)grade;
 	ar << (BYTE)parts;
-	
+
+	ar << m_strPayItem;
 	ar << (short)maxStack;
 	ar << (char)subType1;
 	ar << (BYTE)0;
@@ -284,12 +277,14 @@ void XPropItem::xPROP::DeSerialize( XArchive& ar, int ) {
 	char c0;
 	short s0;
 	ar >> idProp >> strIdentifier >> idName >> idDesc;
-	ar >> goldCost;
+	ar >> m_numCost;
+	ar >> cashCost;
 	ar >> b0;		type = (xtItem)b0;
 	ar >> b0;		useType = (xtItemUse)b0;
 	ar >> b0;		grade = (xtGrade)b0;
 	ar >> b0;		parts = (xtParts)b0;
 
+	ar >> m_strPayItem;
 	ar >> s0;		maxStack = s0;
 	ar >> c0;		subType1 = c0;
 	ar >> b0;
@@ -336,4 +331,3 @@ ID XPropItem::sGetidHeroToidItemSoul( ID idPropHero )
 {
 	return ID_START_SOUL + idPropHero;
 }
-

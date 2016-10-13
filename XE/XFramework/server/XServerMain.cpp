@@ -1,5 +1,4 @@
-﻿s_pInstance
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "XServerMain.h"
 #include "etc/Timer.h"
 #include "XEUserMng.h"

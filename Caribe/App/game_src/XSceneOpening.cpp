@@ -21,7 +21,7 @@ void XSceneOpening::Destroy()
 	s_pSingleton = nullptr;
 }
 
-XSceneOpening::XSceneOpening( XGame *pGame, SceneParamPtr& spParam ) 
+XSceneOpening::XSceneOpening( XGame *pGame, XSPSceneParam& spParam ) 
 	: XSceneBase( pGame, XGAME::xSC_OPENNING )
 	, m_Layout(_T("scene_opening.xml"))
 { 

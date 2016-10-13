@@ -59,6 +59,9 @@ namespace XGAME {
 	struct xAlertWorld {
 		xtAlertWorld m_Type;
 		ID m_snHero = 0;
+		ID m_idParam = 0;
+		int m_Level = 0;
+		XGAME::xtTrain m_Train;
 		_tstring m_strMsg;
 		ID getid() const {
 			return m_snHero;
@@ -87,6 +90,10 @@ class XGame : public XEContent, public XGameCommon//, public XNetworkDelegate
 													, public XDelegateSprObj
 {
 public:
+//	XVector<XSurface*> m_aryWorldSurface;
+	static XGame* sGet() {
+		return s_pInstance;
+	}
 	struct xBrilliant {
 		float dAng;
 		ID idWnd;
@@ -115,8 +122,11 @@ public:
 #ifdef _CHEAT
 	xHelp::XSeq *m_pCurrSeq = nullptr;
 	std::string m_strcNodeParticle;
+	static _tstring s_strMouseSpr;		// 마우스커서에 달려서 테스트해볼수 있는 spr파일명
+	XSprObj* m_psoMouse = nullptr;		// 테스트용
 #endif // cheat
 private:
+	static XGame* s_pInstance;
 	static _tstring s_strSessionKey;		// 임시
 	XESceneMng *m_pSceneMng;
 	ID m_idAccount;						// 임시 저장
@@ -212,17 +222,18 @@ public:
 	void ProcessConnection();
 	void DoReconnectForExistUser( float secDelay );
 	//
-	virtual int Process( float dt );
-	virtual void Draw();
+	int Process( float dt ) override;
+	void Draw() override;
 	// handler
-	virtual void OnLButtonDown( float x, float y );
-	virtual void OnMouseMove( float x, float y );
-	virtual void OnLButtonUp( float x, float y );
-	virtual void OnRButtonDown( float x, float y );
-	virtual void OnRButtonUp( float x, float y );
-	virtual void OnCheatMode();
-	virtual void OnEndEditBox( int idEditField, const char *cStr );
-	virtual BOOL RestoreDevice();
+	void DrawDebugInfo( float x, float y, XCOLOR col, XBaseFontDat* pFontDat ) override;
+	void OnLButtonDown( float x, float y ) override;
+	void OnMouseMove( float x, float y ) override;
+	void OnLButtonUp( float x, float y ) override;
+	void OnRButtonDown( float x, float y ) override;
+	void OnRButtonUp( float x, float y ) override;
+	void OnCheatMode();
+	void OnEndEditBox( int idEditField, const char *cStr );
+	BOOL RestoreDevice();
 	//
 	int OnSoundDown( XWnd *pWnd, DWORD, DWORD );
 	int OnExitApp( XWnd *pWnd, DWORD, DWORD );
@@ -262,9 +273,9 @@ public:
 	void DestroyIncompletePurchase() {
 		SAFE_DELETE( m_pIncompletePurchase );
 	}
-	XEBaseScene* DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, SceneParamPtr& spParam ) override;
+	XEBaseScene* DelegateCreateScene( XESceneMng *pSceneMng, ID idScene, XSPSceneParam& spParam ) override;
 	void DelegateOnDestroy( XEBaseScene *pScene );
-	void DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, SceneParamPtr spParam );
+	void DelegateOnDestroyAfter( ID idSceneDestroy, ID idSceneNext, XSPSceneParam spParam );
 // 	// fsm
 	void DelegateOnCalcTimer( XSpot *pBaseSpot, const XTimer2& timerCalc );
 	DWORD OnDelegateGetMaxExp( const XFLevel *pLevel, int level, DWORD param1, DWORD param2 ) const override;
@@ -396,6 +407,9 @@ public:
 #endif // _CHEAT
 	// 	static bool sDoAlertCampaignByError( XGAME::xtError errCode );
 // 	static void sDoPopupSpotWithStageObj( XSpot* pBaseSpot, XSPCampObj spCampObj, XSPStageObj spStageObj );
+	int OnDebug( XWnd* pWnd, DWORD p1, DWORD p2 );
+	void OnRecvResearchCompleted( XSPHero pHero, ID idAbil, int point );
+	void DoPopupTrainComplete( XGAME::xtTrain train, XSPHero pHero, int level );
 }; // class XGame
 
 

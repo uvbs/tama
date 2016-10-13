@@ -9,6 +9,7 @@
 #include "_Wnd2/XWndPopup.h"
 #include "_Wnd2/XWndSprObj.h"
 #include "XPropBgObjH.h"
+#include "XFramework/client/XWndBatchRender.h"
 
 class XSprObj;
 /****************************************************************
@@ -135,10 +136,10 @@ private:
 * @author xuzhu
 * @date	2016/01/25 11:01
 *****************************************************************/
-class XWndBgObjLayer : public XWnd
+class XWndBgObjLayer : public XWndBatchRender
 {
 public:
-	XWndBgObjLayer();
+	XWndBgObjLayer( const XE::VEC2& sizeWorld );
 	virtual ~XWndBgObjLayer() { Destroy(); }
 	// get/setter
 	// public member

@@ -16,7 +16,7 @@ class XWndStoragyItemElem;
 class XSceneEquip : public XSceneBase
 {
 public:
-	struct xSPM_EQUIP : public XGAME::xSPM_BASE
+	struct xSPM_EQUIP : public XGAME::xSceneParamBase
 	{
 		ID snHero;
 		XGAME::xtParts idxParts;
@@ -37,7 +37,7 @@ private:
 	XLayoutObj m_Layout;
 	XLayoutObj m_LayoutTooltip;
 	XWndStoragyItemElem *m_pSelectItem;		// 선택된 리스트 아이템
-	XHero *m_pHero;
+	XSPHero m_pHero;
 	xSPM_EQUIP m_BaseParam;
 	//
 	void Init()  {
@@ -47,7 +47,7 @@ private:
 	void Destroy();
 protected:
 public:
-	XSceneEquip(XGame *pGame, SceneParamPtr& spBaseParam);
+	XSceneEquip(XGame *pGame, XSPSceneParam& spBaseParam);
 	virtual ~XSceneEquip(void) { Destroy(); }
 	//
 	// virtual

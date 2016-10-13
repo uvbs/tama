@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 class XSprObj;
+class XSprDat;
 class XSprite;
 class XBaseKey;
 class XKeyEvent;
@@ -16,6 +17,9 @@ namespace xSpr {
 	struct xEvent;
 }
 
+namespace XE {
+struct xRenderParam;
+}
 class XDelegateSprObj
 {
 private:
@@ -43,11 +47,25 @@ public:
 	virtual BOOL OnDelegateDrawImageLayerBefore( XSprObj *pSprObj, XSprite *pSprSrc, XLayerImage *pImageLayer, XEFFECT_PARAM *pEffectParam, float x, float y, const MATRIX &mParent ) {
 		return FALSE;
 	}
+	virtual bool OnDelegateDrawImageLayerBefore2( const XSprObj *pSprObj, 
+																								const XSprite *pSprSrc, 
+																								const XLayerImage *pImageLayer, 
+																								XE::xRenderParam* pOutEff ) const {
+		return false;
+	}
 	virtual BOOL OnDelegateDrawImageLayerAfter( XSprObj *pSprObj, XSprite *pSprSrc, XLayerImage *pImageLayer, XEFFECT_PARAM *pEffectParam, const XE::VEC2& vDraw, const MATRIX &mParent ) {
 		return FALSE;
+	}
+	virtual bool OnDelegateDrawImageLayerAfter2( const XSprObj *pSprObj, 
+																							 const XSprite *pSprSrc, 
+																							 const XLayerImage *pImageLayer, 
+																							 XE::xRenderParam* pOutEff ) const {
+		return false;
 	}
 	// 오브젝트 생성키가 실행되기전 불려지는 델리게이트
 	virtual BOOL OnDelegateCreateObj( XSprObj *pSprObj, XSprite *pSprSrc, XLayerObject *pImageLayer, XEFFECT_PARAM *pEffectParam, float x, float y, const MATRIX &mParent ) {
 		return FALSE;
 	}
+	// 비동기 로딩으로 spr로딩과 SetAction까지 끝나면 호출된다.
+	virtual void OnFinishAsyncLoad( const XSprDat* pSprDat ) {}
 };

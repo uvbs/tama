@@ -7,6 +7,7 @@
 #include "XWndTemplate.h"
 #include "XSoundMng.h"
 #include "_Wnd2/XWndButton.h"
+#include "XWndStorageItemElem.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -259,9 +260,9 @@ int XSceneHero::OnSummonFinish(XWnd* pWnd, DWORD p1, DWORD p2)
 	XBREAK( pPopup == nullptr );
 	pPopup->SetbModal( TRUE );
 	//
-	XPropHero::xPROP *pPropHero = nullptr;
+	//XPropHero::xPROP *pPropHero = nullptr;
 	if( _m_bPiece ) {
-		pPropHero = PROP_HERO->GetpProp( _m_idHero );
+		auto pPropHero = PROP_HERO->GetpProp( _m_idHero );
 		XBREAK( pPropHero == nullptr );
 		XWnd *pBg = Find( "img.unit.bg" );
 		if( pBg ) {
@@ -276,9 +277,9 @@ int XSceneHero::OnSummonFinish(XWnd* pWnd, DWORD p1, DWORD p2)
 		_tstring strName = XE::Format(XTEXT(2158), pPropHero->GetstrName().c_str() );
 		xSET_TEXT( this, "text.hero.name", strName );
 	} else {
-		XHero* pHero = ACCOUNT->GetHero( _m_snHero );
+		XSPHero pHero = ACCOUNT->GetHero( _m_snHero );
 		XBREAK( pHero == NULL );
-		pPropHero = pHero->GetpProp();
+		auto pPropHero = pHero->GetpProp();
 		gradeCurr = pHero->GetGrade();
 		// 별
 		for( int j = 1; j < XGAME::xGD_MAX; ++j ) {

@@ -35,8 +35,8 @@ public:
 	void MakeLegionPacketFull( XArchive &p, int idxLegion );
 	XLegion* RestoreLegionPacketFullToLink( XArchive &ar, int idxLegion );
 	XLegion* RestoreLegionPacketFull( XArchive& arFull, int idxLegion );
-	void MakeArchiveHeros( XArchive& ar );
-	BOOL RestoreArchiveHeros( XArchive& ar );
+// 	void MakeArchiveHeros( XArchive& ar );
+// 	BOOL RestoreArchiveHeros( XArchive& ar );
 private:
 	XSPDBUAcc GetThis() {
 		return std::static_pointer_cast<XDBUAccount>( XDBAccount::GetThis() );

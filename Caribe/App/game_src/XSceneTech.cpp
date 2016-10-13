@@ -21,6 +21,8 @@
 #ifdef _XSINGLE
 #include "XPropLegion.h"
 #endif // _XSINGLE
+#include "XImageMng.h"
+#include "XWndStorageItemElem.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -42,7 +44,7 @@ XSceneTech *SCENE_TECH = NULL;
 //////////////////////////////////////////////////////////////////////////
 void XSceneTech::Destroy() 
 {	
-#ifdef _XSINGLE
+#if defined(_XSINGLE) && defined(_xIN_TOOL)
 	if( m_bUpdated ) {
 		XPropLegion::sGet()->UpdatePropWithAcc( "single1_player", ACCOUNT );
 		XPropLegion::sGet()->Save( _T( "propLegion_s.xml" ) );
@@ -129,7 +131,7 @@ void XSceneTech::Update()
 {
 	XGAME::CreateUpdateTopResource( this );
 	// 선택된 영웅이 없으면 첫번째 영웅으로 한다.
-	XHero *pHero = nullptr;
+	XSPHero pHero = nullptr;
 	if( m_snSelectedHero == 0 ) {
 		pHero = ACCOUNT->GetpHeroByIndex( 0 );	// 선택된게 없으면 첫번째로 있는 영웅을 얻는다.
 		if( pHero )
@@ -228,7 +230,7 @@ void XSceneTech::UpdateHeroList( XWnd *pRoot )
 				const auto unitSelected = m_unitSelected;
 				const auto typeAtk = XGAME::GetAtkType( unitSelected );
 				m_listHeroes.Sort( 
-					[ typeAtk, unitSelected, spLegion ]( XHero* pHero1, XHero* pHero2 ) {
+					[ typeAtk, unitSelected, spLegion ]( XSPHero pHero1, XSPHero pHero2 ) {
 						int val1 = 0;		// 왼쪽우선
 						int val2 = 0;		// 오른쪽우선.
 						const auto unit1 = pHero1->GetUnit();
@@ -270,7 +272,8 @@ void XSceneTech::UpdateHeroList( XWnd *pRoot )
 				// 장착된 유닛을 그림.
 				auto pWndUnit = new XWndCircleUnit( pHero->GetUnit(), XE::VEC2( 40, 20 ), nullptr );
 				pWndUnit->SetbShowLevelSquad( true );
-				pButtHero->Insert( pButtHero->GetIdsName(), pWndUnit );
+//				pButtHero->Insert( pButtHero->GetIdsName(), pWndUnit );
+				pButtHero->Add( pWndUnit );
 				pList->AddItem( pHero->GetsnHero(), pButtHero );
 				// 장착된(?)유닛의 특성포인트를 표시
 				auto pImg = new XWndImage(PATH_UI("circle_bg_s.png"), XE::VEC2(21,0));
@@ -311,7 +314,7 @@ void XSceneTech::UpdateHeroList( XWnd *pRoot )
  @brief 오른쪽 패널의 현재 선택한 영웅의 특성의 정보
 */
 void XSceneTech::UpdateRightPanel( XWnd *_pRoot
-																, XHero *pHero
+																, XSPHero pHero
 																, XPropTech::xNodeAbil* pProp
 																, const XGAME::xAbil& abil )
 {
@@ -355,7 +358,7 @@ void XSceneTech::UpdateRightPanel( XWnd *_pRoot
  @brief 선택한 특성의 아이콘/이름/설명 등을 갱신
 */
 void XSceneTech::UpdateSelectedAbil( XWnd *pRoot
-																, XHero *pHero
+																, XSPHero pHero
 																, XPropTech::xNodeAbil* pProp
 																, const XGAME::xAbil& abil )
 {
@@ -457,7 +460,7 @@ void XSceneTech::UpdateNeedRes( const XPropTech::xtResearch& costAbil )
 /**
  @brief 특성초기화 버튼과 여분 포인트를 표시한다.
 */
-void XSceneTech::UpdateInitAbil( XWnd *pRoot, XHero *pHero )
+void XSceneTech::UpdateInitAbil( XWnd *pRoot, XSPHero pHero )
 {
 	bool bShow1 = pHero->GetnumRemainAbilPoint() > 0;
 	bool bShow2 = pHero->GetnumRemainAbilUnlock() > 0;
@@ -470,7 +473,7 @@ void XSceneTech::UpdateInitAbil( XWnd *pRoot, XHero *pHero )
 /**
  @brief 잠금해제 버튼
 */
-void XSceneTech::UpdateUnlockButton( XWnd *pRoot, XHero *pHero
+void XSceneTech::UpdateUnlockButton( XWnd *pRoot, XSPHero pHero
 																	, XPropTech::xNodeAbil* pPropNode )
 {
 	XBREAK( pRoot == nullptr );
@@ -510,7 +513,7 @@ void XSceneTech::UpdateUnlockButton( XWnd *pRoot, XHero *pHero
  @brief 우측 하단 연구비용이나 연구그래프 갱신 
 */
 void XSceneTech::UpdateAbilResearch( XWnd *pRoot
-																	, XHero *pHeroSelected
+																	, XSPHero pHeroSelected
 																	, XPropTech::xNodeAbil* pPropNodeSelected
 																	, const XGAME::xAbil& abilSelected
 																	)
@@ -606,7 +609,7 @@ void XSceneTech::UpdateAbilResearch( XWnd *pRoot
 /**
  @brief 상단 유닛 버튼.
 */
-void XSceneTech::UpdateTopUnitButtons( XWnd *pRoot, XHero* pHero )
+void XSceneTech::UpdateTopUnitButtons( XWnd *pRoot, XSPHero pHero )
 {
 // #ifdef _XSINGLE
 // 	xSET_ENABLE( this, "butt.minotaur.4", TRUE );
@@ -733,7 +736,7 @@ void XSceneTech::UpdateTopUnitButtons( XWnd *pRoot, XHero* pHero )
 /**
  @brief 특성 트리 갱신
 */
-void XSceneTech::UpdateTree( XWnd *pRoot, XHero *pHero )
+void XSceneTech::UpdateTree( XWnd *pRoot, XSPHero pHero )
 {
 	// 연구중인 특성이 있으면 그 특성노드에 글로우를 붙인다.
 	const XGAME::xResearch& research = ACCOUNT->GetResearching();

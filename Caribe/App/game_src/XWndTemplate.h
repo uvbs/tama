@@ -26,7 +26,9 @@ void CreateUpdateTopResource( XWnd *pRoot );
 void CreateUpdateTopGuildCoin( XWnd *pRoot );
 XWnd* GetpRootTopRes( XWnd *pRootFind );
 XWnd* GetpWndTopRes( XGAME::xtResource resType, XWnd *pRootFind );
-XGameWndAlert* DoAlertWithItem( const _tstring& strIdsItem, const _tstring& strText );
+XGameWndAlert* DoAlertWithItem( const XPropItem::xPROP* pPropItem, const _tstring& strText, XWnd::xtAlert type );
+XGameWndAlert* DoAlertWithItem( const _tstring& strIdsItem, const _tstring& strText, XWnd::xtAlert type );
+XGameWndAlert* DoAlertWithItem( ID idItem, const _tstring& strText, XWnd::xtAlert type );
 XWndPopup* DoPopupBattleResult( XGAME::xBattleResult& result, XWnd* pParent, XSpot* pBaseSpot );
 //
 XE_NAMESPACE_END; // XGAME
@@ -76,7 +78,7 @@ class XWndCircleUnit : public XWndImage
 {
 public:
 	XWndCircleUnit();
-	XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XHero *pHero );
+	XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XSPHero pHero );
 	virtual ~XWndCircleUnit() { Destroy(); }
 	// get/setter
 	GET_SET_BOOL_ACCESSOR( bShowLevelSquad );
@@ -88,7 +90,7 @@ public:
 private:
 	// private member
 	XGAME::xtUnit m_Unit = XGAME::xUNIT_NONE;
-	XHero *m_pHero = nullptr;
+	XSPHero m_pHero = nullptr;
 	bool m_bShowLevelSquad = false;
 private:
 	// private method
@@ -97,24 +99,62 @@ private:
 	void Update() override;
 }; // class XWndCircleUnit
 
+inline XWndCircleUnit* xGetCtrlUnit( XWnd* pRoot, const std::string& key ) {
+	return SafeCast<XWndCircleUnit*>( pRoot->Find( key ) );
+}
+
 /****************************************************************
-* @brief 스킬과 스킬의 원형프레임을 그려주는 모듈.
+* @brief 유닛과 유닛의 원형프레임을 그려주는 모듈
+* @author xuzhu
+* @date	2015/11/25 19:48
+*****************************************************************/
+class XWndCircleUnit2 : public XWnd {
+public:
+//	XWndCircleUnit2();
+	XWndCircleUnit2( XGAME::xtUnit unit, const XE::VEC2& vPos, XSPHero pHero );
+	~XWndCircleUnit2() {		Destroy();	}
+	// get/setter
+//	GET_SET_ACCESSOR_CONST( int, Level );
+	// public member
+	void SetUnit( XGAME::xtUnit unit, int level );
+private:
+	// private member
+	XGAME::xtUnit m_Unit = XGAME::xUNIT_NONE;
+	XSPHeroConst m_pHero = nullptr;
+	int m_Level = 0;
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	void Update() override;
+}; // class XWndCircleUnit2
+
+inline XWndCircleUnit2* xGetCtrlUnit2( XWnd* pRoot, const std::string& key ) {
+	return SafeCast<XWndCircleUnit2*>( pRoot->Find( key ) );
+}
+
+/****************************************************************
+* @brief 특성과 특성의 원형프레임을 그려주는 모듈.
 * @author xuzhu
 * @date	2015/12/01 22:01
 *****************************************************************/
-class XWndCircleSkill : public XWndImage
-{
+class XWndCircleSkill : public XWnd {
 public:
-	XWndCircleSkill( XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XHero *pHero);
-	virtual ~XWndCircleSkill() { Destroy(); }
+	XWndCircleSkill( const XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XSPHero pHero );
+	~XWndCircleSkill() {
+		Destroy();
+	}
 	// get/setter
-	GET_SET_BOOL_ACCESSOR( bShowLevel );
+// 	GET_SET_BOOL_ACCESSOR( bShowLevel );
 	// public member
+	GET_SET_ACCESSOR_CONST( int, Level );
+	void SetSkill( const XSKILL::XSkillDat *pDat, int level );
 private:
 	// private member
-	XSKILL::XSkillDat *m_pSkillDat = nullptr;
-	XHero *m_pHero = nullptr;
-	bool m_bShowLevel = false;
+	const XSKILL::XSkillDat *m_pSkillDat = nullptr;
+	XSPHero m_pHero = nullptr;
+//	bool m_bShowLevel = false;
+	int m_Level = 0;
 private:
 	// private method
 	void Init() {}
@@ -122,4 +162,35 @@ private:
 	void Update() override;
 }; // class XWndCircleSkill
 
+inline XWndCircleSkill* xGetCtrlSkill( XWnd* pRoot, const std::string& key ) {
+	return SafeCast<XWndCircleSkill*>( pRoot->Find( key ) );
+}
+
+/****************************************************************
+* @brief 특성과 특성의 원형프레임을 그려주는 모듈.
+* @author xuzhu
+* @date	2015/12/01 22:01
+*****************************************************************/
+class XWndTechAbil : public XWnd
+{
+public:
+	XWndTechAbil( const XSKILL::XSkillDat *pDat, const XE::VEC2& vPos, XSPHero pHero);
+	~XWndTechAbil() { Destroy(); }
+	// get/setter
+	GET_SET_BOOL_ACCESSOR( bShowLevel );
+	// public member
+	GET_SET_ACCESSOR_CONST( int, Level );
+	void SetSkill( const XSKILL::XSkillDat *pDat, int level );
+private:
+	// private member
+	const XSKILL::XSkillDat *m_pSkillDat = nullptr;
+	XSPHero m_pHero = nullptr;
+	bool m_bShowLevel = false;
+	int m_Level = 0;
+private:
+	// private method
+	void Init() {}
+	void Destroy() {}
+	void Update() override;
+}; // class XWndTechAbil
 

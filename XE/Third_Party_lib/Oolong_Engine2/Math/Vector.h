@@ -408,7 +408,7 @@ struct Vec3 : public VECTOR3
  @Function			Vec3
  @Description		Blank constructor.
 *****************************************************************************/
-	Vec3(){}
+	Vec3() {}
 /*!***************************************************************************
  @Function			Vec3
  @Input				fX	X component of vector

@@ -935,11 +935,12 @@ xtDB CUserDB::AccountLoadIDAccount(XSPDBUAcc spAcc, ID idAccount)
 			if (offset > 0)
 				spAcc->DeSerializeItems(arBuff);
 		}{
-			XArchive pBuff2; //HeroBuff
+			XArchive ar; //HeroBuff
 			if (XASSERT(herodataLen > 0)) {
-				pBuff2.SetBufferMem(HeroBuff, herodataLen);
+				ar.SetBufferMem(HeroBuff, herodataLen);
 				if (HeroCount > 0) {
-					spAcc->RestoreArchiveHeros(pBuff2);
+//					spAcc->RestoreArchiveHeros(pBuff2);
+					spAcc->DeSerializeHeros( ar );
 				}
 			}
 		}{
@@ -1771,8 +1772,9 @@ BOOL CUserDB::AccountUpdateAll(XSPDBUAcc spAcc) //모든 정보를 한번에 저
 	int	Herocount = spAcc->m_listHero.size();
 	short MaxItemCount = (short)spAcc->m_maxItems;
 	short sGMLevel = (short)spAcc->GetGMLevel();
-	XArchive HeroInfoPacket;
-	spAcc->MakeArchiveHeros(HeroInfoPacket);
+	XArchive arHeroes;
+//	spAcc->MakeArchiveHeros(HeroInfoPacket);
+	spAcc->SerializeHeros( arHeroes );
 
 	int secSaved = (int)XTimer2::sGetTime();		// 저장당시의 시간을 저장
 	ArchiveSplit worlds[2];
@@ -1866,7 +1868,7 @@ BOOL CUserDB::AccountUpdateAll(XSPDBUAcc spAcc) //모든 정보를 한번에 저
 		_numSub = 0;
 	DWORD numSubscribe = (DWORD)_numSub;;
 	SQLLEN		LevelPacketLen = LevelInfoPacket.size();
-	SQLLEN		HeroPacketLen = HeroInfoPacket.size();
+	SQLLEN		HeroPacketLen = arHeroes.size();
 	SQLLEN loginIDLen1 = SQL_NTS;
 	SQLLEN loginIDLen2 = SQL_NTS;
 	SQLLEN loginIDLen3 = SQL_NTS;
@@ -1946,7 +1948,7 @@ BOOL CUserDB::AccountUpdateAll(XSPDBUAcc spAcc) //모든 정보를 한번에 저
 
 	//8
 	BindParameter(SQL_PARAM_INPUT, SQL_C_BINARY, SQL_VARBINARY, BINARY_BUFF_LEN, 0, (SQLPOINTER*)LevelInfoPacket.GetBuffer(), 0, &LevelPacketLen, sqlcount++);
-	BindParameter(SQL_PARAM_INPUT, SQL_C_BINARY, SQL_VARBINARY, BINARY_BUFF_LEN, 0, (SQLPOINTER*)HeroInfoPacket.GetBuffer(), 0, &HeroPacketLen, sqlcount++);
+	BindParameter(SQL_PARAM_INPUT, SQL_C_BINARY, SQL_VARBINARY, BINARY_BUFF_LEN, 0, (SQLPOINTER*)arHeroes.GetBuffer(), 0, &HeroPacketLen, sqlcount++);
 	{
 		int num = XNUM_ARRAY(worlds);
 		for (int idx = 0; idx < num; ++idx)

@@ -2,6 +2,7 @@
 
 #include "XXMLDoc.h"
 #include "XStruct.h"
+#include "XFramework/XParamObj.h"
 
 const int VER_PROP_WORLD = 1;
 
@@ -34,6 +35,7 @@ public:
 		ID idCode = 0;					///< 스팟코드
 		ID idName = 0;			///< 스팟의 이름(필요할때만)
 		int level = 0;			// 스팟레벨의 수동지정
+		XParamObj2 m_Param;		/// 다이나믹 파라메터
 		struct bitfield {
 			 bool bOpened : 1;		// 첨부터 구름이 오픈되어있는 스팟.
 			 // reserved
@@ -67,7 +69,6 @@ public:
 	public:
 		// 이 성에서 생산할수 있는 자원들(로딩시 생산율변동에 의해 변조될수 있다)
 		std::vector<XGAME::xRES_NUM> m_aryProduce;		// 분당생산량
-//		XGAME::xtDropCastle typeDrop = XGAME::xDC_NONE;
 		xCASTLE() : xBASESPOT( XGAME::xSPOT_CASTLE ) {}
 		void SetAryProduce( std::vector<XGAME::xRES_NUM>& arySrc ) {
 			m_aryProduce = arySrc;
@@ -126,9 +127,6 @@ public:
 			produce = 0;
 			secRegenNpc = 0;
 		}
-// 		inline XGAME::xtSpot GetType() {
-// 			return XGAME::xSPOT_SULFUR;
-// 		}
 		float GetProduce() {
 			return produce * s_ratioProduce;
 		}
@@ -176,11 +174,7 @@ public:
 	private:
 		float secRegen = 0;
 	public:
-// 		XGAME::xtUnit unit = XGAME::xUNIT_NONE;		// 특정한 유닛으로 채우고 싶다면.
-// 		XGAME::xtGradeLegion gradeLegion = XGAME::xGL_NONE;	///< 정예인가
-//		XGAME::xLegion legion;			// 군단생성정보
 		std::string m_idsLegion;			// xLegion의 프로퍼티 식별자.
-//		XGAME::xtClan clan = XGAME::xCL_NONE;
 		xNPC() : xBASESPOT( XGAME::xSPOT_NPC ) {}
 		float _GetsecRegen() {
 			return secRegen;
@@ -205,22 +199,11 @@ public:
 		void Serialize( XArchive& ar ) const;
 		void DeSerialize( XArchive& ar, int );
 	};
-	// Special스팟
-// 	struct xSpecial : public xBASESPOT {
-// 		float dummy;
-// 		xSpecial() : xBASESPOT( XGAME::xSPOT_SPECIAL ) {
-// 			dummy = 0;
-// 		}
-// 	};
 	// 켐페인스팟
 	struct xCampaign : public xBASESPOT {
-// 		_tstring strWhen;			// 특정퀘스트를 받으면 등장. null이면 구름까질때 등장.
  		_tstring strCamp;			///< 캠페인 식별자.
 		ID idCamp = 0;
 		xCampaign() : xBASESPOT( XGAME::xSPOT_CAMPAIGN ) {}
-// 		inline XGAME::xtSpot GetType() {
-// 			return type;
-// 		}
 		void Serialize( XArchive& ar ) const;
 		void DeSerialize( XArchive& ar, int );
 	};
@@ -247,7 +230,7 @@ public:
 		void DeSerialize( XArchive& ar, int );
   };
   struct xPrivateRaid : public xBASESPOT {
-    int dummy;
+		std::string m_idsLegion;			// xLegion의 프로퍼티 식별자.
     xPrivateRaid() : xBASESPOT( XGAME::xSPOT_PRIVATE_RAID ) {}
 		void Serialize( XArchive& ar ) const;
 		void DeSerialize( XArchive& ar, int );
@@ -256,6 +239,7 @@ public:
     _tstring strType;
     _tstring strParam;
     int nParam[4];
+//		XParamObj m_Param;
     xCommon() : xBASESPOT( XGAME::xSPOT_COMMON ) {
       XCLEAR_ARRAY( nParam );
     }
@@ -440,6 +424,7 @@ public:
 	}
 	void SetAreaToSpots();
 	void GetBaseSpotAttr( xBASESPOT *pSpot, XEXmlNode& childNode );
+	void GetNodeParam( XEXmlNode& node, xBASESPOT* pProp );
 	XList4<xBASESPOT*>* GetpPropWhen( const _tstring& strIdentifier ) {
 		if( strIdentifier.empty() )
 			return nullptr;

@@ -1,11 +1,14 @@
 ﻿#include "stdafx.h"
-#include "XWndView.h"
+#include "etc/XSurface.h"
 #include "XWndText.h"
 #include "XWndButton.h"
 #include "XFramework/client/XLayout.h"
 #include "XFramework/client/XLayoutObj.h"
 #include "XFramework/client/XEContent.h"
 #include "XFramework/XEProfile.h"
+#include "sprite/SprObj.h"
+#include "XImageMng.h"
+#include "XWndView.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -56,7 +59,7 @@ XWndView::XWndView( LPCTSTR szImg )
 	: XWnd( 0, 0 ) 
 {
 	Init();
-	m_psfcFrame = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szImg ) );
+	m_psfcFrame = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ) );
 	XBREAK( m_psfcFrame == NULL );
 	SetSizeLocal( m_psfcFrame->GetSize() );
 	AutoLayoutCenter( XE::GetMain()->GetpGame() );
@@ -183,9 +186,6 @@ BOOL XWndView::ProcessEnterLeaveAnimation( float dt )
 
 int XWndView::Process( float dt )
 {
-	{
-	}
-
 	XSprObj::s_LuaDt = dt;		// 루아글루에 사용
 	return XWnd::Process( dt );
 }
@@ -245,7 +245,7 @@ void XWndView::OnFinishAppear()
 
 void XWndView::SetBgImg( LPCTSTR szImg, XE::xtPixelFormat formatSurface )
 {
-	m_psfcFrame = IMAGE_MNG->Load( true, XE::MakePath( DIR_UI, szImg ), formatSurface );
+	m_psfcFrame = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szImg ), formatSurface );
 	if( XASSERT( m_psfcFrame ) ) {
 		SetSizeLocal( m_psfcFrame->GetSize() );
 	} else {
@@ -253,7 +253,7 @@ void XWndView::SetBgImg( LPCTSTR szImg, XE::xtPixelFormat formatSurface )
 	}
 }
 
-void XWndView::OnFinishCreatedChildLayout( XLayout *pLayout )
+void XWndView::OnFinishCreatedChildLayout( const XLayout *pLayout )
 {
 	SetbUpdate( true );
 }
@@ -286,12 +286,15 @@ void XWndView::Update()
 
 ////////////////////////////////////////////////////////////////
 // dialog
-XWndButton* XWndDialog::AddButton( ID id, float x, float y, LPCTSTR szSpr, ID idActUp, ID idActDown  )
-{
-	XWndButton *pButton = new XWndButton( x, y, szSpr, idActUp, idActDown );
-	Add( id, pButton );
-	return pButton;
+XWndDialog::XWndDialog( LPCTSTR szImg )
+	: XWndView( (float)0, (float)0, (LPCTSTR)szImg ) {
+	Init();
+	float w = m_psfcFrame->GetWidth();
+	float h = m_psfcFrame->GetHeight();
+	SetSizeLocal( w, h );
+	SetPosLocal( XE::GetGameWidth() / 2 - (int)w / 2, XE::GetGameHeight() / 2 - (int)h / 2 );
 }
+
 // static text
 XWnd* XWndDialog::AddStaticText( ID id, float x, float y, float w, float h, LPCTSTR szText, XBaseFontDat *pFontDat, XE::xAlign align, XCOLOR col, xFONT::xtStyle style )
 {

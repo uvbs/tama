@@ -12,9 +12,6 @@
 #endif
 #endif
 #include "etc/types.h"
-//#ifdef _VER_IOS
-//#include "Mathematics.h"
-//#endif
 #include "etc/xMath.h"
 #include "xVector.h"
 #include "xeDef.h"
@@ -170,6 +167,9 @@ namespace XE
 		inline void SetTop( float top ) {
 			vLT.y = top;
 		}
+		inline void SetSize( const XE::VEC2& size ) {
+			vRB = vLT + size - XE::VEC2(1);
+		}
 		inline void SetBottom( float bottom ) {
 			vRB.y = bottom;
 		}
@@ -203,7 +203,7 @@ namespace XE
 		inline XE::VEC2 GetvRB() const {
 			return vRB;
 		}
-	};
+	}; // xRECT
 	struct xRECTi {
 		XE::POINT ptLT;
 		XE::POINT ptRB;
@@ -257,8 +257,161 @@ namespace XE
 		inline int& Bottom() {
 			return ptRB.y;
 		}
-	};
-
+	}; // xRECTi
+	// l,t,r,b 버전 & 크기를 얻을때 -1하거나 +1하지 않는다.
+	struct xRect2 {
+		XE::VEC2 vLT;
+		XE::VEC2 vRB;
+		xRect2() {}
+		xRect2( int left, int top, int right, int bottom )
+			: vLT( left, top ), vRB( right, bottom ) { }
+		xRect2( float left, float top, float right, float bottom )
+			: vLT( left, top ), vRB( right, bottom ) { }
+		xRect2( const XE::VEC2& _vLT, const XE::VEC2& _vRB )
+			: vLT( _vLT ), vRB( _vRB ) {}
+		//
+		xRect2& operator += ( const xRect2& rhs ) {
+			vLT += rhs.vLT;
+			vRB += rhs.vRB;
+			return *this;
+		}
+		xRect2& operator -= ( const xRect2& rhs ) {
+			vLT -= rhs.vLT;
+			vRB -= rhs.vRB;
+			return *this;
+		}
+		xRect2& operator *= ( const xRect2& rhs ) {
+			vLT *= rhs.vLT;
+			vRB *= rhs.vRB;
+			return *this;
+		}
+		xRect2& operator /= ( const xRect2& rhs ) {
+			vLT /= rhs.vLT;
+			vRB /= rhs.vRB;
+			return *this;
+		}
+		xRect2& operator *= ( float num ) {
+			vLT *= num;
+			vRB *= num;
+			return *this;
+		}
+		xRect2& operator /= ( float num ) {
+			vLT /= num;
+			vRB /= num;
+			return *this;
+		}
+		xRect2 operator + ( const xRect2& rhs ) const {
+			xRect2 ret;
+			ret.vLT = vLT + rhs.vLT;
+			ret.vRB = vRB + rhs.vRB;
+			return ret;
+		}
+		xRect2 operator - ( const xRect2& rhs ) const {
+			xRect2 ret;
+			ret.vLT = vLT - rhs.vLT;
+			ret.vRB = vRB - rhs.vRB;
+			return ret;
+		}
+		xRect2 operator * ( const xRect2& rhs ) const {
+			xRect2 ret;
+			ret.vLT = vLT * rhs.vLT;
+			ret.vRB = vRB * rhs.vRB;
+			return ret;
+		}
+		xRect2 operator / ( const xRect2& rhs ) const {
+			xRect2 ret;
+			ret.vLT = vLT / rhs.vLT;
+			ret.vRB = vRB / rhs.vRB;
+			return ret;
+		}
+		xRect2 operator + ( const VEC2& rhs ) const {
+			xRect2 ret;
+			ret.vLT = vLT + rhs;
+			ret.vRB = vRB + rhs;
+			return ret;
+		}
+		xRect2 operator - ( const VEC2& rhs ) const {
+			xRect2 ret;
+			ret.vLT = vLT - rhs;
+			ret.vRB = vRB - rhs;
+			return ret;
+		}
+		xRect2 operator * ( const VEC2& rhs ) const {
+			xRect2 ret;
+			ret.vLT = vLT * rhs;
+			ret.vRB = vRB * rhs;
+			return ret;
+		}
+		xRect2 operator / ( const VEC2& rhs ) const {
+			xRect2 ret;
+			ret.vLT = vLT / rhs;
+			ret.vRB = vRB / rhs;
+			return ret;
+		}
+		xRect2 operator * ( float num ) const {
+			xRect2 ret;
+			ret.vLT = vLT + num;
+			ret.vRB = vRB + num;
+			return ret;
+		}
+		xRect2 operator / ( float num ) const {
+			xRect2 ret;
+			ret.vLT = vLT / num;
+			ret.vRB = vRB / num;
+			return ret;
+		}
+		inline XE::VEC2 GetSize() const {
+			return vRB - vLT;
+		}
+		inline float GetWidth() const {
+			return vRB.w - vLT.w;
+		}
+		inline float GetHeight() const {
+			return vRB.h - vLT.h;
+		}
+		inline void SetLeft( float left ) {
+			vLT.x = left;
+		}
+		inline void SetRight( float right ) {
+			vRB.x = right;
+		}
+		inline void SetTop( float top ) {
+			vLT.y = top;
+		}
+		inline void SetBottom( float bottom ) {
+			vRB.y = bottom;
+		}
+		inline float GetLeft() const {
+			return vLT.x;
+		}
+		inline float GetRight() const {
+			return vRB.x;
+		}
+		inline float GetTop() const {
+			return vLT.y;
+		}
+		inline float GetBottom() const {
+			return vRB.y;
+		}
+		inline float& Left() {
+			return vLT.x;
+		}
+		inline float& Right() {
+			return vRB.x;
+		}
+		inline float& Top() {
+			return vLT.y;
+		}
+		inline float& Bottom() {
+			return vRB.y;
+		}
+		inline XE::VEC2 GetvLT() const {
+			return vLT;
+		}
+		inline XE::VEC2 GetvRB() const {
+			return vRB;
+		}
+	}; // xRect2
 	template <typename T>
 	typename std::list<T>::iterator FindList( std::list<T> &listSrc, T findElem )
 	{

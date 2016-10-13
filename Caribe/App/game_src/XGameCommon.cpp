@@ -26,6 +26,7 @@
 #endif // #if defined(_CLIENT) || defined(_GAME_SERVER)
 
 #ifdef _CLIENT
+#include "XImageMng.h"
 #include "XFramework/client/XPropParticle.h"
 #endif // _DEBUG
 
@@ -108,15 +109,21 @@ void XGameCommon::CreateCommon()
 #if (!defined(_XPROP_SERIALIZE) && defined(_CLIENT)) || defined(_SERVER)
 	XBREAK( CONSTANT != nullptr );
 	LoadConstant();
+#ifdef _CLIENT
+	IMAGE_MNG->LoadMap( _T( "img_map.txt" ) );
+#endif // _CLIENT
 	// 안드로이드는 여기 읽으면 안됨
+#ifndef _XSINGLE
 #ifdef _VER_ANDROID
 #error "Do add _XPROP_SERIALIZE"
+#endif
 #endif
 #endif // not _XPROP_SERIALIZE
 	// 루아 생성
 // 	CONSOLE( "Load game.lua..." );
 // 	m_pLua = new XGameLua("game.lua");
 // 	m_pLua->Initialize();
+//
 	CONSOLE( "Create global constant..." );
 	// xml로딩
 	XGlobalConst::sGetMutable()->Load( XE::MakePath( DIR_SCRIPTW, _T("global.xml") ) );
@@ -210,8 +217,8 @@ void XGameCommon::CreateCommon()
 		XERROR( "%s load error", XQuestProp::sGet()->GetstrFilename().c_str() );
 	if( XQuestProp::sGet()->Load( _T( "quest_main001.xml" ) ) == FALSE )
 		XERROR( "%s load error", XQuestProp::sGet()->GetstrFilename().c_str() );
-	if( XQuestProp::sGet()->Load( _T( "quest_repeat.xml" ) ) == FALSE )
-		XERROR( "%s load error", XQuestProp::sGet()->GetstrFilename().c_str() );
+// 	if( XQuestProp::sGet()->Load( _T( "quest_repeat.xml" ) ) == FALSE )
+// 		XERROR( "%s load error", XQuestProp::sGet()->GetstrFilename().c_str() );
 	XQuestProp::sGet()->CheckValidQuest();
 	//
 	XPropHelp::sGet()->Load( _T( "propHelp.xml" ) );

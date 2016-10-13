@@ -23,7 +23,7 @@ private:
 	XWndInvenHeroElem *m_pSelHero;
 	_tstring m_strIdSoulStone;	//소울 스톤을 선택한 경우에 여기다가 식별자 저장
 	XLayoutObj m_Layout;
-	XHero *m_pKeepHero;				//경험치책 먹이고 레벨 오르면 변동스텟 비교해줄 히어로
+	XSPHero m_pKeepHero;				//경험치책 먹이고 레벨 오르면 변동스텟 비교해줄 히어로
 	BOOL m_bEquip;
 	static xTab s_tabCurr;		// 현재 선택된 탭
 private:
@@ -35,16 +35,16 @@ private:
 		m_bEquip = FALSE;
 	}
 	void Destroy();
-	void SetSprSquad(XWnd *pWnd, XHero *pHero);
+	void SetSprSquad(XWnd *pWnd, XSPHero pHero);
 
 	//sort용 메소드
-	static bool CompClan(XHero *p1, XHero *p2);
-	static bool CompGrade(XHero *p1, XHero *p2);
-	static bool CompParty(XHero *p1, XHero *p2);
+	static bool CompClan(XSPHero p1, XSPHero p2);
+	static bool CompGrade(XSPHero p1, XSPHero p2);
+	static bool CompParty(XSPHero p1, XSPHero p2);
 
 protected:
 public:
-	XSceneUnitOrg(XGame *pGame, SceneParamPtr& spBaseParam);
+	XSceneUnitOrg(XGame *pGame, XSPSceneParam& spBaseParam);
 	virtual ~XSceneUnitOrg(void) { Destroy(); }
 	///< 
 	//
@@ -61,7 +61,7 @@ public:
 	int OnClickProvideSkill(XWnd *pWnd, DWORD p1, DWORD p2);
 	//int OnClickLevelupPassive(XWnd *pWnd, DWORD p1, DWORD p2);
 //	int OnSelectLevelupHero(XWnd *pWnd, DWORD p1, DWORD p2);
-	void OnRecvAddHeroExp(ID idCallback, XHero *pHero, BOOL bLevelup);
+	void OnRecvAddHeroExp(ID idCallback, XSPHero pHero, BOOL bLevelup);
 	void OnRecvChangeHeroLegion(ID idWnd);
 	int OnFinishLevelup(XWnd *pWnd, DWORD p1, DWORD p2);
 	int OnDoExitLegion(XWnd* pWnd, DWORD p1, DWORD p2);
@@ -84,28 +84,28 @@ public:
 	void UpdateHeroInven();
 	void UpdateHeroInfo(void);
 	void UpdateHeroBasic();
-	void UpdateHeroLevelUpgrade( XHero *pHero );
+	void UpdateHeroLevelUpgrade( XSPHero pHero );
 	void UpdateSquadInfo();
-	void UpdateSquadUpgradeButton( XHero *pHero );
+	void UpdateSquadUpgradeButton( XSPHero pHero );
 	void UpdateSkillInfo();
 // 	void UpdateSkillInfo(void);
-	void UpdateSkillScroll( XHero *pHero, XGAME::xtIdxSkilltype typeSkill, XGAME::xtTrain typeTrain, const char *cSuffix );
-	void UpdateSkillUpgradeButton( XHero *pHero, XGAME::xtIdxSkilltype typeSkill, XGAME::xtTrain typeTrain, const char *cSuffix );
+	void UpdateSkillScroll( XSPHero pHero, XGAME::xtIdxSkilltype typeSkill, XGAME::xtTrain typeTrain, const char *cSuffix );
+	void UpdateSkillUpgradeButton( XSPHero pHero, XGAME::xtIdxSkilltype typeSkill, XGAME::xtTrain typeTrain, const char *cSuffix );
 	void UpdateTabEquipment(void);
-	void UpdateTrainingCenterButton( XHero *pHero );
+	void UpdateTrainingCenterButton( XSPHero pHero );
 	int OnClickReleaseHero( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnClickReleaseHeroOk(XWnd *pWnd, DWORD p1, DWORD p2);
 	void OnRecvReleaseHero( ID snHero );
 	void OnRecvLevelupSquad(ID snHero);
-//	void DoCreateLevelupReady( XHero *pHero, XGAME::xtTrain type );
+//	void DoCreateLevelupReady( XSPHero pHero, XGAME::xtTrain type );
 //	int OnClickProvideMedal( XWnd* pWnd, DWORD p1, DWORD p2 );
 // 	int OnClickLevelupConfirm( XWnd* pWnd, DWORD p1, DWORD p2 );
 	
-	void SetpKeepHero(XHero *pHero);
+	void SetpKeepHero(XSPHero pHero);
 	int OnClickInfoSquad( XWnd* pWnd, DWORD p1, DWORD p2 );
 //	int OnClickNewLevelupHero( XWnd* pWnd, DWORD p1, DWORD p2 );
 //	int OnClickTrainAccept( XWnd* pWnd, DWORD p1, DWORD p2 );
-//	void OnRecvLevelupConfirm( XHero *pHero, XGAME::xtTrain type );
+//	void OnRecvLevelupConfirm( XSPHero pHero, XGAME::xtTrain type );
 	int OnClickTrainingCenter( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnClickLvupComplete( XWnd* pWnd, DWORD p1, DWORD p2 );
 // 	int OnClickActiveupComplete( XWnd* pWnd, DWORD p1, DWORD p2 );

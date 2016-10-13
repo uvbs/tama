@@ -2,13 +2,14 @@
 <!--월드 씬-->
 <layout font_text_m="normal.ttf" font_text_b="bold.ttf">
   <popup_statistic>
-    <popup img="common_bg_popup.png" format="argb8888">
-      <butt posx="center" posy="303" img_up="common_butt_small.png" text_col="white" font="font_text_b" font_size="30" key="butt.close" font_style="stroke" text="8"></butt>
-      <butt posx="16" posy="32" img_up="common_butt_back.png" key="butt.left"></butt>
-      <butt posx="460" posy="32" img_up="butt_circle_right.png" key="butt.right"></butt>
-      <img posx="center" posy="18" img="popup_title_bar.png">
+    <popup img="common_bg_popup.png" format="argb8888" alpha="0.5">
+      <butt posx="center" posy="270" img_up="common_butt_small.png" text_col="white" font="font_text_b" font_size="30" key="butt.close" font_style="stroke" text="8"></butt>
+      <butt posx="left" posy="top" img_up="common_butt_back.png" key="butt.left"></butt>
+      <butt posx="right" posy="top" img_up="butt_circle_right.png" key="butt.right"></butt>
+      <img posx="center" posy="-15" img="popup_title_bar.png">
         <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="40" font_style="stroke" key="text.title" />
       </img>
+      <scroll_view posx="12" posy="45" width="460" height="221" key="scrl.view" dir="vert" />
     </popup>
   </popup_statistic>
 </layout>

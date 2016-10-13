@@ -1,8 +1,7 @@
 ﻿#include "stdafx.h"
-//#include "XWindow.h"
+#include "etc/XSurfaceDef.h"
+#include "etc/XSurface.h"
 #include "etc/xUtil.h"
-//#include "XWndMng.h"
-//#include "sprite/SprObj.h"
 #include "XFontSpr.h"
 #include "XFramework/XEToolTip.h"		
 #ifdef WIN32
@@ -44,6 +43,11 @@ int XWnd::s_depthMouseMove = 0;	// 마우스오버된 윈도우의 뎁스
 bool XWnd::s_bDrawOutline = false;		// 디버깅 모드. 모든 윈도우들의 외곽선을 그린다.
 bool XWnd::s_bDrawMouseOverWins = false;		// 디버깅 모드. 현재 마우스위치에 오버된 모든윈도우들의 리스트를 출력한다.
 #endif // _DEBUG
+
+void XWND_RES_FRAME::Destroy() {
+	for( int i = 0; i < 9; i++ )
+		SAFE_DELETE( psfcFrame[i] );
+}
 
 XList<std::string>	XWnd::s_listAllowClick;		// 이게 세팅되어 있으면 이 윈도우들외에 다른 윈도우는 입력을 막아야 한다.
 // SetCapture한 윈도우 리스트
@@ -244,8 +248,7 @@ void XWnd::SetRotateLocal( float dRotZ )
 void XWnd::SetSizeLocal( const XE::VEC2& vSize )
 { 
 	m_vSize.x = vSize.x; m_vSize.y = vSize.y; 
-	// 디버그모드일땐 부모의 사이즈가 0인지 체크한다.
-	// 자식의 사이즈가 정해졌는데 부모의 사이즈가 0이면 뭔가 이상한것이라 판단한다.
+	// 아젠장 이걸왜 여기다 넣었을까. 
 	if( m_vSize.IsZero() == FALSE )
 		SetbTouchable( TRUE );
 	else
@@ -298,12 +301,14 @@ XWnd *XWnd::Add( int id, XWnd *pChild, bool bFront )
 {
 	AddOnly( id, pChild );
 	//
+	pChild->OnUpdateBefore();
 	pChild->OnCreate();
 	// add되면 최초한번 업데이트는 무조건 불러준다.
 	pChild->SetbUpdate( false );
 	pChild->Update();
 	// Add를 하면서 Update를 최초 한번 하고 시작하는 방식이므로 일반적으로 이때 대부분의 파일들은 로딩이 끝났을거라고 가정함.
 	pChild->CallEventHandler( XWM_FINISH_LOADED );
+	pChild->OnUpdateAfter();
 	return pChild;
 }
 
@@ -512,7 +517,9 @@ int XWnd::Process( float dt )
 			// 방금 애니메이션이 끝난경우. 업데이트가 있었다면 바로 업데이트 하고 시작.
 			if( m_bUpdate ) {
 				m_bUpdate = false;
+				OnUpdateBefore();
 				Update();
+				OnUpdateAfter();
 			}
 		}
 	}
@@ -530,15 +537,16 @@ int XWnd::Process( float dt )
 		}
 		m_timerPush.Off();
 	}
-//	LIST_MANUAL_LOOP( m_listItems, XWnd*, itor, pWnd ) {
-	
+
 	for( auto itor = m_listItems.begin(); itor != m_listItems.end(); ) {
 		XWnd* pWnd = (*itor);	
 		if( pWnd->GetDestroyFinal() != TRUE && pWnd->GetbProcess() ) {
 			if( pWnd->GetbUpdate() ) {		// 업데이트 요청이있었으면 Update()를 호출한다.
 				if( !pWnd->IsDestroy() && !pWnd->IsAnimation() ) {
 					pWnd->SetbUpdate( FALSE );
+					pWnd->OnUpdateBefore();
 					pWnd->Update();
+					pWnd->OnUpdateAfter();
 				}
 			}
 			if( pWnd->m_timerAutoUpdate.IsOver() ) {
@@ -546,7 +554,9 @@ int XWnd::Process( float dt )
 				pWnd->OnAutoUpdate();		// 이벤트 핸들러
 				pWnd->m_timerAutoUpdate.Reset();
 			}
+			pWnd->OnProcessBefore();
 			pWnd->Process(dt);
+			pWnd->OnProcessAfter();
 		}
 		if( pWnd->GetDestroyFinal() ) {
 			if( pWnd->CallEventHandler( XWM_DESTROY ) )	{	// 파괴 이벤트 핸들러가 있다면 호출
@@ -600,9 +610,34 @@ void XWnd::Update()
 		if( pWnd->GetDestroy() == FALSE )
 			if( !pWnd->IsAnimation() && pWnd->GetbShow() ) {
 				pWnd->SetbUpdate( false );		// 상위부모의 업데이트로 인해 하위윈도우들이 중복으로 업데이트하는걸 방지.
+				pWnd->OnUpdateBefore();
 				pWnd->Update();
+				pWnd->OnUpdateAfter();
 			}
 	}
+}
+
+/**
+ @brief this에 쌓인 이벤트메시지들을 처리하고 자식들에게도 넘긴다.
+*/
+void XWnd::DispatchMsg()
+{
+	if( GetDestroyFinal() )
+		return;
+	while( m_qMsg.size() ) {
+		const auto& msg = FrontMsg();
+		if( DispatchMsg( msg ) ) {
+			PopMsg();
+			SetbUpdate( true );
+		}
+		// 10개이상 쌓인것은 뭔가 이상하다고 간주.
+		if( XBREAK( m_qMsg.size() > 10 ) )
+			break;
+	}
+	for( auto pWnd : m_listItems ) {
+		pWnd->DispatchMsg();
+	}
+
 }
 
 // private전용 자식 삭제
@@ -754,7 +789,9 @@ void XWnd::Draw()
 #endif
 			if( pWnd->GetpDelegate() )
 				pWnd->GetpDelegate()->DelegateBeforeDraw( pWnd );
+			pWnd->OnDrawBefore();
 			pWnd->Draw();
+			pWnd->OnDrawAfter();
 #ifdef WIN32
 			if( XWnd::s_bDrawOutline ) {
 				const auto vPos = pWnd->GetPosFinal();
@@ -815,6 +852,56 @@ void XWnd::GenerateLoopEvent()
 	}
 }
 
+void XWnd::ClearEvent( DWORD msg ) 
+{
+	LIST_MANUAL_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap ) {
+		if( msgMap.msg == msg )
+			m_listMessageMap.erase( itor++ );
+		else
+			++itor;
+	} END_LOOP;
+	// event2
+	
+	for( auto itor = m_listCallback.begin(); itor != m_listCallback.end(); ) {
+		auto& callback = *itor;
+		if( callback.m_idEvent == msg ) {
+			m_listCallback.erase( itor++ );
+		} else {
+			++itor;
+		}
+	}
+	
+}
+XWND_MESSAGE_MAP XWnd::FindMsgMap( DWORD msg ) 
+{
+	LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap ) {
+		if( msgMap.msg == msg )
+			return msgMap;
+	} END_LOOP;
+	XWND_MESSAGE_MAP msgMap;
+	return msgMap;
+}
+
+const XWnd::xCallback* XWnd::FindMsgMap2( DWORD msg ) const
+{
+	return m_listCallback.FindpcByIDNonPtr( msg );
+}
+
+
+bool XWnd::IsHaveEvent( DWORD msg )  const
+{
+	LIST_LOOP( m_listMessageMap, XWND_MESSAGE_MAP, itor, msgMap ) {
+		if( msgMap.msg == msg )
+			return true;
+	} END_LOOP;
+	for( auto& callback : m_listCallback ) {
+		if( callback.m_idEvent == msg ) {
+			return true;
+		}
+	}
+	return FALSE;
+}
+
 int XWnd::CallEventHandler( ID msg, DWORD dwParam2 )
 {
 	int ret = 1;
@@ -831,18 +918,13 @@ int XWnd::CallEventHandler( ID msg, DWORD dwParam2 )
 	for( auto& callback : m_listCallback ) {
 		if( callback.m_idEvent == msg ) {
 			callback.m_funcCallback( this );		// 콜백 함수 호출
+			if( msg == XWM_CLICKED ) {
+				if( XBREAK( m_vSize.IsInvalid() ) )
+					return 0;
+				// 한 윈도우에 같은이벤트를 여러개 달수 있도록 허용함.
+			}
 		}
 	}
-// 	for( auto itor = m_listCallback.begin(); itor != m_listCallback.end(); ) {
-// 		xCallback& callback = (*itor);
-// 		if( callback.m_idEvent == msg ) {
-// 			callback.m_funcCallback( this );		// 콜백 함수 호출
-// 			m_listCallback.erase( itor++ );
-// 		} else {
-// 			++itor;
-// 		}
-// 	}
-
 	return ret;
 }
 
@@ -1501,6 +1583,20 @@ BOOL XWnd::RestoreDevice()
 	return TRUE;
 }
 
+void XWnd::DestroyDevice()
+{
+	for( auto pWnd : m_listItems ) {
+		pWnd->DestroyDevice();
+	}
+}
+
+void XWnd::OnPause()
+{
+	for( auto pWnd : m_listItems ) {
+		pWnd->OnPause();
+	}
+}
+
 /**
  @brief 각 객체가 보유한 shared_ptr을 반납해야 한다.
 */
@@ -1842,31 +1938,6 @@ XE::VEC2 XWnd::GetSizeNoTransLayout()
 	if( m_vSize.h > sizeTotalLayoutSize.h )
 		sizeTotalLayoutSize.h = m_vSize.h;
 	return sizeTotalLayoutSize;
-
-// 	XE::VEC2 vMaxSize;
-	// 자식들의 사이즈 구함.
-// 	XE::VEC2 sizeLayoutChilds;
-// 	for( auto pChild : m_listItems ) {
-// 		if (pChild->GetDestroy() == FALSE) {
-// 			auto sizeLocalChild = pChild->GetSizeNoTransLayout();
-// 			auto sizeFinalChild = sizeLocalChild * pChild->GetScaleLocal();
-// 			auto vTotalSize = pChild->GetPosLocal() + sizeFinalChild;
-// 			if (vTotalSize.w > sizeLayoutChilds.w)
-// 				sizeLayoutChilds.w = vTotalSize.w;
-// 			if (vTotalSize.h > sizeLayoutChilds.h)
-// 				sizeLayoutChilds.h = vTotalSize.h;
-// 		}
-// 	}
-// 	// this의 사이즈도 비교
-// 	auto vSizeThis = m_vSize;
-// 	auto sizeTotalLayoutSize = sizeLayoutChilds;
-// 	// this의 사이즈와 자식들의 레이아웃사이즈중에서 큰걸 선택한다.
-// 	if( vSizeThis.w > sizeTotalLayoutSize.w )
-// 		sizeTotalLayoutSize.w = vSizeThis.w;
-// 	if( vSizeThis.h > sizeTotalLayoutSize.h )
-// 		sizeTotalLayoutSize.h = vSizeThis.h;
-// 
-// 	return sizeTotalLayoutSize;
 }
 
 /**
@@ -1878,13 +1949,15 @@ XE::VEC2 XWnd::GetSizeNoTransLayoutWithAry( const XVector<XWnd*>& aryWnd ) const
 	XE::VEC2 sizeLayoutChilds;
 	for( auto pChild : aryWnd ) {
 		if( !pChild->GetDestroy() ) {
-			const auto sizeLocalChild = pChild->GetSizeNoTransLayout();
-			const auto sizeFinalChild = sizeLocalChild * pChild->GetScaleLocal();
-			const auto vTotalSize = pChild->GetPosLocal() + sizeFinalChild;
-			if( vTotalSize.w > sizeLayoutChilds.w )
-				sizeLayoutChilds.w = vTotalSize.w;
-			if( vTotalSize.h > sizeLayoutChilds.h )
-				sizeLayoutChilds.h = vTotalSize.h;
+			if( pChild->GetbShow() ) {
+				const auto sizeLocalChild = pChild->GetSizeNoTransLayout();
+				const auto sizeFinalChild = sizeLocalChild * pChild->GetScaleLocal();
+				const auto vTotalSize = pChild->GetPosLocal() + sizeFinalChild;
+				if( vTotalSize.w > sizeLayoutChilds.w )
+					sizeLayoutChilds.w = vTotalSize.w;
+				if( vTotalSize.h > sizeLayoutChilds.h )
+					sizeLayoutChilds.h = vTotalSize.h;
+			}
 		}
 	}
 	return sizeLayoutChilds;
@@ -1937,38 +2010,38 @@ void XWnd::GetMaxLTPosByChild( XE::VEC2 *pOutLT, XE::VEC2 *pOutRB )
  @brief this의 GetSizeLocal()을 얻는다. 그러나 사이즈가 invalid하면 부모의 크기로받는다.
  @param pParent 부모를 직접 지정할수있다.
 */
-XE::VEC2 XWnd::GetSizeValidNoTrans()
+XE::VEC2 XWnd::GetSizeValidNoTrans() const
 {
 	XE::VEC2 vSize = GetSizeLocalNoTrans();
 	// this의 사이즈가 invalid하면 부모의 사이즈를 얻는다.
 	if( vSize.IsInvalid() ) {
-		if( GetpParent() )
-			return GetpParent()->GetSizeValidNoTrans();
+		if( m_pParent )
+			return m_pParent->GetSizeValidNoTrans();
 		// 부모가 없다면 전체 게임화면사이즈를 돌려준다.
 		return XE::GetGameSize();
 	} 
 	return vSize;
 }
 
-float XWnd::GetSizeValidNoTransWidth()
+float XWnd::GetSizeValidNoTransWidth() const
 {
 	float width = GetSizeLocalNoTrans().w;
 	// this의 사이즈가 invalid하면 부모의 사이즈를 얻는다.
 	if( width <= 0 ) {
-		if( GetpParent() )
-			return GetpParent()->GetSizeValidNoTransWidth();
+		if( m_pParent )
+			return m_pParent->GetSizeValidNoTransWidth();
 		return XE::GetGameSize().w;
 	}
 	return width;
 }
 
-float XWnd::GetSizeValidNoTransHeight()
+float XWnd::GetSizeValidNoTransHeight() const
 {
 	float height = GetSizeLocalNoTrans().h;
 	// this의 사이즈가 invalid하면 부모의 사이즈를 얻는다.
 	if( height <= 0 ) {
-		if( GetpParent() )
-			return GetpParent()->GetSizeValidNoTransHeight();
+		if( m_pParent )
+			return m_pParent->GetSizeValidNoTransHeight();
 		// 부모가 없다면 전체 게임화면사이즈를 돌려준다.
 		return XE::GetGameSize().h;
 	}
@@ -1976,18 +2049,18 @@ float XWnd::GetSizeValidNoTransHeight()
 }
 
 // this의 부모중에 가로 align이 있는 부모를 찾는다.
-XWnd* XWnd::GetpParentHaveAlignH() 
+XWnd* XWnd::GetpParentHaveAlignH()  const
 {
-	auto pParent = GetpParent();
+	auto pParent = m_pParent;
 	if( pParent && (pParent->GetAlign() & (xALIGN_HCENTER | xALIGN_RIGHT)))
 		return pParent;
 	return nullptr;
 }
 
 // this의 부모중에 세로 align이 있는 부모를 찾는다.
-XWnd* XWnd::GetpParentHaveAlignV() 
+XWnd* XWnd::GetpParentHaveAlignV() const
 {
-	auto pParent = GetpParent();
+	auto pParent = m_pParent;
 	if( pParent && ( pParent->GetAlign() & ( xALIGN_VCENTER | xALIGN_BOTTOM ) ) )
 		return pParent;
 	return nullptr;
@@ -1999,7 +2072,7 @@ XWnd* XWnd::GetpParentHaveAlignV()
  @note 이것은 부모가 0,0 ~ w,h 일때를 가정한것이다. 그러나 부모가 스프라이트 
        객체라면 vLT가 반드시 0,0이라는 보장이 없으므로 boundbox를 구해서 계산하는게 맞다. XWndImage::Update()
 */
-void XWnd::AutoLayoutHCenter( XWnd *pParent )
+void XWnd::AutoLayoutHCenter( const XWnd *pParent )
 {
 	// 폭이 있는 부모를 찾음.
 	if( pParent )
@@ -2010,20 +2083,12 @@ void XWnd::AutoLayoutHCenter( XWnd *pParent )
 	const float wLocalLayout = GetSizeNoTransLayout().w * m_vScale.x;
 	const float left = wParent * 0.5f - wLocalLayout * 0.5f;
 	SetX( left );
-// 	if( pParent )
-// 		pParent = (pParent->IsValidSize())? pParent : pParent->GetpParentValid();
-// 	const XE::VEC2 vSizeParent = (pParent)? pParent->GetSizeValidNoTrans() : XE::GetGameSize();
-// // 	const auto rectBB = pParent->GetBoundBoxByVisibleNoTrans();
-// 	const XE::VEC2 sizeLocalLayout = GetSizeNoTransLayout() * m_vScale;
-// 	const XE::VEC2 vPosLT = vSizeParent * 0.5f - sizeLocalLayout * 0.5f;
-// 	const XE::VEC2 vPosLocal = GetPosLocal();
-// 	SetX( vPosLT.x );
 }
 
 /**
  자동으로 부모의 크기에 맞춰 세로의 중앙으로 맞춰준다.
 */
-void XWnd::AutoLayoutVCenter( XWnd *pParent )
+void XWnd::AutoLayoutVCenter( const XWnd *pParent )
 {
 	if( pParent )
 		pParent = ( pParent->GetSizeLocalNoTrans().h > 0 ) ? pParent : pParent->GetpParentValidHeight();
@@ -2031,32 +2096,19 @@ void XWnd::AutoLayoutVCenter( XWnd *pParent )
 	const float hLocalLayout = GetSizeNoTransLayout().h * m_vScale.y;
 	const float top = hParent * 0.5f - hLocalLayout * 0.5f;
 	SetY( top );
-// 	if( pParent )
-// 		pParent = ( pParent->IsValidSize() ) ? pParent : pParent->GetpParentValid();
-// 	const XE::VEC2 vSizeParent = ( pParent ) ? pParent->GetSizeValidNoTrans() : XE::GetGameSize();
-// 	const XE::VEC2 sizeLocalLayout = GetSizeNoTransLayout();
-// 	const XE::VEC2 vPosLT = vSizeParent / 2.f - sizeLocalLayout / 2.f;
-// 	const XE::VEC2 vPosLocal = GetPosLocal();
-// 	SetY( vPosLT.y );
 }
 
 /**
  자동으로 부모의 크기에 맞춰 가로세로 정중앙에 맞춰준다.
 */
-void XWnd::AutoLayoutCenter( XWnd *pParent )
+void XWnd::AutoLayoutCenter( const XWnd *pParent )
 {
 	// 가로,세로값중 하나만 유효한 윈도우도 있어서 따로 함.
 	AutoLayoutHCenter( pParent );
 	AutoLayoutVCenter( pParent );
-// 	if( pParent )
-// 		pParent = ( pParent->IsValidSize() ) ? pParent : pParent->GetpParentValid();
-// 	const XE::VEC2 vSizeParent = (pParent)? pParent->GetSizeValidNoTrans() : XE::GetGameSize();
-// 	const XE::VEC2 sizeLocalLayout = GetSizeNoTransLayout();
-// 	const XE::VEC2 vPosLT = vSizeParent / 2.f - sizeLocalLayout / 2.f;
-// 	SetPosLocal( vPosLT );
 }
 
-void XWnd::AutoLayoutRight( XWnd *pParent )
+void XWnd::AutoLayoutRight( const XWnd *pParent )
 {
 	if( pParent )
 		pParent = ( pParent->GetSizeLocalNoTrans().w > 0 ) ? pParent : pParent->GetpParentValidWidth();
@@ -2064,18 +2116,9 @@ void XWnd::AutoLayoutRight( XWnd *pParent )
 	const float wLocalLayout = GetSizeNoTransLayout().w * m_vScale.x;
 	const float left = wParent - wLocalLayout;
 	SetX( left );
-// 	if( pParent )
-// 		pParent = ( pParent->IsValidSize() ) ? pParent : pParent->GetpParentValid();
-// 	XE::VEC2 vSizeParent = ( pParent ) ? pParent->GetSizeValidNoTrans() : XE::GetGameSize();
-// // 	const auto rectBB = pParent->GetBoundBoxByVisibleNoTrans();
-// 	XE::VEC2 sizeLocalLayout = GetSizeNoTransLayout();
-// 	XE::VEC2 vPosLT = vSizeParent - sizeLocalLayout;
-// 	XE::VEC2 vPosLocal = GetPosLocal();
-// 	vPosLocal.x = vPosLT.x;
-// 	SetPosLocal( vPosLocal );
 }
 
-void XWnd::AutoLayoutBottom( XWnd *pParent )
+void XWnd::AutoLayoutBottom( const XWnd *pParent )
 {
 	if( pParent )
 		pParent = ( pParent->GetSizeLocalNoTrans().h > 0 ) ? pParent : pParent->GetpParentValidHeight();
@@ -2083,21 +2126,12 @@ void XWnd::AutoLayoutBottom( XWnd *pParent )
 	const float hLocalLayout = GetSizeNoTransLayout().h * m_vScale.y;
 	const float top = hParent - hLocalLayout;
 	SetY( top );
-// 	if( pParent )
-// 		pParent = ( pParent->IsValidSize() ) ? pParent : pParent->GetpParentValid();
-// 	XE::VEC2 vSizeParent = ( pParent ) ? pParent->GetSizeValidNoTrans() : XE::GetGameSize();
-// // 	const auto rectBB = pParent->GetBoundBoxByVisibleNoTrans();
-// 	XE::VEC2 sizeLocalLayout = GetSizeNoTransLayout();
-// 	XE::VEC2 vPosLT = vSizeParent - sizeLocalLayout;
-// 	XE::VEC2 vPosLocal = GetPosLocal();
-// 	vPosLocal.y = vPosLT.y;
-// 	SetPosLocal( vPosLocal );
 }
 
 /**
  @brief align값에 의해 부모를 기준으로 자동으로 m_vPos값을 정렬한다.
 */
-void XWnd::AutoLayoutByAlign( XWnd *pParent, XE::xAlign align )
+void XWnd::AutoLayoutByAlign( const XWnd *pParent, XE::xAlign align )
 {
 	// left align의 경우는 현재값을 그대로 둔다.
 	if( align && align != xALIGN_LEFT ) {
@@ -2206,7 +2240,7 @@ void XWnd::AutoLayoutHCenterWithAry( XVector<XWnd*>& aryWnd, float marginLR )
  @param marginTB 위아래 마진
  @param dist elem간 간격
 */
-void XWnd::AutoLayoutVCenterWithAry( XVector<XWnd*>& aryChilds, float marginTB )
+void XWnd::AutoLayoutVCenterWithAry( const XVector<XWnd*>& aryChilds, float marginTB ) const
 {
 	const int num = aryChilds.size();
 	if( num == 0 )
@@ -2464,7 +2498,7 @@ XWnd* XWnd::GetpParentValid()
 /**
  @brief 가로폭만 유효한값을 가진 부모를 찾는다.
 */
-XWnd* XWnd::GetpParentValidWidth()
+XWnd* XWnd::GetpParentValidWidth() const 
 {
 	if( m_pParent && m_pParent->GetSizeLocal().w <= 0 )
 		return m_pParent->GetpParentValidWidth();
@@ -2474,14 +2508,14 @@ XWnd* XWnd::GetpParentValidWidth()
 /**
  @brief 세로폭만 유효한값을 가진 부모를 찾는다.
 */
-XWnd* XWnd::GetpParentValidHeight()
+XWnd* XWnd::GetpParentValidHeight() const
 {
 	if( m_pParent && m_pParent->GetSizeLocal().h <= 0 )
 		return m_pParent->GetpParentValidHeight();
 	return m_pParent;
 }
 
-float XWnd::GetWidthFinalValid() 
+float XWnd::GetWidthFinalValid() const 
 {
 	if( m_vSize.w <= 0 ) {
 		if( m_pParent )
@@ -2490,7 +2524,7 @@ float XWnd::GetWidthFinalValid()
 	return m_vSize.w * GetScaleFinal().x;
 }
 
-float XWnd::GetHeightFinalValid()
+float XWnd::GetHeightFinalValid() const
 {
 	if( m_vSize.h <= 0 ) {
 		if( m_pParent )
@@ -2520,4 +2554,14 @@ void XWnd::SendMsgToChilds( const std::string& strMsg )
 			pWnd->ProcessMsg( strMsg );
 		}
 	}
+}
+
+XWnd* XWnd::SetClickHander( const char *cKey,
+														ID idEvent,
+														std::function<void( XWnd* )> func ) 
+{
+	auto pButt = Find( cKey );
+	if( pButt )
+		pButt->SetEvent2( idEvent, func );
+	return pButt;
 }

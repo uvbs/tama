@@ -16,22 +16,17 @@ class XWndSelectHeroesInReady;
 class XSceneReady : public XSceneBase
 {
 	XLayoutObj m_Layout;
-// 	ID m_idSpot = 0;
-// 	int m_levelEnemy = 0;
-// 	_tstring m_strNameEnemy;
-// 	int m_idxStage = 0;
-//	std::shared_ptr<XGAME::xSPM_BATTLE> m_spParam;
-//	LegionPtr m_spLegion[2];
 private:
   CTimer m_timerLimit;
 	bool m_bEditMode = false;
+	std::shared_ptr<XGAME::xSceneBattleParam> m_spParam;
 	//
 	void Init()  {
 	}
 	void Destroy();
 protected:
 public:
-	XSceneReady( XGame *pGame, SceneParamPtr& spBaseParam );
+	XSceneReady( XGame *pGame, XSPSceneParam& spBaseParam );
 	virtual ~XSceneReady(void) { Destroy(); }
 	//
 	// virtual

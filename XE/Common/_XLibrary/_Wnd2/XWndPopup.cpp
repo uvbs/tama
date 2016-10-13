@@ -60,6 +60,7 @@ void XWndPopup::SetLayout( const _tstring& strtXml, const std::string& strcNode,
 	m_pLayoutObj = new XLayoutObj( strtXml );
 	if( !m_pLayoutObj->GetpLayout() )
 		return;
+//	m_pLayoutObj->CreateLayout2( strcNode, this );
 	m_pLayoutObj->CreateLayout( strcNode, this );
 	// this의 최대 사이즈로 this의 사이즈를 정한다.
 	auto sizeLocal = GetSizeNoTransLayout();

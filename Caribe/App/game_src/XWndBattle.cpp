@@ -4,11 +4,14 @@
 #include "XAccount.h"
 #include "XGame.h"
 #include "XLegion.h"
-#include "JWWnd.h"
+//#include "JWWnd.h"
 #include "_Wnd2/XWndProgressBar.h"
+#include "_Wnd2/XWndSprObj.h"
+#include "_Wnd2/XWndImage.h"
 #include "XUnitHero.h"
 #include "XSquadObj.h"
 #include "Sprite/Layer.h"
+#include "sprite/SprObj.h"
 #include "XHero.h"
 #include "skill/XSkillDat.h"
 
@@ -39,8 +42,8 @@ void XWndBattleAfterHeroExp::Update()
 {
 	XLegion *pLegion = ACCOUNT->GetLegionByIdx( m_idxLegion ).get();
 	if( XASSERT( pLegion ) ) {
-// 		XArrayLinearN<XHero*, XGAME::MAX_SQUAD> ary;
-		XVector<XHero*> ary;
+// 		XArrayLinearN<XSPHero, XGAME::MAX_SQUAD> ary;
+		XVector<XSPHero> ary;
 		pLegion->GetHerosToAry( &ary );
 		int nAdjustY = 0, size = ary.size();
 		nAdjustY = ary.size() / 5;
@@ -52,7 +55,7 @@ void XWndBattleAfterHeroExp::Update()
 		auto sizePopup = GetSizeLocal();
 		XE::VEC2 vStart( ( 316 - 70 ) / 2 + 114 - 43 * ( size - 1 ), ( 250 - 81 ) / 2 + 45 - nAdjustY );
 		int idx = 0;
-//		XARRAYLINEARN_LOOP( ary, XHero*, pHero ) {
+//		XARRAYLINEARN_LOOP( ary, XSPHero, pHero ) {
 		for( auto pHero : ary ) {
 			if( idx != 0 && idx % 5 == 0 ) {
 				if( idx == ary.size() - ( ary.size() % 5 ) )
@@ -163,8 +166,8 @@ void XWndSkillButton::Draw( void )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-XWndFaceInBattle::XWndFaceInBattle( XSPSquad spSquadObj, int side )
-	: XWndStoragyItemElem( XE::VEC2(0), spSquadObj->GetpHero() )
+XWndFaceInBattle::XWndFaceInBattle( XSPSquadObj spSquadObj, int side )
+	: XWndStoragyItemElem( XE::VEC2(0), spSquadObj->GetpHero(), true )
 {
 	m_spSquadObj = spSquadObj;
 	m_Side = side;
@@ -177,10 +180,18 @@ XWndFaceInBattle::~XWndFaceInBattle()
 
 BOOL XWndFaceInBattle::OnCreate()
 {
-	auto pRed = new XWndImage( PATH_UI("common_bg_frame_red.png"), XE::VEC2( 3, 2 ) );
+	auto pRed = new XWndImage( PATH_UI("common_bg_frame_red.png"), 
+														 true,
+														 XE::xPF_ARGB4444,
+														 XE::VEC2( 3, 2 ) );
+	pRed->SetPriority( -100 );
 	pRed->SetstrIdentifier( "rect.red" );
 	pRed->SetbShow( false );
 	Add( pRed );
+	const int lvHero = m_spSquadObj->GetpHero()->GetLevel();
+	SetLevel( lvHero );
+	SetbShowName( true );
+	SetbShowNum( false );
 	XWndStoragyItemElem::OnCreate();
 	auto pBar = new XWndProgressBar2();
 	pBar->SetstrIdentifier("bar.hp");
@@ -266,6 +277,9 @@ void XWndFaceInBattle::Draw()
 	}
 }
 
+/**
+ @brief 스킬쓸때 초상화에서 튀어나는거.
+*/
 BOOL XWndFaceInBattle::OnDelegateDrawImageLayerBefore( XSprObj *pSprObj
 																								 , XSprite *pSprSrc
 																								 , XLayerImage *pImageLayer

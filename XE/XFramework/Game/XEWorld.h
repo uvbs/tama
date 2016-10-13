@@ -3,11 +3,14 @@
 
 class XEObjMng;
 class XEWndWorld;
+class XBatchRenderer;
+
 // 게임프레임워크에서 오브젝트들이 들어갈 월드전체를 표현하는 추상화 객체
 class XEWorld
 {
 	XE::VEC2 m_vwSize;		// 월드 전체 크기
 	XEObjMng *m_pObjMng;
+//	XRenderCmdMng* m_pRenderCmdMng = nullptr;
 	void Init() {
 		m_pObjMng = NULL;
 	}
@@ -17,8 +20,9 @@ public:
 	virtual ~XEWorld() { Destroy(); }
 	//
 	virtual void Release( void );
-	GET_ACCESSOR( XEObjMng*, pObjMng );
-	GET_ACCESSOR( const XE::VEC2&, vwSize );
+	GET_ACCESSOR_PTR( XEObjMng*, pObjMng );
+//	GET_ACCESSOR_MUTABLE( XEObjMng*, pObjMng );
+	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vwSize );
 	void SetObjMng( XEObjMng *pObjMng );
 	//
 	XSPWorldObj GetObjByidObj( ID idObj );

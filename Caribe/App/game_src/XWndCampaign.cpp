@@ -15,6 +15,7 @@
 #include "XGameWnd.h"
 #include "XSockGameSvr.h"
 #include "XPropLegionH.h"
+#include "XWndStorageItemElem.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT

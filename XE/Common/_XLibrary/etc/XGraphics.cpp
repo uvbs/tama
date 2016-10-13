@@ -11,6 +11,7 @@
 #include "xUtil.h"
 #include "xMath.h"
 #include "XImage.h"
+#include "XSurface.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -24,6 +25,20 @@ XGraphics* XGraphics::s_pGraphics = NULL;
 BOOL		XGraphics::s_bCaptureBackBuffer = FALSE;			// Present전에 현재 백버퍼를 카피해둬야 함
 XSurface* XGraphics::s_pLastBackBuffer = NULL;			// 마지막으로 캡쳐된 백버퍼 화면
 DWORD XGraphics::s_dwDraw = 0;
+bool XGraphics::s_bBatchLoading = false;
+XFps XGraphics::s_fpsDPCallBatch;
+XFps XGraphics::s_fpsDPCallNoBatch;
+XFps XGraphics::s_fpsDPCallNormal;
+
+
+
+void XGraphics::CaptureBackBuffer( BOOL bHighReso ) {		// 
+	if( s_bCaptureBackBuffer ) {	// 캡쳐가 예약이 됐으면 
+		SAFE_DELETE( s_pLastBackBuffer );
+		s_pLastBackBuffer = GRAPHICS->CreateScreenToSurface( bHighReso );		// 백버퍼를 캡쳐해서 보관
+	}
+	s_bCaptureBackBuffer = FALSE;
+}
 
 #pragma mark Init
 
@@ -237,6 +252,7 @@ void XGraphics::Init( int nResolutionWidth, int nResolutionHeight, xPixelFormat 
 //	m_nPhyScreenWidth = m_nWidth;
 //	m_nPhyScreenHeight = m_nHeight;
 	ClearScreen( XCOLOR_BLACK );
+//	XGraphics::s_spLock = std::make_shared<XLock>();
 }
 
 #pragma mark Convert pixel
@@ -421,6 +437,7 @@ BOOL Clipper( int _xl, int _yt, int _xr, int _yb,
 	return FALSE;
 }
 
+
 // v1 - v2를 잇는 곡선을 그린다
 void XGraphics::DrawSplineCatmullRom( const XE::VEC2& v0, const XE::VEC2& v1, 
 														const XE::VEC2& v2, const XE::VEC2& v3,
@@ -590,15 +607,18 @@ void XGraphics::DrawPie( float x, float y
 	num++;
 	DrawFan( pos, col, idxAry, num );
 }
+
 /**
  @brief 파일로부터 이미지를 읽어서 서피스를 만든다.
 */
-XSurface* XGraphics::CreateSurface( bool bHighReso
-																	, LPCTSTR szRes
-																	, XE::xtPixelFormat formatSurface
-																	, bool bSrcKeep/* = false*/
-																	, bool bMakeMask/* = false*/
-																	, bool bAsync/* = false*/ )
+XSurface* XGraphics::CreateSurface( bool bHighReso, 
+																		LPCTSTR szRes, 
+																		bool bBatch,
+																		XE::xtPixelFormat formatSurface, 
+																		bool bUseAtlas, 
+																		bool bSrcKeep/* = false*/, 
+																		bool bMakeMask/* = false*/, 
+																		bool bAsync/* = false*/ )
 {
 	if( !bAsync ) {
 		DWORD *pImg = nullptr;
@@ -610,7 +630,18 @@ XSurface* XGraphics::CreateSurface( bool bHighReso
 		XBREAK( sizeImgMem.h <= 0 );
 		// bHighReso의 잔재. 이 파일이 고해상도로 지정되어 있으면 실제 서피스 크기는 절반이 된다
 		const auto sizeSurface = (bHighReso)? sizeImgMem / 2 : sizeImgMem; 
-		auto pSurface = CreateSurface();
+		XSurface* pSurface = nullptr;
+		const bool bTooBig = (sizeImgMem.w > 2048 || sizeImgMem.h > 2048 );
+		if( bUseAtlas && !bTooBig ) {
+			if(bBatch)
+				pSurface = GRAPHICS->CreateSurfaceAtlasBatch();
+			else
+				pSurface = GRAPHICS->CreateSurfaceAtlasNoBatch();
+		} else {
+			pSurface = CreateSurface();;
+			bUseAtlas = false;
+		}
+
 		if( pSurface ) {
 			bool bOk = pSurface->Create( sizeSurface
 																, XE::VEC2(0)
@@ -619,19 +650,13 @@ XSurface* XGraphics::CreateSurface( bool bHighReso
 																, XE::xPF_ARGB8888		// formatImgSrc
 																, sizeImgMem
 																, bSrcKeep
-																, bMakeMask );
+																, bMakeMask 
+																, bUseAtlas );
 			if( bOk ) {
 				pSurface->SetstrRes( szRes );
 			} else {
 				SAFE_DELETE( pSurface );
 			}
-	// 		auto pSurface = _CreateSurface( sizeSurface
-	// 																, XE::VEC2(0)		// adj
-	// 																, formatSurface
-	// 																, pImg
-	// 																, XE::xPF_ARGB8888		// formatImgSrc
-	// 																, sizeImgMem
-	// 																, bSrcKeep, bMakeMask );
 			SAFE_DELETE_ARRAY( pImg );		// 이미지 원본 날림.
 		} else {
 			XBREAKF( pSurface == nullptr, "[%s] createSurface failed", szRes );
@@ -644,6 +669,17 @@ XSurface* XGraphics::CreateSurface( bool bHighReso
 	}
 }
 
+XSurface* XGraphics::CreateSurface( bool bHighReso,
+																		LPCTSTR szRes,
+																		XE::xtPixelFormat formatSurface,
+																		bool bUseAtlas,
+																		bool bSrcKeep/* = false*/,
+																		bool bMakeMask/* = false*/,
+																		bool bAsync/* = false*/ )
+{
+	const bool bBatch = false;
+	return CreateSurface( bHighReso, szRes, bBatch, formatSurface, bUseAtlas, bSrcKeep, bMakeMask, bAsync );
+}
 
 XSurface* XGraphics::CreateSurface( const XE::POINT& sizeSurfaceOrig
 																	, const XE::VEC2& vAdj
@@ -652,7 +688,7 @@ XSurface* XGraphics::CreateSurface( const XE::POINT& sizeSurfaceOrig
 																	, const XE::POINT& sizeMemSrc
 																	, bool bSrcKeep, bool bMakeMask ) {
 	auto pSurface = CreateSurface();		// virtual
-	if( pSurface ) {
+	if( pSurface && pImgSrc ) {
 		bool bOk = pSurface->Create( sizeSurfaceOrig
 															, vAdj
 															, formatSurface
@@ -660,7 +696,8 @@ XSurface* XGraphics::CreateSurface( const XE::POINT& sizeSurfaceOrig
 															, XE::xPF_ARGB8888		// formatImgSrc
 															, sizeMemSrc
 															, bSrcKeep
-															, bMakeMask );
+															, bMakeMask
+															, false );
 		if( !bOk ) {
 			SAFE_DELETE( pSurface );
 		}
@@ -719,4 +756,40 @@ bool XGraphics::LoadImg( const _tstring& resImg, XE::xImage* pOut )
 	return LoadImg( resImg.c_str(), pOut );
 }
 
-
+/**
+@brief fmtSrc로 되어있는 pImgSrc를 fmtDst포맷으로 바꾼다.
+*/
+void XE::CreateConvertPixels( const void* pImgSrc,
+															int wSrc, int hSrc,
+															xtPixelFormat fmtSrc,
+															const void** ppDstOut,
+															xtPixelFormat fmtDst )
+{
+	XBREAK( fmtSrc == fmtDst );
+	XBREAK( fmtSrc != xPF_ARGB8888 );
+	XBREAK( fmtDst == xPF_ARGB8888 );
+	const int bppSrc = XE::GetBpp( fmtSrc );
+	const int bppDst = XE::GetBpp( fmtDst );
+	if( bppDst == 4 ) {
+		// 4바이트 포맷은 현재는 8888밖에 없어서 변환할 필요가 없어서 그냥 놔둠.
+	} else
+		if( bppDst == 2 ) {
+			auto pDst = new WORD[wSrc * hSrc];
+			*ppDstOut = pDst;
+			switch( fmtDst ) {
+			case xPF_ARGB1555:
+				ConvertBlockABGR8888ToRGBA1555( pDst, wSrc, hSrc, (DWORD*)pImgSrc, wSrc, hSrc );
+				break;
+			case xPF_ARGB4444:
+				XE::ConvertBlockABGR8888ToRGBA4444( pDst, wSrc, hSrc, (DWORD*)pImgSrc, wSrc, hSrc );
+				break;
+			case xPF_RGB565:
+			case xPF_RGB555:
+				XE::ConvertBlockABGR8888ToRGB565( pDst, wSrc, hSrc, (DWORD*)pImgSrc, wSrc, hSrc );
+				break;
+			default:
+				XBREAK( 1 );
+				break;
+			}
+		}
+}

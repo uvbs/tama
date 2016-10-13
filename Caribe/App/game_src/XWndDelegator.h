@@ -22,7 +22,7 @@ class XHero;
 // 	virtual ~XDelegateEvent() { Destroy(); }
 // 	// get/setter
 // 	// public member
-// 	virtual void DelegateTrainComplete( XGAME::xtTrain type, XHero *pHero ) {}
+// 	virtual void DelegateTrainComplete( XGAME::xtTrain type, XSPHero pHero ) {}
 // 	virtual void DelegateEvent( const std::string& idsEvent ) {}
 // 	template<typename T1>
 // 	virtual void DelegateEvent( const std::string& idsEvent, T1 p1 ) {}
@@ -96,7 +96,7 @@ class XDelegator
 		ID m_idWnd = 0;
 		std::string m_idsEvent;		// 이벤트 종류
 		std::function<void( XWnd*, const std::string& )> m_callback;
-		std::function<void( XWnd*, const std::string&, XGAME::xtTrain, XHero* )> m_callback2;
+		std::function<void( XWnd*, const std::string&, XGAME::xtTrain, XSPHero )> m_callback2;
 		std::string m_idsWnd;			// 이벤트 받을 윈도우
 	};
 public:
@@ -150,7 +150,7 @@ public:
 	}
 	template<typename F>
 	void DoRequest2( const std::string& idsEvent, XWnd* pReceiver, F func ) {
-		typedef void ( XWnd::*CallbackFunc )( const std::string&, XGAME::xtTrain, XHero* );
+		typedef void ( XWnd::*CallbackFunc )( const std::string&, XGAME::xtTrain, XSPHero );
 		xCALLBACK callbackObj;
 		callbackObj.m_callback2 
 			= std::bind( static_cast<CallbackFunc>( func ), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4 );

@@ -35,7 +35,7 @@ XSoundMngAndroid::~XSoundMngAndroid()
 }
 bool XSoundMngAndroid::OpenBGMusic( const char* cFileTitle, bool bRepeat)
 {
-	XLOGXN( "%s, %s", __FUNCTION__, cFileTitle );
+	//XLOGXN( "%s, %s", __FUNCTION__, cFileTitle );
 	const std::string strFile = XE::Format( "%s.mp3", cFileTitle );
 	XSoundMng::OpenBGMusic( cFileTitle, bRepeat );
 //	strcpy_s(m_szBGMFilename, _filename);
@@ -44,7 +44,7 @@ bool XSoundMngAndroid::OpenBGMusic( const char* cFileTitle, bool bRepeat)
 	XE::SetReadyRes( szFullpath, strRes.c_str() );
 	m_strBGMFullpath = szFullpath;
 	//	XLOGXN("%s", szPath);
-	XLOGXN("%s:%s", __FUNCTION__, szFullpath );
+	//XLOGXN("%s:%s", __FUNCTION__, szFullpath );
 	SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic( szFullpath );
 // 	SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume( GetBGMMasterVolume() );
 	//	XLOGXN("set volume");
@@ -137,7 +137,7 @@ bool XSoundMngAndroid::OpenSound( ID idSound )
 	if( strFullpath.empty() )
 		return false;
 	SimpleAudioEngine::sharedEngine()->preloadEffect( strFullpath.c_str() );
-	XLOGXN("open sound:%s", strFullpath.c_str() );
+	//XLOGXN("open sound:%s", strFullpath.c_str() );
 	sound.strFile = strFullpath;
 	sound.idSound = idSound;
 	//	sound.Use  =  1;
@@ -196,16 +196,16 @@ ID XSoundMngAndroid::PlaySound(ID idSound, bool bRepeat )
 				const float volFinal = stream.m_VolLocal * volMaster;
 				SimpleAudioEngine::sharedEngine()
 					->setEffectsVolumeByStream( idStream, volFinal );
-				XTRACE( "play sound:idStream=%d, volfinal=%.1f, (id=%d)%s", idStream
-																											, volFinal
-																											, idSound
-																											, sound.strFile.c_str() );
+// 				XTRACE( "play sound:idStream=%d, volfinal=%.1f, (id=%d)%s", idStream
+// 																											, volFinal
+// 																											, idSound
+// 																											, sound.strFile.c_str() );
 			} else {
 				// 플레이에 실패하면 큐에 넣는다.
 				//m_qReplay.push( xReplay( idSound, sound.strFile, bRepeat ) );
 				AddReplayToQ( idSound, bRepeat );
 				// idStream이 0이 나올때가 있다. 이유는 확실히 모르지만 파일을 로딩하자마자 플레이를 시도했을때 나는느낌이다.
-				XTRACE( "play sound:idStream=%d, %s", idStream, sound.strFile.c_str() );
+//				XTRACE( "play sound:idStream=%d, %s", idStream, sound.strFile.c_str() );
 			}
 			return idStream;
 		} // if (sound.idSound == idSound)

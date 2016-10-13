@@ -71,7 +71,7 @@ XSoundMngAndroid::~XSoundMngAndroid()
 BOOL XSoundMngAndroid::OpenBGMusic( const char* _filename, BOOL repeat)
 
 {
-	XLP1;
+	XLOAD_PROFILE1;
 	// 이미 같은 파일명이 플레이 되고 있다면 그냥 리턴
 	if( XE::IsSame( m_szBGMFilename, _filename ) )
 		return FALSE;
@@ -90,7 +90,7 @@ BOOL XSoundMngAndroid::OpenBGMusic( const char* _filename, BOOL repeat)
 	m_strBGM = szPath;
 	m_bBGMLoop = repeat;
 //	AVLoad( szPath, repeat );
-	XLP2;
+	XLOAD_PROFILE2;
 	XLOGP( "%s, %llu",  XE::GetFileName( C2SZ(filename) ), __llPass );
 	return 1;
 }

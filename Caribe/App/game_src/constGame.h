@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "defineAct.h"
-#include "defineGame.h"
+#include "../Resource/defineAct.h"
+#include "../Resource/defineGame.h"
 //#include "XPropItem.h"
 
 #ifdef _CLIENT
@@ -8,6 +8,7 @@
 //#include "client/XAppMain.h"	// 잘안바뀌는 파일이라 넣었음.
 #endif
 
+class XSquadron;
 class XBaseUnit;
 class XSquadObj;
 class XLegion;
@@ -23,34 +24,49 @@ namespace xnUnit {
 }
 typedef std::shared_ptr<xnUnit::XMsgBase> XSPMsgBase;
 
-typedef std::shared_ptr<XBaseUnit> XSPUnit;
-typedef std::weak_ptr<XBaseUnit> XSPUnitW;
-typedef std::shared_ptr<XSquadObj> XSPSquad;
-typedef std::weak_ptr<XSquadObj> XSPSquadW;
-typedef std::shared_ptr<XLegion> LegionPtr;
-typedef std::shared_ptr<XLegionObj> XSPLegionObj;
+typedef std::shared_ptr<XLegion> XSPLegion;
 typedef std::weak_ptr<XLegionObj> XSPLegionObjW;
-typedef std::shared_ptr<const XBaseUnit> XSPUnitConst;
 typedef std::shared_ptr<const XLegion> XSPLegionConst;
-typedef std::shared_ptr<const XSquadObj> XSPSquadObjConst;
+
+typedef std::shared_ptr<XSquadron> XSPSquadron;
+typedef std::shared_ptr<const XSquadron> XSPSquadronConst;
+typedef std::weak_ptr<XSquadron> XSPSquadronW;
+typedef std::weak_ptr<const XSquadron> XSPSquadronConswtW;
+
+typedef std::shared_ptr<XLegionObj> XSPLegionObj;
 typedef std::shared_ptr<const XLegionObj> XSPLegionObjConst;
-typedef std::shared_ptr<XHero> HeroPtr;
-typedef std::shared_ptr<XBaseItem> ItemPtr;
-typedef std::shared_ptr<XSpot> SpotPtr;
+
+typedef std::shared_ptr<XBaseUnit> XSPUnit;
+typedef std::shared_ptr<const XBaseUnit> XSPUnitConst;
+typedef std::weak_ptr<XBaseUnit> XSPUnitW;
+
+typedef std::shared_ptr<XSquadObj> XSPSquadObj;
+typedef std::shared_ptr<const XSquadObj> XSPSquadObjConst;
+typedef std::weak_ptr<XSquadObj> XSPSquadObjW;
+
+typedef std::shared_ptr<XHero> XSPHero;
+typedef std::shared_ptr<const XHero> XSPHeroConst;
+
+typedef std::shared_ptr<XBaseItem> XSPBaseItem;
+
+typedef std::shared_ptr<XSpot> XSPSpot;
+typedef std::shared_ptr<const XSpot> XSPSpotConst;
+
 typedef std::shared_ptr<XAccount> XSPAcc;
 typedef std::shared_ptr<const XAccount> XSPAccConst;
 typedef std::weak_ptr<XAccount> XSPAccW;
+typedef std::weak_ptr<const XAccount> XSPAccConstW;
+
 typedef std::shared_ptr<XPostItem> XSPPostItem;
 typedef std::shared_ptr<const XPostItem> XSPPostItemConst;
 typedef std::shared_ptr<XPostInfo> XSPPostInfo;
 typedef std::shared_ptr<const XPostInfo> XSPPostInfoConst;
 
-#define XSPLegion LegionPtr
+//#define XSPLegion LegionPtr
 // #define XSPSquad SquadPtr
 // #define XSPUnit UnitPtr
-#define XSPHero HeroPtr
-#define XSPItem ItemPtr
-#define XSPSpot SpotPtr
+//#define XSPHero HeroPtr
+// #define XSPSpot SpotPtr
 
 
 namespace xCampaign {
@@ -552,6 +568,7 @@ namespace XGAME {
 		xBT_NONE = 0,
 		xBT_NORMAL,		// 일반 전투
 		xBT_GUILD_RAID,	// 길드레이드
+		xBT_PRIVATE_RAID,		// 개인레이드
 	};
 	// 전투 승패결과
 	enum xtWin {

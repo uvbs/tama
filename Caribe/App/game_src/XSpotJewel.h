@@ -93,6 +93,8 @@ public:
 	//
 	virtual void OnCreateNewOnServer( XSPAcc spAcc ) override;
 	void Serialize( XArchive& ar );
+	void SerializeForBattle( XArchive* pOut, const XParamObj2& param ) override;
+	void DeSerializeForBattle( XArchive& arLegion, XArchive& arAdd, XSPAcc spAcc ) override;
 private:
 	BOOL DeSerialize( XArchive& ar, DWORD ver );
 public:

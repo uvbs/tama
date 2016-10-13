@@ -43,6 +43,7 @@
 #include "_Wnd2/XWndButton.h"
 #include "_Wnd2/XWndProgressBar.h"
 #include "XHero.h"
+#include "XWndStorageItemElem.h"
 //#include "XPropTech.h"
 #ifdef _xIN_TOOL
 #include "CaribeView.h"
@@ -204,8 +205,8 @@ void XWndSpotRecon::Update()
 			v.y = vStart.y + 52.f * k;
 			int idx = ( i * 5 + k );
 			ID idWnd = 100 + idx;
-			XHero *pHero = nullptr;
-			auto pSquad = spLegion->GetSquadron( idx );
+			XSPHero pHero = nullptr;
+			auto pSquad = spLegion->GetpSquadronByidxPos( idx );
 			bool bFog = false;
 			auto vCenter = v + vSize * 0.5f;
 			if( pSquad ) {
@@ -317,7 +318,7 @@ void XWndCastleInfo::Destroy()
 /**
  @brief 
 */
-XWndSquadInLegion* XWndSquadInLegion::sUpdateCtrl( XWnd *pRoot, int idxSquad, const XE::VEC2& v, LegionPtr spLegion )
+XWndSquadInLegion* XWndSquadInLegion::sUpdateCtrl( XWnd *pRoot, int idxSquad, const XE::VEC2& v, XSPLegion spLegion )
 {
 	std::string idsCtrl = XWndSquadInLegion::sGetIds( idxSquad );
 	auto pWndCtrl = SafeCast2<XWndSquadInLegion*>( pRoot->Find( idsCtrl ) );
@@ -333,7 +334,7 @@ XWndSquadInLegion* XWndSquadInLegion::sUpdateCtrl( XWnd *pRoot, int idxSquad, co
  @param bDrawFrame 영웅 외곽 프레임을 그릴건지 말건지
 */
 int XWndSquadInLegion::s_idxSelectedSquad = -1;
-XWndSquadInLegion::XWndSquadInLegion( XHero *pHero, const XE::VEC2& vPos, XLegion *pLegion, bool bDrawFrame, bool bDragDrop, bool bQuestion )
+XWndSquadInLegion::XWndSquadInLegion( XSPHero pHero, const XE::VEC2& vPos, XLegion *pLegion, bool bDrawFrame, bool bDragDrop, bool bQuestion )
 	: XWnd( vPos.x, vPos.y )
 {
 	Init();
@@ -355,13 +356,13 @@ XWndSquadInLegion::XWndSquadInLegion( XHero *pHero, const XE::VEC2& vPos, XLegio
 		SetDropWnd( TRUE );
 	}
 	for (int i = 0; i < 4; ++i)
-		m_pStar[i] = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
+		m_pStar[i] = IMAGE_MNG->Load( XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
 	//
 	m_pName = FONTMNG->CreateFontObj(FONT_NANUM, 18.f);
 	m_pName->SetAlign(XE::xALIGN_HCENTER);
 	m_pName->SetStyle(xFONT::xSTYLE_STROKE);
 	m_pName->SetLineLength(64.f);
-	m_pCrown = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("corps_crown.png")));
+	m_pCrown = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("corps_crown.png")));
 }
 
 XWndSquadInLegion::XWndSquadInLegion( int idxSquad, const XE::VEC2& vPos, XLegion *pLegion, bool bDrawFrame, bool bDragDrop )
@@ -385,13 +386,13 @@ XWndSquadInLegion::XWndSquadInLegion( int idxSquad, const XE::VEC2& vPos, XLegio
 		SetDropWnd( TRUE );
 	}
 	for (int i = 0; i < 4; ++i)
-		m_pStar[i] = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
+		m_pStar[i] = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
 	//
 	m_pName = FONTMNG->CreateFontObj(FONT_NANUM, 18.f);
 	m_pName->SetAlign(XE::xALIGN_HCENTER);
 	m_pName->SetStyle(xFONT::xSTYLE_STROKE);
 	m_pName->SetLineLength(64.f);
-	m_pCrown = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("corps_crown.png")));
+	m_pCrown = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("corps_crown.png")));
 }
 void XWndSquadInLegion::Destroy()
 {
@@ -508,7 +509,7 @@ XWndImage* XWndSquadInLegion::CreateGlowSelected()
 	return pImgSel;
 }
 
-void XWndSquadInLegion::SetFace( XHero *pHero, bool bQuestion )
+void XWndSquadInLegion::SetFace( XSPHero pHero, bool bQuestion )
 {
 	if( pHero == nullptr && pHero == m_pHero )
 		if( m_bQuestion == bQuestion )
@@ -547,7 +548,7 @@ void XWndSquadInLegion::SetFace( XHero *pHero, bool bQuestion )
 			Add( pText );
 		}
 		// 영웅얼굴 서피스 버전(drag를 위함)
-		m_psfcFace = IMAGE_MNG->Load( TRUE, 
+		m_psfcFace = IMAGE_MNG->Load( 
 								XE::MakePath( DIR_IMG, pHero->GetpProp()->strFace.c_str() ));
 		if( m_bDrawFrame ) {
 			// 알파뚫린 영웅 프레임으로 한번더 덮어준다.
@@ -1069,18 +1070,24 @@ int XWndBuffElem::OnClickTooltip( XWnd* pWnd, DWORD p1, DWORD p2 )
 /**
  @brief 전투 통계
 */
-XWndStatistic::XWndStatistic( XSPLegionObj spLegionObj1, XSPLegionObj spLegionObj2 )
+XWndStatistic::XWndStatistic( XSPLegionObj spLegionObj1, 
+															XSPLegionObj spLegionObj2,
+															XWndPopup* pParentPopup )
 	: XWndPopup(_T("layout_statistic.xml"), "popup_statistic" )
 {
 	Init();
 	m_aryLegionObj.Add( spLegionObj1 );
 	m_aryLegionObj.Add( spLegionObj2 );
+	m_pParent = pParentPopup;
+	if( pParentPopup )
+		pParentPopup->SetbShow( false );
 	///< 
 	//
-	auto pView = new XWndScrollView( XE::VEC2(27,84), XE::VEC2(469,219) );
+//	auto pView = new XWndScrollView( XE::VEC2(27,84), XE::VEC2(469,219) );
+	auto pView = SafeCast<XWndScrollView*>( Find("scrl.view") );
 //	pView->SetScrollLockVert();
 	pView->SetScrollVertOnly();
-	Add( pView );
+//	Add( pView );
 	m_pView = pView;
 	xSetButtHander( this, this, "butt.left", &XWndStatistic::OnClickPrev );
 	xSetButtHander( this, this, "butt.right", &XWndStatistic::OnClickNext );
@@ -1142,7 +1149,8 @@ void XWndStatistic::CreateHerosUI( XWnd *pRoot, XSPLegionObj spLegionObj, float 
 	for( auto pSquad : spLegionObj->GetpStatObj()->GetlistSquads() )
 	{
 		auto pHero = pSquad->pHero;
-		auto pWndHero = new XWndInvenHeroElem( pHero, spLegionObj->GetspLegion().get() );
+		auto pWndHero = new XWndInvenHeroElem( pHero, 
+																					 spLegionObj->GetspLegionMutable().get() );
 		pWndHero->SetUnitFace();
 		if( side == XGAME::xSIDE_PLAYER )
 			pWndHero->SetPosLocal( XE::VEC2( 0, y ) );
@@ -1200,12 +1208,12 @@ void XWndStatistic::CreateHerosUI( XWnd *pRoot, XSPLegionObj spLegionObj, float 
 		pWndBar->SetPosLocal( vBar );
 		pWndBar->SetLerp( lerp );
 		pRoot->Add( pWndBar );
-		auto pText = new XWndTextString( 0, 0, strNum.c_str(), FONT_NANUM, 18.f );
+		auto pText = new XWndTextString( 0, 0, strNum.c_str(), FONT_RESNUM, 18.f );
 		pText->SetStyleStroke();
 		auto vText = vBar;
 //		vText.y -= 10.f;
 //		vText.x += 3.f;
-		vText.y += 2.f;
+		vText.y += 3.f;
 		pText->SetPosLocal( vText );
 		if( side == XGAME::xSIDE_PLAYER )
 		{
@@ -1221,6 +1229,8 @@ void XWndStatistic::CreateHerosUI( XWnd *pRoot, XSPLegionObj spLegionObj, float 
 
 void XWndStatistic::Destroy()
 {
+	if( m_pParent )
+		m_pParent->SetbShow( true );
 }
 
 void XWndStatistic::Update()
@@ -1338,7 +1348,7 @@ int XWndStatistic::OnClickNext( XWnd* pWnd, DWORD p1, DWORD p2 )
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
-XWndSlotByTrain::XWndSlotByTrain( XHero *pHero, XGAME::xtTrain type, ID snSlot, XLayout *pLayout, XWndTrainingCenter *pWndPopup )
+XWndSlotByTrain::XWndSlotByTrain( XSPHero pHero, XGAME::xtTrain type, ID snSlot, XLayout *pLayout, XWndTrainingCenter *pWndPopup )
 {
 	Init();
 	m_Type = type;
@@ -1494,7 +1504,7 @@ void XWndSlotByTrain::UpdateSlotLvUp( XWnd* pWndRoot )
 	auto pRootLeft = pWndRoot->Findf("wnd.stat.%d", 1);
 	auto pRootRight = pWndRoot->Findf("wnd.stat.%d", 2);
 	if( pRootLeft && pRootRight ) {
-		XHero *pHero = m_pHero;
+		XSPHero pHero = m_pHero;
 		//
 		const auto type = m_Type;
 		auto pSlot = ACCOUNT->GetpTrainingSlot( m_snSlot );
@@ -1541,7 +1551,7 @@ void XWndSlotByTrain::UpdateSlotSquadUp( XWnd* pWndRoot )
 	auto pRootRight = pWndRoot->Findf( "wnd.stat.%d", 2 );
 	if( !pRootLeft || !pRootRight )
 		return;
-	XHero *pHero = m_pHero;
+	XSPHero pHero = m_pHero;
 	auto pPropUnit = PROP_UNIT->GetpProp( pHero->GetUnit() );
 	if( XASSERT( pPropUnit ) ) {
 		const auto type = m_Type;
@@ -1587,7 +1597,7 @@ void XWndSlotByTrain::UpdateSlotSkillUp( XWnd* pWndRoot )
 	if( !pRootLeft || !pRootRight )
 		return;
 	const auto type = m_Type;
-	XHero *pHero = m_pHero;
+	XSPHero pHero = m_pHero;
 	auto pSkillDat = m_pHero->GetSkillDat( type );
 	if( XASSERT(pSkillDat) ) {
 		const _tstring resIcon = XE::MakePath( DIR_IMG, pSkillDat->GetstrIcon() );
@@ -1682,7 +1692,7 @@ void XWndTrainingCenter::Update()
 	XWndPopup::Update();
 }
 
-void XWndTrainingCenter::UpdateSlot( XHero *pHero, const XAccount::xTrainSlot& slot, ID idWnd )
+void XWndTrainingCenter::UpdateSlot( XSPHero pHero, const XAccount::xTrainSlot& slot, ID idWnd )
 {
 	auto pList = xGET_LIST_CTRL( this, "list.slot" );
 	XWnd *pWndSlot = pList->Findf( "wnd.slot.0x%x", idWnd );
@@ -1709,7 +1719,7 @@ void XWndTrainingCenter::DelegateUnlockTrainSlot( const std::string& idsEvent )
 
 void XWndTrainingCenter::DelegateTrainComplete( const std::string& idsEvent
 																							, XGAME::xtTrain type
-																							, XHero* pHero )
+																							, XSPHero pHero )
 {
 	// 리스트 클리어하고 다시 생성
 	CONSOLE( "0x%08x", ( DWORD )this );
@@ -1760,7 +1770,7 @@ int XWndTrainingCenter::OnClickComplete( XWnd* pWnd, DWORD p1, DWORD p2 )
 }
 
 ////////////////////////////////////////////////////////////////
-XWndTrainCompleInWorld::XWndTrainCompleInWorld( XHero *pHero )
+XWndTrainCompleInWorld::XWndTrainCompleInWorld( XSPHero pHero )
 	: XWndImage( nullptr, 0, 0 )
 {
 	Init();
@@ -1783,134 +1793,6 @@ void XWndTrainCompleInWorld::Update()
 
 	XWndImage::Update();
 }
-
-
-////////////////////////////////////////////////////////////////
-// XWndTrainCompleteInWorldMng::XWndTrainCompleteInWorldMng( const XE::VEC2& vPos )
-// 	: XWnd( vPos )
-// {
-// 	Init();
-// }
-// 
-// void XWndTrainCompleteInWorldMng::Destroy()
-// {
-// }
-// 
-// void XWndTrainCompleteInWorldMng::Update()
-// {
-// 	XArrayLinearN<XHero*, 256> aryHeroes;
-// 	// 현재 렙업확인을 대기중인 영웅 리스트
-// 	ACCOUNT->GetLevelupReadyHeroes( &aryHeroes );
-// 	// 기존 리스트와 비교해서 없어진건 빼준다.
-// 	XARRAYLINEARN_LOOP_AUTO( m_aryHeroesPrev, snHero )
-// 	{
-// 		bool bDel = false;
-// 		XHero *pHero = ACCOUNT->GetHero( snHero );
-// 		if( pHero && pHero->IsAnyLevelupReady() )
-// 		{
-// 		} else
-// 			bDel = true;
-// 		// 이전 update때는 있었으나 지금은 없어진 훈련완료영웅
-// 		if( bDel )
-// 		{
-// 			DestroyWndByIdentifierf("wnd.complete.hero.%d", snHero);
-// 		}
-// 	} END_LOOP;
-// 	m_aryHeroesPrev.Clear();
-// 	// 렙업 대기중인 영웅 윈도우를 생성.
-// 	XE::VEC2 v(0);
-// 	XARRAYLINEARN_LOOP_AUTO( aryHeroes, pHero )
-// 	{
-// 		auto pWnd = Findf("wnd.complete.hero.%d", pHero->GetsnHero() );
-// 		if( pWnd == nullptr )
-// 		{
-// 			auto pWndElem = new XWndTrainCompleInWorld( pHero );
-// 			pWndElem->SetEvent( XWM_CLICKED, this, &XWndTrainCompleteInWorldMng::OnClickHero, pHero->GetsnHero() );
-// 			pWndElem->SetstrIdentifierf("wnd.complete.hero.%d", pHero->GetsnHero() );
-// 			pWndElem->SetPosLocal( v );
-// 			Add( pWndElem );
-// 			pWnd = pWndElem;
-// 		}
-// 		auto vSize = pWnd->GetSizeFinal();
-// 		XBREAK( vSize.w <= 0 );
-// 		v.x += vSize.w * 1.2f;
-// 		m_aryHeroesPrev.Add( pHero->GetsnHero() );
-// 	} END_LOOP;
-// 
-// 	XWnd::Update();
-// }
-// 
-// /****************************************************************
-// * @brief 
-// *****************************************************************/
-// int XWndTrainCompleteInWorldMng::OnClickHero( XWnd* pWnd, DWORD p1, DWORD p2 )
-// {
-// 	ID snHero = p1;
-// 	CONSOLE("OnClickHero:0x%08x", snHero );
-// 	//
-// 	XHero *pHero = ACCOUNT->GetHero( snHero );
-// 	if( XBREAK(pHero == nullptr) )
-// 		return 1;
-// 	XGAME::xtTrain type;
-// 	for( int i = 1; i < XGAME::xTR_MAX; ++i )
-// 	{
-// 		type = (XGAME::xtTrain)i;
-// 		if( pHero->IsLevelupReady( type ) )
-// 		{
-// 			GAMESVR_SOCKET->SendReqLevelupConfirm( GAME, type, pHero );
-// 			break;
-// 		}
-// 	}
-// 	return 1;
-// }
-
-////////////////////////////////////////////////////////////////
-// XWndTrainComplete::XWndTrainComplete( XHero *pHero, XGAME::xtTrain type )
-// 	: XGameWndAlert( nullptr, nullptr, XWnd::xOK )
-// {
-// 	Init();
-// 	_tstring str;
-// 	switch( type )
-// 	{
-// 	case XGAME::xTR_LEVEL_UP:
-// 		str = XE::Format( XTEXT( 2092 ), pHero->GetstrName().c_str(), pHero->GetLevel() );	// 영웅 xxx가 레벨x가 되었습니다.
-// 		break;
-// 	case XGAME::xTR_SQUAD_UP:
-// 		str = XE::Format( XTEXT( 2094 ), pHero->GetstrName().c_str(), pHero->GetlevelSquad() );
-// 		break;
-// 	case XGAME::xTR_SKILL_ACTIVE_UP: {
-// 		_tstring strSkill = XTEXT( pHero->GetSkillDatActive()->GetidName() );
-// 		str = XE::Format( XTEXT( 2095 ), pHero->GetstrName().c_str(), 
-// 										strSkill.c_str(),
-// 										pHero->GetlvActive() );
-// 	} break;
-// 	case XGAME::xTR_SKILL_PASSIVE_UP: {
-// 		_tstring strSkill = XTEXT( pHero->GetSkillDatPassive()->GetidName() );
-// 		str = XE::Format( XTEXT( 2095 ), pHero->GetstrName().c_str(),
-// 			strSkill.c_str(),
-// 			pHero->GetlvPassive() );
-// 	} break;
-// 	default:
-// 		break;
-// 	}
-// 	TCHAR szBuff[ 1024 ];
-// 	XE::ConvertJosaStr( szBuff, str.c_str() );
-// 	SetText( szBuff );
-// 	auto vlCenter = GetSizeFinal() / 2.f;
-// 	vlCenter.y -= 64.f;
-// 	auto pWndSpr = new XWndSprObj( _T( "ui_firework.spr" ), 1, vlCenter, xRPT_1PLAY );
-// 	Add( pWndSpr );
-// 	SOUNDMNG->OpenPlaySound(27);
-// }
-// 
-// void XWndTrainComplete::Destroy()
-// {
-// }
-// 
-// void XWndTrainComplete::Update()
-// {
-// 	XGameWndAlert::Update();
-// }
 
 ////////////////////////////////////////////////////////////////
 /**
@@ -1936,8 +1818,8 @@ XWndLevelup::XWndLevelup()
 		if( pText ) {
 			_tstring str;
 			if( i == 0 ) {
-				_tstring str1 = XE::NumberToMoneyString( ACCOUNT->GetmaxAP( level - 1 ) );
-				_tstring str2 = XE::NumberToMoneyString(ACCOUNT->GetmaxAP());
+				_tstring str1 = XE::NtS( ACCOUNT->GetmaxAP( level - 1 ) );
+				_tstring str2 = XE::NtS(ACCOUNT->GetmaxAP());
 				str = XFORMAT("%s: %s => %s", XTEXT(2099), str1.c_str(), str2.c_str() );
 				++idx;
 			} else
@@ -1962,11 +1844,6 @@ XWndLevelup::XWndLevelup()
 				if( ACCOUNT->GetnumUnlockTicketForMiddleOrBig() ) {
 					str = XTEXT(2144);	// 새로운 유닛을 사용할수 있게 되었슴다.
 				}
-// 				// 렙업에 의해 새로 언락시킬수 있게 된 유닛이 있는지.
-// 				if( ACCOUNT->IsUnlockableUnitByLevel() )
-// 				{
-// 					str = XFORMAT( "새로운 종류의 병사를 사용할 수 있게 되었습니다.", XTEXT( 30003 ), XTEXT( 30004 ), XTEXT( 30005 ) );
-// 				}
 			}
 			pText->SetText( str );
 			
@@ -1978,7 +1855,7 @@ XWndLevelup::XWndLevelup()
 /**
  @brief 영웅의 능력이 반영된 부대능력치를 보여주는 버전
 */
-XWndUnitinfo::XWndUnitinfo( XHero *pHero, LPCTSTR szTitle )
+XWndUnitinfo::XWndUnitinfo( XSPHero pHero, LPCTSTR szTitle )
 	: XWndPopup(_T("layout_unit_info.xml"), "popup_unit")
 {
 	Init();
@@ -2027,7 +1904,7 @@ void XWndUnitinfo::Update()
 	}
 	xSET_TEXT( this, "text.levelup.melee", XFORMAT( "%d", (int)statCurr.meleePower ) );
 	if( m_Unit == XGAME::xUNIT_CYCLOPS )
-		xSET_TEXT( this, "text.levelup.range", XFORMAT( "%d(광역)", (int)statCurr.rangePower ) );
+		xSET_TEXT( this, "text.levelup.range", XFORMAT( "%d(splash)", (int)statCurr.rangePower ) );
 	else
 		xSET_TEXT( this, "text.levelup.range", XFORMAT( "%d", (int)statCurr.rangePower ) );
 	xSET_TEXT( this, "text.levelup.def", XFORMAT( "%d", (int)statCurr.def ) );
@@ -2074,10 +1951,11 @@ void XWndPaymentByCash::Update()
 		case xPR_GOLD:		m_strTitle = XTEXT(80169); break;
 		case xPR_RES:			m_strTitle = XTEXT(2339); break;
 		case xPR_AP:		m_strTitle = XTEXT(2340); break;
+		case xPR_ITEM:	break;
 		case xPR_TIME:		break;
 		case xPR_TRY_DAILY:		m_strTitle = XTEXT(2227); break;		// 도전횟수 부족
 		default:
-			XBREAK(1);
+			m_strTitle = XTEXT(2348);		// 젬으로 대신하시겠습니까?
 			break;
 		}
 	}
@@ -2176,35 +2054,78 @@ void XWndPaymentByCash::SetTime( xSec secLack )
 	m_needCash = ACCOUNT->GetCashResearch( secLack );
 }
 
+void XWndPaymentByCash::SetItem( const _tstring& idsItem, int gem )
+{
+	m_typePayment = xPR_ITEM;
+	auto pWndRoot = Find( "wnd.half.top" );
+	if( XASSERT( pWndRoot ) ) {
+		auto pWndItem = new XWndStoragyItemElem( XE::VEC2(0,11), idsItem );
+		if( pWndItem ) {
+			pWndItem->SetEventItemTooltip();
+			pWndRoot->Add( pWndItem );
+			pWndItem->AutoLayoutHCenter();
+		}
+		SetbUpdate( true );
+	}
+	m_needCash = gem;
+}
+void XWndPaymentByCash::SetItem( ID idItem, int gem )
+{
+	auto pProp = PROP_ITEM->GetpProp( idItem );
+	if( XASSERT(pProp) ) {
+		SetItem( pProp->strIdentifier, gem );
+	}
+}
+
+
 /**
  @brief // 요일스팟 도전횟수 리필
 */
 void XWndPaymentByCash::SetFillTryByDailySpot()		
 {
 	m_typePayment = xPR_TRY_DAILY;
- 	auto pWndRoot = Find( "wnd.half.top" );
- 	if( XASSERT( pWndRoot ) ) {
-		auto pWnd = pWndRoot->Find( "wnd.challs" );
-		if( pWnd == nullptr ) {
-			pWnd = new XWnd();
-			pWnd->SetstrIdentifier( "wnd.challs" );
-			pWndRoot->Add( pWnd );
-			XE::VEC2 vPos;
-			for( int i = 0; i < XGlobalConst::sGet()->m_numEnterDaily; ++i ) {
-				auto pImg = new XWndImage();
-				pImg->SetPosLocal( vPos );
-				pImg->SetSurfaceRes( PATH_UI("chall_mark_on.png") );
-				vPos.x += pImg->GetSizeLocal().w + 1.f;
-				pWnd->Add( pImg );
-			}
-			pWnd->AutoLayoutCenter();
-		}
- 	}
-	m_needCash = XGlobalConst::sGet()->m_gemFillDailyTry;
+	SetChallMark( XGlobalConst::sGet()->m_numEnterDaily, XGlobalConst::sGet()->m_gemFillDailyTry );
+//  	auto pWndRoot = Find( "wnd.half.top" );
+//  	if( XASSERT( pWndRoot ) ) {
+// 		auto pWnd = pWndRoot->Find( "wnd.challs" );
+// 		if( pWnd == nullptr ) {
+// 			pWnd = new XWnd();
+// 			pWnd->SetstrIdentifier( "wnd.challs" );
+// 			pWndRoot->Add( pWnd );
+// 			XE::VEC2 vPos;
+// 			for( int i = 0; i < XGlobalConst::sGet()->m_numEnterDaily; ++i ) {
+// 				auto pImg = new XWndImage();
+// 				pImg->SetPosLocal( vPos );
+// 				pImg->SetSurfaceRes( PATH_UI("chall_mark_on.png") );
+// 				vPos.x += pImg->GetSizeLocal().w + 1.f;
+// 				pWnd->Add( pImg );
+// 			}
+// 			pWnd->AutoLayoutCenter();
+// 		}
+//  	}
+//	m_needCash = XGlobalConst::sGet()->m_gemFillDailyTry;
+}
+
+void XWndPaymentByCash::SetChallMark( int numMark, int gem )
+{
+	auto pWndRoot = Find( "wnd.half.top" );
+	auto pWnd = new XWnd();
+	pWnd->SetstrIdentifier( "wnd.challs" );
+	pWndRoot->Add( pWnd );
+	XE::VEC2 vPos;
+	for( int i = 0; i < numMark; ++i ) {
+		auto pImg = new XWndImage();
+		pImg->SetPosLocal( vPos );
+		pImg->SetSurfaceRes( PATH_UI( "chall_mark_on.png" ) );
+		vPos.x += pImg->GetSizeLocal().w + 1.f;
+		pWnd->Add( pImg );
+	}
+	pWnd->AutoLayoutCenter();
+	m_needCash = gem;
 }
 
 ////////////////////////////////////////////////////////////////
-XWndOrderDialog::XWndOrderDialog( OrderPtr spOrder, float x, float y, ID idHero, XHero *pHero )
+XWndOrderDialog::XWndOrderDialog( OrderPtr spOrder, float x, float y, ID idHero, XSPHero pHero )
 	: XWndView( x, y, _T("bg_dialog.png"))
 {
 	Init();
@@ -2215,7 +2136,7 @@ XWndOrderDialog::XWndOrderDialog( OrderPtr spOrder, float x, float y, ID idHero,
 // 	auto pImg = new XWndImage( m_strFaceRes, 8, 8 );
 // 	pImg->SetstrIdentifier( "img.face" );
 // 	Add( pImg );
-	auto pText = new XWndTextString( XE::VEC2( 75,0 ), XE::VEC2( 203, 78 ), _T(""), FONT_NANUM, 22.f );
+	auto pText = new XWndTextString( XE::VEC2( 75,0 ), XE::VEC2( 203, 78 ), _T(""), FONT_MNLS, 22.f );
 	pText->SetstrIdentifier( "text.dialog" );
 	pText->SetAlign( XE::xALIGN_CENTER );
 	pText->SetStyleShadow();
@@ -2384,44 +2305,13 @@ void XWndHeroPortrait::Update()
 	xSET_IMG( this, "img.hero", XE::MakePath( DIR_IMG, m_pProp->strFace ), XE::xPF_ARGB8888 );
 	XWnd::Update();
 }
-////////////////////////////////////////////////////////////////
-// XWndAbilTreeDebug::XWndAbilTreeDebug( XGAME::xtUnit unit )
-// 	: XWndPopup( _T("abil_tree.xml"), "popup_tree" )
-// {
-// 	Init();
-// //	m_pAcc = pAcc;
-// 	m_Unit = unit;
-// }
-// 
-// void XWndAbilTreeDebug::Update()
-// {
-// 	XArrayLinearN<XPropTech::xNodeAbil*, 1024> aryAbil;
-// 	XPropTech::sGet()->GetNodesToAry( m_Unit, &aryAbil );
-// 	const auto& research = ACCOUNT->GetResearching();
-// 	auto pHero = ACCOUNT->GetHero( research.GetsnHero() );
-// 	if( pHero ) {
-// 		_tstring strMsg;
-// 		XARRAYLINEARN_LOOP_AUTO( aryAbil, pNode ) {
-// 			const auto abil = pHero->GetAbilNode( m_Unit, pNode->idNode );
-// 			if( abil.point > 0 ) {
-// 	// 			auto pSkillDat = SKILL_MNG->FindByIdentifier( pNode->strSkill );
-// 	// 			if( pSkillDat ) {
-// 					strMsg += XFORMAT( "%s:%d\n", XTEXT( pNode->idName ), abil.point );
-// 	// 			}
-// 			}
-// 		} END_LOOP;
-// 		xSET_TEXT( this, "text.abil", strMsg );
-// 	}
-// 	//
-// 	XWndPopup::Update();
-// }
 
 ////////////////////////////////////////////////////////////////
 /**
  @brief 영웅을 선택하는 창을 생성한다.
  @param pHeroFrom 바꿔야할 영웅.
 */
-XWndSelectHeroesInReady::XWndSelectHeroesInReady( XHero *pHeroFrom )
+XWndSelectHeroesInReady::XWndSelectHeroesInReady( XSPHero pHeroFrom )
 	: XWndPopup( _T( "layout_ready_battle.xml" ), "popup_select_hero" )
 {
 	Init();
@@ -2451,7 +2341,7 @@ void XWndSelectHeroesInReady::Update()
 	const ID snHeroSelected = (m_pHeroSelected)? m_pHeroSelected->GetsnHero() : 0;
 	const ID snHeroFrom = (m_pHeroFrom)? m_pHeroFrom->GetsnHero() : 0;
 	// 모든 영웅의 리스트를 받아옴
-	XList4<XHero*> listHero;
+	XList4<XSPHero> listHero;
 	ACCOUNT->_GetInvenHero( listHero );
 	// 
 //	listHero.sort( XSceneUnitOrg::CompParty );
@@ -2516,14 +2406,14 @@ int XWndSelectHeroesInReady::OnClickHero( XWnd* pWnd, DWORD p1, DWORD p2 )
 /**
  @brief From영웅을 교체하고 다시 업데이트한다.
 */
-void XWndSelectHeroesInReady::SetHeroFrom( XHero* pHero )
+void XWndSelectHeroesInReady::SetHeroFrom( XSPHero pHero )
 {
 	m_pHeroFrom = pHero;
 	m_pHeroSelected = pHero;
 	SetbUpdate( true );
 }
 
-void XWndSelectHeroesInReady::CreatePopupSelectUnit( XHero *pHero )
+void XWndSelectHeroesInReady::CreatePopupSelectUnit( XSPHero pHero )
 {
 	XBREAK( GetpParent() == nullptr );
 	GetpParent()->DestroyWndByIdentifier( "wnd.units" );
@@ -2535,7 +2425,7 @@ void XWndSelectHeroesInReady::CreatePopupSelectUnit( XHero *pHero )
 }
 
 ////////////////////////////////////////////////////////////////
-XWndSelectUnitsInReady::XWndSelectUnitsInReady( XHero *pHero )
+XWndSelectUnitsInReady::XWndSelectUnitsInReady( XSPHero pHero )
 	: XWndPopup( _T( "layout_ready_battle.xml" ), "popup_select_unit" )
 {
 	Init();

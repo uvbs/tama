@@ -10,6 +10,10 @@
 #ifndef _XSINGLE
 #define _XPROP_SERIALIZE		// 프로퍼티 시리얼라이즈 버전
 #endif
+#ifdef WIN32
+#define _xIN_TOOL	// 구름 찍기 툴이 포함됨.
+//	#define _XPROP_GRID
+#endif
 
 #ifdef _XUZHU
 //#define _XPATCH

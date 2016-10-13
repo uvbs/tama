@@ -301,8 +301,13 @@ public:
 	afx_msg void OnUpdateProfileTestNoFontDraw( CCmdUI *pCmdUI );
 	afx_msg void OnProfileTestNoProcess();
 	afx_msg void OnUpdateProfileTestNoProcess( CCmdUI *pCmdUI );
-	void OnProfiling();
-	void OnUpdateProfiling( CCmdUI *pCmdUI );
+	afx_msg void OnProfiling();
+	afx_msg void OnUpdateProfiling( CCmdUI *pCmdUI );
+	afx_msg void OnGotoTestScene();
+	afx_msg void OnHideHpbar();
+	afx_msg void OnHideName();
+	afx_msg void OnUpdateHideHpbar( CCmdUI *pCmdUI );
+	afx_msg void OnUpdateHideName( CCmdUI *pCmdUI );
 };
 
 extern CMainFrame *g_pMainFrm;

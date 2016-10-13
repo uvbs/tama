@@ -30,7 +30,7 @@ XWndList::XWndList( const XE::VEC2& vPos,
 	SetPosLocal( vPos );
 // 	m_posBg -= vLocalxy;
 // 	if( XE::IsHave( szBg ) )
-// 		m_psfcBg = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, szBg ) );
+// 		m_psfcBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, szBg ) );
 	// 타입에 따라 스크롤방향을 잠근다.
 	// 스크롤뷰의 크기가 가로 혹은 세로로만 긴 형태라도 당기면 조금 스크롤되는게 있으므로 강제로 스크롤을 막아야 한다.
 }
@@ -177,8 +177,8 @@ void XWndList::Draw( void )
 // 	if( m_psfcBg )
 // 		m_psfcBg->Draw( v + m_posBg );
 	// viewport 설정
-	XE::VEC2 vpLT = GRAPHICS->GetViewportLT();		// 스택에 백업.
-	XE::VEC2 vpSize = GRAPHICS->GetViewportSize();
+	const XE::VEC2 vpLT = GRAPHICS->GetViewportLT();		// 스택에 백업.
+	const XE::VEC2 vpSize = GRAPHICS->GetViewportSize();
 //	GRAPHICS->BackupViewport();
 	m_vAdjustByViewport.Set( 0 );
 	if( v.x < vpLT.x ) {
@@ -298,6 +298,21 @@ void XWndList::OnLButtonUp( float lx, float ly )
 					}
 				}
 			} else {
+				if( m_bSelectedUI ) {
+					// 선택가능한 UI면 선택한것을 리스트에 보관해둔다.
+					if( !m_listSelect.empty() ) {
+						// 기존에 선택되어있던것은 해제 이벤트를 보낸다.
+						ID idExist = m_listSelect.front();
+						if( idExist ) {
+							auto pExist = Find( idExist );
+							if( pExist )
+								pExist->PushMsg( "deselected" );
+						}
+					}
+					m_listSelect.clear();
+					m_listSelect.push_back( idWnd );		// 항상 0번인덱스에 0번인덱스에 넣음.
+					pClickedWnd->PushMsg( "selected" );
+				}
 				CallEventHandler( XWM_SELECT_ELEM, idWnd );
 				pClickedWnd->CallEventHandler( XWM_HELP_CLICKED, idWnd );
 			}
@@ -391,4 +406,13 @@ void XWndList::DoMoveBottom()
 XE::VEC2 XWndList::GetSizeNoTransLayout()
 {
 	return GetSizeLocal();
+}
+
+
+XWndList* xGET_LIST_CTRL( XWnd *pRoot, const char *cKey ) {
+	XBREAK( pRoot == nullptr );
+	XWnd *pWnd = pRoot->Find( cKey );
+	if( pWnd == nullptr )
+		return nullptr;
+	return SafeCast<XWndList*>( pWnd );
 }

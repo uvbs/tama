@@ -6,6 +6,7 @@
 #include "XFontMng.h"
 
 class XFontObjFTGL;
+class XBatchRenderer;
 class XFontObjFTGL : public XBaseFontObj
 {
 	FTSimpleLayout _m_Layout;
@@ -51,6 +52,7 @@ public:
 //	void GetLayoutPosAndSize( XE::VEC2* pOutPos, XE::VEC2* pOutSize );
 	virtual float _RenderText( float x, float y, LPCTSTR str );
 	void _RenderStroke( float x, float y, LPCTSTR szStr, const MATRIX& mVP );
+	void RenderTextBatch( XBatchRenderer* pRenderer, const XE::VEC2& _vPos, LPCTSTR szString );
 	// lua
 	void LuaDrawText( float x, float y, const char *cStr ) {
 		DrawString( x, y, Convert_char_To_TCHAR( cStr ) );

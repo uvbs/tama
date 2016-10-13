@@ -3,12 +3,12 @@
 <layout font_text_m="normal.ttf" font_text_b="bold.ttf">
   <popup_levelup>
     <popup img="popup_bg.png">
-      <butt posx="center" posy="259" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.close" font_style="stroke" text="2"></butt>
-      <text posx="center" posy="143" font="font_text_b" text_col="white" font_size="30" font_style="stroke" key="text.level">
+      <butt posx="center" posy="239" img_up="common_butt_mid.png" text_col="white" font="font_text_b" font_size="35" key="butt.close" font_style="stroke" text="2"></butt>
+      <text posx="center" posy="123" font="font_text_b" text_col="white" font_size="30" font_style="stroke" key="text.level">
         <!--군주님의 레벨이 x가 되었습니다.-->
       </text>
-      <text posx="center" posy="177" font="font_text_b" text_col="green" font_size="25" font_style="stroke" key="text.info." num="4" disty="14"></text>
-      <spr file="ui_levelup.spr" posx="174" posy="79" act="3" scale="0.7" width="0" height="0" />
+      <text posx="center" posy="157" font="font_text_b" text_col="green" font_size="25" font_style="stroke" key="text.info." num="4" disty="14"></text>
+      <spr file="ui_levelup.spr" posx="174" posy="59" act="3" scale="0.7" width="0" height="0" />
     </popup>
   </popup_levelup>
 </layout>

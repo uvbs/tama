@@ -75,6 +75,11 @@ public:
 	XE::VEC2 m_vTouchStart;		// 우클릭 영역표시를 위해 최초 찍은 좌표
 	XE::VEC2 m_vTouchCurr;
 	BOOL m_bDebugDrawArea;
+#ifdef WIN32
+	bool m_bViewFrameRate = false;
+#else
+	bool m_bViewFrameRate = false;
+#endif
 #endif
 private:
 	XEContent *m_pGame;
@@ -88,11 +93,6 @@ private:
 	XE::xRESULT_AUTHEN *m_pResultAuthen;
 // 	XE::xResult_FacebookProfileImage m_resultFacebookProfileImage;
 	bool m_bFrameSkipReset = false;
-#ifdef WIN32
-	bool m_bViewFrameRate = false;
-#else
-	bool m_bViewFrameRate = false;
-#endif
 	void Init() {
 		m_pGame = NULL;
 		m_fAccel = 1.0f;
@@ -120,6 +120,7 @@ public:
 	BOOL m_bPause;		// 이건 UI와 시간까지 모두 멈춰버리니 잠시 게임멈춰두고 UI처리하는거엔 쓰지 말것.
 	BOOL m_bNextFrame;
 	xtRestore m_Restore;
+	static XFps s_fps;
 public:
 	XClientMain();
 	virtual ~XClientMain() { Destroy(); }
@@ -207,6 +208,7 @@ public:
 		return FALSE; 
 	}
 	void OnDestroy();
+	virtual bool RequestCheatAuth() { return true; }
 #ifdef WIN32
 	bool IsThreadMain() const;
 #endif // WIN32

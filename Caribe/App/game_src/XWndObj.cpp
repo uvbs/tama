@@ -1,5 +1,4 @@
 ﻿#include "stdafx.h"
-#include "XWndObj.h"
 #include "Sprite/SprObj.h"
 #include "_Wnd2/XWndEdit.h"
 #include "_Wnd2/XWndProgressBar.h"
@@ -11,6 +10,8 @@
 #include "XFramework/XSoundTable.h"
 #include "XPropBgObj.h"
 #include "XSystem.h"
+#include "XWndObj.h"
+#include "OpenGL2/XBatchRenderer.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT
@@ -28,9 +29,10 @@ XWndObjBird::XWndObjBird( const XE::VEC2& vPos, float dAng, float speed )
 	: XWnd( vPos )
 {
 	Init();
-	m_pSprObj = new XSprObj( _T( "obj_bird.spr" ) );
+	m_pSprObj = new XSprObj( _T( "obj_bird.spr" ), XE::xHSL(), true, true, true, nullptr );
 	m_pSprObj->SetAction( 1 );
-	auto vSize = m_pSprObj->GetSize();
+//	auto vSize = m_pSprObj->GetSize();
+	const XE::VEC2 vSize(2, 2);
 	SetSizeLocal( vSize );
 	m_vDelta = XE::GetAngleVector( dAng, speed );
 	m_pSprObj->SetRotate( dAng );
@@ -111,9 +113,18 @@ void XWndPlayerInfo::Update()
 ////////////////////////////////////////////////////////////////
 
 XWndBgObj::XWndBgObj( const xnBgObj::xProp& prop )
-	: XWndSprObj( prop.m_strSpr, prop.m_idAct, prop.m_vwPos ), m_Prop(prop)
+	: XWndSprObj( prop.m_vwPos )
+// 	: XWndSprObj( prop.m_strSpr, prop.m_idAct, prop.m_vwPos, 
+// 								xRPT_LOOP, true, true, true )
+	, m_Prop(prop)
 {
 	Init();
+	XWndSprObj::CreateSprObj( prop.m_strSpr.c_str(), 
+														prop.m_idAct, 
+														true, 
+														true, 
+														true,
+ 														xRPT_LOOP);
 }
 
 void XWndBgObj::Destroy()
@@ -154,7 +165,7 @@ void XWndBgObj::Update()
 				});
 			}
 		}
-		CONSOLE( "%s(id=%d):idStream=%d", __TFUNC__, m_Prop.m_idObj, m_idStream );
+		XTRACE( "%s(id=%d):idStream=%d", __TFUNC__, m_Prop.m_idObj, m_idStream );
 	}
 	XWndSprObj::Update();
 }
@@ -182,7 +193,8 @@ int XWndBgObj::Process( float dt )
 /**
  @brief 월드 배경에 배치되는 오브젝트들의 루트레이어 객체
 */
-XWndBgObjLayer::XWndBgObjLayer()
+XWndBgObjLayer::XWndBgObjLayer( const XE::VEC2& sizeWorld )
+	: XWndBatchRender( "bgObj", false, true, false, false, XE::VEC2(0,0), sizeWorld )
 {
 	Init();
 }
@@ -198,31 +210,6 @@ XWndBgObjLayer::XWndBgObjLayer()
 */
 void XWndBgObjLayer::Update()
 {
-// 	const auto vwCenter = SCENE_WORLD->GetvwCamera();
-// 	const auto sizeView = SCENE_WORLD->GetvwSizeView();
-// 	UpdateCurrFocus( vwCenter, sizeView );
-// 	auto& listObjs = XPropBgObj::sGet()->GetlistBgObjs();
-// 	for( auto pProp : listObjs ) {
-// 		if( pProp->m_Type != XGAME::xBOT_SOUND ) {
-// 			auto pWndBgObj = SafeCast2<XWndBgObj*>( Findf( "__bg.%d", pProp->m_idObj ) );
-// 			if( pWndBgObj == nullptr ) {
-// 				pWndBgObj = new XWndBgObj( pProp->m_strSpr
-// 																	, pProp->m_idAct
-// 																	, pProp->m_vwPos );
-// 				pWndBgObj->GoRandomFrame();
-// 				pWndBgObj->SetstrIdentifierf("__bg.%d", pProp->m_idObj );
-// 	#ifdef _xIN_TOOL
-// 				pWndBgObj->SetEvent( XWM_CLICKED, this, &XWndBgObjLayer::OnClickBgObj );
-// 	#endif // _xIN_TOOL
-// 				Add( pWndBgObj );
-// 			} else {
-// 				pWndBgObj->SetSprObj( pProp->m_strSpr, pProp->m_idAct );
-// 			}
-// 		} else {
-// 			// sound obj
-// 
-// 		}
-// 	}
 	XWnd::Update();
 }
 
@@ -249,7 +236,7 @@ void XWndBgObjLayer::UpdateCurrFocus( const XE::VEC2& vFocus, const XE::VEC2& si
 // 		}
 	}
 #ifdef _DEBUG
-	CONSOLE("created bgObj: %d", cntCreated );
+//	CONSOLE("created bgObj: %d", cntCreated );
 #endif // _DEBUG
 }
 
@@ -265,7 +252,12 @@ bool XWndBgObjLayer::UpdateSprObj( const xnBgObj::xProp* pProp, bool bIsIn )
 			Add( pWndBgObj );
 			bCreated = true;
 		} else {
-			pWndBgObj->SetSprObj( pProp->m_strSpr, pProp->m_idAct );
+			pWndBgObj->SetSprObj( pProp->m_strSpr.c_str(), 
+														pProp->m_idAct, 
+														true, 
+														true, 
+														true, 
+														xRPT_LOOP );
 		}
 #ifdef _xIN_TOOL
 		if( XBaseTool::sIsToolBgObjMode() )
@@ -322,7 +314,7 @@ XWndBgObj* XWndBgObjLayer::CreateWndBgObj( xnBgObj::xProp *pProp )
 
 void XWndBgObjLayer::Draw()
 {
-	XWnd::Draw();
+//	XWnd::Draw();
 	//
 	if( XBaseTool::sIsToolBgObjMode() ) {
 #ifdef _CHEAT

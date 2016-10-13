@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <layout>
   <popup_rank>
-    <popup img="common_bg_popup.png">
-      <img posx="center" posy="18" img="popup_title_bar.png">
-        <text posx="center" posy="4" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="80075" />
-      </img>
-      <butt posx="470" posy="31" img_up="common_butt_x.png" key="butt.ok"></butt>
-      <img posx="center" posy="75" file="rank_bg_in.png" surface_format="argb8888" debug="12">
+    <popup img="guild_popup_bg.png">
+      <img posx="center" posy="10" file="rank_bg_in.png" surface_format="argb8888" debug="12">
         <list posx="12" posy="32" width="316" height="161" type="list" spacew="0" spaceh="3" key="list.user.rank"></list>
       </img>
-      <text posx="92" posy="85" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="hcenter" text="80127" width="50">
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.ok"></butt>
+      <img posx="center" posy="-15" img="popup_title_bar.png">
+        <text posx="center" posy="center" font="font_text_b" text_col="white" font_size="40" font_style="stroke" text="80075" />
+      </img>
+      <text posx="46" posy="21" font="font_text_b" text_col="yellow" font_size="30" font_style="stroke" align="hcenter" text="80127" width="50">
         <!--순위-->
       </text>
-      <text posx="177" posy="85" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="hcenter" text="80128" width="81">
+      <text posx="122" posy="21" font="font_text_b" text_col="yellow" font_size="30" font_style="stroke" align="hcenter" text="80128" width="81">
         <!--유저이름-->
       </text>
-      <text posx="311" posy="85" font="font_text_b" text_col="white" font_size="30" font_style="stroke" align="hcenter" text="80129" width="73" />
+      <text posx="259" posy="21" font="font_text_b" text_col="yellow" font_size="30" font_style="stroke" align="hcenter" text="80129" width="68" />
     </popup>
   </popup_rank>
 </layout>

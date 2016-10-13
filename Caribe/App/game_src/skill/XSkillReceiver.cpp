@@ -217,7 +217,7 @@ bool XSkillReceiver::DoInvokeSkill( XSkillReceiver* pIvkTarget,
 	bool bInvoke = (pIvkTarget)? pInvoker->OnInvokeSkill( pDat, pEffect, pIvkTarget, level, &strInvokeSkillMut ) : true;
 	if( bInvoke ) {
 #ifdef _XSINGLE
-	XTRACE( "스킬발동: %s", pEffect->strInvokeSkill.c_str() );
+//	XTRACE( "스킬발동: %s", pEffect->strInvokeSkill.c_str() );
 #endif // _XSINGLE
 		// 발동스킬을 실행시킨다. 기준타겟은 pIvkTarget로 된다.
 		// 발동스킬이 m_listUseSkill에 들어가는 문제가 있어 안들어가도록 수정함.

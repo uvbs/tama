@@ -10,6 +10,7 @@
 #include "XHero.h"
 #include "XPropItem.h"
 #include "XSoundMng.h"
+#include "XWndStorageItemElem.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -19,6 +20,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+using namespace XGAME;
 XE_NAMESPACE_START( XGAME )
 //
 /**
@@ -220,7 +222,6 @@ void CreateUpdateTopGuildCoin( XWnd *pRoot )
 	}
 	pBar->AutoLayoutHCenterByChilds( 200.f );
 }
-
 //
 XE_NAMESPACE_END; // XGAME
 
@@ -394,7 +395,7 @@ XWndCircleUnit::XWndCircleUnit()
 {
 	Init();
 }
-XWndCircleUnit::XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XHero *pHero )
+XWndCircleUnit::XWndCircleUnit( XGAME::xtUnit unit, const XE::VEC2& vPos, XSPHero pHero )
 	: XWndImage( PATH_UI("corps_legionnaire_bg.png"), vPos )
 {
 	Init();
@@ -441,53 +442,89 @@ void XWndCircleUnit::Update()
 	XWndImage::Update();
 }
 
-////////////////////////////////////////////////////////////////
-XWndCircleSkill::XWndCircleSkill( XSKILL::XSkillDat *pDat
-																, const XE::VEC2& vPos
-																, XHero *pHero )
-		: XWndImage( PATH_UI("common_bg_skillsimbol.png"), vPos )
+/** //////////////////////////////////////////////////////////////////
+@brief 특성 범용 컨트롤
+*/
+XWndCircleUnit2::XWndCircleUnit2( XGAME::xtUnit unit, 
+																	const XE::VEC2& vPos, 
+																	XSPHero pHero )
+	: XWnd( vPos )
+	, m_Unit( unit )
+	, m_pHero( pHero )
 {
-	Init();
-	m_pSkillDat = pDat;
+	XLayoutObj::sCreateLayout( _T( "mod_unit.xml" ), "module", this );
+}
+
+void XWndCircleUnit2::SetUnit( xtUnit unit, int level )
+{
+	m_Unit = unit;
+	m_Level = level;
+	const _tstring res = XGAME::GetResUnitSmall( unit );
+	xSET_IMG( this, "img.unit", res, XE::xPF_ARGB1555 );
+}
+
+void XWndCircleUnit2::Update()
+{
+	xSET_SHOW( this, "img.bg.lv", m_Level > 0 );
+	if( m_Level ) {
+		xSET_TEXT_FORMAT( this, "text.level", _T( "%d" ), m_Level );
+	}
+	XWnd::Update();
+}
+
+/** //////////////////////////////////////////////////////////////////
+@brief 특성 범용 컨트롤
+*/
+XWndCircleSkill::XWndCircleSkill( const XSKILL::XSkillDat *pDat
+																	, const XE::VEC2& vPos
+																	, XSPHero pHero )
+	: XWnd( vPos )
+	, m_pSkillDat( pDat )
+{
 	m_pHero = pHero;
+	XLayoutObj::sCreateLayout( _T( "mod_skill.xml" ), "module", this );
+	SetSkill( pDat, 0 );
+}
+
+void XWndCircleSkill::SetSkill( const XSKILL::XSkillDat *pDat,
+																int level )
+{
+	if( pDat ) {
+		xSET_IMG( this, "img.skill", pDat->GetResIcon(), XE::xPF_ARGB1555 );
+	}
+	m_Level = level;
 }
 
 void XWndCircleSkill::Update()
 {
-	auto blendFunc = GetblendFunc();
-	// 스킬아이콘
-	auto pFace = xGET_IMAGE_CTRL( this, "img.skill" );
-	if( pFace == nullptr ) {
-		pFace = new XWndImage( XE::VEC2(0) );
-		pFace->SetstrIdentifier( "img.skill" );
-		Add( pFace );
+	xSET_SHOW( this, "img.bg.lv", m_Level > 0 );
+	if( m_Level ) {
+		xSET_TEXT_FORMAT( this, "text.level", _T( "%d" ), m_Level );
 	}
-	if( pFace ) {
-		auto strResUnit = XE::MakePath( DIR_IMG, m_pSkillDat->GetstrIcon() );
-		pFace->SetSurfaceRes( strResUnit );
-		pFace->SetblendFunc( blendFunc );
-	}
-	XWndImage::Update();
+	XWnd::Update();
 }
 
+//////////////////////////////////////////////////////////////////////////
 /**
  @brief 아이템 아이콘을 함께 보여주는 알림창
 */
-XGameWndAlert* XGAME::DoAlertWithItem( const _tstring& strIdsItem, const _tstring& strText )
+XGameWndAlert* XGAME::DoAlertWithItem( const XPropItem::xPROP* pPropItem, 
+																			 const _tstring& strText,
+																			 XWnd::xtAlert type )
 {
-	auto pPropItem = PROP_ITEM->GetpProp( strIdsItem );
 	if( XASSERT( pPropItem ) ) {
 		TCHAR szBuff[1024];
-// 		_tstring str = XE::Format( szFormat, strText );
-		XE::ConvertJosaStr( szBuff, strText );	
-		auto pAlert = XWND_ALERT( "%s", szBuff );
+		// 		_tstring str = XE::Format( szFormat, strText );
+		XE::ConvertJosaStr( szBuff, strText );
+		auto pAlert = XWND_ALERT_TYPE_T( "__alert.with.item", type, 
+																		 _T("%s"), szBuff );
 		if( pAlert ) {
 			auto pWndText = pAlert->GetpWndTextDesc();
 			if( pWndText ) {
 				pWndText->SetY( pWndText->GetPosLocal().y - 36.f );
 			}
-			auto pWndItem = new XWndStoragyItemElem( XE::VEC2( 0, 50 )
-																						, strIdsItem );
+			auto pWndItem = new XWndStoragyItemElem( XE::VEC2( 0, 50 ), 
+																							 pPropItem->strIdentifier );
 			pWndItem->SetEventItemTooltip();
 			pAlert->Add( pWndItem );
 			pWndItem->AutoLayoutHCenter();
@@ -496,6 +533,28 @@ XGameWndAlert* XGAME::DoAlertWithItem( const _tstring& strIdsItem, const _tstrin
 	}
 	return nullptr;
 }
+XGameWndAlert* XGAME::DoAlertWithItem( const _tstring& strIdsItem, 
+																			 const _tstring& strText,
+																			 XWnd::xtAlert type )
+{
+	auto pPropItem = PROP_ITEM->GetpProp( strIdsItem );
+	if( XASSERT( pPropItem ) ) {
+		return DoAlertWithItem( pPropItem, strText, type );
+	}
+	return nullptr;
+}
+
+XGameWndAlert* XGAME::DoAlertWithItem( ID idItem, 
+																			 const _tstring& strText,
+																			 XWnd::xtAlert type )
+{
+	auto pPropItem = PROP_ITEM->GetpProp( idItem );
+	if( XASSERT( pPropItem ) ) {
+		return DoAlertWithItem( pPropItem, strText, type );
+	}
+	return nullptr;
+}
+
 
 XWndPopup* XGAME::DoPopupBattleResult( XGAME::xBattleResult& result, XWnd* pParent, XSpot* pBaseSpot )
 {
@@ -594,3 +653,38 @@ XWndPopup* XGAME::DoPopupBattleResult( XGAME::xBattleResult& result, XWnd* pPare
 #endif // not _XSINGLE
 }
 
+////////////////////////////////////////////////////////////////
+/** //////////////////////////////////////////////////////////////////
+ @brief 특성 범용 컨트롤
+*/
+XWndTechAbil::XWndTechAbil( const XSKILL::XSkillDat *pDat
+														, const XE::VEC2& vPos
+														, XSPHero pHero )
+	: XWnd( vPos )
+	, m_pSkillDat( pDat )
+{
+	m_pHero = pHero;
+	XLayoutObj::sCreateLayout( _T("mod_abil.xml"), "module", this );
+	SetSkill( pDat, 0 );
+// 	if( pDat ) {
+// 		xSET_IMG( this, "img.abil", pDat->GetResIcon(), XE::xPF_ARGB4444 );
+// 	}
+}
+
+void XWndTechAbil::SetSkill( const XSKILL::XSkillDat *pDat,
+														 int level )
+{
+	if( pDat ) {
+		xSET_IMG( this, "img.abil", pDat->GetResIcon(), XE::xPF_ARGB4444 );
+	}
+	m_Level = level;
+}
+
+void XWndTechAbil::Update()
+{
+	xSET_SHOW( this, "img.bg.lv", m_bShowLevel );
+	if( m_bShowLevel ) { 
+		xSET_TEXT_FORMAT( this, "text.point", _T("%d"), m_Level );
+	}
+	XWnd::Update();
+}

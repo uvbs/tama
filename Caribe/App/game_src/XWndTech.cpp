@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "etc/XSurface.h"
 #include "XWndTech.h"
 #include "XHero.h"
 #include "_Wnd2/XWndImage.h"
@@ -10,6 +11,10 @@
 #include "XSkillMng.h"
 #include "skill/XSkillDat.h"
 #include "skill/XESkillMng.h"
+#include "_Wnd2/XWndSprObj.h"
+#include "XWndTemplate.h"
+#include "XImageMng.h"
+#include "XWndStorageItemElem.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -68,7 +73,7 @@ void XWndArrow4Abil::Draw()
 ID XWndAbilButton::s_idSelected = 0;
 ID XWndAbilButton::s_idResearching = 0;
 ID XWndAbilButton::s_snHeroResearching = 0;
-XWndAbilButton::XWndAbilButton( XHero *pHero
+XWndAbilButton::XWndAbilButton( XSPHero pHero
 															, XGAME::xtUnit unit
 															, XPropTech::xNodeAbil *pNodeAbil
 															, const XE::VEC2& vPos )
@@ -293,6 +298,64 @@ BOOL XWndResearchConfirm::OnCreate()
 
 void XWndResearchConfirm::Update()
 {
+	XWndPopup::Update();
+}
+
+////////////////////////////////////////////////////////////////
+XWndResearchComplete::XWndResearchComplete( XSPHero pHero, ID idAbil, int point )
+	: XWndPopup( _T( "research_end.xml" ), "popup" )
+{
+	Init();
+	// 특성 이름과 설명표시
+	auto pAbil = XPropTech::sGet()->GetpNode( idAbil );
+	if( pAbil == nullptr )
+		return;
+	auto pDat = SKILL_MNG->FindByIds( pAbil->strSkill );
+	if( XBREAK( pDat == nullptr ) )
+		return;
+	// 특성아이콘의 레벨 표시
+	auto pCtrl = SafeCast<XWndTechAbil*>( Find("ctrl.abil") );
+	if( XASSERT(pCtrl) ) {
+		pCtrl->SetSkill( pDat, point );
+		pCtrl->SetbShowLevel( true );
+		xSET_SHOW( pCtrl, "spr.light", true );
+	}
+	_tstring strName = pDat->GetstrName();
+	if( strName.empty() ) {
+		strName = XTEXT(pAbil->idName);
+	}
+	xSET_TEXT( this, "text.abil.name", strName );
+	_tstring strDesc = XTEXT( pAbil->idDesc );
+	pDat->GetstrDesc( &strDesc, point );
+	xSET_TEXT( this, "text.abil.desc", strDesc );
+	// 영웅 지정
+	auto pCtrlHero = ::xGetCtrlHero( this, "ctrl.hero" );
+	if( XASSERT( pCtrlHero ) ) {
+		pCtrlHero->SetHero( pHero );
+	}
+	// 유닛지정
+	auto pCtrlUnit = ::xGetCtrlUnit2( this, "ctrl.unit" );
+	if( XASSERT( pCtrlUnit ) ) {
+		if( XASSERT( pAbil ) ) {
+			pCtrlUnit->SetUnit( pAbil->unit,pHero->GetLevel() );
+		}
+	}
+	// XXX의 연구가 끝났습니다.
+	const _tstring strFormat = XTEXT( 2029 );
+	xSET_TEXT_FORMAT( this, 
+										"text.notice", 
+										strFormat.c_str(), 
+										strName.c_str() );
+}
+
+BOOL XWndResearchComplete::OnCreate()
+{
+	return XWndPopup::OnCreate();
+}
+
+void XWndResearchComplete::Update()
+{
+
 	XWndPopup::Update();
 }
 

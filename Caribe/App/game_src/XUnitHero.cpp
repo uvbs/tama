@@ -13,6 +13,7 @@
 #include "XUnitTreant.h"
 #include "XUnitCyclops.h"
 #include "skill/XSkillDat.h"
+#include "sprite/SprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -25,16 +26,17 @@ static char THIS_FILE[] = __FILE__;
 using namespace XSKILL;
 
 ////////////////////////////////////////////////////////////////
-XUnitHero::XUnitHero( XSPSquad spSquadObj,
-					XHero *pHero,
+XUnitHero::XUnitHero( XSPSquadObj spSquadObj,
+					XSPHero pHero,
 					ID idPropUnit, 
 					BIT bitSide, 
 					const XE::VEC3& vPos,
 					float multipleAbility )
-	: XBaseUnit( spSquadObj, pHero->GetidProp(), bitSide, vPos, multipleAbility ) {
+	: XBaseUnit( spSquadObj, pHero->GetidProp(), bitSide, vPos, multipleAbility )
+	, m_pProp( pHero->GetpProp() ) {
 	Init();
 	m_pHero = pHero;
-	m_pProp = pHero->GetpProp();
+	//m_pProp = pHero->GetpProp();
 	XBREAK( m_pProp == NULL );
 #ifdef WIN32
 	SetstrcIds( SZ2C( m_pProp->strIdentifier ) );
@@ -185,7 +187,7 @@ int XUnitHero::DoSkillMotion( void )
 		ID idAct = ACT_SKILL1;
 		if( pDat->GetidCastMotion() ) {
 			idAct = pDat->GetidCastMotion();
-			if( GetpSprObj()->IsHaveAction( idAct ) == FALSE )
+			if( !GetpSprObj()->IsHaveAction( idAct ) )
 				idAct = ACT_SKILL1;
 		}
 		GetpSprObj()->SetAction( idAct, xRPT_1PLAY );
@@ -208,8 +210,8 @@ int XUnitHero::DoSkillMotion( void )
 			v.z -= 85.f;
 			XCOLOR col = (IsPlayer())? XCOLOR_WHITE : XCOLOR_RED;
 			_tstring str = XFORMAT( "%s!", pDat->GetSkillName() );
-			auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
-			AddObj( pObjText );
+// 			auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
+// 			AddObj( pObjText );
 		}
 		if( IsPlayer() )
 			m_bYell = false;
@@ -335,8 +337,8 @@ bool XUnitHero::OnEventApplyInvokeEffect( XSKILL::XSkillUser* pCaster,
 		if( XASSERT(pNode) )	{
 			_tstring str = XFORMAT( "%s!", XTEXT( pNode->idName ) );
 			XCOLOR col = ( IsPlayer() ) ? XCOLOR_WHITE : XCOLOR_RED;
-			auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
-			AddObj( pObjText );
+// 			auto pObjText = new XObjYellSkill( str.c_str(), GetThisUnit(), v, col );
+// 			AddObj( pObjText );
 		}
 	}
 	return XBaseUnit::OnEventApplyInvokeEffect( pCaster, pBuffObj, pSkillDat, pEffect, level );
@@ -383,6 +385,7 @@ void XUnitHero::OnAISet( bool bSet )
 
 XE::VEC2 XUnitHero::DrawName( const XE::VEC2& vPos, float scaleFactor, float scale, const XE::VEC2& vDrawHp )
 {
+//	return vDrawHp;
 	auto pHero = m_pHero;
 	XE::VEC2 vDrawName; // = vPos;
 	vDrawName.x = vDrawHp.x;

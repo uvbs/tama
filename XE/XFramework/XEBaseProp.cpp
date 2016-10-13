@@ -68,7 +68,7 @@ ID XEBaseProp::GetTokenID( CToken& token )
 // 공통 로딩부
 BOOL XEBaseProp::Load( LPCTSTR szFilename, DWORD dwParam )
 {
-	XLP1;
+	XLOAD_PROFILE1;
 	m_strFilename = szFilename;
 	CToken token;
 	// 국가별폴더부터 읽어보고 없으면
@@ -95,7 +95,7 @@ BOOL XEBaseProp::Load( LPCTSTR szFilename, DWORD dwParam )
 	// 아이템 총 개수 세어 배열 생성
 	int num = GetSize();	// virtual
 	CONSOLE( "%s loaded....%d", szFilename, num );
-	XLP2;
+	XLOAD_PROFILE2;
 	XLOGP( "%s, %llu", XE::GetFileName( szFilename ), __llPass );
 	return TRUE;
 }

@@ -1,7 +1,9 @@
 ﻿#include "stdafx.h"
-#include "XWndPageSlide.h"
+#include "etc/XSurface.h"
 #include "XFramework/client/XEContent.h"
 #include "XFramework/XEProfile.h"
+#include "XImageMng.h"
+#include "XWndPageSlide.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -10,6 +12,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 #endif
+
+
+
+
 
 //////////////////////////////////////////////////////////////////////////
 XWndPageSlideWithXML::XWndPageSlideWithXML( const XE::VEC2& vPos, 
@@ -29,16 +35,22 @@ XWndPageSlideWithXML::XWndPageSlideWithXML( const XE::VEC2& vPos,
 		_tstring strExt = XE::GetFileExt( szImgPoint );
 		strFile += _T("_on.");
 		strFile += strExt;
-		m_sfcPointOn = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, strFile.c_str() ) );
+		m_sfcPointOn = IMAGE_MNG->Load( XE::MakePath( DIR_UI, strFile.c_str() ) );
 		//
 		strFile = XE::GetFileTitle( szImgPoint );
 		strExt = XE::GetFileExt( szImgPoint );
 		strFile += _T("_off.");
 		strFile += strExt;
-		m_sfcPointOff = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, strFile.c_str() ) );
+		m_sfcPointOff = IMAGE_MNG->Load( XE::MakePath( DIR_UI, strFile.c_str() ) );
 	}
 	//
 	m_posPagePoint.y = vSize.h - 13.f;	// 디폴트 페이지포인트 위치
+}
+
+void XWndPageSlideWithXML::Destroy() 
+{
+	SAFE_RELEASE2( IMAGE_MNG, m_sfcPointOn );
+	SAFE_RELEASE2( IMAGE_MNG, m_sfcPointOff );
 }
 
 // idxBase페이지를 기준으로 다음페이지의 인덱스를 얻는다. 없으면 -1을 리턴한다.

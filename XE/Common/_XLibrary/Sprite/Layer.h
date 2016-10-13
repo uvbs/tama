@@ -15,15 +15,21 @@
 #include "Sprdef.h"
 
 
-struct XEFFECT_PARAM
-{
+struct XEFFECT_PARAM {
 	xDM_TYPE drawMode;
 	float fAlpha;
+	float m_adjZ = 0;
 	XEFFECT_PARAM() {
 		drawMode = xDM_NORMAL;
 		fAlpha = 1.0f;
 	}
+	inline XE::xtBlendFunc GetfuncBlend() const {
+		return XE::ConvertDMTypeToBlendFunc( drawMode );
+	}
 };
+namespace XE {
+struct xRenderParam;
+}
 
 class XSprite;
 class XSprObj;
@@ -31,13 +37,6 @@ class XSprObj;
 class XBaseLayer
 {
 public:
-// 	enum xSpr::xtLayer { xSpr::xLT_NONE = 0
-// 						, xSpr::xLT_IMAGE
-// 						, xSpr::xLT_OBJ
-// 						, xSpr::xLT_SOUND
-// 						, xSpr::xLT_EVENT
-// 						, xSpr::xLT_DUMMY
-// 						, xMAX_LAYER };
 	enum xtInterpolation { xNONE=0, xLINEAR, xACCEL, xDEACCEL, xSMOOTH, xSPLINE };
 	static xSpr::xtLayer sConvertNewToOld( WORD w0 );
 	static LPCTSTR GetTypeStr( xSpr::xtLayer type = xSpr::xLT_NONE ) { 
@@ -85,6 +84,7 @@ public:
 	virtual void FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr ) {}
 #ifdef _VER_OPENGL
 	virtual void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam ) {}
+	virtual void DrawByParam( const XSprObj *pSprObj, const XE::xRenderParam& param ) const {}
 #else
 	virtual void Draw( XSprObj *pSprObj, float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam ) {}
 #endif
@@ -111,6 +111,7 @@ struct CHANNEL_POS {
 	XE::VEC2 m_vEnd;
 	float m_frameStartKey = 0.f;
 	float m_frameEndKey = 0.f;
+//	std::map<ID, XE::VEC2> m_mapRandom;		// 키에 랜덤요소가 있을때 그 값을 미리 구해놓는다.
 	void Clear() {
 		vPos.Set( 0 );
 		interpolation = XBaseLayer::xNONE;
@@ -165,8 +166,8 @@ struct CHANNEL_EFFECT {
 	float fAlphaSrc = 1.f;				//     "               시작알파값
 	float fNextKeyFrame = 0.f;	// 보간하며 변환될 다음키의 프레임
 	float fStartKeyFrame = 0.f;	//         "            시작키의 프레임
-	BOOL IsFlipHoriz() { return dwDrawFlag & EFF_FLIP_HORIZ; }
-	BOOL IsFlipVert() { return dwDrawFlag & EFF_FLIP_VERT; }
+	bool IsFlipHoriz() const { return (dwDrawFlag & EFF_FLIP_HORIZ) != 0; }
+	bool IsFlipVert() const { return (dwDrawFlag & EFF_FLIP_VERT) != 0; }
 	void Clear() {
 		fAlpha = 1.f;
 		dwDrawFlag = 0;
@@ -176,128 +177,73 @@ struct CHANNEL_EFFECT {
 		fNextKeyFrame = fStartKeyFrame = 0.f;
 	}
 	void FrameMove( float dt, float frmCurr );
+	XE::xtBlendFunc GetfuncBlend() const {
+		return XE::ConvertDMTypeToBlendFunc( DrawMode );
+	}
 };
 
 
 ///////////////////////////////////////////////////////////////////////////////
 class XLayerMove : public XBaseLayer
 {
-//	float m_fAdjustAxisX, m_fAdjustAxisY;		// 회전축 보정
 	XE::VEC2 m_vAdjAxis;		// 회전축 보정
 	CHANNEL_POS	m_cnPos;
 	CHANNEL_ROT	m_cnRot;		
 	CHANNEL_EFFECT m_cnEffect;
 	CHANNEL_SCALE m_cnScale;
-	void Init( void ) {
-// 		memset( &m_cnPos, 0, sizeof(CHANNEL_POS) );
-// 		memset( &m_cnEffect, 0, sizeof(CHANNEL_EFFECT) );
-// 		memset( &m_cnRot, 0, sizeof(CHANNEL_ROT) );
-// 		memset( &m_cnScale, 0, sizeof(CHANNEL_SCALE) );
-// 		m_cnScale.fScaleX = m_cnScale.fScaleY = 1.0f;
-// 		m_cnEffect.fAlpha = 1.0f;
-// 		m_cnEffect.DrawMode = xDM_NORMAL;
-// 		m_fAdjustAxisX = m_fAdjustAxisY = 0;
-	}
+	void Init() {}
 public:
 	XLayerMove() { Init(); }
 	XLayerMove( xSpr::xtLayer type ) : XBaseLayer( type ) { Init(); }
 	virtual ~XLayerMove() {}
 	
-//	GET_SET_ACCESSOR( float, x );
-//	GET_SET_ACCESSOR( float, y );
-//	void Setxy( float x, float y ) { m_x = x; m_y = y; }
-// 	float Getx( void ) { return m_cnPos.vPos.x; }
-// 	float Gety( void ) { return m_cnPos.vPos.y; }
 	const XE::VEC2& GetPos() const { return m_cnPos.vPos; }
 	void Setxy( float x, float y ) { m_cnPos.vPos.Set( x, y ); }
 	void SetAngleZ( float az ) { m_cnRot.fAngle = az; }
-//	void SetAdjustAxis( float adjx, float adjy ) { m_fAdjustAxisX = adjx; m_fAdjustAxisY = adjy; }
 	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vAdjAxis );
 	float GetScaleX() const { return m_cnScale.m_vScale.x; }
 	float GetScaleY() const { return m_cnScale.m_vScale.y; }
 	void SetScaleX( float sx ) { m_cnScale.m_vScale.x = sx; }
 	void SetScaleY( float sy ) { m_cnScale.m_vScale.y = sy; }
 	void SetScale( float sx, float sy ) { SetScaleX(sx); SetScaleY(sy); }
-// 	GET_ACCESSOR_CONST( float, fAdjustAxisX );
-// 	GET_ACCESSOR_CONST( float, fAdjustAxisY );
 	GET_ACCESSOR( CHANNEL_POS&, cnPos );
 	GET_ACCESSOR( CHANNEL_EFFECT&, cnEffect );
 	GET_ACCESSOR( CHANNEL_ROT&, cnRot );
 	GET_ACCESSOR( CHANNEL_SCALE&, cnScale );
-// 	void SetcnEffect( xtInterpolation inter, float dest, float src, DWORD dwDrawFlag, xDM_TYPE drawMode, float fStartKeyFrame, float fNextKeyFrame ) { 
-// 		m_cnEffect.interpolation = inter;
-// 		m_cnEffect.fAlphaDest = dest;
-// 		m_cnEffect.fAlphaSrc = src;
-// 		m_cnEffect.dwDrawFlag = dwDrawFlag;
-// 		m_cnEffect.DrawMode = drawMode;
-// 		m_cnEffect.fNextKeyFrame = fNextKeyFrame;
-// 		m_cnEffect.fStartKeyFrame = fStartKeyFrame;
-// 	}
-// 	void SetcnPos( XKeyPos *pStartKey, XKeyPos *pEndKey, SPR::xtLINE pathType, xtInterpolation inter ) { 
-// 		m_cnPos.interpolation = inter;
-// 		m_cnPos.pStartKey = pStartKey;
-// 		m_cnPos.pEndKey = pEndKey;
-// 		m_cnPos.typePath = pathType;
-// 	}
-// 	void SetcnRot( xtInterpolation inter, float dest, float src, float fStartKeyFrame, float fNextKeyFrame ) {
-// 		m_cnRot.interpolation = inter;
-// 		m_cnRot.fAngleDest = dest;
-// 		m_cnRot.fAngleSrc = src;
-// 		m_cnRot.fNextKeyFrame = fNextKeyFrame;
-// 		m_cnRot.fStartKeyFrame = fStartKeyFrame;
-// 	}
-// 	void SetcnScale( xtInterpolation inter, float osx, float osy, float ssx, float ssy, float fStartKeyFrame, float fNextKeyFrame ) {
-// 		m_cnScale.interpolation = inter;
-// 		m_cnScale.fScaleDestX = osx;		m_cnScale.fScaleDestY = osy;
-// 		m_cnScale.fScaleSrcX = ssx;		m_cnScale.fScaleSrcY = ssy;
-// 		m_cnScale.fNextKeyFrame = fNextKeyFrame;
-// 		m_cnScale.fStartKeyFrame = fStartKeyFrame;
-// 	}
-	
+	const CHANNEL_POS& GetcnPosConst() const {
+		return m_cnPos;
+	}
+	const CHANNEL_ROT& GetcnRotConst() const {
+		return m_cnRot;
+	}
+	const CHANNEL_SCALE& GetcnScaleConst() const {
+		return m_cnScale;
+	}
+	const CHANNEL_EFFECT& GetcnEffConst() const {
+		return m_cnEffect;
+	}
+
 	void SetFlipHoriz( BOOL bFlag ) { ( bFlag ) ? m_cnEffect.dwDrawFlag |= EFF_FLIP_HORIZ : m_cnEffect.dwDrawFlag &= ~EFF_FLIP_HORIZ; }
 	void SetFlipVert( BOOL bFlag ) { ( bFlag ) ? m_cnEffect.dwDrawFlag |= EFF_FLIP_VERT : m_cnEffect.dwDrawFlag &= ~EFF_FLIP_VERT; }
 	void Transform( XE::VEC2 *pvOutPos ) { Transform( &pvOutPos->x, &pvOutPos->y ); }
-	void Transform( float *pOutLx, float *pOutLy ) {
-		MATRIX m, mRotX, mRotY, mRotZ, mScale;
-		MatrixRotationX( mRotX, 0 );
-		MatrixRotationY( mRotY, ( GetcnEffect().IsFlipHoriz() )? D2R(180.f) : 0 );
-		MatrixRotationZ( mRotZ, D2R(m_cnRot.fAngle) );
-		MatrixScaling( mScale, m_cnScale.m_vScale.x, m_cnScale.m_vScale.y, 1.0f );
-		MatrixIdentity( m );
-		MatrixMultiply( m, m, mScale );
-		MatrixMultiply( m, m, mRotX );
-		MatrixMultiply( m, m, mRotY );
-		MatrixMultiply( m, m, mRotZ );
-		X3D::VEC3 v( m_cnPos.vPos.x, m_cnPos.vPos.y, 0 );
-		Vec4 v4d;
-		MatrixVec4Multiply( v4d, v, m );
-		*pOutLx = v4d.x;
-		*pOutLy = v4d.y;
-	}
+	void Transform( float *pOutLx, float *pOutLy );
 	static float sCalcInterpolation( float fTimeLerp, XBaseLayer::xtInterpolation inter );
 
 	// virtual
-	virtual void Clear( void ) { 
+	virtual void Clear( void ) override { 
 		XBaseLayer::Clear();
 		// 키에 의해서 변하는것들만 이곳에 넣는다. m_fAdjustX같은건 키에의해서 변하지 않으므로 넣지 않는다
 		m_cnPos.Clear();
 		m_cnRot.Clear();
 		m_cnScale.Clear();
 		m_cnEffect.Clear();
-// 		memset( &m_cnPos, 0, sizeof(CHANNEL_POS) );
-// 		memset( &m_cnEffect, 0, sizeof(CHANNEL_EFFECT) );
-// 		memset( &m_cnRot, 0, sizeof(CHANNEL_ROT) );
-// 		memset( &m_cnScale, 0, sizeof(CHANNEL_SCALE) );
-// 		m_cnScale.fScaleX = m_cnScale.fScaleY = 1.0f;
-// 		m_cnEffect.fAlpha = 1.0f;
-// 		m_cnEffect.DrawMode = xDM_NORMAL;
 	}
-	virtual void FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr );
-#ifdef _VER_OPENGL
-	virtual void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam ) {}
-#else
-	virtual void Draw( XSprObj *pSprObj, float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam ) {}
-#endif
+	virtual void FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr ) override;
+// #ifdef _VER_OPENGL
+// 	virtual void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam ) override {}
+// #else
+// 	virtual void Draw( XSprObj *pSprObj, float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam ) {}
+// #endif
 	virtual DWORD GetPixel( float lx, float ly, BYTE *pa = NULL, BYTE *pr = NULL, BYTE *pg = NULL, BYTE *pb = NULL  ) { return 0; }
 }; // class XLayerMove
 
@@ -312,18 +258,16 @@ public:
 	XLayerImage() : XLayerMove( xSpr::xLT_IMAGE ) { 
 		Init(); 
 	}
-	virtual ~XLayerImage() {}
+	~XLayerImage() {}
 	GET_SET_ACCESSOR( XSprite*, pSpriteCurr );
-	void SetDrawInfoToSpr( XSprObj *pSprObj, XSprite *pSpr, XEFFECT_PARAM *pEffectParam );
-	virtual void Clear( void ) { XLayerMove::Clear(); Init(); }
-//#ifdef _VER_OPENGL
-	virtual void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam );
-//#else
-//	virtual void Draw( XSprObj *pSprObj, float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam );
-//#endif
-	virtual DWORD GetPixel( float cx, float cy, float mx, float my, const MATRIX &m, BYTE *pa, BYTE *pr, BYTE *pg, BYTE *pb );
-	virtual int Serialize( XArchive& ar, XSprObj *pSprObj );
-	virtual int DeSerialize( XArchive& ar, XSprObj *pSprObj );
+	void Clear( void ) override { XLayerMove::Clear(); Init(); }
+	void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam ) override;
+	void DrawByParam( const XSprObj *pSprObj, const XE::xRenderParam& param ) const override;
+	DWORD GetPixel( float cx, float cy, float mx, float my, const MATRIX &m, BYTE *pa, BYTE *pr, BYTE *pg, BYTE *pb ) override;
+	int Serialize( XArchive& ar, XSprObj *pSprObj ) override;
+	int DeSerialize( XArchive& ar, XSprObj *pSprObj ) override;
+private:
+//	void SetDrawInfoToSpr( XSprObj *pSprObj, XSprite *pSpr, const XEFFECT_PARAM& effParam, XE::xRenderParam* pOut );
 };
 ///////////////////////////////////////////////////////////////////////////////
 class XLayerObject : public XLayerMove
@@ -341,6 +285,7 @@ public:
 	virtual void FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr );
 #ifdef _VER_OPENGL
 	virtual void Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam );
+	void DrawByParam( const XSprObj *pSprObj, const XE::xRenderParam& _param ) const override;
 #else
 	virtual void Draw( XSprObj *pSprObj, float x, float y, const D3DXMATRIX &m, XEFFECT_PARAM *pEffectParam );
 #endif

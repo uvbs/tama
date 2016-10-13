@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XSpotPrivateRaid.h"
 #include "XGameUser.h"
 #include "XClientConnection.h"
 #include "XDBASvrConnection.h"
@@ -183,7 +184,7 @@ int XGameUser::RecvCheat( XPacket& p )
 		DWORD dw0;
 		p >> snHero >> level >> dw0;
 		auto type = (XGAME::xtTrain)dw0;
-		XHero *pHero = m_spAcc->GetHero(snHero);
+		XSPHero pHero = m_spAcc->GetHero(snHero);
 		if( XASSERT(pHero) ) {
 			pHero->SetLevel( type, level );
 		}
@@ -233,14 +234,12 @@ int XGameUser::RecvCheat( XPacket& p )
 		int num;
 		p >> idProp;
 		p >> num;
-		for( int i = 0; i < num; ++i )
-		{
+		for( int i = 0; i < num; ++i ) {
 			auto pProp = PROP_HERO->GetpProp( idProp );
-			if( pProp )
-			{
+			if( pProp ) {
 				XGAME::xtSize tierUnit = XGAME::xSIZE_SMALL;
 				auto unit = XGAME::GetRandomUnit( pProp->typeAtk, tierUnit );
-				auto pHero = XHero::sCreateHero( pProp, 1, unit );
+				auto pHero = XHero::sCreateHero( pProp, 1, unit, m_spAcc );
 				m_spAcc->AddHero( pHero );
 				SendCreateHero( pHero );
 			}
@@ -339,7 +338,7 @@ int XGameUser::RecvCheat( XPacket& p )
 	} else
 	if( type == 99 ) {
 #if _DEV_LEVEL >= DLV_OPEN_BETA
-		if( m_spAcc->GetGMLevel() == 5 ) 
+		if( m_spAcc->GetGMLevel() == 1 ) 
 #endif
 		{
 			int i0;
@@ -351,7 +350,7 @@ int XGameUser::RecvCheat( XPacket& p )
 			if( paramSync == xPS_NONE ) {
 				XConsole( _T("치트명령 처리하지 못함.") );
 			}
-			SendSyncAcc( paramSync );
+			SendSyncAcc( paramSync, 0 );
 		}
 	} else
 	// 용맹포인트 증가.
@@ -372,7 +371,7 @@ int XGameUser::RecvCheatCreateItem( XPacket& p )
 	int num;
 	p >> idProp;
 	p >> num;
-	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( idProp );
+	auto pProp = PROP_ITEM->GetpProp( idProp );
 	XVERIFY_BREAK( pProp == nullptr );
 	if ( num > 100 )
 		num = 100;
@@ -405,6 +404,10 @@ int XGameUser::RecvCheatCreateItem( XPacket& p )
 	return 1;
 }
 
+XSpot* XGameUser::GetpSpot( ID idSpot )
+{
+	return GetpWorld()->GetpSpot( idSpot );
+}
 
 // 로그인서버로 계정정보를 보낸다
 BOOL XGameUser::Save( void )
@@ -505,39 +508,8 @@ void XGameUser::SuccessLoginBeforeSend( XSPSAcc spAcc, BOOL bReconnect )
 	m_spAcc->UpdateSpots( this );
 	// 퀘가 수정되었거나 해서 스팟퀘는 있는데 스팟이 없는경우 새로 생성시켜줌.
 	UpdateSpotsByQuest();
-	//////////////////////////////////////////////////////////////////////////
-	// 접속직후 요일이벤트 스팟이 오늘자 타입으로 제대로 세팅되어있는지 확인한다.
-	//////////////////////////////////////////////////////////////////////////
-	// 현재 활성화된 요일스팟이 있는지 찾아온다.
-// 	{
-// 		// 요일스팟이 있을때.
-// 		if( GetpWorld()->GetNumSpots( XGAME::xSPOT_DAILY ) > 0 ) {
-// 			// 오늘의 요일을 알아낸다.
-// 			XE::xtDOW dowToday = XSYSTEM::GetDayOfWeek();
-// 			// 오늘의 요일에 대한 타입을 알아낸다.
-// //			XGAME::xtDailySpot type = XSpotDaily::sGetDowToType( dowToday );
-// 			// 자정으로부터 지나간 시간을 세팅한다.
-// 			int hour, min, sec;
-// 			XSYSTEM::GetHourMinSec( &hour, &min, &sec );
-// 			int secPass = ( hour * 60 * 60 ) + ( min * 60 ) + sec;
-// 			XSpotDaily *pSpot = GetpWorld()->GetActiveDailySpot();
-// 			if( pSpot ) {
-// 				// 읽어온 스팟의 타입과 오늘타입을 비교해서 다르면 바꿔준다.
-// 				if( /*pSpot->GetType() != type ||*/ pSpot->GetdowToday() != dowToday ) {
-// 					// 다르면 이 스팟은 해제시킨다.
-// //					pSpot->ReleaseSpot();
-// 					// 새 스팟을 랜덤위치에 활성화시킨다.
-// 					GetpWorld()->SetActiveDailySpotToRandom( dowToday, secPass, spAcc );
-// 				}
-// 			} else {
-// 				// 요일스팟은 있는데 활성화된 스팟이 없으므로 아무거나 하나 활성화시킴.
-// 				GetpWorld()->SetActiveDailySpotToRandom( dowToday, secPass, spAcc );
-// 			}
-// 		}
-// 	}
 	// 로그인 직후에 각 스팟들의 처리이벤트
-	spAcc->GetpWorld()->OnAfterDeSerialize( this, 
-												spAcc->GetidAccount() );
+	spAcc->GetpWorld()->OnAfterDeSerialize( this, spAcc->GetidAccount() );
 	spAcc->SetpDelegateLevel( this );//		GetLevel().SetpDelegate( this );
 
 	ProcessAttackedJewel( secOffline );		// 정식기능으로 추가
@@ -554,18 +526,10 @@ void XGameUser::SuccessLoginBeforeSend( XSPSAcc spAcc, BOOL bReconnect )
 	ProcessAttackedMandrake( secOffline );
 	// 다른 유저로부터 침공당한것같은 시뮬레이션
 	{
-// 		ProcessAttackedHome( secOffline );
 	}
 #endif // _DEV
 	// 유황 기습했던것 처리.
 	m_spAcc->DoStackEncounter( secOffline );
-
-	// 클라로 계정정보 보내줌
-	if( bReconnect == FALSE )	{	// 재접상황이면 계정정보는 보내지 않음
-		/*CString string1, string2;		string1.Format( _T("SuccessLogin "));		string2.Format( _T("%s"), szIP );		string1 += string2;		DBLog( USER_CONNECT, (TCHAR*)((LPCTSTR)string1));*/
-	}	else	{
-		/*CString string1, string2;		string1.Format( _T("SuccessLogin "));		string2.Format( _T("%s"), szIP );		string1 += string2;		DBLog( USER_RECONNECT, (TCHAR*)((LPCTSTR)string1));*/
-	}
 }
 
 /**
@@ -1066,7 +1030,7 @@ int XGameUser::RecvSpotAttack( XPacket& p )
 	const int ap = pBaseSpot->GetNeedAP( m_spAcc );
 //	XVERIFY_BREAK( m_spAcc->GetAP() < ap );
 	if( m_spAcc->GetAP() < ap ) {
-		SendSyncAcc( xPS_AP );
+		SendSyncAcc( xPS_AP, 0 );
 		return 1;
 	}
 	m_spAcc->AddAP( -ap );
@@ -1178,6 +1142,9 @@ int XGameUser::RecvSpotAttack( XPacket& p )
 			arParam << pSpot->GetRemainEnter();
 		}
 		SendBattleInfoWithidAccParam( pSpot, 0, &arParam );
+	} else
+	if( pBaseSpot->GettypeSpot() == xSPOT_PRIVATE_RAID ) {
+
 	} else
 	//////////////////////////////////////////////////////////////////////////
 	if( pBaseSpot->IsCampaignType() ) {
@@ -1458,7 +1425,7 @@ ItemBox XGameUser::DoDropScalp( void )
 		return nullItem;
 	}
 //	XBaseItem *pItem = XAccount::sCreateItem( idItem, 1 );
-	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( idItem );
+	auto pProp = PROP_ITEM->GetpProp( idItem );
 	XBREAK( pProp == nullptr );
 	return std::make_pair(pProp, 1);
 }
@@ -1690,10 +1657,7 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 		}
 	}
 	// 전투세션아이디가 다르면 
-//#ifdef _CHEAT
-	if( !battle.bCheatKill )
-//#endif // _CHEAT
-	{
+	if( !battle.bCheatKill ) {
 		// 모든 전투는 전투세션이 있어야 한다. 상대하던 부대의 정보원본을 갖고 있어야 하기때문.
 		XVERIFY_BREAK( battle.snSession == 0 );
 		XVERIFY_BREAK( m_spAcc->GetsnSession() == 0 );
@@ -1709,20 +1673,12 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 	XBREAK( lvEnemy == 0 );
 	//////////////////////////////////////////////////////////////////////////
 	{
-//#ifdef _CHEAT
 		// 스팟소탕했는데 군단이 없으면 급 만듬.
 		if( battle.bCheatKill && pBaseSpot->GetspLegion() == nullptr ) {
 			// 어차피 소탕이면 무조건 이기기때문에 상대의 군단정보가 필요없을듯 하다.
 			// 가라로 군단 만들어도 상관없을듯. 만약 상대를 정찰해놓은 상대라면 군단이 있으므로 괜찮음.
 			pBaseSpot->CreateLegion( m_spAcc );
 		}
-// 		// 정상적인 경우라면 이런경우는 생기지 않아야 함.
-// 		if( XBREAK(battle.bCheatKill && pBaseSpot->GetspLegion() == nullptr) ) {
-// 			m_spAcc->ClearBattleSession();
-// 			SendCancelKill();
-// 			return 1;
-// 		}
-//#endif // _CHEAT
 		// 후퇴
 		if( battle.ebCode == XGAME::xEB_RETREAT ) {
 			// 그냥 패배로 간주하면 됨
@@ -1746,7 +1702,6 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 			XVERIFY_BREAK( m_spAcc->IsNotEnoughCash( cost ) );
 			m_spAcc->AddCashtem( -cost );
 		}
-//		if( result.IsWin() && (!pBaseSpot->IsEventSpot() || pBaseSpot->IsCampaignType()) ) {
 		if( result.IsWin() ) {	// 어떤 전투든 이기면 별점은 나와야 함.
 			// 이긴게임에 한하여 별점 산출	// 15초이내 클리어 3별// 30초이내 클리어 2별// 그 외 1별
 			if( battle.bCheatKill ) {
@@ -1760,7 +1715,6 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 					result.numStar = 1;
 			}
 			// 별퀘를 갖고 있어야만 별을 모을수 있음.
-//			if( m_spAcc->GetpQuestMng()->IsHaveGetStarQuest() ) {
 			if( m_spAcc->IsAbleGetStar() ) {
 				DoCollectingSpotStar( result.numStar, pBaseSpot );
 			}
@@ -1772,15 +1726,9 @@ int XGameUser::RecvReqFinishBattle2( XPacket& p )
 				pBaseSpot->SetnumLose( pBaseSpot->GetnumLose() + 1 );   // 패배횟수를 올림
 	}
 	// 퀘스트이벤트에서 써야하므로 군단포인터를 받아둔다. 참조포인터이므로 밑에서 군단데이터를 삭제해도 지워지지 않는다.
-	LegionPtr spLegion = pBaseSpot->GetspLegion();
+	XSPLegion spLegion = pBaseSpot->GetspLegion();
 	// 소탕치트 했는데 군단이 없으면 급 만듬.
 	if( spLegion == nullptr ) {
-//#ifdef _CHEAT
-// 		if( battle.bCheatKill ) {
-// 			pBaseSpot->CreateLegion( m_spAcc );
-// 			spLegion = pBaseSpot->GetspLegion();
-// 		}
-//#endif // _CHEAT
 		// npc류 스팟에서는 이런게 나와선 안된다. 현재 유저중엔 군단이없는 유저가 있는듯.
 		XVERIFY_BREAK( spLegion == nullptr );	// 현재 유저데이타에서도 군단없는 유저가 있나?
 	}
@@ -2027,7 +1975,7 @@ int XGameUser::ProcCancelBattle( XSpot *pBaseSpot, ID idEnemy )
 int XGameUser::DispatchQuestEventByBattle( XSpot *pBaseSpot, 
 																					bool bWin, 
 																					bool bClearSpot, 
-																					LegionPtr& spLegion  )
+																					XSPLegion& spLegion  )
 {
 	xQuest::XEventInfo infoQuest;
 	infoQuest.SetidSpot( pBaseSpot->GetidSpot() );
@@ -2049,12 +1997,12 @@ int XGameUser::DispatchQuestEventByBattle( XSpot *pBaseSpot,
 	// 스팟전투 승리후에 들어오는 곳이므로 군단정보가 반드시 있어야 함.
 	XBREAK( spLegion == nullptr );
 	if( spLegion != nullptr ) {
-		XArrayLinearN<XHero*, XGAME::MAX_SQUAD> aryHeros;
-		spLegion->GetHerosToAry( aryHeros );
-		XARRAYLINEARN_LOOP( aryHeros, XHero*, pHero ) {
+		XVector<XSPHero> aryHeros;
+		spLegion->GetHerosToAry( &aryHeros );
+		for( auto pHero : aryHeros ) {
 			infoQuest.SetidHero( pHero->GetidProp() );
 			DispatchQuestEvent( XGAME::xQC_EVENT_KILL_HERO, infoQuest );
-		} END_LOOP;
+		}
 	}
 	return 1;
 }
@@ -2076,7 +2024,7 @@ int XGameUser::DoRewardProcess( XSpot *pBaseSpot, XGAME::xBattleResult *pOutResu
 	XLegion *pLegion = m_spAcc->GetCurrLegion().get();
 	m_spAcc->AddExpToHeros( XGC->m_expBattlePerHero, m_spAcc->GetCurrLegion().get(), &pOutResult->m_aryLevelUpHeroes );
 	// 영웅들정보 갱신(갱신된 부분만 보내도록 최적화 할것)
-	pLegion->GetHerosToAry( pOutResult->aryHeroes );
+	pLegion->GetHerosToAry( &pOutResult->aryHeroes );
 	return 1;
 }
 
@@ -2334,6 +2282,9 @@ int XGameUser::ProcSpotEach( XSpot *pBaseSpot,
 	case XGAME::xSPOT_CAMPAIGN: {
 		if( pBaseSpot->IsCampaignType() )
 			ProcForCampaign( pBaseSpot, pOut, battle );
+	} break;
+	case XGAME::xSPOT_PRIVATE_RAID: {
+
 	} break;
 	default:
 		XVERIFY_BREAK( 1 );
@@ -3178,7 +3129,7 @@ void XGameUser::RecvGetUserLegionByIdAcc( XPacket& p )
 	bool bDummyUser = true;
 
 	do {
-		LegionPtr spLegion;
+		XSPLegion spLegion;
 		p >> idSpot;
 		p >> idPacket;
 		p >> idAccount;		// 매칭으로 찾은 상대편 idAccount;
@@ -3233,7 +3184,7 @@ void XGameUser::RecvGetUserLegionByIdAcc( XPacket& p )
 // 					// 이미 정찰된 부대가 있다면 그 정보를 복구시킨다.
 // 					pLegion->SetUnFogList( aryUnfogHeroesSN );
 // 				}
-				spLegion = LegionPtr( pLegion );
+				spLegion = XSPLegion( pLegion );
 				pBaseSpot->SetspLegion( spLegion );
 // 				if( aryResourceHero.size() > 0 )
 // 					pLegion->SetAryResource( aryResourceHero );
@@ -3968,7 +3919,7 @@ void XGameUser::SendUnlockMenu( XGAME::xtMenus bitUnlock )
 // 	p >> snHero;
 // 	XVERIFY_BREAK(snHero == 0);
 // 	p >> aryItems;
-// 	XHero *pHero = m_spAcc->GetHero( snHero );
+// 	XSPHero pHero = m_spAcc->GetHero( snHero );
 // 	XVERIFY_BREAK( pHero == NULL );
 // 	XVERIFY_BREAK( pHero->IsMaxLevel(XGAME::xTR_LEVEL_UP) );
 // 	XVERIFY_BREAK( pHero->GetLevel() >= m_spAcc->GetLevel() );
@@ -4022,7 +3973,7 @@ int XGameUser::RecvChageHeroLegion(XPacket& p)
 	p >> idUnit;
 	XVERIFY_BREAK(idUnit == 0);
 
-	XHero *pHero = m_spAcc->GetHero( snHero );
+	XSPHero pHero = m_spAcc->GetHero( snHero );
 	XVERIFY_BREAK( pHero == NULL );
 	XGAME::xtUnit unit = (XGAME::xtUnit) idUnit;
 	pHero->SetUnit( unit );
@@ -4064,7 +4015,7 @@ int XGameUser::RecvChageHeroEquip(XPacket& p)
 	BOOL bSuccess = TRUE;
 	XVERIFY_BREAK(snHero == 0);
 	XVERIFY_BREAK(snItem == 0);
-	XHero* pHero = m_spAcc->GetHero(snHero);
+	XSPHero pHero = m_spAcc->GetHero(snHero);
 	if (pHero) {			
 		XBaseItem* pItem = m_spAcc->GetItem(snItem);
 		if (pItem) {
@@ -4230,9 +4181,9 @@ int XGameUser::RecvSummonHero( XPacket& p )
 			idx = 2;
 		auto unit = units[ idx ];	// 최초 등장은 1레벨부터이므로 소형으로 선택됨.
 //		int numUnit = 5; //1레벨이니까 기본 숫자제공.
-//		XHero *pHero = XHero::sCreateHero( pPropHero, unit, numUnit );
+//		XSPHero pHero = XHero::sCreateHero( pPropHero, unit, numUnit );
 		int lvSuqad = 1;
-		XHero *pHero = XHero::sCreateHero( pProp, lvSuqad, unit );
+		XSPHero pHero = XHero::sCreateHero( pProp, lvSuqad, unit, m_spAcc );
 		XVERIFY_BREAK( pHero == nullptr );
 		pHero->SetGrade( grade );
 		m_spAcc->AddHero( pHero );
@@ -4301,16 +4252,13 @@ int XGameUser::RecvNewSquad( XPacket& p )
 	ID snHero;
 	int idxSlot, idxLegion;
 	p >> snHero >> idxSlot >> idxLegion;
-	XHero *pHero = m_spAcc->GetHero( snHero );
+	XSPHero pHero = m_spAcc->GetHero( snHero );
 	XVERIFY_BREAK( pHero == NULL );
 	XLegion *pLegion = m_spAcc->GetLegionByIdx( idxLegion ).get();
 	XVERIFY_BREAK( pLegion == NULL );
-	XSquadron *pSq = new XSquadron( pHero );
+	XSPSquadron pSq = std::make_shared<XSquadron>( pHero );
 	XVERIFY_BREAK( pSq == NULL );
-	BOOL bSuccess = pLegion->SetSquadron( idxSlot, pSq, FALSE );
-	if( bSuccess == FALSE )
-		SAFE_DELETE( pSq );
-	XVERIFY_BREAK( bSuccess == FALSE );
+	pLegion->AddSquadron( idxSlot, pSq, FALSE );
 	///< 
 	//결과를 클라에 보냄
 	XPacket ar( (ID)xCL2GS_LOBBY_NEW_SQUAD );
@@ -4338,21 +4286,18 @@ int XGameUser::RecvMoveSquad( XPacket& p )
 	XLegion *pLegion = m_spAcc->GetLegionByIdx( idxLegion ).get();
 	XVERIFY_BREAK( pLegion == NULL );
 	XVERIFY_BREAK( idxDst < -1 );
-	int idx = pLegion->GetSquadronIdxByHeroSN( snHeroSrc );
+	int idx = pLegion->_GetIdxSquadByHeroSN( snHeroSrc );
 	XVERIFY_BREAK( idx != idxSrc );
 	if( snHeroDst > 0 )
 	{
-		idx = pLegion->GetSquadronIdxByHeroSN( snHeroDst );
+		idx = pLegion->_GetIdxSquadByHeroSN( snHeroDst );
 		XVERIFY_BREAK( idx != idxDst );
 	}
-	if( idxDst == -1 )
-	{
+	if( idxDst == -1 )	{
 		// remove squad
-		pLegion->RemoveSquad( idxSrc );
-	} else
-	{
-		BOOL bRet = pLegion->SwapSlotSquad( idxSrc, idxDst );
-		XVERIFY_BREAK( bRet == FALSE );
+		pLegion->DestroySquadBysnHero( idxSrc );
+	} else {
+		pLegion->SwapSlotSquad( idxSrc, idxDst );
 	}
 	//결과를 클라에 보냄
 	XPacket ar( (ID)xCL2GS_LOBBY_MOVE_SQUAD );
@@ -4390,7 +4335,7 @@ int XGameUser::RecvChangeSquad(XPacket& p)
 		data tmp;
 		p >> tmp.spos;
 		p >> (ID)tmp.ssnhero;
-		XHero* pHero = m_spAcc->GetHero(tmp.ssnhero);
+		XSPHero pHero = m_spAcc->GetHero(tmp.ssnhero);
 		// 이런경우는 정상적이라면 일어나선 안되는 경우이므로 더이상 처리할필요 없습니다. 
 		// 이 경우 클라는 해킹이거나 비동기상태이므로 XVERYFY_BREAK로 리턴하여 재접속하도록 하고 있습니다.
 		XVERIFY_BREAK(pHero == nullptr);
@@ -4402,12 +4347,12 @@ int XGameUser::RecvChangeSquad(XPacket& p)
 	ar << legionherosize;
 	ar << (ID)snLeader;
 	for (int n = 0; n < XGAME::MAX_SQUAD; n++) {
-		m_spAcc->GetCurrLegion()->RemoveSquad(n);
+		m_spAcc->GetCurrLegion()->DestroySquadByIdxPos(n);
 	}
 	auto itor = squadlist.begin();		
 	for (; itor != squadlist.end(); itor++) {	
-		XSquadron *pSq = new XSquadron(m_spAcc->GetHero(itor->ssnhero));
-		m_spAcc->GetCurrLegion()->SetSquadron(itor->spos, pSq, FALSE);
+		XSPSquadron pSq = std::make_shared<XSquadron>(m_spAcc->GetHero(itor->ssnhero));
+		m_spAcc->GetCurrLegion()->AddSquadron(itor->spos, pSq, false);
 		if (pSq->GetpHero()->GetsnHero() == snLeader)
 			m_spAcc->GetCurrLegion()->SetpLeader(pSq->GetpHero());
 		ar << (int)itor->spos;
@@ -4656,79 +4601,10 @@ int XGameUser::RecvTrade( XPacket& p )
 */
 int XGameUser::RecvChangeScalpToBook( XPacket& p )
 {
-// 	int i0;
-// 	XGAME::xtClan clan;
-// 	p >> i0;	clan = (XGAME::xtClan)i0;
-// 	XVERIFY_BREAK( clan <= XGAME::xCL_NONE || clan >= XGAME::xCL_MAX );
-// 	XArrayLinearN<XBaseItem*, 256> ary;
-// 	ID idScalp = m_spAcc->ChangeScalpToBook( clan, &ary );
-// 	// 클라에서 이미 징표개수 확인해서 보낸것이므로 0이나와선 안됨
-// 	XVERIFY_BREAK( idScalp == 0 );
-// 	//
-// 	//결과를 클라에 보냄
-// 	XPacket ar( (ID)xCL2GS_LOBBY_CHANGE_SCALP_TO_BOOK );
-// 	ar << (BYTE)clan;
-// 	ar << (BYTE)ary.size();
-// 	ar << (BYTE)VER_ITEM_SERIALIZE;
-// 	ar << (BYTE)(ary.size() * 10);
-// 	XARRAYLINEARN_LOOP( ary, XBaseItem*, pItem )
-// 	{
-// 		XBaseItem::sSerialize( ar, pItem );
-// 	} END_LOOP;
-// 	ar << idScalp;
-// 	Send( ar );
+
 	return 1;
 }
 
-/**
- 클라이언트의 SendReqUpgradeSquad()에 대한 서버측의 Receive함수
- @param p 패킷이 들어있는 아카이브
- @return 오류없이 완료되었다면 1을 리턴한다.
- @see SendReqUpgradeSquad()
-*/
-// int XGameUser::RecvUpgradeSquad( XPacket& p )
-// {
-// 	ID snHero;
-// 	p >> snHero;
-// 	XVERIFY_BREAK( snHero == 0 );
-// 	XHero *pHero = m_spAcc->GetHero( snHero );
-// 	XVERIFY_BREAK( pHero == nullptr );
-// 	XVERIFY_BREAK( pHero->GetlevelSquad() >= PROP_SQUAD->GetMaxLevel() );
-// 	int levelNext = pHero->GetlevelSquad() + 1;
-// 	auto& propSquad = PROP_SQUAD->GetTable( levelNext );
-// 	XVERIFY_BREAK( m_spAcc->GetJewel() < propSquad.numRes );
-// 	XVERIFY_BREAK( m_spAcc->IsTrainingSquadupHero( snHero ) );
-// 	XVERIFY_BREAK( m_spAcc->GetNumRemainFreeSlot() <= 0 );
-// 	// 유닛의 공격타입에 따라 필요한 업글템의 아이디를 얻음.
-// 	ID idNeed = XGAME::GetSquadLvupItem( XGAME::GetTypeUnit( pHero->GetUnit() ) );
-// 	XBREAK( idNeed == 0 );
-// 	XBREAK( propSquad.gradeNeed <= XGAME::xGD_NONE || propSquad.gradeNeed >= XGAME::xGD_MAX );
-// 	idNeed += ( propSquad.gradeNeed - 1 );
-// 	// 소지한 업글템의 개수를 셈
-// 	int num = m_spAcc->GetNumItems( idNeed );
-// 	XVERIFY_BREAK( num < propSquad.numItem );
-// 	m_spAcc->DestroyItem( idNeed, propSquad.numItem );
-// 	m_spAcc->AddResource( XGAME::xRES_JEWEL, -propSquad.numRes );
-// 	// 훈련시작
-// 	XAccount::xTrainSlot slot;
-// 	slot.DoStartSquadup( snHero, (float)propSquad.secTrain );
-// 	m_spAcc->AddTrainSlot( slot );
-// 	//결과를 클라에 보냄
-// 	XPacket ar( (ID)xCL2GS_LOOBY_UPGRADE_SQUAD );
-// 	ar << snHero;
-// 	ar << idNeed;
-// 	ar << propSquad.numItem;
-// 	ar << 0;	// levelsquad
-// 	ar << (BYTE)VER_ETC_SERIALIZE;
-// 	ar << (BYTE)0;
-// 	ar << (WORD)0;
-// 	m_spAcc->SerializeTrainSlot( ar );
-// 	m_spAcc->SerializeResource( ar );
-// 	Send( ar );
-// 
-// 
-// 	return 1;
-// }
 
 /**
  클라이언트의 SendReqReleaseHero()에 대한 서버측의 Receive함수
@@ -4740,7 +4616,7 @@ int XGameUser::RecvReleaseHero( XPacket& p )
 {
 	ID snHero;
 	p >> snHero;
-	XHero *pHero = m_spAcc->GetHero( snHero );
+	XSPHero pHero = m_spAcc->GetHero( snHero );
 	XVERIFY_BREAK( pHero == nullptr );
 	// 영웅의 토탈 exp를 얻는다.
 	XINT64 expTotal = pHero->GetExpSum();
@@ -5124,99 +5000,20 @@ void XGameUser::SendCashItemBuyGoogle( XGAME::xtErrorIAP errCode
 int XGameUser::RecvBuyItem(XPacket& p)					//아이템 구매
 {
 	ID idProp;
-// 	int shoptype; 
-	int num = 1;
 	int  i0;
 	p >> i0;	auto shoptype = (XGAME::xtShopType)i0;
 	p >> idProp;
 	XVERIFY_BREAK( shoptype <= XGAME::xSHOP_NONE || shoptype >= XGAME::xSHOP_MAX );
-	auto pProp = PROP_ITEM->GetpProp(idProp);
-	XVERIFY_BREAK(pProp == nullptr);
 	XVERIFY_BREAK( m_spAcc->IsSaleItemidProp( idProp ) == FALSE );
-	XPacket ar((ID)xCL2GS_LOBBY_ITEM_BUY);
 	p >> i0;	auto costType = (XGAME::xtCoin)i0;
 	XVERIFY_BREAK( costType <= xCOIN_NONE || costType >= xCOIN_MAX );
-	int cost = 0;
-	int HaveGold = m_spAcc->GetGold();
-	int Havecash = m_spAcc->GetCashtem();
 	//무기상.
 	if (shoptype == XGAME::xSHOP_ARMORY) {
-// 		if (m_spAcc->IsSaleItemidProp(idProp)) {	
-// 			p >> costType;
-			if( costType == XGAME::xCOIN_GOLD ) {
-				// 장착템은 템 가격을 직접 계산한다.
-				cost = (int)pProp->GetBuyCost( GetLevel() );
-				XVERIFY_BREAK(cost < 0 );
-				m_spAcc->AddGold(-cost);		// Cost 비용 삭제 해주고.			
-			} else
-			if( costType == XGAME::xCOIN_CASH ) {
-				cost = (int)pProp->cashCost;
-				XVERIFY_BREAK( cost < 0 );
-				m_spAcc->AddCashtem( -cost );
-			} else
-			if( costType == XGAME::xCOIN_MEDAL ) {
-				int costMedal = XGC->m_costMedalForArmoryHero;
-				XVERIFY_BREAK( costMedal < 0 );
-				const _tstring idsMedal( _T("medal_tanker01") );
-				int numMedal = m_spAcc->GetNumItems( idsMedal.c_str() );
-				XVERIFY_BREAK( numMedal < costMedal );
-				m_spAcc->DestroyItem( idsMedal.c_str(), costMedal );
-			}
-			// 상점 리스트에서 상품 목록도 지워주고.
-			m_spAcc->RemoveListShopSell(idProp);
-			m_spAcc->CreateItemToInven(pProp, num);
-			DispatchQuestEvent( XGAME::xQC_EVENT_BUY_ITEM, pProp->idProp );
-// 		}		
-		ar << num;  //(성공의 경우 1 반환)
-		ar << m_spAcc->GetGold();
-		ar << m_spAcc->GetCashtem();
-		m_spAcc->SerializeItems(ar);
-		Send(ar);
-		DispatchQuestEvent( xQC_EVENT_UI_ACTION, xUA_BUY_ARMOR );
-		_tstring strLog = XE::Format(_T("Buy_Item(XGAME::xSHOP_ARMORY): BuyType:%d, BuyIdProp:%d, Cost:%d, HaveGold:%d, RemainGold:%d, HaveCash:%d, RemainCash:%d"), costType, idProp, cost, HaveGold, m_spAcc->GetGold(), Havecash, m_spAcc->GetCashtem());
-		AddLog(XGAME::xULog_Buy_Items, strLog);
+		XVERIFY_BREAK( ProcBuyItemAtArmory( idProp, costType ) == 0 );
 	} else 
-	// 귀중품상점
 	if( shoptype == XGAME::xSHOP_CASHSHOP ) {		
-		DWORD goldCost = pProp->GetBuyCost( GetLevel() );
-		XVERIFY_BREAK((goldCost == 0) && (pProp->cashCost == 0));
-//		XVERIFY_BREAK((pProp->GetCost(ACCOUNT->GetLevel()) != 0) && (pProp->cashCost != 0));
-		if (goldCost > 0) {
-			cost = (int)goldCost;
-			if (goldCost > (DWORD)HaveGold) {
-				ar << 0;  //(성공의 경우 1 반환)
-				Send(ar);
-				_tstring strLog = XE::Format(_T("Buy_Item_gold_Failed(XGAME::xSHOP_CASHSHOP): shoptype:%d, BuyIdProp:%d, Cost:%d, HaveCash:%d"), shoptype, idProp, cost, HaveGold);
-				AddLog(XGAME::xULog_Buy_Items, strLog);
-				return 1;
-			} else {
-				m_spAcc->AddGold(-cost);		// Cost 비용 삭제 해주고.
-			}
-		} else if (pProp->cashCost > 0) {
-			cost = pProp->cashCost;
-			if (pProp->cashCost  >(DWORD)Havecash) {
-				ar << 0;  //(성공의 경우 1 반환)
-				Send(ar);
-				_tstring strLog = XE::Format(_T("Buy_Item_cash_Failed(XGAME::xSHOP_CASHSHOP): shoptype:%d, BuyIdProp:%d, Cost:%d, HaveCash:%d"), shoptype, idProp, cost, Havecash);
-				AddLog(XGAME::xULog_Buy_Items, strLog);
-				return 1;
-			} else {
-				m_spAcc->AddCashtem(-cost);		// Cost 비용 삭제 해주고.
-			}
-			//뺄꺼 빼주고
-		}
-		m_spAcc->CreateItemToInven(pProp, num);
-		ar << num;  //(성공의 경우 1 반환)
-		ar << m_spAcc->GetGold();
-		ar << m_spAcc->GetCashtem();
-		m_spAcc->SerializeItems(ar);
-		Send(ar);
-		_tstring strLog = XE::Format(_T("Buy_Item(XGAME::xSHOP_CASHSHOP): BuyIdProp:%d, Cost:%d, HaveGold:%d, RemainGold:%d, HaveCash:%d, RemainCash:%d"), idProp, cost, HaveGold, m_spAcc->GetGold(), Havecash, m_spAcc->GetCashtem());
-		AddLog(XGAME::xULog_Buy_Items, strLog);
-		//Cash 사용 정보 Update 해주자.	
-		if (DBA_SVR) {
-			DBA_SVR->SendCashInfoUpdate(GetidAcc(), m_spAcc->GetCashtem());
-		}
+		// 귀중품상점
+		XVERIFY_BREAK( ProcBuyItemAtCashShop( idProp ) == 0 );
 	} else {
 		// 알수없는 구입메시지
 		XVERIFY_BREAK(1);
@@ -5225,6 +5022,112 @@ int XGameUser::RecvBuyItem(XPacket& p)					//아이템 구매
 	return 1;
 }
 
+/** //////////////////////////////////////////////////////////////////
+ @brief 무기상점에서 아이템 구입
+*/
+int XGameUser::ProcBuyItemAtArmory( ID idProp, XGAME::xtCoin costType )
+{
+	const int num = 1;
+	auto pPropBuy = PROP_ITEM->GetpProp( idProp );
+	XVERIFY_BREAK( pPropBuy == nullptr );
+	// 프로퍼티에 명시된 지불아이템으로 사기
+	if( costType == XGAME::xCOIN_PROP ) {
+		const int numCost = (int)pPropBuy->GetBuyCost( GetLevel() );
+		XBREAK( numCost < 0 );
+		const int numCurr = m_spAcc->GetNumItems( pPropBuy->m_strPayItem );
+		XVERIFY_BREAK( numCurr < numCost );		// 이미 클라에서 비교해본것이기때문에 비정상으로 간주함.
+		// gold/guild_coin도 아이템아이디를 가져 같은 함수를 쓸수 있도록 함.
+		m_spAcc->DestroyItem( pPropBuy->m_strPayItem, numCost );
+	} else
+	// 젬으로 사기
+	if( costType == XGAME::xCOIN_CASH ) {
+		// 지불템의 속성 꺼냄
+		const int numLack = pPropBuy->m_numCost;		// 편의상 지불템 필요개수만큼을 모두 캐시로 산다.
+		auto pPropPaytem = PROP_ITEM->GetpProp( pPropBuy->m_strPayItem );
+		if( pPropPaytem ) {
+			// 지불템의 개당캐시가격 * 모자르는 수
+			const int numGems = pPropPaytem->cashCost * numLack;		// 모자르는 만큼을 젬으로 사야할때 필요한 젬개수.
+//			const int cost = (int)pPropBuy->cashCost;
+			XVERIFY_BREAK( numGems < 0 );
+			m_spAcc->AddCashtem( -numGems );
+		}
+	} else
+	// 메달로 사기
+	if( costType == XGAME::xCOIN_MEDAL ) {
+		int costMedal = XGC->m_costMedalForArmoryHero;
+		XVERIFY_BREAK( costMedal < 0 );
+		const _tstring idsMedal( _T( "medal_tanker01" ) );
+		int numMedal = m_spAcc->GetNumItems( idsMedal.c_str() );
+		XVERIFY_BREAK( numMedal < costMedal );
+		m_spAcc->DestroyItem( idsMedal.c_str(), costMedal );
+	}
+	_tstring strLog = XE::Format( _T( "Buy_Item(XGAME::xSHOP_ARMORY): BuyType:%d, BuyIdProp:%d, HaveGold:%d, RemainCash:%d" ), costType, idProp, m_spAcc->GetGold(), m_spAcc->GetCashtem() );
+	AddLog( XGAME::xULog_Buy_Items, strLog );
+	// 상점 리스트에서 상품 목록도 지워주고.
+	m_spAcc->RemoveListShopSell( idProp );
+	m_spAcc->CreateItemToInven( pPropBuy, num );
+	DispatchQuestEvent( XGAME::xQC_EVENT_BUY_ITEM, pPropBuy->idProp );
+	// 		}		
+	XPacket ar( (ID)xCL2GS_LOBBY_ITEM_BUY );
+	ar << num;  //(성공의 경우 1 반환)
+	ar << m_spAcc->GetGold();
+	ar << m_spAcc->GetCashtem();
+	m_spAcc->SerializeItems( ar );
+	Send( ar );
+	DispatchQuestEvent( xQC_EVENT_UI_ACTION, xUA_BUY_ARMOR );
+	return 1;
+}
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 캐시상점에서 아이템 구입
+*/
+int XGameUser::ProcBuyItemAtCashShop( ID idProp )
+{
+	auto pProp = PROP_ITEM->GetpProp( idProp );
+	XVERIFY_BREAK( pProp == nullptr );
+	//
+	XPacket ar( (ID)xCL2GS_LOBBY_ITEM_BUY );
+	//
+	int HaveGold = m_spAcc->GetGold();
+	const int Havecash = m_spAcc->GetCashtem();
+	const int num = 1;
+	DWORD goldCost = pProp->GetBuyCost( GetLevel() );
+	XVERIFY_BREAK( (goldCost == 0) && (pProp->cashCost == 0) );
+	//		XVERIFY_BREAK((pProp->GetCost(ACCOUNT->GetLevel()) != 0) && (pProp->cashCost != 0));
+	if( goldCost > 0 ) {
+		const int cost = (int)goldCost;
+		if( goldCost > (DWORD)HaveGold ) {
+			ar << 0;  //(성공의 경우 1 반환)
+			Send( ar );
+			_tstring strLog = XE::Format( _T( "Buy_Item_gold_Failed(XGAME::xSHOP_CASHSHOP):BuyIdProp:%d, Cost:%d, HaveCash:%d" ), idProp, cost, HaveGold );
+			AddLog( XGAME::xULog_Buy_Items, strLog );
+			return 1;
+		} else {
+			m_spAcc->AddGold( -cost );		// Cost 비용 삭제 해주고.
+		}
+	} else if( pProp->cashCost > 0 ) {
+		const int cost = pProp->cashCost;
+		if( pProp->cashCost > (DWORD)Havecash ) {
+			ar << 0;  //(성공의 경우 1 반환)
+			Send( ar );
+			_tstring strLog = XE::Format( _T( "Buy_Item_cash_Failed(XGAME::xSHOP_CASHSHOP):BuyIdProp:%d, Cost:%d, HaveCash:%d" ), idProp, cost, Havecash );
+			AddLog( XGAME::xULog_Buy_Items, strLog );
+			return 1;
+		} else {
+			m_spAcc->AddCashtem( -cost );		// Cost 비용 삭제 해주고.
+		}
+		//뺄꺼 빼주고
+	}
+	m_spAcc->CreateItemToInven( pProp, num );
+	ar << num;  //(성공의 경우 1 반환)
+	ar << m_spAcc->GetGold();
+	ar << m_spAcc->GetCashtem();
+	m_spAcc->SerializeItems( ar );
+	Send( ar );
+	//Cash 사용 정보 Update 해주자.	
+	DBA_SVR->SendCashInfoUpdate( GetidAcc(), m_spAcc->GetCashtem() );
+	return 1;
+}
 /**
  @brief 아이템 상점에 판매
 */
@@ -5304,58 +5207,40 @@ int XGameUser::RecvItemSpent(XPacket& p)					///< 아이템 사용
 int XGameUser::RecvInventoryExpand(XPacket& p)			///< 인벤토리 확장
 {	
 	int type = 0;
-
 	p >> type;
-
 	// 최대 창고 갯수 체크
-	if (m_spAcc->GetmaxItems() + 5 > XGAME::ITEM_MAX_COUNT)		//인벤토리를 더이상 확장 할 수 없다.
-	{
+	if (m_spAcc->GetmaxItems() + 5 > XGAME::ITEM_MAX_COUNT) {		//인벤토리를 더이상 확장 할 수 없다.
 		XPacket ar((ID)xCL2GS_LOBBY_INVENTORY_EXPAND);
-
 		ar << int(0);
 		ar << int(3);
-
 		Send(ar);
-
 		_tstring strLog = XE::Format(_T("Inventory_Expanded_Failed:Over_Max User InvenCount[%d]"), m_spAcc->GetmaxItems());
 		AddLog(XGAME::xULog_Use_Gem, strLog);
 	}
-
-	if (type == XGAME::xSC_SPENT_ITEM) // 여긴 키
-	{
+	if (type == XGAME::xSC_SPENT_ITEM) {// 여긴 키
 		int nCount = m_spAcc->GetNumItems(XGC->m_storageLockItem);
-		if (nCount > 0)
-		{			
+		if (nCount > 0)	{			
 			m_spAcc->DestroyItem(XGC->m_storageLockItem, 1);
 			m_spAcc->SetmaxItems(m_spAcc->GetmaxItems() + 5);
-
 			int tmpCount = m_spAcc->GetNumItems(XGC->m_storageLockItem);
-
 			XPacket ar((ID)xCL2GS_LOBBY_INVENTORY_EXPAND);
 			ar << int(1);
 			ar << type;
 			ar << XGC->m_storageLockItem;
 			ar << m_spAcc->GetmaxItems();			
 			Send(ar);
-
 			_tstring strLog = XE::Format(_T("Inventory_Expanded_Item:Before[%d] After[%d]"), nCount, tmpCount);
 			AddLog(XGAME::xULog_Use_Gem, strLog);
-		}
-		else
-		{
+		}	else {
 			XPacket ar((ID)xCL2GS_LOBBY_INVENTORY_EXPAND); //소모 리소스 부족
-			
 			ar << (int)0;
 			ar << type;		// 호출 타입: 아이템			
 			Send(ar);
-
 			_tstring strLog = XE::Format(_T("Inventory_Expanded_Item:Have_not_enough[%d]"), nCount);
 			AddLog(XGAME::xULog_Use_Gem, strLog);
 			return 1;
 		}
-	}
-	else if (type == XGAME::xSC_SPENT_GEM) //젬
-	{
+	}	else if (type == XGAME::xSC_SPENT_GEM) {//젬
 		int Havecash = m_spAcc->GetCashtem();
 		XVERIFY_BREAK( Havecash < XGC->m_storageLockGem );
 		m_spAcc->AddCashtem( -XGC->m_storageLockGem );
@@ -5758,7 +5643,7 @@ int XGameUser::DoRewardQuest( ID idQuest )
 			auto pPropHero = PROP_HERO->GetpProp( pReward->idReward );
 			if( XASSERT(pPropHero) ) {
 				auto unit = XGAME::GetUnitBySizeAndAtkType( xSIZE_SMALL, pPropHero->typeAtk );
-				auto pHero = XHero::sCreateHero( pPropHero, 1, unit );
+				auto pHero = XHero::sCreateHero( pPropHero, 1, unit, m_spAcc );
 				if( XASSERT(pHero) ) {
 					m_spAcc->AddHero( pHero );
 					XHero::sSerialize( ar, pHero );
@@ -5846,11 +5731,6 @@ int XGameUser::RecvSpotTouch( XPacket& p )
 	{
 	//////////////////////////////////////////////////////////////////////////
 	case XGAME::xSPOT_CASTLE: {
-// 		auto pSpot = SafeCast<XSpotCastle*>( pBaseSpot );
-// 		XVERIFY_BREAK( pSpot == nullptr );
-// 		XVERIFY_BREAK( pSpot->GetidOwner() == m_spAcc->GetidAccount() );
-// 		XVERIFY_BREAK( pSpot->IsQuestion() );
-// 		군단정보 요청.
 	} break;
 	//////////////////////////////////////////////////////////////////////////
 	case XGAME::xSPOT_MANDRAKE: {
@@ -5891,6 +5771,8 @@ int XGameUser::RecvSpotTouch( XPacket& p )
 		if( pBaseSpot->GetspLegion() == nullptr )
 			pBaseSpot->CreateLegion( m_spAcc );
 //		SendSpotSync( pBaseSpot );
+	} break;
+	case XGAME::xSPOT_PRIVATE_RAID: {
 	} break;
 	//////////////////////////////////////////////////////////////////////////
 	case XGAME::xSPOT_COMMON: {
@@ -6281,35 +6163,6 @@ void XGameUser::Cheat_AddPostInfo()
 	post.AddPostGem( 100 );
 	// 우편을 보냄
 	DoSendPost( &post );
-//	if( DBA_SVR ) {
-// 		XArchive ar;
-// 
-// 		ar.WriteString( m_spAcc->GetstrName() ); //Sender
-// 		ar.WriteString( m_spAcc->GetstrName() ); //Recv			
-// 		ar.WriteString( _T( "This is title" ) );		 //Title
-// 		ar.WriteString( _T( "This is message" ) ); //Message
-// 
-// 		int count = 2;// ::rand() % 4; //첨부 아이템 개수
-// 		ar << count;
-// 
-// 		for( int n = 0; n < count; n++ ) {
-// 			int ncount = ( ::xRand() % 9 ) + 1;
-// 			XPropItem::xPROP* pData = PROP_ITEM->GetpPropRandom();
-// 			XBREAK( pData == nullptr );
-// 
-// 			ar << (ID)XGAME::xtPOSTResource::xPOSTRES_ITEMS;
-// 			ar << (ID)pData->idProp;
-// 			ar << (ID)ncount;
-// 		}
-// 		ID idKey = DBA_SVR->SendPOSTInfoAdd( GetidAcc()
-// 																				, m_spAcc->GenerateSN()
-// 																				, (ID)( XGAME::xtPostType::xPOSTTYPE_NORMAL )
-// 																				, ar
-// 																				, xCL2GS_LOBBY_POST_ADD );
-//		DBA_SVR->AddResponse( idKey, this, &XGameUser::cbDoAddPostInfo );
-
-		//DBA_SVR->SendPOSTInfoAdd(ar);
-//	}
 #endif // _CHEAT
 }
 void XGameUser::Cheat_AddPostInfoGuildCoin()
@@ -6323,21 +6176,6 @@ void XGameUser::Cheat_AddPostInfoGuildCoin()
 	post.AddPostGuildCoin( 50 );
 	// 우편을 보냄
 	DoSendPost( &post );
-// 	if( DBA_SVR ) {
-// 		XArchive ar;
-// 		ar << m_spAcc->GetstrName(); //Sender
-// 		ar << m_spAcc->GetstrName(); //Recv			
-// 		ar << _T( "This is title." );		 //Title
-// 		ar << _T( "This is message." ); //Message
-// 		int count = 1;// ::rand() % 4; //첨부 아이템 개수
-// 		ar << count;
-// 		XPostItem postItem( XGAME::xPOSTRES_GUILD_COIN, 100 );
-// 		postItem.Serialize( ar );
-// 		ID idKey = DBA_SVR->SendPOSTInfoAdd( GetidAcc(), m_spAcc->GenerateSN(), 
-// 											(ID)( XGAME::xtPostType::xPOSTTYPE_NORMAL ), 
-// 											ar, xCL2GS_LOBBY_POST_ADD );
-// 		DBA_SVR->AddResponse( idKey, this, &XGameUser::cbDoAddPostInfo );
-// 	}
 #endif // _CHEAT
 }
 /**
@@ -7136,10 +6974,13 @@ int XGameUser::RecvPaymentAssetByGem( XPacket& p )
 {
 	XGAME::xtError errCode = xE_SUCCESS;
 	char c0;
+	XParamObj2 param;
 	p >> c0;		const XGAME::xtPaymentRes typeAsset = (xtPaymentRes)c0;
 	p >> c0;		const bool bByItem = (c0 != 0);
 	p >> c0 >> c0;
+	p >> param;
 
+	// 회사코드
 	switch( typeAsset ) {
 	case xPR_AP:
 	case xPR_GOLD:
@@ -7162,6 +7003,26 @@ int XGameUser::RecvPaymentAssetByGem( XPacket& p )
 			m_spAcc->AddCashtem( -numGem );
 			// 스팟 동기화 전송
 			SendSpotSync( pSpotDaily );
+		}
+	} break;
+	// 회사코드.
+	case xPR_TRY_PRIVATE_RAID: {
+		// 횟수 모두 채우는 젬가격 얻음
+		const int numGem = 10;
+		XBREAK( numGem == 0 );
+		if( m_spAcc->IsNotEnoughCash( numGem ) ) {
+			errCode = xE_NOT_ENOUGH_CASH;
+		} else {
+			// 스팟 찾음
+			const ID idSpot = param.GetDword( "id_spot" );
+			auto pSpot = SafeCast<XSpotPrivateRaid*>( GetpWorld()->GetpSpot( idSpot ) );
+			XVERIFY_BREAK( pSpot == nullptr );
+			// 스팟에 업데이트
+			pSpot->ResetTry();
+			// 젬 소모
+			m_spAcc->AddCashtem( -numGem );
+			// 스팟 동기화 전송
+			SendSpotSync( pSpot );
 		}
 	} break;
 	default:
@@ -7493,7 +7354,7 @@ int XGameUser::RecvSummonHeroByPiece( XPacket& p )
 	XVERIFY_BREAK( pPropHero == nullptr );
 	auto pItemPiece = m_spAcc->GetSoulStoneByHero( pPropHero->strIdentifier );
 	XVERIFY_BREAK( pItemPiece == nullptr );
-	XHero *pHero = nullptr;
+	XSPHero pHero = nullptr;
 	auto bOk = m_spAcc->DoSummonHeroByPiece( idPropHero, &pHero );
 	XVERIFY_BREAK( bOk != XGAME::xE_OK );
 	{
@@ -7525,7 +7386,7 @@ int XGameUser::RecvEndSeq( XPacket& p )
 	m_spAcc->AddCompleteSeq( idsSeq );
 	// 튜토기사 편입컷씬이 끝나면 튜토리얼 기사를 제공한다.
 	_tstring idsHero = _T("donkeyxote");
-// 	XHero *pHero = nullptr;
+// 	XSPHero pHero = nullptr;
 	if( idsSeq == "visit.tavern" ) {
 		if( !m_spAcc->IsHaveHero( idsHero ) ) {
 			auto pHero = m_spAcc->CreateAddHero( idsHero );
@@ -8724,9 +8585,50 @@ x전투시작
 */
 int XGameUser::RecvBattleStart( XPacket& p )
 {
-	// 그냥 바로 답장줌.
+	ID idSpot;
+	p >> idSpot;
+	auto pSpot = GetpWorld()->GetpSpot( idSpot );
+	XVERIFY_BREAK( pSpot == nullptr );
+	ID snSession = m_spAcc->SetBattleSession( 0,      // auto generate
+																						nullptr,	// spLegion
+																						0,				// idAcc
+																						idSpot );
+
+	// 돌려보냄
 	XPacket ar( (ID)xCL2GS_INGAME_BATTLE_START );
+	ar << snSession;
+	ar << idSpot;
 	Send( ar );
+	return 1;
+}
+
+/**
+ @brief 클라로부터 스팟의 전투정보를 요청받음.
+ 클라이언트의 SendReqUpdateSpotForBattle()에 대한 서버측의 Receive함수
+ @param p 패킷이 들어있는 아카이브
+ @return 오류없이 완료되었다면 1을 리턴한다.
+ @see SendReqUpdateSpotForBattle()
+*/
+int XGameUser::RecvUpdateSpotForBattle( XPacket& p )
+{
+	ID idSpot;
+	XArchive arAdd;		// 추가정보
+	p >> idSpot;
+	p >> arAdd;
+	auto pSpot = GetpWorld()->GetpSpot( idSpot );
+	XVERIFY_BREAK( pSpot == nullptr );
+	const xtSpot type = pSpot->GettypeSpot();
+	// 전투에 필요한 최소한의 정보만 팩킹해서 보낸다.
+	XArchive arLegion;
+	XParamObj2 param;
+	pSpot->SerializeForBattle( &arLegion, param );
+
+	// 클라로 전송
+	XPacket ar( p.GetidPacket() );
+	ar << idSpot;
+	ar << arLegion;
+	ar << arAdd;
+	Send(ar);
 	return 1;
 }
 
@@ -8743,7 +8645,7 @@ void XGameUser::SendAddBattleLog( bool bAttack, XGAME::xBattleLog& log )
 /**
  @brief 생성한 영웅을 클라에 동기화시킨다.
 */
-void XGameUser::SendCreateHero( XHero *pHero )
+void XGameUser::SendCreateHero( XSPHero pHero )
 {
 	XPacket ar( (ID)xCL2GS_CREATE_HERO );
 	XHero::sSerialize( ar, pHero );
@@ -8991,7 +8893,7 @@ int XGameUser::RecvCampaignReward( XPacket& p )
 				auto pPropHero = PROP_HERO->GetpProp( reward.idReward );
 				if( XASSERT( pPropHero ) ) {
 					auto unit = XGAME::GetRandomUnit( pPropHero->typeAtk, XGAME::xSIZE_SMALL );
-					auto pHero = XHero::sCreateHero( pPropHero, 1, unit );
+					auto pHero = XHero::sCreateHero( pPropHero, 1, unit, m_spAcc );
 					XVERIFY_BREAK( pHero == nullptr );
 					m_spAcc->AddHero( pHero );
 					infoQuest.SetidHero( reward.idReward );
@@ -9210,7 +9112,7 @@ void XGameUser::ProcessAttackedHome( xSec secPass )
 	// 진짜 침공이 없었을때만 시뮬레이션 함.
 	if( m_spAcc->GetnumAttaccked() != 0 )
 		return;
-	if( secPass > XAccount::s_secOfflineForSimul ) {
+	if( secPass > (xSec)XAccount::s_secOfflineForSimul ) {
 		bool bOk = ( xRandom( 3 ) == 0 );	// 침공
 		if( bOk ) {
 			int powerMin = (int)( m_spAcc->GetPowerIncludeEmpty() * 1.2 );
@@ -9339,7 +9241,7 @@ void XGameUser::ProcessAttackedJewel( xSec secOffline )
 {
 	// 	if( 진짜침공이 있었는가)
 	// 		return;
-	if( secOffline < XAccount::s_secOfflineForSimul )
+	if( secOffline < (xSec)XAccount::s_secOfflineForSimul )
 		return;
 	XVector<XSpotJewel*> aryJewels;
 	m_spAcc->GetpWorld()->GetSpotsToAry( &aryJewels, XGAME::xSPOT_JEWEL );
@@ -9676,7 +9578,7 @@ void XGameUser::DoCollectingSpotStar( int clearStar, XSpot* pBaseSpot )
 /**
  @brief 각종값 동기화 통합판.
 */
-void XGameUser::SendSyncAcc( xtParamSync type )
+void XGameUser::SendSyncAcc( xtParamSync type, int param )
 {
 	if( type == xPS_NO_SYNC || type == xPS_NONE )
 		return;
@@ -9701,6 +9603,14 @@ void XGameUser::SendSyncAcc( xtParamSync type )
 			ar << 0;
 		m_spAcc->SerializeTimerByTrader( ar );
 	} break;
+	case xPS_SPOT: {
+		ID idSpot = (ID)param;
+		ar << idSpot;
+		auto pSpot = GetpSpot( idSpot );
+		if( XASSERT( pSpot ) ) {
+			XSpot::sSerialize( ar, pSpot );
+		}
+	} break;
 	default:
 		break;
 	}
@@ -9720,7 +9630,70 @@ int XGameUser::RecvSync( XPacket& p )
 	p >> param;
 
 	// 클라로 전송
-	SendSyncAcc( type );
+	SendSyncAcc( type, param );
 	return 1;
 }
 
+/**
+ @brief 플레이어측의 출전리스트를 받아 스팟에 갱신한다.
+ @param p 패킷이 들어있는 아카이브
+ @return 오류없이 완료되었다면 1을 리턴한다.
+ @see SendReqPrivateRaidEnterList()
+*/
+int XGameUser::RecvPrivateRaidEnterList( XPacket& p )
+{
+	ID idSpot;
+	int size;
+	p >> idSpot;
+	p >> size;
+	auto pSpot = SafeCast<XSpotPrivateRaid*>( GetpWorld()->GetpSpot( idSpot ) );
+	XVERIFY_BREAK( pSpot == nullptr );
+	XVERIFY_BREAK( size > pSpot->GetPropParam().GetInt("max_squad") );
+	XList4<ID> listEnterPlayer;
+	for( int i = 0; i < size; ++i ) {
+		ID snHero;
+		p >> snHero;
+		listEnterPlayer.push_back( snHero );
+// 		auto pHero = m_spAcc->GetpHeroBySN( snHero );
+// 		XVERIFY_BREAK( pHero == nullptr );
+// 		listEnterPlayer.push_back( pHero );
+	}
+	// 이 리스트는 군단에 속한 영웅과 관계없이 UI상에서 늘어놓은 영웅은 모두 온다.
+	// UI에 처럼 배치할때 는 군단이 있을때 군단영웅먼저 넣는다.
+	pSpot->UpdatePlayerEnterList( listEnterPlayer, m_spAcc->GetLevel() );
+	XBREAK( pSpot->IsEmptyLegionPlayer() );
+	// 클라로 전송(echo)
+	XPacket ar( p.GetidPacket() );
+	ar << idSpot;
+	//XLegion::sSerialize( pSpot->GetspLegionPlayer(), &ar );
+	//ar << pSpot->GetlegionDatPlayer();
+	pSpot->SerializeForBattle( &ar, XParamObj2() );
+	Send(ar);
+
+// 	XGAME::xBattleStartInfo info( false, pSpot );
+// 	info.m_idEnemy = 0;
+// 	info.m_strName = _T("legion empire");
+// 	SendBattleInfo( pSpot, &info );
+
+	return 1;
+}
+
+
+/**
+ 클라이언트의 SendReqEnterReadyScene()에 대한 서버측의 Receive함수
+ @param p 패킷이 들어있는 아카이브
+ @return 오류없이 완료되었다면 1을 리턴한다.
+ @see SendReqEnterReadyScene()
+*/
+int XGameUser::RecvEnterReadyScene( XPacket& p )
+{
+	ID idSpot;
+	p >> idSpot;
+	auto pSpot = SafeCast<XSpotPrivateRaid*>( GetpWorld()->GetpSpot( idSpot ) );
+	XVERIFY_BREAK( pSpot == nullptr );
+	// 클라로 전송
+	XPacket ar( p.GetidPacket() );
+	ar << idSpot;
+	Send(ar);
+	return 1;
+}

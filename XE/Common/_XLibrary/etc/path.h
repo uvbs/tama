@@ -27,7 +27,11 @@ namespace XE
 	LPCTSTR GetExecFileTitle();
 //#ifdef _CLIENT
 	LPCTSTR	MakePathLang( LPCTSTR szLocalPath, LPCTSTR szFile );
-//#endif
+	_tstring MakePathLang2( LPCTSTR szLocalPath, LPCTSTR szFile );
+	inline _tstring MakePathLang2( LPCTSTR szLocalPath, const _tstring& strFile ) {
+		return MakePathLang2( szLocalPath, strFile.c_str() );
+	}
+	//#endif
 	LPCTSTR	MakePath( LPCTSTR szLocalPath, LPCTSTR szFile );
 	inline LPCTSTR	MakePath( LPCTSTR szLocalPath, const _tstring& strFile ) {
 		return MakePath( szLocalPath, strFile.c_str() );

@@ -121,7 +121,7 @@ public:
 
 	int RecvItemSellList(XPacket& p);				//아이템 상점 판매 목록
 	int RecvBuyItem(XPacket& p);					//아이템 구매
-	int	RecvSellItem(XPacket& p); 					///< 아이템 상점에 판매
+	int	RecvSellItem( XPacket& p ); 					///< 아이템 상점에 판매
 	int RecvItemSpent(XPacket& p);					///< 아이템 사용
 	int RecvInventoryExpand(XPacket& p);			///< 인벤토리 확장
 
@@ -213,7 +213,7 @@ public:
 	int DoSpotAttackCampaign( XSpot *pBaseSpot, int idxStage, int idxFloor );
 	int DestroySpotByQuest( XQuestObj *pQuestObj );
 	bool IsVerificationBattle( /*전투데이타*/ );
-	int DispatchQuestEventByBattle( XSpot *pBaseSpot, bool bWin, bool bClearSpot, LegionPtr& spLegion );
+	int DispatchQuestEventByBattle( XSpot *pBaseSpot, bool bWin, bool bClearSpot, XSPLegion& spLegion );
 	int DoRewardProcess( XSpot *pSpot, XGAME::xBattleResult *pOutResult );
 	int DoRewardProcessForCastle( XSpotCastle *pSpot, XGAME::xBattleResult *pOut, XGAME::xBattleFinish& pBattle );
 	int DoRewardProcessForJewel( XSpotJewel *pSpot, XGAME::xBattleResult *pOut );
@@ -300,9 +300,10 @@ public:
 	void DelegateFinishBuff( XSPAcc spAcc, const XGAME::xBuff& buff ) override;
 	void SendOccurBuff( XGAME::xBuff *pBuff );
 	int RecvBattleStart( XPacket& p );
+	int RecvUpdateSpotForBattle( XPacket& p );
 	void SendAddBattleLog( bool bAttack, XGAME::xBattleLog& log );
 	int RecvWithdrawMandrake( XPacket& p );
-	void SendCreateHero( XHero *pHero );
+	void SendCreateHero( XSPHero pHero );
 	int RecvResearchCompleteNow( XPacket& p );
 	void SendBaseInfo( void );
 //	XPropItem::xPROP* DoDropEquip();
@@ -316,9 +317,9 @@ public:
 	
 	void AddLog(int logtype, _tstring strLog );
 // 	int RecvTrainHero( XPacket& p );
-// 	int RecvTrainHeroLevel( XHero *pHero, int& time );
-// 	int RecvTrainHeroSquad( XHero *pHero, int& time );
-// 	int RecvTrainHeroSkill( XHero *pHero, XGAME::xtTrain type );
+// 	int RecvTrainHeroLevel( XSPHero pHero, int& time );
+// 	int RecvTrainHeroSquad( XSPHero pHero, int& time );
+// 	int RecvTrainHeroSkill( XSPHero pHero, XGAME::xtTrain type );
 	int RecvCheckTrainComplete( XPacket& p );
 	int SendTrainingComplete( ID snSlot, xErrorCode result, XGAME::xtQuickComplete typeComplete = XGAME::xQCT_NONE );
 //	int RecvTrainCompleteTouch( XPacket& p );
@@ -358,6 +359,8 @@ public:
 	void DoSendPost( const XPostInfo* pPostInfo );
 	int RecvSync( XPacket& p );
 	int RecvPaymentAssetByGem( XPacket& p );
+	int RecvPrivateRaidEnterList( XPacket& p );
+	int RecvEnterReadyScene( XPacket& p );
 private:
 	XCrypto* GetpCryptObj();
 	int ProcSpotEach( XSpot *pBaseSpot, XGAME::xBattleResult *pOut, XGAME::xBattleFinish& battle );
@@ -394,7 +397,10 @@ private:
 	void SendResultOpenCloud( ID idCloud, XGAME::xtError err, XGAME::xtTermsPayment termsPay );
 	XGAME::xtError IsAblePayment( int goldCostOpen, XGAME::xtError err, XGAME::xtTermsPayment termsPay, int* pOutGold, int* pOutCash );
 	XGAME::xtError GetPaymentCost( int goldCost, XGAME::xtError err, XGAME::xtTermsPayment termsPay, int* pOutGold, int* pOutCash );
-	void SendSyncAcc( XGAME::xtParamSync type );
+	void SendSyncAcc( XGAME::xtParamSync type, int param );
+	XSpot* GetpSpot( ID idSpot );
+	int ProcBuyItemAtArmory( ID idProp, XGAME::xtCoin costType );
+	int ProcBuyItemAtCashShop( ID idProp );
 };
 
 

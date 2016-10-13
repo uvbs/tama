@@ -38,7 +38,12 @@
 
 #ifdef WIN32
 	#ifdef _XLIBPNG
-	  #pragma comment( lib, "../../../../../XE/Third_Party_lib/libpng_win/lib/libpng.lib" )
+//	  #pragma comment( lib, "../../../../../XE/Third_Party_lib/libpng_win/lib/libpng.lib" )
+#ifdef _DEBUG
+		#pragma comment( lib, "../../../../../XE/Third_Party_lib/libpng1256/libpngd.lib" )
+#else
+		#pragma comment( lib, "../../../../../XE/Third_Party_lib/libpng1256/libpng.lib" )
+#endif // _DEBUG
 	#endif
 	#ifdef _XOOLONG
 		#ifdef _DEBUG

@@ -30,6 +30,10 @@ namespace xHelp {
 	class XPropCamera;
 	class XOrderCamera;
 }
+namespace XGAME {
+struct xSceneBattleParam;
+}
+
 // 월드씬
 class XSceneWorld : public XSceneBase
 									, public XDelegateWndEdit
@@ -85,6 +89,7 @@ private:
 	CTimer m_timerBird;
 	CTimer m_timerSec;
 	XSPAcc m_spAcc;
+	XVector<XSurface*> m_aryWorldSurface;
 //////////////////////////////////////
 // 툴
 #ifdef _xIN_TOOL
@@ -140,7 +145,7 @@ private:
 
 protected:
 public:
-	XSceneWorld( XGame *pGame, SceneParamPtr& spBaseParam );
+	XSceneWorld( XGame *pGame, XSPSceneParam& spBaseParam );
 	~XSceneWorld() { Destroy(); }
 	
 	GET_ACCESSOR( XLayoutObj&, Layout );
@@ -227,17 +232,17 @@ public:
 	
 	// 스팟 업데이트
 private:
-	void UpdateCastleSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateJewelSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateSulfurSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateMandrakeSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateNpcSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateDailySpot( XSpot *pBaseSpot, XWnd *pRoot );
-//	void UpdateSpecialSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateCampaignSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateVisitSpot( XSpot *pBaseSpot, XWnd *pRoot );
-	void UpdateCashSpot( XSpot *pBaseSpot, XWnd *pRoot );
-  void UpdateCommonSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateCastleSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateJewelSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateSulfurSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateMandrakeSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateNpcSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateDailySpot( XSpot *pBaseSpot, XWnd *pRoot );
+// //	void UpdateSpecialSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateCampaignSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateVisitSpot( XSpot *pBaseSpot, XWnd *pRoot );
+// 	void UpdateCashSpot( XSpot *pBaseSpot, XWnd *pRoot );
+//   void UpdateCommonSpot( XSpot *pBaseSpot, XWnd *pRoot );
 	void UpdateSpots(void);
   void UpdateResIcon( XSpot *pSpot, XWnd *pRoot );
 public:
@@ -279,12 +284,11 @@ public:
 
 	// Recv
 	void RecvClearStorageWithWndSpot(XSpot *pBaseSpot);
-	void OnRecvReconSpot(ID idSpot, const LegionPtr& spLegion );
+	void OnRecvReconSpot(ID idSpot, const XSPLegion& spLegion );
 //	int OnRecvBattleResult(XGAME::xtSpot typeSpot, int bWin);
 	void OnRecvBattleResult( XGAME::xBattleResult& result );
-	//	void OnRecvBattleInfo(ID idSpot, ID idBattle, int level, LPCTSTR szName, LegionPtr& spLegion, ID snSession/*, XAccount *pEnemy = nullptr*/, int defense = 0);
-	void OnRecvBattleInfo();
-//	void DoEnterBattleScene( ID idSpot, ID idBattle, int level, LPCTSTR szName, LegionPtr& spLegion, ID snSession/*, XAccount *pEnemy*/, int defense, std::shared_ptr<XGAME::xSPM_BATTLE> spOut );
+	void OnRecvBattleInfo( XSPSceneParam spParam );
+	//	void DoEnterBattleScene( ID idSpot, ID idBattle, int level, LPCTSTR szName, LegionPtr& spLegion, ID snSession/*, XAccount *pEnemy*/, int defense, std::shared_ptr<XGAME::xSPM_BATTLE> spOut );
 	//	void OnRecvAttackedSpotResult( BOOL bWin, XSpotResource *pSpot, int level );
 	void OnRecvAttackedCastle(ID idSpot, ID idAccount, int level, LPCTSTR szName);
 //	void OnRecvSpotCollect(XSpot *pBaseSpot, XGAME::xtResource typeRes, float _num);
@@ -349,7 +353,7 @@ public:
 	void RecvCompleteQuest( XQuestObj *pObj );
 	void OnUpdateQuest( XQuestObj *pObj );
 	void OnRecvQuestReward( XQuestObj *pObj );
-	void OnClickStageInCampaign( ID snSession, ID idSpot, int idxStage, int level, LegionPtr& spLegion );
+	void OnClickStageInCampaign( ID snSession, ID idSpot, int idxStage, int level, XSPLegion& spLegion );
 	int OnCompleteQuest( XWnd* pWnd, DWORD p1, DWORD p2 );
 
 	// ??
@@ -442,7 +446,7 @@ public:
 	bool IsQuestDirectionToArea( XPropCloud::xCloud* pPropArea );
 	XE::VEC2 GetvwCamera();
 	void SetvwCamera( const XE::VEC2& vwCamera );
-	XHero* GetpHero( ID idHero ) override;
+	XSPHero GetpHero( ID idHero ) override;
 //	void UpdateOptionPopup();
 //	void UpdateSpotProfilePicture( XSpotCastle *pSpot, const std::string& strFbUserId, const XE::xImage& imgInfo );
 	/// 프로필사진 레이어를 얻는다.
@@ -483,7 +487,6 @@ private:
 //	int OnClickSelectLanguage( XWnd* pWnd, DWORD p1, DWORD p2 );
 //	int OnCloseOption( XWnd* pWnd, DWORD p1, DWORD p2 );
 	void DelegateStopScroll( const XE::VEC2& vCurr ) override;
-
 	//
 #ifdef _xIN_TOOL
 	void DelegateChangeToolMode( xtToolMode modeOld, xtToolMode modeCurr ) override;
@@ -491,8 +494,9 @@ private:
 	friend class XToolCloud;
 #endif // _xIN_TOOL
 	void AddMenuKill( XWndPopupSpotMenu* pPopup, ID idSpot, int enemyPower, bool bNPC );
-//	void OnRecvSyncAcc( XGAME::xtParamSync type );
-};
+private:
+	BOOL RestoreDevice() override;
+ };
 
 extern XSceneWorld *SCENE_WORLD;
 

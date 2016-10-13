@@ -30,6 +30,7 @@ class XProgressBar
 	BOOL m_bHoriz;		// 가로형
 	XE::VEC2 m_vPos;
 	XE::VEC2 m_vSize;
+	XE::VEC2 m_vScale;
 	XSurface *m_pSurface;
 	XSurface *m_psfcBg;
 	XE::VEC2 m_vAdjBar;	// 앞에 바의 찍히는 위치 보정.
@@ -38,6 +39,7 @@ class XProgressBar
 		m_bHoriz = TRUE;
 		m_pSurface = NULL;
 		m_psfcBg = NULL;
+		m_vScale.Set( 1.f, 1.f );
 	}
 	void Destroy();
 public:
@@ -50,6 +52,7 @@ public:
 	GET_ACCESSOR( XSurface*, psfcBg );
 	GET_SET_ACCESSOR( const XE::VEC2&, vAdjBar );
 	GET_SET_ACCESSOR( bool, bReverse );
+	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vScale );
 	void Draw( float lerp );
 	void Draw( const XE::VEC2& vPos, float lerp );
 	void Draw( const XE::VEC2& vPos, const XE::VEC2& vSize, float lerp );

@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XSpotPrivateRaid.h"
 #include "XWndSpots.h"
 //#include "XWindow.h"
 #include "XSpots.h"
@@ -13,6 +14,7 @@
 #include "_Wnd2/XWndButton.h"
 #include "XTemp.h"
 #include "XGlobalConst.h"
+#include "sprite/SprObj.h"
 #ifdef _CHEAT
 #include "client/XAppMain.h"
 #endif // _CHEAT
@@ -33,6 +35,64 @@ using namespace xSpot;
 #ifdef min
 #undef min
 #endif
+
+
+//////////////////////////////////////////////////////////////////////////
+XWndSpot* XWndSpot::sCreate( XSpot* pBaseSpot )
+{
+	const auto typeSpot = pBaseSpot->GettypeSpot();
+	switch( typeSpot ) {
+	case XGAME::xSPOT_CASTLE:	{
+		auto pSpot = SafeCast<XSpotCastle*>( pBaseSpot );
+		return new XWndCastleSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_JEWEL: {
+		auto pSpot = SafeCast<XSpotJewel*>( pBaseSpot );
+		return new XWndJewelSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_SULFUR: {		
+		auto pSpot = SafeCast<XSpotSulfur*>( pBaseSpot );
+		return new XWndSulfurSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_MANDRAKE: {		
+		auto pSpot = SafeCast<XSpotMandrake*>( pBaseSpot );
+		return new XWndMandrakeSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_NPC: {			
+		auto pSpot = SafeCast<XSpotNpc*>( pBaseSpot );
+		return new XWndNpcSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_DAILY: {		
+		auto pSpot = SafeCast<XSpotDaily*>( pBaseSpot );
+		return new XWndDailySpot( pSpot );
+	} break;
+	case XGAME::xSPOT_CAMPAIGN:	{ 
+		auto pSpot = SafeCast<XSpotCampaign*>( pBaseSpot );
+		return new XWndCampaignSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_VISIT: {		
+		auto pSpot = SafeCast<XSpotVisit*>( pBaseSpot );
+		return new XWndVisitSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_CASH: {			
+		auto pSpot = SafeCast<XSpotCash*>( pBaseSpot );
+		return new XWndCashSpot( pSpot );
+	} break;
+// 	case XGAME::xSPOT_GUILD_RAID:		return new XWndGuildRaid
+	case XGAME::xSPOT_PRIVATE_RAID:	{
+		auto pSpot = SafeCast<XSpotPrivateRaid*>( pBaseSpot );
+		return new XWndPrivateRaidSpot( pSpot );
+	} break;
+	case XGAME::xSPOT_COMMON:	{
+		auto pSpot = SafeCast<XSpotCommon*>( pBaseSpot );
+		return new XWndCommonSpot( pSpot );
+	} break;
+	default:
+		XBREAKF( 1, "unknown spot type:type=%d", pBaseSpot->GettypeSpot() );
+		break;
+	}
+	return nullptr;
+}
 
 //////////////////////////////////////////////////////////////////////////
 /**
@@ -116,9 +176,17 @@ void XWndSpot::sUpdateHelloMsg( XSpot *pSpot, const _tstring& strHello )
 ////////////////////////////////////////////////////////////////
 ID XWndSpot::s_idLastTouch = 0;
 XWndSpot::XWndSpot( XSpot *pBaseSpot, LPCTSTR szSpr, ID idAct, const XE::VEC2& vPos )
-	: XWndSprObj( szSpr, idAct, vPos ) 
+	: XWndSprObj( vPos )
 {
 	Init();
+	_tstring strSpr = szSpr;
+	if( strSpr.empty() ) {
+		strSpr = pBaseSpot->GetpBaseProp()->strSpr;
+	}
+	if( idAct == 0 ) {
+		idAct = pBaseSpot->GetpBaseProp()->idAct;
+	}
+	CreateSprObj( strSpr.c_str(), idAct, true, true, true, xRPT_LOOP );
 	m_pBaseSpot = pBaseSpot;
 	m_idSpot = pBaseSpot->GetidSpot();
 	auto pProp = pBaseSpot->GetpBaseProp();
@@ -224,7 +292,7 @@ XWndTextString* XWndSpot::UpdateName( const char* cIdentifier, bool bShow )
 	auto pText = XWndTextString::sUpdateCtrl( this
 																					, cIdentifier
 																					, XE::VEC2(0)
-																					, FONT_NANUM_BOLD, 18 );
+																					, FONT_MNLS, 18 );
 	if( pText ) {
 		pText->SetStyleStroke();
 		pText->SetbShow( true );
@@ -349,13 +417,14 @@ XWndImage* XWndSpot::UpdateHardMark( const char* cIdentifier, bool bShow )
 		int lvHard = XGAME::GetHardLevel( power, ACCOUNT->GetPowerExcludeEmpty() );
 		auto pImg = XWndImage::sUpdateCtrl( this, XE::VEC2(0), nullptr, true, cIdentifier );
 		if( pImg ) {
+			pImg->SetPriority( -100 );
 			pImg->SetbShow( true );
 			const auto bb = GetBoundBoxByVisibleLocal();
 			const auto vSize = pImg->GetSizeLocal();
 			pImg->SetX( -( vSize.w * 0.5f ) );
-			pImg->SetY( bb.vLT.y - vSize.h );
+			pImg->SetY( bb.vLT.y - (vSize.h * 0.8f) );
 			_tstring strImg = XE::Format( _T( "world_hard%d.png" ), lvHard + 2 );
-			pImg->SetSurfaceRes( XE::MakePath( DIR_UI, strImg ) );
+			pImg->SetSurfaceRes( XE::MakePath( DIR_UI, strImg ), XE::xPF_ARGB1555, true );
 		}
 		return pImg;
 	}
@@ -371,8 +440,13 @@ XWndSprObj* XWndSpot::UpdateExclamByQuest( const char* cIdentifier, bool bShow )
 		return SafeCast2<XWndSprObj*>( pExist );
 	}
 	if( m_pBaseSpot->IsEventSpot() && m_pBaseSpot->IsActive() ) {	
-		auto pWndSpr = XWndSprObj::sUpdateCtrl( this, _T("ui_exclam.spr"), 1, "spr.exclam" );
+		auto pWndSpr = XWndSprObj::sUpdateCtrl( this, 
+																						_T("ui_exclam.spr"), 1,
+																						true,						// bBatch
+																						XE::VEC2(0),
+																						"spr.exclam" );
 		if( pWndSpr ) {
+			pWndSpr->SetPriority( -500 );
 			auto bb = GetBoundBoxByVisibleLocal();
 			pWndSpr->SetY( 5.f );
 		}
@@ -613,6 +687,8 @@ _tstring XWndCastleSpot::GetstrDebugText()
 	// 디버그용 텍스트 출력
 	if( XAPP->GetbDebugMode() ) {
 //		strText += XE::Format(_T(":(%d)\n"), (int)m_pSpot->GetTimerCalc().GetsecPassTime());
+		strText += XE::Format( _T( "idWnd:%d\n" ), getid() );
+		strText += XE::Format( _T( "id:%d-%s\n" ), m_pSpot->GetidSpot(), m_pSpot->GetpProp()->strIdentifier.c_str() );
 		strText += XE::Format( _T( "(Lv%d)(sc:%d)" ), m_pSpot->GetLevel(), m_pSpot->GetScore() );
 		strText += XE::Format( _T( ":(%d sec)\n" ), (int)m_pSpot->GetTimerCalc().GetsecRemainTime() );
 		strText += XE::Format( _T( "%s" ), m_pSpot->GetStrLocalStorage().c_str() );
@@ -668,6 +744,21 @@ bool XWndCastleSpot::IsEnemySpot()
 {
 	return ( ACCOUNT->GetidAccount() != m_pSpot->GetidOwner() );
 }
+
+// void XWndCastleSpot::OnClickSpot( XSPAccConst spAcc )
+// {
+// 	// 각 스팟의 팝업창을 띄운다.
+// 	auto pMenu = SCENE_WORLD->CreateSpotPopup2( GetpBaseSpot()->GetidSpot() );
+// 	if( pMenu ) {
+// 		if( m_pSpot->IsQuestion() ) {
+// 			pMenu->AddMenuRecon();
+// 		} else {
+// 			if( m_pSpot->GetidOwner() == spAcc->GetidAccount() ) {
+// 				// 내 소유면 리젠버튼만 추가
+// 			}
+// 		}
+// 	}
+// }
 
 ////////////////////////////////////////////////////////////////
 XWndJewelSpot::XWndJewelSpot( XSpotJewel* pSpot ) 
@@ -1210,6 +1301,18 @@ _tstring XWndCashSpot::GetstrDebugText()
 	return strText;
 }
 
+////////////////////////////////////////////////////////////////
+XWndPrivateRaidSpot::XWndPrivateRaidSpot( XSpotPrivateRaid* pSpot )
+	: XWndSpot( pSpot, _T(""), 0, pSpot->GetPosWorld() )
+{
+	Init();
+	SetbShowName( true );
+	SetbShowLevel( true );
+	SetbShowExclamByQuest( true );
+// 	SetbShowExclamByDefeat( true );
+// 	SetbShowStarScore( false );
+}
+
 //////////////////////////////////////////////////////////////////////////
 XWndCommonSpot::XWndCommonSpot( XSpotCommon* pSpot )
 	: XWndSpot( pSpot, SPR_COMMON, pSpot->GetPosWorld() )
@@ -1280,4 +1383,6 @@ _tstring XWndCommonSpot::GetstrDebugText()
 #endif
 	return strText;
 }
+
+//////////////////////////////////////////////////////////////////////////
 

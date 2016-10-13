@@ -163,32 +163,32 @@ struct xBattleLog {
 /**
  @brief 전투 시작시 필요한 정보들.
 */
-struct xBattleStart {
-	ID m_idEnemy = 0;			// 상대가 pc의 경우.
-#ifndef _XSINGLE
-	XGAME::xtSpot m_typeSpot = XGAME::xSPOT_NONE;	// 전투가벌어지는 스팟의 타입(에러확인용)
-	ID m_idSpot = 0;					// 전투가 벌어지는 스팟(0인경우도 있음)
-#endif // not _XSINGLE
-	int m_Level = 0;					// 상대의 레벨
-	_tstring m_strName;				// 상대이름
-	LegionPtr m_spLegion[2];	// 0:아군 1:적군
-	xtBattle m_typeBattle = XGAME::xBT_NONE;
-	int m_Defense = 0;				// 방어도(보석광산용)
-	int m_idxStage = -1;				///< 캠페인의 경우 스테이지 인덱스
-	int m_idxFloor = 0;
-	// npc와 전투하는것인가.
-	bool IsVsNpc() const {
-		return m_idEnemy == 0;
-	}
-	bool IsValid() const ;
-	inline bool IsInvalid() const {
-		return !IsValid();
-	}
-	inline void Release() {
-		m_spLegion[0].reset();
-		m_spLegion[1].reset();
-	}
-};
+// struct xBattleStart {
+// 	ID m_idEnemy = 0;			// 상대가 pc의 경우.
+// #ifndef _XSINGLE
+// 	XGAME::xtSpot m_typeSpot = XGAME::xSPOT_NONE;	// 전투가벌어지는 스팟의 타입(에러확인용)
+// 	ID m_idSpot = 0;					// 전투가 벌어지는 스팟(0인경우도 있음)
+// #endif // not _XSINGLE
+// 	int m_Level = 0;					// 상대의 레벨
+// 	_tstring m_strName;				// 상대이름
+// 	LegionPtr m_spLegion[2];	// 0:아군 1:적군
+// 	xtBattle m_typeBattle = XGAME::xBT_NONE;
+// 	int m_Defense = 0;				// 방어도(보석광산용)
+// 	int m_idxStage = -1;				///< 캠페인의 경우 스테이지 인덱스
+// 	int m_idxFloor = 0;
+// 	// npc와 전투하는것인가.
+// 	bool IsVsNpc() const {
+// 		return m_idEnemy == 0;
+// 	}
+// 	bool IsValid() const ;
+// 	inline bool IsInvalid() const {
+// 		return !IsValid();
+// 	}
+// 	inline void Release() {
+// 		m_spLegion[0].reset();
+// 		m_spLegion[1].reset();
+// 	}
+// };
 //////////////////////////////////////////////////////////////////////////
 /**
  @brief 전투후 결과전송을 위해 사용된다.
@@ -201,7 +201,7 @@ struct xBattleResult {
 	int m_totalStar = 0;		// 계정이 가진 총 별개수.
 	XArrayLinearN<XBaseItem*, 256> aryUpdated;
 	XArrayLinearN<ItemBox, 256> aryDrops;
-	XArrayLinearN<XHero*, XGAME::MAX_SQUAD> aryHeroes;
+	XVector<XSPHero> aryHeroes;
 	XVector<ID> m_aryLevelUpHeroes;		// 레벨업한 영웅들의 sn
 	xBattleLog logForAttacker;
 	int ladder = 0;
@@ -287,7 +287,7 @@ struct xBattleStartInfo {
 	ID m_idEnemy = 0;			// 상대가 pc의 경우.
 	int m_Level = 0;					// 상대의 레벨
 	_tstring m_strName;				// 상대이름
-	LegionPtr m_spLegion;			// 스팟에 군단정보가 없을경우 여기에 들어감.
+	XSPLegion m_spLegion;			// 스팟에 군단정보가 없을경우 여기에 들어감.
 	xtBattle m_typeBattle = XGAME::xBT_NORMAL;
 // 	int m_Defense = 0;				// 방어도(보석광산용)
 	int m_idxStage = -1;				///< 캠페인의 경우 스테이지 인덱스
@@ -349,7 +349,7 @@ struct xReward {
 #endif // WIN32
 	static int sLoadResFromXMLToAry( XEXmlNode& nodeRoot, LPCTSTR szNodeName, LPCTSTR szTag, std::vector<xReward> *pOutAry );
 	xReward() : rewardType( xtReward::xRW_NONE ), idReward( 0 ), num( 1 ) {}
-	xReward( XHero* pHero );
+	xReward( XSPHero pHero );
 	inline void SetItem( ID idProp, int _num = 1 ) {
 		rewardType = xtReward::xRW_ITEM;
 		idReward = idProp;

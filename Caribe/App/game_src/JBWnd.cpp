@@ -1,4 +1,6 @@
 ﻿#include "stdafx.h"
+#include "XStruct.h"
+#include "XWndStorageItemElem.h"
 #include "JBWnd.h"
 #include "XSoundMng.h"
 #include "client/XAppMain.h"
@@ -29,6 +31,7 @@
 #include "_Wnd2/XWndButton.h"
 #include "XSystem.h"
 #include "XCampObj.h"
+#include "sprite/SprObj.h"
 
 
 #ifdef WIN32
@@ -212,7 +215,7 @@ int XWndResParticle::Process(float dt)
  @brief pWndList에 pHero의 XWndInvenHeroElem객체를 생성하거나 업데이트하는 표준함수.
  @param pHero 코딩의 편의상 null이 될수도 있어야 함.
 */
-XWndInvenHeroElem* XWndInvenHeroElem::sUpdateCtrl( XWndList *pWndList, XHero *pHero )
+XWndInvenHeroElem* XWndInvenHeroElem::sUpdateCtrl( XWndList *pWndList, XSPHero pHero )
 {
 	if( pHero == nullptr )
 		return nullptr;
@@ -229,7 +232,7 @@ XWndInvenHeroElem* XWndInvenHeroElem::sUpdateCtrl( XWndList *pWndList, XHero *pH
 /**
  @brief 
 */
-XWndInvenHeroElem::XWndInvenHeroElem( XHero* pHero, XLegion *pLegion )
+XWndInvenHeroElem::XWndInvenHeroElem( XSPHero pHero, XLegion *pLegion )
 	: m_pProp( pHero->GetpProp() )
 {
 	Init();
@@ -239,15 +242,17 @@ XWndInvenHeroElem::XWndInvenHeroElem( XHero* pHero, XLegion *pLegion )
 		return;
 	m_pLegion = pLegion;
 	auto numStar = m_pHero->GetGrade();
-	m_psfcStar = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bicstar.png" ) ) );
-	m_psfcStarEmpty = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
+	m_psfcStar = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bicstar.png" ) ) );
+	m_psfcStarEmpty = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
 	// 	for (int i = 0; i < numStar; ++i) {
-	// 		m_pStar[i] = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
-	// 		m_aryStarEmpty[ i ] = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
+	// 		m_pStar[i] = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
+	// 		m_aryStarEmpty[ i ] = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
 	// 	}
 	m_psfcBgGradation = IMAGE_MNG->Load( PATH_UI( "bg_hero.png" ), XE::xPF_ARGB8888 );
 	m_pFace = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, m_pHero->GetpProp()->strFace.c_str() ), XE::xPF_ARGB8888 );
-	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ), 0, 0 );
+// 	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ), 0, 0 );
+	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ), XE::xPF_ARGB4444 );
+
 	m_pNameCard = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "corps_heroname_bg.png" ) ) );
 	SetSizeLocal( m_pBG->GetWidth() + 4, m_pBG->GetHeight() + m_pNameCard->GetHeight() / 2 );
 	//m_pNameCard->SetScale(0.7f);
@@ -266,9 +271,9 @@ XWndInvenHeroElem::XWndInvenHeroElem( XHero* pHero, XLegion *pLegion )
 	m_pName->SetAlign( XE::xALIGN_HCENTER );
 	m_pName->SetStyle( xFONT::xSTYLE_STROKE );
 	m_pName->SetLineLength( 48.f );
-	m_pSelect = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_unit_bg_s_select.png" ) ) );
-	m_pParty = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "legion_hero_battle.png" ) ) );
-	m_pSoulStone = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "gem_small.png" ) ) );
+	m_pSelect = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s_select.png" ) ) );
+	m_pParty = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "legion_hero_battle.png" ) ) );
+	m_pSoulStone = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "gem_small.png" ) ) );
 	m_strName = XE::Format( _T( "%s" ), m_pHero->GetpProp()->GetstrName().c_str() );
 }
 
@@ -281,15 +286,15 @@ XWndInvenHeroElem::XWndInvenHeroElem( XPropHero::xPROP *pProp )
 	m_bSoul = true;
 	//	auto numStar = pProp->GetGrade();
 	auto numStar = XGAME::xGD_COMMON;
-	m_psfcStar = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bicstar.png" ) ) );
-	m_psfcStarEmpty = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
+	m_psfcStar = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bicstar.png" ) ) );
+	m_psfcStarEmpty = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
 	// 	for (int i = 0; i < numStar; ++i) {
-	// 		m_pStar[i] = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
-	// 		m_aryStarEmpty[ i ] = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
+	// 		m_pStar[i] = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("common_etc_bicstar.png")));
+	// 		m_aryStarEmpty[ i ] = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_etc_bigstar_empty.png" ) ) );
 	// 	}
 	m_psfcBgGradation = IMAGE_MNG->Load( PATH_UI( "bg_hero.png" ), XE::xPF_ARGB8888 );
 	m_pFace = IMAGE_MNG->Load( XE::MakePath( DIR_IMG, pProp->strFace.c_str() ), XE::xPF_ARGB8888 );
-	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ), 0, 0 );
+	m_pBG = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s.png" ) ) );
 	m_pNameCard = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "corps_heroname_bg.png" ) ) );
 	SetSizeLocal( m_pBG->GetWidth() + 4, m_pBG->GetHeight() + m_pNameCard->GetHeight() / 2 );
 	auto pImg = new XWndImage( PATH_UI( "bg_level.png" ), 0, 43 );
@@ -303,10 +308,27 @@ XWndInvenHeroElem::XWndInvenHeroElem( XPropHero::xPROP *pProp )
 	m_pName->SetAlign( XE::xALIGN_HCENTER );
 	m_pName->SetStyle( xFONT::xSTYLE_STROKE );
 	m_pName->SetLineLength( 48.f );
-	m_pSelect = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "common_unit_bg_s_select.png" ) ) );
-	m_pParty = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "legion_hero_battle.png" ) ) );
-	m_pSoulStone = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "hero_piece.png" ) ) );
+	m_pSelect = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "common_unit_bg_s_select.png" ) ) );
+	m_pParty = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "legion_hero_battle.png" ) ) );
+	m_pSoulStone = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "hero_piece.png" ) ) );
 	m_strName = XE::Format( _T( "%s" ), pProp->GetstrName().c_str() );
+}
+
+void XWndInvenHeroElem::Destory() 
+{
+	SAFE_RELEASE2( IMAGE_MNG, m_pBG );
+	SAFE_RELEASE2( IMAGE_MNG, m_pFace );
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcBgGradation );
+	SAFE_RELEASE2( IMAGE_MNG, m_pNameCard );
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcStar );
+	SAFE_RELEASE2( IMAGE_MNG, m_psfcStarEmpty );
+	SAFE_RELEASE2( IMAGE_MNG, m_pSelect );
+	SAFE_RELEASE2( IMAGE_MNG, m_pUnitFace );
+	SAFE_RELEASE2( IMAGE_MNG, m_pUnitBg );
+	SAFE_RELEASE2( IMAGE_MNG, m_pParty );
+	SAFE_RELEASE2( IMAGE_MNG, m_pSoulStone );
+	SAFE_DELETE( m_pName );
+	//SAFE_DELETE(m_pSoulCount);
 }
 
 void XWndInvenHeroElem::SetUnitFace( void )
@@ -320,7 +342,7 @@ void XWndInvenHeroElem::SetUnitFace( void )
 	_tstring strFace = XE::Format( _T( "%s02.png" ), strTitle.c_str() );
 	LPCTSTR resImg = XE::MakePath( DIR_IMG, strFace.c_str() );
 	m_pUnitFace = IMAGE_MNG->Load( resImg, XE::xPF_ARGB8888 );
-	m_pUnitBg = IMAGE_MNG->Load( TRUE, XE::MakePath( DIR_UI, _T( "corps_legionnaire_bg.png" ) ) );
+	m_pUnitBg = IMAGE_MNG->Load( XE::MakePath( DIR_UI, _T( "corps_legionnaire_bg.png" ) ) );
 	if( m_pName )
 		m_pName->SetLineLength( 50.f );
 	XWnd *pLevel = Find( "img.bg.level" );
@@ -329,7 +351,7 @@ void XWndInvenHeroElem::SetUnitFace( void )
 	SetSizeLocal( 87, 50 );
 }
 
-XPropHero::xPROP* XWndInvenHeroElem::GetpProp()
+const XPropHero::xPROP* XWndInvenHeroElem::GetpProp()
 {
 	if( m_pProp )
 		return m_pProp;
@@ -390,19 +412,8 @@ void XWndInvenHeroElem::Draw()
 				m_psfcStar->SetScale( 0.6f );
 				m_psfcStar->Draw( v );
 			}
-			else {
-				// 				m_psfcStarEmpty->SetScale( 0.6f );
-				// 				m_psfcStarEmpty->Draw( v );
-			}
 		}
 	}
-	// 	for (int i = 0; i < XGAME::xGD_MAX; ++i) {
-	// 		if( i <= numStar)
-	// 		if (m_pStar[i]) {
-	// 			m_pStar[i]->SetScale(0.6f);
-	// 			m_pStar[i]->Draw(vPos.x - 1 + i * 10, vPos.y - 1);
-	// 		}
-	// 	}
 	if( m_pNameCard ) {
 		m_pNameCard->SetScale( 1.2f, 1.f );
 		if( m_pUnitFace )
@@ -459,6 +470,13 @@ void XWndInvenHeroElem::DrawDrag( const XE::VEC2& vMouse )
 	}
 }
 
+void XWndInvenLegionElem::Destroy()
+{
+	SAFE_RELEASE2( IMAGE_MNG, m_pBG );
+	SAFE_RELEASE2( IMAGE_MNG, m_pFace );
+	SAFE_RELEASE2( IMAGE_MNG, m_pSelect );
+}
+
 //////////////////////////////////////////////////////////////////////////
 /**
 @brief
@@ -468,9 +486,9 @@ XWndInvenLegionElem::XWndInvenLegionElem(XPropUnit::xPROP* pPropUnit)
 {
 	Init();
 	m_pProp = pPropUnit;
-	m_pBG = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_unit_bg_bb.png")));
+	m_pBG = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("common_unit_bg_bb.png")));
 	SetSizeLocal(m_pBG->GetWidth(), m_pBG->GetHeight());
-	m_pSelect = IMAGE_MNG->Load(TRUE, XE::MakePath(DIR_UI, _T("common_unit_bg_bb_sel.png")));
+	m_pSelect = IMAGE_MNG->Load(  XE::MakePath(DIR_UI, _T("common_unit_bg_bb_sel.png")));
 	m_pFace = IMAGE_MNG->Load(XE::MakePath(DIR_IMG, m_pProp->strFace.c_str()), XE::xPF_ARGB8888);
 }
 
@@ -520,16 +538,13 @@ XWndLevelupElem::XWndLevelupElem(XBaseItem* pItem)
 	Add(m_pText);
 }
 
+int XWndCallbackSpr::Process( float dt )
+{
+	if( m_pOwner && GetpSprObj()->IsFinish() )
+		(m_pOwner->*m_pFunc)(this, m_dwParam1, m_dwParam2);
 
-//template<typename T>
-//XWndCallbackSpr::XWndCallbackSpr(XWnd *pOwner, LPCTSTR szFilename, ID action, const XE::VEC2& vPos, int(T::*pFunc)(XWnd* pWnd, DWORD p1, DWORD p2))
-//	: XWndSprObj(szFilename, action, vPos, xRPT_1PLAY)
-//{
-//	Init();
-//	m_pOwner = pOwner;
-//	//m_pFunc = static_cast<(XWnd::*)(XWnd* pWnd, DWORD p1, DWORD p2)> (pFunc);
-//}
-
+	return XWndSprObj::Process( dt );
+}
 
 //////////////////////////////////////////////////////////////////////////
 XWndStatArrow::XWndStatArrow(float fAfter, float fBefore, float x, float y)
@@ -616,7 +631,7 @@ XWndGuildMember::XWndGuildMember(XGuild::SGuildMember *pMember)
 	XBREAK(m_pMember == nullptr);
 	auto pImg = new XWndImage( TRUE, XE::MakePath( DIR_UI, _T( "guild_member_info.png" ) ), 0.f, 0.f );
 	Add( pImg );
-	auto pText = new XWndTextString(XE::VEC2(0, 0), m_pMember->m_strName.c_str(), FONT_NANUM_BOLD, 30.f);
+	auto pText = new XWndTextString(XE::VEC2(0, 0), m_pMember->m_strName.c_str(), FONT_MNLS, 30.f);
 //	pText->SetLineLength(150.f);
 	pText->SetAlign(XE::xALIGN_CENTER);
 	pImg->Add(pText);
@@ -645,7 +660,7 @@ XWndGuildJoinReqMember::XWndGuildJoinReqMember(XGuild::SGuildMember *pUser)
 	m_pUser = pUser;
 	XBREAK(m_pUser == nullptr);
 
-	XWndTextString *pText = new XWndTextString(XE::VEC2(0, 8), m_pUser->m_strName.c_str(), FONT_NANUM_BOLD, 30.f);
+	XWndTextString *pText = new XWndTextString(XE::VEC2(0, 8), m_pUser->m_strName.c_str(), FONT_MNLS, 30.f);
 	pText->SetLineLength(150.f);
 	pText->SetAlign(XE::xALIGN_HCENTER);
 	Add(pText);
@@ -1355,7 +1370,7 @@ void XWndPopupSpotMenu::UpdateForSulfur()
 																												, XTEXT(2334)
 																												, enc.m_strDefender.c_str()
 																												, XE::NumberToMoneyString(enc.m_numSulfur) );
-							auto pText = new XWndTextString( v, strMsg, FONT_NANUM, 18.f );
+							auto pText = new XWndTextString( v, strMsg, FONT_MNLS, 18.f );
 							pWndScrl->Add( pText );
 							auto sizeText = pText->GetSizeNoTransLayout();
 							v.y += sizeText.h + 2.f;

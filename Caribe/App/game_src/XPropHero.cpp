@@ -265,11 +265,11 @@ XPropHero::xPROP* XPropHero::GetPropRandomByAtkType( XGAME::xtAttack typeAtk
  @brief 획득방법에 따른 영웅리스트를 배열에 받는다.
 */
 int XPropHero::GetpPropByGetToAry( XVector<xPROP*> *pOutAry
-								, XGAME::xtGet typeGet
+								, XGAME::xtGet bitGet
 								, XGAME::xtAttack typeAtk/* = XGAME::xAT_NONE*/ )
 {
 	for( auto pProp : m_aryProp ) {
-		if( pProp->getType == typeGet ) {
+		if( pProp->getType & bitGet ) {
 			if( typeAtk == XGAME::xAT_NONE || typeAtk == pProp->typeAtk )
 				pOutAry->push_back( pProp );
 		}
@@ -305,18 +305,19 @@ int XPropHero::GetpPropByGetToAryWithExclude( XVector<xPROP*> *pOutAry
  @brief typeGet타입영웅중에서 하나를 랜덤으로 선택해서 돌려준다.
  @param typeAtk는 디폴트로 none이지만 지정을 하게 되면 이 필터도 함께 적용한다.
 */
-XPropHero::xPROP* XPropHero::GetpPropRandomByGetType( XGAME::xtGet typeGet,
+XPropHero::xPROP* XPropHero::GetpPropRandomByGetType( XGAME::xtGet bitGet,
 													XGAME::xtAttack typeAtk/* = XGAME::xAT_NONE*/ )
 {
 	// 병과별로 영웅수가 달라서 그냥 랜덤하면 병과별 확률이 균일하지 않다.
 	// 병과별로 먼저 확률돌리고 그담에 다시 영웅을 꺼내야한다.
 	XVector<xPROP*> ary;
-	GetpPropByGetToAry( &ary, typeGet, typeAtk );
+	GetpPropByGetToAry( &ary, bitGet, typeAtk );
 	auto ppSelected = ary.GetpFromRandom();
 	if( ppSelected )
 		return *ppSelected;
 	return nullptr;
 }
+
 /**
  @brief 영웅의 식별자로 idProp을 돌려준다.
 */

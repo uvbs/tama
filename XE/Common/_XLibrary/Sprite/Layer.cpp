@@ -8,12 +8,13 @@
  */
 
 #include "stdafx.h"
-#include "Layer.h"
+#include "etc/XSurface.h"
 #include "SprObj.h"
 #include "XBaseObj.h"
 #include "etc/xMath.h"
 #include "XArchive.h"
 #include "Sprite.h"
+#include "Layer.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -130,6 +131,25 @@ void CHANNEL_EFFECT::FrameMove( float dt, float frmCurr ) {
 	}
 }
 
+void XLayerMove::Transform( float *pOutLx, float *pOutLy ) 
+{
+	MATRIX m, mRotX, mRotY, mRotZ, mScale;
+	MatrixRotationX( mRotX, 0 );
+	MatrixRotationY( mRotY, (GetcnEffect().IsFlipHoriz()) ? D2R( 180.f ) : 0 );
+	MatrixRotationZ( mRotZ, D2R( m_cnRot.fAngle ) );
+	MatrixScaling( mScale, m_cnScale.m_vScale.x, m_cnScale.m_vScale.y, 1.0f );
+	MatrixIdentity( m );
+	MatrixMultiply( m, m, mScale );
+	MatrixMultiply( m, m, mRotX );
+	MatrixMultiply( m, m, mRotY );
+	MatrixMultiply( m, m, mRotZ );
+	X3D::VEC3 v( m_cnPos.vPos.x, m_cnPos.vPos.y, 0 );
+	Vec4 v4d;
+	MatrixVec4Multiply( v4d, v, m );
+	*pOutLx = v4d.x;
+	*pOutLy = v4d.y;
+}
+
 /**
  @brief 
 */
@@ -145,38 +165,47 @@ void XLayerMove::FrameMove( XSprObj *pSprObj, float dt, float fFrmCurr )
 	m_cnEffect.FrameMove( dt, fFrmCurr );
 }
 
-void XLayerImage::SetDrawInfoToSpr( XSprObj *pSprObj, XSprite *pSpr, XEFFECT_PARAM *pEffectParam )
-{
-#ifdef _XBUG_140123_SPR
-	XBREAK( pEffectParam == NULL );	// 이 버전부터 이것은 널이 될 수 없다.
-#endif
-	pSpr->SetAdjustAxis( GetvAdjAxis() );		// 회전축을 보정함
-	pSpr->SetRotateZ( GetcnRot().fAngle );
-	pSpr->SetScale( GetcnScale().m_vScale );
-	pSpr->SetFlipHoriz( (GetcnEffect().dwDrawFlag & EFF_FLIP_HORIZ) ? TRUE : FALSE );
-	pSpr->SetFlipVert( (GetcnEffect().dwDrawFlag & EFF_FLIP_VERT) ? TRUE : FALSE );
-	pSpr->SetColor( pSprObj->GetColorR(), pSprObj->GetColorG(), pSprObj->GetColorB() );
-	// 이버전부터는 외부에서 주는대로만 찍는다.
-	pSpr->SetDrawMode( pEffectParam->drawMode );
-	pSpr->SetfAlpha( pEffectParam->fAlpha );	
-}
+// void XLayerImage::SetDrawInfoToSpr( XSprObj *pSprObj, 
+// 																		const XEFFECT_PARAM& effParam,
+// 																		XE::xRenderParam* pOut )
+// {
+// 	XE::xRenderParam param;
+// 	param
+// 
+// 	pSpr->SetAdjustAxis( GetvAdjAxis() );		// 회전축을 보정함
+// 	pSpr->SetRotateZ( GetcnRot().fAngle );
+// 	pSpr->SetScale( GetcnScale().m_vScale );
+// 	pSpr->SetFlipHoriz( (GetcnEffect().dwDrawFlag & EFF_FLIP_HORIZ) ? TRUE : FALSE );
+// 	pSpr->SetFlipVert( (GetcnEffect().dwDrawFlag & EFF_FLIP_VERT) ? TRUE : FALSE );
+// 	pSpr->SetColor( pSprObj->GetColorR(), pSprObj->GetColorG(), pSprObj->GetColorB() );
+// 	// 이버전부터는 외부에서 주는대로만 찍는다.
+// 	pSpr->SetDrawMode( effParam.drawMode );
+// 	pSpr->SetfAlpha( effParam.fAlpha );
+// 	pSpr->GetpSurface()->SetadjZ( effParam.m_adjZ );
+// 
+// 
+// }
 
 
-void XLayerImage::Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEFFECT_PARAM *pEffectParam )
+void XLayerImage::Draw( XSprObj *pSprObj, 
+												float x, float y, 
+												const MATRIX &mParent, 
+												XEFFECT_PARAM *pEffectParam )
 {
 	const XE::VEC2 vPos(x, y);
 	XSprite *pSpr = m_pSpriteCurr;
 	if( pSpr ) {
 		auto vLocal = GetPos();
-// 		float lx = Getx();
-// 		float ly = Gety();
+		auto funcBlend = XE::xBF_MULTIPLY;
 		if( GetcnEffect().DrawMode != xDM_NONE ) {
-			//
+			// 구버전
 			BOOL bDelegateDraw = FALSE;
 			XDelegateSprObj *pDelegate = pSprObj->GetpDelegate();
 			XEFFECT_PARAM effParam;
 			if( pEffectParam ) {
 				effParam = *pEffectParam;
+				if( effParam.drawMode != xDM_ERROR )
+					funcBlend = effParam.GetfuncBlend();
 				// 외부이펙트와 내부이펙트를 곱함(둘중 하나라도 스크린이면 스크린으로 찍힘)
 				if( effParam.drawMode == xDM_SCREEN || GetcnEffect().DrawMode == xDM_SCREEN )
 					effParam.drawMode = xDM_SCREEN;
@@ -195,21 +224,108 @@ void XLayerImage::Draw( XSprObj *pSprObj, float x, float y, const MATRIX &m, XEF
 																	&effParam, // pEffectParam, 
 																	vPos.x + vLocal.x, 
 																	vPos.y + vLocal.y, 
-																	m );
+																	mParent );
 			// 델리게이트에서 드로우를 하지 않았다면 자체드로우를 함.
 			if( bDelegateDraw == FALSE ) {
-				SetDrawInfoToSpr( pSprObj, pSpr, &effParam /*pEffectParam*/ );
-				pSpr->Draw( vPos + vLocal, m );
+				XE::xRenderParam param;
+				param.m_vPos = vPos + vLocal;
+				param.m_vAdjAxis = GetvAdjAxis();
+				param.m_vRot.z = GetcnRot().fAngle;
+				param.m_vScale = GetcnScale().m_vScale;
+				param.m_vColor = pSprObj->Getv4Color();
+				param.m_vColor.a = effParam.fAlpha;
+				param.SetFlipHoriz( GetcnEffect().IsFlipHoriz() );
+				param.SetFlipVert( GetcnEffect().IsFlipVert() );
+				param.m_funcBlend = effParam.GetfuncBlend();
+				param.m_adjZ = effParam.m_adjZ;
+				param.m_bZBuff = GRAPHICS->IsbEnableZBuff();
+				//				param.m_bZBuff = pSpr->IsBatch();
+				param.m_bAlphaTest = (param.m_bZBuff == true);
+//				param.m_bAlphaTest = param.m_bAlphaTest;
+				if( effParam.fAlpha < 1.f 
+						|| funcBlend == XE::xBF_ADD || funcBlend == XE::xBF_SUBTRACT ) {
+					param.m_bZBuff = false;
+					param.m_bAlphaTest = false;
+				}
+//				SetDrawInfoToSpr( pSprObj, pSpr, effParam, &paramRender );
+				if( pSpr->GetpSurface() ) {
+					// 전용 배치렌더러에 렌더명령을 전달한다.
+					pSpr->GetpSurface()->DrawByParam( mParent, param );
+// 				pSpr->Draw( vPos + vLocal, m );
 //				pSpr->Draw( x + lx, y + ly, m );
+				}
 			}
 			if( pDelegate )
-				bDelegateDraw = pDelegate->OnDelegateDrawImageLayerAfter( pSprObj,
-																																	 pSpr,
-																																	 this,
-																																	 &effParam, // pEffectParam, 
-																																	 vPos + vLocal,
-																																	 m );
+				bDelegateDraw 
+				= pDelegate->OnDelegateDrawImageLayerAfter( pSprObj,
+																										pSpr,
+																										this,
+																										&effParam, // pEffectParam, 
+																										vPos + vLocal,
+																										mParent );
 		}
+	}
+}
+
+/**
+ @brief 신버전. 가급적 이걸로 사용할것.
+*/
+void XLayerImage::DrawByParam( const XSprObj *pSprObj,
+															 const XE::xRenderParam& _param ) const
+{
+	XSprite *pSpr = m_pSpriteCurr;
+	if( pSpr == nullptr )
+		return;
+	if( pSpr->GetpSurface() == nullptr )
+		return;
+	auto param = _param;
+	auto pSurface = pSpr->GetpSurface();
+	const auto& cnPos = GetcnPosConst();
+	const auto& cnRot = GetcnRotConst();
+	const auto& cnScale = GetcnScaleConst();
+	const auto& cnEff = GetcnEffConst();
+	MATRIX mParent;
+	MatrixIdentity( mParent );
+	param.m_vPos += cnPos.vPos;
+	param.m_vAdjAxis += GetvAdjAxis();
+	param.m_vRot.z += cnRot.fAngle;
+	param.m_vScale *= cnScale.m_vScale;
+	param.m_vColor.a *= cnEff.fAlpha;
+	param.SetFlipHoriz( cnEff.IsFlipHoriz() );
+	param.SetFlipVert( cnEff.IsFlipVert() );
+	param.m_funcBlend = cnEff.GetfuncBlend();		// 기본적으론 내부가 우선이지만
+	// 외부지정 파라메터와 내부 파라메터를 곱함( 둘중 하나라도 add면 add로 찍힘)
+	if( param.m_funcBlend == XE::xBF_ADD 
+			|| cnEff.GetfuncBlend() == XE::xBF_ADD )
+		param.m_funcBlend = XE::xBF_ADD;
+	// z버퍼 사용중이면 알파테스트는 무조건 true가 된다.
+	if( param.m_bZBuff )
+		param.m_bAlphaTest = true;
+	if( param.m_vColor.a < 1.f
+		|| param.m_funcBlend == XE::xBF_ADD || param.m_funcBlend == XE::xBF_SUBTRACT ) {
+		param.m_bZBuff = false;
+		param.m_bAlphaTest = false;
+	}
+	// 델리게이트가 있다면 델리게이트를 먼저실행함
+	bool bDelegateDraw = false;
+ 	auto pDelegate = pSprObj->GetpDelegate();
+	if( pDelegate )
+		bDelegateDraw
+		= pDelegate->OnDelegateDrawImageLayerBefore2( pSprObj,
+																								 pSpr,
+																								 this,
+																								 &param );
+	// 델리게이트에서 드로우를 하지 않았다면 자체드로우를 함.
+	if( bDelegateDraw == false ) {
+		// render
+		pSurface->DrawByParam( mParent, param );
+	}
+	// draw after
+	if( pDelegate ) {
+		pDelegate->OnDelegateDrawImageLayerAfter2( pSprObj,
+																							pSpr,
+																							this,
+																							&param );
 	}
 }
 
@@ -254,7 +370,7 @@ int XLayerImage::DeSerialize( XArchive& ar, XSprObj *pSprObj )
 	int idxSpr;
 	ar >> idxSpr;
 	if( idxSpr >= 0 )
-		m_pSpriteCurr = pSprObj->GetSprite( idxSpr );
+		m_pSpriteCurr = pSprObj->GetSpriteMutable( idxSpr );
 	else
 		m_pSpriteCurr = NULL;
 	return 1;
@@ -270,8 +386,6 @@ void XLayerObject::Draw( XSprObj *, float x, float y, const D3DXMATRIX &m, XEFFE
 	const XE::VEC2 vPos( x, y );
 	XSprObj *pSprObj = m_pSprObjCurr;
 	if( pSprObj ) {
-// 		float lx = Getx();
-// 		float ly = Gety();
 		auto vLocal = GetPos();
 		pSprObj->SetAdjustAxis( GetvAdjAxis() );		// 회전축을 보정함
 		pSprObj->SetRotateZ( GetcnRot().fAngle );
@@ -290,9 +404,47 @@ void XLayerObject::Draw( XSprObj *, float x, float y, const D3DXMATRIX &m, XEFFE
 			pSprObj->SetfAlpha( GetcnEffect().fAlpha );
 		}
 		pSprObj->Draw( vPos + vLocal, m );
-//		pSprObj->Draw( x + lx, y + ly, m );
 	} 
 }
+
+/** //////////////////////////////////////////////////////////////////
+ @brief 신버전
+*/
+void XLayerObject::DrawByParam( const XSprObj *_pSprObj,
+																const XE::xRenderParam& _param ) const
+{
+	XSprObj *pSprObj = m_pSprObjCurr;
+	if( pSprObj ) {
+		const auto& cnPos = GetcnPosConst();
+		const auto& cnRot = GetcnRotConst();
+		const auto& cnScale = GetcnScaleConst();
+		const auto& cnEff = GetcnEffConst();
+		auto param = _param;
+		param.m_vPos += cnPos.vPos;
+		param.m_vRot.z += cnRot.fAngle;
+		param.m_vScale *= cnScale.m_vScale;
+		param.m_vAdjAxis += GetvAdjAxis();
+		param.m_vColor.a *= cnEff.fAlpha;
+		param.SetFlipHoriz( cnEff.IsFlipHoriz() );
+		param.SetFlipVert( cnEff.IsFlipVert() );
+		param.m_funcBlend = cnEff.GetfuncBlend();		// 기본적으론 내부가 우선이지만
+		// 외부지정 파라메터와 내부 파라메터를 곱함( 둘중 하나라도 add면 add로 찍힘)
+		if( param.m_funcBlend == XE::xBF_ADD
+				|| cnEff.GetfuncBlend() == XE::xBF_ADD )
+			param.m_funcBlend = XE::xBF_ADD;
+		// z버퍼 사용중이면 알파테스트는 무조건 true가 된다.
+		if( param.m_bZBuff )
+			param.m_bAlphaTest = true;
+		if( param.m_vColor.a < 1.f
+				|| param.m_funcBlend == XE::xBF_ADD || param.m_funcBlend == XE::xBF_SUBTRACT ) {
+			param.m_bZBuff = false;
+			param.m_bAlphaTest = false;
+		}
+		//
+		pSprObj->DrawByParam( param );
+	}
+}
+
 void XLayerObject::FrameMove( XSprObj *pParent, float dt, float fFrmCurr )
 {
 	XLayerMove::FrameMove( pParent, dt, fFrmCurr );

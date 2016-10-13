@@ -13,6 +13,7 @@
 #include "XSpotDaily.h"
 #include "XStruct.h"
 #include "XWndTemplate.h"
+#include "XWndStorageItemElem.h"
 #if _DEV_LEVEL <= DLV_DEV_PERSONAL
 #include "XCampObj.h"
 #endif
@@ -146,10 +147,10 @@ void XWndPopupDaily::UpdateElem( XWnd* pWndElem, XE::xtDOW dow, int idx )
 			}
 			xSET_SHOW( pWndElem, "spr.glow", dow == m_dowToday );
 			// 등장 유닛 표시
-			auto pCtrlUnit = SafeCast<XWndCircleUnit*>( pWndElem->Find( "ctrl.unit" ) );
+			auto pCtrlUnit = SafeCast<XWndCircleUnit2*>( pWndElem->Find( "ctrl.unit" ) );
 			if( pCtrlUnit ) {
 				const auto unit = m_pSpot->GetUnitByDow( dow );
-				pCtrlUnit->SetUnit( unit );
+				pCtrlUnit->SetUnit( unit, 0 );
 			}
 			// 드랍아이템
 			CreateRewardCtrl( pWndElem, dow );

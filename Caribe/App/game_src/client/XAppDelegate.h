@@ -17,8 +17,8 @@ public:
 	virtual XClientMain* OnCreateAppMain( XE::xtDevice device, float widthPhy, float heightPhy );
 	XWnd* DelegateCreateCustomCtrl( const std::string& strcCtrl
 																, TiXmlElement* pElemCtrl
-																, XWnd *pParent
-																, const XLayout::xATTR_ALL& attrAll) override;
+																, const XWnd *pParent
+																, const XLayout::xATTR_ALL& attrAll) const override;
 public:
 	static XAppDelegate* s_pInstance;
 	static XAppDelegate* sGet() {		return s_pInstance;	}

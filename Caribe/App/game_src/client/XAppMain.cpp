@@ -1,5 +1,4 @@
 ﻿#include "stdafx.h"
-#include "client/XAppMain.h"
 #ifdef WIN32
 #include "DlgEnterName.h"
 #include "XDlgConsole.h"
@@ -7,6 +6,10 @@
 #include "XGame.h"
 #include "XGlobalConst.h"
 #include "XResMng.h"
+#include "client/XCheatOption.h"
+#include "client/XAppMain.h"
+#include "XAccount.h"
+#include "XAsyncMng.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -32,6 +35,7 @@ XAppMain* XAppMain::sCreate( XE::xtDevice device, int widthPhy, int heightPhy )
 }
 //////////////////////////////////////////////////////////////////////////
 XAppMain::XAppMain()
+	: m_dwFilter(XGAME::xBIT_SIDE_FILTER)
 {
 	XBREAK( XAPP != nullptr );
 	XAPP = this;
@@ -47,6 +51,9 @@ void XAppMain::Destroy()
 
 void XAppMain::DidFinishCreate( void )
 {
+#if defined(_XSINGLE) && !defined(WIN32)
+	m_bViewFrameRate = true;
+#endif 
 }
 
 // 엔진 초기화 완료.
@@ -115,6 +122,8 @@ void XAppMain::SaveCheat( FILE *fp )
 // 	fprintf( fp, "fil_hero = %d\r\n", m_bFilterHero );
 // 	fprintf( fp, "fil_unit = %d\r\n", m_bFilterUnit );
 	fprintf( fp, "filter = %d\r\n", m_dwFilter );
+	fprintf( fp, "option = %d\r\n", m_dwOption );
+	fprintf( fp, "nodraw = %d\r\n", m_dwNoDraw );
 	fprintf( fp, "battle_log = %d\r\n", m_bBattleLogging );
 	fprintf( fp, "reload_cmd = \"%s\"\r\n", m_strReloadCmd.c_str() );
 	fprintf( fp, "show_hp_squad = %d\r\n", m_bDebugViewSquadsHp );
@@ -314,6 +323,14 @@ void XAppMain::LoadCheat( CToken& token )
 		token.GetToken(); // =
 		m_dwFilter = (DWORD)token.GetNumber();
 	} else
+	if( token == _T("option") ) {
+		token.GetToken(); // =
+		m_dwOption = (DWORD)token.GetNumber();
+	} else
+	if( token == _T("nodraw") ) {
+		token.GetToken(); // =
+		m_dwNoDraw = (DWORD)token.GetNumber();
+	} else
 // 	if( token == _T("fil_player") ) {
 // 		token.GetToken(); // =
 // 		m_bFilterPlayer = token.GetBool();
@@ -476,4 +493,22 @@ BOOL XAppMain::OnSelectLoadType( XE::xtLoadType typeLoad )
 #endif
 		}
 	return FALSE;
+}
+
+bool XAppMain::RequestCheatAuth()
+{
+#if _DEV_LEVEL >= DLV_OPEN_BETA
+	if( XAccount::sGetPlayer() && XAccount::sGetPlayer()->GetGMLevel() == 1 ) 
+#endif // _DEV_LEVEL >= DLV_OPEN_BETA
+	{
+		return true;
+	}
+	return false;
+}
+
+void XAppMain::FrameMove()
+{
+	XClientMain::FrameMove();
+	//
+	XAsyncMng::sGet()->Process();
 }

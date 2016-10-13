@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <popup>
+    <popup img="bg_unit_sel.png" format="argb8888">
+      <hero_ctrl posx="center" posy="center" param="100" key="ctrl.hero" param2="1">
+        <spr posx="4" posy="50" file="brilliant.spr" id_act="4" scale="0.5" show="off" key="spr.light" />
+      </hero_ctrl>
+      <img file="world_bg_title_new.png" posx="center" posy="-7">
+        <text posx="center" posy="5" font="font_text_s" text_col="white" font_size="20" text="2346" font_style="stroke">
+          <!--훈련 완료-->
+        </text>
+      </img>
+    </popup>
+  </popup>
+</root>

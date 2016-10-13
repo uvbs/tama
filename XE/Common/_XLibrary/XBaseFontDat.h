@@ -16,6 +16,7 @@ private:
 	XCOLOR m_colStroke;	// 외곽선색
 	XBaseFontDat *m_pStroke;		// stroke용 폰트
 	_tstring m_strFont;
+	bool m_bBatch = false;
 
 	void Init() {
 		_m_FontSize = 0;
@@ -42,17 +43,21 @@ public:
 	}
 	virtual ~XBaseFontDat() { Destroy(); }	
 	//
-	float GetFontSize() { return _m_FontSize; }		
-
-	void SetScale( float xyScale ) {
+	inline float GetFontSize() const { 
+		return _m_FontSize; 
+	}	
+	inline void SetScale( float xyScale ) {
 		m_vScale.x = xyScale;
 		m_vScale.y = xyScale;
 	}
-	GET_SET_ACCESSOR( const XE::VEC2&, vScale );
-	GET_ACCESSOR(_tstring&, strFont);
+	GET_SET_ACCESSOR_CONST( const XE::VEC2&, vScale );
+	GET_ACCESSOR_CONST(const _tstring&, strFont);
+	GET_SET_BOOL_ACCESSOR( bBatch );
 	// 외곽선(stroke)효과가 있는 폰트인가
 //	BOOL IsStroke() { return (m_pStroke)? TRUE : FALSE; }
-	BOOL IsStroke() { return (m_StrokeDepth >= 1.0f)? TRUE : FALSE; }
+	inline bool IsStroke() const { 
+		return (m_StrokeDepth >= 1.0f); 
+	}
 	// 폰트에 스트로크 효과를 준다. 파라메터는 두께. 실시간으로 사용하지 않고 생성자 호출직후에 사용한다
 	float DrawString( float x, float y, XCOLOR color, LPCTSTR format, ... );
 	//

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<layout font_gold_m="normal.ttf" font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf" font_meter="font_meter.spr" font_gold="font_gold.spr" font_cooper="CooperBlackStd.otf" font_thai="kunlasatri.ttf" font_time="font_pvp_time.spr" font_res_num="res_num.ttf" font_title="title.ttf">
+<layout font_gold_m="normal.ttf" font_text_m="normal.ttf" font_text_b="bold.ttf" font_text_s="normal.ttf" font_meter="font_meter.spr" font_gold="font_gold.spr" font_thai="kunlasatri.ttf" font_time="font_pvp_time.spr" font_res_num="res_num.ttf" font_title="title.ttf" font_mnls="mnls.ttf">
   <constant>
     <col_team_mng_yellow text_col_r="236" text_col_g="221" text_col_b="99" />
     <col_growth_yellow text_col_r="255" text_col_g="191" text_col_b="75" />

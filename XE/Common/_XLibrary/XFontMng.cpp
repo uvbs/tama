@@ -68,6 +68,12 @@ float AdjFontSize( LPCTSTR szFontFile, float sizeOrig )
 
 
 //////////////////////////////////////////////////////////////////////////
+std::vector<_tstring> XFontMng::s_aryFonts = {
+	_tstring( _T("normal.ttf") ),
+	_tstring( _T("bold.ttf") ),
+	_tstring( _T("normal.ttf") )
+};
+
 void XFontMng::Destroy( void )
 {
 	// 폰트매니저가 최종 삭제될때까지 release되지 않은 객체가 있으면 경고알려줌

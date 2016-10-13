@@ -7,6 +7,7 @@
  @todo nothing
 */
 #include "stdafx.h"
+#include "XScenePrivateRaid.h"
 #include "XSockGameSvr.h"
 #include "XPacketCG.h"
 #include "XFramework/client/XTimeoutMng.h"
@@ -46,6 +47,7 @@
 #include "XCampObj.h"
 #include "XDefNetwork.h"
 #include "XHero.h"
+#include "XSpotPrivateRaid.h"
 
 #define BTRACE		XTRACE
 
@@ -80,7 +82,7 @@ BOOL XSockGameSvr::SendCheat( XWnd *pTimeoutCallback, int type, DWORD param1, DW
 	} else
 	if( type == 2 ) {
 		ID snHero = param1;
-		XHero *pHero = ACCOUNT->GetHero( snHero );
+		XSPHero pHero = ACCOUNT->GetHero( snHero );
 		if( XASSERT(pHero) ) {
 			int level = (int)param2;
 			auto type = (XGAME::xtTrain)param3;
@@ -105,7 +107,7 @@ BOOL XSockGameSvr::SendCheat( XWnd *pTimeoutCallback, int type, DWORD param1, DW
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
  @see AddResponse()
 */
-BOOL XSockGameSvr::SendReqCheatCreateItem( XWnd *pTimeoutCallback, XPropItem::xPROP *pProp, int num )
+BOOL XSockGameSvr::SendReqCheatCreateItem( XWnd *pTimeoutCallback, const XPropItem::xPROP *pProp, int num )
 {
 	_XCHECK_CONNECT(0);
 	//
@@ -354,6 +356,58 @@ BOOL XSockGameSvr::SendReqReconSpot( XWnd *pTimeoutCallback, ID idSpot )
 	return TRUE;
 }
 
+/**
+ @brief 스팟정보의 업데이트를 요청한다. 이것은 전투를 위한 요청이므로 이어지는 전투에 필요한 최소한의 정보는 모두 받아야 한다.
+ @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
+ @param idSpot 업데이트 하고자 하는 스팟
+ @param arAdd 업데이트 요청에 추가로 필요한 파라메터(e:스테이지 인덱스, floor...)
+ @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
+ @see AddResponse()
+
+ 전투는 반드시 스팟을 동반해야하는 원칙이 있음.
+ 그 전투에 관한 장기적 데이터의 보관은 스팟에 보관(클리어 상황, 배치상황 같은..)
+ 스팟업데이트는 Viewer용과 battle용 두개로 나뉜다.
+ Viewer용은 단시 UI표시용으로 약식으로 올 수 있다.
+ battle용은 이어지는 전투에 필요한 최소한의 정보를 모두 받아온다.
+ 캠페인류의 경우 해당 스테이지의 전투정보만 받아오면 된다.
+*/
+BOOL XSockGameSvr::SendReqUpdateSpotForBattle( XWnd *pTimeoutCallback, ID idSpot, XArchive& arAdd )
+{
+	_XCHECK_CONNECT(0);
+	//
+	XPacket ar( (ID)xCL2GS_SPOT_UPDATE_FOR_BATTLE );
+	ar << idSpot;
+	ar << arAdd;
+
+	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
+	ID idKey = 
+		AddResponse( ar.GetidPacket(), 
+					&XSockGameSvr::RecvUpdateSpotForBattle, pTimeoutCallback );
+	Send( ar );
+	//
+	return TRUE;
+}
+
+/**
+ SendReqUpdateSpotForBattle()에 대한 응답함수
+ @param p 패킷이 들어있는 아카이브
+ @see SendReqUpdateSpotForBattle()
+*/
+void XSockGameSvr::RecvUpdateSpotForBattle( XPacket& p, const xCALLBACK& c )
+{
+	ID idSpot;
+	XArchive arAdd;		// 스팟별 추가 업데이트 정보
+	XArchive arLegion;
+	p >> idSpot;
+	p >> arLegion;
+	p >> arAdd;
+	//
+	auto pbaseSpot = sGetpWorld()->GetpSpot( idSpot );
+	if( XBREAK(pbaseSpot == nullptr) )
+		return;
+	// 각 스팟에 부대정보 갱신
+	pbaseSpot->DeSerializeForBattle( arLegion, arAdd, ACCOUNT );
+}
 
 /**
  스팟 공격(유저/자원지/npc 통합)
@@ -424,18 +478,33 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 	XBREAK( info.m_Power == 0 );
 	XBREAK( info.m_Level == 0 );
 	// 전투시 필요한 기본정보.
-	xBattleStart bs;
-	bs.m_idEnemy = idAccEnemy;
-#ifndef _XSINGLE
-	bs.m_typeSpot = info.m_typeSpot;
-	bs.m_idSpot = info.m_idSpot;
-#endif // not _xSINGLE
-	bs.m_Level = info.m_Level;
-	bs.m_strName = info.m_strName;
-	bs.m_spLegion[ 0 ] = ACCOUNT->GetCurrLegion();
-	bs.m_spLegion[ 1 ] = pBaseSpot->GetspLegion();
-	bs.m_typeBattle = XGAME::xBT_NORMAL;
-	///< 
+	XVector<XSPLegion> aryLegion(2);
+	aryLegion[0] = ACCOUNT->GetCurrLegion();
+	aryLegion[1] = pBaseSpot->GetspLegion();
+	XSPSceneParam spSceneParam;
+	if( info.m_typeBattle == XGAME::xBT_PRIVATE_RAID ) {
+		// 전투씬 파라메터
+		spSceneParam
+			= std::make_shared<XGAME::xPrivateRaidParam>( 0,
+																										typeSpot,
+																										info.m_idSpot,
+																										info.m_Level,
+																										info.m_strName,
+																										aryLegion );
+	} else {
+		spSceneParam 
+			= std::make_shared<XGAME::xSceneBattleParam>( idAccEnemy,
+																										info.m_typeSpot,
+																										info.m_idSpot,
+																										info.m_Level,
+																										info.m_strName,
+																										aryLegion,
+																										XGAME::xBT_NORMAL,
+																										0,
+																										info.m_idxStage,
+																										info.m_idxFloor );
+	}
+		///< 
 	XBREAK( snSession == 0 );
 	ACCOUNT->SetBattleSession( snSession
 													,	pBaseSpot->GetspLegion()
@@ -443,6 +512,8 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 													, info.m_idSpot, 0 );
 	//
 	if( typeSpot == XGAME::xSPOT_SULFUR && idAccEnemy ) {
+		auto spParam = std::static_pointer_cast<XGAME::xSceneBattleParam>(spSceneParam);
+		XBREAK( spParam == nullptr );
 		// 인카운터된 유황스팟.
 		auto pSpot = SafeCast<XSpotSulfur*>( pBaseSpot );
 		if( XASSERT(pSpot) ) {
@@ -452,10 +523,11 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 				XBREAK( pSpot->GetnumSulfur() == 0 );
 				if( SCENE_BATTLE ) {
 					// 인카운터 유저 추가.
-					bs.m_idEnemy = pSpot->GetidEncounterUser();
+					spParam->m_idEnemy = pSpot->GetidEncounterUser();
+//					bs.m_idEnemy = pSpot->GetidEncounterUser();
 					// 전투씬 파라메터를 밀어넣는다.
-					XSceneBattle::sSetBattleStart( bs );
-					SCENE_BATTLE->OnRecvBattleResultSulfurEncounter( pSpot, info );
+//					XSceneBattle::sSetBattleStart( bs );
+					SCENE_BATTLE->OnRecvBattleResultSulfurEncounter( pSpot, info, spParam );
 				}
 			}
 		}
@@ -486,13 +558,10 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 				auto pPopup = new XWndPaymentByCash();
 				pPopup->SetFillTryByDailySpot();
 				GAME->GetpScene()->Add( pPopup );
-//				pPopup->SetEvent( XWM_OK, GAME, &XGame::OnClickFillAPByCash );
 				pPopup->SetEvent2( XWM_OK, []( XWnd* pWnd ) {
 					const bool bByItem = false;
-					GAMESVR_SOCKET->SendReqPaymentAssetByGem( GAME, xPR_TRY_DAILY, bByItem );
-// 					GAMESVR_SOCKET->SendReqOpenCloud( this, idCloud, xTP_GOLD_AND_CASH );
+					GAMESVR_SOCKET->SendReqPaymentAssetByGem( GAME, xPR_TRY_DAILY, bByItem, XParamObj2() );
 				} );
-//				XWND_ALERT("%s", XTEXT(2227));	// 도전횟수 없음.
 				return;
 			}
 		} else
@@ -515,6 +584,8 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 		} break;
 		case XGAME::xSPOT_CAMPAIGN:
 		case XGAME::xSPOT_COMMON: {
+			auto spParam = std::static_pointer_cast<XGAME::xSceneBattleParam>(spSceneParam);
+			XBREAK( spParam == nullptr );
 			int idxStage, levelLegion, idxFloor;
 			arParam >> idxStage;
 			arParam >> levelLegion;
@@ -523,7 +594,8 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 			if( typeSpot == XGAME::xSPOT_COMMON )  {
 				auto pSpot = SafeCast<XSpotCommon*>( pBaseSpot );
 				if( pSpot->IsGuildRaid() ) {
-					bs.m_typeBattle = XGAME::xBT_GUILD_RAID;
+					//bs.m_typeBattle = XGAME::xBT_GUILD_RAID;
+					spParam->m_typeBattle = XGAME::xBT_GUILD_RAID;
 					int i0;
 					arParam >> i0;	auto err = ( XGAME::xtGuildError )i0;
 					if( err == XGAME::xGE_ERROR_STILL_TRYING_RAID ) {
@@ -533,9 +605,35 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 				}
 			}
 			// 전투씬 추가파라메터
-			bs.m_idxStage = idxStage;
-			bs.m_idxFloor = idxFloor;
-			bs.m_Level = levelLegion;
+// 			bs.m_idxStage = idxStage;
+// 			bs.m_idxFloor = idxFloor;
+// 			bs.m_Level = levelLegion;
+			spParam->m_idxStage = idxStage;
+			spParam->m_idxFloor = idxFloor;
+			spParam->m_Level = levelLegion;
+		} break;
+		case XGAME::xSPOT_PRIVATE_RAID: {
+			for( int idxSide = 0; idxSide < 2; ++idxSide ) {
+				int numEnter;
+				arParam >> numEnter;
+				for( int i = 0; i < numEnter; ++i ) {
+					ID snHero;
+					arParam >> snHero;
+					XSPHero pHero = nullptr;
+					auto spParam = std::static_pointer_cast<XGAME::xPrivateRaidParam>(spSceneParam);
+					if( idxSide == 0 ) {
+						pHero = ACCOUNT->GetpHeroBySN( snHero );
+					} else {
+						// 적군 추가 영웅
+						pHero = XHero::sCreateDeSerialize2( arParam, nullptr );
+					}
+					if( XASSERT( spParam ) ) {
+						if( XASSERT( pHero ) ) {
+							spParam->m_aryEnter[idxSide].push_back( pHero );
+						}
+					}
+				} // for numEnter
+			} // for idxSide
 		} break;
 		default:
 			XBREAK(1);
@@ -543,8 +641,8 @@ void XSockGameSvr::ProcSpotInfoBattle( const XGAME::xBattleStartInfo& info,
 		} // switch( typeSpot )
 		if( SCENE_WORLD ) {
 			// 전투씬 파라메터를 밀어넣는다.
-			XSceneBattle::sSetBattleStart( bs );
-			SCENE_WORLD->OnRecvBattleInfo();
+//			XSceneBattle::sSetBattleStart( bs );
+			SCENE_WORLD->OnRecvBattleInfo( spSceneParam );
 		}
 	}
 }
@@ -630,27 +728,40 @@ void XSockGameSvr::RecvJewelBattleInfo( XPacket& p, const xCALLBACK& c )
 		// 이겼을 때 루팅할수 있는 양을 미리 받아둠.
 		//pJewel->SetlootJewel( infoMatch.mloo );
 		pJewel->SetMatch( infoMatch );
-		LegionPtr spLegion = LegionPtr( pLegion );
+		XSPLegion spLegion = XSPLegion( pLegion );
 		ACCOUNT->SetBattleSession( snSession,
 																spLegion,
 																infoMatch.m_idAcc,
 																pJewel->GetidSpot(), 0 );
 		if( SCENE_WORLD ) {
 			if( XASSERT(pJewel) ) {
-				XGAME::xBattleStart bs;
-#ifndef _XSINGLE
-				bs.m_typeSpot = pJewel->GettypeSpot();
-				bs.m_idSpot = pJewel->GetidSpot();
-#endif // not _XSINGLE
-				bs.m_idEnemy = pJewel->GetidOwner();
-				bs.m_Level = pJewel->GetLevel();
-				bs.m_strName = pJewel->GetstrName();
-				bs.m_spLegion[0] = ACCOUNT->GetCurrLegion();
-				bs.m_spLegion[1] = spLegion;
-				bs.m_typeBattle = XGAME::xBT_NORMAL;
-				bs.m_Defense = pJewel->GetDefense();
-				XSceneBattle::sSetBattleStart( bs );
-				SCENE_WORLD->OnRecvBattleInfo();
+// 				XGAME::xBattleStart bs;
+// #ifndef _XSINGLE
+// 				bs.m_typeSpot = pJewel->GettypeSpot();
+// 				bs.m_idSpot = pJewel->GetidSpot();
+// #endif // not _XSINGLE
+// 				bs.m_idEnemy = pJewel->GetidOwner();
+// 				bs.m_Level = pJewel->GetLevel();
+// 				bs.m_strName = pJewel->GetstrName();
+// 				bs.m_spLegion[0] = ACCOUNT->GetCurrLegion();
+// 				bs.m_spLegion[1] = spLegion;
+// 				bs.m_typeBattle = XGAME::xBT_NORMAL;
+// 				bs.m_Defense = pJewel->GetDefense();
+// 				XSceneBattle::sSetBattleStart( bs );
+
+				XVector<XSPLegion> aryLegion;
+				aryLegion.push_back( ACCOUNT->GetCurrLegion() );
+				aryLegion.push_back( spLegion );
+				auto spParam = std::make_shared<XGAME::xSceneBattleParam>( pJewel->GetidOwner(),
+																																	pJewel->GettypeSpot(),
+																																	pJewel->GetidSpot(),
+																																	pJewel->GetLevel(),
+																																	pJewel->GetstrName(),
+																																	aryLegion,
+																																	XGAME::xBT_NORMAL,
+																																	pJewel->GetDefense(),
+																																	-1, 0 );
+				SCENE_WORLD->OnRecvBattleInfo( spParam );
 			}
 		}
 	} else {
@@ -832,10 +943,8 @@ void XSockGameSvr::RecvJewelMatchResult( XPacket& p, const xCALLBACK& c )
 	ID idEnemy;
 	p >> idxMine;
 	p >> idEnemy;
-	//
-	auto pSpot = sGetpWorld()->GetSpotJewelByIdx( idxMine ); //sGetpWorld()->GetSpot<XSpotJewel*>( XGAME::xSPOT_JEWEL, strIdentifier.c_str() );
-	if( pSpot == nullptr )
-	{
+	auto pSpot = sGetpWorld()->GetSpotJewelByIdx( idxMine ); 
+	if( pSpot == nullptr ) {
 		// 스팟이 없으면 새로 생성한다.
 		auto pProp = PROP_WORLD->GetpPropJewelByIdx( idxMine ); //PROP_WORLD->GetpPropJewel(strFormat.c_str());
 		XBREAK( pProp == nullptr );
@@ -867,7 +976,7 @@ void XSockGameSvr::RecvJewelReconResult( XPacket& p, const xCALLBACK& c )
 		p >> arLegion >> arAbil;
 		p >> infoMatch;
 		pSpot->SetMatch( infoMatch );
-		LegionPtr spLegion( XLegion::sCreateDeserializeFull( arLegion ) );
+		XSPLegion spLegion( XLegion::sCreateDeserializeFull( arLegion ) );
 		pSpot->SetspLegion( spLegion );   // << 추가
 		if( SCENE_WORLD )
 			SCENE_WORLD->OnRecvReconSpot( pSpot->GetidSpot(), spLegion );
@@ -980,6 +1089,7 @@ void XSockGameSvr::RecvSpotSync( XPacket& p, const xCALLBACK& c )
 		if( pBaseSpot == nullptr ) {
 			// 없으면 만듬.
 			pBaseSpot = XSpot::sCreateDeSerialize( p, sGetpWorld() );
+			pBaseSpot->OnCreate( ACCOUNT );
 			ACCOUNT->AddSpot( pBaseSpot );
 			ACCOUNT->AddSpotStar( idSpot );
 		} else {
@@ -1081,6 +1191,11 @@ void XSockGameSvr::RecvSyncAcc( XPacket& p, const xCALLBACK& c )
 			XAccount::s_bTraderArrived = ( i0 != 0 );
 		}
 		ACCOUNT->DeserializeTimerByTrader( p );		break;
+	case xPS_SPOT: {
+		ID idSpot;
+		p >> idSpot;
+		XSpot::sDeserializeUpdate( sGetpWorld(), idSpot, p );
+	} break;
 	default:
 		break;
 	}
@@ -1141,12 +1256,12 @@ void XSockGameSvr::RecvMandrakeLegionResult( XPacket& p, const xCALLBACK& c )
 		arDB >> win;
 		arDB >> reward;
 		arDB >> idxLegion;
-		LegionPtr spLegion;
+		XSPLegion spLegion;
 		{
 			XArchive arLegion;
 			arDB >> arLegion;
 			auto pLegion = XLegion::sCreateDeserializeFull( arLegion );
-			spLegion = LegionPtr( pLegion );
+			spLegion = XSPLegion( pLegion );
 		}
 		XArchive arAbil;
 		arDB >> arAbil;
@@ -1159,20 +1274,31 @@ void XSockGameSvr::RecvMandrakeLegionResult( XPacket& p, const xCALLBACK& c )
 			pSpot->SetspLegion( spLegion );
 			if( SCENE_WORLD ) {
 				if( snSession ) {		// battle mode
-					XGAME::xBattleStart bs;
-#ifndef _XSINGLE
-					bs.m_typeSpot = pSpot->GettypeSpot();
-					bs.m_idSpot = pSpot->GetidSpot();
-#endif // not _XSINGLE
-					bs.m_idEnemy = idEnemy;
-					bs.m_Level = level;
-					bs.m_strName = strName;
-					bs.m_spLegion[ 0 ] = ACCOUNT->GetCurrLegion();
-					bs.m_spLegion[ 1 ] = spLegion;
-					bs.m_typeBattle = XGAME::xBT_NORMAL;
-					XSceneBattle::sSetBattleStart( bs );
-					SCENE_WORLD->OnRecvBattleInfo();
-//					SCENE_WORLD->OnRecvBattleInfo( idSpot, idEnemy, level, strName.c_str(), spLegion, 0/*, pAccEnemy*/ );
+// 					XGAME::xBattleStart bs;
+// #ifndef _XSINGLE
+// 					bs.m_typeSpot = pSpot->GettypeSpot();
+// 					bs.m_idSpot = pSpot->GetidSpot();
+// #endif // not _XSINGLE
+// 					bs.m_idEnemy = idEnemy;
+// 					bs.m_Level = level;
+// 					bs.m_strName = strName;
+// 					bs.m_spLegion[ 0 ] = ACCOUNT->GetCurrLegion();
+// 					bs.m_spLegion[ 1 ] = spLegion;
+// 					bs.m_typeBattle = XGAME::xBT_NORMAL;
+// 					XSceneBattle::sSetBattleStart( bs );
+// 					SCENE_WORLD->OnRecvBattleInfo();
+					XVector<XSPLegion> aryLegion;
+					aryLegion.push_back( ACCOUNT->GetCurrLegion() );
+					aryLegion.push_back( spLegion );
+					auto spParam = std::make_shared<XGAME::xSceneBattleParam>( idEnemy,
+																																		 pSpot->GettypeSpot(),
+																																		 pSpot->GetidSpot(),
+																																		 level,
+																																		 strName,
+																																		 aryLegion,
+																																		 XGAME::xBT_NORMAL,
+																																		 0, -1, 0 );
+					SCENE_WORLD->OnRecvBattleInfo( spParam );
 				} else {
 					SCENE_WORLD->OnRecvReconSpot( pSpot->GetidSpot(), spLegion );
 				}
@@ -1375,7 +1501,7 @@ void XSockGameSvr::RecvUnlockMenu( XPacket& p, const xCALLBACK& c )
 // 	p >> dw0;	//idWnd;
 // 	p >> snHero;
 // 	p >> ary;			// 삭제해야할 책 리스트
-// 	XHero *pHero = ACCOUNT->GetHero( snHero );
+// 	XSPHero pHero = ACCOUNT->GetHero( snHero );
 // 	pHero->DeSerializeLevel( p );
 // 	pHero->DeSerializeLevelupReady( p );
 // 	XBREAK( pHero->GetXFLevelObj().IsFullExp() && !pHero->IsLevelupLevelReady() );
@@ -1420,12 +1546,12 @@ void XSockGameSvr::RecvChangeHeroLegion( XPacket& p, const xCALLBACK& c )
 	p >> dw0;	unit = (XGAME::xtUnit) dw0;
 	p >> numUnit;
 
-	XHero *pHero = ACCOUNT->GetHero( snHero );
+	XSPHero pHero = ACCOUNT->GetHero( snHero );
 	pHero->SetUnit( unit );
 //	pHero->SetnumUnit( numUnit );
-// 	XList<XHero*> listHero;
+// 	XList<XSPHero> listHero;
 // 	ACCOUNT->GetInvenHero(listHero);
-// 	XLIST_LOOP(listHero, XHero*, pHero)
+// 	XLIST_LOOP(listHero, XSPHero, pHero)
 // 	{
 // 		if (snHero == pHero->GetsnHero())
 // 			pHero->SetUnit((XGAME::xtUnit)idLegion);
@@ -1466,7 +1592,7 @@ BOOL XSockGameSvr::SendReqSummonHero( XWnd *pTimeoutCallback, XGAME::xtGatha typ
 void XSockGameSvr::RecvSummonHero( XPacket& p, const xCALLBACK& c )
 {
 	DWORD gold, cashtem;
-	XHero *pHero = nullptr;
+	XSPHero pHero = nullptr;
 	ID idPropHero = 0;
 	BYTE b0;
 	p >> idPropHero;
@@ -1480,7 +1606,8 @@ void XSockGameSvr::RecvSummonHero( XPacket& p, const xCALLBACK& c )
 	} else {
 		WORD w0;
 		p >> w0; 
-		pHero = XHero::sCreateDeSerialize( p, ACCOUNT );
+		pHero = XHero::sCreateDeSerialize2( p, ACCOUNT );
+		ACCOUNT->AddHero( pHero );
 		XBREAK( idPropHero != pHero->GetidProp() );
 	}
 	p >> gold;
@@ -1531,7 +1658,7 @@ void XSockGameSvr::RecvNewSquad( XPacket& p, const xCALLBACK& c )
 	ID snHero;
 	int idxSlot, idxLegion;
 	p >> snHero >> idxSlot >> idxLegion;
-	XHero *pHero = ACCOUNT->GetHero( snHero );
+	XSPHero pHero = ACCOUNT->GetHero( snHero );
 	if( XBREAK( pHero == NULL ) )
 		return;
 	XLegion *pLegion = ACCOUNT->GetLegionByIdx( idxLegion ).get();
@@ -1541,8 +1668,8 @@ void XSockGameSvr::RecvNewSquad( XPacket& p, const xCALLBACK& c )
 	{
 		//SCENE_LEGION->CreateSquadToLegion( pHero, pLegion, idxSlot );
 	}
-	XSquadron *pSq = new XSquadron( pHero );
-	pLegion->SetSquadron( idxSlot, pSq, FALSE );
+	XSPSquadron pSq = std::make_shared<XSquadron>( pHero );
+	pLegion->AddSquadron( idxSlot, pSq, FALSE );
 }
 
 /**
@@ -1591,7 +1718,7 @@ void XSockGameSvr::RecvMoveSquad( XPacket& p, const xCALLBACK& c )
 		return;
 	
 	if( idxDst == -1 )
-		pLegion->RemoveSquad( snHeroSrc );
+		pLegion->DestroySquadBysnHero( snHeroSrc );
 	else
 	{
 		// swap
@@ -1903,7 +2030,7 @@ void XSockGameSvr::RecvItemItemsSync( XPacket& p, const xCALLBACK& c )
 // 	ID idItem, snHero;
 // 	int numDel;
 // 	p >> snHero;
-// 	XHero *pHero = ACCOUNT->GetHero( snHero );
+// 	XSPHero pHero = ACCOUNT->GetHero( snHero );
 // 	XBREAK(pHero == nullptr);
 // 	p >> b0;	
 // 	if( b0 == 0 )
@@ -2540,7 +2667,8 @@ void XSockGameSvr::RecvReqQuestReward( XPacket& p, const xCALLBACK& c )
 				ACCOUNT->SetResource( typeRes, sum );
 		} break;
 		case XGAME::xtReward::xRW_HERO: {
-			XHero::sCreateDeSerialize( p, ACCOUNT );
+			auto pHero = XHero::sCreateDeSerialize2( p, ACCOUNT );
+			ACCOUNT->AddHero( pHero );
 		} break;
 		case XGAME::xtReward::xRW_CASH: {
 			DWORD numCash;
@@ -2886,7 +3014,7 @@ void XSockGameSvr::RecvResearch( XPacket& p, const xCALLBACK& c )
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
  @see AddResponse()
 */
-// BOOL XSockGameSvr::SendReqTrainHero( XWnd *pTimeoutCallback, XHero *pHero, XGAME::xtTrain type )
+// BOOL XSockGameSvr::SendReqTrainHero( XWnd *pTimeoutCallback, XSPHero pHero, XGAME::xtTrain type )
 // {
 // 	_XCHECK_CONNECT(0);
 // 	//
@@ -3030,6 +3158,7 @@ void XSockGameSvr::RecvCheckTrainComplete( XPacket& p, const xCALLBACK& c )
 		//
 		_tstring str;
 		int type2 = -1;
+		//XBREAK(1);	// XWndSkillTrainComplete로 교체할것.
 		switch( type ) {
 		case XGAME::xTR_LEVEL_UP:
 			str = XE::Format( XTEXT( 2096 ), pHero->GetstrName().c_str() );	// 영웅 xxx의 훈련이 끝났습니다.
@@ -3053,24 +3182,19 @@ void XSockGameSvr::RecvCheckTrainComplete( XPacket& p, const xCALLBACK& c )
 		SOUNDMNG->OpenPlaySound( 27 );		// 훈련완료!
 		if( pHero->GetbLevelUpAndClear( type ) ) {
 			str += XFORMAT( "\n%s", XTEXT( 2234 ) );	// 레벨이 올랐습니다!
-// 			if( !GAME->IsPlayingSeq() && !SCENE_BATTLE ) {	// 튜토중이거나 전투중에도 안뜸.
 		}
 		// 튜토중이거나 월드씬이 아닌상태에선 버퍼에 담는다.
 		if( GAME->IsPlayingSeq() || !SCENE_WORLD ) {
 			auto& listAlert = GAME->GetlistAlertWorld();
-// 			if( !listAlert.FindpByID(pHero->GetsnHero() ) {
 			xAlertWorld alert;
 			alert.m_Type = xAW_TRAIN_COMPLETE;
 			alert.m_snHero = pHero->GetsnHero();
+			alert.m_Train = type;
 			alert.m_strMsg = str;
 			listAlert.Add( alert );
-// 			}
 		} else {
-			auto pAlert = new XGameWndAlert( str.c_str(), nullptr, XWnd::xOK );
-			if( pAlert ) {
-				GAME->GetpScene()->Add( pAlert );
-				pAlert->SetbModal( TRUE );
-			}
+			const int lv = pHero->GetLevel( type );
+			GAME->DoPopupTrainComplete( type, pHero, lv );
 		}
 		if ( typeComplete ) {
 			// 즉시완료시키면 렙업창 꺼줌.
@@ -3079,11 +3203,8 @@ void XSockGameSvr::RecvCheckTrainComplete( XPacket& p, const xCALLBACK& c )
 				pWnd->SetbDestroy( true );
 			SendUnregistPushMsg(NULL, ACCOUNT->GetidAccount(), type2, snHero);
 		}
-
-	} else
-	{
-		switch( result )
-		{
+	} else	{
+		switch( result )		{
 		case xEC_NOT_ENOUGH_CASH:
 			XWND_ALERT("%s", _T("not enough cash."))
 			break;
@@ -3272,33 +3393,25 @@ BOOL XSockGameSvr::SendReqChangeSquad(XWnd *pTimeoutCallback, int idx, XLegion *
 {
 	if(pLegion == nullptr)
 		return false;
-	int size = 0;
 	XPacket ar((ID)xCL2GS_LOBBY_CHANGE_SQUAD);
 	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
 	ID idKey =
 		AddResponse(ar.GetidPacket(),
 		&XSockGameSvr::RecvChangeSquad, pTimeoutCallback);
 
-	auto& arySquad = pLegion->GetarySquadrons();
+//	auto& arySquad = pLegion->GetarySquadrons();
 	ar << idx;
-	//ar << arySquad
-	// size를 먼저 넣기 위해 2번돌음..
-	for (int i = 0; i < arySquad.GetMax(); i++) {
-		if (arySquad[i])
-			size++;
-	}
+	const int size = pLegion->GetNumSquadrons();
 	ar << size;
 	if (pLegion->GetpLeader())
-		ar << (ID)pLegion->GetpLeader()->GetsnHero();
+		ar << pLegion->GetpLeader()->GetsnHero();
 	else
 		ar << 0;
-	for (int i = 0; i < arySquad.GetMax(); i++) {
-		if (arySquad[i]){
-			ar << i;	//슬롯
-			//부대의 영웅이 계정에 없는 영웅일수는 없다
-			XBREAK(ACCOUNT->GetHero(arySquad[i]->GetpHero()->GetsnHero()) == nullptr);
-			ar << (ID)arySquad[i]->GetpHero()->GetsnHero();
-		}
+	for( auto pSq : pLegion->GetlistSquadrons() ) {
+		ar << pSq->GetidxPos();	//슬롯
+		//부대의 영웅이 계정에 없는 영웅일수는 없다
+		XBREAK(ACCOUNT->GetHero(pSq->GetpHero()->GetsnHero()) == nullptr);
+		ar << pSq->GetpHero()->GetsnHero();
 	}
 	//pLegion->Serialize(ar);
 	Send(ar);
@@ -3311,8 +3424,7 @@ void XSockGameSvr::RecvChangeSquad(XPacket& p, const xCALLBACK& c)
 	ID snHero, snLeader;
 
 	p >> success;
-	if (success == 0)
-	{
+	if (success == 0)	{
 		if (SCENE_LEGION)
 			SCENE_LEGION->RecvChangeSquad(success);
 		return;
@@ -3322,20 +3434,16 @@ void XSockGameSvr::RecvChangeSquad(XPacket& p, const xCALLBACK& c)
 	p >> size;
 	p >> snLeader;
 
-	for (int i = 0; i < XGAME::MAX_SQUAD; i++)
-	{
-		ACCOUNT->GetCurrLegion()->RemoveSquad(i);
+	for (int i = 0; i < XGAME::MAX_SQUAD; i++)	{
+		ACCOUNT->GetCurrLegion()->DestroySquadByIdxPos(i);
 	}
 
-	for (int i = 0; i < size; i++)
-	{
+	for (int i = 0; i < size; i++)	{
 		p >> slot;
 		p >> snHero;
-
 		XBREAK(ACCOUNT->GetHero(snHero) == nullptr);
-
-		XSquadron *pSq = new XSquadron(ACCOUNT->GetHero(snHero));
-		ACCOUNT->GetCurrLegion()->SetSquadron(slot, pSq, FALSE);
+		auto pSq = std::make_shared<XSquadron>(ACCOUNT->GetHero(snHero));
+		ACCOUNT->GetCurrLegion()->AddSquadron(slot, pSq, false);
 
 		if (pSq->GetpHero()->GetsnHero() == snLeader)
 			ACCOUNT->GetCurrLegion()->SetpLeader(pSq->GetpHero());
@@ -3500,21 +3608,25 @@ void XSockGameSvr::RecvResearchComplete( XPacket& p, const xCALLBACK& c )
 	if( codeError == xEC_OK || codeError == xEC_QUICK_OK ) {
 		// 완료됨.
 		ACCOUNT->GetResearching().DoComplete();
-		// 여기서 바로 띄우면 안되고 보관해놨다가 월드맵뜨면 띄워야 함.
-		_tstring str = XE::Format( XTEXT( 2029 ), XTEXT( pProp->idName ) );	// "아무개"의 연구가 완료되었습니다.
-		if( SCENE_WORLD && !GAME->IsPlayingSeq() ) {
-			auto pAlert = XWND_ALERT( "%s", str.c_str() );
-			if( pAlert ) {
-				pAlert->SetbModal( TRUE );
-			}
-		} else {
-			auto& listAlert = GAME->GetlistAlertWorld();
-			xAlertWorld alert;
-			alert.m_Type = xAW_RESEARCH_COMPLETE;
-			alert.m_snHero = snHero;
-			alert.m_strMsg = str;
-			listAlert.Add( alert );
-		}
+		GAME->OnRecvResearchCompleted( pHero, idAbil, point );
+// 		// 현재 월드씬이면 바로 띄우고 아니면 큐에 보관했다가 월드맵 진입하면 띄운다.
+// 		_tstring str = XE::Format( XTEXT( 2029 ), XTEXT( pProp->idName ) );	// "아무개"의 연구가 완료되었습니다.
+// 		if( SCENE_WORLD && !GAME->IsPlayingSeq() ) {
+// 			auto pPopup = new XWndResearchComplete( pHero, idAbil, point );
+// 			SCENE_WORLD->Add( pPopup );
+// 			// 			auto pAlert = XWND_ALERT( "%s", str.c_str() );
+// // 			if( pAlert ) {
+// // 				pAlert->SetbModal( TRUE );
+// // 			}
+// 		} else {
+// 			auto& listAlert = GAME->GetlistAlertWorld();
+// 			xAlertWorld alert;
+// 			alert.m_Type = xAW_RESEARCH_COMPLETE;
+// 			alert.m_snHero = snHero;
+// 			alert.m_idParam = idAbil;
+// 			alert.m_Level = point;
+// 			listAlert.Add( alert );
+// 		}
 		if (codeError == xEC_QUICK_OK)
 			SendUnregistPushMsg(NULL, ACCOUNT->GetidAccount(), XGAME::xTECH_TRAINING, idAbil);
 	} else {
@@ -3549,7 +3661,7 @@ void XSockGameSvr::RecvResearchComplete( XPacket& p, const xCALLBACK& c )
  @see AddResponse()
 */
 BOOL XSockGameSvr::SendReqResearchCompleteNow( XWnd *pTimeoutCallback
-																							, XHero *pHero
+																							, XSPHero pHero
 																							, ID idAbil )
 {
 	_XCHECK_CONNECT(0);
@@ -3770,19 +3882,19 @@ void XSockGameSvr::RecvFinishBuff( XPacket& p, const xCALLBACK& c )
 }
 
 /**
- @brief 
- 전송하고 응답을 기다려야 하는 류의 구현에 사용.
- _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
+ @brief 전투시작 요청. 전투세션값을 요청한다.
  @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
  @param param 사용자가 정의해서 쓰시오
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
  @see AddResponse()
 */
-BOOL XSockGameSvr::SendReqBattleStart( XWnd *pTimeoutCallback )
+BOOL XSockGameSvr::SendReqBattleStart( XWnd *pTimeoutCallback, ID idSpot )
 {
 	_XCHECK_CONNECT(0);
 	//
 	XPacket ar( (ID)xCL2GS_INGAME_BATTLE_START );
+	ar << idSpot;
+
 
 	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
 	ID idKey = 
@@ -3800,6 +3912,16 @@ BOOL XSockGameSvr::SendReqBattleStart( XWnd *pTimeoutCallback )
 */
 void XSockGameSvr::RecvBattleStart( XPacket& p, const xCALLBACK& c )
 {
+	ID snSession;
+	ID idSpot;
+	p >> snSession;
+	p >> idSpot;
+
+	XBREAK( snSession == 0 );
+	ACCOUNT->SetBattleSession( snSession,
+														 nullptr,
+														 0,
+														 idSpot );
 	if( SCENE_READY )
 		SCENE_READY->RecvBattleStart();
 }
@@ -3918,53 +4040,6 @@ void XSockGameSvr::RecvCheckAPTimeOver( XPacket& p, const xCALLBACK& c )
 		ACCOUNT->GettimerAP().RetryTimer( 2 );		// n초후에 다시 시도하도록 함.
 	}
 }
-
-
-/*
-SendReqCheckAPTimeOver()
-{
-	ar << (WORD)ACCOUNT->GetAP();
-	ar << (WORD)ACCOUNT->GetmaxAP();
-}
-
-RecvReqCheckAPTimeOver()
-{
-	WORD w0;
-	p >> w0;		// 0이오는것은 실패임.
-	if( w0 > 0 )
-	{
-		ACCOUNT->SetAP( w0 );
-		ACCOUNT->ResetAPTimer();
-	}
-	p >> w0;	ACCOUNT->SetmaxAP( w0 );
-
-}
-
-// 서버
-RecvCheckAPTimeOver()
-{
-	XBREAK( m_pAccount->GetmaxAP() > 0xffff );
-	if( m_pAccount->IsAPTimeOver() )
-	{
-		int ap = m_pAccount->AddAP( 1 );
-		m_pAccount->ResetAPTimer();
-		XBREAK( ap > 0xffff );
-		XBREAK( ap == 0 );		// 적어도 1은 더했으므로 0이 나올수는 없다.
-		ar << (WORD)ap;
-		ar << (WORD)m_pAccount->GetmaxAP();
-		m_pAccount->SetcntAPFail( 0 );		// 성공하면 계속 초기화
-	} else
-	{
-		ar << (WORD)0;	// 0이면 타이머가 아직 안지났음.
-		ar << (WORD)m_pAccount->GetmaxAP();
-		int cntFail = m_pAccount->GetcntAPFail();
-		XVERIFY_BREAK( ++cntFail >= 5 );	// 5초씩이나 차이가 난다는것은 클라랑 심각하게 비동기되고 있다는것이므로 재접하도록 함.
-		m_pAccount->SetcntAPFail( cntFail );
-	}
-
-}
-*/
-
 /**
  @brief 
  전송하고 응답을 기다려야 하는 류의 구현에 사용.
@@ -3996,95 +4071,6 @@ BOOL XSockGameSvr::SendReqTrainCompleteQuick( XWnd *pTimeoutCallback, ID snSlot,
 }
 
 /**
- @brief 영웅에게 메달이나 보옥등의 전리품 제공하여 렙업
- 전송하고 응답을 기다려야 하는 류의 구현에 사용.
- _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
- @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
- @param param 사용자가 정의해서 쓰시오
- @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
- @see AddResponse()
-*/
-// BOOL XSockGameSvr::SendReqProvideBooty( XWnd *pTimeoutCallback, ID snHero, XGAME::xtTrain type, int num )
-// {
-// 	_XCHECK_CONNECT(0);
-// 	//
-// 	XPacket ar( (ID)xCL2GS_PROVIDE_BOODY );
-// 	ar << snHero;
-// 	ar << (BYTE)type;
-// 	XBREAK( num > 0xff );
-// //	ar << (BYTE)num;	// 이건 메달제공이기때문에 대량으로 한꺼번에 제공될 필요 없다. 해서도 안되고.
-// 	ar << (BYTE)0;
-// 	ar << (BYTE)0;
-// 	ar << (BYTE)0;
-// 
-// 	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
-// 	ID idKey = 
-// 		AddResponse( ar.GetidPacket(), 
-// 					&XSockGameSvr::RecvProvideBooty, pTimeoutCallback );
-// 	Send( ar );
-// 	//
-// 	return TRUE;
-// }
-// 
-// /**
-//  SendReqProvideBooty()에 대한 응답함수
-//  @param p 패킷이 들어있는 아카이브
-//  @see SendReqProvideBooty()
-// */
-// void XSockGameSvr::RecvProvideBooty( XPacket& p, const xCALLBACK& c )
-// {
-// 	ID snHero;
-// 	BYTE b0;
-// 	WORD w0;
-// 	p >> snHero;
-// 	p >> b0;	auto type = (XGAME::xtTrain)b0;
-// 	p >> b0;	int verEtc = b0;
-// 	p >> b0 >> b0;
-// 	ID idNeed;
-// 	auto pHero = ACCOUNT->GetHero( snHero );
-// 	if( XBREAK( pHero == nullptr ) )
-// 		return;
-// 	switch( type )
-// 	{
-// 	case XGAME::xTR_SQUAD_UP: {
-// 		int numRefund1;
-// 		int numRefund2;
-// 		p >> numRefund1 >> numRefund2;
-// 		if( numRefund1 )
-// 			CONSOLE("유황환불:+%d", numRefund1);
-// 		if( numRefund2 )
-// 			CONSOLE( "만드레이크환불:+%d", numRefund2 );
-// 	} break;
-// 	case XGAME::xTR_SKILL_ACTIVE_UP:
-// 	case XGAME::xTR_SKILL_PASSIVE_UP: {
-// 		int numRefund;
-// 		p >> numRefund;
-// 		if( numRefund )
-// 			CONSOLE( "보석환불:+%d", numRefund );
-// 	} break;
-// 	default:
-// 		XBREAK(1);
-// 		break;
-// 	}
-// 	ACCOUNT->DeSerializeTrainSlot( p, verEtc );
-// 	pHero->DeSerializeLevelupReady( p );
-// 	p >> idNeed;
-// 	p >> b0;	bool bLevelup = xbyteToBool(b0);
-// 	p >> b0;	pHero->SetNumProvide( type, b0 );
-// 	p >> w0;	auto result = (xErrorCode)w0;
-// 	if( result == xEC_NO_MORE_PROVIDE )
-// 		XWND_ALERT("%s", _T("더이상 할 수 없습니다. 훈련이 끝나기를 기다려 주세요.") );
-// 
-// 	if( idNeed )
-// 		// 무조건 한개씩만 제공하는걸로 가정
-// 		XBREAK( 0 == ACCOUNT->DestroyItem( idNeed, 1 ) );
-// 	///< 
-// 	GAME->SetbUpdate( true );
-// 
-// 
-// }
-
-/**
  @brief 
  전송하고 응답을 기다려야 하는 류의 구현에 사용.
  _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
@@ -4093,7 +4079,7 @@ BOOL XSockGameSvr::SendReqTrainCompleteQuick( XWnd *pTimeoutCallback, ID snSlot,
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
  @see AddResponse()
 */
-BOOL XSockGameSvr::SendReqPromotionHero( XWnd *pTimeoutCallback, XHero *pHero )
+BOOL XSockGameSvr::SendReqPromotionHero( XWnd *pTimeoutCallback, XSPHero pHero )
 {
 	_XCHECK_CONNECT(0);
 	//
@@ -4815,7 +4801,8 @@ void XSockGameSvr::RecvReqKickGuild(XPacket& p, const xCALLBACK& c)
 
 void XSockGameSvr::RecvCreateHero( XPacket& p, const xCALLBACK& c )
 {
-	auto pHero = XHero::sCreateDeSerialize( p, ACCOUNT );
+	auto pHero = XHero::sCreateDeSerialize2( p, ACCOUNT );
+	ACCOUNT->AddHero( pHero );
 	GAME->SetbUpdate( true );
 // 	if (SCENE_UNITORG)
 // 		SCENE_UNITORG->SetbUpdate(true);
@@ -4994,7 +4981,7 @@ void XSockGameSvr::RecvFillAP( XPacket& p, const xCALLBACK& c )
  @brief 각종 asset(자원,금화,시간,AP,횟수등)을 젬이나 특정아이템으로 지불하고 구매한다.
  @param bByItem 젬대신 typeAsset에 맞는 아이템이 있다면 그것을 소모하고 구매(교환)
 */
-BOOL XSockGameSvr::SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, xtPaymentRes typeAsset, bool bByItem )
+BOOL XSockGameSvr::SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, xtPaymentRes typeAsset, bool bByItem, const XParamObj2& param )
 {
 	_XCHECK_CONNECT(0);
 	//
@@ -5003,6 +4990,7 @@ BOOL XSockGameSvr::SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, xtPaymentRe
 	ar << xboolToByte( bByItem );
 	ar << (char)0;
 	ar << (char)0;
+	ar << param;
 
 	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
 	ID idKey = 
@@ -5352,7 +5340,7 @@ void XSockGameSvr::RecvCampaignReward( XPacket& p, const xCALLBACK& c )
  @see AddResponse()
 */
 BOOL XSockGameSvr::SendReqTrainHeroByGold( XWnd *pTimeoutCallback, 
-											XHero *pHero, 
+											XSPHero pHero, 
 											int gold, 
 											XGAME::xtTrain typeTrain )
 {
@@ -5539,7 +5527,7 @@ BOOL XSockGameSvr::SendTouchSquadInReadyScene( int idxSquad )
  @param param 사용자가 정의해서 쓰시오
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
 */
-BOOL XSockGameSvr::SendControlSquadInBattle( const XHero *pHero )
+BOOL XSockGameSvr::SendControlSquadInBattle( XSPHeroConst pHero )
 {
 	_XCHECK_CONNECT(0);
 	//
@@ -5938,4 +5926,111 @@ void XSockGameSvr::DelegateGuildUpdate( XGuild* pGuild, const xnGuild::xMember& 
 {
 
 }
+
+/**
+ @brief 
+ 전송하고 응답을 기다려야 하는 류의 구현에 사용.
+ _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
+ @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
+ @param param 사용자가 정의해서 쓰시오
+ @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
+ @see AddResponse()
+*/
+BOOL XSockGameSvr::SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, 
+																								const XList4<XSPHero>& listHero, 
+																								ID idSpot )
+{
+	_XCHECK_CONNECT(0);
+	//
+	XPacket ar( (ID)xCL2GS_PRIVATE_RAID_ENTER_LIST );
+	ar << idSpot;
+	ar << listHero.size();
+	for( const auto pHero : listHero ) {
+		ar << pHero->GetsnHero();
+	}
+
+	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
+	ID idKey = 
+		AddResponse( ar.GetidPacket(), 
+					&XSockGameSvr::RecvPrivateRaidEnterList, pTimeoutCallback );
+	Send( ar );
+	//
+	return TRUE;
+}
+
+/**
+ SendReqPrivateRaidEnterList()에 대한 응답함수
+ @param p 패킷이 들어있는 아카이브
+ @see SendReqPrivateRaidEnterList()
+*/
+void XSockGameSvr::RecvPrivateRaidEnterList( XPacket& p, const xCALLBACK& c )
+{
+	// 갱신 완료
+
+}
+
+/**
+ @brief 
+ 전송하고 응답을 기다려야 하는 류의 구현에 사용.
+ _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
+ @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
+ @param param 사용자가 정의해서 쓰시오
+ @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
+ @see AddResponse()
+*/
+BOOL XSockGameSvr::SendReqEnterReadyScene( XWnd *pTimeoutCallback, ID idSpot )
+{
+	_XCHECK_CONNECT(0);
+	//
+	XPacket ar( (ID)xCL2GS_ENTER_READY_SCENE );
+	ar << idSpot;
+
+	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
+	ID idKey = 
+		AddResponse( ar.GetidPacket(), 
+					&XSockGameSvr::RecvEnterReadyScene, pTimeoutCallback );
+	Send( ar );
+	//
+	return TRUE;
+}
+
+/**
+ SendReqEnterReadyScene()에 대한 응답함수
+ @param p 패킷이 들어있는 아카이브
+ @see SendReqEnterReadyScene()
+*/
+void XSockGameSvr::RecvEnterReadyScene( XPacket& p, const xCALLBACK& c )
+{
+	ID idSpot;
+	p >> idSpot;
+	if( SCENE_WORLD == nullptr )
+		return;
+		auto pbaseSpot = sGetpWorld()->GetpSpot( idSpot );
+	if( XBREAK( pbaseSpot == nullptr ) )
+		return;
+	auto pSpot = SafeCast<XSpotPrivateRaid*>( pbaseSpot );
+	if( XBREAK( pSpot == nullptr ) )
+		return;
+	XVector<XSPLegion> aryLegion( 2 );
+	aryLegion[0] = ACCOUNT->GetCurrLegion();
+	aryLegion[1] = pSpot->GetspLegion();
+	auto spParam
+		= std::make_shared<XGAME::xPrivateRaidParam>( 0,			// idEnemy
+																									xSPOT_NPC,
+																									idSpot,
+																									pSpot->GetLevel(),
+																									_T("babarian"), // pSpot->GetstrName(),
+																									aryLegion );
+	// 추가로 추가부대의 리스트를 파라메터에 넣는다.
+	for( int i = 0; i < 2; ++i ) {
+		for( auto pHero : pSpot->GetlistEnter( i ) ) {
+			// 군단소속 영웅은 리스트에 넣지 않는다.
+			if( false == aryLegion[i]->IsEnteredHero( pHero->GetsnHero()) ) {
+				spParam->m_aryEnter[i].push_back( pHero );
+			}
+		}
+	}
+	SCENE_WORLD->DoExit( xSC_READY, spParam );
+}
+
 

@@ -82,10 +82,7 @@ class XWndPageSlideWithXML : public XWnd
 		m_pDelegate = NULL;
 		m_bLockSlide = FALSE;
 	}
-	void Destroy() {
-		SAFE_RELEASE2( IMAGE_MNG, m_sfcPointOn );
-		SAFE_RELEASE2( IMAGE_MNG, m_sfcPointOff );
-	}
+	void Destroy();
 public:
 	/**
 	szImgPoint: 현재 페이지의 위치를 보여주는 포인트이미지 파일명. 파일명.png의 형식

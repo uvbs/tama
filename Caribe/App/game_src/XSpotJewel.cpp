@@ -69,7 +69,6 @@ void XSpotJewel::Serialize( XArchive& ar )
 	else
 		ar << m_strHello;
 	ar << (BYTE)m_idxLegion;
-//  bool bSimul = (m_spAccSimul != nullptr);
 	ar << (BYTE)0; //(BYTE)xboolToByte( m_bSimul );
 	ar << (BYTE)m_lvMatchEnemyForSimul;
 	ar << (BYTE)0;
@@ -80,14 +79,11 @@ void XSpotJewel::Serialize( XArchive& ar )
 	ar << m_lsLocal.maxSize;
 //#ifdef _DEV
 	ar << m_strNameByMatchEnemyForSimul;
-// #else
-// 	ar << _tstring();
-// #endif
 }
-BOOL XSpotJewel::DeSerialize( XArchive& ar, DWORD ver ) 
+
+BOOL XSpotJewel::DeSerialize( XArchive& ar, DWORD ver )
 {
 #ifndef _DUMMY_GENERATOR
-//	// CONSOLE( "deserialize jewel" );
 #endif // not _DUMMY_GENERATOR
 	XSpot::DeSerialize( ar, ver );
 //	ID idProp;
@@ -96,10 +92,6 @@ BOOL XSpotJewel::DeSerialize( XArchive& ar, DWORD ver )
 	ar >> b0;	//idProp = b0;
 	ar >> b0;	m_levelMine = b0;
 	ar >> w0;	m_Defense = w0;
-// 	if( m_levelMine == 0 )
-// 		m_levelMine = 1;
-// 	if( m_Defense == 0 )
-// 		m_Defense = m_levelMine;
 	// null이 나올수도 있으나 그냥 리턴하지말고 남은 시리얼라이즈를 모두 끝내야함.
 	// 스팟이 필요에의해 삭제될수 있기때문.
 	ar >> m_idOwner;
@@ -115,11 +107,7 @@ BOOL XSpotJewel::DeSerialize( XArchive& ar, DWORD ver )
 		ar >> m_strHello;
 	ar >> b0;	m_idxLegion = b0;
 	ar >> b0;   //m_bSimul = (b0!=0);
-//#ifdef _DEV
   ar >> b0;	m_lvMatchEnemyForSimul = b0;
-// #else
-// 	ar >> b0;
-// #endif
 	ar >> b0;
 	DWORD dw0;
 	ar >> dw0;	m_secLastEvent = (double)dw0;
@@ -138,24 +126,25 @@ BOOL XSpotJewel::DeSerialize( XArchive& ar, DWORD ver )
 	if( GetpProp() )
 		SetMaxLocal( GetpProp() );
 	if( ver >= 25 ) {
-//#ifdef _DEV
 		ar >> m_strNameByMatchEnemyForSimul;
-// #else
-// 		_tstring strDummy;
-// 		ar >> strDummy;
-// #endif // _DEV
 	}
-
-// #ifdef _GAME_SERVER
-//   if( m_bSimul ) {
-//     //m_spAccSimul = new XAccount;
-//     m_idOwner = XE::GenerateID();
-//   } else {
-//     SAFE_RELEASE_REF( m_spAccSimul );
-//   }
-// #endif // _GAME_SERVER
 	return TRUE;
 }
+
+void XSpotJewel::SerializeForBattle( XArchive* pOut, const XParamObj2& param )
+{
+	XSpot::SerializeForBattle( pOut, param );
+	*pOut << m_levelMine;
+	*pOut << m_Defense;
+}
+
+void XSpotJewel::DeSerializeForBattle( XArchive& arLegion, XArchive& arAdd, XSPAcc spAcc )
+{
+	XSpot::DeSerializeForBattle( arLegion, arAdd, spAcc );
+	arAdd >> m_levelMine;
+	arAdd >> m_Defense;
+}
+
 
 // 스팟을 유저(플레이어 자신포함)의 소유로 만든다.
 void XSpotJewel::SetPlayerOwner( ID idAcc, LPCTSTR szName ) 
@@ -388,3 +377,4 @@ void XSpotJewel::GetJewelInfo( XGAME::xJewelInfo* pOut )
 	pOut->m_LevelMine = m_levelMine;
 	pOut->m_Defense = m_Defense;
 }
+

@@ -2,6 +2,33 @@
 브랜치 테스트
 git test
 문제해결
+2016.10.11
+ * 기기에서 ../normal.ttf 식으로 읽으니까 제대로 안읽힌다.
+   .정확하게는 다른 apk로 설치를 한 후에 문제의 apk를 덮어설치하면 읽어지고 문제의 apk를 처음부터 설치하면 못읽음
+	 . ../와 같은 방식은 안쓰는게 좋을듯 하니 폰트를 읽을때 폰트명을 직접 사용하지 않고 키값으로 읽어내도록 해야할듯.
+	 . 예를들어 FONTMNG->Load( "unicode" ); 라고 하면 먼저 국가폴더(en)의 font.txt를 먼저 읽어서 거기서 unicode키값으로 지정되어있는 파일명을 사용한다.
+	   이 경우는 en폴더엔 unicode폰트를 보관하지 않을예정이므로 unicode = "" 와 같은식으로 비워둬서 상위 폴더에서 다시 찾도록 한다
+		 Load( const char* cKey ) 와 같은식으로 바껴서 en/font.txt를 먼저 읽고 그담 font.txt를 읽도록한다.
+2016.9.29
+ *_fprintf이(가) msvcrt.lib(MSVCR120.dll)에 이미 정의되어 있습니다.
+   .본프로젝트는 release빌드인데 라이브러리는 디버그 빌드면 난다. 라이브러리쪽 릴리즈 빌드를 다시 해볼것.
+   .특정라이브러리 무시옵션은 다른 모듈에서의 링크까지 에러나므로 안됨.
+2016.9.28
+  Android NDK: WARNING: Ignoring unknown import directory: ..\..\XE\Common\_XLibrary\android\prebuilt    
+  Android NDK: ..\..\Caribe/../XE/Common/_XLibrary/Android.mk: Cannot find module with tag 'libpng' in import path    
+  ..\..\Caribe/../XE/Common/_XLibrary/Android.mk:101: *** Android NDK: Aborting.    .  Stop.
+  이런에러 뜨면 이클립스 caribe프로젝트 속성의 c/c++ build/Environment에 패스가 android/로 되어있음.
+ *apk넣고 실행하자마자 죽어버리는 증상
+   .jni에 있는 cpp에 패키지명을 잘못씀.
+   .mtricks.xe쪽은 엔진쪽이니 안바꿔도 되지만 caribe쪽은 패키지명이 바뀌면 cpp에 것도 바꿔줘야 함.
+   .opening.spr이 없었음.
+2016.09.21
+ *유닛 렌더링시 z-buff가 안먹는것처럼 뒷유닛이 앞유닛의 투명부분에 의해 가려지는 현상
+   .알파테스트가 꺼진건지 확인
+2016.09.18
+ *배치렌더링시 주의사항
+   .겹치는 ui일때 배치렌더링과 일반렌더링을 섞으면 안된다. 배치렌더링은 마지막에 몰아서 하기때문에 일반렌더링은 무조건 배치렌더링 밑에 가린다.
+   .서로 위치가 다르다면 상관없다.
 2016.08.22
 * 이클립스 Android SDK: resolving error markers 에러가 날때 대처법
   이클립스 설치 폴더로 이동

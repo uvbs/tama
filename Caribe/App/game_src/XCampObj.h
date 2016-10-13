@@ -161,8 +161,8 @@ public:
 		return nullptr;
 	}
 	/// 현재스테이지(아직 안깬스테이지)의 군대정보
-	LegionPtr GetspLegionLastUnlockStage( int idxFloor = 0 );
-	LegionPtr GetspLegionLastPlayStage( int idxFloor = 0 );
+	XSPLegion GetspLegionLastUnlockStage( int idxFloor = 0 );
+	XSPLegion GetspLegionLastPlayStage( int idxFloor = 0 );
 	virtual XGAME::xtError IsAbleTry( const XSPStageObj spStageObj, int idxFloor = 0 );
 	bool IsAbleTry( int idxStage, int idxFloor = 0 );
 	/// 캠페인 이름

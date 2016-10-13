@@ -527,6 +527,33 @@
     <ClCompile Include="..\..\..\game_src\XComp.cpp">
       <Filter>source\battle</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneTest.cpp">
+      <Filter>source\_test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneTest2.cpp">
+      <Filter>source\_test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XWndStorageItemElem.cpp">
+      <Filter>source\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSpotPrivateRaid.cpp">
+      <Filter>source\world and spot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneBattleSub.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XSceneBattleSingle.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XAsyncMng.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XScenePrivateRaid.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\game_src\XWndPrivateRaid.cpp">
+      <Filter>source\battle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
@@ -1124,6 +1151,42 @@
     <ClInclude Include="..\..\..\game_src\XComp.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSceneTest.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\XFramework\XSplitNode.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\client\XCheatOption.h">
+      <Filter>source\main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSceneTest2.h">
+      <Filter>source\_test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XWndStorageItemElem.h">
+      <Filter>source\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSpotPrivateRaid.h">
+      <Filter>source\world and spot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSceneBattleSub.h">
+      <Filter>source\battle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XSceneBattleSingle.h">
+      <Filter>source\battle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XAsyncMng.h">
+      <Filter>source\battle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XScenePrivateRaid.h">
+      <Filter>source\battle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XLegionH.h">
+      <Filter>source\obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\game_src\XWndPrivateRaid.h">
+      <Filter>source\battle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\daily_work.txt" />
@@ -1235,6 +1298,9 @@
     <Filter Include="source\battle\skill">
       <UniqueIdentifier>{33075e7d-422d-4b5c-8dfc-665283c46d5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\_test">
+      <UniqueIdentifier>{2c4123a0-8518-4d00-8d8c-a02bc959f8b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Caribe.rc">
@@ -1341,10 +1407,16 @@
     <Xml Include="..\..\..\Resource\prop\layout\mail.xml">
       <Filter>Layout XML</Filter>
     </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\option.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\player_info.xml">
       <Filter>Layout XML</Filter>
     </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\popup_battle_exp.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\popup_battle_result.xml">
       <Filter>Layout XML</Filter>
     </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\popup_daily.xml">
@@ -1360,6 +1432,12 @@
       <Filter>Layout XML</Filter>
     </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\rank.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\regist_acc.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\research_info.xml">
       <Filter>Layout XML</Filter>
     </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\scene_loading.xml">
@@ -1386,10 +1464,19 @@
     <Xml Include="..\..\..\Resource\prop\layout\squad_levelup.xml">
       <Filter>Layout XML</Filter>
     </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\trade_confirm.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\abil_tree.xml">
       <Filter>Layout XML</Filter>
     </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\bar_blue.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\buy_by_cash.xml">
+      <Filter>Layout XML</Filter>
+    </Xml>
+    <Xml Include="..\..\..\Resource\prop\layout\camp_hero.xml">
       <Filter>Layout XML</Filter>
     </Xml>
     <Xml Include="..\..\..\Resource\prop\layout\campaign.xml">

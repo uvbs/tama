@@ -3,6 +3,7 @@
 #include "XEWorld.h"
 #include "XEWndWorld.h"
 #include "XFramework/XEProfile.h"
+#include "sprite/SprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -23,8 +24,10 @@ static bool compY( const XEBaseWorldObj *pObj1, const XEBaseWorldObj *pObj2 )
 		DWORD snObj1 = ( pObj1 ) ? (int)( pObj1 )->GetsnObj() : 0x7fffffff;
 		DWORD snObj2 = ( pObj2 ) ? (int)( pObj2 )->GetsnObj() : 0x7fffffff;
 		return snObj1 < snObj2;
-	} else
-		return y1 < y2;
+	} else {
+ 		return y1 > y2;
+//		return y1 < y2;
+	}
 	// 그래도 소트껌뻑이는게 거슬린다면 x좌표소트, snObj소트도 할것.
 }
 
@@ -132,7 +135,7 @@ void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 		if( dt > 0 )
 			pObj->FrameMove( dt );
 		//
-		XE::VEC2 vlPos = pWndWorld->GetPosWorldToWindow( pObj->GetvwPos() );
+		XE::VEC2 vlPos = pWndWorld->GetPosWorldToWindow( pObj->GetvwPos(), nullptr );
 		// 화면에서 벗어나서 삭제됨을 체크해줄것을 요청한다.
 		if( pObj->DelegateOutOfBoundary( vlPos ) )
 			pObj->SetDestroy( 1 );
@@ -140,8 +143,8 @@ void XEObjMng::FrameMove( XEWndWorld *pWndWorld, float dt )
 			pObj->Release();
 			// 하위상속 객체에 파괴됨을 알린다.
 			OnDestroyObj( pObj );		// virtual
-			if( pWndWorld->GetpWorld() )
-				pWndWorld->GetpWorld()->OnDestroyObj( pObj );
+			if( pWndWorld->GetspWorld() )
+				pWndWorld->GetspWorld()->OnDestroyObj( pObj );
 			{
 				auto itorMap = m_mapObj.find( pObj->GetsnObj() );
 				if( XASSERT(itorMap != m_mapObj.end()) ) {
@@ -180,9 +183,17 @@ void XEObjMng::Draw( XEWndWorld *pWndWorld )
 			//XPROF_OBJ( "select" );
 			for( auto spObj : m_listObj ) {
 				XEBaseWorldObj *pObj = spObj.get();
-				XE::xRECT rectBB = pObj->GetBoundBoxWindow();
-				if( pWndWorld->IsOutBoundary( rectBB ) == FALSE )
-					m_aryVisible.Add( pObj );
+				auto pSprObj = pObj->GetpSprObj();
+				if( pSprObj ) {
+					if( pSprObj->GetAction() ) {
+						auto rectBB = pObj->GetBoundBoxWindow( pSprObj, pSprObj->GetAction() );
+						if( pWndWorld->IsOutBoundary( rectBB ) == FALSE ) {
+							m_aryVisible.Add( pObj );
+						} else {
+							int a = 0;
+						}
+					}
+				}
 			}
 		}
 		{
@@ -198,18 +209,21 @@ void XEObjMng::Draw( XEWndWorld *pWndWorld )
 
 void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*>& aryVisible )
 {
+// 	auto bAlphaTest = GRAPHICS->GetbAlphaTest();
+// 	auto bZBuffer = GRAPHICS->GetbEnableZBuff();
+// 	GRAPHICS->SetbAlphaTest( true );		// 월드객체는 기본적으로 알파테스트와 z버퍼를 사용한다. 이펙트류는 개별적으로 옵션을 선택하도록 한다.
+// 	GRAPHICS->SetbEnableZBuff( true );
 	XPROF_OBJ_AUTO();
 	for( auto pObj : aryVisible ) {
 		if( pWndWorld ) {
 			// 각 오브젝트들의 월드좌표를 스크린좌표로 변환하여 draw를 시킴
 			float scale = 1.f;
 			// 투영함수에서 카메라 스케일값을 받아온다.
-			XE::VEC2 vsPos;
+			XE::VEC2 vsPos;	
 			{
 				XPROF_OBJ( "projection" );
 				vsPos = pWndWorld->GetPosWorldToScreen( pObj->GetvwPos(), &scale );
-			}
-			{
+			}	{
 				XPROF_OBJ( "draw each" );
 				pObj->Draw( vsPos, scale );
 			}
@@ -218,6 +232,8 @@ void XEObjMng::DrawVisible( XEWndWorld *pWndWorld, const XVector<XEBaseWorldObj*
 			pObj->Draw( vs );
 		}
 	};
+// 	GRAPHICS->SetbAlphaTest( bAlphaTest );
+// 	GRAPHICS->SetbEnableZBuff( bZBuffer );
 }
 
 void XEObjMng::OnLButtonUp( float lx, float ly )

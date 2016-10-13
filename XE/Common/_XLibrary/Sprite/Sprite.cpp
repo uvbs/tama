@@ -1,4 +1,7 @@
 ﻿#include "stdafx.h"
+#define XSPR_LOAD
+#include "etc/XGraphics.h"
+#include "etc/XSurface.h"
 #include "Sprite.h"
 #include "SprDat.h"
 #include "XResObj.h"
@@ -14,34 +17,34 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 int XSprite::s_sizeTotalMem = 0;
-// float XSprite::s_H = 0.f;
-// float XSprite::s_S = 0.f;
-// float XSprite::s_L = 0.f;		
-// XE::VEC3 XSprite::s_HSL;
-// XE::VEC2 XSprite::s_Range1;
-// XE::VEC2 XSprite::s_Range2;
-XE::xHSL XSprite::s_HSL;
+//XE::xHSL XSprite::s_HSL;
 /**
  @brief 
 */
 XSprite::XSprite( int idx ) {
 	Init();
 	m_idxSprite = idx;
-	// 이제 highreso가 false인 스프라이트는 없는걸로. 있으면 m_bHighReso다시 살릴것.
-	m_pSurface = GRAPHICS->CreateSurface();
+	// 배치렌더버전으로 바뀜
+//	m_pSurface = GRAPHICS->CreateSurface();
+	//m_pSurface = GRAPHICS->CreateSurfaceAtlasBatch();
 }
-// XSprite::XSprite( BOOL bHighReso, int idx ) {
-// 	Init();
-// 	m_idxSprite = idx;
-// 	m_pSurface = GRAPHICS->CreateSurface( bHighReso );
-// }
 
 void XSprite::Destroy( void )
 {
 	SAFE_DELETE( m_pSurface );
 }
-void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, BOOL bSrcKeep, BOOL bRestore )
+void XSprite::Load( XSprDat *pSprDat, 
+										XBaseRes *pRes, 
+										bool bUseAtlas, 
+										bool bAsyncLoad,
+										const XE::xHSL& hsl,
+										BOOL _bSrcKeep, 
+										bool bBatch,
+										BOOL bRestore )
 {
+	if( !m_pSurface ) {
+		m_pSurface = GRAPHICS->CreateSurfaceByType( bUseAtlas, bBatch );
+	}
 	if( bRestore ) {
 		m_pSurface->ClearDevice();
 	}
@@ -77,12 +80,10 @@ void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, BOOL bSrcKeep, BOOL bResto
 	pRes->Read( &adjY, 4 );
 	XSPR_TRACE("SprDat: w,h(%d,%d)", (int)width, (int)height );
 	const auto sizeSurface = XE::VEC2( width, height );
+	const auto ptSizeSurface = XE::POINT( width, height );
 	const auto vSizeMem = sizeSurface * 2;
 	const XE::POINT sizeMem( (int)vSizeMem.w, (int)vSizeMem.h );
 	const int size = sizeMem.Size();
-// 	int memw = m_pSurface->ConvertToMemSize( width );
-// 	int memh = m_pSurface->ConvertToMemSize( height );
-// 	int size = memw * memh;
 	if( pSprDat->IsUpperVersion(25) ) {
 		// 압축포맷
 		int sizeComp, sizeUncomp;
@@ -116,65 +117,100 @@ void XSprite::Load( XSprDat *pSprDat, XBaseRes *pRes, BOOL bSrcKeep, BOOL bResto
 	ConvertMemBGR2RGB( pImg, size );
 #endif // WIN32
 	// HSL값이 있다면 변환
-	if( !s_HSL.m_vHSL.IsZero() ) {
-		const float h = D2R(s_HSL.m_vHSL.x);
-		const float s = s_HSL.m_vHSL.y / 100.f;
-		const float l = s_HSL.m_vHSL.z / 100.f;
-		const XE::VEC2 range1 = D2R(s_HSL.m_vRange1);
-		const XE::VEC2 range2 = D2R(s_HSL.m_vRange2);
+	if( !hsl.m_vHSL.IsZero() ) {
+		const float h = D2R( hsl.m_vHSL.x);
+		const float s = hsl.m_vHSL.y / 100.f;
+		const float l = hsl.m_vHSL.z / 100.f;
+		const XE::VEC2 range1 = D2R( hsl.m_vRange1);
+		const XE::VEC2 range2 = D2R( hsl.m_vRange2);
 		if( range1.v2 - range1.v1 == 0.f || range2.v2 - range2.v1 == 0.f)
 			ApplyHSLNormal( pImg, size, h, s, l);
 		else
 			ApplyHSLRanged( pImg, size, h, s, l, range1, range2 );
 	}
-#ifdef _VER_OPENGL
-	if( bRestore )
-		// restore는 bKeepSrc를 무조건 false로 해야 중복해서 소스이미지가 만들어지지 않는다.
-		m_pSurface->Create( XE::POINT(width, height)
-											, XE::VEC2(adjX,adjY)
-											, formatSurface
-											, pImg
-											, XE::xPF_ARGB8888
-											, sizeMem // XE::POINT(memw,memh)
-											, false
-											, false );
-//		m_pSurface->Create( width, height, adjX, adjY, xALPHA, pImg, sizeof(DWORD), 0, FALSE );
-	else
-		m_pSurface->Create( XE::POINT(width, height)
-											, XE::VEC2(adjX,adjY)
-											, formatSurface
-											, pImg
-											, XE::xPF_ARGB8888
-											, sizeMem // XE::POINT(memw,memh)
-											, bSrcKeep != FALSE
-											, false );
-//		m_pSurface->Create( width, height, adjX, adjY, xALPHA, pImg, sizeof(DWORD), 0, bSrcKeep );
+	XSPR_TRACE( "SprDat: CreateSurface" );
+	const bool bSrcKeep = (_bSrcKeep != FALSE);
+
+#ifdef _XASYNC_SPR
+	// 주 스레드에서 읽을수 있도록 파일에서 읽은 내용을 서피스쪽에다 담아둠.
+	if( bAsyncLoad ) {
+		auto spInfoSurface
+			= std::make_shared<XE::xSurfaceInfo>( ptSizeSurface,
+																						XE::VEC2( adjX, adjY ),
+																						formatSurface,
+																						(void*)pImg,
+																						sizeMem,
+																						XE::xPF_ARGB8888,
+																						bSrcKeep,
+																						false,
+																						bUseAtlas );
+		// 비동기로딩을 하기위해 메모리 데이터를 받아둠.
+		m_pSurface->SetspSurfaceInfo( spInfoSurface );
+	} else {
+		// 동기로딩
+		XE::xSurfaceInfo infoSurface( ptSizeSurface,
+																	XE::VEC2( adjX, adjY ),
+																	formatSurface,
+																	pImg,
+																	sizeMem,
+																	XE::xPF_ARGB8888,
+																	bSrcKeep,
+																	false,
+																	bUseAtlas );
+		CreateDevice( infoSurface );
+		// d3d쪽도 Create()안에서 메모리를 삭제하는 방식은 피해야 할듯
+		SAFE_DELETE_ARRAY( pImg );    // 뭐야 이거 -_-;;;  조낸 일관성 없네.
+	}
+#else
+	XE::xSurfaceInfo infoSurface( ptSizeSurface,
+																XE::VEC2( adjX, adjY ),
+																formatSurface,
+																pImg,
+																XE::xPF_ARGB8888,
+																sizeMem,
+																bSrcKeep,
+																false,
+																bUseAtlas );
+	CreateDevice( infoSurface );
+	// d3d쪽도 Create()안에서 메모리를 삭제하는 방식은 피해야 할듯
 	SAFE_DELETE_ARRAY( pImg );    // 뭐야 이거 -_-;;;  조낸 일관성 없네.
-#else // opengl
+#endif // _XASYNC_SPR
+#ifdef _VER_DX
 	// d3d쪽은 restore를 아직 구현안했음. 윈도8포팅할때는 아래 Create()없애고 CreateFromImg()를 똑같이 일관되게 써서 구현할것.
 	XBREAK( bRestore == TRUE );
-	XSPR_TRACE("SprDat: CreateSurface" );
-	if( bRestore )
-		m_pSurface->Create( XE::POINT(width, height)
-											, XE::VEC2(adjX,adjY)
-											, formatSurface
-											, pImg
-											, XE::xPF_ARGB8888
-											, sizeMem //XE::POINT(memw,memh)
-											, false
-											, false );
-	else
-		m_pSurface->Create( XE::POINT(width, height)
-											, XE::VEC2(adjX,adjY)
-											, formatSurface
-											, pImg
-											, XE::xPF_ARGB8888
-											, sizeMem // XE::POINT(memw,memh)
-											, bSrcKeep != FALSE
-											, false );
-    // d3d쪽도 Create()안에서 메모리를 삭제하는 방식은 피해야 할듯
-	SAFE_DELETE_ARRAY( pImg );		// 15.12.07 추가
-#endif // win32
+#endif // verdx
+}
+
+void XSprite::CreateDevice()
+{
+	XBREAK( m_pSurface->GetspSurfaceInfo() == nullptr );
+	const auto& infoSurface = *(m_pSurface->GetspSurfaceInfo());
+	CreateDevice( infoSurface );
+}
+
+void XSprite::CreateDevice( const XE::xSurfaceInfo& infoSurface )
+{
+	if( XASSERT(m_pSurface) ) {
+		m_pSurface->Create( infoSurface.m_ptSizeSurface,
+												infoSurface.m_vAdj,
+												infoSurface.m_fmtSurface,
+												infoSurface.m_pImg,
+												infoSurface.m_fmtSrc,
+												infoSurface.m_ptSizeMem,
+												infoSurface.m_bSrcKeep,
+												infoSurface.m_bMakeMask,
+												infoSurface.m_bUseAtlas );
+		m_pSurface->DestroySurfaceInfo();
+//		m_pSurface->SetspSurfaceInfo( nullptr );		// 메모리 삭제
+	}
+}
+
+void XSprite::UpdateUV( ID idTex,
+												const XE::POINT& sizePrev,
+												const XE::POINT& sizeNew )
+{
+	if( m_pSurface )
+		m_pSurface->UpdateUV( idTex, sizePrev, sizeNew );
 }
 /**
  @brief ABGR포맷으로 저장되어있는 pImg블럭의 픽셀데이타를 ARGB포맷으로 변환해서 pImg에 다시 넣는다.
@@ -325,4 +361,100 @@ MATRIX* XSprite::GetMatrix( MATRIX *pOut, float lx, float ly )
 	return pOut;
 }
 
+void XSprite::Draw( float x, float y ) 
+{
+	m_pSurface->Draw( x, y );
+}
+void XSprite::Draw( float x, float y, const MATRIX &mParent )
+{
+	m_pSurface->Draw( x, y, mParent );
+}
+void XSprite::Draw( const XE::VEC2& vPos, const MATRIX &mParent )
+{
+	m_pSurface->Draw( vPos, mParent );
+}
+void XSprite::Draw( const XE::VEC2& v )
+{
+	Draw( v.x, v.y );
+}
 
+bool XSprite::IsBatch() const
+{
+	return (m_pSurface)? m_pSurface->IsBatch() : false;
+}
+
+void XSprite::SetScale( float sx, float sy ) {
+	m_pSurface->SetScale( sx, sy );
+}	// 여기는 GRAPHICS->GetfGScale과 곱하지 않는다 XLayerImage::Draw에서 이걸 계속 호출하기 때문이다
+
+void XSprite::SetScale( const XE::VEC2& vScale ) {
+	m_pSurface->SetScale( vScale );
+}
+void XSprite::SetScale( float scalexy ) {
+	m_pSurface->SetScale( scalexy );
+}
+
+float XSprite::GetWidth() const {
+	return m_pSurface->GetWidth();
+}
+float XSprite::GetHeight() const {
+	return m_pSurface->GetHeight();
+}
+XE::VEC2 XSprite::GetSize() const {
+	return m_pSurface->GetSize();
+}
+XE::VEC2 XSprite::GetMemSize() const {
+	return m_pSurface->GetMemSize();
+}
+XE::VEC2 XSprite::GetAdjust() const {
+	return m_pSurface->GetAdjust();
+}
+float XSprite::GetAdjustX() const {
+	return m_pSurface->GetAdjustX();
+}
+float XSprite::GetAdjustY() const {
+	return m_pSurface->GetAdjustY();
+}
+XE::VEC2 XSprite::GetsizeMemAligned() const {
+	return m_pSurface->GetsizeMemAlignedVec2();
+}
+// 스프라이트 이미지데이타(메모리/VRAM)의 바이트크기
+int XSprite::GetbytesMemAligned() const {
+	return m_pSurface->GetbytesMemAligned();
+}
+void XSprite::SetfAlpha( float alpha ) {
+	m_pSurface->SetfAlpha( alpha );
+}
+void XSprite::SetColor( XCOLOR col ) {
+	m_pSurface->SetColor( col );
+}
+void XSprite::SetColor( float r, float g, float b ) {
+	m_pSurface->SetColor( r, g, b );
+}
+void XSprite::SetAdjustAxis( float ax, float ay ) {
+	m_pSurface->SetAdjustAxis( ax, ay );
+}
+void XSprite::SetAdjustAxis( const XE::VEC2& vAdjAxis ) {
+	m_pSurface->SetAdjustAxis( vAdjAxis );
+}
+void XSprite::SetRotate( float dX, float dY, float dZ ) {
+	m_pSurface->SetRotate( dX, dY, dZ );
+}
+void XSprite::SetRotateZ( float dAng ) {
+	m_pSurface->SetRotateZ( dAng );
+}
+void XSprite::SetFlipHoriz( BOOL bFlag ) {
+	m_pSurface->SetFlipHoriz( bFlag );
+}
+void XSprite::SetFlipVert( BOOL bFlag ) {
+	m_pSurface->SetFlipVert( bFlag );
+}
+void XSprite::SetDrawMode( xDM_TYPE t ) {
+	m_pSurface->SetDrawMode( t );
+}
+DWORD XSprite::GetPixel( float lx, float ly, BYTE *pa, BYTE *pr, BYTE *pg, BYTE *pb ) {
+	return m_pSurface->GetPixel( lx, ly, pa, pr, pg, pb );
+}
+void XSprite::DestroyDevice() {
+	m_pSurface->DestroyDevice();
+}

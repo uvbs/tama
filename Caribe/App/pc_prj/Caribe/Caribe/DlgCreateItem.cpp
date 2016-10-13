@@ -46,7 +46,7 @@ void CDlgCreateItem::OnOK()
 {
 	UPDATE_C2D();
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-// 	XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( m_strIdentifier );
+// 	auto pProp = PROP_ITEM->GetpProp( m_strIdentifier );
 // 	if( pProp == nullptr )
 // 		pProp = PROP_ITEM->GetpPropFromName( m_strIdentifier );
 // 	if( pProp )

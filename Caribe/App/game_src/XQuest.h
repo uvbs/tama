@@ -26,7 +26,7 @@ class XQuestMng;
 namespace xQuest {
 	class XEventInfo {
 		std::vector<DWORD> m_aryParam;
-		LegionPtr m_spLegion;		// how용
+		XSPLegion m_spLegion;		// how용
  		int m_Amount;		// 리소스같은 조건의 양을 설정.
 		XGAME::xParam m_Param2;	// 서브 파라메터
 		_tstring m_strParam;		// 스트링형태 파라메터
@@ -40,8 +40,8 @@ namespace xQuest {
 		XEventInfo() : m_aryParam(XGAME::xQC_EVENT_MAX) { Init(); }
 		virtual ~XEventInfo() { Destroy(); }
 		//
-		GET_ACCESSOR_CONST( const LegionPtr&, spLegion );
-		SET_ACCESSOR( LegionPtr&, spLegion );
+		GET_ACCESSOR_CONST( const XSPLegion&, spLegion );
+		SET_ACCESSOR( XSPLegion&, spLegion );
 		GET_SET_ACCESSOR_CONST( int, Amount );
 		GET_SET_ACCESSOR_CONST( bool, bLevelUnder );
 		void SetLevel( int lv ) {

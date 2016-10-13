@@ -83,11 +83,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(ProjectDir)\..\..\..\bin\MTDLL_Release\</OutDir>
-    <TargetName>Freetype2</TargetName>
+    <TargetName>
+    </TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release2015|Win32'">
     <OutDir>$(ProjectDir)\..\..\..\bin\MTDLL_Release\</OutDir>
-    <TargetName>Freetype2</TargetName>
+    <TargetName>Freetype2015</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -2,14 +2,14 @@
 <root>
   <popup_player>
     <popup img="popup_small.png">
-      <butt posx="right" posy="21" img_up="common_butt_x.png" key="butt.close">
+      <butt posx="right" posy="top" img_up="common_butt_x.png" key="butt.close">
         <!--x버튼-->
       </butt>
-      <text posx="center" posy="37" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.play.time">
+      <text posx="center" posy="17" font="font_text_s" text_col="white" font_size="20" font_style="stroke" key="text.play.time">
         <!--플레이시간-->
       </text>
-      <layout posx="80" posy="66" file="profile_picture.xml" layout="profile_me" key="wnd.profile" />
-      <wnd posx="139" posy="58" key="wnd.user.info">
+      <layout posx="80" posy="46" file="profile_picture.xml" layout="profile_me" key="wnd.profile" />
+      <wnd posx="139" posy="38" key="wnd.user.info">
         <!--레벨/이름/경험치-->
         <img posx="16" posy="2" file="world_top_exp_bg.png" key="img.name.bg">
           <pbar posx="0" posy="1" key="pbar.exp" width="100" height="10" img1="world_top_exp.png"></pbar>
@@ -17,7 +17,7 @@
           <img posx="-12" posy="-2" file="world_top_shield.png">
             <text posx="center" posy="center" key="text.level" font="font_res_num" font_size="20" font_style="stroke" id="666" />
           </img>
-          <text posx="center" posy="center" key="text.name" font="font_text_b" font_size="20" font_style="stroke" />
+          <text posx="center" posy="center" key="text.name" font="font_mnls" font_size="20" font_style="stroke" />
           <text posx="-10" posy="14" key="text.exp" font="font_text_s" font_size="15" font_style="stroke" text="80000" show="off"></text>
         </img>
         <!--승점-->
@@ -31,11 +31,11 @@
           <text posx="center" posy="center" key="text.power" font_size="20" font_style="stroke" font="font_res_num" />
         </img>
       </wnd>
-      <text posx="center" posy="145" font="font_text_s" text_col="white" font_size="20" text="2272">
+      <text posx="center" posy="125" font="font_text_s" text_col="white" font_size="20" text="2272">
         <!--"다른플레이어에게 보여질...."-->
       </text>
-      <img posx="center" posy="158" file="edit_box.png">
-        <edit_box posx="5" posy="2" width="165" height="20" key="edit.hello.msg" text_col="black" />
+      <img posx="center" posy="138" file="edit_box.png">
+        <edit_box posx="center" posy="center" width="165" _height="20" key="edit.hello.msg" text_col="black" font="font_mnls" />
       </img>
     </popup>
   </popup_player>

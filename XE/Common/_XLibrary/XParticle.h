@@ -4,6 +4,7 @@
 #include "etc/Timer.h"
 #include "etc/xGraphics.h"
 #include "XFramework/client/XPropParticle.h"
+#include "etc/XGraphicsDef.h"
 /*
   * 스킬이펙트, 눈, 비
   * 여러가지 텍스쳐의 파티클들이 함께 존재 하므로 텍스쳐id로 소트를 해서 뭉텅이로 glDraw를 불러야 한다.
@@ -228,7 +229,7 @@ protected:
 	ID m_idTexture;
 	BOOL m_bDestroy;
 	CTimer m_timerLife;		// 생존시간.
-	XE::xtBlendFunc m_BlendFunc = XE::xBF_MULTIPLY;
+	XE::xtBlendFunc m_BlendFunc;
 public:
 	XBaseParticle( XParticleDelegate *pDelegate, 
 								int type, 
@@ -310,27 +311,14 @@ protected:
 	XSurface *m_psfcTexture;
 	float m_Size;
 public:
-	XPointSpriteParticle( XParticleDelegate *pDelegate, int type, const XE::VEC3& vPos, XSurface *psfcTexture, float scale, XCOLOR col )
-		: XBaseParticle( pDelegate, type, vPos, (ID)psfcTexture, scale, col ) { 
-			Init();
-			XBREAK( psfcTexture == NULL );
-			m_psfcTexture = psfcTexture;
-			m_Size = (psfcTexture->GetTextureSize() * m_Scale).w;
-	}
-	XPointSpriteParticle( XParticleDelegate *pDelegate, 
-						int type, 
-						const XE::VEC3& vPos, 
-						XSurface *psfcTexture,
-						ID idTexture, 
-						float scale, 
-						XCOLOR col )
-		: XBaseParticle( pDelegate, type, vPos, idTexture, scale, col ) {
-		Init();
-		XBREAK( psfcTexture == NULL );
-		m_psfcTexture = psfcTexture;
-//		m_Size = ( psfcTexture->GetTextureSize() * m_Scale ).w;
-		m_Size = psfcTexture->GetTextureSize().w;
-	}
+	XPointSpriteParticle( XParticleDelegate *pDelegate, int type, const XE::VEC3& vPos, XSurface *psfcTexture, float scale, XCOLOR col );
+	XPointSpriteParticle( XParticleDelegate *pDelegate,
+												int type,
+												const XE::VEC3& vPos,
+												XSurface *psfcTexture,
+												ID idTexture,
+												float scale,
+												XCOLOR col );
 	virtual ~XPointSpriteParticle() {}
 	//
 	GET_ACCESSOR( float, Size );

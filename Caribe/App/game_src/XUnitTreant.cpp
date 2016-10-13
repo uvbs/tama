@@ -5,6 +5,7 @@
 #include "XBattleField.h"
 #include "XEObjMngWithType.h"
 #include "XMsgUnit.h"
+#include "XFramework/Game/XEWndWorld.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -18,7 +19,7 @@ using namespace XSKILL;
 using namespace XGAME;
 
 ////////////////////////////////////////////////////////////////
-XUnitTreant::XUnitTreant( XSPSquad spSquadObj,
+XUnitTreant::XUnitTreant( XSPSquadObj spSquadObj,
 													ID idProp,
 													BIT bitSide, const 
 													XE::VEC3& vPos,

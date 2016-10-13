@@ -41,11 +41,14 @@
 #ifdef WIN32
 #include "XObjEtc.h"
 #endif // WIN32
-#ifdef _XPROFILE
 #include "XSceneBattle.h"
+#ifdef _XPROFILE
 #include "XFramework/XEProfile.h"
 #endif // _XPROFILE
-
+#include "XImageMng.h"
+#ifdef _CHEAT
+#include "client/XCheatOption.h"
+#endif // _CHEAT
 
 // #ifdef _DEBUG
 // #define new DEBUG_NEW
@@ -281,7 +284,12 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_UPDATE_COMMAND_UI( ID_PROFILETEST_NODRAWBAR, &CMainFrame::OnUpdateProfileTestNoDrawBar )
 	ON_COMMAND( IDM_PROFILING, &CMainFrame::OnProfiling )
 	ON_UPDATE_COMMAND_UI( IDM_PROFILING, &CMainFrame::OnUpdateProfiling )
-END_MESSAGE_MAP()
+	ON_COMMAND( IDM_TEST_SCENE, &CMainFrame::OnGotoTestScene )
+		ON_COMMAND( ID_HIDE_HPBAR, &CMainFrame::OnHideHpbar )
+		ON_COMMAND( ID_HIDE_NAME, &CMainFrame::OnHideName )
+		ON_UPDATE_COMMAND_UI( ID_HIDE_HPBAR, &CMainFrame::OnUpdateHideHpbar )
+		ON_UPDATE_COMMAND_UI( ID_HIDE_NAME, &CMainFrame::OnUpdateHideName )
+		END_MESSAGE_MAP()
 
 
 
@@ -863,7 +871,7 @@ void CMainFrame::OnCreateItem()
 	CDlgCreateItem dlg;
 	if( dlg.DoModal() == IDOK )
 	{
-		XPropItem::xPROP *pProp = PROP_ITEM->GetpProp( dlg.m_strIdentifier );
+		auto pProp = PROP_ITEM->GetpProp( dlg.m_strIdentifier );
 		if( pProp == nullptr )
 			pProp = PROP_ITEM->GetpPropFromName( dlg.m_strIdentifier );
 		if( pProp )
@@ -2520,25 +2528,28 @@ void CMainFrame::OnCheatCommand()
 	static _tstring s_strCmd;
 	CDlgCheatCommand dlg;
 	dlg.m_strCmd = s_strCmd.c_str();
+	dlg.m_strDesc = _T( "명령어:\n" );
+	dlg.m_strDesc += _T( "gm_level <숫자>: GM레벨을 지정한다." );
+	dlg.m_strDesc += _T( "level <숫자>: 군주레벨을 지정한다." );
+	dlg.m_strDesc += _T( "exp <숫자>: 군주경험치값을 지정한다." );
+	dlg.m_strDesc += _T( "gold <숫자>: 보유 금화를 지정한다." );
+	dlg.m_strDesc += _T( "sec_simul <숫자>: 침공시뮬레이션시 오프라인 시간(초)을 설정한다." );
+	dlg.m_strDesc += _T( "trader: 무역상을 소환한다." );
+	dlg.m_strDesc += _T( "flush_spr: 참조하고 있지 않은 spr자원을 날린다.");
 	if( dlg.DoModal() == IDOK ) {
 		s_strCmd = (LPCTSTR)dlg.m_strCmd;
 		if( !s_strCmd.empty() ) {
-			GAMESVR_SOCKET->SendCheat( GAME, 99, 0, 0, 0, 0, s_strCmd );
+			if( s_strCmd == _T( "gold" ) ) {
+				GAMESVR_SOCKET->SendCheat( GAME, 3, 50000, 0, 0, 0, s_strCmd );
+			} else
+				if( s_strCmd == _T( "flush_spr" ) ) {
+					SPRMNG->DoFlushCache();
+			} else {
+				// 그 외 문자열은 서버로 보내 처리한다. 명령어의 종류는 XAccount::ProcessCheatCmd참조
+				GAMESVR_SOCKET->SendCheat( GAME, 99, 0, 0, 0, 0, s_strCmd );
+			}
 		}
 	}
-// 	CDlgEditVal dlg;
-// 	dlg.m_nLevel = ACCOUNT->GetLevel();
-// 	dlg.m_dwEXP = ACCOUNT->GetExp();
-// #if _DEV_LEVEL <= DLV_DEV_PERSONAL
-// 	dlg.m_GMLevel = ACCOUNT->GetGMLevel();
-// #endif
-// 	if( dlg.DoModal() == IDOK ) {
-// 		ACCOUNT->SetLevel( dlg.m_nLevel );
-// 		ACCOUNT->SetExp( dlg.m_dwEXP );
-// #if _DEV_LEVEL <= DLV_DEV_PERSONAL
-// 		ACCOUNT->SetGMLevel( dlg.m_GMLevel );
-// #endif
-// 	}
 }
 
 
@@ -2554,55 +2565,76 @@ void CMainFrame::OnUpdateOnViewDamageLogging( CCmdUI *pCmdUI )
 void CMainFrame::OnBattleOption()
 {
 	CDlgBattleOption dlg;
-	if( XAPP->m_dwFilter & xBIT_PLAYER_HERO )
+	if( XAPP->IsBitFilter( xBIT_PLAYER_HERO ) )
 		dlg.m_bCheckPlayerHero = TRUE;
-	if( XAPP->m_dwFilter & xBIT_PLAYER_UNIT )
+	if( XAPP->IsBitFilter( xBIT_PLAYER_UNIT ) )
 		dlg.m_bCheckPlayerUnit = TRUE;
-	if( XAPP->m_dwFilter & xBIT_ENEMY_HERO )
+	if( XAPP->IsBitFilter( xBIT_ENEMY_HERO ) )
 		dlg.m_bCheckEnemyHero = TRUE;
-	if( XAPP->m_dwFilter & xBIT_ENEMY_UNIT )
+	if( XAPP->IsBitFilter( xBIT_ENEMY_UNIT ) )
 		dlg.m_bCheckEnemyUnit = TRUE;
-	if( XAPP->m_dwFilter & xBIT_HERO_INFO_CONSOLE )
-		dlg.m_bHeroInfoToConsole = TRUE;
-	if( XAPP->m_dwFilter & xBIT_FLUSH_IMG )
-		dlg.m_bCheckFlushImg = TRUE;
-	if( XAPP->m_dwFilter & xBIT_FLUSH_SPR )
-		dlg.m_bCheckFlushSpr = TRUE;
+// 	if( XAPP->m_dwFilter & xBIT_HERO_INFO_CONSOLE )
+// 		dlg.m_bHeroInfoToConsole = TRUE;
+// 	if( XAPP->m_dwFilter & xBIT_FLUSH_IMG )
+// 		dlg.m_bCheckFlushImg = TRUE;
+// 	if( XAPP->m_dwFilter & xBIT_FLUSH_SPR )
+// 		dlg.m_bCheckFlushSpr = TRUE;
 	{
 		// 0x00010000 부터 0x80000000까지 16비트의 각 비트를 dlg에 셋
-		DWORD bit = xBIT_NO_DRAW_DMG_NUM;
-		for( int i = 0; i < 16; ++i ) {
-			if( XAPP->m_dwFilter & bit )
+		// noDraw
+		DWORD bit = 0x01;
+		for( int i = 0; i < 32; ++i ) {
+			if( XAPP->IsBitNoDraw( bit ) )
 				dlg.m_bNoDraw[i] = TRUE;
+			bit <<= 1;
+		}
+		// option
+		bit = 0x01;
+		for( int i = 0; i < 32; ++i ) {
+			if( XAPP->IsBitOption( bit ) )
+				dlg.m_bOption[i] = TRUE;
 			bit <<= 1;
 		}
 	}
 	dlg.m_strFontDmg = XObjDmgNum::s_strFont.c_str();
 	//
 	if( dlg.DoModal() ) {
-		if( dlg.m_bCheckPlayerHero )	XAPP->m_dwFilter |= xBIT_PLAYER_HERO;
-		else													XAPP->m_dwFilter &= ~xBIT_PLAYER_HERO;
-		if( dlg.m_bCheckPlayerUnit )	XAPP->m_dwFilter |= xBIT_PLAYER_UNIT;
-		else													XAPP->m_dwFilter &= ~xBIT_PLAYER_UNIT;
-		if( dlg.m_bCheckEnemyHero )		XAPP->m_dwFilter |= xBIT_ENEMY_HERO;
-		else													XAPP->m_dwFilter &= ~xBIT_ENEMY_HERO;
-		if( dlg.m_bCheckEnemyUnit )		XAPP->m_dwFilter |= xBIT_ENEMY_UNIT;
-		else													XAPP->m_dwFilter &= ~xBIT_ENEMY_UNIT;
-		if( dlg.m_bHeroInfoToConsole )	XAPP->m_dwFilter |= xBIT_HERO_INFO_CONSOLE;
-		else														XAPP->m_dwFilter &= ~xBIT_HERO_INFO_CONSOLE;
-		if( dlg.m_bCheckFlushImg )	XAPP->m_dwFilter |= xBIT_FLUSH_IMG;
-		else												XAPP->m_dwFilter &= ~xBIT_FLUSH_IMG;
-		if( dlg.m_bCheckFlushSpr )	XAPP->m_dwFilter |= xBIT_FLUSH_SPR;
-		else												XAPP->m_dwFilter &= ~xBIT_FLUSH_SPR;
-		DWORD bit = xBIT_NO_DRAW_DMG_NUM;
-		for( int i = 0; i < 16; ++i ) {
+		// dwFilter
+		if( dlg.m_bCheckPlayerHero )	XAPP->SetBitFilter(xBIT_PLAYER_HERO);
+		else													XAPP->ClearBitFilter( xBIT_PLAYER_HERO );
+		if( dlg.m_bCheckPlayerUnit )	XAPP->SetBitFilter( xBIT_PLAYER_UNIT );
+		else													XAPP->ClearBitFilter( xBIT_PLAYER_UNIT );
+		if( dlg.m_bCheckEnemyHero )		XAPP->SetBitFilter( xBIT_ENEMY_HERO );
+		else													XAPP->ClearBitFilter( xBIT_ENEMY_HERO );
+		if( dlg.m_bCheckEnemyUnit )		XAPP->SetBitFilter( xBIT_ENEMY_UNIT );
+		else													XAPP->ClearBitFilter( xBIT_ENEMY_UNIT );
+		// noDraw
+		DWORD 
+		bit = 0x01;
+		for( int i = 0; i < 32; ++i ) {
 			if( dlg.m_bNoDraw[i] )
-				XAPP->m_dwFilter |= bit;
+				XAPP->SetBitNoDraw( bit );
 			else
-				XAPP->m_dwFilter &= ~bit;
+				XAPP->ClearBitNoDraw( bit );
+			bit <<= 1;
+		}
+		bit = 0x01;
+		for( int i = 0; i < 32; ++i ) {
+			if( dlg.m_bOption[i] )
+				XAPP->SetBitOption( bit );
+			else
+				XAPP->ClearBitOption( bit );
 			bit <<= 1;
 		}
 		XObjDmgNum::s_strFont = (LPCTSTR)dlg.m_strFontDmg;
+		//
+#ifdef _XSINGLE
+		if( SCENE_BATTLE ) {
+			SCENE_BATTLE->SetAI( !XAPP->IsBitOption( xBO_STOP_AI ) );
+		}
+#endif // 
+
+		GAME->GetpScene()->SetbUpdate( true );
 		XAPP->XClientMain::SaveCheat();
 	}
 }
@@ -2733,3 +2765,36 @@ void CMainFrame::OnUpdateProfiling( CCmdUI *pCmdUI )
 #endif // _XPROFILE
 }
 
+void CMainFrame::OnGotoTestScene()
+{
+	if( XGame::sGet()->GetCurrScene() )
+		XGame::sGet()->GetCurrScene()->DoExit( XGAME::xSC_TEST );
+}
+
+void CMainFrame::OnHideHpbar()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if( XAPP->IsBitNoDraw( xBD_HIDE_HPBAR ) )
+		XAPP->ClearBitNoDraw( xBD_HIDE_HPBAR );
+	else
+		XAPP->SetBitNoDraw(xBD_HIDE_HPBAR);
+}
+void CMainFrame::OnUpdateHideHpbar( CCmdUI *pCmdUI )
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->SetCheck( (XAPP->IsBitNoDraw(xBD_HIDE_HPBAR)) != 0 );
+}
+
+void CMainFrame::OnHideName()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if( XAPP->IsBitNoDraw(xBD_HIDE_NAME) )
+		XAPP->ClearBitNoDraw(xBD_HIDE_NAME);
+	else
+		XAPP->SetBitNoDraw(xBD_HIDE_NAME);
+}
+void CMainFrame::OnUpdateHideName( CCmdUI *pCmdUI )
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->SetCheck( (XAPP->IsBitNoDraw(xBD_HIDE_NAME)) != 0 );
+}

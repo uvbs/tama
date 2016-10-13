@@ -3,6 +3,7 @@
 #include "XSceneBattle.h"
 #include "XLegionObj.h"
 #include "XBattleField.h"
+#include "sprite/SprObj.h"
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -24,11 +25,14 @@ void XSceneProcess::Destroy()
 }
 
 ////////////////////////////////////////////////////////////////
+/**
+ @brief 3,2,1을 하는 Ready씬
+*/
 XSceneProcessReady::XSceneProcessReady( XSceneBattle *pScene )
 	: XSceneProcess( pScene )
 {
 	Init();
-	m_pso321 = new XSprObj(_T("321go.spr") );
+	m_pso321 = new XSprObj(_T("321go.spr") ); 
 	m_pso321->SetAction( 1, xRPT_1PLAY );
 //	m_timerCount.Set(3.f);		// 3초를 넣어야함.
 // 	// 대기상태에선 프레임 스키핑 끔.
@@ -67,14 +71,14 @@ void XSceneProcessReady::Draw()
 
 ////////////////////////////////////////////////////////////////
 XSceneProcessBattle::XSceneProcessBattle( XSceneBattle *pScene, 
-								  XBattleField *pWorld )
+																					std::shared_ptr<XBattleField> spWorld )
 	: XSceneProcess( pScene )
 {
 	Init();
 	//
 //	m_aryLegion = aryLegion;
 	// 유닛 인공지능 시작
-	pWorld->OnStartBattle();
+	spWorld->OnStartBattle();
 	CONSOLE("xJC_START_BATTLE");
 }
 

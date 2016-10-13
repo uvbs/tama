@@ -44,11 +44,7 @@ private:
 #endif // _CLIENT
 	//
 	void Init() {}
-	void Destroy() {
-#ifdef _CLIENT
-		SAFE_RELEASE2( IMAGE_MNG, m_psfcProfile );
-#endif // _CLIENT
-	}
+	void Destroy();
 	//
 	friend XSpot* XSpot::sCreateDeSerialize( XArchive& ar, XWorld *pWorld );
 	XSpotCastle( XWorld *pWorld, XGAME::xtSpot typeSpot ) : XSpot( pWorld, typeSpot ) {}
