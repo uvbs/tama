@@ -6,6 +6,9 @@
 #include "XWndTemplate.h"
 #include "XSoundMng.h"
 #include "_Wnd2/XWndButton.h"
+#ifdef _VER_ANDROID
+#include "XFramework/android/JniHelper.h"
+#endif // _VER_ANDROID
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -19,6 +22,9 @@ XSceneTrader *SCENE_TRADER = NULL;
 
 void XSceneTrader::Destroy()
 {
+#ifdef _VER_ANDROID
+	JniHelper::ShowAdmob( false, 0, 0 );
+#endif // _VER_ANDROID
 	XBREAK(SCENE_TRADER == NULL);
 	XBREAK(SCENE_TRADER != this);
 	SCENE_TRADER = NULL;
@@ -41,9 +47,10 @@ XSceneTrader::XSceneTrader(XGame *pGame)
 	m_totalGold = 0;
 
 	UILoad();				// 초기 UI 로드
-
 	UpdateCharacter();		// 현재 무역상이 있는지 확인
-//	SOUNDMNG->OpenPlaySound(17, true);
+#ifdef _VER_ANDROID
+	JniHelper::ShowAdmob( true, 480, 51 );
+#endif // _VER_ANDROID
 }
 
 void XSceneTrader::Create(void)

@@ -13,9 +13,9 @@
 #include "_Wnd2/XWndImage.h"
 #include "XResMng.h"
 #include "XSystem.h"
+#include "XSceneTest.h"
 #ifdef WIN32
 #include "CaribeView.h"
-#include "XSceneTest.h"
 #endif // WIN32
 #ifdef _VER_IOS
 	#include "objc/xe_ios.h"

@@ -5,6 +5,7 @@
 *****************************************************************/
 #pragma once
 #ifdef _XTEST
+//#ifdef _DEBUG
 #include "XSceneBase.h"
 #include "XFramework/client/XLayoutObj.h"
 #include "OpenGL2/XGraphicsOpenGL.h"
@@ -48,7 +49,9 @@ private:
 	XSprObj* m_psoTest[MAX_SPR1 * MAX_SPR2];
 	XVector<XWndStoragyItemElem*> m_aryCtrl;
 private:
-	void Init()  {}
+	void Init()  {
+		memset( m_psoTest, 0, sizeof(m_psoTest) );
+	}
 	void Destroy();
 };
 

@@ -633,8 +633,7 @@ int JniHelper::RenameFile( const char *cFileOld, const char *cFileNew )
 void JniHelper::DoExitApp( void )
 {
 	JNIEnv *_env = 0;
-	if (! getEnv(&_env))
-	{
+	if (! getEnv(&_env)) {
 		return;
 	}
 	LOGD("DoExitApp");
@@ -642,14 +641,58 @@ void JniHelper::DoExitApp( void )
 	jmethodID mid = _env->GetStaticMethodID(_javaClass, "Callback_DoExitApp",  "()V");
 	if( mid == NULL ) {
 		LOGD("not found java function");
-	} else
-	{
+	} else	{
 		LOGD("get DoExitApp");
 		_env->CallStaticObjectMethod(_javaClass, mid);
 		LOGD("call DoExitApp");
 	}
 
 }
+
+void JniHelper::DoTest()
+{
+	JNIEnv *_env = 0;
+	if (! getEnv(&_env)) {
+		return;
+	}
+	LOGD("JniHelper:%s", __FUNCTION__);
+	jclass _javaClass = getClassID_("com/mtricks/xe/Cocos2dxHelper", _env);
+	const char* cFunc = "Callback_DoTest";
+	jmethodID mid = _env->GetStaticMethodID(_javaClass, cFunc,  "()V");
+	if( mid == nullptr ) {
+		LOGD("%s:not found java function:[%s]", __FUNCTION__, cFunc );
+	} else	{
+		LOGD("%s:call [%s]", __FUNCTION__, cFunc);
+		_env->CallStaticObjectMethod(_javaClass, mid);
+		LOGD("%s:successed call [%s]", __FUNCTION__, cFunc);
+	}
+
+}
+
+void JniHelper::ShowAdmob( bool bShow, int dpX, int dpY )
+{
+	JNIEnv *_env = 0;
+	if (! getEnv(&_env)) {
+		return;
+	}
+	LOGD("JniHelper:%s", __FUNCTION__);
+	jclass _javaClass = getClassID_("com/mtricks/xe/Cocos2dxHelper", _env);
+	const char* cFunc = "Callback_ShowAdmob";
+	
+	jmethodID mid = _env->GetStaticMethodID(_javaClass, cFunc,  "(ZII)V"); // 슈밤. 이건 Z;I;I식으로 하니까 에러나네. 기준이 왜이래
+	if( mid == nullptr ) {
+		LOGD("%s:not found java function:[%s]", __FUNCTION__, cFunc );
+	} else	{
+		LOGD("%s:call [%s]", __FUNCTION__, cFunc);
+		jboolean jbShow = bShow;
+		jint jdpX = dpX;
+		jint jdpY = dpY;
+		_env->CallStaticObjectMethod( _javaClass, mid, jbShow, dpX, dpY );
+		LOGD("%s:successed call [%s]", __FUNCTION__, cFunc);
+	}
+
+}
+
 
 
 bool JniHelper::Check3G()
@@ -703,7 +746,7 @@ void JniHelper::LoadURL(const char *url)
 		return;
 	}
 
-	jclass _javaClass = getClassID_("com/example/gltest2/MyMainActivity", _env);
+	jclass _javaClass = getClassID_("com/gemtree2/caribe/MyMainActivity", _env);
 	jmethodID mid = _env->GetStaticMethodID(_javaClass, "LoadURL", "(Ljava/lang/String)V");
 	if (mid == NULL) {
 		LOGD("not found java function");

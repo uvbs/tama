@@ -7,6 +7,11 @@ environment/project/com.android.toolchain.gcc.948211711.1462829115/NDK_MODULE_PA
 environment/project/com.android.toolchain.gcc.948211711.1462829115/NDK_MODULE_PATH/value=..\\..\\Caribe;..\\..\\Caribe\\App\\game_src;..\\..\\XE\\Common\\_XLibrary\\android_xe\\prebuilt
 environment/project/com.android.toolchain.gcc.948211711.1462829115/append=true
 environment/project/com.android.toolchain.gcc.948211711.1462829115/appendContributed=true
+environment/project/com.android.toolchain.gcc.948211711.166424811.2100528509/NDK_MODULE_PATH/delimiter=;
+environment/project/com.android.toolchain.gcc.948211711.166424811.2100528509/NDK_MODULE_PATH/operation=replace
+environment/project/com.android.toolchain.gcc.948211711.166424811.2100528509/NDK_MODULE_PATH/value=..\\..\\Caribe;..\\..\\Caribe\\App\\game_src;..\\..\\XE\\Common\\_XLibrary\\android_xe\\prebuilt
+environment/project/com.android.toolchain.gcc.948211711.166424811.2100528509/append=true
+environment/project/com.android.toolchain.gcc.948211711.166424811.2100528509/appendContributed=true
 environment/project/com.android.toolchain.gcc.948211711.166424811/NDK_MODULE_PATH/delimiter=;
 environment/project/com.android.toolchain.gcc.948211711.166424811/NDK_MODULE_PATH/operation=replace
 environment/project/com.android.toolchain.gcc.948211711.166424811/NDK_MODULE_PATH/value=..\\..\\Caribe;..\\..\\Caribe\\App\\game_src;..\\..\\XE\\Common\\_XLibrary\\android_xe\\prebuilt

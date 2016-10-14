@@ -36,6 +36,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 
@@ -53,6 +54,7 @@ import com.mtricks.trivialdrivesample.util.IabResult;
 import com.mtricks.trivialdrivesample.util.Inventory;
 import com.mtricks.trivialdrivesample.util.Purchase;
 import com.mtricks.trivialdrivesample.util.SkuDetails;
+import com.mtricks.xe.Cocos2dxHandler.xShowAdmob;
 import com.mtricks.xe.Cocos2dxHandler.xSoftnyxBuyItem;
 import com.mtricks.xe.Cocos2dxHelper.Cocos2dxHelperListener;
 //import com.ini3.Ini3UserAuthen;
@@ -71,15 +73,17 @@ import com.pgman.auth.AuthConnectionFailListener;
 import com.pgman.auth.AuthConnectionListener;
 import com.pgman.auth.AuthResult;
 import com.pgman.auth.AuthUserInfoListener;
-//import com.google.android.gms.ads.*;
-//import android.widget.RelativeLayout;
-//import android.widget.RelativeLayout.*;
+import com.google.android.gms.ads.*;
+
+//import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.*;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+//import com.google.android.gms.ads.MobileAds;
+//import com.google.android.gms.ads.reward;
+//import com.google.android.gms.ads.reward.RewardItem;
+//import com.google.android.gms.ads.reward.RewardedVideoAd;
+//import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 public class XeActivity extends Activity implements Cocos2dxHelperListener {
 	public static XeActivity xeActivity;
@@ -109,8 +113,12 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 	public static final boolean debugLog = true;
 	public static final boolean debugLogFb = false;
 	Purchase consumeProduct;
-    //private AdView adView;
-	private RewardedVideoAd mAd;
+    private AdView adView;
+    private AdRequest adRequest;
+    boolean bShowBanner = false;
+    final boolean bAdmob = true;
+    //private FrameLayout xadView; 
+	//private RewardedVideoAd mAd;
     
 	// @SuppressWarnings("deprecation")
 	@Override
@@ -124,7 +132,7 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 		//setContentView(mGLView);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         // Create and load the AdView.
-/*        adView = new AdView(this);
+        adView = new AdView(this);
         adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
         adView.setAdSize(AdSize.BANNER);
 
@@ -133,59 +141,17 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
         mainLayout = new android.widget.RelativeLayout(this);
         mainLayout.removeView(mGLView);
         mainLayout.addView(mGLView);
+        if( bAdmob ) {
+            adRequest = new AdRequest.Builder().addTestDevice( AdRequest.DEVICE_ID_EMULATOR).build();
+            adView.loadAd( adRequest );
+        }
+        adView.setVisibility(View.GONE);
 
-         Add adView to the bottom of the screen.
-        android.widget.RelativeLayout.LayoutParams 
-        adParams = new android.widget.RelativeLayout.LayoutParams(
-                android.widget.RelativeLayout.LayoutParams.MATCH_PARENT, 
-                android.widget.RelativeLayout.LayoutParams.WRAP_CONTENT);
-        adParams.addRule(android.widget.RelativeLayout.ALIGN_PARENT_TOP);
-        mainLayout.addView(adView, adParams);
-		
-		
-		//setContentView(mGLView);
+        adView.setX( 300 );
+        adView.setY( 200 );
+        mainLayout.addView( adView );
         setContentView(mainLayout);
         //
-        adView.setVisibility(View.VISIBLE);
-        adView.loadAd(new AdRequest.Builder()
-        .addTestDevice( AdRequest.DEVICE_ID_EMULATOR).build());
-*/        
-        setContentView(mGLView);
-        //
-        // Initialize the Mobile Ads SDK.
-        MobileAds.initialize(this, APP_ID);
-
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        mRewardedVideoAd.setRewardedVideoAdListener(this);
-        loadRewardedVideoAd();
-
-        // Create the "retry" button, which tries to show an interstitial between game plays.
-        mRetryButton = ((Button) findViewById(R.id.retry_button));
-        mRetryButton.setVisibility(View.INVISIBLE);
-        mRetryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startGame();
-            }
-        });
-
-        // Create the "show" button, which shows a rewarded video if one is loaded.
-        mShowVideoButton = ((Button) findViewById(R.id.watch_video));
-        mShowVideoButton.setVisibility(View.INVISIBLE);
-        mShowVideoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showRewardedVideo();
-            }
-        });
-
-        // Display current coin count to user.
-        mCoinCountText = ((TextView) findViewById(R.id.coin_count_text));
-        mCoinCount = 0;
-        mCoinCountText.setText("Coins: " + mCoinCount);
-
-        startGame();
-        
 	}
 
 	@Override
@@ -845,6 +811,45 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 		android.os.Process.killProcess(android.os.Process.myPid());
 
 	}
+	public void ShowAdView( boolean bShow, int dpX, int dpY ) {
+		Log.d(TAG, "Java: ShowAdView=" + bShow );
+		if( bShow ) {
+			adView.setX( dpX );
+			adView.setY( dpY );
+	        adView.setVisibility(View.VISIBLE);
+		} else {
+			adView.setX( dpX );
+			adView.setY( dpY );
+	        adView.setVisibility(View.GONE);
+		}
+	}
+	public void ShowAdViewToMsg( boolean bShow, int dpX, int dpY ) {
+		if( bAdmob ) {
+			Log.d(TAG, "Java: XeActivity:ShowAdViewToMsg" );
+			Message msg = new Message();
+			msg.what = Cocos2dxHandler.HANDLER_SHOW_ADMOB;
+			xShowAdmob param = new Cocos2dxHandler.xShowAdmob();
+			param.bShow = bShow;
+			param.dpX = dpX;
+			param.dpY = dpY;
+			msg.obj = param;
+			this.mHandler.sendMessage(msg);
+		}
+	}
+	public void DoTestFromHandler() {
+		Log.d(TAG, "Java: XeActivity:DoTestFromHandler" );
+		bShowBanner = !bShowBanner;
+		ShowAdView( bShowBanner, 500, 500 );
+	}
+	@Override
+	public void DoTest() {
+		Log.d(TAG, "Java: XeActivity:Dotest" );
+		//ShowAdView();
+		Message msg = new Message();
+		msg.what = Cocos2dxHandler.HANDLER_TEST;
+		Log.d(TAG, "XeActivity.DoTest" );
+		this.mHandler.sendMessage(msg);
+	}
 
 	@Override
 	public boolean CheckCDMA() {
@@ -877,7 +882,7 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 	    CreateGoogleIAP( publicKey );
 	}
 	//////////////////////////////////////////////////////////////////////////////////////
-    private void loadRewardedVideoAd() {
+/*    private void loadRewardedVideoAd() {
         if (!mRewardedVideoAd.isLoaded()) {
             mRewardedVideoAd.loadAd(AD_UNIT_ID, new AdRequest.Builder().build());
         }
@@ -890,7 +895,7 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 //        createTimer(COUNTER_TIME);
 //        mGamePaused = false;
 //        mGameOver = false;
-    }
+    } */
 	/////////////////////////////////////////////////////////////////////////////////////////
 	@Override
 	public void showDialog(final String pTitle, final String pMessage) {
@@ -908,32 +913,28 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 	protected void onPause() {
 		super.onPause();
 		mGLView.onPause();
-//		if( adView != null ) {
-//			adView.pause();
-//		}
-        mRewardedVideoAd.pause(this);
+		if( adView != null ) {
+			adView.pause();
+		}
+//        mRewardedVideoAd.pause(this);
 	}
 	@Override
 	protected void onResume() {
-		// down if (null != mDownloaderClientStub) {
-		// down mDownloaderClientStub.connect(this);
-		// down }
-
 		super.onResume();
 		mGLView.onResume();
-        mRewardedVideoAd.resume(this);
-//		if( adView != null ) {
-//			adView.resume();
-//		}
+//        mRewardedVideoAd.resume(this);
+		if( adView != null ) {
+			adView.resume();
+		}
 	}
 	@Override
 	public void onDestroy() {
 		Log.d(TAG, "XeActivity.onDestroy()");
 		mGLView.onDestroy();
 		super.onDestroy();
-//		if( adView != null ) {
-//			adView.destroy();
-//		}
+		if( adView != null ) {
+			adView.destroy();
+		}
 	}
 	@Override
 	public boolean onKeyDown(int KeyCode, KeyEvent event) {

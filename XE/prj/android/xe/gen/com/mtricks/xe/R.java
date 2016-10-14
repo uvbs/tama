@@ -707,6 +707,7 @@ containing a value of this type.
         public static int strict_sandbox=0x7f07000b;
         public static int terrain=0x7f070005;
         public static int wrap_content=0x7f07000f;
+        public static int xadview=0x7f07002f;
     }
     public static final class integer {
         public static int google_play_services_version=0x7f090000;
@@ -726,6 +727,7 @@ containing a value of this type.
         public static int com_facebook_placepickerfragment_list_row=0x7f03000b;
         public static int com_facebook_search_bar_layout=0x7f03000c;
         public static int com_facebook_usersettingsfragment=0x7f03000d;
+        public static int xadview=0x7f03000e;
     }
     public static final class raw {
         public static int gtm_analytics=0x7f040000;

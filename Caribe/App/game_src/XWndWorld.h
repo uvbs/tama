@@ -286,7 +286,7 @@ private:
 private:
 	// private method
 	void Init() {}
-	void Destroy() {}
+	void Destroy();
 	int OnClickLow( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnClickSound( XWnd* pWnd, DWORD p1, DWORD p2 );
 	int OnClickLanguage( XWnd* pWnd, DWORD p1, DWORD p2 );
