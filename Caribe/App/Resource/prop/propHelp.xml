@@ -443,7 +443,8 @@
   <dialog.boss3 event="xAE_ENTER_SCENE" event_param="xSC_INGAME" _event_param2="spot.boss3" param_spot2="spot.boss3">
     <mode mode="cut_scene" flag="yes"></mode>
     <touch flag="no" />
-    <camera x="799" y="474" push_pos="yes" />
+    <_camera x="799" y="474" push_pos="yes" />
+    <camera x="1257" y="435" push_pos="yes"></camera>
     <delay sec="1"></delay>
     <dialog id_text="70179" talker="kay" x="339" />
     <dialog id_text="70180" talker="kay" x="339"></dialog>
@@ -465,7 +466,8 @@
   <dialog.boss4 event="xAE_ENTER_SCENE" event_param="xSC_INGAME" _event_param2="spot.645" param_spot2="spot.645">
     <mode mode="cut_scene" flag="yes"></mode>
     <touch flag="no" />
-    <camera x="799" y="474" push_pos="yes" />
+    <camera x="1257" y="435" push_pos="yes"></camera>
+    <_camera x="799" y="474" push_pos="yes" />
     <delay sec="1"></delay>
     <dialog id_text="70183" talker="bedivere" x="339" />
     <dialog id_text="70184" talker="bedivere" x="339"></dialog>
@@ -487,7 +489,8 @@
   <dialog.boss5 event="xAE_ENTER_SCENE" event_param="xSC_INGAME" _event_param2="spot.824" param_spot2="spot.824">
     <mode mode="cut_scene" flag="yes"></mode>
     <touch flag="no" />
-    <camera x="344" y="734" push_pos="yes" />
+    <camera x="1257" y="435" push_pos="yes"></camera>
+    <_camera x="344" y="734" push_pos="yes" />
     <delay sec="1"></delay>
     <dialog id_text="70205" talker="bedivere" x="center" y="center" />
     <dialog id_text="70205" talker="bedivere" x="center" y="center"></dialog>
