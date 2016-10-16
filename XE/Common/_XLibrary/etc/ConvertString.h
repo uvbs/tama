@@ -1,4 +1,4 @@
-﻿/*  ConvertString.h
+﻿/*  ConvertString.h*/
 /*
  *  BnBTest
  *
