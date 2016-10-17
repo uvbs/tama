@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="pgman_done">완료</string>
+    <string name="pgman_login_ok">Connect</string>
+    <string name="pgman_login_cancel">Cancel</string>
+    
+    <string name="pgman_login_error">아이디 또는 패스워드가 맞지 않습니다</string>
+    <string name="pgman_login_not_connected">인터넷접속이 연결되지 않았습니다</string>
+    <string name="pgman_login_error_100">서버오류</string>
+    <string name="pgman_login_error_101">클라이언트 키값 없음</string>
+    <string name="pgman_login_error_102">Auth code 오류</string>
+    <string name="pgman_login_error_109">redirection_url 오류</string>
+    <string name="pgman_login_error_103">response_type 오류</string>
+    <string name="pgman_login_error_203">사용자권한부여 취소</string>
+    <string name="pgman_login_error_501">데이터없음(디비에러)</string>
+    <string name="pgman_login_error_503">사용자정보없음</string>
+    <string name="pgman_login_error_504">앱 ID 오류</string>
+    <string name="pgman_login_error_msg">접속중 에러가 발생했습니다</string>
+   
+</resources>
