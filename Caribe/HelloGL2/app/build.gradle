@@ -1,10 +1,9 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
     defaultConfig {
-        applicationId 'com.android.gl2jni'
+        applicationId 'com.gemtree2.caribe'
         minSdkVersion 5
         targetSdkVersion 23
         ndk {
@@ -14,16 +13,15 @@ android {
             cmake {
                 // Available argumetns are inside ${SDK}/cmake/.../android.toolchain.cmake file
                 arguments '-DANDROID_PLATFORM=android-9',
-                          '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=gnustl_static'
+                        '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=gnustl_static'
             }
         }
     }
-
     buildTypes {
         release {
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                          'proguard-rules.pro'
+                    'proguard-rules.pro'
         }
     }
     externalNativeBuild {
@@ -31,5 +29,9 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    productFlavors {
+    }
 }
 
+dependencies {
+}

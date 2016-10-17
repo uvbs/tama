@@ -302,7 +302,7 @@ private:
 /**
  @brief 
 */
-template<typename RET>
+/*template<typename RET>
 class XWndTextDynamic : public XWndTextString
 {
 	RET (XWnd::*m_pFunc)( DWORD param1 );
@@ -344,7 +344,7 @@ public:
 		XWndTextString::Draw();
 	}
 };
-
+*/
 XWndTextString* xGET_TEXT_CTRL( XWnd *pRoot, const char *cKey );
 /**
  @brief 

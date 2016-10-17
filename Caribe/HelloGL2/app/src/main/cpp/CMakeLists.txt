@@ -14,7 +14,7 @@ add_library(gl2jni SHARED
             gl_code.cpp)
 
 include_directories(
-    C:/p4v/iPhone_zero/Caribe/App/game_src/android
+    C:\xuzhu_work\Project\iPhone_zero\Caribe\App\game_src\android
     C:/p4v/iPhone_zero/Caribe/App/game_src
     C:/p4v/iPhone_zero/XE/Common/_XLibrary
     C:/p4v/iPhone_zero/XE/Third_Party_lib

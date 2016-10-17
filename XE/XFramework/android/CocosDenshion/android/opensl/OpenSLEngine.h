@@ -15,7 +15,7 @@
 #include "android/asset_manager.h"
 #include "android/asset_manager_jni.h"
 #include <android/log.h>
-#include "JniHelper.h"
+#include "XFramework/android/JniHelper.h"
 #include <dlfcn.h>
 
 

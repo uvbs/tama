@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 #include <cstring>
 #include <android/log.h>
-#include "JniHelper.h"
+#include "XFramework/android/JniHelper.h"
 #include <jni.h>
 
 #define  I9100_MODEL "GT-I9100"

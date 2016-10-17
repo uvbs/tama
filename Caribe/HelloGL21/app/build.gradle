@@ -1,0 +1,41 @@
+apply plugin: 'com.android.application'
+android {
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
+    defaultConfig {
+        applicationId 'com.gemtree2.caribe'
+        minSdkVersion 17
+        targetSdkVersion 22
+        ndk {
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a','x86'
+        }
+        externalNativeBuild {
+            cmake {
+                // Available argumetns are inside ${SDK}/cmake/.../android.toolchain.cmake file
+                arguments '-DANDROID_PLATFORM=android-22',
+                        '-DANDROID_TOOLCHAIN=gcc', '-DANDROID_STL=c++_static'
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
+    compile 'com.google.android.gms:play-services:+'
+    compile 'com.android.support:support-v13:+'
+    compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
+}
