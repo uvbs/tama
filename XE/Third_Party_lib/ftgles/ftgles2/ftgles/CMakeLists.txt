@@ -1,0 +1,44 @@
+add_library(ftgl2 STATIC
+../xftglShader.cpp 
+../XGLProgram.cpp 
+src/FTBuffer.cpp 
+src/FTCharmap.cpp 
+src/FTContour.cpp 
+src/FTFace.cpp 
+src/FTGlyphContainer.cpp 
+src/FTLibrary.cpp 
+src/FTPoint.cpp 
+src/FTSize.cpp 
+src/FTVectoriser.cpp 
+src/FTFont/FTFont.cpp 
+src/FTFont/FTFontGlue.cpp 
+src/FTFont/FTTextureFont.cpp 
+src/FTGL/ftglesGlue.cpp 
+src/FTGlyph/FTGlyph.cpp 
+src/FTGlyph/FTGlyphGlue.cpp 
+src/FTGlyph/FTTextureGlyph.cpp 
+src/FTLayout/FTLayout.cpp 
+src/FTLayout/FTLayoutGlue.cpp 
+src/FTLayout/FTSimpleLayout.cpp 
+src/iGLU-1.0.0/libtess/dict.c 
+src/iGLU-1.0.0/libtess/geom.c 
+src/iGLU-1.0.0/libtess/memalloc.c 
+src/iGLU-1.0.0/libtess/mesh.c 
+src/iGLU-1.0.0/libtess/normal.c 
+src/iGLU-1.0.0/libtess/priorityq.c 
+src/iGLU-1.0.0/libtess/render.c 
+src/iGLU-1.0.0/libtess/sweep.c 
+src/iGLU-1.0.0/libtess/tess.c 
+src/iGLU-1.0.0/libtess/tessmono.c 
+src/iGLU-1.0.0/libutil/error.c 
+src/iGLU-1.0.0/libutil/glue.c 
+src/iGLU-1.0.0/libutil/project.c 
+src/iGLU-1.0.0/libutil/registry.c 
+            )
+include_directories(
+    ./
+    ./src
+    ../../freetype2_android/include
+    ./src/iGLU-1.0.0/include
+    )
+

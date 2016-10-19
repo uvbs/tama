@@ -7,11 +7,7 @@ The following files were *not* copied into the new Gradle project; you
 should evaluate whether these are still needed in your project and if
 so manually move them:
 
-From FacebookSDK:
 * build.xml
-From xe:
-* javap
-* proguard-project.txt
 
 Replaced Jars with Dependencies:
 --------------------------------
@@ -30,17 +26,9 @@ Moved Files:
 Android Gradle projects use a different directory structure than ADT
 Eclipse projects. Here's how the projects were restructured:
 
-In FacebookSDK:
 * AndroidManifest.xml => facebookSDK\src\main\AndroidManifest.xml
-* assets\ => facebookSDK\src\main\assets
 * res\ => facebookSDK\src\main\res\
 * src\ => facebookSDK\src\main\java\
-In xe:
-* AndroidManifest.xml => xe\src\main\AndroidManifest.xml
-* assets\ => xe\src\main\assets
-* res\ => xe\src\main\res\
-* src\ => xe\src\main\java\
-* src\com\android\vending\billing\IInAppBillingService.aidl => xe\src\main\aidl\com\android\vending\billing\IInAppBillingService.aidl
 
 Missing Android Support Repository:
 -----------------------------------

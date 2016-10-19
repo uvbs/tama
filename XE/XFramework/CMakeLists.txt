@@ -1,0 +1,34 @@
+add_library(xframework STATIC
+    XSplitNode.cpp
+    XParamObj.cpp
+    XEOption.cpp
+    XInApp.cpp
+    XReceiverCallback.cpp
+    Game/XEComponentMng.cpp
+    client/XEmitter.cpp
+    client/XPropParticle.cpp
+    XEToolTip.cpp
+    XDBAccount.cpp
+    XConstant.cpp
+    XTextTable.cpp
+    XTextTableUTF8.cpp
+    XF.cpp
+    XConsoleMain.cpp
+    XScroll.cpp
+    XSoundTable.cpp
+    XGlobal.cpp
+    XFacebook.cpp
+    XEBaseScene.cpp
+    XEBaseProp.cpp
+    XESceneMng.cpp
+    XEProfile.cpp
+            )
+include_directories(
+    ../Common/_XLibrary/android_xe
+    ../Common/_XLibrary
+    ../Third_Party_lib
+    ../Third_Party_lib/ftgles/ftgles2/ftgles/src
+    ../Third_Party_lib/ftgles/freetype2_android/include
+    ../
+    )
+

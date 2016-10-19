@@ -83,22 +83,17 @@
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/shaders" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/cmake" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support.constraint/constraint-layout/1.0.0-alpha7/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/24.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/24.0.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/multidex/1.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/palette-v7/24.0.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-compat/24.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-core-ui/24.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-core-utils/24.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-fragment/24.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-media-compat/24.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v13/24.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/24.2.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/24.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/24.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads-lite/9.6.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/9.6.1/jars" />
@@ -152,26 +147,136 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.firebase/firebase-storage/9.6.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-safeguard" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/multi-dex" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/pre-dexed" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shaders" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <content url="file://$MODULE_DIR$/../common/xe">
-      <sourceFolder url="file://$MODULE_DIR$/../common/xe" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../../XE/Common">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Map">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Map" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Network">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Network" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Network/android">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Network/android" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Network/client">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Network/client" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/OpenGL2">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/OpenGL2" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Sound/Android">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Sound/Android" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Sprite">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/Sprite" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/_Wnd2">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/_Wnd2" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/android_xe">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/android_xe" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/etc">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/etc" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/etc/iOS">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Common/_XLibrary/etc/iOS" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/autofit">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/autofit" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/base">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/base" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/cff">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/cff" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/pshinter">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/pshinter" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/psnames">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/psnames" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/raster">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/raster" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/sfnt">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/sfnt" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/smooth">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/smooth" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/truetype">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/freetype2_android/src/truetype" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/FTFont">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/FTFont" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/FTGL">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/FTGL" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/FTGlyph">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/FTGlyph" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/FTLayout">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/FTLayout" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libutil">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libutil" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/XFramework">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/XFramework" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/XFramework/Game">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/XFramework/Game" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/XFramework/android">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/XFramework/android" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/XFramework/android/CocosDenshion/android">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/XFramework/android/CocosDenshion/android" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/XFramework/android/CocosDenshion/android/jni">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/XFramework/android/CocosDenshion/android/jni" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/XFramework/android/CocosDenshion/android/opensl">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/XFramework/android/CocosDenshion/android/opensl" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../XE/XFramework/client">
+      <sourceFolder url="file://$MODULE_DIR$/../../../XE/XFramework/client" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="Android API 24 Platform (2)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="support-v4-24.2.1" level="project" />
-    <orderEntry type="library" exported="" name="support-compat-24.2.1" level="project" />
-    <orderEntry type="library" exported="" name="support-fragment-24.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-database-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-tagmanager-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-location-9.6.1" level="project" />
-    <orderEntry type="library" exported="" name="constraint-layout-solver-1.0.0-alpha7" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="palette-v7-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="firebase-database-connection-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-panorama-9.6.1" level="project" />
@@ -186,7 +291,6 @@
     <orderEntry type="library" exported="" name="firebase-auth-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-games-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-gass-9.6.1" level="project" />
-    <orderEntry type="library" exported="" name="support-core-ui-24.2.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-messaging-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-cast-framework-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-ads-9.6.1" level="project" />
@@ -205,30 +309,31 @@
     <orderEntry type="library" exported="" name="animated-vector-drawable-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-nearby-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-appindexing-9.6.1" level="project" />
-    <orderEntry type="library" exported="" name="org.jbundle.util.osgi.wrapped.org.apache.http.client-4.1.2" level="project" />
     <orderEntry type="library" exported="" name="play-services-fitness-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-instantapps-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-identity-9.6.1" level="project" />
-    <orderEntry type="library" exported="" name="constraint-layout-1.0.0-alpha7" level="project" />
     <orderEntry type="library" exported="" name="play-services-maps-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-storage-common-9.6.1" level="project" />
-    <orderEntry type="library" exported="" name="support-media-compat-24.2.1" level="project" />
-    <orderEntry type="library" exported="" name="support-v13-24.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-analytics-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-iid-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-auth-base-9.6.1" level="project" />
-    <orderEntry type="library" exported="" name="support-core-utils-24.2.1" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-basement-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-auth-common-9.6.1" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-24.2.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-auth-module-9.6.1" level="project" />
+    <orderEntry type="library" exported="" name="multidex-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-clearcut-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-safetynet-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-places-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-analytics-9.6.1" level="project" />
     <orderEntry type="library" exported="" name="mediarouter-v7-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="firebase-crash-9.6.1" level="project" />
+    <orderEntry type="module" module-name="facebookSDK" exported="" />
+    <orderEntry type="module" module-name="xe" exported="" />
+    <orderEntry type="library" exported="" name="android-android-24" level="project" />
+    <orderEntry type="library" exported="" name="org.apache.http.legacy-android-24" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-19.1.0" level="project" />
   </component>
 </module>

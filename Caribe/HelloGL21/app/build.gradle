@@ -1,27 +1,40 @@
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    compileSdkVersion 24
+    buildToolsVersion '24.0.3'
     defaultConfig {
         applicationId 'com.gemtree2.caribe'
-        minSdkVersion 17
-        targetSdkVersion 22
+        minSdkVersion 21
+        targetSdkVersion 24
+        useLibrary  'org.apache.http.legacy'
+        multiDexEnabled true
         ndk {
-            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a','x86'
+            moduleName "xlib_test"
+//            abiFilters 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            abiFilters 'x86', 'armeabi', 'armeabi-v7a'
         }
         externalNativeBuild {
             cmake {
                 // Available argumetns are inside ${SDK}/cmake/.../android.toolchain.cmake file
-                arguments '-DANDROID_PLATFORM=android-22',
-                        '-DANDROID_TOOLCHAIN=gcc', '-DANDROID_STL=c++_static'
+//                arguments '-DANDROID_PLATFORM=android-24',
+//                        '-DANDROID_TOOLCHAIN=gcc', '-DANDROID_STL=c++_static'
             }
         }
+    }
+//    sourceSets {
+//        main {
+//            jniLibs.srcDirs = [ ]
+//        }
+//    }
+    dexOptions {
+        jumboMode true
+        javaMaxHeapSize "4g"
     }
     buildTypes {
         release {
             minifyEnabled = false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                    'proguard-rules.pro'
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+//                    'proguard-rules.pro'
         }
     }
     externalNativeBuild {
@@ -32,10 +45,13 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
+    compile project(':xe')
+    compile project(':facebookSDK')
+//    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:multidex:1.0.0'
+//    compile 'com.android.support:appcompat-v7:+'
+//    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
     compile 'com.google.android.gms:play-services:+'
-    compile 'com.android.support:support-v13:+'
-    compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
+//    compile 'com.android.support:support-v13:+'
+//    compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
 }
