@@ -47,4 +47,5 @@ dependencies {
     compile project(':facebookSDK')
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.google.android.gms:play-services:+'
+    compile files('libs/tapjoyconnectlibrary.jar')
 }
