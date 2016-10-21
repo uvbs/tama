@@ -8,6 +8,7 @@ LOCAL_MODULE := gamesrc_static
 LOCAL_MODULE_FILENAME := libgamesrc
 
 LOCAL_SRC_FILES := \
+XSceneBattlesingle.cpp \
 XWndPrivateRaid.cpp \
 XAsyncMng.cpp \
 XSceneBattleSub.cpp \
@@ -140,15 +141,6 @@ XGuild.cpp \
 client\XAppDelegate.cpp \
 client\XAppMain.cpp \
 
-#skill/XAdjParam.cpp \
-#skill/XBuffObj.cpp \
-#skill/XESkillMng.cpp \
-#skill/XLuaSkill.cpp \
-#skill/xSkill.cpp \
-#skill/XSkillDat.cpp \
-#skill/XSkillObj.cpp \
-#skill/XSkillReceiver.cpp \
-#skill/XSkillUser.cpp \
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) \
 							$(LOCAL_PATH)/../ \

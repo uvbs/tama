@@ -11,6 +11,9 @@
 #include "XSoundMng.h"
 #include "_Wnd2/XWndList.h"
 #include "_Wnd2/XWndButton.h"
+#ifdef _VER_ANDROID
+#include "XFramework/android/JniHelper.h"
+#endif // _VER_ANDROID
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -24,7 +27,9 @@ XSceneShop *SCENE_SHOP = NULL;
 
 void XSceneShop::Destroy()
 {	
-//	SAFE_DELETE(m_pLayout);
+#ifdef _VER_ANDROID
+	JniHelper::ShowAdmob( false, 0, 0 );
+#endif // _VER_ANDROID
 	XBREAK(SCENE_SHOP == NULL);
 	XBREAK(SCENE_SHOP != this);
 	SCENE_SHOP = NULL;
@@ -40,26 +45,20 @@ XSceneShop::XSceneShop(XGame *pGame)
 	Init(); 
 
 	m_Layout.CreateLayout("common_bg", this);
-//	m_Layout.CreateLayout("common_bg_goldcash", this);
 	m_Layout.CreateLayout("shop", this);
 
-	// 텍스트
-// 	xSET_TEXT(this, "text.common.gold", XE::Format(_T("%d"), ACCOUNT->GetGold()));
-// 	xSET_TEXT(this, "text.common.cash", XE::Format(_T("%d"), ACCOUNT->GetCashtem()));
-	
 	// 버튼
 	xSET_BUTT_HANDLER(this, "butt.back", &XSceneShop::OnBack);
-
 	xSET_BUTT_HANDLER(this, "butt.shop.cash", &XSceneShop::OnClickTabCash);		// 캐쉬 탭
-//	xSET_BUTT_HANDLER(this, "butt.shop.etc", &XSceneShop::OnClickTabEtc);		// 기타 탭
 	xSET_SHOW( this, "butt.shop.etc", FALSE );	// 필요없어서 삭제
 
 	// 리스트
 	m_pList = SafeCast<XWndList*, XWnd*>(Find("list.shop"));
-//	m_pList->SetScrollDir(XE::xHORIZ);
 	m_pList->SetScrollHorizOnly();
-
 	m_shopType = SHOPTYPE_CASH;
+#ifdef _VER_ANDROID
+	JniHelper::ShowAdmob( true, 480, 51 );
+#endif // _VER_ANDROID
 	UpdateList();
 }
 

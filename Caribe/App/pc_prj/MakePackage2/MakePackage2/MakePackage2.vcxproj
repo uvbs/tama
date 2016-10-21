@@ -50,14 +50,11 @@
     <ProjectGuid>{1C96D25D-2617-4DE0-817B-729714BA1321}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>MakePackage2</RootNamespace>
-    <SccProjectName>
-    </SccProjectName>
+    <SccProjectName>Perforce Project</SccProjectName>
     <SccAuxPath>
     </SccAuxPath>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccProvider>
-    </SccProvider>
+    <SccLocalPath>..\..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
     <ProjectName>2_MakePackage2</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>

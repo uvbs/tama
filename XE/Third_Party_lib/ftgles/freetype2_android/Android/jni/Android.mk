@@ -11,7 +11,7 @@ LOCAL_CFLAGS := -DANDROID_NDK \
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include_all \
 		$(LOCAL_PATH)/../../include \
-		$(LOCAL_PATH)/../../src \
+		$(LOCAL_PATH)/../../src
 
 #		$(FREETYPE_SRC_PATH)include \
 #		$(FREETYPE_SRC_PATH)src

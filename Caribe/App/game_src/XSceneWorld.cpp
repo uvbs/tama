@@ -48,6 +48,9 @@
 #ifdef WIN32
 #include "CaribeView.h"
 #endif
+#ifdef _VER_ANDROID
+#include "XFramework/android/JniHelper.h"
+#endif // _VER_ANDROID
 #include "XSceneWorld.h"
 
 #ifdef WIN32
@@ -3428,8 +3431,17 @@ BOOL XSceneWorld::OnKeyUp( int keyCode )
 			// 백버튼 누르면 현재 씬에도 돌아가기 버튼이 있는지 보고 있으면 OnBack을 불러준다. 
 			XTRACE( "OnKeyUp==back" );
 			auto pAlert = XWND_ALERT_YESNO( "wnd.exit", "%s", _T( "exit?" ) );
-			if( pAlert )
+			if( pAlert ) {
+#ifdef _VER_ANDROID
+				JniHelper::ShowAdmob( true, 480, 825 );
+#endif // _VER_ANDROID
 				pAlert->SetEvent( XWM_YES, GAME, &XGame::OnExitApp );
+#ifdef _VER_ANDROID
+				pAlert->SetEvent2( XWM_NO, [this]( XWnd* ) {
+					JniHelper::ShowAdmob( false, 480, 825 );
+				});
+#endif // _VER_ANDROID
+			}
 		}
 	}
 	return TRUE;

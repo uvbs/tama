@@ -350,10 +350,12 @@ namespace PushApplication
                             {
                                 //                        if (bLoad == false)
                                 //                            bLoad = LoadDeviceIDDB();
+                                Console.WriteLine("PluralPostData");
                                 PluralPostData(each.pushmessage);
                             }
                             else //전체 아니니까 바로 푸쉬 해주도록 한다.
                             {
+                                Console.WriteLine("SinglePostData");
                                 SinglePostData(each.deviceid, each.pushmessage);
                             }
                             //SendMessage("[Make" + currTime.ToString("HH:mm:ss") + " [" + index + "] " + p.pushmessage);
@@ -415,6 +417,7 @@ namespace PushApplication
                         totalCollection.Add(arrayCollection);
                         totalCollection.Add(Collection);
 
+                        Console.WriteLine("SendGCMNotification1");
                         SendGCMNotification(API_KEY, totalCollection.ToString());
 
                         arrayCollection.Clear();
@@ -426,6 +429,7 @@ namespace PushApplication
                 totalCollection.Add(arrayCollection);
                 totalCollection.Add(Collection);
 
+                Console.WriteLine("SendGCMNotification2");
                 SendGCMNotification(API_KEY, totalCollection.ToString());
             }
             else
@@ -443,9 +447,11 @@ namespace PushApplication
                 totalCollection.Add(arrayCollection);
                 totalCollection.Add(Collection);
 
+                Console.WriteLine("SendGCMNotification3");
                 SendGCMNotification(API_KEY, totalCollection.ToString());
             }
 
+            Console.WriteLine("SendGCMNotification4");
             SendGCMNotification(API_KEY, postData);
         }
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)

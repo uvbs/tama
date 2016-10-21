@@ -77,7 +77,8 @@ public:
 	static void GetUserProfileImage(const char *cUserID);
 	static int RenameFile( const char *cFileOld, const char *cFileNew );
 	static void DoExitApp( void );
-
+	static void DoTest();
+	static void ShowAdmob( bool bShow, int dpX, int dpY );
 	static bool Check3G();
 	static bool CheckWiFi();
 

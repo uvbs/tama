@@ -13,20 +13,14 @@
 # limitations under the License.
 #
 
-# ������������ �����ϴ� ���丮��θ� ��ȯ�Ѵ�.(�����)
-
 LOCAL_PATH := $(call my-dir)
 
-# Local_path�� ������ ��� LOCAL_�������� �ʱ�ȭ ����.
 include $(CLEAR_VARS)
 
-#���� ���̺귯�������� �̸��� ������. .so������ ���.
 LOCAL_MODULE    := xlib_test
 
-#���̺귯�� �� �ʿ��� �ҽ��ڵ� ����� �����ϴ� �κ�.(Local_Path����.) \�� ������.
-LOCAL_SRC_FILES := xlib_test.cpp \
+LOCAL_SRC_FILES := xlib_test.cpp 
 
-#Ŭ���� ������ �����ϴ� ���ϵ��� ��θ� �������ִ� �κ�.
 LOCAL_C_INCLUDES := $(LOCAL_PATH) \
 					$(LOCAL_PATH)/../../App/game_src/android/ \
 					$(LOCAL_PATH)/../../App/Resource/ \
@@ -40,20 +34,24 @@ LOCAL_EXPORT_LDLIBS := -llog\
                        -lz \
                        -lGLESv2 \
 
-#				-lEGL \
-                       
+                    
 LOCAL_LDLIBS := -lGLESv2 \
                 -llog \
                 -lz \
 
 
 #COMMON_CFLAGS := -DDEBUG -D_DEBUG
+
 COMMON_CFLAGS := -DNDEBUG -D_SPR_USE_LUA -D_XNEW_APP -marm -fno-omit-frame-pointer -fexceptions -Wparentheses -fpermissive
+
 LOCAL_CFLAGS += $(COMMON_CFLAGS)				
+
 LOCAL_EXPORT_CFLAGS += $(COMMON_CFLAGS) 
 
 COMMON_CPPFLAGS := -DNDEBUG -marm -fno-omit-frame-pointer -fexceptions -Wparentheses -fpermissive -O2
+
 LOCAL_CPPFLAGS += $(COMMON_CPPFLAGS)
+
 LOCAL_EXPORT_CPPFLAGS += $(COMMON_CPPFLAGS)
 
 #LOCAL_CPPFLAGS += -DDEBUG \
@@ -84,12 +82,9 @@ LOCAL_WHOLE_STATIC_LIBRARIES := \
 	ftgl2_static
 
 
-#share library�� ���϶�� ����,
 #BUILD_STATIC_LIBRARY
 #BUILD_MULTI_PREBUILT
-#���� ����
 include $(BUILD_SHARED_LIBRARY)
-
 
 $(call import-module,../XE/Common/_XLibrary)
 $(call import-module,../XE/Common/_XLibrary/etc)

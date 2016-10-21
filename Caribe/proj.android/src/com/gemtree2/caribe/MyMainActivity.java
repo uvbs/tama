@@ -47,13 +47,17 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-
+// admob
+//import android.provider.Settings.Secure;
+//import com.google.android.gms.ads.*;
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdView;
 
 public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener {
 	public static Version ver = new Version();
 	static String[] SKU_GEM;
-	
 	public static MyMainActivity myActivity;
+//	private AdView adView;
 	
 	static {
 		System.loadLibrary("xlib_test");
@@ -81,7 +85,7 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		//setContentView( R.layout.activity_main );
 		if(Build.VERSION.SDK_INT >= 9)	// 2.3버전 이상
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 		
@@ -89,6 +93,11 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		GcmBroadcastReceiver.isAppOn = true;
 		
 		gcmInit();
+		
+	    //String deviceid = Secure.getString(this.getContentResolver(), Secure.ANDROID_ID);
+		//AdRequest adRequest = new AdRequest.Builder().addTestDevice(deviceid).build();
+     	//adView = (AdView) this.findViewById(R.id.adView);
+     	//adView.loadAd(adRequest);		
 		
 //		SendPush("hello xuzhu!");
 		Log.d( TAG, "model:" + Cocos2dxHelper.getDeviceModel() );
@@ -184,7 +193,6 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	@Override
 	public void onResume() {
 		super.onResume();
-		
 		GcmBroadcastReceiver.isAppOn = true;
 	}
 
@@ -193,6 +201,11 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		super.onPause();
 		
 		GcmBroadcastReceiver.isAppOn = false;
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
 	}
 
 	@Override

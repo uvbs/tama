@@ -19,6 +19,9 @@
 #include "client/XAppMain.h"
 #endif // _CHEAT
 #include "XImageMng.h"
+#ifdef _VER_ANDROID
+#include "XFramework/android/JniHelper.h"
+#endif // _VER_ANDROID
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -841,6 +844,16 @@ XWndOption::XWndOption( XSPAcc spAcc )
 // 		Add( pButt );
 	}
 #endif // _CHEAT
+#ifdef _VER_ANDROID
+	JniHelper::ShowAdmob( true, 480, 849 );
+#endif // _VER_ANDROID
+}
+
+void XWndOption::Destroy()
+{
+#ifdef _VER_ANDROID
+	JniHelper::ShowAdmob( false, 0, 0 );
+#endif // _VER_ANDROID
 }
 
 BOOL XWndOption::OnCreate()

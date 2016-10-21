@@ -1,5 +1,50 @@
-﻿skill_new
+﻿Conquerors: Winds of Chaos(SNRPG)
 
+The once peaceful Millennial Empire is coming to an end.
+As time passed, the government became corrupted.
+The corrupted government did not care for the people of the land.
+Plague and chaos was spread throughout the land.
+Local leaders knew about this and used their power to gain more power.
+This caused heroes to be born.
+Come join and be the legendary hero!
+
+
+☆ Raise your power and compete with other knights to build your own empire.
+☆ Collect heroes and improve them.
+☆ Explore the continents to compete with more powerful enemies.
+☆ Convenes and strategically moves legions of monsters.
+☆ Hire alliances with friends to rebuild your empire forces.
+
+GAME POINT
+War of the Legion, Clash of Heroes, Tactical Strategies, Corps Training, King of the Empire
+=====================================================
+Conquerors: Winds of Chaos !
+Join with your friends to clash and defeat enemies!
+
+The once peaceful Millennial Empire is coming to an end.
+As time passed, the government became corrupted.
+The corrupted government did not care for the people of the land.
+Plague and chaos was spread throughout the land.
+Local leaders knew about this and used their power to gain more power.
+This caused heroes to be born. Come join and be the legendary hero!
+
+PLEASE NOTE! 
+'Conquerors' is free to download and play, however, some game items can also be purchased for real money.
+If you don't want to use this feature, please setting password in the Play Store App's settings.
+A network connection is also required.
+
+FEATURES
+●Build and upgrade your empire to battle against others.
+●Explore the world and defeat powerful enemies.
+●Collect all warriors and make a powerful army.
+●Summon your army and strategically move them to victory.
+
+GAME POINT
+War of the Legion, Clash of Heroes, Tactical Strategies, Corps Training, King of the Empire
+
+
+skill_new
+160 272
 q#E35ktvhQjnt
 addr2line -C -f -e <앱라이브러리.so> <함수 주소>
 P4Merge

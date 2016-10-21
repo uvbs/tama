@@ -73,7 +73,7 @@ public:
 					XArrayLinearN<XSPSquadObj, 64> *pOutAry,
 					float radius );
 	XSPSquadObj GetSquadBySN( XGAME::xtLegionIdx idxLegion, ID snSquad );
-	void SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit, bool bEnemy );
+	void SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit, bool bEnemy, XSPAcc spAcc );
   void SetAI( bool bFlag );
 	void DrawLegionBar( const XE::VEC2& vPos, int idxLegion ) const;
 	XSPUnit GetHeroUnit( ID idProp );

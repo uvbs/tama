@@ -593,6 +593,7 @@ int XScenePatchClient::FSMReqRecvRes( xtAct event, const XParamObj2& param )
 			// 와이파이 아닌데 다운받을래?
 			auto pAlert = XWND_ALERT_YESNO( "alert.cdma.check", "%s", _T( "Download the new file. If the network is no WiFi, you may excessive fee occurs." ) );
 			if( pAlert ) {
+				pAlert->SetEnableNcEvent( FALSE );		// 화면밖 찍어도 안꺼지게.
 				pAlert->SetEvent2( XWM_YES, [this](XWnd*) {
 														FSMReqRecvRes( xACT_ON_YES, XParamObj2() );
 				} );
@@ -745,7 +746,7 @@ int XScenePatchClient::FSMError( xtAct event, const XParamObj2& param )
 	case xACT_ENTER: {
 		// 에러 사안별로 좀더 꼼꼼하게 에러메시지 표시할것.
 #pragma message("check this")
-			auto pAlert = XWND_ALERT( "alert.patch.error", "%s", XTEXT(10) );	// 문제발생. 앱다시 실행
+			auto pAlert = XWND_ALERT( "alert.patch.error:%s", XTEXT(10) );	// 문제발생. 앱다시 실행
 			if( pAlert )
 				pAlert->SetEvent( XWM_OK, GAME, &XGame::OnExitApp );
 		}

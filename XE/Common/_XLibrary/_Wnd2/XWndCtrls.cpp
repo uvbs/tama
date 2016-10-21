@@ -218,25 +218,25 @@ void XWndAlert::CreateWndAlert( XWndAlertDelegate *pDelegate,
 	{
 		XE::VEC2 size;
 		XE::VEC2 vPos;
-		pWnd = new XWndButtonString( 49.f, 131.f, GetText(4), col, m_pFDText, szImgUp, szImgDown, szImgDisable );		// 확인
+		pWnd = new XWndButtonString( 49.f, 131.f, GetText(5), col, m_pFDText, szImgUp, szImgDown, szImgDisable );		// 확인
 		size = pWnd->GetSizeFinal();
 		vPos.x = (vSizeThis.w / 4.f) - (size.w / 2.f);
 		vPos.y = vSizeThis.h - m_vRBMargin.h - size.h;
 		pWnd->SetPosLocal( vPos );
-		pWnd->SetEvent( XWM_CLICKED, this, &XWndAlert::OnYes );
-		pWnd->SetStyle( xFONT::xSTYLE_SHADOW );
-		Add( XE::xID_YES, pWnd );
-		m_pButton1 = pWnd;
-		pWnd->SetstrIdentifier( "butt.yes" );
-		pWnd = new XWndButtonString( 181.f, 131.f, GetText(5), col, m_pFDText, szImgUp, szImgDown, szImgDisable );		// 취소
-		size = pWnd->GetSizeFinal();
-		vPos.x = ((vSizeThis.w / 4.f) * 3.f) - (size.w / 2.f);
-		pWnd->SetPosLocal( vPos );
 		pWnd->SetEvent( XWM_CLICKED, this, &XWndAlert::OnNo );
 		pWnd->SetStyle( xFONT::xSTYLE_SHADOW );
 		Add( XE::xID_NO, pWnd );
-		m_pButton2 = pWnd;
+		m_pButton1 = pWnd;
 		pWnd->SetstrIdentifier( "butt.no" );
+		pWnd = new XWndButtonString( 181.f, 131.f, GetText(4), col, m_pFDText, szImgUp, szImgDown, szImgDisable );		// 취소
+		size = pWnd->GetSizeFinal();
+		vPos.x = ((vSizeThis.w / 4.f) * 3.f) - (size.w / 2.f);
+		pWnd->SetPosLocal( vPos );
+		pWnd->SetEvent( XWM_CLICKED, this, &XWndAlert::OnYes );
+		pWnd->SetStyle( xFONT::xSTYLE_SHADOW );
+		Add( XE::xID_YES, pWnd );
+		m_pButton2 = pWnd;
+		pWnd->SetstrIdentifier( "butt.yes" );
 	} else
 	if( type == xALERT_NONE )
 	{

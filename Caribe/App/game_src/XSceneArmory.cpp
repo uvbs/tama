@@ -10,6 +10,9 @@
 #include "XSoundMng.h"
 #include "_Wnd2/XWndButton.h"
 #include "XWndStorageItemElem.h"
+#ifdef _VER_ANDROID
+#include "XFramework/android/JniHelper.h"
+#endif // _VER_ANDROID
 
 #ifdef WIN32
 #ifdef _DEBUG
@@ -26,7 +29,9 @@ XSceneArmory *SCENE_ARMORY = NULL;
 
 void XSceneArmory::Destroy()
 {	
-//	SAFE_DELETE(m_pLayout);
+#ifdef _VER_ANDROID
+	JniHelper::ShowAdmob( false, 0, 0 );
+#endif // _VER_ANDROID
 	XBREAK(SCENE_ARMORY == NULL);
 	XBREAK(SCENE_ARMORY != this);
 	SCENE_ARMORY = NULL;
@@ -60,6 +65,9 @@ XSceneArmory::XSceneArmory(XGame *pGame)
 		m_LayoutTooltip.CreateLayout( "hero_tooltip", pRoot );
 		pRoot->SetbShow( false );
 	}
+#ifdef _VER_ANDROID
+	JniHelper::ShowAdmob( true, 480, 51 );
+#endif // _VER_ANDROID
 	SetbUpdate( true );		// Update()가 호출 됩니다.
 }
 

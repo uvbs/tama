@@ -233,7 +233,7 @@ XSPLegionObj XBattleField::GetLegionObj( int idx ) const
  @brief 부대생성 치트기능
  vPos화면위치에 unit부대 하나를 생성한다.
 */
-void XBattleField::SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit, bool bEnemy )
+void XBattleField::SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit, bool bEnemy, XSPAcc spAcc )
 {
 #ifdef _XSINGLE
 	const auto idxSide = (bEnemy)? xSI_OTHER : xSI_PLAYER;
@@ -244,7 +244,7 @@ void XBattleField::SpawnSquadByCheat( const XE::VEC3& vwPos, XGAME::xtUnit unit,
 	if( pPropHero == nullptr )
 		return;
 	int numUnit = 1;
-	auto pHero = std::make_shared<XHero>( pPropHero, 1, unit );
+	auto pHero = std::make_shared<XHero>( pPropHero, 1, unit, spAcc );
 	auto pSquadObj = new XSquadObj( spLegionObj, pHero, vwPos );
 	pSquadObj->CreateUnitAndHero( XWndBattleField::sGet(), spLegionObj->GetCamp() );
 	spLegionObj->AddSquad( XSPSquadObj( pSquadObj ) );
