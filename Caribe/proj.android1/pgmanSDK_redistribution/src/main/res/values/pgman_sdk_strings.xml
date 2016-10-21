@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <string name="pgman_app_name">PgmanSDK</string>
-    <string name="pgman_registered_app_id">AppRegisterId</string>
-    
-</resources>

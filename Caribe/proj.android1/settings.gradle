@@ -1,5 +1,0 @@
-include ':facebookSDK'
-include ':library'
-include ':xe'
-project(':xe').projectDir = new File(settingsDir, '../cocos2d/cocos/platform/android/libcocos2dx')
-include ':caribe'
