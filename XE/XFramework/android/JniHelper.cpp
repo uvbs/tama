@@ -53,7 +53,7 @@ public static void main( java.lang.String[] );
 ****************************************************************************/
 #include "stdafx.h"
 #include "XFramework/XReceiverCallback.h"
-// versionAndroid.h�� XE�� �ƴ� ������ �������̹Ƿ� ���⼭ �ν��� ���� ����.
+// versionAndroid.h는 XE가 아닌 게임쪽 디파인이므로 여기서 인식이 되지 않음.
 #ifdef _VER_ANDROID
 #include "JniHelper.h"
 #include <android/log.h>
@@ -243,7 +243,7 @@ char* JniHelper::__x_unicode_test()
     }
     BLOGD("x2");
     jclass _javaClass = getClassID_("com/mtricks/xe/Cocos2dxHelper", _env);
-	char *str = "���ڵ� �� �ѱ� ���ڴ�";
+	char *str = "占쏙옙占쌘듸옙 占쏙옙 占싼깍옙 占쏙옙占쌘댐옙";
     BLOGD("x3");
 	jmethodID mid = _env->GetStaticMethodID(_javaClass, "Callback_GetUnicodeString",  "([B)[B");
 //	jmethodID mid = _env->GetStaticMethodID(_javaClass, "Callback_GetUnicodeString",  "([BLjava/lang/String;)[B");
@@ -259,7 +259,7 @@ char* JniHelper::__x_unicode_test()
 	jbyteArray uniByteArray = (jbyteArray)_env->CallStaticObjectMethod(_javaClass, mid, toJavaStr);
     BLOGD("x5");
 
-	// java���� �Ѿ��?byte array�� char* �� ����
+	// java占쏙옙占쏙옙 占싼억옙占?byte array占쏙옙 char* 占쏙옙 占쏙옙占쏙옙
 	jint len = _env->GetArrayLength(uniByteArray);
 	jbyte* uniBytes = _env->GetByteArrayElements(uniByteArray, NULL);
 
@@ -300,7 +300,7 @@ char* JniHelper::Create_UTF16_To_UTF8( char *pOutUtf8, const unsigned short *utf
 	jbyteArray uniByteArray = (jbyteArray)_env->CallStaticObjectMethod(_javaClass, mid, toJavaStr);
     BLOGD("x5");
 
-	// java���� �Ѿ��?byte array�� char* �� ����
+	// java占쏙옙占쏙옙 占싼억옙占?byte array占쏙옙 char* 占쏙옙 占쏙옙占쏙옙
 	jint len = _env->GetArrayLength(uniByteArray);
 	jbyte* uniBytes = _env->GetByteArrayElements(uniByteArray, NULL);
 
@@ -346,7 +346,7 @@ char* JniHelper::Create_EUCKR_To_UTF8( char *pOutUtf8, const char *euckr, int si
 	_env->SetByteArrayRegion(toJavaStr, 0, strlen(str), (jbyte*)str);
 	jbyteArray uniByteArray = (jbyteArray)_env->CallStaticObjectMethod(_javaClass, mid, toJavaStr);
     
-	// java���� �Ѿ��?byte array�� char* �� ����
+	// java占쏙옙占쏙옙 占싼억옙占?byte array占쏙옙 char* 占쏙옙 占쏙옙占쏙옙
 	jint len = _env->GetArrayLength(uniByteArray);
 	jbyte* uniBytes = _env->GetByteArrayElements(uniByteArray, NULL);
     
@@ -360,13 +360,13 @@ char* JniHelper::Create_EUCKR_To_UTF8( char *pOutUtf8, const char *euckr, int si
         return NULL;
     }
     strcpy_s( pOutUtf8, sizeBuff, (char*)uniBytes );
-    pOutUtf8[len] = 0;  // uniBytes�� �ι��ڰ� �ȵ��?�ִ���
+    pOutUtf8[len] = 0;  // uniBytes占쏙옙 占싸뱄옙占쌘곤옙 占싫듸옙占?占쌍댐옙占쏙옙
 	//
 //    BLOGD("euckr-utf8:%s, %d", pOutUtf8, (int)len);
 	_env->ReleaseByteArrayElements(uniByteArray, uniBytes, JNI_ABORT);
 	return pOutUtf8;
 }
-//cPath�� �ִ��� �˻��Ѵ�.
+//cPath占쏙옙 占쌍댐옙占쏙옙 占싯삼옙占싼댐옙.
 /*BOOL JniHelper::IsExistDir( const char *cPath )
 {
     JniMethodInfo t;
@@ -384,7 +384,7 @@ char* JniHelper::Create_EUCKR_To_UTF8( char *pOutUtf8, const char *euckr, int si
  */
 
 /**
- @brief ����IAP�ý��ۿ� cidProduct�������� ���Ÿ� ��û��.
+ @brief 구글IAP시스템에 cidProduct아이템의 구매를 요청함.
 */
 // void JniHelper::OnClickedBuyItem( const char *cidProduct, const std::string& strPayload  )
 // {
@@ -468,7 +468,7 @@ void JniHelper::DoLogoutFacebook()
 	}
 }
 
-// �±� ini3���?���̽��� ���� �α���
+// 占승깍옙 ini3占쏙옙占?占쏙옙占싱쏙옙占쏙옙 占쏙옙占쏙옙 占싸깍옙占쏙옙
 void JniHelper::DoLoginIni3ByFacebook( void )
 {
 	JNIEnv *_env = 0;
@@ -490,7 +490,7 @@ void JniHelper::DoLoginIni3ByFacebook( void )
 
 }
 
-// �ε��׽þ� Lyto���?���̽��� ���� �α���
+// 占싸듸옙占쌓시억옙 Lyto占쏙옙占?占쏙옙占싱쏙옙占쏙옙 占쏙옙占쏙옙 占싸깍옙占쏙옙
 void JniHelper::DoLoginLytoByFacebook( void )
 {
 	JNIEnv *_env = 0;
@@ -512,8 +512,8 @@ void JniHelper::DoLoginLytoByFacebook( void )
 
 }
 /**
- @brief �����ʻ����� �񵿱�� ��û�Ѵ�.
- ������ �����ϸ� XE::cbOnRecvProfileImageByFacebook�� ������ �޴´�.
+ @brief 프로필사진을 비동기로 요청한다.
+ 사진이 도착하면 XE::cbOnRecvProfileImageByFacebook로 응답을 받는다.
 */
 void JniHelper::GetUserProfileImage(const char *cUserID)
 {
@@ -745,10 +745,10 @@ void JniHelper::LoadMarketURL( const char *url )
 }
 
 /**
- @brief ���� �ξ۽ý��� �ʱ�ȭ
- IAP�ý��� �¾�
- ���Ÿ�� Ȯ��
- �̼����� consume
+ @brief 구글 인앱시스템 초기화
+ IAP시스템 셋업
+ 구매목록 확인
+ 미소진템 consume
 */
 void JniHelper::InitGoogleIAPAsync( const std::string& strPublicKey )
 {
@@ -772,7 +772,7 @@ void JniHelper::InitGoogleIAPAsync( const std::string& strPublicKey )
 	}
 }
 /**
- @brief idsProduct�� �񵿱�� ������Ų��.
+ @brief idsProduct를 비동기로 소진시킨다.
 */
 void JniHelper::DoConsumeItemAsync( const std::string& idsProduct )
 {
@@ -930,7 +930,7 @@ extern "C"
 	//////////////////////////////////////////////////////////////////////////
 	// JAVA-> C++
 
-	//  �ξ�
+	//  인앱
 	JNIEXPORT jstring JNICALL 
 	Java_com_gemtree2_caribe_MyMainActivity_JavaToCpp( JNIEnv* env
 																									, jobject thiz
@@ -948,7 +948,7 @@ extern "C"
 		std::string strParam2 = (m_param2)? m_param2 : "";
 		LOGD("JavaToCpp:%s, %s, %s", strID.c_str(), strParam1.c_str(), strParam2.c_str() );
 		if(strID == "InitInApp") {
-			// m_id : �ξ� �ʱ�ȭ
+			// m_id : 인앱 초기화
 			// m_parma1 :
 			// m_parma2 :
 		} else
@@ -964,7 +964,7 @@ extern "C"
 	//////////////////////////////////////////////////////////////////////////
 	// C++ -> JAVA
 
-	// ���� �Լ�
+	// 헬퍼 함수
 	std::string CppToJava1( const char* methodName
 												, const char* id
 												, const char* param1
@@ -998,7 +998,7 @@ extern "C"
 		LOGD( "JniHelper:CppToJava: id=%s", ( id ) ? id : "null" );
 		return rr;	
 	}
-	//  �ξ�
+	//  인앱
 	std::string CppToJava( const char* id, const char* param1, const char* param2 )
 	{
 		LOGD("CppToJava : %s	%s	%s",id, param1, param2);

@@ -170,7 +170,7 @@ BOOL XSprDat::Load( LPCTSTR _szFilename,
 		} else {
 			// restore device mode
 			pSpr = m_arySprite[ i ];
-			XBREAK( pSpr == nullptr );
+			XBREAKF( pSpr == nullptr, "file=%s", szFilename );
 			pSpr->Load( this, spRes.get(), bUseAtlas, bAsyncLoad, hsl, 
 									bSrcKeep, bBatch, TRUE );
 		}

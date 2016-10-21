@@ -3,34 +3,157 @@ cmake_minimum_required(VERSION 3.4.1)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 # now build app's shared lib
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -frtti -fno-omit-frame-pointer -fexceptions -Wparentheses -fpermissive -O2 -w -D_XGMO -D_XPATCH -DFT2_BUILD_LIBRARY")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DNDEBUG -D_SPR_USE_LUA -D_XNEW_APP -marm -fno-omit-frame-pointer -fexceptions -Wparentheses -fpermissive -DANDROID_NDK -DFT2_BUILD_LIBRARY=1")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DNDEBUG -marm -w -O2 -fno-omit-frame-pointer -fexceptions -Wparentheses -fpermissive")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_XNEW_APP -std=c++11 -frtti -fno-omit-frame-pointer -fexceptions -Wparentheses -fpermissive -O2 -w -D_XGMO -D_XPATCH")
 
 add_library(xlib_test SHARED
             xlib_test.cpp
+../../../../../App/game_src/XWndPrivateRaid.cpp 
+../../../../../App/game_src/XAsyncMng.cpp 
+../../../../../App/game_src/XSceneBattleSub.cpp 
+../../../../../App/game_src/XSpotPrivateRaid.cpp 
+../../../../../App/game_src/XScenePrivateRaid.cpp 
+../../../../../App/game_src/XSceneTest2.cpp 
+../../../../../App/game_src/XSceneTest.cpp 
+../../../../../App/game_src/XWndStorageItemElem.cpp 
+../../../../../App/game_src/XComp.cpp 
+../../../../../App/game_src/XMsgUnit.cpp 
+../../../../../App/game_src/XWndPopupDaily.cpp 
+../../../../../App/game_src/XSpotDaily.cpp 
+../../../../../App/game_src/XWndCampaignHero.cpp 
+../../../../../App/game_src/XCampObjHero2.cpp 
+../../../../../App/game_src/XStageObjHero2.cpp 
+../../../../../App/game_src/XTemp.cpp 
+../../../../../App/game_src/XGlobalConst.cpp 
+../../../../../App/game_src/XWndBattle.cpp 
+../../../../../App/game_src/XWndCampaign.cpp 
+../../../../../App/game_src/XWndHire.cpp 
+../../../../../App/game_src/XWndQuest.cpp 
+../../../../../App/game_src/XWndResCtrl.cpp 
+../../../../../App/game_src/XWndStorage.cpp 
+../../../../../App/game_src/XWndTech.cpp 
+../../../../../App/game_src/XWndUnitOrg.cpp 
+../../../../../App/game_src/XOption.cpp 
+../../../../../App/game_src/XWndDelegator.cpp 
+../../../../../App/game_src/XWndTemplate.cpp 
+../../../../../App/game_src/XWndWorld.cpp 
+../../../../../App/game_src/XSceneLoading.cpp 
+../../../../../App/game_src/XPropBgObj.cpp 
+../../../../../App/game_src/XFSMConnector.cpp 
+../../../../../App/game_src/XWndSpots.cpp 
+../../../../../App/game_src/XPropLegion.cpp 
+../../../../../App/game_src/XGameEtc.cpp 
+../../../../../App/game_src/XCampObjHero.cpp 
+../../../../../App/game_src/XStageObjHero.cpp 
+../../../../../App/game_src/XPropUser.cpp 
+../../../../../App/game_src/XStruct.cpp 
+../../../../../App/game_src/XSceneGuildShop.cpp 
+../../../../../App/game_src/XWndObj.cpp 
+../../../../../App/game_src/XSceneBase.cpp 
+../../../../../App/game_src/XSpotCampaign.cpp 
+../../../../../App/game_src/XSpotCastle.cpp 
+../../../../../App/game_src/XSpotEtc.cpp 
+../../../../../App/game_src/XSpotJewel.cpp 
+../../../../../App/game_src/XSpotMandrake.cpp 
+../../../../../App/game_src/XSpotNpc.cpp 
+../../../../../App/game_src/XSpotSulfur.cpp 
+../../../../../App/game_src/XCampObj.cpp 
+../../../../../App/game_src/XStageObj.cpp 
+../../../../../App/game_src/XSquadron.cpp 
+../../../../../App/game_src/XPropHelp.cpp 
+../../../../../App/game_src/XSeq.cpp 
+../../../../../App/game_src/XOrder.cpp 
+../../../../../App/game_src/XPropOrder.cpp 
+../../../../../App/game_src/XPropSeq.cpp 
+../../../../../App/game_src/XPropUpgrade.cpp 
+../../../../../App/game_src/XConnector.cpp 
+../../../../../App/game_src/XStatistic.cpp 
+../../../../../App/game_src/XSceneProcess.cpp 
+../../../../../App/game_src/XSkillMng.cpp 
+../../../../../App/game_src/XEBaseFSM.cpp 
+../../../../../App/game_src/XFSMUnit.cpp 
+../../../../../App/game_src/XExpTableHero.cpp 
+../../../../../App/game_src/XEObjMngWithType.cpp 
+../../../../../App/game_src/XLegionObj.cpp 
+../../../../../App/game_src/XBaseItem.cpp 
+../../../../../App/game_src/XPropItem.cpp 
+../../../../../App/game_src/XUnitArcher.cpp 
+../../../../../App/game_src/XUnitHero.cpp 
+../../../../../App/game_src/constGame.cpp 
+../../../../../App/game_src/XAccount.cpp 
+../../../../../App/game_src/XAppLayout.cpp 
+../../../../../App/game_src/XBaseUnit.cpp 
+../../../../../App/game_src/XBattleField.cpp 
+../../../../../App/game_src/XGame.cpp 
+../../../../../App/game_src/XGameCommon.cpp 
+../../../../../App/game_src/XGameLua.cpp 
+../../../../../App/game_src/XGameWnd.cpp 
+../../../../../App/game_src/JBWnd.cpp 
+../../../../../App/game_src/JWWnd.cpp 
+../../../../../App/game_src/XHero.cpp 
+../../../../../App/game_src/XLegion.cpp 
+../../../../../App/game_src/XLoginInfo.cpp 
+../../../../../App/game_src/XPropCloud.cpp 
+../../../../../App/game_src/XPropHero.cpp 
+../../../../../App/game_src/XPropUnit.cpp 
+../../../../../App/game_src/XPropWorld.cpp 
+../../../../../App/game_src/XPropSquad.cpp 
+../../../../../App/game_src/XPropTech.cpp 
+../../../../../App/game_src/XPropCamp.cpp 
+../../../../../App/game_src/XQuestProp.cpp 
+../../../../../App/game_src/XQuestMng.cpp 
+../../../../../App/game_src/XQuest.cpp 
+../../../../../App/game_src/XQuestCon.cpp 
+../../../../../App/game_src/XSceneBattle.cpp 
+../../../../../App/game_src/XScenePatchClient.cpp 
+../../../../../App/game_src/XSceneTitle.cpp 
+../../../../../App/game_src/XSceneUnitOrg.cpp 
+../../../../../App/game_src/XSceneStorage.cpp 
+../../../../../App/game_src/XSceneShop.cpp 
+../../../../../App/game_src/XSceneWorld.cpp 
+../../../../../App/game_src/XSceneHero.cpp 
+../../../../../App/game_src/XSceneLegion.cpp 
+../../../../../App/game_src/XSceneTrader.cpp 
+../../../../../App/game_src/XSceneArmory.cpp 
+../../../../../App/game_src/XSceneTech.cpp 
+../../../../../App/game_src/XSceneTechSel.cpp 
+../../../../../App/game_src/XSceneEquip.cpp 
+../../../../../App/game_src/XSceneGuild.cpp 
+../../../../../App/game_src/XSceneReady.cpp 
+../../../../../App/game_src/XSockGameSvr.cpp 
+../../../../../App/game_src/XSockGameSvrContent.cpp 
+../../../../../App/game_src/XSockLoginSvr.cpp 
+../../../../../App/game_src/XSockLoginSvrContent.cpp 
+../../../../../App/game_src/XSpot.cpp 
+../../../../../App/game_src/XWndBattleField.cpp 
+../../../../../App/game_src/XWndCloudLayer.cpp 
+../../../../../App/game_src/XWorld.cpp 
+../../../../../App/game_src/XObjEtc.cpp 
+../../../../../App/game_src/XUnitCyclops.cpp 
+../../../../../App/game_src/XUnitTreant.cpp 
+../../../../../App/game_src/XUnitCommon.cpp 
+../../../../../App/game_src/XSquadObj.cpp 
+../../../../../App/game_src/XExpTableUser.cpp 
+../../../../../App/game_src/XPostInfo.cpp 
+../../../../../App/game_src/XPatch.cpp 
+../../../../../App/game_src/XGuild.cpp 
+../../../../../App/game_src/client/XAppDelegate.cpp 
+../../../../../App/game_src/client/XAppMain.cpp 
+../../../../../App/game_src/skill/XAdjParam.cpp
+../../../../../App/game_src/skill/XBuffObj.cpp
+../../../../../App/game_src/skill/XESkillMng.cpp
+../../../../../App/game_src/skill/XLuaSkill.cpp 
+../../../../../App/game_src/skill/xSkill.cpp 
+../../../../../App/game_src/skill/XSkillDat.cpp 
+../../../../../App/game_src/skill/XSkillObj.cpp 
+../../../../../App/game_src/skill/XSkillReceiver.cpp 
+../../../../../App/game_src/skill/XSkillUser.cpp
             )
 
-# build the ndk-helper library
-##set(xe_dir ../../../../../../XE/XFramework/android)
-##add_subdirectory( ${xe_dir} xebin )
-
-add_subdirectory( ../../../../../../XE/XFramework xframework )
-add_subdirectory( ../../../../../../XE/XFramework/android jni )
-add_subdirectory( ../../../../../../XE/XFramework/client xframework_client )
-add_subdirectory( ../../../../../../XE/XFramework/Game xframework_game )
 add_subdirectory( ../../../../../../XE/Common/_XLibrary xlib )
-add_subdirectory( ../../../../../../XE/Common/_XLibrary/_Wnd2 xe_wnd )
-add_subdirectory( ../../../../../../XE/Common/_XLibrary/etc xe_etc )
-add_subdirectory( ../../../../../../XE/Common/_XLibrary/Network xe_network )
-add_subdirectory( ../../../../../../XE/Common/_XLibrary/OpenGL2 xe_gl2 )
-add_subdirectory( ../../../../../../XE/Common/_XLibrary/Sprite xe_spr )
-add_subdirectory( ../../../../../../XE/Third_Party_lib/ftgles/ftgles2/ftgles ftgl2 )
-add_subdirectory( ../../../../../../XE/Third_Party_lib/ftgles/freetype2_android/Android/jni freetype2 )
-
-#target_include_directories(xlib_test PRIVATE
-#                           ${xe_dir})
 
 include_directories(
+    ../../../../../../Caribe/App/Resource
     ../../../../../../Caribe/App/game_src/android
     ../../../../../../Caribe/App/game_src
     ../../../../../../XE/Common/_XLibrary
@@ -40,24 +163,13 @@ include_directories(
     ../../../../../../XE
     )
 
+
 # add lib dependencies
 target_link_libraries(xlib_test
                       android
                       log
                       EGL
                       GLESv2
-                      xframework
-                      jni
-                      xframework_client
-                      xframework_game
                       xlib
-                      xe_wnd
-                      xe_etc
-                      xe_network
-                      xe_gl2
-                      xe_spr
-                      ftgl2
-                      freetype
-                      curl
                       )
 

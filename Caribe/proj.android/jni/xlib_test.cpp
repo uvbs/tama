@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#ifdef _VER_ANDROID
+//#ifdef _VER_ANDROID
 #include "../../App/game_src/client/XAppDelegate.h"
 #include "android/JniHelper.h"
 #include <android/log.h>
@@ -28,8 +28,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved)
     return JNI_VERSION_1_4;
 }
 
-#ifdef _XNEW_APP
-#pragma message("-------------_XNEW_APP skeleton")
+//#pragma message("-------------_XNEW_APP skeleton")
 JNIEXPORT void JNICALL
 	Java_com_mtricks_xe_XRenderer_nativeInit(JNIEnv *, jobject, jint width, jint height)
 {
@@ -44,11 +43,9 @@ JNIEXPORT void JNICALL
 		XE::OnResumeHandler();
 	}
 }
-#endif // not _XNEW_APP
 
 } // extern C
 
-#ifdef _XNEW_APP
 namespace XE
 {
 void DestroyAppDelegate( void )
@@ -56,5 +53,4 @@ void DestroyAppDelegate( void )
 	SAFE_DELETE( APP_DELEGATE );
 }
 }
-#endif
-#endif // _VER_ANDROID
+//#endif // _VER_ANDROID

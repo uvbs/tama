@@ -42,3 +42,6 @@ include_directories(
     ./src/iGLU-1.0.0/include
     )
 
+target_link_libraries( ftgl2
+ C:/xuzhu_work/Project/iPhone_zero/XE/Common/_XLibrary/android_xe/prebuilt/libfreetype2.a
+ )

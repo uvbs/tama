@@ -1,6 +1,6 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -frtti -fno-omit-frame-pointer -fexceptions -Wparentheses -fpermissive")
 
-add_library(xlib STATIC
+add_library(xlib SHARED
 XE.cpp 
 XResMng.cpp 
 XHSLMap.cpp 
@@ -15,25 +15,17 @@ XLockPThreadMutex.cpp
 XSystem.cpp 
 XLibrary.cpp 
 XCrypto.cpp 
-XImage.cpp 
-XImageLibPng.cpp 
-XLua.cpp 
-lua_tinker.cpp 
-XResObj.cpp 
+XLua.cpp
+XResObj.cpp
 XAutoPtr.cpp 
-XBaseFontDat.cpp 
-XBaseFontObj.cpp 
-XFontMng.cpp 
-XFontSpr.cpp 
-XParticle.cpp 
+XParticle.cpp
 XParticleMng.cpp 
 XParticleFramework.cpp 
 XPool.cpp 
 XRefRes.cpp 
 XSoundMng.cpp 
 XTransition.cpp 
-XImageMng.cpp 
-android_xe/ConvertString_android.cpp 
+android_xe/ConvertString_android.cpp
 android_xe/CrashHandler.cpp 
 Map/XEMap.cpp 
 Map/XEMapLayer.cpp 
@@ -41,16 +33,186 @@ Map/XEMapLayerImage.cpp
 Sound/Android/XSoundMngAndroid.cpp 
 ../XDrawGraph.cpp 
 ../XGameUtil.cpp 
-../XInterpolationObj.cpp 
+../XInterpolationObj.cpp
+XImageMng.cpp
+XImage.cpp
+XImageLibPng.cpp
+lua_tinker.cpp
+XBaseFontDat.cpp
+XBaseFontObj.cpp
+XFontMng.cpp
+XFontSpr.cpp
+ _Wnd2/XWnd.cpp
+ _Wnd2/XWndButton.cpp
+ _Wnd2/XWndButtonRadio.cpp
+ _Wnd2/XWndEdit.cpp
+ _Wnd2/XWndCtrls.cpp
+ _Wnd2/XWndSprObj.cpp
+ _Wnd2/XWndImage.cpp
+ _Wnd2/XWndPageSlide.cpp
+ _Wnd2/XWndText.cpp
+ _Wnd2/XWndView.cpp
+ _Wnd2/XWndPopup.cpp
+ _Wnd2/XWndList.cpp
+ _Wnd2/XWndProgressbar.cpp
+ _Wnd2/XWndScrollview.cpp
+etc/Alert.cpp
+etc/Debug.cpp
+etc/InputMng.cpp
+etc/path.cpp
+etc/Timer.cpp
+etc/Token.cpp
+etc/XGraphics.cpp
+etc/xLang.cpp
+etc/xMath.cpp
+etc/XSurface.cpp
+etc/XTimer2.cpp
+etc/xUtil.cpp
+etc/iOS/xStringiOS.cpp
+etc/XSurfaceMem.cpp
+network/XPacket.cpp
+network/XSocket.cpp
+network/XDownloader.cpp
+network/XDownloaderCurl.cpp
+network/XDownloadTask.cpp
+network/client/XNetworkConnection.cpp
+network/client/XSocketClient.cpp
+network/XNetworkDelegate.cpp
+network/android/XBSDSocketClient.cpp
+OpenGL2/XGraphicsOpenGL.cpp
+OpenGL2/XSurfaceOpenGL.cpp
+OpenGL2/XShader.cpp
+OpenGL2/XFontDatFTGL.cpp
+OpenGL2/XFontObjFTGL.cpp
+OpenGL2/XParticleOpenGL.cpp
+OpenGL2/XTextureAtlas.cpp
+OpenGL2/XTextureAtlasSub.cpp
+OpenGL2/XSurfaceGLAtlasBatch.cpp
+OpenGL2/XSurfaceGLAtlasNoBatch.cpp
+OpenGL2/XBatchRenderer.cpp
+Sprite/Key.cpp
+Sprite/Layer.cpp
+Sprite/SprDat.cpp
+Sprite/Sprite.cpp
+Sprite/SprMng.cpp
+Sprite/SprMng_old.cpp
+Sprite/SprObj.cpp
+Sprite/XActDat.cpp
+Sprite/XActObj.cpp
+Sprite/XActObj2.cpp
+Sprite/XBaseObj.cpp
+../../XframeWork/XSplitNode.cpp
+../../XframeWork/XParamObj.cpp
+../../XframeWork/XEOption.cpp
+../../XframeWork/XInApp.cpp
+../../XframeWork/XReceiverCallback.cpp
+../../XframeWork/Game/XEComponentMng.cpp
+../../XframeWork/client/XEmitter.cpp
+../../XframeWork/client/XPropParticle.cpp
+../../XframeWork/XEToolTip.cpp
+../../XframeWork/XDBAccount.cpp
+../../XframeWork/XConstant.cpp
+../../XframeWork/XTextTable.cpp
+../../XframeWork/XTextTableUTF8.cpp
+../../XframeWork/XF.cpp
+../../XframeWork/XConsoleMain.cpp
+../../XframeWork/XScroll.cpp
+../../XframeWork/XSoundTable.cpp
+../../XframeWork/XGlobal.cpp
+../../XframeWork/XFacebook.cpp
+../../XframeWork/XEBaseScene.cpp
+../../XframeWork/XEBaseProp.cpp
+../../XframeWork/XESceneMng.cpp
+../../XframeWork/XEProfile.cpp
+../../XframeWork/android/com_mtricks_xe_XRenderer.cpp
+../../XframeWork/android/com_mtricks_xe_Cocos2dxHelper.cpp
+../../XframeWork/android/JniHelper.cpp
+../../XframeWork/android/CocosDenshion/android/SimpleAudioEngine.cpp
+../../XframeWork/android/CocosDenshion/android/jni/SimpleAudioEngineJni.cpp
+../../XframeWork/android/CocosDenshion/android/opensl/OpenSLEngine.cpp
+../../XframeWork/android/CocosDenshion/android/opensl/SimpleAudioEngineOpenSL.cpp
+../../XframeWork/client/XApp.cpp
+../../XframeWork/client/XEContent.cpp
+../../XframeWork/client/XClientMain.cpp
+../../XframeWork/client/XTimeoutMng.cpp
+../../XframeWork/client/XWndBatchRender.cpp
+../../XframeWork/client/XLayout.cpp
+../../XframeWork/client/XLayoutObj.cpp
+../../XframeWork/Game/XFLevel.cpp
+../../XframeWork/Game/XEBaseWorldObj.cpp
+../../XframeWork/Game/XEWndWorld.cpp
+../../XframeWork/Game/XEWndWorldImage.cpp
+../../XframeWork/Game/XEObjMng.cpp
+../../XframeWork/Game/XEWorld.cpp
+../../XframeWork/Game/XEComponents.cpp
+../../XframeWork/Game/XEWndWorldObjs.cpp
+../../XframeWork/Game/XEWorldCamera.cpp
+../../Third_Party_lib/Oolong_Engine2/Math/Matrix.cpp
+../../Third_Party_lib/Oolong_Engine2/Math/Transform.cpp
+../../Third_Party_lib/Oolong_Engine2/Math/Vector.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/../xftglShader.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/../XGLProgram.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTBuffer.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTCharmap.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTContour.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTFace.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTGlyphContainer.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTLibrary.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTPoint.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTSize.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTVectoriser.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTFont/FTFont.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTFont/FTFontGlue.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTFont/FTTextureFont.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTGL/ftglesGlue.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTGlyph/FTGlyph.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTGlyph/FTGlyphGlue.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTGlyph/FTTextureGlyph.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTLayout/FTLayout.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTLayout/FTLayoutGlue.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/FTLayout/FTSimpleLayout.cpp
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess/dict.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess/geom.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess/memalloc.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess/mesh.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess/normal.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess/priorityq.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess/render.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess/sweep.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess/tess.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libtess/tessmono.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libutil/error.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libutil/glue.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libutil/project.c
+../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/libutil/registry.c
+
             )
+            
 
 include_directories(
     ./
     ./android_xe
     ../../Third_Party_lib
+    ../../Third_Party_lib/zip_support
+    ../../Third_Party_lib/ftgles/ftgles2/ftgles
     ../../Third_Party_lib/ftgles/ftgles2/ftgles/src
+    ../../Third_Party_lib/ftgles/ftgles2/ftgles/src/iGLU-1.0.0/include
     ../../Third_Party_lib/ftgles/freetype2_android/include
     ../../Third_Party_lib/lua514/src
     ../../
     )
+
+target_link_libraries( xlib
+                      ${CMAKE_CURRENT_SOURCE_DIR}/android_xe/prebuilt/libpng.a
+                      ${CMAKE_CURRENT_SOURCE_DIR}/android_xe/prebuilt/libzip.a
+                      ${CMAKE_CURRENT_SOURCE_DIR}/android_xe/prebuilt/libfreetype2.a
+                      ${CMAKE_CURRENT_SOURCE_DIR}/android_xe/prebuilt/liblua.a
+                      ${CMAKE_CURRENT_SOURCE_DIR}/android_xe/prebuilt/liboolong_math.a
+                      ${CMAKE_CURRENT_SOURCE_DIR}/android_xe/prebuilt/libxml.a
+                      ${CMAKE_CURRENT_SOURCE_DIR}/android_xe/prebuilt/libcurl/libs/armeabi/libcurl.a
+                      android
+                      log
+                      EGL
+                      GLESv2
+)
 

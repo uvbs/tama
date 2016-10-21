@@ -18,3 +18,10 @@ include_directories(
     ../../
     )
 
+target_link_libraries( xframework_game xframework )
+target_link_libraries( xframework_game xe_gl2 )
+target_link_libraries( xframework_game xlib )
+target_link_libraries( xframework_game xe_etc )
+target_link_libraries( xframework_game xe_wnd )
+target_link_libraries( xframework_game xe_spr )
+

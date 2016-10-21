@@ -20,3 +20,11 @@ include_directories(
     ../../../
         )
 
+#target_link_libraries( xe_spr xframework )
+#target_link_libraries( xe_spr xe_gl2 )
+#target_link_libraries( xe_spr xlib )
+#target_link_libraries( xe_spr xe_etc )
+#target_link_libraries( xe_spr xe_wnd )
+#target_link_libraries( xe_spr oolong )
+#target_link_libraries( xe_spr lua )
+

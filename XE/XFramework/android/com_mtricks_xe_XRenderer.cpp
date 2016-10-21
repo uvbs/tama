@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#ifdef ANDROID
+//#ifdef ANDROID
 #include "XFramework/android/com_mtricks_xe_XRenderer.h"
 #include <string>
 #include "XFramework/client/XApp.h"
@@ -21,33 +21,33 @@ using namespace std;
 #endif
 
 namespace XE {
-#ifdef _XNEW_APP
+// #ifdef _XNEW_APP
 	void DestroyAppDelegate( void );
-#else
-	void CreateMain(int width, int height);
-	void DestroyMain();
-#endif
+// #else
+// 	void CreateMain(int width, int height);
+// 	void DestroyMain();
+// #endif
 };
 
 static bool s_bDebugFB = false;
 
 extern "C"
 {
-#ifndef _XNEW_APP
-JNIEXPORT void JNICALL
-Java_com_mtricks_xe_XRenderer_nativeInit(JNIEnv *, jobject, jint width, jint height)
-{
-	if( XE::GetMain() == NULL )
-	{
-		LOGD("nativeCreateMain:%dx%d",width, height);
-		XE::CreateMain(width, height);
-	} else
-	{
-		LOGD("nativeInit:%dx%d",width, height);
-		XE::OnResumeHandler();
-	}
-}
-#endif // not _XNEW_APP
+// #ifndef _XNEW_APP
+// JNIEXPORT void JNICALL
+// Java_com_mtricks_xe_XRenderer_nativeInit(JNIEnv *, jobject, jint width, jint height)
+// {
+// 	if( XE::GetMain() == NULL )
+// 	{
+// 		LOGD("nativeCreateMain:%dx%d",width, height);
+// 		XE::CreateMain(width, height);
+// 	} else
+// 	{
+// 		LOGD("nativeInit:%dx%d",width, height);
+// 		XE::OnResumeHandler();
+// 	}
+// }
+// #endif // not _XNEW_APP
 
 JNIEXPORT void JNICALL
 Java_com_mtricks_xe_XRenderer_nativeFrameMove(JNIEnv *, jobject, jfloat)
@@ -55,11 +55,11 @@ Java_com_mtricks_xe_XRenderer_nativeFrameMove(JNIEnv *, jobject, jfloat)
 	XE::GetMain()->FrameMove();
 	if( XE::GetMain()->GetbDestroy() )
 	{
-#ifdef _XNEW_APP
-		XE::DestroyAppDelegate();
-#else
-		XE::DestroyMain();
-#endif
+// #ifdef _XNEW_APP
+		//XE::DestroyAppDelegate();
+// #else
+// 		XE::DestroyMain();
+// #endif
 		JniHelper::DoExitApp();
 	}
 }
@@ -134,15 +134,15 @@ JNIEXPORT void JNICALL Java_com_mtricks_xe_XRenderer_nativeOnPause
 JNIEXPORT void JNICALL Java_com_mtricks_xe_XRenderer_nativeOnResume
 (JNIEnv *, jobject)
 {
-//	LOGD("nativeOnResume");
-//	XE::OnResumeHandler();	//  ϰ ϵ ϱ ʿ ȣϵ ٲ
+	LOGD("cpp: nativeOnResume");
+	//XE::OnResumeHandler();	//  ϰ ϵ ϱ ʿ ȣϵ ٲ
 
 }
 JNIEXPORT void JNICALL Java_com_mtricks_xe_XRenderer_nativeOnDestroy
 (JNIEnv *, jobject)
 {
-	XLOG("nativeOnDestroy. maybe out of memory?");
-//	XE::OnPauseHandler();
+	XLOG("cpp: nativeOnDestroy. maybe out of memory?");
+	XE::OnPauseHandler();
 }
 
 JNIEXPORT
@@ -327,4 +327,4 @@ Java_com_mtricks_xe_XRenderer_nativeOnFinishedConsumeItem( JNIEnv *env, jobject
 
 
 } // extern C
-#endif // android
+//#endif // android

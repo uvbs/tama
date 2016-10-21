@@ -1,3 +1,5 @@
 include ':app'
 include ':xe'
+project(':xe').projectDir = new File(settingsDir, '../../XE/prj/android2/xe')
 include ':facebookSDK'
+project(':facebookSDK').projectDir = new File(settingsDir, '../../XE/Third_Party_lib/facebook_sdk/gradle/facebookSDK')

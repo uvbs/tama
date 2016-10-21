@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#ifdef ANDROID
+//#ifdef ANDROID
 #include <stdlib.h>
 #include <jni.h>
 #include <android/log.h>
@@ -129,4 +129,4 @@ extern "C" {
 	
 }
 
-#endif // android
+//#endif // android

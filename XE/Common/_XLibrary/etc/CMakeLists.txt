@@ -23,3 +23,5 @@ include_directories(
     ../../../
 )
 
+target_link_libraries( xe_etc xframework_client )
+target_link_libraries( xe_etc xlib )

@@ -25,7 +25,6 @@
   <permission android:name="com.gemtree2.caribe.permission.C2D_MESSAGE" android:protectionLevel="signature" />
   <uses-permission android:name="com.gemtree2.caribe.permission.C2D_MESSAGE" />
   <!-- Required to read and write the expansion files on shared storage -->
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <!-- 네트워크 연결상태를 확인하기 위해 -->
 
   <application

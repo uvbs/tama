@@ -36,7 +36,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mtricks.xe.Cocos2dxHelper;
 import com.mtricks.xe.Cocos2dxHelper.Cocos2dxHelperListener;
 import com.mtricks.xe.XeActivity;
-
 // gcm 관련
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;

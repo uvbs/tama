@@ -554,6 +554,27 @@
     <ClCompile Include="..\..\..\game_src\XWndPrivateRaid.cpp">
       <Filter>source\battle</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\infback.c">
+      <Filter>source\android\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\inffast.c">
+      <Filter>source\android\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\inflate.c">
+      <Filter>source\android\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\inftrees.c">
+      <Filter>source\android\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\zutil.c">
+      <Filter>source\android\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\adler32.c">
+      <Filter>source\android\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\crc32.c">
+      <Filter>source\android\zip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\game_src\VersionCommon.h" />
@@ -1187,6 +1208,30 @@
     <ClInclude Include="..\..\..\game_src\XWndPrivateRaid.h">
       <Filter>source\battle</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\crc32.h">
+      <Filter>source\android\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\inffast.h">
+      <Filter>source\android\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\inffixed.h">
+      <Filter>source\android\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\inflate.h">
+      <Filter>source\android\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\inftrees.h">
+      <Filter>source\android\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\zconf.h">
+      <Filter>source\android\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\zlib.h">
+      <Filter>source\android\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\XE\Third_Party_lib\zip_support\zlib\zutil.h">
+      <Filter>source\android\zip</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\daily_work.txt" />
@@ -1300,6 +1345,9 @@
     </Filter>
     <Filter Include="source\_test">
       <UniqueIdentifier>{2c4123a0-8518-4d00-8d8c-a02bc959f8b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\android\zip">
+      <UniqueIdentifier>{2f479466-911a-49c6-99cf-32c2122330a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

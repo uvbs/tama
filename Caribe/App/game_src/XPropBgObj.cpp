@@ -309,7 +309,7 @@ xnBgObj::xProp* XPropBgObj::GetSameProp( const xnBgObj::xProp* pPropSrc )
 			}
 		}
 	}
-	return false;
+	return nullptr;
 }
 
 xnBgObj::xProp* XPropBgObj::CreateNewProp()

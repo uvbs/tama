@@ -8,7 +8,7 @@
 #include "XGlobalConst.h"
 
 namespace XGAME {
-enum xtParamSync;
+enum xtParamSync : int;
 };
 
 class XWnd;

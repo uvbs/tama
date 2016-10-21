@@ -16,3 +16,4 @@ include_directories(
     ../../
     )
 
+target_link_libraries( jni xframework )

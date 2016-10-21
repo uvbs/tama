@@ -16,7 +16,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 #endif
-
 using namespace xnReceiverCallback;
 
 std::shared_ptr<XReceiverCallback> XReceiverCallback::s_spInstance;
