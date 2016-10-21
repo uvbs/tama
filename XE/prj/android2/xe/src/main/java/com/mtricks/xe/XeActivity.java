@@ -111,7 +111,7 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 		mGLView = new XGLSurfaceView(this);
 		Cocos2dxHelper.init(this, this);
 		setContentView(mGLView);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		//getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 //		com.pgman.util.Utility.setLocal( this, "ko" );
 //		Start();	// Softnyx IAP  MyMainActivity에서 호출함.
 	}
