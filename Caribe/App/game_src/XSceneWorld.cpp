@@ -2973,7 +2973,14 @@ void XSceneWorld::UpdateDebugButtons()
 			pButt->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnCheat, 99 );
 			v.x -= 25.f;
 		}
-//	}
+		pButt = XWndButtonDebug::sUpdateCtrl( this, "butt.debug.test", v, vSize, _T( "test" ), true );
+		Add( pButt );
+		pButt->SetEvent2( XWM_CLICKED, [this]( XWnd* ) {
+#ifdef _VER_ANDROID
+			JniHelper::DoTest();
+#endif // _VER_ANDROID
+		} );
+		//	}
 #endif // CHEAT
 
 }

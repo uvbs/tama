@@ -35,6 +35,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.facebook.Request;
@@ -79,6 +80,7 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 	public static final String TAG_GCM = "xuzhu gcm";
 	public static final String TAG_FB = "xfacebook";
 	public static final String TAG_NYX = "softnyx";
+	public static final String TAG_TAP = "tapjoy";
 	private XGLSurfaceView mGLView;
 	private Cocos2dxHandler mHandler;
 	// ini3 authen
@@ -100,6 +102,10 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 	public static final boolean debugLog = true;
 	public static final boolean debugLogFb = false;
 	Purchase consumeProduct;
+	/*private AdView adView;
+	private AdRequest adRequest;
+	boolean bShowBanner = false;
+	final boolean bAdmob = true; */
 
 	// @SuppressWarnings("deprecation")
 	@Override
@@ -112,8 +118,26 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 		Cocos2dxHelper.init(this, this);
 		setContentView(mGLView);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//		com.pgman.util.Utility.setLocal( this, "ko" );
-//		Start();	// Softnyx IAP  MyMainActivity에서 호출함.
+		// Create and load the AdView.
+/*		adView = new AdView(this);
+		adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+		adView.setAdSize(AdSize.BANNER);
+
+		// Create a RelativeLayout as the main layout and add the gameView.
+		android.widget.RelativeLayout
+				mainLayout = new android.widget.RelativeLayout(this);
+		mainLayout.removeView(mGLView);
+		mainLayout.addView(mGLView);
+		if( bAdmob ) {
+			adRequest = new AdRequest.Builder().addTestDevice( AdRequest.DEVICE_ID_EMULATOR).build();
+			adView.loadAd( adRequest );
+		}
+		adView.setVisibility(View.GONE);
+
+		adView.setX( 300 );
+		adView.setY( 200 );
+		mainLayout.addView( adView );
+		setContentView(mainLayout); */
 	}
 
 	@Override
@@ -740,6 +764,56 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener {
 		finish();
 		android.os.Process.killProcess(android.os.Process.myPid());
 
+	}
+
+	public void ShowAdView( boolean bShow, int dpX, int dpY ) {
+		Log.d(TAG, "Java: ShowAdView=" + bShow );
+		/*if( bShow ) {
+			adView.setX( dpX );
+			adView.setY( dpY );
+			adView.setVisibility(View.VISIBLE);
+		} else {
+			adView.setX( dpX );
+			adView.setY( dpY );
+			adView.setVisibility(View.GONE);
+		}*/
+	}
+	public void ShowAdViewToMsg( boolean bShow, int dpX, int dpY ) {
+		/*if( bAdmob ) {
+			Log.d(TAG, "Java: XeActivity:ShowAdViewToMsg" );
+			Message msg = new Message();
+			msg.what = Cocos2dxHandler.HANDLER_SHOW_ADMOB;
+			xShowAdmob param = new Cocos2dxHandler.xShowAdmob();
+			param.bShow = bShow;
+			param.dpX = dpX;
+			param.dpY = dpY;
+			msg.obj = param;
+			this.mHandler.sendMessage(msg);
+		}*/
+	}
+	@Override
+	public void DoTestFromHandlerOverride() {	}
+	public void DoTestFromHandler() {
+		Log.d(TAG, "Java: XeActivity:DoTestFromHandler" );
+		DoTestFromHandlerOverride();
+//		bShowBanner = !bShowBanner;
+//		ShowAdView( bShowBanner, 500, 500 );
+
+	}
+	@Override
+	public void DoTest() {
+		Log.d(TAG, "Java: XeActivity:Dotest" );
+		//ShowAdView();
+		Message msg = new Message();
+		msg.what = Cocos2dxHandler.HANDLER_TEST;
+		Log.d(TAG, "XeActivity.DoTest" );
+		this.mHandler.sendMessage(msg);
+	}
+	public void AddTestMsgHandler() {
+		Log.d(TAG, "XeActivity.AddMsgHandler" );
+		Message msg = new Message();
+		msg.what = Cocos2dxHandler.HANDLER_TEST;
+		this.mHandler.sendMessage(msg);
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 
@@ -36,6 +37,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 //import com.gemtree2.caribe.R;
+import com.mtricks.xe.Cocos2dxHandler;
 import com.mtricks.xe.Cocos2dxHelper;
 import com.mtricks.xe.Cocos2dxHelper.Cocos2dxHelperListener;
 import com.mtricks.xe.XeActivity;
@@ -897,4 +899,17 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		offerwallPlacement.requestContent();
 	}
 	// tapjoy end
+	@Override
+	public void DoTestFromHandlerOverride() {
+		Log.d(TAG, "Java: XeActivity:DoTestFromHandlerOverride" );
+		showDirectPlayContent();
+//		bShowBanner = !bShowBanner;
+//		ShowAdView( bShowBanner, 500, 500 );
+	}
+	@Override
+	public void DoTest() {
+		Log.d(TAG, "Java: XeActivity:Dotest" );
+		//ShowAdView();
+		this.AddTestMsgHandler();
+	}
 } // MyMainActivity

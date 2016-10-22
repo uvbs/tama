@@ -383,6 +383,15 @@ public class Cocos2dxHelper {
 				);
 //		Cocos2dxHelper.sCocos2dxHelperListener.PGMAN_BuyItemFromJni( idsProduct, price, strPayload );
 	}
+	public static void Callback_ShowAdmob( final boolean bShow, final int dpX, final int dpY ) {
+		Log.d(TAG, "Java: Callback_ShowAdmob" );
+		Cocos2dxHelper.sCocos2dxHelperListener.ShowAdViewToMsg( bShow, dpX, dpY );
+	}
+
+	public static void Callback_DoTest() {
+		Log.d(TAG, "Java: callback_Test" );
+		Cocos2dxHelper.sCocos2dxHelperListener.DoTest();
+	}
 
 	/*
 	 * public static void terminateProcess() {
@@ -541,6 +550,9 @@ public class Cocos2dxHelper {
 		//public void PGMAN_LogoutFromJni();
 		//public void PGMAN_BuyItemFromJni( final String idsProduct, int price, final String strPayload );
 		public void DoExitApp();
+		public void DoTestFromHandlerOverride();
+		public void DoTest();
+		public void ShowAdViewToMsg( boolean bShow, int dpX, int dpY );
 		public boolean CheckCDMA();
 		public boolean CheckWiFi();
 		public void GetUserProfileImage(final String strID);

@@ -232,7 +232,17 @@ void XSceneTitle::Update()
 	}
 #else
 #endif // _SOFTNYX
-// 		if( Find( "butt.appstore" ) == nullptr ) {
+		auto pButt = new XWndButtonDebug( v, sizeButt, _T( "test" ) );
+		Add( pButt );
+		pButt->SetEvent2( XWM_CLICKED, [this]( XWnd* ) {
+#ifdef _VER_ANDROID
+			JniHelper::DoTest();
+// 			static bool bShow = false;
+// 			bShow = !bShow;
+// 			JniHelper::ShowAdmob( bShow, 500, 200 );
+#endif // _VER_ANDROID
+		} );
+		// 		if( Find( "butt.appstore" ) == nullptr ) {
 // 			auto pButt = new XWndButtonDebug( v, sizeButt, _T( "앱스토어로 이동" ) );
 // 			pButt->SetstrIdentifier( "butt.appstore" );
 // 			pButt->SetEvent( XWM_CLICKED, this, &XSceneTitle::OnGotoAppStore );

@@ -47,6 +47,8 @@ public class Cocos2dxHandler extends Handler {
 	public final static int HANDLER_SOFTNYX_GETUSERINFO = 6;
 	public final static int HANDLER_SOFTNYX_BUYITEM = 7;
 	public final static int HANDLER_SOFTNYX_LOGOUT = 8;
+	public final static int HANDLER_TEST = 9;
+	public final static int HANDLER_SHOW_ADMOB = 10;
 
 	// ===========================================================
 	// Fields
@@ -96,7 +98,13 @@ public class Cocos2dxHandler extends Handler {
 		case Cocos2dxHandler.HANDLER_SOFTNYX_BUYITEM:
 			SoftnyxBuyItem(msg);
 			break;
-		}
+		case Cocos2dxHandler.HANDLER_TEST:
+			DoTest(msg);
+			break;
+		case Cocos2dxHandler.HANDLER_SHOW_ADMOB:
+			ShowAdmobHandler(msg);
+			break;
+		} // switch
 	}
 
 	private void showDialog(Message msg) {
@@ -147,6 +155,17 @@ public class Cocos2dxHandler extends Handler {
 		XeActivity theActivity = this.mActivity.get();
 		xSoftnyxBuyItem buyParam = (xSoftnyxBuyItem) msg.obj;
 	}
+	private void DoTest( Message msg ) {
+		Log.d("xuzhu", "handlerMessage: DoTest" );
+		XeActivity theActivity = this.mActivity.get();
+		theActivity.DoTestFromHandler();
+	}
+	private void ShowAdmobHandler( Message msg ) {
+		Log.d("softnyx", "handlerMessage: ShowAdmobHandler" );
+		XeActivity theActivity = this.mActivity.get();
+		xShowAdmob param = (xShowAdmob) msg.obj;
+		theActivity.ShowAdView( param.bShow, param.dpX, param.dpY );
+	}
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
@@ -189,5 +208,10 @@ public class Cocos2dxHandler extends Handler {
 		public String idsProduct; 
 		public String strPayload;
 		public int price;
+	}
+	public static class xShowAdmob {
+		public boolean bShow;
+		public int dpX;
+		public int dpY;
 	}
 }
