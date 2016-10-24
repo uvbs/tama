@@ -1241,73 +1241,73 @@ void CaribeView::DoAfterInputSpot( CDlgSpot& dlg, XPropWorld::xBASESPOT *pOutBas
 	}
 }
 
-void CaribeView::DoSpawnSquad( XGAME::xtUnit unit )
+void CaribeView::DoSpawnSquad( XGAME::xtUnit unit, XSPAcc spAcc )
 {
 	bool bEnemy = XE::GetMain()->m_bCtrl == true;
 	XE::VEC3 vwPos = XWndBattleField::sGet()->GetPosWindowToWorld( m_vRClick );
-	XBattleField::sGet()->SpawnSquadByCheat( vwPos, unit, bEnemy );
+	XBattleField::sGet()->SpawnSquadByCheat( vwPos, unit, bEnemy, spAcc );
 }
 
 void CaribeView::OnCreateSpearman()
 {
 	// TODO: ���⿡ ���� ó���� �ڵ带 �߰��մϴ�.
-	DoSpawnSquad( XGAME::xUNIT_SPEARMAN );
+	DoSpawnSquad( XGAME::xUNIT_SPEARMAN, ACCOUNT );
 }
 
 
 void CaribeView::OnCreateArcher()
 {
 	// TODO: ���⿡ ���� ó���� �ڵ带 �߰��մϴ�.
-	DoSpawnSquad( XGAME::xUNIT_ARCHER );
+	DoSpawnSquad( XGAME::xUNIT_ARCHER, ACCOUNT );
 }
 
 
 void CaribeView::OnCreatePaladin()
 {
 	// TODO: ���⿡ ���� ó���� �ڵ带 �߰��մϴ�.
-	DoSpawnSquad( XGAME::xUNIT_PALADIN );
+	DoSpawnSquad( XGAME::xUNIT_PALADIN, ACCOUNT );
 }
 
 
 void CaribeView::OnCreateMinotaur()
 {
 	// TODO: ���⿡ ���� ó���� �ڵ带 �߰��մϴ�.
-	DoSpawnSquad( XGAME::xUNIT_MINOTAUR );
+	DoSpawnSquad( XGAME::xUNIT_MINOTAUR, ACCOUNT );
 }
 
 
 void CaribeView::OnCreateCyclops()
 {
 	// TODO: ���⿡ ���� ó���� �ڵ带 �߰��մϴ�.
-	DoSpawnSquad( XGAME::xUNIT_CYCLOPS );
+	DoSpawnSquad( XGAME::xUNIT_CYCLOPS, ACCOUNT );
 }
 
 
 void CaribeView::OnCreateLycan()
 {
 	// TODO: ���⿡ ���� ó���� �ڵ带 �߰��մϴ�.
-	DoSpawnSquad( XGAME::xUNIT_LYCAN );
+	DoSpawnSquad( XGAME::xUNIT_LYCAN, ACCOUNT );
 }
 
 
 void CaribeView::OnCreateGolem()
 {
 	// TODO: ���⿡ ���� ó���� �ڵ带 �߰��մϴ�.
-	DoSpawnSquad( XGAME::xUNIT_GOLEM );
+	DoSpawnSquad( XGAME::xUNIT_GOLEM, ACCOUNT );
 }
 
 
 void CaribeView::OnCreateTreant()
 {
 	// TODO: ���⿡ ���� ó���� �ڵ带 �߰��մϴ�.
-	DoSpawnSquad( XGAME::xUNIT_TREANT );
+	DoSpawnSquad( XGAME::xUNIT_TREANT, ACCOUNT );
 }
 
 
 void CaribeView::OnCreateFallenAngel()
 {
 	// TODO: ���⿡ ���� ó���� �ڵ带 �߰��մϴ�.
-	DoSpawnSquad( XGAME::xUNIT_FALLEN_ANGEL );
+	DoSpawnSquad( XGAME::xUNIT_FALLEN_ANGEL, ACCOUNT );
 }
 
 void CaribeView::OnCopySpot()

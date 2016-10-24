@@ -52,7 +52,7 @@ public:
 	bool DoEditSpotDlg( XPropWorld::xBASESPOT *pBaseSpot );
 	void DoPreInputSpot( XGAME::xtSpot type, XPropWorld::xBASESPOT *pBaseProp, CDlgSpot& dlg );
 	void DoAfterInputSpot( CDlgSpot& dlg, XPropWorld::xBASESPOT *pOutBaseProp );
-	void DoSpawnSquad( XGAME::xtUnit unit );
+	void DoSpawnSquad( XGAME::xtUnit unit, XSPAcc spAcc );
 
 // 재정의입니다.
 public:
