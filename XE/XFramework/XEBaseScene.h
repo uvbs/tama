@@ -29,7 +29,7 @@ class XEBaseScene : public XWnd
 private:
 	XESceneMng *m_pSceneMng;
 	ID m_idScene;			// 씬 아이디
-	int m_Destroy;
+	int m_Destroy = 0;
 	XTransition *m_pTransition;		// 트랜지션 효과 객체
 	ID m_idNextScene;				// 씬이 파괴되어 빠져나갈때 다음에 실행되어야 할 씬의 아이디
 	XEBaseScene *m_pParentScene;	// child지정된 씬의 경우 부모씬이 있음.
@@ -45,7 +45,7 @@ private:
 	//
 	void Init()  {
 		m_idScene = 0;
-		m_Destroy = FALSE;
+		//m_Destroy = FALSE;
 		m_pTransition = NULL;
 		m_pSceneChild = NULL;
 		m_idNextScene = 0;
@@ -58,6 +58,8 @@ private:
 	}
 	void Destroy();
 	virtual void CallScriptImplement( XLua *pLua, const char *cFunc, DWORD p1, DWORD p2 );
+	SET_ACCESSOR( int, Destroy );
+
 protected:
 	GET_ACCESSOR( XEBaseScene*, pParentScene );
 public:
@@ -65,7 +67,7 @@ public:
 	XEBaseScene( XEContent *pGame, const std::string& idsScene, bool bTransition );
 	virtual ~XEBaseScene(void) { Destroy(); }
 	//
-	GET_SET_ACCESSOR_CONST( int, Destroy );
+	GET_ACCESSOR_CONST( int, Destroy );
 	GET_ACCESSOR_CONST( ID, idScene );
 	GET_SET_ACCESSOR( XTransition*, pTransition );
 	GET_SET_ACCESSOR( XESceneMng*, pSceneMng );

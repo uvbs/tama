@@ -9,6 +9,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+XEOption* XEOption::s_pInstance = nullptr;
 
 ////////////////////////////////////////////////////////////////
 /**

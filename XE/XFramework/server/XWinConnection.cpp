@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "XFramework/XEOption.h"
 #include "XWinConnection.h"
 #include <stdio.h>
 #include "XEUser.h"
@@ -264,7 +265,16 @@ void XEWinConnectionInServer::ProcessHeartBeat()
 			Send( ar );		
 			if( IsDisconnected() == FALSE ) {
 				m_modeHeartBeat = xHB_REQUEST;
-				m_timerHeartBeat.Set( 30.f );
+				float secNotResponse = 40.f;	// 디폴트
+				if( XEOption::sGet() ) {
+					auto sec = XEOption::sGet()->GetParam().GetFloat( "sec_not_response" );
+					if( sec > 0 ) {
+						secNotResponse = sec;
+					} else {
+						CONSOLE( "경고: ini에 sec_not_response값이 정해지지 않았음. 디폴트 40초로 합니다." );
+					}
+				}
+				m_timerHeartBeat.Set( secNotResponse );
 			}
 		}
 	} else

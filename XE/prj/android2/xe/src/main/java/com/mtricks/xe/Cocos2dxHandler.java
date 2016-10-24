@@ -49,6 +49,7 @@ public class Cocos2dxHandler extends Handler {
 	public final static int HANDLER_SOFTNYX_LOGOUT = 8;
 	public final static int HANDLER_TEST = 9;
 	public final static int HANDLER_SHOW_ADMOB = 10;
+	public final static int HANDLER_SHOW_TAPJOY = 11;
 
 	// ===========================================================
 	// Fields
@@ -100,9 +101,6 @@ public class Cocos2dxHandler extends Handler {
 			break;
 		case Cocos2dxHandler.HANDLER_TEST:
 			DoTest(msg);
-			break;
-		case Cocos2dxHandler.HANDLER_SHOW_ADMOB:
-			ShowAdmobHandler(msg);
 			break;
 		} // switch
 	}

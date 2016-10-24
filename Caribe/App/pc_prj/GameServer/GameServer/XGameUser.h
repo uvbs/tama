@@ -25,6 +25,8 @@ private:
 //	BOOL m_bDestroySave;
 	CTimer m_timer1Min;		// 1분 타이머	
 	XGAME::xtPlatform m_Platform = XGAME::xPL_NONE;
+	std::string m_strKeyAds;			// 광고비디오 시청 식별키
+	CTimer m_timerAds;			// 광고비디오 시청 요청 타이머
 	//CTimer m_messagetimer2min;
 	/*
 	 전투상대 부대정보
@@ -361,6 +363,8 @@ public:
 	int RecvPaymentAssetByGem( XPacket& p );
 	int RecvPrivateRaidEnterList( XPacket& p );
 	int RecvEnterReadyScene( XPacket& p );
+	int RecvShowAdsVideo( XPacket& p );
+	int RecvDidFinishShowAdsVideo( XPacket& p );
 private:
 	XCrypto* GetpCryptObj();
 	int ProcSpotEach( XSpot *pBaseSpot, XGAME::xBattleResult *pOut, XGAME::xBattleFinish& battle );

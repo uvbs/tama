@@ -7122,194 +7122,6 @@ int XGameUser::RecvTrainCompleteQuick( XPacket& p )
 	return 1;
 }
 
-// 다음은 서버 코드입니다.
-/**
- 클라이언트의 SendReqProvideBooty()에 대한 서버측의 Receive함수
- @param p 패킷이 들어있는 아카이브
- @return 오류없이 완료되었다면 1을 리턴한다.
- @see SendReqProvideBooty()
-*/
-// int XGameUser::RecvProvideBooty( XPacket& p )
-// {
-// 	BYTE b0;
-// 	ID snHero;
-// 	p >> snHero;
-// 	p >> b0;	auto type = (XGAME::xtTrain)b0;
-// //	p >> b0;	int num = b0;
-// 	p >> b0 >> b0 >> b0;
-// 	XVERIFY_BREAK( type != XGAME::xTR_SQUAD_UP 
-// 				&& type != XGAME::xTR_SKILL_ACTIVE_UP 
-// 				&& type != XGAME::xTR_SKILL_PASSIVE_UP );
-// 	auto pHero = m_spAcc->GetHero( snHero );
-// 	XVERIFY_BREAK( pHero == nullptr );
-// 	bool bLevelup = false;
-// 	XPacket ar( p.GetidPacket() );
-// 	ar << snHero;
-// 	ar << (BYTE)type;
-// 	ar << (BYTE)VER_ETC_SERIALIZE;
-// 	ar << (BYTE)0;
-// 	ar << (BYTE)0;
-// 	xErrorCode result = xEC_OK;
-// 	ID idNeed;		// 업글시 필요 템
-// 	int numNeed;	// 필요 개수
-// 	switch( type )
-// 	{
-// 	case XGAME::xTR_SQUAD_UP: {
-// 		auto pPropSquadNext = pHero->GetpPropSquadupNext();
-// 		XVERIFY_BREAK( pPropSquadNext == nullptr );
-// 		int num = 1;	// 먹일 메달 개수
-// 		XASSERT( num == 1 );	// 1개씩만 먹여야 함.
-// 		// 현재 메달제공이 가능한 상태인가.
-// 		XVERIFY_BREAK( !m_spAcc->IsAbleProvideSquad( pHero, &idNeed, &numNeed ) );
-// 		// 훈련중이냐
-// 		int numRefund1 = 0;
-// 		int numRefund2 = 0;
-// 		bool bAbleProvide = false;
-// 		if( m_spAcc->IsTrainingSquadupHero( snHero ) ) {
-// 			// 훈련 경과 시간
-// 			auto pSlot = m_spAcc->GetTrainingHero( snHero, type );
-// 			XVERIFY_BREAK( pSlot == nullptr );
-// 			// 채워야 하는 남은 템수
-// 			int numRemain = pPropSquadNext->numItem - pHero->GetNumProvided( type );
-// 			// 훈련중인 메달이 이미 꽉찬상태면
-// 			if( pSlot->GetnumTrainingItem() > (numRemain-1) ) {// 지금 1개를 채울것이므로-1
-// 				int numOver = pSlot->GetnumTrainingItem() - (numRemain-1);	
-// 				XASSERT( numOver > 0 );
-// 				bool bAbleForward = false;
-// 				// 이월이 되는가.
-// 				auto pPropNextNext = pHero->GetpPropSquadupNextNext();
-// 				if( pPropNextNext && pPropNextNext->gradeNeed == pSlot->GetgradeTrainingItem() )
-// 					bAbleForward = true;	// 이월 됨
-// 				// 이월이 되는가
-// 				if( bAbleForward )
-// 					// 그대로 더함.
-// 					bAbleProvide = true;
-// 				else {
-// 					// 이월 안됨
-// 					// 제공할 여유가 있는가
-// 					if( pSlot->GetnumTrainingItem() > 1 ) {
-// 						// 제공할수 있음
-// 						// 보석1개환불, 시간감소
-// 						numRefund1 = pPropSquadNext->GetNeedRes(0);
-// 						numRefund2 = pPropSquadNext->GetNeedRes(1);
-// 						// 훈련해야 하는거 하나 빼줌
-// 						pSlot->SetAddItem( pSlot->GetgradeTrainingItem(), 
-// 											pSlot->GetnumTrainingItem() - 1);
-// 						// 훈련시간 감소
-// 						pSlot->DoDecreaseTrainingSec( pPropSquadNext->needTrain.secTrainPerItem );
-// 						// 메달 제공
-// 						bAbleProvide = true;
-// 					} else {
-// 						// 이월이 안되는 마지막 한개는 제공불가가 됨.
-// 						result = xEC_NO_MORE_PROVIDE;
-// 						idNeed = 0;		// 메달 소모 안됨
-// 					}
-// 				}
-// 				// 훈련으로 얻는것과 합치면 오버됨
-// 			} else
-// 				// 안넘으니 그냥 더함
-// 				bAbleProvide = true;
-// 		} else {
-// 			// 훈련중이 아닐때
-// 			bAbleProvide = true;
-// 		}
-// 		// 전리품 제공
-// 		if( bAbleProvide ) {
-// 			if( ( pHero->AddProvide( type, 1, nullptr ) ) ) {
-// 				// 렙업
-// 				bLevelup = true;
-// 				pHero->SetNumProvide( type, 0 );	// 제공했던 아이템 클리어
-// 			}
-// 			XBREAK( m_spAcc->DestroyItem( idNeed, 1 ) == 0 );
-// 			DispatchQuestEvent( xQC_EVENT_UI_ACTION, xUA_PROVIDE_SQUAD );
-// 		}
-// 		ar << numRefund1;		// 환불될 보석
-// 		ar << numRefund2;		// 환불될 보석
-// 	} break;
-// 	case XGAME::xTR_SKILL_ACTIVE_UP:
-// 	case XGAME::xTR_SKILL_PASSIVE_UP: {
-// 		auto pPropSkillNext = pHero->GetpPropSkillupNext(type);
-// 		XVERIFY_BREAK( pPropSkillNext == nullptr );
-// 		int num = 1;	// 먹일 보옥 개수
-// 		XASSERT( num == 1 );	// 1개씩만 먹여야 함.
-// 		// 현재 보옥제공이 가능한 상태인가.
-// 		XVERIFY_BREAK( !m_spAcc->IsAbleProvideSkill( pHero, type, &idNeed, &numNeed ) );
-// 		// 훈련중이냐
-// 		int numRefund = 0;
-// 		bool bAbleProvide = false;
-// 		if( m_spAcc->IsTrainingSkillupHero( snHero, type ) ) {
-// 			// 훈련 경과 시간
-// 			auto pSlot = m_spAcc->GetTrainingHero( snHero, type );
-// 			XVERIFY_BREAK( pSlot == nullptr );
-// 			// 채워야 하는 남은 템수
-// 			int numRemain = pPropSkillNext->numItem - pHero->GetNumProvided( type );
-// 			// 훈련중인 보옥이 이미 꽉찬상태면
-// 			if( pSlot->GetnumTrainingItem() > (numRemain-1) ) {	// 지금 1개를 채울것이므로-1
-// 				int numOver = pSlot->GetnumTrainingItem() - (numRemain-1);	
-// 				XASSERT( numOver > 0 );
-// 				bool bAbleForward = false;
-// 				// 이월이 되는가.
-// 				auto pPropNextNext = pHero->GetpPropSkillupNextNext(type);
-// 				if( pPropNextNext && pPropNextNext->gradeNeed == pSlot->GetgradeTrainingItem() )
-// 					bAbleForward = true;	// 이월 됨
-// 				// 이월이 되는가
-// 				if( bAbleForward )
-// 					// 그대로 더함.
-// 					bAbleProvide = true;
-// 				else {
-// 					// 이월 안됨
-// 					// 제공할 여유가 있는가
-// 					if( pSlot->GetnumTrainingItem() > 1 ) {
-// 						// 제공할수 있음
-// 						// 자원1개환불, 시간감소
-// 						numRefund = pPropSkillNext->GetNeedRes();
-// 						// 훈련해야 하는거 하나 빼줌
-// 						pSlot->SetAddItem( pSlot->GetgradeTrainingItem(), 
-// 											pSlot->GetnumTrainingItem() - 1);
-// 						// 훈련시간 감소
-// 						pSlot->DoDecreaseTrainingSec( pPropSkillNext->needTrain.secTrainPerItem );
-// 						// 보옥 제공
-// 						bAbleProvide = true;
-// 					} else {
-// 						// 이월이 안되는 마지막 한개는 제공불가가 됨.
-// 						result = xEC_NO_MORE_PROVIDE;
-// 						idNeed = 0;		// 보옥 소모 안됨
-// 					}
-// 				}
-// 				// 훈련으로 얻는것과 합치면 오버됨
-// 			} else
-// 				// 안넘으니 그냥 더함
-// 				bAbleProvide = true;
-// 		} else {
-// 			// 훈련중이 아닐때
-// 			bAbleProvide = true;
-// 		}
-// 		// 전리품 제공
-// 		if( bAbleProvide ) {
-// 			if( ( pHero->AddProvide( type, 1, nullptr ) ) ) {
-// 				// 렙업
-// 				bLevelup = true;
-// 				pHero->SetNumProvide( type, 0 );	// 제공했던 아이템 클리어
-// 			}
-// 			XBREAK( m_spAcc->DestroyItem( idNeed, 1 ) == 0 );
-// 			DispatchQuestEvent( xQC_EVENT_UI_ACTION, xUA_PROVIDE_SKILL );
-// 		}
-// 		ar << numRefund;		// 환불될 자원
-// 	} break;
-// 	} // switch
-// 	//
-// 	m_spAcc->SerializeTrainSlot( ar );
-// 	pHero->SerializeLevelupReady( ar );
-// 	ar << idNeed;		// 소모된 메달. 0이면 소모안되었음.
-// 	ar << xboolToByte(bLevelup);	// LevelupReady가 가므로 굳이 보내줄 필요 없는듯.
-// 	XBREAK( pHero->GetNumProvided(type) > 0xff );
-// 	ar << (BYTE)pHero->GetNumProvided(type);
-// 	XBREAK( (DWORD)result >= 0xffff );
-// 	ar << (WORD)result;
-// 	Send( ar );
-// 
-// 	return 1;
-// }
 /**
  클라이언트의 SendReqPromotionHero()에 대한 서버측의 Receive함수
  @param p 패킷이 들어있는 아카이브
@@ -9697,3 +9509,51 @@ int XGameUser::RecvEnterReadyScene( XPacket& p )
 	Send(ar);
 	return 1;
 }
+
+/**
+ @brief 광고 비디오를 시청하겠다고 요청이 옴
+ 클라이언트의 SendReqShowAdsVideo()에 대한 서버측의 Receive함수
+ @param p 패킷이 들어있는 아카이브
+ @return 오류없이 완료되었다면 1을 리턴한다.
+ @see SendReqShowAdsVideo()
+*/
+int XGameUser::RecvShowAdsVideo( XPacket& p )
+{
+	DWORD dwKey = ::xRand();
+	m_strKeyAds = XE::Format( "%08x", dwKey );
+	const float secDurationAds = XEnv::sGet()->GetParam().GetFloat( "sec_show_ads" );
+	XBREAK( secDurationAds == 0 );
+	m_timerAds.Set( secDurationAds, TRUE );		// n초 미만으로 패킷이 다시 왔다면 치트
+	// 클라로 전송
+	XPacket ar( p.GetidPacket() );
+	ar << dwKey;
+	Send(ar);
+	return 1;
+}
+
+/**
+ 클라이언트의 SendReqDidFinishShowAdsVideo()에 대한 서버측의 Receive함수
+ @param p 패킷이 들어있는 아카이브
+ @return 오류없이 완료되었다면 1을 리턴한다.
+ @see SendReqDidFinishShowAdsVideo()
+*/
+int XGameUser::RecvDidFinishShowAdsVideo( XPacket& p )
+{
+	std::string strKey;
+	p >> strKey;
+	XVERIFY_BREAK( strKey.empty() );
+	XVERIFY_BREAK( strKey != m_strKeyAds );		// 보관해뒀던 키랑 다르면 치트
+#if !defined(_DEBUG)
+	XVERIFY_BREAK( !m_timerAds.IsOver() );		// 타이머가 꺼져있거나 최소시간이 안지났는데 패킷이 온거면 치트
+#endif // !defined(_DEBUG)
+	m_strKeyAds.clear();
+	// 클라로 전송
+	XPacket ar( p.GetidPacket() );
+	const int numGemEarned = 10;
+	ar << numGemEarned;
+	ar << m_spAcc->GetCashtem();
+	Send(ar);
+	return 1;
+}
+
+

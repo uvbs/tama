@@ -42,13 +42,24 @@ private:
 
 class XEOption
 {
+	static XEOption* s_pInstance;
 public:
-	XEOption() { Init(); }
+	static XEOption* sGet() {
+		return s_pInstance;
+	}
+public:
+	XEOption() { 
+		s_pInstance = this;
+		Init(); 
+	}
 	XEOption( XDelegateOption* pDelegate ) 
 		: m_pDelegate(pDelegate) { 
 		Init(); 
 	}
-	virtual ~XEOption() { Destroy(); }
+	virtual ~XEOption() { 
+		Destroy(); 
+		s_pInstance = nullptr;
+	}
 	// get/setter
 // 	GET_BOOL_ACCESSOR( bFirst );
 	GET_ACCESSOR_CONST( const XParamObj2&, Param );

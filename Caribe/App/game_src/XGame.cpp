@@ -2282,6 +2282,14 @@ bool XGame::OnReceiveCallbackData( const xnReceiverCallback::xData& data )
 			}
 		} while (0);
 #endif // _NEW_INAPP
+	} else
+	if( data.m_strIds == "finish_show_ads" ) {
+		// 광고 비디오 시청이 끝남.
+		if( XASSERT( !m_strKeyAds.empty() ) ) {
+			if( !GAMESVR_SOCKET->SendReqDidFinishShowAdsVideo( this, m_strKeyAds ) ) {
+				bOk = false;
+			}
+		}
 	}
 	return bOk;	// false면 콜백을 다시 받는다.
 }
@@ -2599,3 +2607,4 @@ void XGame::DoPopupTrainComplete( xtTrain train, XSPHero pHero, int level )
 		break;
 	}
 }
+

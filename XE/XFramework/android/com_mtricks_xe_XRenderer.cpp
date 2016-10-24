@@ -323,6 +323,20 @@ Java_com_mtricks_xe_XRenderer_nativeOnFinishedConsumeItem( JNIEnv *env, jobject
 	XInApp::sGet()->cbFinishedConsumItem( bOk, idsProduct );
 }
 
+JNIEXPORT void JNICALL
+Java_com_mtricks_xe_XRenderer_nativeJavaToCpp( JNIEnv *env, jobject, 
+																							 jstring jstrID,
+																							 jstring jstrParam1,
+																							 jstring jstrParam2,
+																							 jstring jstrParam3)
+{
+	LOGD( "cpp: callback %s", __FUNCTION__ );
+	const std::string strID = JniHelper::jstring2string( jstrSku );
+	const std::string strParam1 = JniHelper::jstring2string( jstrParam1 );
+	const std::string strParam2 = JniHelper::jstring2string( jstrParam2 );
+	const std::string strParam3 = JniHelper::jstring2string( jstrParam3 );
+	XReceiverCallback::sGet()->cbOnReceiveCallback( strID, strParam1, strParam2, strParam3 );
+}
 
 
 

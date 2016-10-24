@@ -152,6 +152,7 @@ private:
 	int m_cntEventOpening = 0;
 	int m_cntRefBgDark = 0;			// bg_dark의 참조카운터
 	XList4<XGAME::xAlertWorld> m_listAlertWorld;			// 월드씬 진입하면 띄워야할 알림들.
+	std::string m_strKeyAds;
 	void Init() {
 		m_pSceneMng = nullptr;
 		m_idAccount = 0;
@@ -178,6 +179,7 @@ public:
 	GET_ACCESSOR( XList4<std::string>&, listAllowWnd );
 	GET_ACCESSOR( XESceneMng*, pSceneMng );
 	GET_ACCESSOR_CONST( XSurface*, psfcProfile );
+	GET_SET_ACCESSOR( const std::string&, strKeyAds );
 //	GET_SET_BOOL_ACCESSOR( bFirst );
 	bool IsbFirst() const;
 	inline bool GetbFirst() const {

@@ -7,6 +7,7 @@
  @todo nothing
 */
 #include "stdafx.h"
+#include "XFramework/XReceiverCallback.h"
 #include "XSockGameSvr.h"
 #include "XPacketCG.h"
 #include "XFramework/client/XTimeoutMng.h"
@@ -516,3 +517,93 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 		exit( 1 );
 	}
 }
+
+/**
+ @brief 
+ 전송하고 응답을 기다려야 하는 류의 구현에 사용.
+ _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
+ @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
+ @param param 사용자가 정의해서 쓰시오
+ @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
+ @see AddResponse()
+*/
+BOOL XSockGameSvr::SendReqShowAdsVideo( XWnd *pTimeoutCallback)
+{
+	_XCHECK_CONNECT(0);
+	//
+	XPacket ar( (ID)xCL2GS_SHOW_ADS);
+
+	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
+	ID idKey = 
+		AddResponse( ar.GetidPacket(), 
+					&XSockGameSvr::RecvShowAdsVideo, pTimeoutCallback );
+	Send( ar );
+	//
+	return TRUE;
+}
+
+/**
+ SendReqShowAdsVideo()에 대한 응답함수
+ @param p 패킷이 들어있는 아카이브
+ @see SendReqShowAdsVideo()
+*/
+void XSockGameSvr::RecvShowAdsVideo( XPacket& p, const xCALLBACK& c )
+{
+	DWORD dwKey;
+	p >> dwKey;
+	if( dwKey ) {
+		std::string strKey = XE::Format( "%08x", dwKey );
+		GAME->SetstrKeyAds( strKey );		// 광고 다보고난 후 이 키값을 서버로 보내 비교한다.
+		// success
+#if defined(_VER_ANDROID)
+		JniHelper::ShowTapjoyDirectPlay();
+#elif defined(WIN32)
+		XReceiverCallback::sGet()->cbOnReceiveCallback( "finish_show_ads", "", "", "" );
+#endif // _VER_ANDROID
+	} else {
+		XWND_ALERT( "%s", "failed show ads");
+	}
+}
+
+/**
+ @brief 
+ 전송하고 응답을 기다려야 하는 류의 구현에 사용.
+ _XCHECK_CONNECT의 파라메터는 팝업창에 뜰 텍스트의 아이디이다. 0은 디폴트 메시지이다.
+ @param pTimeoutCallback 서버로부터 응답이 없을때 호출될 콜백객체
+ @param param 사용자가 정의해서 쓰시오
+ @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
+ @see AddResponse()
+*/
+BOOL XSockGameSvr::SendReqDidFinishShowAdsVideo( XWnd *pTimeoutCallback, const std::string& strKeyAds )
+{
+	_XCHECK_CONNECT(0);
+	//
+	XPacket ar( (ID)xCL2GS_FINISH_SHOW_ADS );
+	ar << strKeyAds;
+
+	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
+	ID idKey = 
+		AddResponse( ar.GetidPacket(), 
+					&XSockGameSvr::RecvDidFinishShowAdsVideo, pTimeoutCallback );
+	Send( ar );
+	//
+	return TRUE;
+}
+
+/**
+ SendReqDidFinishShowAdsVideo()에 대한 응답함수
+ @param p 패킷이 들어있는 아카이브
+ @see SendReqDidFinishShowAdsVideo()
+*/
+void XSockGameSvr::RecvDidFinishShowAdsVideo( XPacket& p, const xCALLBACK& c )
+{
+	int numGemEarned; // 보상젬 개수
+	int numGems;  // 젬을 벌고 난 후의 젬 개수
+	p >> numGemEarned >> numGems;
+	ACCOUNT->SetCashtem( numGems );
+	if( GAME->GetpScene() ) {
+		GAME->GetpScene()->OnRecvDidFinishShowAdsVideo( numGemEarned );
+	}
+}
+
+

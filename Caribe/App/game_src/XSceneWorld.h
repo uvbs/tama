@@ -496,6 +496,7 @@ private:
 	void AddMenuKill( XWndPopupSpotMenu* pPopup, ID idSpot, int enemyPower, bool bNPC );
 private:
 	BOOL RestoreDevice() override;
+	void OnRecvDidFinishShowAdsVideo( int numGemEarned ) override;
  };
 
 extern XSceneWorld *SCENE_WORLD;

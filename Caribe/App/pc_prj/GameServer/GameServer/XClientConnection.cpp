@@ -191,7 +191,8 @@ BOOL XClientConnection::ProcessPacket(DWORD idPacket, ID idKey, XPacket& p)
 		case xCL2GS_SPOT_UPDATE_FOR_BATTLE: retv = pUser->RecvUpdateSpotForBattle( p );	break;
 		case xCL2GS_ENTER_READY_SCENE: retv = pUser->RecvEnterReadyScene( p );	break;
 		case xCL2GS_SYNC:		retv = pUser->RecvSync( p );	break;
-
+		case xCL2GS_SHOW_ADS: retv = pUser->RecvShowAdsVideo( p );	break;
+		case xCL2GS_FINISH_SHOW_ADS: retv = pUser->RecvDidFinishShowAdsVideo( p );	break;
 		default:
 			// 알수없는 패킷이 날아왔다.
 			XBREAKF(1, "unknown packet 0x%8x", idPacket);

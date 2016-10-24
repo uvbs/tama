@@ -192,6 +192,8 @@ enum xtPacket {
 	xCL2GS_CHECK_ENCOUNTER_LOG,			
 	xCL2GS_GOTO_HOME,									// 홈버튼으로 앱에서 잠시 빠져나감.
 	xCL2GS_SYNC_HELLO,								// 스팟의 인사말 메시지 갱신
+	xCL2GS_SHOW_ADS,									// 광고비디오 시청
+	xCL2GS_FINISH_SHOW_ADS,						// 광고시청 끝
 	// quest
 	xCL2GS_QUEST_OCCUR,							// 새 퀘스트 발생
 	xCL2GS_QUEST_COMPLETE,						// 퀘스트 조건 모두 부합.

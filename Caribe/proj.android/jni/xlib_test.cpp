@@ -1,5 +1,5 @@
 #include "stdafx.h"
-//#ifdef _VER_ANDROID
+#ifdef _VER_ANDROID
 #include "../../App/game_src/client/XAppDelegate.h"
 #include "android/JniHelper.h"
 #include <android/log.h>
@@ -53,4 +53,4 @@ void DestroyAppDelegate( void )
 	SAFE_DELETE( APP_DELEGATE );
 }
 }
-//#endif // _VER_ANDROID
+#endif // _VER_ANDROID

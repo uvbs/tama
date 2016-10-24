@@ -1,4 +1,4 @@
-/****************************************************************************
+ï»¿/****************************************************************************
 Copyright (c) 2010 cocos2d-x.org
 
 http://www.cocos2d-x.org
@@ -52,9 +52,11 @@ public static void main( java.lang.String[] );
    ([Ljava/lang/String;)V   
 ****************************************************************************/
 #include "stdafx.h"
+#ifdef ANDROID
+
 #include "XFramework/XReceiverCallback.h"
 // versionAndroid.hëŠ” XEê°€ ì•„ë‹Œ ê²Œì„ìª½ ë””íŒŒì¸ì´ë¯€ë¡œ ì—¬ê¸°ì„œ ì¸ì‹ì´ ë˜ì§€ ì•ŠìŒ.
-#ifdef _VER_ANDROID
+//#ifdef _VER_ANDROID
 #include "JniHelper.h"
 #include <android/log.h>
 #include <string.h>
@@ -679,7 +681,7 @@ void JniHelper::ShowAdmob( bool bShow, int dpX, int dpY )
 	jclass _javaClass = getClassID_("com/mtricks/xe/Cocos2dxHelper", _env);
 	const char* cFunc = "Callback_ShowAdmob";
 	
-	jmethodID mid = _env->GetStaticMethodID(_javaClass, cFunc,  "(ZII)V"); // ½´¹ã. ÀÌ°Ç Z;I;I½ÄÀ¸·Î ÇÏ´Ï±î ¿¡·¯³ª³×. ±âÁØÀÌ ¿ÖÀÌ·¡
+	jmethodID mid = _env->GetStaticMethodID(_javaClass, cFunc,  "(ZII)V"); // ìŠˆë°¤ Z;I;Iì‹ìœ¼ë¡œ í•˜ë‹ˆê¹Œ ì—ëŸ¬ë‚˜ë„¤
 	if( mid == nullptr ) {
 		LOGD("%s:not found java function:[%s]", __FUNCTION__, cFunc );
 	} else	{
@@ -693,6 +695,26 @@ void JniHelper::ShowAdmob( bool bShow, int dpX, int dpY )
 
 }
 
+void JniHelper::ShowTapjoyDirectPlay()
+{
+	JNIEnv *_env = 0;
+	if( !getEnv( &_env ) ) {
+		return;
+	}
+	LOGD( "JniHelper:%s", __FUNCTION__ );
+	jclass _javaClass = getClassID_( "com/mtricks/xe/Cocos2dxHelper", _env );
+	const char* cFunc = "Callback_ShowTapjoyDirectPlay";
+
+	jmethodID mid = _env->GetStaticMethodID( _javaClass, cFunc, "()V" );
+	if( mid == nullptr ) {
+		LOGD( "%s:not found java function:[%s]", __FUNCTION__, cFunc );
+	} else {
+		LOGD( "%s:call [%s]", __FUNCTION__, cFunc );
+		_env->CallStaticObjectMethod( _javaClass, mid );
+		LOGD( "%s:successed call [%s]", __FUNCTION__, cFunc );
+	}
+
+}
 
 
 bool JniHelper::Check3G()
@@ -1051,6 +1073,7 @@ extern "C"
 #ifdef __cplusplus
 } // extern "C"
 #endif
+#endif // ANDROID
 
 
-#endif // android
+//#endif // android

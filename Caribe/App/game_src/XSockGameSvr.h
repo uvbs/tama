@@ -420,6 +420,8 @@ public:
 	BOOL SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, XGAME::xtPaymentRes typeAsset, bool bByItem, const XParamObj2& param );
 	BOOL SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, const XList4<XSPHero>& listHero, ID idSpot );
 	BOOL SendReqEnterReadyScene( XWnd *pTimeoutCallback, ID idSpot );
+	BOOL SendReqShowAdsVideo( XWnd *pTimeoutCallback );
+	BOOL SendReqDidFinishShowAdsVideo( XWnd *pTimeoutCallback, const std::string& strKeyAds );
 private:
 	void RecvAttackedSimulByHome( XPacket& p, const xCALLBACK& c );
 	void cbOnDisconnectByExternal() override;
@@ -446,6 +448,8 @@ private:
 	void RecvPrivateRaidEnterList( XPacket& p, const xCALLBACK& c );
 	void RecvUpdateSpotForBattle( XPacket& p, const xCALLBACK& c );
 	void RecvEnterReadyScene( XPacket& p, const xCALLBACK& c );
+	void RecvShowAdsVideo( XPacket& p, const xCALLBACK& c );
+	void RecvDidFinishShowAdsVideo( XPacket& p, const xCALLBACK& c );
 };
 
 extern XSockGameSvr *GAMESVR_SOCKET;			// 월드서버와의 커넥션

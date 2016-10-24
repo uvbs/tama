@@ -388,6 +388,10 @@ public class Cocos2dxHelper {
 		Cocos2dxHelper.sCocos2dxHelperListener.ShowAdViewToMsg( bShow, dpX, dpY );
 	}
 
+	public static void Callback_ShowTapjoyDirectPlay() {
+		Log.d(TAG, "Java: Callback_ShowTapjoyDirectPlay" );
+		Cocos2dxHelper.sCocos2dxHelperListener.ShowTapjoyDirectPlay();
+	}
 	public static void Callback_DoTest() {
 		Log.d(TAG, "Java: callback_Test" );
 		Cocos2dxHelper.sCocos2dxHelperListener.DoTest();
@@ -559,6 +563,7 @@ public class Cocos2dxHelper {
 		public void InitGoogleIAP( final String publicKey ); 
 		public void DoConsumeItem( final String idsProduct ); 
 		public void CheckUnConsumedItem();
+		public void ShowTapjoyDirectPlay();
 
 	}
 }

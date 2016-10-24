@@ -1,5 +1,4 @@
-#define ANDROID
-/****************************************************************************
+﻿/****************************************************************************
 Copyright (c) 2010-2011 cocos2d-x.org
 
 http://www.cocos2d-x.org
@@ -79,6 +78,7 @@ public:
 	static void DoExitApp( void );
 	static void DoTest();
 	static void ShowAdmob( bool bShow, int dpX, int dpY );
+	static void ShowTapjoyDirectPlay();
 	static bool Check3G();
 	static bool CheckWiFi();
 
@@ -128,7 +128,7 @@ extern "C"
 	const char* iOSToCpp(const char* id, const char* param1, const char* param2);
 	// C++ -> IOS
 	//  �ξ�
-	extern const char* CppToJava(const char* id, const char* param1, const char* param2);
+	//extern const char* CppToJava(const char* id, const char* param1, const char* param2);
 #ifdef __cplusplus
 }
 #endif

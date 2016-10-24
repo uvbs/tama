@@ -2973,11 +2973,15 @@ void XSceneWorld::UpdateDebugButtons()
 			pButt->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnCheat, 99 );
 			v.x -= 25.f;
 		}
-		pButt = XWndButtonDebug::sUpdateCtrl( this, "butt.debug.test", v, vSize, _T( "test" ), true );
-		Add( pButt );
-		pButt->SetEvent2( XWM_CLICKED, [this]( XWnd* ) {
+		v.x -= 10.f;
+		pButt = XWndButtonDebug::sUpdateCtrl( this, "butt.debug.test", v, XE::VEC2(35.f, 35.f), _T( "test" ), true );
+//		Add( pButt );
+		if( pButt )
+			pButt->SetEvent2( XWM_CLICKED, [this]( XWnd* ) {
+			GAMESVR_SOCKET->SendReqShowAdsVideo( GAME );
 #ifdef _VER_ANDROID
-			JniHelper::DoTest();
+//			JniHelper::DoTest();
+//			JniHelper::ShowTapjoyDirectPlay();
 #endif // _VER_ANDROID
 		} );
 		//	}
@@ -4305,4 +4309,12 @@ BOOL XSceneWorld::RestoreDevice()
 {
 	LoadWorldMap( m_pScrollView );
 	return true;
+}
+
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 광고 비디오 시청 후 젬을 보상받음.
+*/
+void XSceneWorld::OnRecvDidFinishShowAdsVideo( int numGemEarned )
+{
+	CONSOLE("%s: earned gem number=%d", __TFUNC__, numGemEarned );
 }

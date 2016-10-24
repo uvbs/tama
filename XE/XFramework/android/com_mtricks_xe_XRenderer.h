@@ -80,7 +80,12 @@ JNIEXPORT void JNICALL
 Java_com_mtricks_xe_XRenderer_nativeOnFinishedConsumeItem( JNIEnv *env, jobject
 																												, jboolean _bOk
 																												, jstring jstrSku);
-
+JNIEXPORT void JNICALL 
+Java_com_mtricks_xe_XRenderer_nativeJavaToCpp( JNIEnv *env, 
+																							 jobject, jstring jstrID, 
+																							 jstring jstrParam1, 
+																							 jstring jstrParam2, 
+																							 jstring jstrParam3 );
 // JNIEXPORT void JNICALL 
 // Java_com_mtricks_xe_XRenderer_nativeOnRecvProfileImage
 // (JNIEnv *env, jobject, jint jimage[], jint length );

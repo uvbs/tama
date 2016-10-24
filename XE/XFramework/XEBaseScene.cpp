@@ -94,6 +94,7 @@ int XEBaseScene::Process( float dt )
 				OnEndTransitionIn( m_pTransition );
 			}
 		}
+
 		// 브릿지씬만 아니면 페이드아웃될때 음악도 서서히 줄어든다.
 		if( !IsbBridge() ) {
 			float lerp = m_pTransition->GetfSlerp();
