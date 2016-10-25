@@ -2,13 +2,15 @@
 #include "XXMLDoc.h"
 #include "XList.h"
 #include <vector>
+#include "XFramework/XParamObj.h"
 
 ////////////////////////////////////////////////////////////////
 // xml을 읽어서 상수들을 읽은 후 전역변수에 모두 세팅하고 객체는 다시 삭제한다.
 class XGlobalVal : public XXMLDoc
 {
 	TiXmlNode *m_pRoot;
-	XEXmlNode nodeRoot;
+	XEXmlNode m_nodeRoot;
+	XParamObj2 m_Params;
 	void Init() {
 		m_pRoot = NULL;
 	}
@@ -17,6 +19,8 @@ public:
 	XGlobalVal();
 	virtual ~XGlobalVal() { Destroy(); }
 	//
+	void LoadParams();
+	void LoadNode( XEXmlNode& node, const std::string& strKey );
 	bool OnDidFinishLoad() override;
 	template<typename RET>
 	RET GetVal( LPCTSTR szVal, LPCTSTR szNodeName=NULL ) {

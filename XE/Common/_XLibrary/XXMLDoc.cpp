@@ -506,7 +506,7 @@ void XEXmlAttr::Destroy()
 {
 }
 
-const char* XEXmlAttr::GetString()
+const char* XEXmlAttr::GetString() const
 {
 	return m_pAttr->Value();
 }

@@ -97,6 +97,9 @@ public:
 	_tstring GetstrName() const;
 	std::string GetcstrName() const;
 	const char* GetString( const char *cKey );
+	inline std::string GetString2( const char* cKey ) {
+		return std::string( GetString( cKey ) );
+	}
 	LPCTSTR GetTString( const char *cKey );
 	int GetStringAry( const char *cKey, std::vector<std::string> *pOutAry );
 	int GetInt( const char *cKey );
@@ -165,6 +168,9 @@ public:
 	}
 };
 
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 
+*/
 class XEXmlAttr
 {
 	TiXmlAttribute *m_pAttr;
@@ -191,7 +197,10 @@ public:
 	//
 	int GetInt();		// 속성의 값을 int로 읽는다.
 	float GetFloat();
-	const char* GetString();
+	const char* GetString() const;
+	inline std::string GetString2() const {
+		return std::string( GetString() );
+	}
 	LPCTSTR GetTString();
 	//
 	XEXmlAttr GetNext();
