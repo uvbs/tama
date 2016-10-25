@@ -1,0 +1,51 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:2.2.2'
+	}
+}
+
+apply plugin: 'com.android.application'
+
+allprojects {
+	repositories {
+		jcenter()
+	}
+}
+
+android {
+	compileSdkVersion 24
+	buildToolsVersion "24.0.2"
+
+	sourceSets {
+		main {
+			assets.srcDirs = ['assets']
+			java.srcDirs = ['src']
+			manifest.srcFile 'AndroidManifest.xml'
+			res.srcDirs = ['res']
+		}
+	}
+
+	defaultConfig {
+		applicationId "com.vungle.publisherSampleAndroid"
+		minSdkVersion 11
+		targetSdkVersion 24
+		versionCode 1
+		versionName "1.0"
+	}
+	buildTypes {
+		release {
+			minifyEnabled true
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+		}
+	}
+	lintOptions {
+		abortOnError false
+	}
+}
+
+dependencies {
+	compile fileTree(dir: 'libs', include: ['*.jar'])
+}
