@@ -5756,16 +5756,16 @@ int XGameUser::RecvSpotTouch( XPacket& p )
 		GetpQuestMng()->GetDropableItems( &aryDropItem, infoQuest );
 	} break;
 	//////////////////////////////////////////////////////////////////////////
-	case XGAME::xSPOT_CASH: {
-		XSpotCash *pSpot = SafeCast<XSpotCash*>( pBaseSpot );
-		XVERIFY_BREAK( pSpot == nullptr );
-		int numGet = pSpot->GetnumCash();
-		m_spAcc->AddCashtem( numGet );
-		arAdd << numGet;
-		pSpot->Initialize( m_spAcc );
-		SendBaseInfo();		// 패킷 최적화 대상.
+//	case XGAME::xSPOT_CASH: {
+// 		XSpotCash *pSpot = SafeCast<XSpotCash*>( pBaseSpot );
+// 		XVERIFY_BREAK( pSpot == nullptr );
+// 		int numGet = pSpot->GetnumCash();
+// 		m_spAcc->AddCashtem( numGet );
+// 		arAdd << numGet;
+// 		pSpot->Initialize( m_spAcc );
+// 		SendBaseInfo();		// 패킷 최적화 대상.
 		//
-	} break;
+//	} break;
 	//////////////////////////////////////////////////////////////////////////
 	case XGAME::xSPOT_DAILY: {
 		if( pBaseSpot->GetspLegion() == nullptr )

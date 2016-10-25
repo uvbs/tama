@@ -1264,7 +1264,7 @@ _tstring XWndVisitSpot::GetstrDebugText()
 
 //////////////////////////////////////////////////////////////////////////
 XWndCashSpot::XWndCashSpot( XSpotCash* pSpot )
-	: XWndSpot( pSpot, SPR_CASH, pSpot->GetPosWorld() )
+	: XWndSpot( pSpot, _T("spot_cash.spr"), 2, pSpot->GetPosWorld() )
 {
 	Init();
 	m_pSpot = pSpot;

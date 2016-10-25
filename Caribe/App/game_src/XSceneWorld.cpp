@@ -551,178 +551,6 @@ BOOL XSceneWorld::CreateMandrakeSpot( XSpotMandrake *pSpot )
 	}
 	return FALSE;
 }
-// 
-// 
-// void XSceneWorld::UpdateCastleSpot( XSpot *pBaseSpot, XWnd *pRoot )
-// {
-// 	XBREAK( pRoot == nullptr );
-// 	ID idSpot = pBaseSpot->GetidSpot();
-// 	auto pSpot = static_cast<XSpotCastle*>( pBaseSpot );
-// 	XWnd *pExist = pRoot->Find( idSpot );
-// 	if( pExist == nullptr )	{
-// 		auto pWndSpot = new XWndCastleSpot( pSpot );
-// 		std::string ids = SZ2C( pSpot->GetpBaseProp()->strIdentifier.c_str() );
-// 		pWndSpot->SetstrIdentifier( ids );
-// 		pRoot->Add(idSpot, pWndSpot);
-// 		pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, idSpot );
-// 	} 
-// 	UpdateResIcon( pSpot, pRoot );
-// }
-// 
-// 
-// void XSceneWorld::UpdateJewelSpot( XSpot *pBaseSpot, XWnd *pRoot )
-// {
-// 	XBREAK( pRoot == nullptr );
-// 	auto pSpot = static_cast<XSpotJewel*>( pBaseSpot );
-// 	ID idSpot = pSpot->GetidSpot();
-// 	XWnd *pExist = pRoot->Find( idSpot );
-// 	if( pExist == nullptr ) {
-// 		auto pWndSpot = new XWndJewelSpot( pSpot );
-// 		std::string ids = SZ2C( pSpot->GetpBaseProp()->strIdentifier.c_str() );
-// 		pWndSpot->SetstrIdentifier( ids );
-// 		pRoot->Add( idSpot, pWndSpot );
-// 		pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, idSpot );
-// 	}
-// 	UpdateResIcon( pSpot, pRoot );
-// }
-// 
-// 
-// /**
-//  모든 유황스팟 UI를 업데이트 한다.
-// */
-// void XSceneWorld::UpdateSulfurSpot( XSpot *pBaseSpot, XWnd *pRoot )
-// {
-// 	XBREAK( pRoot == nullptr );
-// 	auto pSpot = static_cast<XSpotSulfur*>( pBaseSpot );
-// 	std::string strIdentifier = SZ2C(pSpot->GetpProp()->strIdentifier.c_str());
-// 	XWnd *pWnd = pRoot->Find( strIdentifier.c_str() );
-// 	if( pWnd == nullptr ) {
-// 		auto pWndSpot = new XWndSulfurSpot( pSpot );
-// 		pWndSpot->SetstrIdentifier( strIdentifier.c_str() );
-// 		pRoot->Add( pSpot->GetidSpot(), pWndSpot );
-// 		pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, pSpot->GetidSpot() );
-// 	}
-// 	UpdateResIcon( pSpot, pRoot );
-// }
-// 
-// /**
-//  모든 Npc스팟 UI를 업데이트 한다.
-// */
-// void XSceneWorld::UpdateNpcSpot( XSpot *pBaseSpot, XWnd *pRoot )
-// {
-// 	XBREAK( pRoot == nullptr );
-// 	auto pSpot = static_cast<XSpotNpc*>( pBaseSpot );
-// 	XBREAK( pSpot == nullptr );
-// 	XWnd *pWnd = pRoot->Find( pSpot->GetidSpot() );
-// 	if( pWnd == nullptr ) {
-// 		auto pWndSpot = new XWndNpcSpot( pSpot );
-// 		XBREAK( pSpot->GetpBaseProp() == nullptr );
-// 		std::string ids = SZ2C(pSpot->GetpBaseProp()->strIdentifier.c_str());
-// 		pWndSpot->SetstrIdentifier( ids );
-// 		pRoot->Add( pSpot->GetidSpot(), pWndSpot );
-// 		pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, pSpot->GetidSpot() );
-// 	}
-// }
-// 
-// /**
-//  모든 Daily스팟 UI를 업데이트 한다.
-// */
-// void XSceneWorld::UpdateDailySpot( XSpot *pBaseSpot, XWnd *pRoot )
-// {
-// 	XBREAK( pRoot == nullptr );
-// 	auto pSpot = static_cast<XSpotDaily*>( pBaseSpot );
-// 	XWnd *pWnd = pRoot->Find( pSpot->GetidSpot() );
-// // 	if( pSpot->GetType() != XGAME::xDS_NONE ) {
-// 		if( pWnd == nullptr ) {
-// 			auto pWndSpot = new XWndDailySpot( pSpot );
-// 			std::string ids = SZ2C( pSpot->GetpBaseProp()->strIdentifier.c_str() );
-// 			pWndSpot->SetstrIdentifier( ids );
-// 			pRoot->Add( pSpot->GetidSpot(), pWndSpot );
-// 			pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, pSpot->GetidSpot() );
-// 		}
-// // 	}
-// }
-// 
-// /**
-//  모든 만드레이크스팟 UI를 업데이트 한다.
-// */
-// void XSceneWorld::UpdateMandrakeSpot( XSpot *pBaseSpot, XWnd *pRoot )
-// {
-// 	XBREAK( pRoot == nullptr );
-// 	auto pSpot = static_cast<XSpotMandrake*>( pBaseSpot );
-// 	XWnd *pWnd = pRoot->Find( pSpot->GetidSpot() );
-// 	if( pWnd == nullptr ) {
-// 		auto pWndSpot = new XWndMandrakeSpot( pSpot );
-// 		std::string ids = SZ2C( pSpot->GetpBaseProp()->strIdentifier.c_str() );
-// 		pWndSpot->SetstrIdentifier( ids );
-// 		pRoot->Add( pSpot->GetidSpot(), pWndSpot );
-// 		pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, pSpot->GetidSpot() );
-// 	}
-// 	UpdateResIcon( pBaseSpot, pRoot );
-// }
-// 
-// /**
-//  @brief 캠페인 스팟을 업데이트 한다.
-// */
-// void XSceneWorld::UpdateCampaignSpot( XSpot *pBaseSpot, XWnd *pRoot )
-// {
-// 	XBREAK( pRoot == nullptr );
-// 	auto pSpot = static_cast<XSpotCampaign*>( pBaseSpot );
-// 	XWnd *pWnd = pRoot->Find( pSpot->GetidSpot() );
-// 	if( pWnd == nullptr )	{
-// 		auto pWndSpot = new XWndCampaignSpot( pSpot );
-// 		std::string ids = SZ2C( pSpot->GetpBaseProp()->strIdentifier.c_str() );
-// 		pWndSpot->SetstrIdentifier( ids );
-// 		pRoot->Add( pSpot->GetidSpot(), pWndSpot );
-// 		pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, pSpot->GetidSpot() );
-// 	}
-// }
-// 
-// void XSceneWorld::UpdateVisitSpot( XSpot *pBaseSpot, XWnd *pRoot )
-// {
-// 	XBREAK( pRoot == nullptr );
-// 	auto pSpot = static_cast<XSpotVisit*>( pBaseSpot );
-// 	XWnd *pWnd = pRoot->Find( pSpot->GetidSpot() );
-// 	if( pWnd == nullptr ) {
-// 		auto pWndSpot = new XWndVisitSpot( pSpot );
-// 		std::string ids = SZ2C( pSpot->GetpBaseProp()->strIdentifier.c_str() );
-// 		pWndSpot->SetstrIdentifier( ids );
-// 		pRoot->Add( pSpot->GetidSpot(), pWndSpot );
-// 		pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, pSpot->GetidSpot() );
-// 	}
-// }
-// 
-// void XSceneWorld::UpdateCashSpot( XSpot *pBaseSpot, XWnd *pRoot )
-// {
-// 	XBREAK( pRoot == nullptr );
-// 	auto pSpot = static_cast<XSpotCash*>( pBaseSpot );
-// 	XWnd *pWnd = pRoot->Find( pSpot->GetidSpot() );
-// 	if( pWnd == nullptr ) {
-// 		auto pWndSpot = new XWndCashSpot( pSpot );
-// 		std::string ids = SZ2C( pSpot->GetpBaseProp()->strIdentifier.c_str() );
-// 		pWndSpot->SetstrIdentifier( ids );
-// 		pRoot->Add( pSpot->GetidSpot(), pWndSpot );
-// 		pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, pSpot->GetidSpot() );
-// 	}
-// }
-// 
-// void XSceneWorld::UpdatePrivatgeRaidSpot( )
-// 
-// void XSceneWorld::UpdateCommonSpot( XSpot *pBaseSpot, XWnd *pRoot )
-// {
-// 	XBREAK( pRoot == nullptr );
-// 	ID idSpot = pBaseSpot->GetidSpot();
-// 	auto pSpot = static_cast<XSpotCommon*>( pBaseSpot );
-// 	XWnd *pWnd = pRoot->Find( idSpot );
-// 	if( pWnd == nullptr ) {
-// 		auto pWndSpot = new XWndCommonSpot( pSpot );
-// 	std::string ids = SZ2C( pSpot->GetpBaseProp()->strIdentifier.c_str() );
-// 	pWndSpot->SetstrIdentifier( ids );
-// 		pRoot->Add( idSpot, pWndSpot );
-// 		pWndSpot->SetEvent( XWM_CLICKED, this, &XSceneWorld::OnClickSpot, idSpot );
-// 	}
-// }
-
 
 /**
  @brief 자원버블(bubble) 업데이트
@@ -976,23 +804,6 @@ void XSceneWorld::UpdateSpots( void )
 				// 자원수거하는 형태면 아이콘 컨트롤도 생성.
 				UpdateResIcon( pBaseSpot, pRoot );
 			}
-// 			switch( typeSpot ) {
-// 			case XGAME::xSPOT_CASTLE: UpdateCastleSpot( pBaseSpot, pRoot ); break;
-// 			case XGAME::xSPOT_JEWEL: UpdateJewelSpot( pBaseSpot, pRoot ); break;
-// 			case XGAME::xSPOT_SULFUR: UpdateSulfurSpot( pBaseSpot, pRoot );	break;
-// 			case XGAME::xSPOT_MANDRAKE: UpdateMandrakeSpot( pBaseSpot, pRoot ); break;
-// 			case XGAME::xSPOT_NPC: UpdateNpcSpot( pBaseSpot, pRoot ); break;
-// 			case XGAME::xSPOT_DAILY: UpdateDailySpot( pBaseSpot, pRoot ); break;
-// //			case XGAME::xSPOT_SPECIAL: UpdateSpecialSpot( pBaseSpot, pRoot ); break;
-// 			case XGAME::xSPOT_CAMPAIGN: UpdateCampaignSpot( pBaseSpot, pRoot ); break;
-// 			case XGAME::xSPOT_VISIT: UpdateVisitSpot( pBaseSpot, pRoot ); break;
-// 			case XGAME::xSPOT_CASH: UpdateCashSpot( pBaseSpot, pRoot ); break;
-// 			case XGAME::xSPOT_PRIVATE_RAID: UpdatePrivateSpot( pBaseSpot, pRoot ); break;
-// 			case XGAME::xSPOT_COMMON: UpdateCommonSpot( pBaseSpot, pRoot ); break;
-// 			default:
-// 				XBREAKF( 1, "unknown spot type:type=%d", pBaseSpot->GettypeSpot() );
-// 				break;
-// 			}
 			++idx;
 		} END_LOOP;
 	} while (0);
@@ -1648,8 +1459,7 @@ int XSceneWorld::OnClickSpot( XWnd* pWnd, DWORD p1, DWORD p2 )
 		OnClickVisitSpot( pBaseSpot );
 		break;
 	case XGAME::xSPOT_CASH:
-		bSend = 1;
-		OnClickCashSpot( pBaseSpot );
+		bSend = OnClickCashSpot( pBaseSpot );
 		break;
 	case XGAME::xSPOT_PRIVATE_RAID:
 		bSend = 1;
@@ -2017,16 +1827,17 @@ int XSceneWorld::OnClickCashSpot( XSpot *pBaseSpot )
 	auto pSpot = SafeCast<XSpotCash*>( pBaseSpot );
 	if( XBREAK( pSpot == nullptr ) )
 		return 0;
-	ID idSpot = pSpot->GetidSpot();
-	//
-	{
-		XSpotCash *pSpot = static_cast<XSpotCash*>( pBaseSpot );
-		if( XASSERT( pSpot ) )
-		{
-		}
-
+	const ID idSpot = pSpot->GetidSpot();
+	// 캐시스팟을 누르면 "광고 보겠는가?" 팝업창이 뜬다.
+	auto pPopup = XWND_ALERT_YESNO_T( "popup.cash.dialog", _T("%s"), XTEXT(2350) );
+	if( pPopup ) {
+		pPopup->SetstrTitle( XTEXT(2349) );
+		pPopup->SetEvent2( XWM_YES, [this](XWnd*) {
+			GAMESVR_SOCKET->SendReqShowAdsVideo( GAME );
+		});
 	}
-	return 1;
+	//
+	return 0;
 }
 
 int XSceneWorld::OnClickCommonSpot( XSpot *pBaseSpot )
