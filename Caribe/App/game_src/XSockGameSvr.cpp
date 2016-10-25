@@ -44,6 +44,9 @@
 #include "XPropCamp.h"
 #include "XPropHelp.h"
 #include "XImageMng.h"
+#ifdef _VER_ANDROID
+#include "XFramework/android/JniHelper.h"
+#endif // _VER_ANDROID
 
 #define BTRACE		XTRACE
 
@@ -556,7 +559,8 @@ void XSockGameSvr::RecvShowAdsVideo( XPacket& p, const xCALLBACK& c )
 		GAME->SetstrKeyAds( strKey );		// 광고 다보고난 후 이 키값을 서버로 보내 비교한다.
 		// success
 #if defined(_VER_ANDROID)
-		JniHelper::ShowTapjoyDirectPlay();
+		//JniHelper::ShowTapjoyDirectPlay();
+		CppToJavaV( "CppToJavaV", "show_ads", "", "" );
 #elif defined(WIN32)
 		XReceiverCallback::sGet()->cbOnReceiveCallback( "finish_show_ads", "", "", "" );
 #endif // _VER_ANDROID

@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 //#ifdef ANDROID
+#include "XFramework/XReceiverCallback.h"
 #include "XFramework/android/com_mtricks_xe_XRenderer.h"
 #include <string>
 #include "XFramework/client/XApp.h"
@@ -330,11 +331,11 @@ Java_com_mtricks_xe_XRenderer_nativeJavaToCpp( JNIEnv *env, jobject,
 																							 jstring jstrParam2,
 																							 jstring jstrParam3)
 {
-	LOGD( "cpp: callback %s", __FUNCTION__ );
-	const std::string strID = JniHelper::jstring2string( jstrSku );
+	const std::string strID = JniHelper::jstring2string( jstrID );
 	const std::string strParam1 = JniHelper::jstring2string( jstrParam1 );
 	const std::string strParam2 = JniHelper::jstring2string( jstrParam2 );
 	const std::string strParam3 = JniHelper::jstring2string( jstrParam3 );
+	LOGD( "cpp: callback %s: id=%s, p1=%s, p2=%s, p3=%s", __FUNCTION__, strID.c_str(), strParam1.c_str(), strParam2.c_str(), strParam3.c_str() );
 	XReceiverCallback::sGet()->cbOnReceiveCallback( strID, strParam1, strParam2, strParam3 );
 }
 

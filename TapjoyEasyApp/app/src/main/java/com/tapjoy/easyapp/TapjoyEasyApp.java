@@ -76,11 +76,14 @@ public class TapjoyEasyApp extends Activity implements View.OnClickListener, TJG
 
 		// Connect with the Tapjoy server.  Call this when the application first starts.
 		// REPLACE THE SDK KEY WITH YOUR TAPJOY SDK Key.
-		String tapjoySDKKey = "u6SfEbh_TA-WMiGqgQ3W8QECyiQIURFEeKm0zbOggubusy-o5ZfXp33sTXaD";
+
+		String tapjoySDKKey = "G9cPIGB3RK-KgobR4mWdfQECPxov81Ea8FbQgubNRYhzx_CGWjLyDkAAbixL";
+//		String tapjoySDKKey = "u6SfEbh_TA-WMiGqgQ3W8QECyiQIURFEeKm0zbOggubusy-o5ZfXp33sTXaD";
 //		String tapjoySDKKey = "sejWMAfxSVaHo0I_tGAFlwECYf0xIUSPfqsagthqtDq7Ys5i1grR-rjus1-e";
 
 
-		Tapjoy.setGcmSender("34027022155");
+		Tapjoy.setGcmSender("988195830797");
+		//Tapjoy.setGcmSender("34027022155");
 
 		// NOTE: This is the only step required if you're an advertiser.
 		Tapjoy.connect(this, tapjoySDKKey, connectFlags, new TJConnectListener() {

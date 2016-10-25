@@ -223,6 +223,11 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener, TJGe
 		super.onStop();
 		Tapjoy.onActivityStop(this);
 	}
+
+	public void nativeJavaToCpp( String strid, String param1, String param2, String param3 ) {
+		mGLView.GetRenderer().nativeJavaToCpp( strid, param1, param2, param3 );
+	}
+
 	// 구글 인앱시스템 초기화
 /*	public static void Callback_InitGoogleIAP(final String publicKey ) 
 	{
@@ -1001,9 +1006,11 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener, TJGe
 
 		// Connect with the Tapjoy server.  Call this when the application first starts.
 		// REPLACE THE SDK KEY WITH YOUR TAPJOY SDK Key.
-		String tapjoySDKKey = "u6SfEbh_TA-WMiGqgQ3W8QECyiQIURFEeKm0zbOggubusy-o5ZfXp33sTXaD";
+		String tapjoySDKKey = "G9cPIGB3RK-KgobR4mWdfQECPxov81Ea8FbQgubNRYhzx_CGWjLyDkAAbixL";
+//		String tapjoySDKKey = "u6SfEbh_TA-WMiGqgQ3W8QECyiQIURFEeKm0zbOggubusy-o5ZfXp33sTXaD";
 //		String tapjoySDKKey = "sejWMAfxSVaHo0I_tGAFlwECYf0xIUSPfqsagthqtDq7Ys5i1grR-rjus1-e";
-		Tapjoy.setGcmSender("34027022155");
+		Tapjoy.setGcmSender("988195830797");
+//		Tapjoy.setGcmSender("34027022155");
 		// NOTE: This is the only step required if you're an advertiser.
 		Tapjoy.connect(this, tapjoySDKKey, connectFlags, new TJConnectListener() {
 			@Override
@@ -1064,7 +1071,8 @@ public class XeActivity extends Activity implements Cocos2dxHelperListener, TJGe
 				Log.i( TAG_TAP, "onEarnedCurrency" );
 				earnedCurrency = true;
 				Log.i( TAG_TAP, "You've just earned " + amount + " " + currencyName);
-				mGLView.GetRenderer().nativeJavaToCpp( "finish_show_ads", "", "", "" );
+				nativeJavaToCpp( "finish_show_ads", "", "", "" );
+//				mGLView.GetRenderer().nativeJavaToCpp( "finish_show_ads", "", "", "" );
 //				showPopupMessage("You've just earned " + amount + " " + currencyName);
 			}
 		});

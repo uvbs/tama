@@ -47,4 +47,7 @@ dependencies {
     compile project(':facebookSDK')
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.google.android.gms:play-services:+'
+    compile files('libs/vungle-publisher-adaptive-id-4.0.3.jar')
+    compile files('libs/javax.inject-1.jar')
+    compile files('libs/dagger-2.7.jar')
 }

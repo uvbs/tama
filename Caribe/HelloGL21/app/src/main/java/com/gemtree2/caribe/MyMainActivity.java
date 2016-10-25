@@ -66,9 +66,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 //import com.tapjoy.TJPlacementVideoListener;
 //import com.tapjoy.TJVideoListener;
 
+import com.vungle.publisher.AdConfig;
+import com.vungle.publisher.EventListener;
+import com.vungle.publisher.Orientation;
+import com.vungle.publisher.VunglePub;
 public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener/*, TJGetCurrencyBalanceListener, TJPlacementListener, TJPlacementVideoListener*/ {
 	public static Version ver = new Version();
 	static String[] SKU_GEM;
+	// vungle
+	final VunglePub vunglePub = VunglePub.getInstance();
 //	// Tapjoy
 //	private boolean earnedCurrency = false;
 //	// Tapjoy Placements
@@ -82,22 +88,41 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		System.loadLibrary("xlib_test");
 	}
 
-	static public String CppToJava(String id, String param1, String param2)		// C++ - > Java
-	{
-		Log.v(TAG, "id : \"" + id + "\" param1 : \"" + param1 + "\" parma2 : \"" + param2 +"\"" );
-		
-//		if(id.equals("gcm_regid"))	{
+	static public String CppToJava(String id, String param1, String param2) {		// C++ - > Java
+		Log.v(TAG, "Java: CppToJava id: \"" + id + "\" param1 : \"" + param1 + "\" parma2 : \"" + param2 +"\"" );
+
+		String str = "";
 		if( id.equals("gcm_regid") ) {
-			return myActivity.regid;
+			str = myActivity.regid;
     	} else 
     	if(id.equals("buy")) {
-//			myActivity.onBuyProduct(param1, null );
-	
-			return "";
-    	} else {
+    	}
+		if( id.equals("show_ads")) {
+			Log.i( "x_vungle", "call myActivity.vunglePub.playAd();" );
+			myActivity.vunglePub.playAd();
+		} else {
     		Log.e(TAG, "CppToJava:unknown id:" + id); 
     	}
-		return "";
+		return str;
+	}
+	///////////////////////////////////
+	static public void CppToJavaV(String id, String param1, String param2) {		// C++ - > Java
+		Log.v(TAG, "Java: CppToJavaV id: \"" + id + "\" param1 : \"" + param1 + "\" parma2 : \"" + param2 +"\"" );
+		if( id.equals("show_ads")) {
+			Log.i( "x_vungle", "call myActivity.vunglePub.playAd();" );
+			final AdConfig overrideConfig = new AdConfig();
+			// set incentivized option on
+			overrideConfig.setIncentivized(true);
+			overrideConfig.setIncentivizedCancelDialogTitle("Careful!");
+			overrideConfig.setIncentivizedCancelDialogBodyText("If the video isn't completed you won't get your reward! Are you sure you want to close early?");
+			overrideConfig.setIncentivizedCancelDialogCloseButtonText("Close");
+			overrideConfig.setIncentivizedCancelDialogKeepWatchingButtonText("Keep Watching");
+			// the overrideConfig object will only affect this ad play.
+			myActivity.vunglePub.playAd(overrideConfig);
+//			myActivity.vunglePub.playAd();
+		} else {
+			Log.e(TAG, "CppToJava:unknown id:" + id);
+		}
 	}
 
 	@Override
@@ -199,8 +224,15 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 			CreateFacebook(savedInstanceState);
 		}
 		// tapjoy init
-		Tapjoy_connect();
+		//Tapjoy_connect();
 		//Tapjoy_callShowOffers();
+		// vungle init
+		// get your App ID from the app's main page on the Vungle Dashboard after setting up your app
+		//final String app_id = "580ed02be3ca2a652800000e";
+		final String app_id = "Test_Android";
+		// initialize the Publisher SDK
+		vunglePub.init(this, app_id);
+		vunglePub.setEventListeners(vungleDefaultListener, vungleSecondListener);
 	} // onCreate
 
 	@Override
@@ -220,14 +252,14 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+		vunglePub.onResume();
 		GcmBroadcastReceiver.isAppOn = true;
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		
+		vunglePub.onPause();
 		GcmBroadcastReceiver.isAppOn = false;
 	}
 
@@ -899,6 +931,7 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 	@Override
 	public void DoTestFromHandlerOverride() {
 		Log.d(TAG, "Java: XeActivity:DoTestFromHandlerOverride" );
+		vunglePub.playAd();
 		//Tapjoy_showDirectPlayContent();
 //		bShowBanner = !bShowBanner;
 //		ShowAdView( bShowBanner, 500, 500 );
@@ -909,4 +942,75 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		//ShowAdView();
 		this.AddTestMsgHandler();
 	}
+	///////////////////////////////////////////////////////////////////////////////////
+	// TODO: vungle start
+	private final EventListener vungleDefaultListener = new EventListener() {
+		@Deprecated
+		@Override
+		public void onVideoView(boolean isCompletedView, int watchedMillis, int videoDurationMillis) {
+			// This method is deprecated and will be removed. Please use onAdEnd() instead.
+		}
+
+		@Override
+		public void onAdStart() {
+			// Called before playing an ad.
+			Log.i("xuzhu_vungle", "1onAdStart:" );
+		}
+
+		@Override
+		public void onAdUnavailable(String reason) {
+			// Called when VunglePub.playAd() was called but no ad is available to show to the user.
+			Log.i("xuzhu_vungle", "1onAdUnavailable: reason=%s" + reason );
+		}
+
+		@Override
+		public void onAdEnd(boolean wasSuccessfulView, boolean wasCallToActionClicked) {
+			// Called when the user leaves the ad and control is returned to your application.
+			Log.i("xuzhu_vungle", "1onAdEnd: wasSuccessfulView=" + wasSuccessfulView + " wasCallToActionClicked=" + wasCallToActionClicked );
+		}
+
+		@Override
+		public void onAdPlayableChanged(boolean isAdPlayable) {
+			// Called when ad playability changes.
+			Log.i("DefaultListener", "This is a default eventlistener.");
+			final boolean enabled = isAdPlayable;
+//			runOnUiThread(new Runnable() {
+//				@Override
+//				public void run() {
+//					// Called when ad playability changes.
+//					setButtonState(buttonPlayAd, enabled);
+//					setButtonState(buttonPlayAdIncentivized, enabled);
+//					setButtonState(buttonPlayAdOptions, enabled);
+//				}
+//			});
+		}
+	};
+
+	private final EventListener vungleSecondListener = new EventListener() {
+		// Vungle SDK allows for multiple listeners to be attached. This secondary event listener is only
+		// going to print some logs for now, but it could be used to Pause music, update a badge icon, etc.
+		@Deprecated
+		@Override
+		public void onVideoView(boolean isCompletedView, int watchedMillis, int videoDurationMillis) {}
+
+		@Override
+		public void onAdStart() {
+			Log.i("xuzhu_vungle", "2onAdStart:" );
+		}
+
+		@Override
+		public void onAdUnavailable(String reason) {
+			Log.i("xuzhu_vungle", "2onAdUnavailable: reason=%s" + reason );
+		}
+		@Override
+		public void onAdEnd(boolean wasSuccessfulView, boolean wasCallToActionClicked) {
+			Log.i("xuzhu_vungle", "2onAdEnd: wasSuccessfulView=" + wasSuccessfulView + " wasCallToActionClicked=" + wasCallToActionClicked );
+			nativeJavaToCpp( "finish_show_ads", "", "", "" );
+		}
+		@Override
+		public void onAdPlayableChanged(boolean isAdPlayable) {
+			Log.i("SecondListener", String.format("This is a second event listener! Ad playability has changed, and is now: %s", isAdPlayable));
+		}
+	};	// TODO: vungle end
+	///////////////////////////////////////////////////////////////////////////////////
 } // MyMainActivity

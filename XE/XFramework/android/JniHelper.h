@@ -112,6 +112,7 @@ extern "C"
 	// C++ -> JAVA
 	//  �ξ�
 	std::string CppToJava(const char* id, const char* param1 = "", const char* param2 = "");
+	void CppToJavaV( const std::string& methodName, const std::string& strId, const std::string& param1, const std::string& param2 );
 #ifdef __cplusplus
 }
 #endif

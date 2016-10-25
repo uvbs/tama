@@ -162,17 +162,28 @@ static bool getStaticMethodInfo_(JniMethodInfo &methodinfo, const char *classNam
 
 static std::string jstring2string_( jstring jstr )
 {
+	LOGD("enter jstring2string_");
 	if( jstr == NULL ) {
 		return "";
 	}
+	LOGD( "getEnv( &env )" );
 	JNIEnv *env = 0;
 	if( !getEnv( &env ) ) {
-		return 0;
+		return "";
 	}
+	if( XBREAK(env == nullptr) )
+		return "";
+	LOGD( "const char* chars = env->GetStringUTFChars( jstr, NULL );" );
 	const char* chars = env->GetStringUTFChars( jstr, NULL );
+	LOGD( "std::string ret( chars );" );
 	std::string ret( chars );
+	LOGD( "env->ReleaseStringUTFChars( jstr, chars );" );
 	env->ReleaseStringUTFChars( jstr, chars );
 	return ret;
+}
+std::string JniHelper::jstring2string( jstring str )
+{
+	return jstring2string_( str );
 }
 //
 } // extern "C"
@@ -231,10 +242,6 @@ bool JniHelper::getMethodInfo(JniMethodInfo &methodinfo, const char *className, 
     return getMethodInfo_(methodinfo, className, methodName, paramCode);
 }
 */
-std::string JniHelper::jstring2string(jstring str)
-{
-    return jstring2string_(str);
-}
 char* JniHelper::__x_unicode_test()
 {
 /*    JNIEnv *_env = 0;
@@ -1040,7 +1047,7 @@ extern "C"
 		if( !getEnv( &_env ) ) {
 			return "";
 		}
-		jstring r;
+// 		jstring rStr;
 		jclass _javaClass = getClassID_( "com/gemtree2/caribe/MyMainActivity", _env );
 		jmethodID mid = _env->GetStaticMethodID( _javaClass
 																					, methodName
@@ -1048,26 +1055,58 @@ extern "C"
 		if( mid == NULL ) {
 			LOGD( "not found java function" );
 		} else {
-			//LOGD("get Callback_OnClickedBuyItem");
+			LOGD("cpp: call function");
 			jstring tid = _env->NewStringUTF( id );
 			jstring tparam1 = _env->NewStringUTF( param1 );
 			jstring tparam2 = _env->NewStringUTF( param2 );
-			r = (jstring)_env->CallStaticObjectMethod( _javaClass, mid, tid, tparam1, tparam2 );
+			auto rStr = (jstring)_env->CallStaticObjectMethod( _javaClass, mid, tid, tparam1, tparam2 );
 
-			//LOGD("call LoadMarketURL");
+			if( rStr ) {
+				LOGD( "const std::string strRet = JniHelper::jstring2string( rStr );" );
+				const std::string strRet = JniHelper::jstring2string( rStr );
+	//			const char* rchar = _env->GetStringUTFChars( rStr, NULL );
+	//			XBREAK( rchar == nullptr );
+		//		std::string rr( rchar );
+	//			_env->ReleaseStringUTFChars( rStr, rchar );
+				LOGD( "JniHelper:CppToJava: id=%s", (id) ? id : "null" );
+				return strRet;
+			}
 		}
-		const char* rchar = _env->GetStringUTFChars( r, NULL );
-		std::string rr( rchar );
-//		rr = rchar;
-		_env->ReleaseStringUTFChars( r, rchar );
-		LOGD( "JniHelper:CppToJava: id=%s", ( id ) ? id : "null" );
-		return rr;	
+		return "";
 	}
 	//  인앱
 	std::string CppToJava( const char* id, const char* param1, const char* param2 )
 	{
 		LOGD("CppToJava : %s	%s	%s",id, param1, param2);
 		return CppToJava1("CppToJava", id, param1, param2);
+	}
+	/** ////////////////////////////////////////////////////////////////////////////////////
+	 @brief void버전
+	*/
+	void CppToJavaV( const std::string& methodName,
+									 const std::string& strId,
+									 const std::string& param1,
+									 const std::string& param2 )
+	{
+		LOGD( "%s:%s, %s, %s, %s", __FUNCTION__, methodName.c_str(), strId.c_str(), param1.c_str(), param2.c_str() );
+		JNIEnv *_env = 0;
+		if( !getEnv( &_env ) ) {
+			return;
+		}
+		// 		jstring rStr;
+		jclass _javaClass = getClassID_( "com/gemtree2/caribe/MyMainActivity", _env );
+		jmethodID mid = _env->GetStaticMethodID( _javaClass
+																						 , methodName.c_str()
+																						 , "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
+		if( mid == NULL ) {
+			LOGD( "not found java function" );
+		} else {
+			LOGD( "cpp: call function" );
+			jstring tid			= _env->NewStringUTF( strId.c_str() );
+			jstring tparam1 = _env->NewStringUTF( param1.c_str() );
+			jstring tparam2 = _env->NewStringUTF( param2.c_str() );
+			_env->CallStaticObjectMethod( _javaClass, mid, tid, tparam1, tparam2 );
+		}
 	}
 
 #ifdef __cplusplus
