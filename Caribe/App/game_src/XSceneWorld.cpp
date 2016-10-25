@@ -2980,7 +2980,7 @@ void XSceneWorld::UpdateDebugButtons()
 			pButt->SetEvent2( XWM_CLICKED, [this]( XWnd* ) {
 			GAMESVR_SOCKET->SendReqShowAdsVideo( GAME );
 #ifdef _VER_ANDROID
-			JniHelper::DoTest();
+//			JniHelper::DoTest();
 //			JniHelper::ShowTapjoyDirectPlay();
 #endif // _VER_ANDROID
 		} );

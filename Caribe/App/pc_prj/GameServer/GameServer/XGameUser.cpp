@@ -9550,6 +9550,7 @@ int XGameUser::RecvDidFinishShowAdsVideo( XPacket& p )
 	// 클라로 전송
 	XPacket ar( p.GetidPacket() );
 	const int numGemEarned = 10;
+	m_spAcc->AddCashtem( numGemEarned );
 	ar << numGemEarned;
 	ar << m_spAcc->GetCashtem();
 	Send(ar);

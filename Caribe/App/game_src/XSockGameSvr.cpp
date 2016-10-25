@@ -532,6 +532,7 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
 */
 BOOL XSockGameSvr::SendReqShowAdsVideo( XWnd *pTimeoutCallback)
 {
+	CONSOLE("%s", __TFUNC__);
 	_XCHECK_CONNECT(0);
 	//
 	XPacket ar( (ID)xCL2GS_SHOW_ADS);
@@ -552,6 +553,7 @@ BOOL XSockGameSvr::SendReqShowAdsVideo( XWnd *pTimeoutCallback)
 */
 void XSockGameSvr::RecvShowAdsVideo( XPacket& p, const xCALLBACK& c )
 {
+	CONSOLE("%s", __TFUNC__);
 	DWORD dwKey;
 	p >> dwKey;
 	if( dwKey ) {
@@ -580,6 +582,7 @@ void XSockGameSvr::RecvShowAdsVideo( XPacket& p, const xCALLBACK& c )
 */
 BOOL XSockGameSvr::SendReqDidFinishShowAdsVideo( XWnd *pTimeoutCallback, const std::string& strKeyAds )
 {
+	CONSOLE( "%s", __TFUNC__ );
 	_XCHECK_CONNECT(0);
 	//
 	XPacket ar( (ID)xCL2GS_FINISH_SHOW_ADS );
@@ -601,6 +604,7 @@ BOOL XSockGameSvr::SendReqDidFinishShowAdsVideo( XWnd *pTimeoutCallback, const s
 */
 void XSockGameSvr::RecvDidFinishShowAdsVideo( XPacket& p, const xCALLBACK& c )
 {
+	CONSOLE( "%s", __TFUNC__ );
 	int numGemEarned; // 보상젬 개수
 	int numGems;  // 젬을 벌고 난 후의 젬 개수
 	p >> numGemEarned >> numGems;
@@ -608,6 +612,7 @@ void XSockGameSvr::RecvDidFinishShowAdsVideo( XPacket& p, const xCALLBACK& c )
 	if( GAME->GetpScene() ) {
 		GAME->GetpScene()->OnRecvDidFinishShowAdsVideo( numGemEarned );
 	}
+	GAME->SetbUpdate( true );
 }
 
 

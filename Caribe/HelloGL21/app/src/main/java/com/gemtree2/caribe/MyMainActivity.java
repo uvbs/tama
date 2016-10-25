@@ -1005,7 +1005,8 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		@Override
 		public void onAdEnd(boolean wasSuccessfulView, boolean wasCallToActionClicked) {
 			Log.i("xuzhu_vungle", "2onAdEnd: wasSuccessfulView=" + wasSuccessfulView + " wasCallToActionClicked=" + wasCallToActionClicked );
-			nativeJavaToCpp( "finish_show_ads", "", "", "" );
+			if( wasSuccessfulView )
+				nativeJavaToCpp( "finish_show_ads", "", "", "" );
 		}
 		@Override
 		public void onAdPlayableChanged(boolean isAdPlayable) {
