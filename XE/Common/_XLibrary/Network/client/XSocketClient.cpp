@@ -78,12 +78,9 @@ BOOL XESocketClient::Send( XPacket& ar )
 //		return FALSE;
 	if( GetbEncryption() )
 		ar.DoCrypto( this, ar.GetidPacket() );
-	try
-	{
+	try	{
 		SendData( ar.GetBuffer(), ar.size() ); 
-	}
-	catch (std::exception& e)
-	{
+	}	catch (std::exception& e)	{
 		XTRACE( "exception: %s ", e.what() );
 	}
 	return TRUE;

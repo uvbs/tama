@@ -360,35 +360,17 @@ void XSockLoginSvr::RecvDiffPacketVer( XPacket& p )
 	XConnector::sGet()->StopFSM();
 }
 
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 닉네임이 잘못됨.
+*/
 // 같은 계정으로 다른곳에서 접속을 해서 this는 끊어야 한다.
 void XSockLoginSvr::RecvDuplicateLogout( XPacket& ar )
 {
-	// 로그인서버라도 처리해야하지 않을까?
-/*
-	XWND_ALERT_PARAM_RET( pAlert, 
-		nullptr, 
-		XWnd::xOK, 
-		XCOLOR_WHITE, 
-		"%s", XTEXT(2037) );
-	pAlert->SetEvent( XWM_OK, GAME, &XT3::OnExitApp );
-*/
 }
 
 // 접속을 시도했으나 이미 로그인되어있어 THIS가 다시 로그인을 시도해야함.
 void XSockLoginSvr::RecvReconnectTry( XPacket& ar )
 {
-/*
-	// 세션이 있을때 xCL2LS_ACCOUNT_SESSION_DEVICE_ID
-	// 세션이 없을때 xCL2LS_ACCOUNT_LOGIN_FROM_DEVICE_ID
-	float secDelay;
-	ar >> secDelay;
-	if( ACCOUNT )
-		ACCOUNT->SetSessionkey( _T("") );
-	XBREAK( secDelay == 0.f );
-	//	GAME->GetpScheduler()->RegisterScheduler( 1, secDelay );
-	GAME->DoReconnectForExistUser( secDelay );
-	CONSOLE("RecvReconnectTry. clear sessionkey");
-*/
 	CONSOLE( "%s", __TFUNC__ );
 	float sec;
 	ar >> sec;

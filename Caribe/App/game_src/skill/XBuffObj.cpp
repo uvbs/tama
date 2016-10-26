@@ -259,23 +259,6 @@ void XBuffObj::OnEventInvokeFromSkill( XSkillDat *pFromSkill,
 }
 
 
-/**
- @brief 평타공격이 시작되기전에 호출된다.
-*/
-// void XBuffObj::OnEventBeforeAttack( XSKILL::xtJuncture event )
-// {
-// 	LIST_LOOP( m_listEffectObjs, EFFECT_OBJ*, itor, pEffObj ) {
-// 		EFFECT *pEffect = &pEffObj->m_effect;
-// 		if( pEffect->invokeJuncture == event ) {
-// 			??
-// 			bool bSuccess = XSKILL::DoDiceInvokeRatio( pEffect, m_Level );
-// 			if( bSuccess && pEffect->invokeJuncture == xJC_RANGE_ATTACK_START )
-// 				if( m_pDelegate )
-// 					m_pDelegate->DelegateResultEventBeforeAttack( this, pEffect );
-// 		}
-// 	} END_LOOP;
-// }
-
 
 /**
   버프객체에서 매프레임 버프의 효과를 적용시킨다.(보정치)

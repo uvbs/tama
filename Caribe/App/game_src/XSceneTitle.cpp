@@ -513,6 +513,11 @@ void XSceneTitle::ClearEditBoxByNickname()
 
 void XSceneTitle::OnDelegateEnterEditBox(XWndEdit *pWndEdit, LPCTSTR szString, const _tstring& strOld)
 {
+	const _tstring strNick = szString;
+	if( strNick.length() < 2 || strNick.length() > 16 ) {
+		XWND_ALERT( "The length of the nickname must be 2 to 16.")
+		return;
+	}
 	xSET_TEXT(this, "text.nickname", szString);
 	pWndEdit->SetbDestroy(TRUE);
 }

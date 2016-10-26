@@ -292,9 +292,12 @@ namespace XGAME {
 		xCP_LOGIN_FACEBOOK,	// facebook으로 로그인
 		xCP_LOGIN_NEW_ACC,	// 새계정 생성 요청
 		xCP_LOGIN_NEW_ACC_BY_FACEBOOK,	// 새계정 생성 요청
-//		xCP_LOGIN_FACEBOOK,
+		xCP_LOGIN_MAX,
 	};
 
+	inline bool IsValidConnectParam( xtConnectParam param ) {
+		return param > 0 || param < xCP_LOGIN_MAX;
+	}
 	/// 배열에 사용하는 인덱스
 	enum xtSideIndex {
 		xSI_PLAYER=0,		///< 플레이어측

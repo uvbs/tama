@@ -161,19 +161,19 @@ int XCrypto::EncryptMem( BYTE *pOutBuffer, int sizeBuffer, BYTE *pSrc, int sizeS
 	long long llCheckSum = Encrypt( pCurr, sizeBuffer, pSrc, sizeSrc );
 	XBREAK( llCheckSum > 0xffffffff );	// 이런경우 헤더에 넣는 체크섬값 크기 늘여야함.
 	// 잘 풀리는지 검증
-	BYTE buffDecrypt[ 0x10000 ];
+//	BYTE buffDecrypt[ 0x10000 ];
 //	GetNextRandomKeyClear();
-	XINT64 llCheckSumDecrypt = Decrypt2( buffDecrypt, 0x10000, pCurr, sizeSrc );
- 	XBREAK( llCheckSumDecrypt != llCheckSum );
-	if( llCheckSumDecrypt != llCheckSum ) {
-		for( int i = 0; i < sizeSrc; ++i ) {
-			const BYTE datEnc = pSrc[i];
-			const BYTE datDec = buffDecrypt[i];
-			if( datEnc != datDec ) {
-				int a = 0;
-			}
-		}
-	}
+//	XINT64 llCheckSumDecrypt = Decrypt2( buffDecrypt, 0x10000, pCurr, sizeSrc );
+// 	XBREAK( llCheckSumDecrypt != llCheckSum );
+// 	if( llCheckSumDecrypt != llCheckSum ) {
+// 		for( int i = 0; i < sizeSrc; ++i ) {
+// 			const BYTE datEnc = pSrc[i];
+// 			const BYTE datDec = buffDecrypt[i];
+// 			if( datEnc != datDec ) {
+// 				int a = 0;
+// 			}
+// 		}
+// 	}
 
 // 	break걸렸을때 다시 실행해보면 같은값이 제대로 나오는걸로 보아. 멀티스레드 문제인듯 싶다.
 // 

@@ -237,10 +237,12 @@ void XClientConnection::RecvCreateNewAccount( XPacket& p, ID idKey )
 	_tstring strDeviceID;
 	_tstring strAppstore;
 	p >> strNickName;
+	XVERIFY_BREAK( strNickName.length() < 2 || strNickName.length() > 16 );
 	p >> strDeviceID;
 	p >> strAppstore;
 	BYTE b0;
 	p >> b0;	auto typeLogin = (XGAME::xtConnectParam)b0;
+	XVERIFY_BREAK( IsValidConnectParam(typeLogin) == false );
 	p >> b0 >> b0 >> b0;
 #ifdef _XBOT
 	const _tstring strUUID = strNickName;		// 봇모드에서는 닉이 uuid

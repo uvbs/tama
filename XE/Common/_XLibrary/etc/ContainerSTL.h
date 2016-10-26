@@ -326,6 +326,8 @@ public:
 		XBREAK(m_idxBack == -1);
 		if( XBREAKF( m_idxBack == -1, "queue is full: max=%d", m_nMax ) )		// 큐가 꽉차서 더이상 못넣음
 			return false;
+		if( m_idxBack < 0 || m_idxBack >= m_nMax )	// 방어코드
+			m_idxBack = 0;
 		m_Array[ m_idxBack++ ] = data;
 		++ m_nNum;
 		if( m_idxBack >= m_nMax )		// 인덱스가 끝까지 가면 0으로 되돌아감
@@ -347,6 +349,8 @@ public:
 	T Front() {
 //		XBREAK( m_Array == NULL );
 		XBREAK( IsEmpty() == TRUE );
+		if( m_idxFront < 0 || m_idxFront >= m_nMax )	// 방어코드
+			m_idxFront = 0;
 		return m_Array[ m_idxFront ];
 	}
 	T Back() {
@@ -357,6 +361,8 @@ public:
 			idxBack = m_idxFront - 1;		// front의 바로 앞이 큐의 마지막 위치다
 		if( idxBack < 0 )						// 인덱스가 언더플로우 되지 않도록
 			idxBack = m_nMax - 1;
+		if( idxBack < 0 || idxBack >= m_nMax )	// 방어코드
+			idxBack = 0;
 		return m_Array[ idxBack ];
 	}
 	// 큐가 가득찼는가

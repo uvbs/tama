@@ -57,10 +57,9 @@ BOOL XENetworkConnection::PumpPacket( XPacket *pOutPacket )
 		if( m_qBuffer.size() >= sizeof(DWORD) ) {		// 큐버퍼에 최소4바이트가 모여 패킷길이를 알수 있게 되었다
 			if( m_sizePacket == 0 ) {
 				m_sizePacket = m_qBuffer.PopDWORD();	// 큐에서 4바이트를 꺼낸다.
-				if( XBREAK( m_sizePacket > 0xffff ) ) {
+				if( XBREAK( m_sizePacket > 0x1fff /*|| m_sizePacket <= 4*/) ) {
 					// 정상적이지 않은 패킷이 날아왔음. 접속끊어야 함.
 					m_qBuffer.clear();
-					//					SetbDestroy( TRUE );
 					DoDisconnect();		// 즉시 접속을 끊어라.
 					// 에러 핸들러 호출
 					OnError( xERR_PACKET_SIZE_TO_LARGE, m_sizePacket );
@@ -68,7 +67,7 @@ BOOL XENetworkConnection::PumpPacket( XPacket *pOutPacket )
 				}
 			}
 		}
-		XBREAK( m_sizePacket > 0xffff );		// 뭔가 잘못된 경우다
+		XBREAK( m_sizePacket > 0x1fff );		// 뭔가 잘못된 경우다
 		// 패킷 하나가 완전히 도착하면 패킷 아카이브를 만든다
 		if( m_sizePacket > 0 && (DWORD)m_qBuffer.Size() >= m_sizePacket )	// 필요한 패킷양 이상이 큐에 쌓였다
 		{
@@ -98,60 +97,5 @@ BOOL XENetworkConnection::PumpPacket( XPacket *pOutPacket )
 	//
 	return bRet;
 }
-// BOOL XENetworkConnection::PumpPacket( XPacket *pOutPacket )
-// {
-// 	// 패킷펌핑하고 있을때 다른 스레드가 이 커넥션을 사용하지 못하게 막는다.
-// 	//
-// 	BOOL bRet = FALSE;
-// 	//	if( m_Packet.GetPacketLength() == 0 )	// 패킷이 비어 있으면
-// 	{
-// 		// 최초 읽은 4바이트는 패킷의 총 길이다		
-// 		if( m_qBuffer.Size() >= sizeof( long ) )		// 큐버퍼에 최소4바이트가 모여 패킷길이를 알수 있게 되었다
-// 		{
-// 			if( m_sizePacket == 0 )
-// 			{
-// 				m_sizePacket = m_qBuffer.PopDWORD();	// 큐에서 4바이트를 꺼낸다.
-// 				if( XBREAK( m_sizePacket > 0xffff ) )
-// 				{
-// 					// 정상적이지 않은 패킷이 날아왔음. 접속끊어야 함.
-// 					m_qBuffer.Clear();
-// 					//					SetbDestroy( TRUE );
-// 					DoDisconnect();		// 즉시 접속을 끊어라.
-// 					// 에러 핸들러 호출
-// 					OnError( xERR_PACKET_SIZE_TO_LARGE, m_sizePacket );
-// 					return FALSE;
-// 				}
-// 			}
-// 		}
-// 		XBREAK( m_sizePacket > 0xffff );		// 뭔가 잘못된 경우다
-// 		// 패킷 하나가 완전히 도착하면 패킷 아카이브를 만든다
-// 		if( m_sizePacket > 0 && (DWORD)m_qBuffer.Size() >= m_sizePacket )	// 필요한 패킷양 이상이 큐에 쌓였다
-// 		{
-// 			if( pOutPacket->IsOverBuffer( m_sizePacket ) ) {
-// 				pOutPacket->ReAllocBuffer( m_sizePacket + 16 );	// 안전을 위해 16바이트 더 늘임.
-// 			}
-// 			int popSize = m_qBuffer.PopBlock( pOutPacket->GetBufferPacket()
-// 				, pOutPacket->GetMaxBufferSize()
-// 				, m_sizePacket );	// 큐에서 sizePacket만큼 pop시킨다
-// 			if( XBREAK( popSize == 0 ) )
-// 			{
-// 				// 패킷에 담는데 에러가 남 접속끊어야 함.
-// 				m_qBuffer.Clear();
-// 				//				SetbDestroy( TRUE );
-// 				DoDisconnect();
-// 				OnError( xERR_PACKET_SIZE_TO_LARGE, m_sizePacket );
-// 				return FALSE;
-// 			}
-// 			pOutPacket->SetPacketLength( m_sizePacket );	// 완성된 패킷이 준비되었다
-// #ifdef _XCRYPT_PACKET
-// 			pOutPacket->IsCryptThenSetFlag();	// 암호화 된 메모리인지 플래그를 세팅한다.
-// #endif
-// 			m_sizePacket = 0;
-// 			bRet = TRUE;
-// 		}
-// 	}
-// 	//
-// 	return bRet;
-// }
 
 #endif // server

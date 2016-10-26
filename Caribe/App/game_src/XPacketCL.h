@@ -20,6 +20,7 @@ enum xtCLPacket {
 	xCL2LS_ACCOUNT_NICKNAME_DUPLICATE,	// 닉네임 중복
 	xCL2LS_WRONG_PASSWORD,				// 패스워드 실패
 	xCL2LS_CLOSED_SERVER,				// 서버 점검중.
+	xCL2LS_WRONG_NICK,				// 닉네임의 글자수가 적거나 오버 및 기타등등
 	
 	xCL2LS_LOGIN_LOCK_FOR_BATTLE,   // 현재 공격받고 있어서 로그인이 잠시 막힘
 	xCL2LS_LOGIN_LOCK_FREE,         // 로그인락 상태가 해제됨.
