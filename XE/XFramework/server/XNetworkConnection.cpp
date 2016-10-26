@@ -57,7 +57,8 @@ BOOL XENetworkConnection::PumpPacket( XPacket *pOutPacket )
 		if( m_qBuffer.size() >= sizeof(DWORD) ) {		// 큐버퍼에 최소4바이트가 모여 패킷길이를 알수 있게 되었다
 			if( m_sizePacket == 0 ) {
 				m_sizePacket = m_qBuffer.PopDWORD();	// 큐에서 4바이트를 꺼낸다.
-				if( XBREAK( m_sizePacket > 0x1fff /*|| m_sizePacket <= 4*/) ) {
+				if( XBREAK( m_sizePacket > 0x7fff /*|| m_sizePacket <= 4*/) ) {
+					m_sizePacket = 0;
 					// 정상적이지 않은 패킷이 날아왔음. 접속끊어야 함.
 					m_qBuffer.clear();
 					DoDisconnect();		// 즉시 접속을 끊어라.
@@ -67,7 +68,10 @@ BOOL XENetworkConnection::PumpPacket( XPacket *pOutPacket )
 				}
 			}
 		}
-		XBREAK( m_sizePacket > 0x1fff );		// 뭔가 잘못된 경우다
+		if( XBREAK( m_sizePacket > 0x7fff ) ) {		// 뭔가 잘못된 경우다
+			m_sizePacket = 0;
+			return FALSE;
+		}
 		// 패킷 하나가 완전히 도착하면 패킷 아카이브를 만든다
 		if( m_sizePacket > 0 && (DWORD)m_qBuffer.Size() >= m_sizePacket )	// 필요한 패킷양 이상이 큐에 쌓였다
 		{
