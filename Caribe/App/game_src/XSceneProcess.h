@@ -43,7 +43,6 @@ public:
 ////////////////////////////////////////////////////////////////
 class XSceneProcessBattle : public XSceneProcess
 {
-//	XArrayLinearN<XLegionObj*, 2> m_aryLegion;	// 0:아군 1:적군
 	void Init() {
 	}
 

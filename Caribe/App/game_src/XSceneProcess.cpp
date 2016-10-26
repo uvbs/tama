@@ -34,28 +34,20 @@ XSceneProcessReady::XSceneProcessReady( XSceneBattle *pScene )
 	Init();
 	m_pso321 = new XSprObj(_T("321go.spr") ); 
 	m_pso321->SetAction( 1, xRPT_1PLAY );
-//	m_timerCount.Set(3.f);		// 3초를 넣어야함.
-// 	// 대기상태에선 프레임 스키핑 끔.
-// 	m_bFrameSkipOld = XAPP->GetbFrameSkip();
-// 	XAPP->SetbFrameSkip( FALSE );
 }
 
 void XSceneProcessReady::Destroy()
 {
 	SAFE_DELETE( m_pso321 );
-//	XAPP->SetbFrameSkip( m_bFrameSkipOld );
 }
 
 int XSceneProcessReady::Process( float dt )
 {
-//	SetbExit( TRUE );	// 3,2,1카운트 나온다음 프로세스 종료예약
-//	if( m_timerCount.IsOver() )
 	if( m_pso321 ) {
 		m_pso321->FrameMove( dt );
 		if( m_pso321->IsFinish() ) {
 			// 레디씬이 끝나면 프레임스킵을 리셋시켜 애니메이션이 갑자기 튀지 않도록 한다.
 			SAFE_DELETE( m_pso321 );
-//			XAPP->ResetFrameSkip();
 			m_pScene->OnEndSceneProcess( this );
 			m_timerCount.Off();
 		}

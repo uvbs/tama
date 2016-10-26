@@ -258,10 +258,10 @@ void XSceneBattle::CreateCamps()
 */
 BOOL XSceneBattle::OnCreate()
 {
-#ifdef _XASYNC_SPR
-	// 비동기로딩에서는 3,2,1을 먼저 시작한다.
-	CreateProcessReady();
-#endif // _XASYNC_SPR
+// #ifdef _XASYNC_SPR
+// 	// 비동기로딩에서는 3,2,1을 먼저 시작한다.
+// //	CreateProcessReady();
+// #endif // _XASYNC_SPR
 #ifdef _XSINGLE
 	sSetAbilHeroes();
 #endif // _XSINGLE
@@ -820,9 +820,10 @@ bool XSceneBattle::IsDialogMsg( DWORD idSeqPopup )
 void XSceneBattle::OnEnterBattle()
 {
 	// 3,2,1,씬
-#ifndef _XASYNC_SPR
 	CreateProcessReady();
-#endif // not _XASYNC_SPR
+// #ifndef _XASYNC_SPR
+// 	CreateProcessReady();
+// #endif // not _XASYNC_SPR
 
 }
 /**
