@@ -50,7 +50,7 @@ double FixDouble(double a, int n)
 }
 void XGlobalConst::LoadConst()
 {
-	LoadParams();		// key/val 방식의 새로운 버전의 로더
+	LoadParams( "params" );		// key/val 방식의 새로운 버전의 로더
 //	LoadDynaParam( &m_Param );
 
 	// 누락된 enum이 없는지 검사하기위해 한번씩 콜함.

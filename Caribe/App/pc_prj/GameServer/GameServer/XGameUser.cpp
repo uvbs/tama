@@ -9519,8 +9519,15 @@ int XGameUser::RecvEnterReadyScene( XPacket& p )
 */
 int XGameUser::RecvShowAdsVideo( XPacket& p )
 {
+	ID idSpot;
+	p >> idSpot;
+	auto pSpot = SafeCast<XSpotCash*>( GetpWorld()->GetSpot( idSpot ) );
+	XBREAK( pSpot == nullptr );
+	XVERIFY_BREAK( pSpot == nullptr );		// 캐시스팟이 맞는지부터 검사.
+	XVERIFY_BREAK( !pSpot->IsActive() );	// 캐시스팟이 지금 활성화 되어있어야 함.
 	DWORD dwKey = ::xRand();
 	m_strKeyAds = XE::Format( "%08x", dwKey );
+	m_idSpotAds = idSpot;
 	const float secDurationAds = XEnv::sGet()->GetParam().GetFloat( "sec_show_ads" );
 	XBREAK( secDurationAds == 0 );
 	m_timerAds.Set( secDurationAds, TRUE );		// n초 미만으로 패킷이 다시 왔다면 치트
@@ -9539,6 +9546,7 @@ int XGameUser::RecvShowAdsVideo( XPacket& p )
 */
 int XGameUser::RecvDidFinishShowAdsVideo( XPacket& p )
 {
+	XVERIFY_BREAK( m_idSpotAds == 0 );		// 요청시 보관했던 아이디가 없으면 에러
 	std::string strKey;
 	p >> strKey;
 	XVERIFY_BREAK( strKey.empty() );
@@ -9546,14 +9554,28 @@ int XGameUser::RecvDidFinishShowAdsVideo( XPacket& p )
 #if !defined(_DEBUG)
 	XVERIFY_BREAK( !m_timerAds.IsOver() );		// 타이머가 꺼져있거나 최소시간이 안지났는데 패킷이 온거면 치트
 #endif // !defined(_DEBUG)
+	auto pSpot = SafeCast<XSpotCash*>( GetpWorld()->GetSpot( m_idSpotAds ) );
+	if( XASSERT( pSpot ) ) {
+		// 스팟 클리어
+		pSpot->Initialize( m_spAcc );
+	}
+	// 광고요청 정보 클리어
 	m_strKeyAds.clear();
+	m_idSpotAds = 0;
+	m_timerAds.Off();
+
+	// 보상
+	const int numGemEarned = XGlobalConst::sGet()->GetParams().GetInt( "ads_gem" );
+	XBREAK( numGemEarned == 0 );
+	m_spAcc->AddCashtem( numGemEarned );
+
 	// 클라로 전송
 	XPacket ar( p.GetidPacket() );
-	const int numGemEarned = 10;
-	m_spAcc->AddCashtem( numGemEarned );
+	ar << pSpot->GetidSpot();
 	ar << numGemEarned;
 	ar << m_spAcc->GetCashtem();
 	Send(ar);
+	SendSpotSync( pSpot, false );
 	return 1;
 }
 

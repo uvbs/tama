@@ -20,37 +20,63 @@ void XGlobalVal::Destroy()
 {
 }
 
-
-void XGlobalVal::LoadParams()
+/** ////////////////////////////////////////////////////////////////////////////////////
+ @brief 루트키 이하의 모든 노드들의 변수들을 읽는다.
+ 억세스시엔 <노드이름>.<attr이름> 과같은식으로 접근한다.
+*/
+void XGlobalVal::LoadParams( const std::string& strKeyRoot )
 {
-	auto node = m_nodeRoot.GetFirst();
-	while( !node.IsEmpty() ) {
-		const std::string strKey = node.GetcstrName();
-		LoadNode( node, strKey );
-		node = node.GetNext();
-	}
+	auto nodeParams = m_nodeRoot.FindNode( strKeyRoot );
+	if( nodeParams.IsEmpty() )
+		return;
+	LoadNode( nodeParams, "" );
+// 	auto node = nodeParams.GetFirst();
+// 	while( !node.IsEmpty() ) {
+// 		const std::string strKey = node.GetcstrName();
+// 		if( strKey.at(0) != '_' ) {
+// 			LoadNode( node, strKey );
+// 		}
+// 		node = node.GetNext();
+// 	}
 }
 
-void XGlobalVal::LoadNode( XEXmlNode& nodeParent, const std::string& _strKey )
+void XGlobalVal::LoadNode( XEXmlNode& nodeParent, const std::string& _strKeyParent )
 {
 	XEXmlAttr attr = nodeParent.GetFirstAttribute();
 	while( !attr.IsEmpty() ) {
 		// attr로 검색되는것들은 모두 최종 변수.
-		std::string strKey;
-		if( _strKey.empty() ) {
-			strKey = attr.GetcstrName();
-		} else {
-			strKey = _strKey + "." + attr.GetcstrName();
-		}
-		std::string strVal = attr.GetString2();
-		m_Params.Set( strKey, strVal );		// 키/밸류 등록
+		const std::string strAttr = attr.GetcstrName();
+		if( strAttr.at(0) != '_' ) {
+			std::string strKey;
+			if( strAttr == "val" ) {
+				// attr이름이 val인것은 키 이름에 포함시키지 않는다.
+				XBREAK( _strKeyParent.empty() );
+				strKey = _strKeyParent;		// 부모키 이름만 사용함.
+			} else {
+				if( _strKeyParent.empty() ) {
+					strKey = strAttr;
+				} else {
+					strKey = _strKeyParent;
+					if( !_strKeyParent.empty() )
+						strKey += ".";
+					strKey += strAttr;
+				}
+			}
+			const std::string strVal = attr.GetString2();		// 값을 스트링으로 읽음.
+			m_Params.Set( strKey, strVal );		// 키/밸류 등록
+		} // _
 		attr = attr.GetNext();
 	}
 	///< 
 	XEXmlNode nodeChild = nodeParent.GetFirst();
 	while( !nodeChild.IsEmpty() ) {
-		std::string strKey = _strKey + "." + nodeChild.GetcstrName();		// aaa.bbb.ccc.val 이런식으로 연결되도록 계속 붙인다.
-		LoadNode( nodeChild, strKey );
+		std::string strKey = _strKeyParent;
+		if( !_strKeyParent.empty() )
+			strKey +=+ ".";
+		strKey += nodeChild.GetcstrName();		// aaa.bbb.ccc.val 이런식으로 연결되도록 계속 붙인다.
+		if( strKey.at(0) != '_' ) {
+			LoadNode( nodeChild, strKey );
+		}
 		nodeChild = nodeChild.GetNext();
 	}
 }

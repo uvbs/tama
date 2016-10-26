@@ -41,7 +41,7 @@ public:
 	XGameWndAlert* WndAlertWithType( const char *ids, XWnd::xtAlert type, LPCTSTR format, ... );
 	virtual void OnCloseDialog( const std::string& idsWnd ) {}
 	virtual void OnCreateOrderDialog( ID idHero ) {}
-	virtual void OnRecvDidFinishShowAdsVideo( int numGemEarned ) {}
+	virtual void OnRecvDidFinishShowAdsVideo( int numGemEarned, ID idSpot ) {}
 		/**
 	 @brief 씬에게 idHero의 XHero객체가 있는지 요청이 들어온다면 각 씬의 구조에 맞춰 XHero객체를 찾아서 돌려준다.
 	*/

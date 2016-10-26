@@ -228,8 +228,9 @@ public class MyMainActivity extends XeActivity implements Cocos2dxHelperListener
 		//Tapjoy_callShowOffers();
 		// vungle init
 		// get your App ID from the app's main page on the Vungle Dashboard after setting up your app
-		//final String app_id = "580ed02be3ca2a652800000e";
-		final String app_id = "Test_Android";
+		//final String app_id = "580ed02be3ca2a652800000e";	// xuzhu
+		final String app_id = "5810223547e7673a0b0000ac";	// gemtree
+		//final String app_id = "Test_Android";
 		// initialize the Publisher SDK
 		vunglePub.init(this, app_id);
 		vunglePub.setEventListeners(vungleDefaultListener, vungleSecondListener);

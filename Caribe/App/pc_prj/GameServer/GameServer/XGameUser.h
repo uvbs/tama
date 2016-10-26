@@ -27,6 +27,7 @@ private:
 	XGAME::xtPlatform m_Platform = XGAME::xPL_NONE;
 	std::string m_strKeyAds;			// 광고비디오 시청 식별키
 	CTimer m_timerAds;			// 광고비디오 시청 요청 타이머
+	ID m_idSpotAds = 0;			// 광고비디오 시청한 스팟
 	//CTimer m_messagetimer2min;
 	/*
 	 전투상대 부대정보

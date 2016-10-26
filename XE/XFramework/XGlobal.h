@@ -19,7 +19,8 @@ public:
 	XGlobalVal();
 	virtual ~XGlobalVal() { Destroy(); }
 	//
-	void LoadParams();
+	GET_ACCESSOR_CONST( const XParamObj2&, Params );
+	void LoadParams( const std::string& strKeyRoot );
 	void LoadNode( XEXmlNode& node, const std::string& strKey );
 	bool OnDidFinishLoad() override;
 	template<typename RET>

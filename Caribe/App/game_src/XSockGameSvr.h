@@ -420,7 +420,7 @@ public:
 	BOOL SendReqPaymentAssetByGem( XWnd *pTimeoutCallback, XGAME::xtPaymentRes typeAsset, bool bByItem, const XParamObj2& param );
 	BOOL SendReqPrivateRaidEnterList( XWnd *pTimeoutCallback, const XList4<XSPHero>& listHero, ID idSpot );
 	BOOL SendReqEnterReadyScene( XWnd *pTimeoutCallback, ID idSpot );
-	BOOL SendReqShowAdsVideo( XWnd *pTimeoutCallback );
+	BOOL SendReqShowAdsVideo( XWnd *pTimeoutCallback, ID idSpot );
 	BOOL SendReqDidFinishShowAdsVideo( XWnd *pTimeoutCallback, const std::string& strKeyAds );
 private:
 	void RecvAttackedSimulByHome( XPacket& p, const xCALLBACK& c );

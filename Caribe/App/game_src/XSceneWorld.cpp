@@ -1832,8 +1832,8 @@ int XSceneWorld::OnClickCashSpot( XSpot *pBaseSpot )
 	auto pPopup = XWND_ALERT_YESNO_T( "popup.cash.dialog", _T("%s"), XTEXT(2350) );
 	if( pPopup ) {
 		pPopup->SetstrTitle( XTEXT(2349) );
-		pPopup->SetEvent2( XWM_YES, [this](XWnd*) {
-			GAMESVR_SOCKET->SendReqShowAdsVideo( GAME );
+		pPopup->SetEvent2( XWM_YES, [this, idSpot](XWnd*) {
+			GAMESVR_SOCKET->SendReqShowAdsVideo( GAME, idSpot );
 		});
 	}
 	//
@@ -2788,10 +2788,10 @@ void XSceneWorld::UpdateDebugButtons()
 		pButt = XWndButtonDebug::sUpdateCtrl( this, "butt.debug.test", v, XE::VEC2(35.f, 35.f), _T( "test" ), true );
 //		Add( pButt );
 		if( pButt )
-			pButt->SetEvent2( XWM_CLICKED, [this]( XWnd* ) {
-			GAMESVR_SOCKET->SendReqShowAdsVideo( GAME );
+ 			pButt->SetEvent2( XWM_CLICKED, [this]( XWnd* ) {
+// 			GAMESVR_SOCKET->SendReqShowAdsVideo( GAME );
 #ifdef _VER_ANDROID
-//			JniHelper::DoTest();
+			JniHelper::DoTest();
 //			JniHelper::ShowTapjoyDirectPlay();
 #endif // _VER_ANDROID
 		} );
@@ -4125,7 +4125,15 @@ BOOL XSceneWorld::RestoreDevice()
 /** ////////////////////////////////////////////////////////////////////////////////////
  @brief 광고 비디오 시청 후 젬을 보상받음.
 */
-void XSceneWorld::OnRecvDidFinishShowAdsVideo( int numGemEarned )
+void XSceneWorld::OnRecvDidFinishShowAdsVideo( int numGemEarned, ID idSpot )
 {
 	CONSOLE("%s: earned gem number=%d", __TFUNC__, numGemEarned );
+	auto pSpot = sGetpWorld()->GetSpot( idSpot );
+	if( XASSERT( pSpot ) ) {
+		// 완료되면 젬 파티클 뿌려줌.
+		DoMakeResourceParticle( pSpot->GetPosWorld(), 
+														XGAME::xRES_CASH, 
+														(float)numGemEarned );
+	}
+
 }

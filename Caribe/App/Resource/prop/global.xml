@@ -133,4 +133,10 @@
       <!--요일스팟 1일 도전 횟수-->
     </num_try_daily>
   </daily_spot>
+  <params test_val="1">
+    <ads_gem val="10">
+      <!--광고동영상 시청 보상.-->
+    </ads_gem>
+    <_test val="10"></_test>
+  </params>
 </global>

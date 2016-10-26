@@ -530,12 +530,13 @@ void XSockGameSvr::RecvProp( XPacket& ar, const xCALLBACK& c )
  @return 전송에 성공하면 TRUE를 리턴한다. 만약 연결이 끊겨있거나 하면 _XCHECK_CONNECT()에 의해 FALSE가 리턴된다.
  @see AddResponse()
 */
-BOOL XSockGameSvr::SendReqShowAdsVideo( XWnd *pTimeoutCallback)
+BOOL XSockGameSvr::SendReqShowAdsVideo( XWnd *pTimeoutCallback, ID idSpot )
 {
 	CONSOLE("%s", __TFUNC__);
 	_XCHECK_CONNECT(0);
 	//
 	XPacket ar( (ID)xCL2GS_SHOW_ADS);
+	ar << idSpot;
 
 	//응답을 받을 콜백함수를 지정한다. 첫번째 파라메터는 응답을 받을때 사용되는 패킷아이디이다.
 	ID idKey = 
@@ -607,10 +608,13 @@ void XSockGameSvr::RecvDidFinishShowAdsVideo( XPacket& p, const xCALLBACK& c )
 	CONSOLE( "%s", __TFUNC__ );
 	int numGemEarned; // 보상젬 개수
 	int numGems;  // 젬을 벌고 난 후의 젬 개수
+	ID idSpot;
+	p >> idSpot;
 	p >> numGemEarned >> numGems;
+
 	ACCOUNT->SetCashtem( numGems );
 	if( GAME->GetpScene() ) {
-		GAME->GetpScene()->OnRecvDidFinishShowAdsVideo( numGemEarned );
+		GAME->GetpScene()->OnRecvDidFinishShowAdsVideo( numGemEarned, idSpot );
 	}
 	GAME->SetbUpdate( true );
 }

@@ -3612,7 +3612,7 @@ int XAccount::GetGoldNormalSummon()
 */
 int XAccount::GetCashFromGold( int numGold )
 {
-	int cash = (numGold / 6000) + 1;
+	int cash = (numGold / 6000);
 	if( cash <= 0 )
 		cash = 1;
 	return cash;
